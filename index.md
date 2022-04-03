@@ -4,27 +4,62 @@ You can use the [editor on GitHub](https://github.com/MikeSchulze/gdUnit3/edit/g
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+# GdUnit3 - Godot Unit Test Framework
+![Godot v3.2.3](https://img.shields.io/badge/Godot-v3.2.3-%23478cbf?logo=godot-engine&logoColor=white)
+![Godot v3.2.4](https://img.shields.io/badge/Godot-v3.2.4-%23478cbf?logo=godot-engine&logoColor=white)
+![Godot v3.3](https://img.shields.io/badge/Godot-v3.3-%23478cbf?logo=godot-engine&logoColor=white)
+![Godot v3.3.1](https://img.shields.io/badge/Godot-v3.3.1-%23478cbf?logo=godot-engine&logoColor=white)
+![Godot v3.3.2](https://img.shields.io/badge/Godot-v3.3.2-%23478cbf?logo=godot-engine&logoColor=white)
+![Godot v3.3.3](https://img.shields.io/badge/Godot-v3.3.3-%23478cbf?logo=godot-engine&logoColor=white)
+![Godot v3.3.4](https://img.shields.io/badge/Godot-v3.3.4-%23478cbf?logo=godot-engine&logoColor=white)
+![Godot v3.4](https://img.shields.io/badge/Godot-v3.4-%23478cbf?logo=godot-engine&logoColor=white)
 
-```markdown
-Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
+***
+## GdUnit3 V2.0.0 - Beta
 
-1. Numbered
-2. List
+ * You are welcome to test in and send me your feedback
+ * You are welcome to suggest improvements
+ * You are welcome to report bugs
+***
 
-**Bold** and _Italic_ and `Code` text
 
-[Link](url) and ![Image](src)
+GdUnit is a testing framework for Godot. GdUnit is important in the development of test-driven development and will help you to get your code bug free.
+
+[[https://github.com/MikeSchulze/gdUnit3/wiki/images/GdUnit.png]]
+
+## Main Features
+* Fully integrated in the Godot editor
+* Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnitInspector
+* Create test's directly from the ScriptEditor
+* Configurable template for the creation of a new test-suite
+* A spacious set of Asserts use to verify your code
+* Argument matchers to verify the behavior of a function call by a specified argument type.
+* Fluent syntax support
+* Test Fuzzing support
+* Mocking a class to simulate the implementation which you define the output of certain function
+* Spy on a instance to verify that a function has been called with certain parameters.
+* Mock or Spy on a Scene 
+* Provides a scene runner to simulate interactions on a scene 
+  * Simulate by Input events like mouse and/or keyboard
+  * Simulate scene processing by a certain number of frames
+  * Simulate scene proccessing by waiting for a specific signal
+* Update Notifier to install latest version from GitHub
+* Command Line Tool
+
+
+## Example
+``` python
+extends GdUnitTestSuite
+
+func test_example():
+	assert_str("This is a example message").has_length(25).starts_with("This is a ex")
 ```
+
+
+
 
 For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
