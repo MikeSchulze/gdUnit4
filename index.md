@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        ...
+    </head>
+    <body>
+        {{ content }}
+        <script src="/assets/js/tabs.js"></script>
+    </body>
+</html>
+
 
 # GdUnit3 - Embedded Godot Unit Test Framework
 ![Godot v3.2.3](https://img.shields.io/badge/Godot-v3.2.3-%23478cbf?logo=godot-engine&logoColor=white)
