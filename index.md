@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="en-us">
-    <head>
-        ...
-    </head>
-    <body>
-        {{ content }}
-        <script src="/assets/js/tabs.js"></script>
-    </body>
-</html>
+
 
 
 # GdUnit3 - Embedded Godot Unit Test Framework
@@ -56,27 +47,40 @@ GdUnit is a testing framework for Godot. GdUnit is important in the development 
 
 
 ## Example
-{% tabs example %}
 
-{% tab example GdScript %}
-``` python
-extends GdUnitTestSuite
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        ...
+    </head>
+    <body>
+        {{ 
+            {% tabs example %}
 
-func test_example():
-    assert_str("This is a example message").has_length(25).starts_with("This is a ex")
-```
-{% endtab %}
+            {% tab example GdScript %}
+            ``` python
+            extends GdUnitTestSuite
 
-{% tab example CSharp %}
-``` python
-[TestCase(Description = "Small example test")]
-public void Example() {
-    AssertString("This is a example message").HasLength(25).StartsWith("This is a ex");
-}
-```
-{% endtab %}
+            func test_example():
+                assert_str("This is a example message").has_length(25).starts_with("This is a ex")
+            ```
+            {% endtab %}
 
-{% endtabs %}
+            {% tab example CSharp %}
+            ``` python
+            [TestCase(Description = "Small example test")]
+            public void Example() {
+                AssertString("This is a example message").HasLength(25).StartsWith("This is a ex");
+            }
+            ```
+            {% endtab %}
+
+            {% endtabs %}
+         }}
+        <script src="/assets/js/tabs.js"></script>
+    </body>
+</html>
+
 
 
 For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
