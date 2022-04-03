@@ -1,11 +1,4 @@
-## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/MikeSchulze/gdUnit3/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-
-# GdUnit3 - Godot Unit Test Framework
+# GdUnit3 - Embedded Godot Unit Test Framework
 ![Godot v3.2.3](https://img.shields.io/badge/Godot-v3.2.3-%23478cbf?logo=godot-engine&logoColor=white)
 ![Godot v3.2.4](https://img.shields.io/badge/Godot-v3.2.4-%23478cbf?logo=godot-engine&logoColor=white)
 ![Godot v3.3](https://img.shields.io/badge/Godot-v3.3-%23478cbf?logo=godot-engine&logoColor=white)
