@@ -54,7 +54,6 @@ GdUnit is a testing framework for Godot. GdUnit is important in the development 
         ...
     </head>
     <body>
-        {{ 
             {% tabs example %}
 
             {% tab example GdScript %}
@@ -76,7 +75,6 @@ GdUnit is a testing framework for Godot. GdUnit is important in the development 
             {% endtab %}
 
             {% endtabs %}
-         }}
         <script src="/assets/js/tabs.js"></script>
     </body>
 </html>
