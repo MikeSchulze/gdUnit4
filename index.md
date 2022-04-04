@@ -1,7 +1,6 @@
 
-
-
 # GdUnit3 - Embedded Godot Unit Test Framework
+
 ![Godot v3.2.3](https://img.shields.io/badge/Godot-v3.2.3-%23478cbf?logo=godot-engine&logoColor=white)
 ![Godot v3.2.4](https://img.shields.io/badge/Godot-v3.2.4-%23478cbf?logo=godot-engine&logoColor=white)
 ![Godot v3.3](https://img.shields.io/badge/Godot-v3.3-%23478cbf?logo=godot-engine&logoColor=white)
@@ -11,22 +10,22 @@
 ![Godot v3.3.4](https://img.shields.io/badge/Godot-v3.3.4-%23478cbf?logo=godot-engine&logoColor=white)
 ![Godot v3.4](https://img.shields.io/badge/Godot-v3.4-%23478cbf?logo=godot-engine&logoColor=white)
 
-
-
 ***
+
 ## GdUnit3 V2.0.0 - Beta
 
- * You are welcome to test in and send me your feedback
- * You are welcome to suggest improvements
- * You are welcome to report bugs
-***
+* You are welcome to test in and send me your feedback
+* You are welcome to suggest improvements
+* You are welcome to report bugs
 
+***
 
 GdUnit is a testing framework for Godot. GdUnit is important in the development of test-driven development and will help you to get your code bug free.
 
 [[https://github.com/MikeSchulze/gdUnit3/wiki/images/GdUnit.png]]
 
 ## Main Features
+
 * Fully integrated in the Godot editor
 * Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnitInspector
 * Create test's directly from the ScriptEditor
@@ -52,25 +51,28 @@ GdUnit is a testing framework for Godot. GdUnit is important in the development 
 {% tabs example %}
 
 {% tab example GdScript %}
+
 ``` python
 extends GdUnitTestSuite
 
 func test_example():
     assert_str("This is a example message").has_length(25).starts_with("This is a ex")
 ```
+
 {% endtab %}
 
 {% tab example CSharp %}
+
 ``` python
 [TestCase(Description = "Small example test")]
 public void Example() {
     AssertString("This is a example message").HasLength(25).StartsWith("This is a ex");
 }
 ```
+
 {% endtab %}
 
 {% endtabs %}
-
 
 For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
