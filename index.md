@@ -4,9 +4,7 @@
 ```md Markdown Example codeCopyEnabled
     For example, this is a code block
 ```
-```md Markdown Example2 codeCopyEnabled
-    For example, this is a code block
-```
+
 
 
 
@@ -58,6 +56,9 @@ GdUnit is a testing framework for Godot. GdUnit is important in the development 
 
 ## Example
 
+```md Markdown Example2 codeCopyEnabled
+    For example, this is a code block
+```
 
 For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
