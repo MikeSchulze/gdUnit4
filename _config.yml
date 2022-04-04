@@ -6,7 +6,7 @@ plugins:
   - jekyll-code-tabs
 
 # Enable safe mode
-safe: true
+safe: false
 
 whitelist:
   - jekyll-code-tabs
