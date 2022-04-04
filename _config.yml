@@ -1,3 +1,3 @@
 theme: jekyll-theme-slate
 plugins:
-  - jekyll-tabs
+  - jekyll-code-tabs

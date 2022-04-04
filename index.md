@@ -1,49 +1,27 @@
 
 ### First tabs
 
-{% tabs log %}
+{% codetabs %}
 
-{% tab log php %}
-```php
-var_dump('hello');
+{% codetab C %}
+```c
+printf("Hello, world!");
 ```
-{% endtab %}
+{% endcodetab %}
 
-{% tab log js %}
-```javascript
-console.log('hello');
+{% codetab Go %}
+```go
+fmt.Println("Hello, world!")
 ```
-{% endtab %}
+{% endcodetab %}
 
-{% tab log ruby %}
-```javascript
-pputs 'hello'
+{% codetab Python %}
+```python
+print("Hello, world!")
 ```
-{% endtab %}
+{% endcodetab %}
 
-{% endtabs %}
-
-### Second tabs
-
-{% tabs data-struct %}
-
-{% tab data-struct yaml %}
-```yaml
-hello:
-  - 'whatsup'
-  - 'hi'
-```
-{% endtab %}
-
-{% tab data-struct json %}
-```json
-{
-    "hello": ["whatsup", "hi"]
-}
-```
-{% endtab %}
-
-{% endtabs %}
+{% endcodetabs %}
 
 
 
