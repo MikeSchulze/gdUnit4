@@ -6,3 +6,5 @@ plugins:
 
 exclude:
   - lib
+
+theme: jekyll-theme-slate
