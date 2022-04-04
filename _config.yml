@@ -1,6 +1,8 @@
 
 theme: jekyll-theme-slate
 markdown: kramdown
+plugins_dir: ./_plugins
+
 
 plugins:
   - jekyll-code-tabs
