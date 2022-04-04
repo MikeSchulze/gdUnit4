@@ -1,24 +1,11 @@
 
 ### First tabs
 
-```md kotlin Kotlin
-data class Example {
-	val text: String
-}
+```md Markdown Example codeCopyEnabled
+    For example, this is a code block
 ```
-
-```md java
-class Example {
-    String text;
-    
-    Example(String text) {
-        this.text = text;
-    }
-    
-    String getText() {
-        return text;
-    }
- }
+```md Markdown Example2 codeCopyEnabled
+    For example, this is a code block
 ```
 
 
