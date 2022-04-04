@@ -1,8 +1,24 @@
 
 ### First tabs
 
-```md Markdown Example
-    For example, this is a code block
+```kotlin Kotlin
+data class Example {
+	val text: String
+}
+```
+
+```java
+class Example {
+    String text;
+    
+    Example(String text) {
+        this.text = text;
+    }
+    
+    String getText() {
+        return text;
+    }
+ }
 ```
 
 
