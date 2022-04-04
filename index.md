@@ -1,27 +1,9 @@
 
 ### First tabs
 
-{% codetabs %}
-
-{% codetab C %}
-```c
-printf("Hello, world!");
+```md Markdown Example
+    For example, this is a code block
 ```
-{% endcodetab %}
-
-{% codetab Go %}
-```go
-fmt.Println("Hello, world!")
-```
-{% endcodetab %}
-
-{% codetab Python %}
-```python
-print("Hello, world!")
-```
-{% endcodetab %}
-
-{% endcodetabs %}
 
 
 

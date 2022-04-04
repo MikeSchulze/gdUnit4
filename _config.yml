@@ -1,3 +1,5 @@
+
+markdown: JdvpCodeTabsCommonMark
 theme: jekyll-theme-slate
 plugins:
   - jekyll-code-tabs
