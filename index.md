@@ -1,4 +1,52 @@
 
+### First tabs
+
+{% tabs log %}
+
+{% tab log php %}
+```php
+var_dump('hello');
+```
+{% endtab %}
+
+{% tab log js %}
+```javascript
+console.log('hello');
+```
+{% endtab %}
+
+{% tab log ruby %}
+```javascript
+pputs 'hello'
+```
+{% endtab %}
+
+{% endtabs %}
+
+### Second tabs
+
+{% tabs data-struct %}
+
+{% tab data-struct yaml %}
+```yaml
+hello:
+  - 'whatsup'
+  - 'hi'
+```
+{% endtab %}
+
+{% tab data-struct json %}
+```json
+{
+    "hello": ["whatsup", "hi"]
+}
+```
+{% endtab %}
+
+{% endtabs %}
+
+
+
 # GdUnit3 - Embedded Godot Unit Test Framework
 
 ![Godot v3.2.3](https://img.shields.io/badge/Godot-v3.2.3-%23478cbf?logo=godot-engine&logoColor=white)
@@ -47,32 +95,6 @@ GdUnit is a testing framework for Godot. GdUnit is important in the development 
 
 ## Example
 
-
-{% tabs example %}
-
-{% tab example GdScript %}
-
-``` python
-extends GdUnitTestSuite
-
-func test_example():
-    assert_str("This is a example message").has_length(25).starts_with("This is a ex")
-```
-
-{% endtab %}
-
-{% tab example CSharp %}
-
-``` python
-[TestCase(Description = "Small example test")]
-public void Example() {
-    AssertString("This is a example message").HasLength(25).StartsWith("This is a ex");
-}
-```
-
-{% endtab %}
-
-{% endtabs %}
 
 For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
