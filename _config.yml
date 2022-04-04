@@ -1,4 +1,6 @@
 
-markdown: Markdown
-theme: jekyll-theme-slate
+markdown: kramdown
+
+exclude:
+  - lib
 
