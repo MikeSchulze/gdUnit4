@@ -1,7 +1,4 @@
-source 'https://rubygems.org'
-
-gemspec
 
 group :jekyll_plugins do
-    gem 'jdvp-codetabs-commonmark'
+    gem 'jekyll-code-tabs'
   end
