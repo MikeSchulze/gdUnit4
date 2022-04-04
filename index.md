@@ -3,7 +3,32 @@
 
 
 
+But you can also add examples in several different languages:
+## One
+{% codetabs %}
 
+{% codetab Java %}
+```java
+System.out.println("Hello, world!");
+```
+{% endcodetab %}
+
+{% codetab Go %}
+```go
+fmt.Println("Hello, world!")
+```
+{% endcodetab %}
+
+{% codetab Python %}
+```python
+def func(param):
+    pass
+
+print("Hello, world!")
+```
+{% endcodetab %}
+
+{% endcodetabs %}
 
 
 # GdUnit3 - Embedded Godot Unit Test Framework
