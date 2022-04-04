@@ -1,13 +1,13 @@
 
 ### First tabs
 
-```kotlin Kotlin
+```md kotlin Kotlin
 data class Example {
 	val text: String
 }
 ```
 
-```java
+```md java
 class Example {
     String text;
     
