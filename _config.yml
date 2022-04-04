@@ -5,12 +5,14 @@ plugins_dir: ./_plugins
 
 
 plugins:
+  - jekyll-gist
   - jekyll-code-tabs
 
 # Enable safe mode
 safe: false
 
 whitelist:
+  - jekyll-gist
   - jekyll-code-tabs
 
 exclude:
