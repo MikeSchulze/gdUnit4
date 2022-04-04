@@ -1,10 +1,16 @@
 
+theme: jekyll-theme-slate
 markdown: kramdown
 
 plugins:
   - jekyll-code-tabs
 
+# Enable safe mode
+safe: true
+
+whitelist:
+  - jekyll-code-tabs
+
 exclude:
   - lib
 
-theme: jekyll-theme-slate
