@@ -1,37 +1,17 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-### First tabs
+layout: default
+title: GdUnit3 - Embedded Godot Unit Test Framework
+---
 
+<!-- UIkit CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.7.2/dist/css/uikit.min.css" />
 
-
-But you can also add examples in several different languages:
-## One
-{% codetabs %}
-
-{% codetab Java %}
-```java
-System.out.println("Hello, world!");
-```
-{% endcodetab %}
-
-{% codetab Go %}
-```go
-fmt.Println("Hello, world!")
-```
-{% endcodetab %}
-
-{% codetab Python %}
-```python
-def func(param):
-    pass
-
-print("Hello, world!")
-```
-{% endcodetab %}
-
-{% endcodetabs %}
-
-
-# GdUnit3 - Embedded Godot Unit Test Framework
+<!-- UIkit JS -->
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.7.2/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.7.2/dist/js/uikit-icons.min.js"></script>
 
 ![Godot v3.2.3](https://img.shields.io/badge/Godot-v3.2.3-%23478cbf?logo=godot-engine&logoColor=white)
 ![Godot v3.2.4](https://img.shields.io/badge/Godot-v3.2.4-%23478cbf?logo=godot-engine&logoColor=white)
@@ -53,8 +33,6 @@ print("Hello, world!")
 ***
 
 GdUnit is a testing framework for Godot. GdUnit is important in the development of test-driven development and will help you to get your code bug free.
-
-[[https://github.com/MikeSchulze/gdUnit3/wiki/images/GdUnit.png]]
 
 ## Main Features
 
@@ -78,15 +56,24 @@ GdUnit is a testing framework for Godot. GdUnit is important in the development 
 
 
 ## Example
+{% codetabs %}
 
+{% codetab GdScript %}
+```python
+extends GdUnitTestSuite
 
+func test_example():
+	assert_str("This is a example message").has_length(25).starts_with("This is a ex")
+```
+{% endcodetab %}
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+{% codetab C# %}
+```cs
+public void Example() {
+    AssertString("This is a example message").HasLength(25).StartsWith("This is a ex");
+}
+```
+{% endcodetab %}
 
-### Jekyll Themes
+{% endcodetabs %}
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/MikeSchulze/gdUnit3/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
