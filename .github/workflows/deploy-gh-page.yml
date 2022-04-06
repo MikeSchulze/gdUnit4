@@ -1,0 +1,22 @@
+name: Build and Deploy GdUnit3 GitHub Pages
+
+on: [workflow_dispatch, push]
+  branches:
+    - main
+  paths:	
+    - '_site/**'
+      
+jobs:
+  deploy:
+    name: Push static sites to gh-pages
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: actions/checkout@main
+
+    - name: Deploy
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        REPO: self
+        BRANCH: gh-pages
+        FOLDER: /
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
