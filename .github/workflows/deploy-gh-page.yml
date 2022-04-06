@@ -1,4 +1,4 @@
-name: Build and Deploy GdUnit3 GitHub Pages
+name: Deploy GdUnit3 GitHub Pages
 
 on:
   workflow_dispatch:
