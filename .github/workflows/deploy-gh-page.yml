@@ -1,12 +1,12 @@
-name: Deploy GdUnit3 GitHub Pages
+name: Deploy-GdUnit3-GitHub-Pages
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - documentation
     paths:	
       - '_site/**'
+  workflow_dispatch:
       
 jobs:
   deploy:
