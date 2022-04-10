@@ -1,42 +1,35 @@
 ---
 layout: default
-title: GdUnit3 - Embedded Godot Unit Test Framework
+title: Home
 ---
 
-<!-- UIkit CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.7.2/dist/css/uikit.min.css" />
-
-<!-- UIkit JS -->
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.7.2/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.7.2/dist/js/uikit-icons.min.js"></script>
-
-![Godot v3.2.3](https://img.shields.io/badge/Godot-v3.2.3-%23478cbf?logo=godot-engine&logoColor=white)
-![Godot v3.2.4](https://img.shields.io/badge/Godot-v3.2.4-%23478cbf?logo=godot-engine&logoColor=white)
-![Godot v3.3](https://img.shields.io/badge/Godot-v3.3-%23478cbf?logo=godot-engine&logoColor=white)
-![Godot v3.3.1](https://img.shields.io/badge/Godot-v3.3.1-%23478cbf?logo=godot-engine&logoColor=white)
-![Godot v3.3.2](https://img.shields.io/badge/Godot-v3.3.2-%23478cbf?logo=godot-engine&logoColor=white)
-![Godot v3.3.3](https://img.shields.io/badge/Godot-v3.3.3-%23478cbf?logo=godot-engine&logoColor=white)
-![Godot v3.3.4](https://img.shields.io/badge/Godot-v3.3.4-%23478cbf?logo=godot-engine&logoColor=white)
-![Godot v3.4](https://img.shields.io/badge/Godot-v3.4-%23478cbf?logo=godot-engine&logoColor=white)
-
-***
-
+# Draft Version (Work in Progress)
 ## GdUnit3 V2.0.0 - Beta
 
-* You are welcome to test in and send me your feedback
-* You are welcome to suggest improvements
-* You are welcome to report bugs
+![s](\gdUnit3\assets\images\background.png)
+
+
+
+### What is GdUnit3?
+**Gd**(*Godot*)**Unit**(*Unit Testing*)**3**(*Godot 3.x*)
+
+GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and Scenes within the Godot editor. GdUnit3 is very useful for [TDD (test driven development)](https://en.wikipedia.org/wiki/Test-driven_development){:target="_blank"} and will help you get your code bug-free.
+
+
+### You are welcome to:
+  * [Give Feedback](https://github.com/MikeSchulze/gdUnit3/discussions/228){:target="_blank"}
+  * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit3/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=){:target="_blank"}
+  * [Report Bugs](https://github.com/MikeSchulze/gdUnit3/issues/new?assignees=MikeSchulze&labels=bug&template=bug_report.md&title=){:target="_blank"}
 
 ***
 
-GdUnit is a testing framework for Godot. GdUnit is important in the development of test-driven development and will help you to get your code bug free.
 
-## Main Features
-
-* Fully integrated in the Godot editor
-* Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnitInspector
+### Main Features
+* Write and run tests in GdScript or C#
+* Embedded test Inspector in the Godot to navigate over your test suites
+* Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnit Inspector
 * Create test's directly from the ScriptEditor
-* Configurable template for the creation of a new test-suite
+* A Configurable template for the creation of a new test-suite
 * A spacious set of Asserts use to verify your code
 * Argument matchers to verify the behavior of a function call by a specified argument type.
 * Fluent syntax support
@@ -48,29 +41,44 @@ GdUnit is a testing framework for Godot. GdUnit is important in the development 
   * Simulate by Input events like mouse and/or keyboard
   * Simulate scene processing by a certain number of frames
   * Simulate scene proccessing by waiting for a specific signal
+  * Simulate scene proccessing by waiting for a specific function result
 * Update Notifier to install latest version from GitHub
 * Command Line Tool
 
 
-## Example
-{% codetabs %}
+## Test Example
+{: .d-none .d-md-inline-block }
 
-{% codetab GdScript %}
-```python
+{% tabs example %}
+
+{% tab example GdScript %}
+```ruby
+class_name GdUnitExampleTest
 extends GdUnitTestSuite
 
 func test_example():
 	assert_str("This is a example message").has_length(25).starts_with("This is a ex")
 ```
-{% endcodetab %}
+{% endtab %}
 
-{% codetab C# %}
+{% tab example C# %}
 ```cs
-public void Example() {
-    AssertString("This is a example message").HasLength(25).StartsWith("This is a ex");
+namespace examples
+{
+    using GdUnit3;
+    using static GdUnit3.Assertions;
+
+    [TestSuite]
+    public class GdUnitExampleTest
+    {
+        [TestCase]
+        public void Example()
+        {
+            AssertString("This is a example message").HasLength(25).StartsWith("This is a ex");
+        }
+    }
 }
+
 ```
-{% endcodetab %}
-
-{% endcodetabs %}
-
+{% endtab %}
+{% endtabs %}

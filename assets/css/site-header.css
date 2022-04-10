@@ -1,0 +1,24 @@
+.main {
+    position: relative;
+    max-width: 1200px;
+    margin-left: calc((100% - 1264px) / 2 + 264px);
+}
+
+.site-header {
+    display: flex;
+    min-height: 140px;
+    align-items: center;
+}
+
+.side-bar {
+    width: calc((100% - 1264px) / 2 + 264px);
+    min-width: 64px;
+}
+
+.site-logo {
+    min-height: 130px;
+}
+
+.site.title {
+    position: relative;
+}

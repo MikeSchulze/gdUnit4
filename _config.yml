@@ -13,16 +13,52 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
+color_scheme: light
+logo: "/assets/images/logo.png"
 title: GdUnit3 
+
+aux_links:
+  "GdUnit3 on GitHub":
+    - "//github.com/MikeSchulze/gdUnit3"
+aux_links_new_tab: true
+
+footer_content: "Copyright &copy; 2021-2022 Mike Schulze. Distributed by an <a href=\"https://github.com/MikeSchulze/gdUnit3/blob/master/LICENSE\">MIT license.</a>"
+
+
+# Define Jekyll collections
+collections:
+  first_steps:
+    permalink: "/:collection/:path/"
+    output: true
+  asserts:
+    permalink: "/:collection/:path/"
+    output: true
+  advanced_testing:
+    permalink: "/:collection/:path/"
+    output: true
+  faq:
+    permalink: "/:collection/:path/"
+    output: true
+
+
+just_the_docs:
+  collections:
+    first_steps:
+      name: First Steps
+    asserts:
+    advanced_testing:
+    faq:
+      name: FAQ
+
+
+# Google Analytics Tracking (optional)
+#ga_tracking: UA-0000000-00
+#ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true by default)
+
 email: mikeschulze.lpz@kabelmail.com
-description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
 baseurl: "/gdUnit3" # the subpath of your site, e.g. /blog
 url: "http://GdUnit3.com" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: gdUnit3
-github_username:  jekyll
+github_username:  MikeSchulze
 
 # Build settings
 safe: false
@@ -30,7 +66,7 @@ markdown: kramdown
 theme: just-the-docs
 #remote_theme: pmarsceill/just-the-docs
 plugins:
-  - jekyll-code-tabs
+  - jekyll-tabs
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
