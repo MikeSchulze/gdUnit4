@@ -47,14 +47,14 @@ Verifies that the current value is true.
 {% endtab %}
 {% tab assert-bool-is_true C# %}
 ```cs
-    public static IBoolAssert AssertBool(<current>).IsTrue();
+    public static IBoolAssert AssertBool(<current>).IsTrue()
 ```
 ```cs
     // this assertion succeeds
-    AssertBool(true).IsTrue()
+    AssertBool(true).IsTrue();
 
     // this assertion fails because the value is false and not true
-    AssertBool(false).IsTrue()
+    AssertBool(false).IsTrue();
 ```
 {% endtab %}
 {% endtabs %}
@@ -80,10 +80,10 @@ Verifies that the current value is false.
 ```
 ```cs
     // this assertion succeeds
-    AssertBool(false).IsFalse()
+    AssertBool(false).IsFalse();
 
     // this assertion fails because the value is true and not false
-    AssertBool(true).IsFalse()
+    AssertBool(true).IsFalse();
 ```
 {% endtab %}
 {% endtabs %}
@@ -106,14 +106,14 @@ Verifies that the current value is equal to the given one.
 {% endtab %}
 {% tab assert-bool-is_equal C# %}
 ```cs
-    public static IBoolAssert AssertBool(<current>).IsEqual();
+    public static IBoolAssert AssertBool(<current>).IsEqual(<expected>);
 ```
 ```cs
     // this assertion succeeds
-    AssertBool(false).IsEqual(false)
+    AssertBool(false).IsEqual(false);
 
     // this assertion fails because the value is false and not true
-    AssertBool(false).IsEqual(true)
+    AssertBool(false).IsEqual(true);
 ```
 {% endtab %}
 {% endtabs %}
@@ -136,14 +136,14 @@ Verifies that the current value is not equal to the given one.
 {% endtab %}
 {% tab assert-bool-is_not_equal C# %}
 ```cs
-    public static IBoolAssert AssertBool(<current>).IsNotEqual();
+    public static IBoolAssert AssertBool(<current>).IsNotEqual(<expected>);
 ```
 ```cs
     // this assertion succeeds
-    AssertBool(false).IsNotEqual(true)
+    AssertBool(false).IsNotEqual(true);
 
     // this assertion fails because the value is false and should not be false
-    AssertBool(false).IsNotEqual(false)
+    AssertBool(false).IsNotEqual(false);
 ```
 {% endtab %}
 {% endtabs %}

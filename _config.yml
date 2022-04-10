@@ -57,7 +57,7 @@ just_the_docs:
 
 email: mikeschulze.lpz@kabelmail.com
 baseurl: "/gdUnit3" # the subpath of your site, e.g. /blog
-url: "http://GdUnit3.com" # the base hostname & protocol for your site, e.g. http://example.com
+# url: "http://GdUnit3.com" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  MikeSchulze
 
 # Build settings
