@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Common Assert
+title: AssertThat
 parent: Asserts
 nav_order: 20
 ---

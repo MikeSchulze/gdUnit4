@@ -52,6 +52,9 @@ An assertion tool to verify integer values.
 {% endtab %}
 {% endtabs %}
 
+---
+## Integer Assert Examples
+
 ### is_equal
 Verifies that the current value is equal to the given one.
 {% tabs assert-int-is_equal %}

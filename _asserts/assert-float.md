@@ -50,6 +50,9 @@ An assertion tool to verify float values.
 {% endtab %}
 {% endtabs %}
 
+---
+## Float Assert Examples
+
 ### is_equal
 Verifies that the current value is equal to the given one.
 {% tabs assert-float-is_equal %}

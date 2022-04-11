@@ -4,7 +4,7 @@ title: Home
 ---
 
 # Draft Version (Work in Progress)
-## GdUnit3 V2.0.0 - Beta
+## GdUnit3 V2.0.0 - (C# Beta Support)
 
 ![s](\gdUnit3\assets\images\background.png)
 
@@ -16,6 +16,8 @@ title: Home
 GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and Scenes within the Godot editor. GdUnit3 is very useful for [TDD (test driven development)](https://en.wikipedia.org/wiki/Test-driven_development){:target="_blank"} and will help you get your code bug-free.
 
 
+## ***Please note that C# test support is currently still in beta and not feature complete. If you have any problems or find any bugs, please report them.***
+
 ### You are welcome to:
   * [Give Feedback](https://github.com/MikeSchulze/gdUnit3/discussions/228){:target="_blank"}
   * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit3/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=){:target="_blank"}
@@ -25,7 +27,7 @@ GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and
 
 
 ### Main Features
-* Write and run tests in GdScript or C#
+* Write and run tests in GdScript or C#(Beta)
 * Embedded test Inspector in the Godot to navigate over your test suites
 * Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnit Inspector
 * Create test's directly from the ScriptEditor
