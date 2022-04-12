@@ -64,10 +64,10 @@ Verifies that the current value is equal to the given one.
 ```
 ```ruby
     # this assertion succeeds
-    assert_bool(23).is_equal(23)
+    assert_int(23).is_equal(23)
 
     # this assertion fails because 23 are not equal to 42
-    assert_bool(23).is_equal(42)
+    assert_int(23).is_equal(42)
 ```
 {% endtab %}
 {% tab assert-int-is_equal C# %}
@@ -94,10 +94,10 @@ Verifies that the current value is not equal to the given one.
 ```
 ```ruby
     # this assertion succeeds
-    assert_bool(23).is_not_equal(42)
+    assert_int(23).is_not_equal(42)
 
     # this assertion fails because 23 are equal to 23 
-    assert_bool(23).is_not_equal(23)
+    assert_int(23).is_not_equal(23)
 ```
 {% endtab %}
 {% tab assert-int-is_not_equal C# %}
