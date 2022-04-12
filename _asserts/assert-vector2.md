@@ -11,6 +11,7 @@ An assertion tool to verify Vector2 values.
 {% tabs assert-vec2-overview %}
 {% tab assert-vec2-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_null](/gdUnit3/asserts/assert-vector2/#is_null) | Verifies that the current value is null.|
 |[is_not_null](/gdUnit3/asserts/assert-vector2/#is_not_null) | Verifies that the current value is not null.|
 |[is_equal](/gdUnit3/asserts/assert-vector2/#is_equal) | Verifies that the current value is equal to the given one.|
@@ -27,6 +28,7 @@ An assertion tool to verify Vector2 values.
 **Not Yet Implemented!**
 
 |Function|Description|
+|--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-vector2/#is_null) | Verifies that the current value is null.|
 |[IsNotNull](/gdUnit3/asserts/assert-vector2/#is_not_null) | Verifies that the current value is not null.|
 |[IsEqual](/gdUnit3/asserts/assert-vector2/#is_equal) | Verifies that the current value is equal to the given one.|

@@ -12,6 +12,7 @@ An assertion tool to verify String values.
 {% tabs assert-str-overview %}
 {% tab assert-str-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_null](/gdUnit3/asserts/assert-string/#is_null)| Verifies that the current value is null.|
 |[is_not_null](/gdUnit3/asserts/assert-string/#is_not_null)| Verifies that the current value is not null.|
 |[is_equal](/gdUnit3/asserts/assert-string/#is_equal) | Verifies that the current String is equal to the given one.|
@@ -30,6 +31,7 @@ An assertion tool to verify String values.
 {% endtab %}
 {% tab assert-str-overview C# %}
 |Function|Description|
+|--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-string/#is_null)| Verifies that the current value is null.|
 |[IsNotNull](/gdUnit3/asserts/assert-string/#is_not_null)| Verifies that the current value is not null.|
 |[IsEqual](/gdUnit3/asserts/assert-string/#is_equal) | Verifies that the current String is equal to the given one.|

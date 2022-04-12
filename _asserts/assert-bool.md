@@ -12,6 +12,7 @@ An assertion tool to verify boolean values.
 {% tabs assert-bool %}
 {% tab assert-bool GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_true](/gdUnit3/asserts/assert-bool/#is_true)| Verifies that the current value is true.|
 |[is_false](/gdUnit3/asserts/assert-bool/#is_false)| Verifies that the current value is false.|
 |[is_equal](/gdUnit3/asserts/assert-bool/#is_equal)| Verifies that the current value is equal to the given one.|
@@ -19,6 +20,7 @@ An assertion tool to verify boolean values.
 {% endtab %}
 {% tab assert-bool C# %}
 |Function|Description|
+|--- | --- |
 |[IsTrue](/gdUnit3/asserts/assert-bool/#is_true)| Verifies that the current value is true.|
 |[IsFalse](/gdUnit3/asserts/assert-bool/#is_false)| Verifies that the current value is false.|
 |[IsEqual](/gdUnit3/asserts/assert-bool/#is_equal)| Verifies that the current value is equal to the given one.|

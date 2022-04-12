@@ -12,6 +12,7 @@ An assertion tool to verify dictionaries.
 {% tabs assert-dict-overview %}
 {% tab assert-dict-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_null](/gdUnit3/asserts/assert-dictionary/#is_null) | Verifies that the current value is null.|
 |[is_not_null](/gdUnit3/asserts/assert-dictionary/#is_not_null) | Verifies that the current value is not null.|
 |[is_equal](/gdUnit3/asserts/assert-dictionary/#is_equal) | Verifies that the current dictionary is equal to the given one, ignoring order.|

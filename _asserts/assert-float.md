@@ -12,6 +12,7 @@ An assertion tool to verify float values.
 {% tabs assert-float-overview %}
 {% tab assert-float-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_null](/gdUnit3/asserts/assert-float/#is_null) | Verifies that the current value is null.|
 |[is_not_null](/gdUnit3/asserts/assert-float/#is_not_null) | Verifies that the current value is not null.|
 |[is_equal](/gdUnit3/asserts/assert-float/#is_equal) | Verifies that the current value is equal to the given one.|
@@ -31,6 +32,7 @@ An assertion tool to verify float values.
 {% endtab %}
 {% tab assert-float-overview C# %}
 |Function|Description|
+|--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-float/#is_null) | Verifies that the current value is null.|
 |[IsNotNull](/gdUnit3/asserts/assert-float/#is_not_null) | Verifies that the current value is not null.|
 |[IsEqual](/gdUnit3/asserts/assert-float/#is_equal) | Verifies that the current value is equal to the given one.|

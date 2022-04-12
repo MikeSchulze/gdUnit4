@@ -10,6 +10,7 @@ nav_order: 10
 {% tabs assert-file-overview %}
 {% tab assert-file-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_file]() | Verifies the given resource is a file |
 |[exists]() | Verifies the given resource exists |
 |[is_script]() | Verifies the given resource is a gd script |

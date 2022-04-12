@@ -12,6 +12,7 @@ An assertion tool to verify integer values.
 {% tabs assert-int-overview %}
 {% tab assert-int-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_null](/gdUnit3/asserts/assert-integer/#is_null) | Verifies that the current value is null.|
 |[is_not_null](/gdUnit3/asserts/assert-integer/#is_not_null) | Verifies that the current value is not null.|
 |[is_equal](/gdUnit3/asserts/assert-integer/#is_equal) | Verifies that the current value is equal to the given one.|
@@ -32,6 +33,7 @@ An assertion tool to verify integer values.
 {% endtab %}
 {% tab assert-int-overview C# %}
 |Function|Description|
+|--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-integer/#is_null) | Verifies that the current value is null.|
 |[IsNotNull](/gdUnit3/asserts/assert-integer/#is_not_null) | Verifies that the current value is not null.|
 |[IsEqual](/gdUnit3/asserts/assert-integer/#is_equal) | Verifies that the current value is equal to the given one.|

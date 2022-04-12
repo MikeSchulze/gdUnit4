@@ -14,6 +14,7 @@ An assertion tool that waits until a certain time for an expected function retur
 {% tabs assert-function-overview %}
 {% tab assert-function-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_null](/gdUnit3/asserts/assert-function/#is_null) | Verifies that the current value is null.|
 |[is_not_null](/gdUnit3/asserts/assert-function/#is_not_null) | Verifies that the current value is not null.|
 |[is_equal](/gdUnit3/asserts/assert-function/#is_equal) | Verifies that the current value is equal to expected one.|

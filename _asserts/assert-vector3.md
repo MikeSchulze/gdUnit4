@@ -12,6 +12,7 @@ An assertion tool to verify Vector3 values.
 {% tabs assert-vec3-overview %}
 {% tab assert-vec3-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_null](/gdUnit3/asserts/assert-vector3/#is_null) | Verifies that the current value is null.|
 |[is_not_null](/gdUnit3/asserts/assert-vector3/#is_not_null) | Verifies that the current value is not null.|
 |[is_equal](/gdUnit3/asserts/assert-vector3/#is_equal) | Verifies that the current value is equal to the given one.|
@@ -28,6 +29,7 @@ An assertion tool to verify Vector3 values.
 **Not Yet Implemented!**
 
 |Function|Description|
+|--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-vector3/#is_null) | Verifies that the current value is null.|
 |[IsNotNull](/gdUnit3/asserts/assert-vector3/#is_not_null) | Verifies that the current value is not null.|
 |[IsEqual](/gdUnit3/asserts/assert-vector3/#is_equal) | Verifies that the current value is equal to the given one.|

@@ -13,6 +13,7 @@ The default timeout of 2s can be overridden by wait_until(<time in ms>)
 {% tabs assert-signal-overview %}
 {% tab assert-signal-overview GdScript %}
 |Function|Description|
+|--- | --- |
 |[is_emitted](/gdUnit3/asserts/assert-signal/#is_emitted) | Verifies that given signal is emitted until waiting time.|
 |[is_not_emitted](/gdUnit3/asserts/assert-signal/#is_not_emitted) | Verifies that given signal is NOT emitted until waiting time.|
 |[wait_until](/gdUnit3/asserts/assert-signal/#wait_until) | Sets the assert signal timeout in ms.|
