@@ -42,17 +42,17 @@ The default timeout can be overriden on test-case level by using the argument *t
 {% tabs settings-timeout %}
 {% tab settings-timeout GdScript %}
 ```ruby
-# Configures the test case to fail after a maximum of 2 seconds runtime
-func test_foo(timeout = 2000) -> void:
- ...
+   # Configures the test case to fail after a maximum of 2 seconds runtime
+   func test_foo(timeout = 2000) -> void:
+   ...
 ```
 {% endtab %}
 {% tab settings-timeout C# %}
 ```cs
-// Configures the test case to fail after a maximum of 2 seconds runtime
-[TestCase(Timeout = 2000)]
-public async Task foo() {
-}
+   // Configures the test case to fail after a maximum of 2 seconds runtime
+   [TestCase(Timeout = 2000)]
+   public async Task foo() {
+   }
 ```
 {% endtab %}
 {% endtabs %}
