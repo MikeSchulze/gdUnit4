@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 10
 ---
 
-## File Assertions
+# File Assertions
 
 {% tabs assert-file-overview %}
 {% tab assert-file-overview GdScript %}

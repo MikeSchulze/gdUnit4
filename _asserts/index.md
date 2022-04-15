@@ -5,7 +5,7 @@ nav_order: 1
 has_children: true
 ---
 
-## Asserts
+# Asserts
 
 GdUnit3 is providing a set of assertions where give you helpful error messages and improves yor test code readability. Assertions are type organized and supports fluent syntax writing.
 
@@ -13,6 +13,8 @@ The pattern for using asserts is defined as `assert_<type>(<current>).<compariso
 If you don't know the type of the current value, use the generic `assert_that(<current>)` instead.
 
 On GdScript the asserts are included over `GdUnitTestSuite` for CSharpScripts you have to import by `using static GdUnit3.Assertions;`
+
+---
 
 {% tabs assert-example %}
 {% tab assert-example GdScript %}

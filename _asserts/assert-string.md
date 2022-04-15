@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 1
 ---
 
-## String Assertions
+# String Assertions
 
 An assertion tool to verify String values.
 

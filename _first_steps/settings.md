@@ -4,10 +4,12 @@ title: Settings
 nav_order: 2
 ---
 
-### GdUnit3 Settings
+# Settings
 ![](/gdUnit3/assets/images/settings/inspector-settings.png)
 
 To open the setting press the tools button on the GdUnit inspector.
+
+---
 
 ### Common Settings
 ![](/gdUnit3/assets/images/settings/settings-common.png)

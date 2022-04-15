@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 6
 ---
 
-## Dictionary Assertions
+# Dictionary Assertions
 
 An assertion tool to verify dictionaries.
 

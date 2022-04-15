@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 12
 ---
 
-## Signal Assertions
+# Signal Assertions
 
 An Assertion Tool to verify for emitted signals until a certain time. When the timeout is reached, the assertion fails with a timeout error.
 The default timeout of 2s can be overridden by wait_until(<time in ms>)

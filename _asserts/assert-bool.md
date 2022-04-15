@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 2
 ---
 
-## Boolean Assertions
+# Boolean Assertions
 
 An assertion tool to verify boolean values.
 

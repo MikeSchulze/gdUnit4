@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 7
 ---
 
-## Object Assertions
+# Object Assertions
 
 An assertion tool to verify Objects.
 
@@ -35,8 +35,6 @@ An assertion tool to verify Objects.
 |[IsNotInstanceOf](/gdUnit3/asserts/assert-object/#is_not_instanceof) | Verifies that the current value is not an instance of the given type.|
 {% endtab %}
 {% endtabs %}
-
-
 
 ---
 ## Object Assert Examples

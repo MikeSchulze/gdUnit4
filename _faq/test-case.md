@@ -4,7 +4,7 @@ title: Test Case
 nav_order: 2
 ---
 
-## Test-Case Definition
+# Test-Case
 
 ### Definition
 
@@ -37,7 +37,7 @@ Remeber we have to use the annotation **[TestCase]** to indendicate this method 
 {% endtab %}
 {% endtabs %}
 
-
+---
 
 ### How to fail fast (Only GdScript)
 A test case can fail by one or more assertions. This means that a test is not aborted at the first failed assertion. GdScript does not have exceptions that allow this, so we have to manually deal with a failed assertion here. For this we can use the function **is_failure** to test for an failure and abort.

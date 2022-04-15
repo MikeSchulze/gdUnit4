@@ -7,7 +7,7 @@ nav_order: 11
 
 ## ***!Deprecated!***
 
-## Function/Method Assertions
+# Function/Method Assertions
 
 An assertion tool that waits until a certain time for an expected function return value. When the timeout is reached, the assertion fails with a timeout error. The default timeout of 2s can be overridden by wait_until(<time in ms>)
 

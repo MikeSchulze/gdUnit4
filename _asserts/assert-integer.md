@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 3
 ---
 
-## Integer Assertions
+# Integer Assertions
 
 An assertion tool to verify integer values.
 

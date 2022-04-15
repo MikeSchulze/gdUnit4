@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 5
 ---
 
-## Array Assertions
+# Array Assertions
 
 An assertion tool to verify arrays.
 

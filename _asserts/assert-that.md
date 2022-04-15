@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 20
 ---
 
-## AssertThat Assertions
+# AssertThat Assertions
 
 The assert_that is useful when you don't know the type of the value you want to test. You can use this assertion on all types you want, but for better readability of the test (GdScript) I prefer to use type store asserts.
 For C# you should prefer to use AssertThat, under C# the type of a variable is always known therefore it allows to find the right assert.

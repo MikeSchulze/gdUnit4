@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 4
 ---
 
-## Float/Double Assertions
+# Float/Double Assertions
 
 An assertion tool to verify float values.
 

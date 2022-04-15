@@ -5,7 +5,7 @@ parent: Asserts
 nav_order: 8
 ---
 
-## Vector2 Assertions
+# Vector2 Assertions
 An assertion tool to verify Vector2 values.
 
 {% tabs assert-vec2-overview %}

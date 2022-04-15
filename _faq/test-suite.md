@@ -4,7 +4,7 @@ title: Test Suite
 nav_order: 1
 ---
 
-## Test-Suite Definition
+# Test-Suite
 
 ### Definition
 A test-suite is a collection of tests basically alligned to a class you want to test.
@@ -18,6 +18,8 @@ GdUnit test-suite runs in execution steps (hooks) where you allow to define prei
 |before_test | executed before each test is started|
 |after_test | executed after each test has finished|
 |test | executes the test content|
+
+---
 
 ## Execution Graph for a test-suite
 

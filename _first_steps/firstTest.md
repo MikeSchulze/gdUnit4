@@ -4,7 +4,7 @@ title: Your First Test
 nav_order: 3
 ---
 
-## Create your first Test
+# Create your first Test
 
 The fastest way to create a test is to use the built-in "Create Test" function.
 To do this, open your script that you want to test and right-click on a function and then click "Create Test".
@@ -50,8 +50,8 @@ Remeber we generated a test for the function `func full_name() -> String:` with 
 To verify the return value of the function replace the `assert_not_yet_implemented()` with:
 ```ruby
 func test_full_name() -> void:
-   var person := TestPerson.new("Hoschi", "Horst")
-   assert_str(person.full_name()).is_equal("Hoschi Horst")
+   var person := TestPerson.new("King", "Arthur")
+   assert_str(person.full_name()).is_equal("King Arthur")
 
 ```
 Do re run the test by press the "Run Button" on the inspector
@@ -71,23 +71,23 @@ You can do this manually or with the included `auto_free` tool
 {% tab first-step-orphan GdScript (manual) %}
 ```ruby
 func test_full_name() -> void:
-	var person := TestPerson.new("Hoschi", "Horst")
-	assert_str(person.full_name()).is_equal("Hoschi Horst")
+	var person := TestPerson.new("King", "Arthur")
+	assert_str(person.full_name()).is_equal("King Arthur")
 	person.free()
 ```
 {% endtab %}
 {% tab first-step-orphan GdScript (auto_free) %}
 ```ruby
 func test_full_name() -> void:
-   var person :TestPerson = auto_free(TestPerson.new("Hoschi", "Horst"))
-   assert_str(person.full_name()).is_equal("Hoschi Horst")
+   var person :TestPerson = auto_free(TestPerson.new("King", "Arthur"))
+   assert_str(person.full_name()).is_equal("King Arthur")
 ```
 {% endtab %}
 {% endtabs %}
 
 
 GdUnit offers [Asserts](/gdUnit3/asserts/index/) for all basic build-in types and much more. 
-A collection of tests is called `Test Suite` in GdUnit, look into [Test Suite](/gdUnit3/faq/testSuite) for more details.
+A collection of tests is called `Test Suite` in GdUnit, look into [Test Suite](/gdUnit3/faq/test-suite) for more details.
 
 Now run your test again and it will complete successful. 
 Congratulations you have successfully written your first test.

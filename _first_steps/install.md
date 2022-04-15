@@ -4,7 +4,7 @@ title: Installation
 nav_order: 1
 ---
 
-## Installation
+# Installation
 
 You have to install the GdUnit3 plugin over the AssetLib in the Godot Editor.
 ![](/gdUnit3/assets/images/install/activate-gdunit-step0.png)
