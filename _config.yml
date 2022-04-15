@@ -36,10 +36,12 @@ collections:
   advanced_testing:
     permalink: "/:collection/:path/"
     output: true
+  tutorials:
+    permalink: "/:collection/:path/"
+    output: true
   faq:
     permalink: "/:collection/:path/"
     output: true
-
 
 just_the_docs:
   collections:
@@ -47,6 +49,7 @@ just_the_docs:
       name: First Steps
     asserts:
     advanced_testing:
+    tutorials:
     faq:
       name: FAQ
 
