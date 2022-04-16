@@ -6,8 +6,7 @@ title: Home
 # Draft Version (Work in Progress)
 ## GdUnit3 V2.0.0 - (C# Beta Support)
 
-![s](\gdUnit3\assets\images\background.png)
-
+![GdUnit3](\gdUnit3\assets\images\background.png)
 
 
 ### What is GdUnit3?
@@ -52,7 +51,6 @@ GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and
 {: .d-none .d-md-inline-block }
 
 {% tabs example %}
-
 {% tab example GdScript %}
 ```ruby
 class_name GdUnitExampleTest
