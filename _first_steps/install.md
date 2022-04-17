@@ -61,7 +61,7 @@ GdUnit3 uses the C# language standard 8.0 and therefore we need to adjust the pr
 To run and debug C# sharp tests inside the VS-Code IDE you need to install the GdUnit3 [extension](https://code.visualstudio.com/docs/editor/extension-marketplace)
 1. Click on the `Extensions` icon in the activity bar and search for `GdUnit3`
 
-    ![](/gdUnit3/assets/images/install/extensions-view-icon.png)
+    ![](/gdUnit3/assets/images/install/extensions-install.png)
 
 2. After successful installation you will find the GdUnit3 inspector in the activity bar.
 
