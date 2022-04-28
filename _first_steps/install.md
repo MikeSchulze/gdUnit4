@@ -38,7 +38,11 @@ GdUnit3 uses the C# language standard 8.0 and therefore we need to adjust the pr
 2. Setup the TargetFramework
 
     GdUnit3 C# API uses the framework *netstandard2.1* to support the language standard 8.0.<br>
-    Open you project file (\*.csproj), under section `<PropertyGroup>` change the *TargetFramework* to `netstandard2.1` and add the property `<LangVersion>8.0</LangVersion>`
+    Open you project file (\*.csproj), and change:
+    * under section `<PropertyGroup>` change the *TargetFramework* to `netstandard2.1` and add the property `<LangVersion>8.0</LangVersion>`
+        * add `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>`
+    * add the section `<ItemGroup>` see below
+
 ```cs
     <Project Sdk="Godot.NET.Sdk/3.3.0">
     <PropertyGroup>
@@ -46,9 +50,13 @@ GdUnit3 uses the C# language standard 8.0 and therefore we need to adjust the pr
 
         <TargetFramework>netstandard2.1</TargetFramework>
         <LangVersion>8.0</LangVersion>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
         ..
     </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.2.0" />
+    </ItemGroup>
     </Project>
 ```
 3. Test C# build settings

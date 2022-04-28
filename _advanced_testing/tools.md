@@ -144,10 +144,18 @@ Creates a new directory under the temporary directory *user://tmp*.
 
 Useful for storing data during test execution. The directory is automatically deleted after the execution of the test suite.
 
-
+{% tabs tools-create_temp_dir %}
+{% tab tools-create_temp_dir GdScript %}
 ```ruby
     func create_temp_dir(relative_path :String) -> String:
 ```
+{% endtab %}
+{% tab tools-create_temp_dir C# %}
+```cs
+    string CreateTempDir(string path);
+```
+{% endtab %}
+{% endtabs %}
 
 Example:
 
@@ -176,10 +184,18 @@ Deletes the temporary directory.
 
 Is called automatically after each execution of the test suite.
 
+{% tabs tools-clean_temp_dir %}
+{% tab tools-clean_temp_dir GdScript %}
 ```ruby
    func clean_temp_dir():
 ```
-
+{% endtab %}
+{% tab tools-clean_temp_dir C# %}
+```cs
+   void ClearTempDir();
+```
+{% endtab %}
+{% endtabs %}
 
 ### create_temp_file
 Creates a new File under the temporary directory *user://tmp* + \<relative_path\>

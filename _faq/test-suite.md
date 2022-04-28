@@ -183,11 +183,11 @@ You can override the function **after_test()** to define a shutdown hook if you 
 ```
 {% endtab %}
 {% tab faq-test-suite-after_test C# %}
-You can annotate a method with **[After]** to define a shutdown hook if you neeed to clean-up test data for each test. This function is called after each test execution.
+You can annotate a method with **[AfterTest]** to define a shutdown hook if you neeed to clean-up test data for each test. This function is called after each test execution.
    ```ruby
 
-   [After]
-   public void TearDownSuite() {
+   [AfterTest]
+   public void TearDownTest() {
       # clean up your test data
       ...
    }
