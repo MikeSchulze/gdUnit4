@@ -4,7 +4,7 @@ title: Home
 ---
 
 # Draft Version (Work in Progress)
-## GdUnit3 V2.0.0 - (C# Beta Support)
+## GdUnit3 V2.1.0 - (C# Beta Support)
 
 ![GdUnit3](\gdUnit3\assets\images\background.png)
 

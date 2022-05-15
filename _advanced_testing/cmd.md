@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Continuous Integration Testing
+title: Command Line Tool
 parent: Advanced Testing
 nav_order: 6
 ---
 
-# Continuous Integration Testing
+# Command Line Tool
 
 ### GdUnit3 Command Line Tool
 GdUnit3 provides a tool that allows you to run a specific set of test suites and tests from the command line.
@@ -144,7 +144,13 @@ The tool ends with a certain return code, where you can check if the tests were 
 ```
 
 ### The Report
-The GdUnit command line tool generates a modern HTML report with which you can quickly get an overview of the executed tests. 
+The GdUnit command line tool generates a modern HTML and JUnit report with which you can quickly get an overview of the executed tests. 
+You can find the reports in the report folder as:
+- index.htm - the HTML report
+- results.xml - the [JUnit report](https://www.ibm.com/docs/en/developer-for-zos/14.1.0?topic=formats-junit-xml-format){:target="_blank"}
+
+
+#### The HTML report
 ![](/gdUnit3/assets/images/reports/GdUnit3Report-main.png)
 
 

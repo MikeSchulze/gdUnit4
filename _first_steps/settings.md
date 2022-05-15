@@ -11,7 +11,7 @@ To open the setting press the tools button on the GdUnit inspector.
 
 ---
 
-### Common Settings
+## Common Settings
 ![](/gdUnit3/assets/images/settings/settings-common.png)
 #### **server connection timout**
 The server connection timout specifies the maximum time in minutes that the test runner client waits when the communication between editor and runner is interrupted.
@@ -57,19 +57,32 @@ The default timeout can be overriden on test-case level by using the argument *t
 {% endtab %}
 {% endtabs %}
 
+---
 
-### Report Settings - Asserts
+## Report Settings
 ![](/gdUnit3/assets/images/settings/settings-report.png)
+
+### Asserts 
 #### **verbose errors**
 Suppresses internal error reporting for failed assert conditions.
 
 #### **verbose warnings**
 Suppresses internal warning reporting for failed assert conditions.
 
+### Godot
+#### **Push Error**
+Reports Godot push_error() notifications and let the test fail (default disabled)
+
+#### **Script Error**
+Reports Godot gd script errors and let the test fail
+
+### Common
 #### **verbose orphans**
 Enable/disable the orphan node reporting
 
-### Templates
+---
+
+## Templates
 ![](/gdUnit3/assets/images/settings/settings-template.png)
 
 #### **test suite template**
