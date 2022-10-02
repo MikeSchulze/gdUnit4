@@ -11,6 +11,8 @@ An assertion tool to verify Vector3 values.
 
 {% tabs assert-vec3-overview %}
 {% tab assert-vec3-overview GdScript %}
+**GdUnitVector3Assert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_null](/gdUnit3/asserts/assert-vector3/#is_null) | Verifies that the current value is null.|
@@ -26,7 +28,7 @@ An assertion tool to verify Vector3 values.
 |[is_not_between](/gdUnit3/asserts/assert-vector3/#is_not_between) | Verifies that the current value is not between the given boundaries (inclusive).|
 {% endtab %}
 {% tab assert-vec3-overview C# %}
-**Not Yet Implemented!**
+**IVector3Assert**<br>
 
 |Function|Description|
 |--- | --- |
@@ -62,6 +64,18 @@ Verifies that the current value is equal to the given one.
     assert_vector3(Vector3(1.1, 1.2, 1.0)).is_equal(Vector3(1.1, 1.3, 1.0))
 ```
 {% endtab %}
+{% tab assert-vec3-is_equal C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsEqual(<expected>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(Vector3.One).IsEqual(Vector3.One);
+
+    // should fail because is NOT equal
+    AssertThat(Vector3.One).IsEqual(new Vector3(1.2f, 1.000001f, 1f);
+```
+{% endtab %}
 {% endtabs %}
 
 
@@ -81,9 +95,19 @@ Verifies that the current value is not equal to the given one.
     assert_vector3(Vector3(1.1, 1.2, 1.0)).is_not_equal(Vector3(1.1, 1.2, 1.0))
 ```
 {% endtab %}
+{% tab assert-vec3-is_not_equal C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsNotEqual(<expected>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(new Vector3(1.2f, 1.000001f, 1f)).IsNotEqual(new Vector3(1.2f, 1.000002f, 1f));
+
+    // should fail because is equal
+    new Vector3(1.2f, 1.000001f, 1f)).IsNotEqual(new Vector3(1.2f, 1.000001f, 1f);
+```
+{% endtab %}
 {% endtabs %}
-
-
 
 
 ### is_equal_approx
@@ -99,6 +123,18 @@ Verifies that the current and expected value are approximately equal.
 
     # this will fail because the vector is out of approximated range
     assert_vector3(Vector3(1.005, 1, 1)).is_equal_approx(Vector3.ONE, Vector3(0.004, 0.004, 0.004))
+```
+{% endtab %}
+{% tab assert-vec3-is_equal_approx C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsEqualApprox(<expected>, <approx>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(Vector3.One).IsEqualApprox(Vector3.One, new Vector3(0.004f, 0.004f, 0.004f));
+
+    // should fail because is NOT equal approximated
+    AssertThat(new Vector3(1.005f, 1f, 1f)).IsEqualApprox(Vector3.One, new Vector3(0.004f, 0.004f, 0.004f));
 ```
 {% endtab %}
 {% endtabs %}
@@ -122,9 +158,19 @@ Verifies that the current value is less than the given one.
     assert_vector3(Vector3(1.1, 1.2, 1.0)).is_less(Vector3(1.1, 1.2, 1.0))
 ```
 {% endtab %}
+{% tab assert-vec3-is_less C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsLess(<expected>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(new Vector3(1.2f, 1.000001f, 1f)).IsLess(new Vector3(1.2f, 1.000002f, 1f));
+
+    // should fail because is NOT less is equal
+    AssertThat(Vector3.One).IsLess(Vector3.One);
+```
+{% endtab %}
 {% endtabs %}
-
-
 
 
 ### is_less_equal
@@ -143,8 +189,20 @@ Verifies that the current value is less than or equal the given one.
     assert_vector3(Vector3(1.1, 1.3, 1.0)).is_less_equal(Vector3(1.1, 1.2, 1.0))
 ```
 {% endtab %}
-{% endtabs %}
+{% tab assert-vec3-is_less_equal C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsLessEqual(<expected>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(new Vector3(1.2f, 1.000001f, 1f)).IsLessEqual(new Vector3(1.2f, 1.000001f, 1f));
+    AssertThat(new Vector3(1.2f, 1.000001f, 1f)).IsLessEqual(new Vector3(1.2f, 1.000002f, 1f));
 
+    // should fail because is NOT less or equal
+    AssertThat(Vector3.One).IsLessEqual(Vector3.Zero);
+```
+{% endtab %}
+{% endtabs %}
 
 
 ### is_greater
@@ -162,8 +220,19 @@ Verifies that the current value is greater than the given one.
     assert_vector3(Vector3(1.1, 1.2, 1.0)).is_greater(Vector3(1.1, 1.2, 1.0))
 ```
 {% endtab %}
-{% endtabs %}
+{% tab assert-vec3-is_greater C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsGreater(<expected>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(new Vector3(1.2f, 1.000002f, 1f)).IsGreater(new Vector3(1.2f, 1.000001f, 1f));
 
+    // should fail because zero is NOT greater than one
+    AssertThat(Vector3.Zero).IsGreater(Vector3.One);
+```
+{% endtab %}
+{% endtabs %}
 
 
 ### is_greater_equal
@@ -182,9 +251,20 @@ Verifies that the current value is greater than or equal the given one.
     assert_vector3(Vector3(1.1, 1.2, 1.0)).is_greater_equal(Vector3(1.1, 1.3, 1.0))
 ```
 {% endtab %}
+{% tab assert-vec3-is_greater_equal C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsGreaterEqual(<expected>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(new Vector3(1.2f, 1.000001f, 1f)).IsGreaterEqual(new Vector3(1.2f, 1.000001f, 1f));
+    AssertThat(new Vector3(1.2f, 1.000002f, 1f)).IsGreaterEqual(new Vector3(1.2f, 1.000001f, 1f));
+
+    // should fail because it is NOT greater or equal
+   AssertThat(new Vector3(1.2f, 1.000002f, 1f)).IsGreaterEqual(new Vector3(1.2f, 1.000003f, 1f));
+```
+{% endtab %}
 {% endtabs %}
-
-
 
 
 ### is_between
@@ -201,6 +281,19 @@ Verifies that the current value is between the given boundaries (inclusive).
 
     # this assertion fail because the part y 1.2 is not between 1.0 and 1.1
     assert_vector3(Vector3(1.1, 1.2, 1.0)).is_between (Vector3(1.1, 1.0, 1.0), Vector3(1.1, 1.1, 1.0))
+```
+{% endtab %}
+{% tab assert-vec3-is_between C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsBetween(<from>, <to>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(Vector3.Zero).IsBetween(Vector3.Zero, Vector3.One);
+    AssertThat(Vector3.One).IsBetween(Vector3.Zero, Vector3.One);
+
+    // should fail because it is NOT between zero and one
+    AssertThat(new Vector3(0, -.1f, 1f)).IsBetween(Vector3.Zero, Vector3.One);
 ```
 {% endtab %}
 {% endtabs %}
@@ -221,6 +314,16 @@ Verifies that the current value is not between the given boundaries (inclusive).
     assert_vector3(Vector3(1.0, 1.0, 1.0)).is_not_between(Vector3(1.0, 1.0, 1.0), Vector3(2.0, 1.0, 1.0))
 ```
 {% endtab %}
+{% tab assert-vec3-is_not_between C# %}
+```cs
+    public static IVector3Assert AssertThat(Godot.Vector3 current).IsNotBetween(<from>, <to>);
+```
+```cs
+    // this assertion succeeds
+    AssertThat(new Vector3(1f, 1.0002f, 1f)).IsNotBetween(Vector3.Zero, Vector3.One);
+
+    // should fail because it is between zero and one
+    AssertThat(Vector3.One).IsNotBetween(Vector3.Zero, Vector3.One);
+```
+{% endtab %}
 {% endtabs %}
-
-

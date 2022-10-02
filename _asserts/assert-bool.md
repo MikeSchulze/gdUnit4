@@ -11,6 +11,8 @@ An assertion tool to verify boolean values.
 
 {% tabs assert-bool %}
 {% tab assert-bool GdScript %}
+**GdUnitBoolAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_true](/gdUnit3/asserts/assert-bool/#is_true)| Verifies that the current value is true.|
@@ -19,6 +21,8 @@ An assertion tool to verify boolean values.
 |[is_not_equal](/gdUnit3/asserts/assert-bool/#is_not_equal)| Verifies that the current value is not equal to the given one.|
 {% endtab %}
 {% tab assert-bool C# %}
+**IBoolAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[IsTrue](/gdUnit3/asserts/assert-bool/#is_true)| Verifies that the current value is true.|
@@ -49,14 +53,14 @@ Verifies that the current value is true.
 {% endtab %}
 {% tab assert-bool-is_true C# %}
 ```cs
-    public static IBoolAssert AssertBool(<current>).IsTrue()
+    public static IBoolAssert AssertThat(<current>).IsTrue()
 ```
 ```cs
     // this assertion succeeds
-    AssertBool(true).IsTrue();
+    AssertThat(true).IsTrue();
 
     // this assertion fails because the value is false and not true
-    AssertBool(false).IsTrue();
+    AssertThat(false).IsTrue();
 ```
 {% endtab %}
 {% endtabs %}
@@ -78,14 +82,14 @@ Verifies that the current value is false.
 {% endtab %}
 {% tab assert-bool-is_false C# %}
 ```cs
-    public static IBoolAssert AssertBool(<current>).IsFalse();
+    public static IBoolAssert AssertThat(<current>).IsFalse();
 ```
 ```cs
     // this assertion succeeds
-    AssertBool(false).IsFalse();
+    AssertThat(false).IsFalse();
 
     // this assertion fails because the value is true and not false
-    AssertBool(true).IsFalse();
+    AssertThat(true).IsFalse();
 ```
 {% endtab %}
 {% endtabs %}
@@ -108,14 +112,14 @@ Verifies that the current value is equal to the given one.
 {% endtab %}
 {% tab assert-bool-is_equal C# %}
 ```cs
-    public static IBoolAssert AssertBool(<current>).IsEqual(<expected>);
+    public static IBoolAssert AssertThat(<current>).IsEqual(<expected>);
 ```
 ```cs
     // this assertion succeeds
-    AssertBool(false).IsEqual(false);
+    AssertThat(false).IsEqual(false);
 
     // this assertion fails because the value is false and not true
-    AssertBool(false).IsEqual(true);
+    AssertThat(false).IsEqual(true);
 ```
 {% endtab %}
 {% endtabs %}
@@ -138,14 +142,14 @@ Verifies that the current value is not equal to the given one.
 {% endtab %}
 {% tab assert-bool-is_not_equal C# %}
 ```cs
-    public static IBoolAssert AssertBool(<current>).IsNotEqual(<expected>);
+    public static IBoolAssert AssertThat(<current>).IsNotEqual(<expected>);
 ```
 ```cs
     // this assertion succeeds
-    AssertBool(false).IsNotEqual(true);
+    AssertThat(false).IsNotEqual(true);
 
     // this assertion fails because the value is false and should not be false
-    AssertBool(false).IsNotEqual(false);
+    AssertThat(false).IsNotEqual(false);
 ```
 {% endtab %}
 {% endtabs %}

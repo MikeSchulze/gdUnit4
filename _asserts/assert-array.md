@@ -11,6 +11,8 @@ An assertion tool to verify arrays.
 
 {% tabs assert-array-overview %}
 {% tab assert-array-overview GdScript %}
+**GdUnitArrayAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_null](/gdUnit3/asserts/assert-array/#is_null) | Verifies that the current value is null.|
@@ -29,6 +31,8 @@ An assertion tool to verify arrays.
 |[extractv](/gdUnit3/asserts/assert-array/#extractv) | Extracts all values by given extractor's.|
 {% endtab %}
 {% tab assert-array-overview C# %}
+**IEnumerableAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-array/#is_null) | Verifies that the current value is null.|
@@ -68,14 +72,14 @@ Verifies that the current value is null.
 {% endtab %}
 {% tab assert-array-is_null C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).IsNull()
+    public static IEnumerableAssert AssertThat(<current>).IsNull()
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(null).IsNull();
+    AssertThat(null).IsNull();
 
     // should fail because the array not null
-    AssertArray(new int[]{}).IsNull();
+    AssertThat(new int[]{}).IsNull();
 ```
 {% endtab %}
 {% endtabs %}
@@ -98,14 +102,14 @@ Verifies that the current value is not null.
 {% endtab %}
 {% tab assert-array-is_not_null C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).IsNotNull()
+    public static IEnumerableAssert AssertThat(<current>).IsNotNull()
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new int[]{}).IsNotNull();
+    AssertThat(new int[]{}).IsNotNull();
 
     // should fail because the array is null
-    AssertArray(null).IsNotNull();
+    AssertThat(null).IsNotNull();
 ```
 {% endtab %}
 {% endtabs %}
@@ -128,14 +132,14 @@ Verifies that the current Array is equal to the given one.
 {% endtab %}
 {% tab assert-array-is_not_null C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).IsEqual(<expected>)
+    public static IEnumerableAssert AssertThat(<current>).IsEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new int[]{1, 2, 3, 4, 2, 5}).IsEqual(new int[]{1, 2, 3, 4, 2, 5});
+    AssertThat(new int[]{1, 2, 3, 4, 2, 5}).IsEqual(new int[]{1, 2, 3, 4, 2, 5});
 
     // should fail because the array not contains same elements and has diff size
-    AssertArray(new int[]{1, 2, 4, 2, 5}).IsEqual(new int[]{1, 2, 3, 4, 2, 5});
+    AssertThat(new int[]{1, 2, 4, 2, 5}).IsEqual(new int[]{1, 2, 3, 4, 2, 5});
 ```
 {% endtab %}
 {% endtabs %}
@@ -158,14 +162,14 @@ Verifies that the current Array is equal to the given one, ignoring case conside
 {% endtab %}
 {% tab assert-array-is_equal_ignoring_case C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).IsEqualIgnoringCase(<expected>)
+    public static IEnumerableAssert AssertThat(<current>).IsEqualIgnoringCase(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new sring[]{"this", "is", "a", "message"}).IsEqualIgnoringCase(new sring[]{"This", "is", "a", "Message"});
+    AssertThat(new sring[]{"this", "is", "a", "message"}).IsEqualIgnoringCase(new sring[]{"This", "is", "a", "Message"});
 
     // should fail because the array not contains same elements
-    AssertArray(new sring[]{"this", "is", "a", "message"}).IsEqualIgnoringCase(new sring[]{"This", "is", "an", "Message"});
+    AssertThat(new sring[]{"this", "is", "a", "message"}).IsEqualIgnoringCase(new sring[]{"This", "is", "an", "Message"});
 ```
 {% endtab %}
 {% endtabs %}
@@ -188,14 +192,14 @@ Verifies that the current Array is not equal to the given one.
 {% endtab %}
 {% tab assert-array-is_equal_ignoring_case C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).IsNotEqual(<expected>)
+    public static IEnumerableAssert AssertThat(<current>).IsNotEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new int[]{1, 2, 3, 4, 5}).IsNotEqual(new int[]{1, 2, 3, 4, 5, 6});
+    AssertThat(new int[]{1, 2, 3, 4, 5}).IsNotEqual(new int[]{1, 2, 3, 4, 5, 6});
 
     // should fail because the array contains same elements
-    AssertArray(new int[]{1, 2, 3, 4, 5}).IsNotEqual(new int[]{1, 2, 3, 4, 5});
+    AssertThat(new int[]{1, 2, 3, 4, 5}).IsNotEqual(new int[]{1, 2, 3, 4, 5});
 ```
 {% endtab %}
 {% endtabs %}
@@ -219,14 +223,14 @@ Verifies that the current Array is not equal to the given one, ignoring case con
 {% endtab %}
 {% tab assert-array-is_not_equal_ignoring_case C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).IsNotEqualIgnoringCase(<expected>)
+    public static IEnumerableAssert AssertThat(<current>).IsNotEqualIgnoringCase(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new string[]{"this", "is", "a", "message"}).IsNotEqualIgnoringCase(new string[]{"This", "is", "an", "Message"});
+    AssertThat(new string[]{"this", "is", "a", "message"}).IsNotEqualIgnoringCase(new string[]{"This", "is", "an", "Message"});
 
     // should fail because the array contains same elements ignoring case sensitive
-    AssertArray(new string[]{"this", "is", "a", "message"}).IsNotEqualIgnoringCase(new string[]{"This", "is", "a", "Message"});
+    AssertThat(new string[]{"this", "is", "a", "message"}).IsNotEqualIgnoringCase(new string[]{"This", "is", "a", "Message"});
 ```
 {% endtab %}
 {% endtabs %}
@@ -249,14 +253,14 @@ Verifies that the current Array is empty, it has a size of 0.
 {% endtab %}
 {% tab assert-array-is_empty C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).IsEmpty()
+    public static IEnumerableAssert AssertThat(<current>).IsEmpty()
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new int[]{}).IsEmpty();
+    AssertThat(new int[]{}).IsEmpty();
 
     // should fail because the array is not empty it has a size of one
-    AssertArray(new int[]{1}).IsEmpty();
+    AssertThat(new int[]{1}).IsEmpty();
 ```
 {% endtab %}
 {% endtabs %}
@@ -279,14 +283,14 @@ Verifies that the current Array is not empty, it has a size of minimum 1.
 {% endtab %}
 {% tab assert-array-is_not_empty C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).IsNotEmpty()
+    public static IEnumerableAssert AssertThat(<current>).IsNotEmpty()
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new int[]{1}).IsNotEmpty();
+    AssertThat(new int[]{1}).IsNotEmpty();
 
     // should fail because the array is empty
-    AssertArray(new int[]{}).IsNotEmpty();
+    AssertThat(new int[]{}).IsNotEmpty();
 ```
 {% endtab %}
 {% endtabs %}
@@ -310,15 +314,15 @@ Verifies that the current Array has a size of given value.
 {% endtab %}
 {% tab assert-array-has_size C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).HasSize(<expected>)
+    public static IEnumerableAssert AssertThat(<current>).HasSize(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new int[]{1, 2, 3, 4, 5}).HasSize(5);
-    AssertArray(new string[]{"a", "b", "c", "d", "e", "f"}).HasSize(6);
+    AssertThat(new int[]{1, 2, 3, 4, 5}).HasSize(5);
+    AssertThat(new string[]{"a", "b", "c", "d", "e", "f"}).HasSize(6);
 
     // should fail because the array has a size of 5 and not 4
-    AssertArray(new int[]{1, 2, 3, 4, 5}).HasSize(4);
+    AssertThat(new int[]{1, 2, 3, 4, 5}).HasSize(4);
 ```
 {% endtab %}
 {% endtabs %}
@@ -342,14 +346,14 @@ Verifies that the current Array contains the given values, in any order.
 {% endtab %}
 {% tab assert-array-contains C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).Contains(<expected>)
+    public static IEnumerableAssert AssertThat(<current>).Contains(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new int[]{1, 2, 3, 4, 5}).Contains(5, 2);
+    AssertThat(new int[]{1, 2, 3, 4, 5}).Contains(5, 2);
 
     // should fail because the array not contains 7 and 6
-    AssertArray(new int[]{1, 2, 3, 4, 5}).Contains(2, 7, 6):
+    AssertThat(new int[]{1, 2, 3, 4, 5}).Contains(2, 7, 6):
 ```
 {% endtab %}
 {% endtabs %}
@@ -372,14 +376,14 @@ Verifies that the current Array contains exactly only the given values and nothi
 {% endtab %}
 {% tab assert-array-contains_exactly C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).ContainsExactly(<expected>)
+    public static IEnumerableAssert AssertThat(<current>).ContainsExactly(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertArray(new int[]{1, 2, 3, 4, 5}).ContainsExactly(1, 2, 3, 4, 5);
+    AssertThat(new int[]{1, 2, 3, 4, 5}).ContainsExactly(1, 2, 3, 4, 5);
 
     // should fail because the array contains the same elements but in a different order
-    AssertArray(new int[]{1, 2, 3, 4, 5}).ContainsExactly(1, 4, 3, 2, 5);
+    AssertThat(new int[]{1, 2, 3, 4, 5}).ContainsExactly(1, 4, 3, 2, 5);
 ```
 {% endtab %}
 {% endtabs %}
@@ -402,14 +406,14 @@ Verifies that the current Array contains exactly only the given values and nothi
 {% endtab %}
 {% tab assert-array-contains_exactly_in_any_order C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).ContainsExactlyInAnyOrder(<expected>)
+    public static IEnumerableAssert AssertThat(<current>).ContainsExactlyInAnyOrder(<expected>)
 ```
 ```cs
     // this assertion succeeds, contains all elements but in a different order
-    AssertArray(new int[]{1, 2, 3, 4, 5}).ContainsExactlyInAnyOrder(1, 5, 3, 4, 2);
+    AssertThat(new int[]{1, 2, 3, 4, 5}).ContainsExactlyInAnyOrder(1, 5, 3, 4, 2);
 
     // should fail because the array contains not exacly all elements (5 is missing)
-    AssertArray(new int[]{1, 2, 3, 4}).ContainsExactlyInAnyOrder(1, 4, 3, 2);
+    AssertThat(new int[]{1, 2, 3, 4}).ContainsExactlyInAnyOrder(1, 4, 3, 2);
 ```
 {% endtab %}
 {% endtabs %}
@@ -441,16 +445,16 @@ You can use function name chaining e.g. `get_parent.get_name`
 {% endtab %}
 {% tab assert-array-extract C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).Extract(<func_name :String>, <args>);
-    public static IArrayAssert AssertArray(<current>).Extract(<func_name :String>[.<func_name>], <args>]);
+    public static IEnumerableAssert AssertThat(<current>).Extract(<func_name :String>, <args>);
+    public static IEnumerableAssert AssertThat(<current>).Extract(<func_name :String>[.<func_name>], <args>]);
 ```
 ```cs
     // extracting only by function name "get_class"
-    AssertArray(new object[] { new Reference(), 2, new AStar(), AutoFree(new Node()) })
+    AssertThat(new object[] { new Reference(), 2, new AStar(), AutoFree(new Node()) })
         .Extract("get_class")
         .ContainsExactly("Reference", "n.a.", "AStar", "Node");
     // extracting by a function name and arguments
-    AssertArray(new object[] { new Reference(), 2, new AStar(), AutoFree(new Node()) })
+    AssertThat(new object[] { new Reference(), 2, new AStar(), AutoFree(new Node()) })
         .Extract("has_signal", ["tree_entered"])
         .ContainsExactly(false, "n.a.", false, true);
 ```
@@ -514,7 +518,7 @@ To check multiple extracted values you must use `tuple`, a tuple can hold two up
 {% endtab %}
 {% tab assert-array-extractv C# %}
 ```cs
-    public static IArrayAssert AssertArray(<current>).ExtractV(<extractor:IValueExtractor>[, extractor, ..]);
+    public static IEnumerableAssert AssertThat(<current>).ExtractV(<extractor:IValueExtractor>[, extractor, ..]);
 ```
 ```cs
     // example object for extraction
@@ -538,15 +542,15 @@ To check multiple extracted values you must use `tuple`, a tuple can hold two up
 ```
 ```cs
     // single extract
-    AssertArray(new object[] { 1, false, 3.14, null, Colors.AliceBlue })
+    AssertThat(new object[] { 1, false, 3.14, null, Colors.AliceBlue })
         .ExtractV(Extr("GetClass"))
         .ContainsExactly("n.a.", "n.a.", "n.a.", null, "n.a.");
     // tuple of two
-    AssertArray(new object[] { new TestObj("A", 10), new TestObj("B", "foo"), Colors.AliceBlue, new TestObj("C", 11) })
+    AssertThat(new object[] { new TestObj("A", 10), new TestObj("B", "foo"), Colors.AliceBlue, new TestObj("C", 11) })
                 .ExtractV(Extr("GetName"), Extr("GetValue"))
                 .ContainsExactly(Tuple("A", 10), Tuple("B", "foo"), Tuple("n.a.", "n.a."), Tuple("C", 11));
     // tuple of three
-    AssertArray(new object[] { new TestObj("A", 10), new TestObj("B", "foo", "bar"), new TestObj("C", 11, 42) })
+    AssertThat(new object[] { new TestObj("A", 10), new TestObj("B", "foo", "bar"), new TestObj("C", 11, 42) })
                 .ExtractV(Extr("GetName"), Extr("GetValue"), Extr("GetX"))
                 .ContainsExactly(Tuple("A", 10, null), Tuple("B", "foo", "bar"), Tuple("C", 11, 42));
 ```

@@ -11,6 +11,8 @@ An assertion tool to verify integer values.
 
 {% tabs assert-int-overview %}
 {% tab assert-int-overview GdScript %}
+**GdUnitIntAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_null](/gdUnit3/asserts/assert-integer/#is_null) | Verifies that the current value is null.|
@@ -32,6 +34,8 @@ An assertion tool to verify integer values.
 |[is_between](/gdUnit3/asserts/assert-integer/#is_between) | Verifies that the current value is between the given boundaries (inclusive).|
 {% endtab %}
 {% tab assert-int-overview C# %}
+**INumberAssert\<int\>**<br>
+
 |Function|Description|
 |--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-integer/#is_null) | Verifies that the current value is null.|
@@ -74,14 +78,14 @@ Verifies that the current value is equal to the given one.
 {% endtab %}
 {% tab assert-int-is_equal C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsEqual(<expected>)
+    INumberAssert<int> AssertThat(<current>).IsEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(23).IsEqual(23);
+    AssertThat(23).IsEqual(23);
 
     // this assertion fails because 23 are not equal to 42
-    AssertInt(23).IsEqual(42);
+    AssertThat(23).IsEqual(42);
 ```
 {% endtab %}
 {% endtabs %}
@@ -104,14 +108,14 @@ Verifies that the current value is not equal to the given one.
 {% endtab %}
 {% tab assert-int-is_not_equal C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsNotEqual(<expected>)
+    INumberAssert<int> AssertThat(<current>).IsNotEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(23).IsNotEqual(42);
+    AssertThat(23).IsNotEqual(42);
 
     // this assertion fails because 23 are equal to 23 
-    AssertInt(23).IsNotEqual(23);
+    AssertThat(23).IsNotEqual(23);
 ```
 {% endtab %}
 {% endtabs %}
@@ -136,15 +140,15 @@ Verifies that the current value is less than the given one.
 {% endtab %}
 {% tab assert-int-is_less C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsLess(<expected>)
+    INumberAssert<int> AssertThat(<current>).IsLess(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(23).IsLess(42);
-    AssertInt(23).IsLess(24);
+    AssertThat(23).IsLess(42);
+    AssertThat(23).IsLess(24);
 
     // this assertion fails because 23 is not less than 23
-    AssertInt(23).IsLess(23);
+    AssertThat(23).IsLess(23);
 ```
 {% endtab %}
 {% endtabs %}
@@ -168,15 +172,15 @@ Verifies that the current value is less than or equal the given one.
 {% endtab %}
 {% tab assert-int-is_less_equal C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsLessEqual(<expected>)
+    INumberAssert<int> AssertThat(<current>).IsLessEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(23).IsLessEqual(42);
-    AssertInt(23).IsLessEqual(23);
+    AssertThat(23).IsLessEqual(42);
+    AssertThat(23).IsLessEqual(23);
 
     // this assertion fails because 23 is not less than or equal to 22
-    AssertInt(23).IsLessEqual(22);
+    AssertThat(23).IsLessEqual(22);
 ```
 {% endtab %}
 {% endtabs %}
@@ -200,15 +204,15 @@ Verifies that the current value is greater than the given one.
 {% endtab %}
 {% tab assert-int-is_greater C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsGreater(<expected>)
+    INumberAssert<int> AssertThat(<current>).IsGreater(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(23).IsGreater(20);
-    AssertInt(23).IsGreater(22);
+    AssertThat(23).IsGreater(20);
+    AssertThat(23).IsGreater(22);
 
     // this assertion fails because 23 is not greater than 23
-    AssertInt(23).IsGreater(23);
+    AssertThat(23).IsGreater(23);
 ```
 {% endtab %}
 {% endtabs %}
@@ -231,14 +235,14 @@ Verifies that the current value is greater than or equal the given one.
 {% endtab %}
 {% tab assert-int-is_greater_equal C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsGreaterEqual(<expected>)
+    INumberAssert<int> AssertThat(<current>).IsGreaterEqual(<expected>)
 ```
 ```cs
-    AssertInt(23).IsGreaterEqual(20)
-    AssertInt(23).IsGreaterEqual(23)
+    AssertThat(23).IsGreaterEqual(20)
+    AssertThat(23).IsGreaterEqual(23)
 
     # this assertion fails because 23 is not greater than 23
-    AssertInt(23).IsGreaterEqual(24)
+    AssertThat(23).IsGreaterEqual(24)
 ```
 {% endtab %}
 {% endtabs %}
@@ -261,14 +265,14 @@ Verifies that the current value is even.
 {% endtab %}
 {% tab assert-int-is_even C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsEven()
+    INumberAssert<int> AssertThat(<current>).IsEven()
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(12).IsEven();
+    AssertThat(12).IsEven();
 
     // this assertion fail because the value '13' is not even
-    AssertInt(13).IsEven();
+    AssertThat(13).IsEven();
 ```
 {% endtab %}
 {% endtabs %}
@@ -292,14 +296,14 @@ Verifies that the current value is odd.
 {% endtab %}
 {% tab assert-int-is_odd C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsOdd()
+    INumberAssert<int> AssertThat(<current>).IsOdd()
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(13).IsOdd();
+    AssertThat(13).IsOdd();
 
     // this assertion fail because the value '12' is even
-    AssertInt(12).IsOdd();
+    AssertThat(12).IsOdd();
 ```
 {% endtab %}
 {% endtabs %}
@@ -323,14 +327,14 @@ Verifies that the current value is negative.
 {% endtab %}
 {% tab assert-int-is_negative C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsNegative()
+    INumberAssert<int> AssertThat(<current>).IsNegative()
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(-13).IsNegative();
+    AssertThat(-13).IsNegative();
 
     // this assertion fail because the value '13' is positive
-    AssertInt(13).IsNegative();
+    AssertThat(13).IsNegative();
 ```
 {% endtab %}
 {% endtabs %}
@@ -353,14 +357,14 @@ Verifies that the current value is not negative.
 {% endtab %}
 {% tab assert-int-is_not_negative C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsNotNegative()
+    INumberAssert<int> AssertThat(<current>).IsNotNegative()
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(13).IsNotNegative();
+    AssertThat(13).IsNotNegative();
 
     // this assertion fail because the value '-13' is negative
-    AssertInt(-13).IsNotNegative();
+    AssertThat(-13).IsNotNegative();
 ```
 {% endtab %}
 {% endtabs %}
@@ -382,14 +386,14 @@ Verifies that the current value is equal to zero.
 {% endtab %}
 {% tab assert-int-is_zero C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsZero()
+    INumberAssert<int> AssertThat(<current>).IsZero()
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(0).IsZero();
+    AssertThat(0).IsZero();
 
     // this assertion fail because the value is not zero
-    AssertInt(1).IsZero();
+    AssertThat(1).IsZero();
 ```
 {% endtab %}
 {% endtabs %}
@@ -413,14 +417,14 @@ Verifies that the current value is not equal to zero.
 {% endtab %}
 {% tab assert-int-is_not_zero C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsNotZero()
+    INumberAssert<int> AssertThat(<current>).IsNotZero()
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(1).IsNotZero();
+    AssertThat(1).IsNotZero();
 
     // this assertion fail because the value is zero
-    AssertInt(0).IsNotZero();
+    AssertThat(0).IsNotZero();
 ```
 {% endtab %}
 {% endtabs %}
@@ -442,14 +446,14 @@ Verifies that the current value is in the given set of values.
 {% endtab %}
 {% tab assert-int-is_in C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsIn([] <expected>)
+    INumberAssert<int> AssertThat(<current>).IsIn([] <expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(5).IsIn(3, 4, 5, 6);
+    AssertThat(5).IsIn(3, 4, 5, 6);
 
     // this assertion fail because 7 is not in [3, 4, 5, 6]
-    AssertInt(7).IsIn(3, 4, 5, 6);
+    AssertThat(7).IsIn(3, 4, 5, 6);
 ```
 {% endtab %}
 {% endtabs %}
@@ -471,14 +475,14 @@ Verifies that the current value is not in the given set of values.
 {% endtab %}
 {% tab assert-int-is_not_in C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsNotIn([] <expected>)
+    INumberAssert<int> AssertThat(<current>).IsNotIn([] <expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(5).IsNotIn(3, 4, 6, 7);
+    AssertThat(5).IsNotIn(3, 4, 6, 7);
 
     // this assertion fail because 5 is in [3, 4, 5, 6]
-    AssertInt(5).IsNotIn(3, 4, 5, 6);
+    AssertThat(5).IsNotIn(3, 4, 5, 6);
 ```
 {% endtab %}
 {% endtabs %}
@@ -502,15 +506,15 @@ Verifies that the current value is between the given boundaries (inclusive).
 {% endtab %}
 {% tab assert-int-is_between C# %}
 ```cs
-    IIntAssert AssertInt(<current>).IsBetween(<from>, <to>)
+    INumberAssert<int> AssertThat(<current>).IsBetween(<from>, <to>)
 ```
 ```cs
     // this assertion succeeds
-    AssertInt(23).IsBetween(20, 30);
-    AssertInt(23).IsBetween(23, 24);
+    AssertThat(23).IsBetween(20, 30);
+    AssertThat(23).IsBetween(23, 24);
 
     // this assertion fail because the value is zero and not between 1 and 9
-    AssertInt(0).IsBetween(1, 9);
+    AssertThat(0).IsBetween(1, 9);
 ```
 {% endtab %}
 {% endtabs %}

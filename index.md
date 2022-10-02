@@ -3,21 +3,18 @@ layout: default
 title: Home
 ---
 
-# Draft Version (Work in Progress)
-## GdUnit3 V2.1.0 - (C# Beta Support)
+# GdUnit3 V2.3.0
 
 ![GdUnit3](\gdUnit3\assets\images\background.png)
 
 
-### What is GdUnit3?
+## What is GdUnit3?
 **Gd**(*Godot*)**Unit**(*Unit Testing*)**3**(*Godot 3.x*)
 
 GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and Scenes within the Godot editor. GdUnit3 is very useful for [TDD (test driven development)](https://en.wikipedia.org/wiki/Test-driven_development){:target="_blank"} and will help you get your code bug-free.
 
 
-## ***Please note that C# test support is currently still in beta and not feature complete. If you have any problems or find any bugs, please report them.***
-
-### You are welcome to:
+## You are welcome to:
   * [Give Feedback](https://github.com/MikeSchulze/gdUnit3/discussions/228){:target="_blank"}
   * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit3/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=){:target="_blank"}
   * [Report Bugs](https://github.com/MikeSchulze/gdUnit3/issues/new?assignees=MikeSchulze&labels=bug&template=bug_report.md&title=){:target="_blank"}
@@ -25,8 +22,8 @@ GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and
 ***
 
 
-### Main Features
-* Write and run tests in GdScript or C#(Beta)
+## Main Features
+* Write and run tests in GdScript or C#
 * Embedded test Inspector in the Godot to navigate over your test suites
 * Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnit Inspector
 * Create test's directly from the ScriptEditor
@@ -35,6 +32,7 @@ GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and
 * Argument matchers to verify the behavior of a function call by a specified argument type.
 * Fluent syntax support
 * Test Fuzzing support
+* Parameterized Tests (Test Cases)
 * Mocking a class to simulate the implementation which you define the output of certain function
 * Spy on a instance to verify that a function has been called with certain parameters.
 * Mock or Spy on a Scene 
@@ -45,9 +43,10 @@ GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and
   * Simulate scene proccessing by waiting for a specific function result
 * Update Notifier to install latest version from GitHub
 * Command Line Tool
+* Visual Studio Code extension
 
 
-## Test Example
+### Test Example
 {: .d-none .d-md-inline-block }
 
 {% tabs example %}

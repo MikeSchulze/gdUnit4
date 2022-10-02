@@ -1,196 +1,360 @@
 ---
 layout: default
-title: Test Suite
+title: TestSuite
 nav_order: 1
 ---
 
-# Test-Suite
+# TestSuite
 
-### Definition
-A test-suite is a collection of tests basically alligned to a class you want to test.
-When writing tests, it is common to find that several tests need similar test data to created before and cleanup after test run.
-GdUnit test-suite runs in execution steps (hooks) where you allow to define preinitalisized test data.
+## Definition
+A TestSuite is a collection of tests basically alligned to a class you want to test.<br>
+When writing tests, it is common to find that several tests need similar test data to created before and cleanup after test run.<br>
+GdUnit TestSuite runs in execution stages (hooks) where you allow to define preinitalisized test data.
 
-|Execution Step|Description|
+{% tabs faq-TestSuite-stages %}
+{% tab faq-TestSuite-stages GdScript %}
+GdUnit use predefined functions to define the execution stages.<br>
+To define a test you have to use the prefix `test_` e.g. `test_verify_is_string`
+
+|Stage|Description|
 |---| ---|
-|before | executed only once at test suite run is started|
-|after | executed only once at test suite run has finished|
+|before | executed only once at TestSuite run is started|
+|after | executed only once at TestSuite run has finished|
 |before_test | executed before each test is started|
 |after_test | executed after each test has finished|
-|test | executes the test content|
+|test_<name> | executes the test content|
+{% endtab %}
+{% tab faq-TestSuite-stages C# %}
+GdUnit use attributes to define the execution stages and tests.<br>
+All GdUnit attributes are contained in the `namespace GdUnit3`
+
+|Stage|Description|
+|---| ---|
+|[Before] | executed only once at TestSuite run is started|
+|[After] | executed only once at TestSuite run has finished|
+|[BeforeTest] | executed before each test is started|
+|[AfterTest] | executed after each test has finished|
+|[TestCase] | executes the test content|
+{% endtab %}
+{% endtabs %}
 
 ---
 
-## Execution Graph for a test-suite
+## Stage *before*
+This stage is executed only once at the beginning of a TestSuite execution.<br>
+GdUnit3 allows to use asserts within this stage, occurring errors are reported.
 
-{% tabs faq-test-suite-overview %}
-{% tab faq-test-suite-overview GdScript %}
+{% tabs faq-TestSuite-before %}
+{% tab faq-TestSuite-before GdScript %}
+**func before()**<br>
+Use this function inside your TestSuite to define a pre-hook and prepare your TestSuite data.
+```ruby
+class_name GdUnitExampleTest
+extends GdUnitTestSuite
+
+var _test_data :Node
+
+# create some test data here
+func before():
+   _test_data = Node.new()
+```
+{% endtab %}
+{% tab faq-TestSuite-before C# %}
+**[Before]**<br>
+Use this attribute inside your TestSuite to define a method as pre hook to prepare your TestSuite data.
+```cs
+using GdUnit3;
+using static GdUnit3.Assertions;
+
+namespace ExampleProject.Tests
+{
+    [TestSuite]
+    public class ExampleTest
+    {
+        private Godot.Node _test_data;
+
+        [Before]
+        public void Setup()
+        {
+            // create some test data here
+            _test_data = new Godot.Node();
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+{% include advice.html 
+content="If you create objects in the <b>Before</b> stage, you must release the object at the end in the <b>After</b> stage, otherwise, the object is reported as an orphan node.<br>
+Alternatively, you can use the tool <b>auto_free()</b>,  the object is automatically freed at <b>After</b> stage."
+%}
+{% tabs faq-TestSuite-before %}
+{% tab faq-TestSuite-before GdScript %}
+```ruby
+class_name GdUnitExampleTest
+extends GdUnitTestSuite
+
+var _test_data :Node
+
+# create some test data here
+func before():
+   _test_data = auto_free(Node.new())
+```
+{% endtab %}
+{% tab faq-TestSuite-before C# %}
+```cs
+using GdUnit3;
+using static GdUnit3.Assertions;
+
+namespace ExampleProject.Tests
+{
+    [TestSuite]
+    public class ExampleTest
+    {
+        private Godot.Node _test_data;
+
+        [Before]
+        public void Setup()
+        {
+            // create some test data here
+            _test_data = AutoFree(new Godot.Node());
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+---
+
+## Stage *after*
+This stage is executed only once at the end of a TestSuite execution.<br>
+GdUnit3 allows to use asserts within this stage, occurring errors are reported.
+
+{% tabs faq-TestSuite-after %}
+{% tab faq-TestSuite-after GdScript %}
+**func after():**<br>
+Use this function inside your TestSuite to define a shutdown hook and release your TestSuite data.
+```ruby
+class_name GdUnitExampleTest
+extends GdUnitTestSuite
+
+var _test_data :Node
+
+# give free resources where was created in before()
+func after():
+   _test_data.free()
+```
+{% endtab %}
+{% tab faq-TestSuite-after C# %}
+**[After]**<br>
+Use this attribute inside your TestSuite to define a method as shutdown hook to release your TestSuite data.
+```cs
+using GdUnit3;
+using static GdUnit3.Assertions;
+
+namespace ExampleProject.Tests
+{
+    [TestSuite]
+    public class ExampleTest
+    {
+        private Godot.Node _test_data;
+
+        [After]
+        public void TearDownSuite()
+        {
+            // give free resources where was created in before()
+            _test_data.Free();
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+---
+
+## Stage *before_test*
+This stage is executed before each TestCase.<br>
+GdUnit3 allows to use asserts within the this stage, occurring errors are reported.
+
+{% tabs faq-TestSuite-before_test %}
+{% tab faq-TestSuite-before_test GdScript %}
+**func before_test():**<br>
+Use this function inside your TestSuite to define a pre hook to initalize your TestCase data.
+```ruby
+class_name GdUnitExampleTest
+extends GdUnitTestSuite
+
+var _test_data :Node
+
+# initalizize you test data here
+func before_test():
+   _test_data = Node.new()
+```
+{% endtab %}
+{% tab faq-TestSuite-before_test C# %}
+**[BeforeTest]**<br>
+Use this attribute inside your TestSuite to define a method as pre hook to initalize your TestCase data.
+```cs
+using GdUnit3;
+using static GdUnit3.Assertions;
+
+namespace ExampleProject.Tests
+{
+    [TestSuite]
+    public class ExampleTest
+    {
+        private Godot.Node _test_data;
+
+        [BeforeTest]
+        public void SetupTest()
+        {
+            // initalizize you test data here
+            _test_data = new Godot.Node();
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+{% include advice.html 
+content="If you create objects in the <b>before_test</b> stage, you must release the object at the end in the <b>after_test</b> stage, otherwise, the object is reported as an orphan node.<br>
+Alternatively, you can use the tool <b>auto_free()</b>,  the object is automatically freed at <b>after_test</b> stage."
+%}
+{% tabs faq-TestSuite-before_test %}
+{% tab faq-TestSuite-before_test GdScript %}
+```ruby
+class_name GdUnitExampleTest
+extends GdUnitTestSuite
+
+var _test_data :Node
+
+# initalizize you test data here
+func before_test():
+   _test_data = auto_free(Node.new())
+```
+{% endtab %}
+{% tab faq-TestSuite-before_test C# %}
+```cs
+using GdUnit3;
+using static GdUnit3.Assertions;
+
+namespace ExampleProject.Tests
+{
+    [TestSuite]
+    public class ExampleTest
+    {
+        private Godot.Node _test_data;
+
+        [BeforeTest]
+        public void SetupTest()
+        {
+            // initalizize you test data here
+            _test_data = AutoFree(new Godot.Node());
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+---
+
+## Stage *after_test*
+This stage is executed after each TestCase.<br>
+GdUnit3 allows to use asserts within the this stage, occurring errors are reported.
+
+{% tabs faq-TestSuite-after_test %}
+{% tab faq-TestSuite-after_test GdScript %}
+**func after_test():**<br>
+Use this function inside your TestSuite to define a test clean up hook to release your TestCase data if neeed.
+```ruby
+class_name GdUnitExampleTest
+extends GdUnitTestSuite
+
+# clean up your test data
+func after_test():
+   ...
+```
+{% endtab %}
+{% tab faq-TestSuite-after_test C# %}
+**[AfterTest]**<br>
+Use this attribute inside your TestSuite to define a method as clean up hook to release your TestCase data if neeed.
+```cs
+using GdUnit3;
+using static GdUnit3.Assertions;
+
+namespace ExampleProject.Tests
+{
+    [TestSuite]
+    public class ExampleTest
+    {
+        [AfterTest]
+        public void TearDownTest()
+        {
+            // clean up your test data
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+---
+
+## The execution graph of an TestSuite execution
+
+{% tabs faq-TestSuite-overview %}
+{% tab faq-TestSuite-overview GdScript %}
 ```ruby
  (Run)
-   |- func before() -> void: # init the test-suite
+   |- func before() -> void: # init the TestSuite
    |    ...
    |
    [...] # loops over all tests
       |     
-      |- func before_test() -> void: # init next test-case
+      |- func before_test() -> void: # init next TestCase
       |    ...
       |
       >--- 
-         | func test_1() -> void: # execute test-case (1-n iterations)
+         | func test_1() -> void: # execute TestCase (1-n iterations)
          |   ...
       <---
       |  
-      |- func after_test() -> void: # clean-up current test-case finished
+      |- func after_test() -> void: # clean-up current TestCase finished
       |     ...
    [...]
    |   
-   | - func after() -> void: # clean-up test-suite finished
+   | - func after() -> void: # clean-up TestSuite finished
    |      ....
  (END)
 ```
 {% endtab %}
-{% tab faq-test-suite-overview C# %}
+{% tab faq-TestSuite-overview C# %}
 ```cs
  (Run)
-   |- [Before] // init the test-suite
+   |- [Before] // init the TestSuite
    |  public void Setup() {}
    |
    [...] // loops over all tests
       |     
-      |- [BeforeTest] // init next test-case
+      |- [BeforeTest] // init next TestCase
       |  public void SetupTest() {}
       |
       >--- 
-         | [TestCase] // execute test-case (1-n iterations)
+         | [TestCase] // execute TestCase (1-n iterations)
          | public void TestCase1() {}
       <---
       |  
-      |- [AfterTest] // clean-up current test-case finished
+      |- [AfterTest] // clean-up current TestCase finished
       |  public void TearDownTest() {}
    [...]
    |   
-   | - [After] // clean-up test-suite finished
+   | - [After] // clean-up TestSuite finished
    |   public void TearDownSuite() {}
  (END)
-```
-{% endtab %}
-{% endtabs %}
-
-
-### Using step *before*
-
-{% tabs faq-test-suite-before %}
-{% tab faq-test-suite-before GdScript %}
-You can override the **before()** function in your test-suite to define a pre hook and prepare your test data. This function is called only once at the beginning of a test-suite execution.
-```ruby
-   var _test_data :Node
-
-   func before():
-      _test_data = Node.new()
-      # create some test data here
-      ...
-```
-{% endtab %}
-{% tab faq-test-suite-before C# %}
-You can annotate with **[Before]** in your test-suite to define a pre hook and prepare your test data. This method is called only once at the beginning of a test-suite execution.
-```cs
-   private Godot.Node _test_data;
-
-   [Before]
-   public void Setup() {
-      _test_data = new Godot.Node()
-      // create some test data here
-      ...
-   }
-```
-{% endtab %}
-{% endtabs %}
-
-When you create objects in the **before** step than you have to manage the object to free at the end of a test-suite execution at step **after**.
-Alternativly you can use **auto_free()** to create object where will be automatically freed after test-suite execution. 
-
-### Using step *after*
-
-{% tabs faq-test-suite-after %}
-{% tab faq-test-suite-after GdScript %}
-You can overwrite the **after()** function in your test-suite  to define a shutdown hook and release pre-initialized test data. This function is called only once at the end of a test-suite execution.
-
-```ruby
-   var _test_data :Node
-
-   func after():
-      # give free resources where was created in before()
-   _test_data.free()
-```
-{% endtab %}
-{% tab faq-test-suite-after C# %}
-You can annotate a method with **[After]** in your test-suite to define a shutdown hook and release pre-initialized test data. This function is called only once at the end of a test-suite execution.
-
-```cs
-   private Godot.Node _test_data
-
-   [After]
-   public void TearDownSuite() {
-      // give free resources where was created in before()
-      _test_data.Free();
-   }
-```
-{% endtab %}
-{% endtabs %}
-
-
-
-
-### Using step *before_test*
-
-{% tabs faq-test-suite-before_test %}
-{% tab faq-test-suite-before_test GdScript %}
-You can override the function **before_test()** to define a test pre hook to pre-initialized test data for each test. This function is called before each test execution.
-```ruby
-   var _test_data :Node
-
-   func before_test():
-      _test_data = Node.new()
-      # initalizize you test data here
-      ...
-```
-{% endtab %}
-{% tab faq-test-suite-before_test C# %}
-You can annotate a method with **[BeforeTest]** to define a test pre hook to pre-initialized test data for each test. This methos is called before each test execution.
-```cs
-   private Godot.Node _test_data
-
-   [BeforeTest]
-   public void SetupTest() {
-      _test_data = new Godot.Node()
-      // initalizize you test data here
-      ...
-   }
-```
-{% endtab %}
-{% endtabs %}
-
-
-### Using step *after_test*
-{% tabs faq-test-suite-after_test %}
-{% tab faq-test-suite-after_test GdScript %}
-You can override the function **after_test()** to define a shutdown hook if you neeed to clean-up test data for each test. This function is called after each test execution.
-   ```ruby
-
-   func after_test():
-      # clean up your test data
-      ...
-```
-{% endtab %}
-{% tab faq-test-suite-after_test C# %}
-You can annotate a method with **[AfterTest]** to define a shutdown hook if you neeed to clean-up test data for each test. This function is called after each test execution.
-   ```ruby
-
-   [AfterTest]
-   public void TearDownTest() {
-      # clean up your test data
-      ...
-   }
 ```
 {% endtab %}
 {% endtabs %}

@@ -9,6 +9,8 @@ nav_order: 10
 
 {% tabs assert-file-overview %}
 {% tab assert-file-overview GdScript %}
+**GdUnitFileAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_file]() | Verifies the given resource is a file |

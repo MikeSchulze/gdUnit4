@@ -13,6 +13,8 @@ An assertion tool that waits until a certain time for an expected function retur
 
 {% tabs assert-function-overview %}
 {% tab assert-function-overview GdScript %}
+**GdUnitFuncAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_null](/gdUnit3/asserts/assert-function/#is_null) | Verifies that the current value is null.|

@@ -11,6 +11,8 @@ An assertion tool to verify float values.
 
 {% tabs assert-float-overview %}
 {% tab assert-float-overview GdScript %}
+**GdUnitFloatAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_null](/gdUnit3/asserts/assert-float/#is_null) | Verifies that the current value is null.|
@@ -31,6 +33,8 @@ An assertion tool to verify float values.
 |[is_between](/gdUnit3/asserts/assert-float/#is_between) | Verifies that the current value is between the given boundaries (inclusive).|
 {% endtab %}
 {% tab assert-float-overview C# %}
+**INumberAssert\<float\>**<br>
+
 |Function|Description|
 |--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-float/#is_null) | Verifies that the current value is null.|
@@ -72,14 +76,14 @@ Verifies that the current value is equal to the given one.
 {% endtab %}
 {% tab assert-float-is_equal C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsEqual(<expected>)
+    public static INumberAssert<double> AssertThat(<current>).IsEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(23.2).IsEqual(23.2);
+    AssertThat(23.2).IsEqual(23.2);
 
     // this assertion fails because 23.2 are not equal to 23.4
-    AssertFloat(23.2).IsEqual(23.4);
+    AssertThat(23.2).IsEqual(23.4);
 ```
 {% endtab %}
 {% endtabs %}
@@ -101,14 +105,14 @@ Verifies that the current value is not equal to the given one.
 {% endtab %}
 {% tab assert-float-is_not_equal C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsNotEqual(<expected>)
+    public static INumberAssert<double> AssertThat(<current>).IsNotEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(23.2).IsNotEqual(23.4);
+    AssertThat(23.2).IsNotEqual(23.4);
 
     // this assertion fails because 23.2 are equal to 23.2
-    AssertFloat(23.2).IsNotEqual(23.2);
+    AssertThat(23.2).IsNotEqual(23.2);
 ```
 {% endtab %}
 {% endtabs %}
@@ -135,17 +139,17 @@ Verifies that the current and expected value are approximately equal.
 {% endtab %}
 {% tab assert-float-is_equal_approx C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsEqualApprox(<expected>, <approx>)
+    public static INumberAssert<double> AssertThat(<current>).IsEqualApprox(<expected>, <approx>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(23.19).IsEqualApprox(23.2, 0.01);
-    AssertFloat(23.20).IsEqualApprox(23.2, 0.01);
-    AssertFloat(23.21).IsEqualApprox(23.2, 0.01);
+    AssertThat(23.19).IsEqualApprox(23.2, 0.01);
+    AssertThat(23.20).IsEqualApprox(23.2, 0.01);
+    AssertThat(23.21).IsEqualApprox(23.2, 0.01);
 
     // this assertion fails because 23.18 and 23.22 are not equal approximately to 23.2 +/- 0.01
-    AssertFloat(23.18).IsEqualApprox(23.2, 0.01);
-    AssertFloat(23.22).IsEqualApprox(23.2, 0.01);
+    AssertThat(23.18).IsEqualApprox(23.2, 0.01);
+    AssertThat(23.22).IsEqualApprox(23.2, 0.01);
 ```
 {% endtab %}
 {% endtabs %}
@@ -169,15 +173,15 @@ Verifies that the current value is less than the given one.
 {% endtab %}
 {% tab assert-float-is_less C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsLess(<expected>)
+    public static INumberAssert<double> AssertThat(<current>).IsLess(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(23.2).IsLess(23.4);
-    AssertFloat(23.2).IsLess(26.0);
+    AssertThat(23.2).IsLess(23.4);
+    AssertThat(23.2).IsLess(26.0);
 
     // this assertion fails because 23.2 is not less than 23.2
-    AssertFloat(23.2).IsLess(23.2);
+    AssertThat(23.2).IsLess(23.2);
 ```
 {% endtab %}
 {% endtabs %}
@@ -202,15 +206,15 @@ Verifies that the current value is less than or equal the given one.
 {% endtab %}
 {% tab assert-float-is_less_equal C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsLessEqual(<expected>)
+    public static INumberAssert<double> AssertThat(<current>).IsLessEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(23.2).IsLessEqual(23.4);
-    AssertFloat(23.2).IsLessEqual(23.2);
+    AssertThat(23.2).IsLessEqual(23.4);
+    AssertThat(23.2).IsLessEqual(23.2);
 
     // this assertion fails because 23.2 is not less than or equal to 23.1
-    AssertFloat(23.2).IsLessEqual(23.1);
+    AssertThat(23.2).IsLessEqual(23.1);
 ```
 {% endtab %}
 {% endtabs %}
@@ -234,15 +238,15 @@ Verifies that the current value is greater than the given one.
 {% endtab %}
 {% tab assert-float-is_greater C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsGreater(<expected>)
+    public static INumberAssert<double> AssertThat(<current>).IsGreater(<expected>)
 ```
 ```cs
     # this assertion succeeds
-    AssertFloat(23.2).IsGreater(23.0)
-    AssertFloat(23.4).IsGreater(22.1)
+    AssertThat(23.2).IsGreater(23.0)
+    AssertThat(23.4).IsGreater(22.1)
 
     # this assertion fails because 23.2 is not greater than 23.2
-    AssertFloat(23.2).IsGreater(23.2)
+    AssertThat(23.2).IsGreater(23.2)
 ```
 {% endtab %}
 {% endtabs %}
@@ -265,15 +269,15 @@ Verifies that the current value is greater than or equal the given one.
 {% endtab %}
 {% tab assert-float-is_greater_equal C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsGreaterEqual(<expected>)
+    public static INumberAssert<double> AssertThat(<current>).IsGreaterEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(23.2).IsGreaterEqual(20.2);
-    AssertFloat(23.2).IsGreaterEqual(23.2);
+    AssertThat(23.2).IsGreaterEqual(20.2);
+    AssertThat(23.2).IsGreaterEqual(23.2);
 
     // this assertion fails because 23.2 is not greater than 23.3
-    AssertFloat(23.2).IsGreaterEqual(23.3);
+    AssertThat(23.2).IsGreaterEqual(23.3);
 ```
 {% endtab %}
 {% endtabs %}
@@ -296,14 +300,14 @@ Verifies that the current value is negative.
 {% endtab %}
 {% tab assert-float-is_negative C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsNegative()
+    public static INumberAssert<double> AssertThat(<current>).IsNegative()
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(-13.2).IsNegative();
+    AssertThat(-13.2).IsNegative();
 
     // this assertion fails because is not negative
-    AssertFloat(13.2).IsNegative();
+    AssertThat(13.2).IsNegative();
 ```
 {% endtab %}
 {% endtabs %}
@@ -326,14 +330,14 @@ Verifies that the current value is not negative.
 {% endtab %}
 {% tab assert-float-is_not_negative C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsNotNegative()
+    public static INumberAssert<double> AssertThat(<current>).IsNotNegative()
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(13.2).IsNotNegative();
+    AssertThat(13.2).IsNotNegative();
 
     // this assertion fails because is negative
-    AssertFloat(-13.2).IsNotNegative();
+    AssertThat(-13.2).IsNotNegative();
 ```
 {% endtab %}
 {% endtabs %}
@@ -357,14 +361,14 @@ Verifies that the current value is equal to zero.
 {% endtab %}
 {% tab assert-float-is_zero C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsZero()
+    public static INumberAssert<double> AssertThat(<current>).IsZero()
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(0.0).IsZero();
+    AssertThat(0.0).IsZero();
 
     // this assertion fail because the value is not zero
-    AssertFloat(0.00001).IsZero();
+    AssertThat(0.00001).IsZero();
 ```
 {% endtab %}
 {% endtabs %}
@@ -388,14 +392,14 @@ Verifies that the current value is not equal to zero.
 {% endtab %}
 {% tab assert-float-is_not_zero C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsNotZero()
+    public static INumberAssert<double> AssertThat(<current>).IsNotZero()
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(0.00001).IsNotZero();
+    AssertThat(0.00001).IsNotZero();
 
     // this assertion fail because the value is not zero
-    AssertFloat(0.000001).IsNotZero();
+    AssertThat(0.000001).IsNotZero();
 ```
 {% endtab %}
 {% endtabs %}
@@ -418,14 +422,14 @@ Verifies that the current value is in the given set of values.
 {% endtab %}
 {% tab assert-float-is_in C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsIn([]<expected>)
+    public static INumberAssert<double> AssertThat(<current>).IsIn([]<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(5.2).IsIn(5.1, 5.2, 5.3, 5.4);
+    AssertThat(5.2).IsIn(5.1, 5.2, 5.3, 5.4);
 
     // this assertion fail because 5.5 is not in [5.1, 5.2, 5.3, 5.4]
-    AssertFloat(5.5).IsIn(5.1, 5.2, 5.3, 5.4);
+    AssertThat(5.5).IsIn(5.1, 5.2, 5.3, 5.4);
 ```
 {% endtab %}
 {% endtabs %}
@@ -447,14 +451,14 @@ Verifies that the current value is not in the given set of values.
 {% endtab %}
 {% tab assert-float-is_not_in C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsNotIn([]<expected>)
+    public static INumberAssert<double> AssertThat(<current>).IsNotIn([]<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(5.2).IsNotIn(5.1, 5.3, 5.4);
+    AssertThat(5.2).IsNotIn(5.1, 5.3, 5.4);
 
     // this assertion fail because 5.2 is not in [5.1, 5.2, 5.3, 5.4]
-    AssertFloat(5.2).IsNotIn(5.1, 5.2, 5.3, 5.4);
+    AssertThat(5.2).IsNotIn(5.1, 5.2, 5.3, 5.4);
 ```
 {% endtab %}
 {% endtabs %}
@@ -480,16 +484,16 @@ Verifies that the current value is between the given boundaries (inclusive).
 {% endtab %}
 {% tab assert-float-is_between C# %}
 ```cs
-    public static IDoubleAssert AssertFloat(<current>).IsBetween(<from>, <to>)
+    public static INumberAssert<double> AssertThat(<current>).IsBetween(<from>, <to>)
 ```
 ```cs
     // this assertion succeeds
-    AssertFloat(-20.0).IsBetween(-20.0, 20.9);
-    AssertFloat(10.0).IsBetween(-20.0, 20.9);
-    AssertFloat(20.9).IsBetween(-20.0, 20.9);
+    AssertThat(-20.0).IsBetween(-20.0, 20.9);
+    AssertThat(10.0).IsBetween(-20.0, 20.9);
+    AssertThat(20.9).IsBetween(-20.0, 20.9);
 
     // this assertion fail because the value is -10.0 and not between -9 and 0
-    AssertFloat(-10.0).IsBetween(-9.0, 0.0);
+    AssertThat(-10.0).IsBetween(-9.0, 0.0);
 ```
 {% endtab %}
 {% endtabs %}

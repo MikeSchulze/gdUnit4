@@ -22,7 +22,8 @@ Map Godot error number to a readable error message. See[Error Codes](https://doc
 {% endtab %}
 {% tab tools-error_as_string C# %}
 ```cs
-    Not yet implemented!
+    public static string ErrorAsString(Godot.Error errorNumber);
+    public static string ErrorAsString(int errorNumber);
 ```
 {% endtab %}
 {% endtabs %}
@@ -152,7 +153,7 @@ Useful for storing data during test execution. The directory is automatically de
 {% endtab %}
 {% tab tools-create_temp_dir C# %}
 ```cs
-    string CreateTempDir(string path);
+    public static string CreateTempDir(string path);
 ```
 {% endtab %}
 {% endtabs %}
@@ -192,7 +193,7 @@ Is called automatically after each execution of the test suite.
 {% endtab %}
 {% tab tools-clean_temp_dir C# %}
 ```cs
-   void ClearTempDir();
+   public static void ClearTempDir();
 ```
 {% endtab %}
 {% endtabs %}

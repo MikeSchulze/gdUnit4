@@ -11,6 +11,8 @@ An assertion tool to verify Objects.
 
 {% tabs assert-obj-overview %}
 {% tab assert-obj-overview GdScript %}
+**GdUnitObjectAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_null](/gdUnit3/asserts/assert-object/#is_null) | Verifies that the current value is null.|
@@ -23,6 +25,8 @@ An assertion tool to verify Objects.
 |[is_not_instanceof](/gdUnit3/asserts/assert-object/#is_not_instanceof) | Verifies that the current value is not an instance of the given type.|
 {% endtab %}
 {% tab assert-obj-overview C# %}
+**IObjectAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-object/#is_null) | Verifies that the current value is null.|
@@ -56,14 +60,14 @@ Verifies that the current value is equal to expected one.
 {% endtab %}
 {% tab assert-obj-is_equal C# %}
 ```cs
-    public static IObjectAssert AssertObject(<current>).IsEqual(<expected>);
+    public static IObjectAssert AssertThat(<current>).IsEqual(<expected>);
 ```
 ```cs
     // this assertion succeeds
-    AssertObject(new Godot.Mesh()).IsEqual(new Godot.Mesh());
+    AssertThat(new Godot.Mesh()).IsEqual(new Godot.Mesh());
 
     // should fail because the current is an Mesh and we expect equal to a Skin
-    AssertObject(new Godot.Mesh()).IsEqual(new Godot.Skin());
+    AssertThat(new Godot.Mesh()).IsEqual(new Godot.Skin());
 ```
 {% endtab %}
 {% endtabs %}
@@ -85,14 +89,14 @@ Verifies that the current value is not equal to expected one.
 {% endtab %}
 {% tab assert-obj-is_not_equal C# %}
 ```cs
-    public static IObjectAssert AssertObject(<current>).IsNotEqual(<expected>);
+    public static IObjectAssert AssertThat(<current>).IsNotEqual(<expected>);
 ```
 ```cs
     // this assertion succeeds
-    AssertObject(new Godot.Mesh()).IsNotEqual(new Godot.Skin());
+    AssertThat(new Godot.Mesh()).IsNotEqual(new Godot.Skin());
 
     // should fail because the current is an Mesh and we expect not equal to a Mesh
-    AssertObject(new Godot.Mesh()).IsNotEqual(new Godot.Mesh());
+    AssertThat(new Godot.Mesh()).IsNotEqual(new Godot.Mesh());
 ```
 {% endtab %}
 {% endtabs %}
@@ -114,14 +118,14 @@ Verifies that the current value is null.
 {% endtab %}
 {% tab assert-obj-is_null C# %}
 ```cs
-    public static IObjectAssert AssertObject(<current>).IsNull();
+    public static IObjectAssert AssertThat(<current>).IsNull();
 ```
 ```cs
     // this assertion succeeds
-    AssertObject(null).IsNull();
+    AssertThat(null).IsNull();
 
     // should fail because it the current value is an Mesh and not null
-    AssertObject(new Godot.Mesh()).IsNull();
+    AssertThat(new Godot.Mesh()).IsNull();
 ```
 {% endtab %}
 {% endtabs %}
@@ -143,14 +147,14 @@ Verifies that the current value is not null.
 {% endtab %}
 {% tab assert-obj-is_not_null C# %}
 ```cs
-    public static IObjectAssert AssertObject(<current>).IsNotNull();
+    public static IObjectAssert AssertThat(<current>).IsNotNull();
 ```
 ```cs
     // this assertion succeeds
-    AssertObject(new Godot.Mesh()).IsNotNull();
+    AssertThat(new Godot.Mesh()).IsNotNull();
 
     // should fail because the current value is null
-    AssertObject(null).IsNotNull();
+    AssertThat(null).IsNotNull();
 ```
 {% endtab %}
 {% endtabs %}
@@ -180,22 +184,22 @@ Verifies that the current value is the same as the given one.
 {% endtab %}
 {% tab assert-obj-is_same C# %}
 ```cs
-    public static IObjectAssert AssertObject(<current>).IsSame();
+    public static IObjectAssert AssertThat(<current>).IsSame();
 ```
 ```cs
     // this assertion succeeds
     var obj1 = new Godot.Node();
     var obj2 = obj1;
     var obj3 = obj1.Duplicate();
-    AssertObject(obj1).IsSame(obj1);
-    AssertObject(obj1).IsSame(obj2);
-    AssertObject(obj2).IsSame(obj1);
+    AssertThat(obj1).IsSame(obj1);
+    AssertThat(obj1).IsSame(obj2);
+    AssertThat(obj2).IsSame(obj1);
 
     // should fail because because the current is not same instance as expected value
-    AssertObject(null).IsSame(obj1);
-    AssertObject(obj1).IsSame(obj3);
-    AssertObject(obj3).IsSame(obj1);
-    AssertObject(obj3).IsSame(obj2);
+    AssertThat(null).IsSame(obj1);
+    AssertThat(obj1).IsSame(obj3);
+    AssertThat(obj3).IsSame(obj1);
+    AssertThat(obj3).IsSame(obj2);
 ```
 {% endtab %}
 {% endtabs %}
@@ -225,22 +229,22 @@ Verifies that the current value is not the same as the given one.
 {% endtab %}
 {% tab assert-obj-is_not_same C# %}
 ```cs
-    public static IObjectAssert AssertObject(<current>).IsNotSame();
+    public static IObjectAssert AssertThat(<current>).IsNotSame();
 ```
 ```cs
     // this assertion succeeds
     var obj1 = new Godot.Node();
     var obj2 = obj1;
     var obj3 = obj1.Duplicate();
-    AssertObject(null).IsNotSame(obj1);
-    AssertObject(obj1).IsNotSame(obj3);
-    AssertObject(obj3).IsNotSame(obj1);
-    AssertObject(obj3).IsNotSame(obj2);
+    AssertThat(null).IsNotSame(obj1);
+    AssertThat(obj1).IsNotSame(obj3);
+    AssertThat(obj3).IsNotSame(obj1);
+    AssertThat(obj3).IsNotSame(obj2);
 
     // should fail because because the current is the same instance as expected value
-    AssertObject(obj1).IsNotSame(obj1)
-    AssertObject(obj1).IsNotSame(obj2)
-    AssertObject(obj2).IsNotSame(obj1)
+    AssertThat(obj1).IsNotSame(obj1)
+    AssertThat(obj1).IsNotSame(obj2)
+    AssertThat(obj2).IsNotSame(obj1)
 ```
 {% endtab %}
 {% endtabs %}
@@ -262,14 +266,14 @@ Verifies that the current value is an instance of the given type.
 {% endtab %}
 {% tab assert-obj-is_instanceof C# %}
 ```cs
-    public static IObjectAssert AssertObject(<current>).IsInstanceOf<Type>();
+    public static IObjectAssert AssertThat(<current>).IsInstanceOf<Type>();
 ```
 ```cs
     // this assertion succeeds
-    AssertObject(new Godot.Path()).IsInstanceOf<Node>();
+    AssertThat(new Godot.Path()).IsInstanceOf<Node>();
 
     // should fail because the current is not a instance of class Tree
-    AssertObject(new Godot.Path()).IsInstanceOf<Tree>();
+    AssertThat(new Godot.Path()).IsInstanceOf<Tree>();
 ```
 {% endtab %}
 {% endtabs %}
@@ -291,14 +295,14 @@ Verifies that the current value is not an instance of the given type.
 {% endtab %}
 {% tab assert-obj-is_not_instanceof C# %}
 ```cs
-     public static IObjectAssert AssertObject(<current>).IsNotInstanceOf<Type>();
+     public static IObjectAssert AssertThat(<current>).IsNotInstanceOf<Type>();
 ```
 ```cs
     // this assertion succeeds
-    AssertObject(new Godot.Path()).IsNotInstanceOf<Tree>();
+    AssertThat(new Godot.Path()).IsNotInstanceOf<Tree>();
 
     // should fail because Path is a instance of class Node (Path < Spatial < Node < Object)
-    AssertObject(new Godot.Path()).IsNotInstanceOf<Node>();
+    AssertThat(new Godot.Path()).IsNotInstanceOf<Node>();
 ```
 {% endtab %}
 {% endtabs %}

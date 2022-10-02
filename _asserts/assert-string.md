@@ -11,6 +11,8 @@ An assertion tool to verify String values.
 
 {% tabs assert-str-overview %}
 {% tab assert-str-overview GdScript %}
+**GdUnitStringAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[is_null](/gdUnit3/asserts/assert-string/#is_null)| Verifies that the current value is null.|
@@ -30,6 +32,8 @@ An assertion tool to verify String values.
 |[has_length](/gdUnit3/asserts/assert-string/#has_length) | Verifies that the current String has the expected length by used comparator.|
 {% endtab %}
 {% tab assert-str-overview C# %}
+**IStringAssert**<br>
+
 |Function|Description|
 |--- | --- |
 |[IsNull](/gdUnit3/asserts/assert-string/#is_null)| Verifies that the current value is null.|
@@ -70,14 +74,14 @@ Verifies that the current String is equal to the given one.
 {% endtab %}
 {% tab assert-str-is_equal C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).IsEqual(<expected>)
+    public static IStringAssert AssertThat(<current>).IsEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a test message").IsEqual("This is a test message");
+    AssertThat("This is a test message").IsEqual("This is a test message");
 
     // this assertion fails because the 'Message' is writen camel case
-    AssertString("This is a test message").IsEqual("This is a test Message");
+    AssertThat("This is a test message").IsEqual("This is a test Message");
 ```
 {% endtab %}
 {% endtabs %}
@@ -100,14 +104,14 @@ Verifies that the current String is equal to the given one, ignoring case consid
 {% endtab %}
 {% tab assert-str-is_equal_ignoring_case C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).IsEqualIgnoringCase(<expected>)
+    public static IStringAssert AssertThat(<current>).IsEqualIgnoringCase(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a test message").IsEqualIgnoringCase("This is a test Message")
+    AssertThat("This is a test message").IsEqualIgnoringCase("This is a test Message")
 
     // this assertion fails because 'test' is missing 
-    AssertString("This is a test message").IsEqualIgnoringCase("This is a Message")
+    AssertThat("This is a test message").IsEqualIgnoringCase("This is a Message")
 ```
 {% endtab %}
 {% endtabs %}
@@ -129,14 +133,14 @@ Verifies that the current String is not equal to the given one.
 {% endtab %}
 {% tab assert-str-is_not_equal C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).IsNotEqual(<expected>)
+    public static IStringAssert AssertThat(<current>).IsNotEqual(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a test message").IsNotEqual("This is a test Message");
+    AssertThat("This is a test message").IsNotEqual("This is a test Message");
 
     // this assertion fails because the values are equal
-    AssertString("This is a test message").IsNotEqual("This is a test message");
+    AssertThat("This is a test message").IsNotEqual("This is a test message");
 ```
 {% endtab %}
 {% endtabs %}
@@ -158,14 +162,14 @@ Verifies that the current String is not equal to the given one, ignoring case co
 {% endtab %}
 {% tab assert-str-is_not_equal_ignoring_case C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).IsNotEqualIgnoringCase(<expected>)
+    public static IStringAssert AssertThat(<current>).IsNotEqualIgnoringCase(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a test message").IsNotEqualIgnoringCase("This is a Message");
+    AssertThat("This is a test message").IsNotEqualIgnoringCase("This is a Message");
 
     // this assertion fails because the values are equal ignoring camel case
-    AssertString("This is a test message").IsNotEqualIgnoringCase("This is a test Message");
+    AssertThat("This is a test message").IsNotEqualIgnoringCase("This is a test Message");
 ```
 {% endtab %}
 {% endtabs %}
@@ -188,14 +192,14 @@ Verifies that the current String is empty, it has a length of 0.
 {% endtab %}
 {% tab assert-str-is_empty C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).IsEmpty()
+    public static IStringAssert AssertThat(<current>).IsEmpty()
 ```
 ```cs
     // this assertion succeeds
-    AssertString("").IsEmpty();
+    AssertThat("").IsEmpty();
 
     // this assertion fails because the values contains a single space
-    AssertString(" ").IsEmpty();
+    AssertThat(" ").IsEmpty();
 ```
 {% endtab %}
 {% endtabs %}
@@ -219,14 +223,14 @@ Verifies that the current String is not empty, it has a length of minimum 1.
 {% endtab %}
 {% tab assert-str-is_not_empty C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).IsNotEmpty()
+    public static IStringAssert AssertThat(<current>).IsNotEmpty()
 ```
 ```cs
     // this assertion succeeds
-    AssertString(" ").IsNotEmpty();
+    AssertThat(" ").IsNotEmpty();
 
     // this assertion fails because the values empty (has size of 0 lenght)
-    AssertString("").IsNotEmpty();
+    AssertThat("").IsNotEmpty();
 ```
 {% endtab %}
 {% endtabs %}
@@ -249,14 +253,14 @@ Verifies that the current String contains the given String.
 {% endtab %}
 {% tab assert-str-contains C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).Contains(<expected>)
+    public static IStringAssert AssertThat(<current>).Contains(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a String").Contains("is");
+    AssertThat("This is a String").Contains("is");
 
     // this assertion fails
-    AssertString("This is a String").Contains("not");
+    AssertThat("This is a String").Contains("not");
 ```
 {% endtab %}
 {% endtabs %}
@@ -279,14 +283,14 @@ Verifies that the current String does not contain the given String, ignoring cas
 {% endtab %}
 {% tab assert-str-contains_ignoring_case C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).ContainsIgnoringCase(<expected>)
+    public static IStringAssert AssertThat(<current>).ContainsIgnoringCase(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a String").ContainsIgnoringCase("IS");
+    AssertThat("This is a String").ContainsIgnoringCase("IS");
 
     // this assertion fails
-    AssertString("This is a String").ContainsIgnoringCase("not");
+    AssertThat("This is a String").ContainsIgnoringCase("not");
 ```
 {% endtab %}
 {% endtabs %}
@@ -309,14 +313,14 @@ Verifies that the current String does not contain the given String.
 {% endtab %}
 {% tab assert-str-not_contains C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).NotContains(<expected>)
+    public static IStringAssert AssertThat(<current>).NotContains(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a String").NotContains("not");
+    AssertThat("This is a String").NotContains("not");
 
     // this assertion fails
-    AssertString("This is a String").NotContains("is");
+    AssertThat("This is a String").NotContains("is");
 ```
 {% endtab %}
 {% endtabs %}
@@ -340,14 +344,14 @@ Verifies that the current String does not contain the given String, ignoring cas
 {% endtab %}
 {% tab assert-str-not_contains_ignoring_case C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).NotContainsIgnoringCase(<expected>)
+    public static IStringAssert AssertThat(<current>).NotContainsIgnoringCase(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a String").NotContainsIgnoringCase("Not");
+    AssertThat("This is a String").NotContainsIgnoringCase("Not");
 
     // this assertion fails
-    AssertString("This is a String").NotContainsIgnoringCase("IS");
+    AssertThat("This is a String").NotContainsIgnoringCase("IS");
 ```
 {% endtab %}
 {% endtabs %}
@@ -370,14 +374,14 @@ Verifies that the current String starts with the given prefix.
 {% endtab %}
 {% tab assert-str-starts_with C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).StartsWith(<expected>)
+    public static IStringAssert AssertThat(<current>).StartsWith(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a String").StartsWith("This is");
+    AssertThat("This is a String").StartsWith("This is");
 
     // this assertion fails
-    AssertString("This is a String").StartsWith("a String");
+    AssertThat("This is a String").StartsWith("a String");
 ```
 {% endtab %}
 {% endtabs %}
@@ -401,14 +405,14 @@ Verifies that the current String ends with the given suffix.
 {% endtab %}
 {% tab assert-str-ends_with C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).EndsWith(<expected>)
+    public static IStringAssert AssertThat(<current>).EndsWith(<expected>)
 ```
 ```cs
     // this assertion succeeds
-    AssertString("This is a String").EndsWith("a String");
+    AssertThat("This is a String").EndsWith("a String");
 
     // this assertion fails
-    AssertString("This is a String").EndsWith("a Str");
+    AssertThat("This is a String").EndsWith("a Str");
 ```
 {% endtab %}
 {% endtabs %}
@@ -439,22 +443,22 @@ Verifies that the current String has the expected length by used [[comparator|As
 {% endtab %}
 {% tab assert-str-has_length C# %}
 ```cs
-    public static IStringAssert AssertString(<current>).HasLength(<expected>, <comparator> (// EQUAL is default))
+    public static IStringAssert AssertThat(<current>).HasLength(<expected>, <comparator> (// EQUAL is default))
 ```
 ```cs
     // this assertion succeeds because the current String has 22 characters 
-    AssertString("This is a test message").HasLength(22);
-    AssertString("This is a test message").HasLength(23, Compare.LESS_THAN);
-    AssertString("This is a test message").HasLength(22, Compare.LESS_EQUAL);
-    AssertString("This is a test message").HasLength(21, Compare.GREATER_THAN);
-    AssertString("This is a test message").HasLength(21, Compare.GREATER_EQUAL);
+    AssertThat("This is a test message").HasLength(22);
+    AssertThat("This is a test message").HasLength(23, Compare.LESS_THAN);
+    AssertThat("This is a test message").HasLength(22, Compare.LESS_EQUAL);
+    AssertThat("This is a test message").HasLength(21, Compare.GREATER_THAN);
+    AssertThat("This is a test message").HasLength(21, Compare.GREATER_EQUAL);
 
     // this assertion fails because the current String has 22 characters and not 23
-    AssertString("This is a test message").HasLength(23);
-    AssertString("This is a test message").HasLength(22, Compare.LESS_THAN);
-    AssertString("This is a test message").HasLength(21, Compare.LESS_EQUAL); 
-    AssertString("This is a test message").HasLength(22, Compare.GREATER_THAN);
-    AssertString("This is a test message").HasLength(23, Compare.GREATER_EQUAL);
+    AssertThat("This is a test message").HasLength(23);
+    AssertThat("This is a test message").HasLength(22, Compare.LESS_THAN);
+    AssertThat("This is a test message").HasLength(21, Compare.LESS_EQUAL); 
+    AssertThat("This is a test message").HasLength(22, Compare.GREATER_THAN);
+    AssertThat("This is a test message").HasLength(23, Compare.GREATER_EQUAL);
 ```
 {% endtab %}
 {% endtabs %}
