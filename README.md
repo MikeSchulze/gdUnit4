@@ -2,6 +2,11 @@
 <h1 align="center">GdUnit4 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MikeSchulze/gdunit4" width="12%"> </h1>
 <h2 align="center">A Godot Embedded Unit Testing Framework</h2>
 
+# WORK IN PROGRESS !!
+# WORK IN PROGRESS !!
+# WORK IN PROGRESS !!
+# WORK IN PROGRESS !!
+
 <p align="center">
   <img src="https://img.shields.io/badge/Godot-v4.x.x-%23478cbf?logo=godot-engine&logoColor=cyian&color=red">
 </p>
@@ -17,8 +22,8 @@
 
 
 
-## What is gdunit4
-gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot editor. gdunit4 is very useful for test-driven development and will help you get your code bug-free.
+## What is GdUnit4
+gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot editor. GdUnit4 is very useful for test-driven development and will help you get your code bug-free.
  
  
 ## Features
