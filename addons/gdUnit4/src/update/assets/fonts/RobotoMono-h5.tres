@@ -1,0 +1,6 @@
+[gd_resource type="FontFile" load_steps=2 format=2]
+
+[ext_resource path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-Bold.ttf" type="FontFile" id=1]
+
+[resource]
+font_data = ExtResource( 1 )

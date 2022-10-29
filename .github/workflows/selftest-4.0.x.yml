@@ -1,0 +1,51 @@
+name: CI GdUnit3 on Godot 4.0.x
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.yml'
+      - '**.jpg'
+      - '**.png'
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  testing:
+    strategy:
+      matrix:
+        godot: [4.0]
+
+    name: CI Godot ${{ matrix.godot }}
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    container:
+      image: barichello/godot-ci:${{ matrix.godot }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+          submodules: 'recursive'
+
+      - name: Run Selftest
+        timeout-minutes: 10
+        env:
+          GODOT_BIN: "/usr/local/bin/godot"
+        shell: bash
+        run: ./runtest.sh --selftest
+
+      - name: Publish Test Reports
+        if: always()
+        uses: ./.github/actions/publish-test-report
+        with:
+          report-name: Test Report (${{ matrix.godot }})
+
+      - name: Collect Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Report (${{ matrix.godot }})
+          path: reports/**

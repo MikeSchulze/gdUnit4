@@ -1,0 +1,111 @@
+[gd_scene format=2]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+offset_right = 1024.0
+offset_bottom = 40.0
+minimum_size = Vector2( 0, 40 )
+
+[node name="test1" type="Button" parent="VBoxContainer/HBoxContainer"]
+offset_right = 100.0
+offset_bottom = 40.0
+minimum_size = Vector2( 100, 0 )
+text = "Test 1"
+
+[node name="test2" type="Button" parent="VBoxContainer/HBoxContainer"]
+offset_left = 104.0
+offset_right = 204.0
+offset_bottom = 40.0
+minimum_size = Vector2( 100, 0 )
+text = "Test 2"
+
+[node name="test3" type="Button" parent="VBoxContainer/HBoxContainer"]
+offset_left = 208.0
+offset_right = 308.0
+offset_bottom = 40.0
+minimum_size = Vector2( 100, 0 )
+text = "Test 3"
+
+[node name="PanelContainer" type="TabContainer" parent="VBoxContainer"]
+offset_top = 44.0
+offset_right = 1024.0
+offset_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 32.0
+offset_right = -4.0
+offset_bottom = -4.0
+
+[node name="Panel1" type="ColorRect" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+offset_right = 100.0
+offset_bottom = 520.0
+minimum_size = Vector2( 100, 100 )
+color = Color( 0.694118, 0.207843, 0.207843, 1 )
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/Panel1"]
+anchor_right = 1.0
+offset_bottom = 14.0
+text = "Panel 1"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel2" type="ColorRect" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+offset_left = 104.0
+offset_right = 204.0
+offset_bottom = 520.0
+minimum_size = Vector2( 100, 100 )
+color = Color( 0.219608, 0.662745, 0.380392, 1 )
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/Panel2"]
+anchor_right = 1.0
+offset_bottom = 14.0
+text = "Panel 2"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel3" type="ColorRect" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+offset_left = 208.0
+offset_right = 308.0
+offset_bottom = 520.0
+minimum_size = Vector2( 100, 100 )
+color = Color( 0.12549, 0.286275, 0.776471, 1 )
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/Panel3"]
+anchor_right = 1.0
+offset_bottom = 14.0
+text = "Panel 3"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/test1" to="." method="_on_test_pressed" binds= [ 1 ]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/test2" to="." method="_on_test_pressed" binds= [ 2 ]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/test3" to="." method="_on_test_pressed" binds= [ 3 ]]

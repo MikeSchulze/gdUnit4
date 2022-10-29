@@ -1,0 +1,61 @@
+name: CI GdUnit3 on Godot Mono 4.0.x
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.yml'
+      - '**.jpg'
+      - '**.png'
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  testing:
+    strategy:
+      matrix:
+        godot: [mono-4.0]
+
+    name: GdUnit3 Selftest on Godot ${{ matrix.godot }}
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    container:
+      image: barichello/godot-ci:${{ matrix.godot }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Compile
+        run: |
+          dotnet restore gdUnit4.csproj
+          mkdir -p .mono/assemblies/Debug
+          cp /usr/local/bin/GodotSharp/Api/Release/* .mono/assemblies/Debug
+          dotnet build -verbosity:m
+
+      - name: Run Selftest
+        timeout-minutes: 10
+        env:
+          GODOT_BIN: "/usr/local/bin/godot"
+        shell: bash
+        run: ./runtest.sh --selftest
+
+      - name: Publish Test Reports
+        if: always()
+        uses: ./.github/actions/publish-test-report
+        with:
+          report-name: Test Report (${{ matrix.godot }})
+
+      - name: Collect Test Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Report_${{ matrix.godot }}
+          path: reports/**

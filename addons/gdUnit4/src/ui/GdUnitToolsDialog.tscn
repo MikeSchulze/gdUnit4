@@ -1,0 +1,342 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://icon.png" type="Texture2D" id=1]
+[ext_resource path="res://addons/gdUnit4/src/ui/GdUnitToolsDialog.gd" type="Script" id=2]
+[ext_resource path="res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd" type="Script" id=3]
+[ext_resource path="res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.tscn" type="PackedScene" id=4]
+
+[node name="Control" type="Window"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 112.0
+offset_top = 75.0
+offset_right = -112.0
+offset_bottom = -75.0
+minimum_size = Vector2( 800, 400 )
+input_pass_on_modal_close_click = false
+size_flags_horizontal = 3
+size_flags_vertical = 3
+window_title = "GdUnitTools"
+resizable = true
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GdUnitUpdateClient" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="property_template" type="Control" parent="."]
+visible = false
+offset_left = 208.0
+offset_top = 415.0
+offset_right = 1020.0
+offset_bottom = 600.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="property_template"]
+offset_top = 13.0
+offset_right = 131.0
+offset_bottom = 27.0
+minimum_size = Vector2( 300, 0 )
+text = "Update Notifications"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btn_reset" type="Button" parent="property_template"]
+offset_right = 12.0
+offset_bottom = 40.0
+tooltip_text = "Reset to default value"
+clip_text = true
+
+[node name="info" type="Label" parent="property_template"]
+offset_left = 390.0
+offset_top = 11.0
+offset_right = 590.0
+offset_bottom = 25.0
+size_flags_horizontal = 3
+text = "Enables/disables the update notification "
+clip_text = true
+max_lines_visible = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sub_category" type="Panel" parent="property_template"]
+anchor_right = 1.0
+offset_bottom = 30.0
+minimum_size = Vector2( 0, 30 )
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="property_template/sub_category"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_colors/font_color = Color( 0.196078, 0.631373, 0.639216, 1 )
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="v" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="v"]
+offset_right = 792.0
+offset_bottom = 408.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="HBoxContainer" parent="v/MarginContainer"]
+offset_right = 792.0
+offset_bottom = 408.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelContainer" type="MarginContainer" parent="v/MarginContainer/GridContainer"]
+offset_right = 200.0
+offset_bottom = 408.0
+minimum_size = Vector2( 200, 0 )
+size_flags_vertical = 3
+custom_constants/offset_top = 20
+
+[node name="Panel" type="VBoxContainer" parent="v/MarginContainer/GridContainer/PanelContainer"]
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 408.0
+grow_horizontal = 2
+minimum_size = Vector2( 50, 100 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="v/MarginContainer/GridContainer/PanelContainer/Panel"]
+offset_right = 200.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+minimum_size = Vector2( 0, 120 )
+size_flags_horizontal = 3
+
+[node name="logo" type="TextureRect" parent="v/MarginContainer/GridContainer/PanelContainer/Panel/CenterContainer"]
+offset_left = 50.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 110.0
+minimum_size = Vector2( 100, 100 )
+size_flags_horizontal = 0
+size_flags_vertical = 4
+texture = ExtResource( 1 )
+expand = true
+stretch_mode = 1
+
+[node name="CenterContainer2" type="MarginContainer" parent="v/MarginContainer/GridContainer/PanelContainer/Panel"]
+use_parent_material = true
+offset_top = 124.0
+offset_right = 200.0
+offset_bottom = 154.0
+grow_horizontal = 2
+minimum_size = Vector2( 0, 30 )
+size_flags_horizontal = 3
+
+[node name="version" type="RichTextLabel" parent="v/MarginContainer/GridContainer/PanelContainer/Panel/CenterContainer2"]
+use_parent_material = true
+offset_right = 200.0
+offset_bottom = 30.0
+minimum_size = Vector2( 200, 30 )
+clip_contents = false
+size_flags_horizontal = 3
+bbcode_enabled = true
+meta_underlined = false
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="v/MarginContainer/GridContainer/PanelContainer"]
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 408.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btn_report_bug" type="Button" parent="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer"]
+offset_top = 290.0
+offset_right = 200.0
+offset_bottom = 320.0
+minimum_size = Vector2( 0, 30 )
+tooltip_text = "Press to create a bug report"
+size_flags_horizontal = 3
+text = "Report Bug"
+
+[node name="btn_request_feature" type="Button" parent="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer"]
+offset_top = 324.0
+offset_right = 200.0
+offset_bottom = 354.0
+minimum_size = Vector2( 0, 30 )
+tooltip_text = "Press to create a feature request"
+size_flags_horizontal = 3
+text = "Request Feature"
+
+[node name="btn_install_examples" type="Button" parent="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer"]
+offset_top = 358.0
+offset_right = 200.0
+offset_bottom = 388.0
+minimum_size = Vector2( 0, 30 )
+tooltip_text = "Press to install the advanced test examples"
+size_flags_horizontal = 3
+text = "Install Examples"
+
+[node name="Properties" type="TabContainer" parent="v/MarginContainer/GridContainer"]
+offset_left = 204.0
+offset_right = 792.0
+offset_bottom = 408.0
+size_flags_horizontal = 11
+size_flags_vertical = 11
+tab_alignment = 0
+
+[node name="Common" type="TabBar" parent="v/MarginContainer/GridContainer/Properties"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 32.0
+offset_right = -4.0
+offset_bottom = -4.0
+clip_contents = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tab_alignment = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="v/MarginContainer/GridContainer/Properties/Common"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="v/MarginContainer/GridContainer/Properties/Common/ScrollContainer"]
+offset_right = 1347.0
+offset_bottom = 372.0
+minimum_size = Vector2( 1347, 0 )
+clip_contents = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Report" type="TabBar" parent="v/MarginContainer/GridContainer/Properties"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 32.0
+offset_right = -4.0
+offset_bottom = -4.0
+clip_contents = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="v/MarginContainer/GridContainer/Properties/Report"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+minimum_size = Vector2( 773, 0 )
+clip_contents = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Templates" type="TabBar" parent="v/MarginContainer/GridContainer/Properties"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 32.0
+offset_right = -4.0
+offset_bottom = -4.0
+clip_contents = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TestSuite" parent="v/MarginContainer/GridContainer/Properties/Templates" instance=ExtResource( 4 )]
+
+[node name="MarginContainer2" type="MarginContainer" parent="v"]
+offset_top = 412.0
+offset_right = 792.0
+offset_bottom = 442.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="v/MarginContainer2"]
+offset_right = 792.0
+offset_bottom = 30.0
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="v/MarginContainer2/HBoxContainer"]
+visible = false
+offset_right = 812.0
+offset_bottom = 30.0
+minimum_size = Vector2( 0, 30 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": true,
+"_editor_description_": ""
+}
+
+[node name="Label" type="Label" parent="v/MarginContainer2/HBoxContainer/ProgressBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+minimum_size = Vector2( 0, 30 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+valign = 3
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btn_close" type="Button" parent="v/MarginContainer2/HBoxContainer"]
+offset_left = 592.0
+offset_right = 792.0
+offset_bottom = 30.0
+minimum_size = Vector2( 200, 30 )
+text = "Close"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer/btn_report_bug" to="." method="_on_btn_report_bug_pressed"]
+[connection signal="pressed" from="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer/btn_request_feature" to="." method="_on_btn_request_feature_pressed"]
+[connection signal="pressed" from="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer/btn_install_examples" to="." method="_on_btn_install_examples_pressed"]
+[connection signal="pressed" from="v/MarginContainer2/HBoxContainer/btn_close" to="." method="_on_btn_close_pressed"]

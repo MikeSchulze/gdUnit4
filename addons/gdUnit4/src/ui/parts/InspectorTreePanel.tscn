@@ -1,0 +1,189 @@
+[gd_scene load_steps=10 format=3 uid="uid://bqfpidewtpeg0"]
+
+[ext_resource type="Script" path="res://addons/gdUnit4/src/ui/parts/InspectorTreeMainPanel.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://bmpjsqg5ta60q" path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-Regular.ttf" id="2_eo550"]
+[ext_resource type="FontFile" uid="uid://bkq03m43nqgy1" path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-Bold.ttf" id="3_6xw7w"]
+[ext_resource type="FontFile" uid="uid://doadflpipckck" path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-Italic.ttf" id="4_t4a7n"]
+[ext_resource type="FontFile" uid="uid://c3tchq6x6i7eb" path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-BoldItalic.ttf" id="5_u45s8"]
+
+[sub_resource type="FontFile" id="FontFile_vbojv"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+fixed_size = 14
+fallbacks = [ExtResource("2_eo550")]
+face_index = null
+embolden = null
+transform = null
+cache/0/14/0/ascent = 0.0
+cache/0/14/0/descent = 0.0
+cache/0/14/0/underline_position = 0.0
+cache/0/14/0/underline_thickness = 0.0
+cache/0/14/0/scale = 1.0
+cache/0/14/0/kerning_overrides/14/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="FontFile_e022h"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+fixed_size = 14
+fallbacks = [ExtResource("3_6xw7w")]
+face_index = null
+embolden = null
+transform = null
+cache/0/14/0/ascent = 0.0
+cache/0/14/0/descent = 0.0
+cache/0/14/0/underline_position = 0.0
+cache/0/14/0/underline_thickness = 0.0
+cache/0/14/0/scale = 1.0
+cache/0/14/0/kerning_overrides/14/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="FontFile_xpv3c"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+fixed_size = 14
+fallbacks = [ExtResource("4_t4a7n")]
+face_index = null
+embolden = null
+transform = null
+cache/0/14/0/ascent = 0.0
+cache/0/14/0/descent = 0.0
+cache/0/14/0/underline_position = 0.0
+cache/0/14/0/underline_thickness = 0.0
+cache/0/14/0/scale = 1.0
+cache/0/14/0/kerning_overrides/14/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="FontFile_c0cbd"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+fixed_size = 14
+fallbacks = [ExtResource("5_u45s8")]
+face_index = null
+embolden = null
+transform = null
+cache/0/14/0/ascent = 0.0
+cache/0/14/0/descent = 0.0
+cache/0/14/0/underline_position = 0.0
+cache/0/14/0/underline_thickness = 0.0
+cache/0/14/0/scale = 1.0
+cache/0/14/0/kerning_overrides/14/0 = Vector2(0, 0)
+
+[node name="MainPanel" type="VSplitContainer"]
+use_parent_material = true
+clip_contents = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -924.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+split_offset = 200
+script = ExtResource("1")
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 2
+offset_right = 228.0
+offset_bottom = 518.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Tree" type="Tree" parent="Panel"]
+use_parent_material = true
+layout_mode = 2
+offset_right = 228.0
+offset_bottom = 518.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+allow_rmb_select = true
+hide_root = true
+select_mode = 1
+
+[node name="report" type="PanelContainer" parent="."]
+clip_contents = true
+layout_mode = 2
+offset_top = 530.0
+offset_right = 228.0
+offset_bottom = 648.0
+size_flags_horizontal = 11
+size_flags_vertical = 11
+
+[node name="report_template" type="RichTextLabel" parent="report"]
+use_parent_material = true
+layout_mode = 2
+offset_right = 228.0
+offset_bottom = 118.0
+size_flags_horizontal = 3
+size_flags_vertical = 11
+focus_mode = 2
+theme_override_fonts/normal_font = SubResource("FontFile_vbojv")
+theme_override_fonts/bold_font = SubResource("FontFile_e022h")
+theme_override_fonts/italics_font = SubResource("FontFile_xpv3c")
+theme_override_fonts/bold_italics_font = SubResource("FontFile_c0cbd")
+theme_override_fonts/mono_font = SubResource("FontFile_vbojv")
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/bold_font_size = 14
+theme_override_font_sizes/italics_font_size = 14
+theme_override_font_sizes/bold_italics_font_size = 14
+theme_override_font_sizes/mono_font_size = 14
+bbcode_enabled = true
+fit_content_height = true
+selection_enabled = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="report"]
+use_parent_material = true
+layout_mode = 2
+offset_right = 228.0
+offset_bottom = 118.0
+size_flags_horizontal = 3
+size_flags_vertical = 11
+
+[node name="list" type="VBoxContainer" parent="report/ScrollContainer"]
+clip_contents = true
+layout_mode = 2
+offset_right = 228.0
+offset_bottom = 118.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="contextMenu" type="PopupPanel" parent="."]
+
+[node name="items" type="VBoxContainer" parent="contextMenu"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 99.0
+offset_bottom = 96.0
+
+[node name="debug" type="MenuButton" parent="contextMenu/items"]
+layout_mode = 2
+offset_right = 84.0
+offset_bottom = 20.0
+size_flags_horizontal = 11
+size_flags_vertical = 9
+keep_pressed_outside = true
+text = "Debug Test"
+switch_on_hover = true
+
+[node name="run" type="MenuButton" parent="contextMenu/items"]
+layout_mode = 2
+offset_top = 24.0
+offset_right = 84.0
+offset_bottom = 44.0
+size_flags_horizontal = 11
+size_flags_vertical = 9
+keep_pressed_outside = true
+text = "Run Test"
+switch_on_hover = true
+
+[connection signal="item_activated" from="Panel/Tree" to="." method="_on_Tree_item_activated"]
+[connection signal="item_double_clicked" from="Panel/Tree" to="." method="_on_Tree_item_double_clicked"]
+[connection signal="item_mouse_selected" from="Panel/Tree" to="." method="_on_tree_item_mouse_selected"]
+[connection signal="item_selected" from="Panel/Tree" to="." method="_on_Tree_item_selected"]
+[connection signal="focus_exited" from="contextMenu" to="." method="_on_contextMenu_focus_exited"]
+[connection signal="popup_hide" from="contextMenu" to="." method="_on_contextMenu_popup_hide"]
+[connection signal="mouse_exited" from="contextMenu/items" to="." method="_on_items_mouse_exited"]
+[connection signal="pressed" from="contextMenu/items/debug" to="." method="_on_run_pressed" binds= [true]]
+[connection signal="pressed" from="contextMenu/items/run" to="." method="_on_run_pressed" binds= [false]]

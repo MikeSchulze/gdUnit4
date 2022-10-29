@@ -1,0 +1,26 @@
+# This workflow prunes old workflow runs for an entire repository.
+
+name: cleanup-workflow-runs
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # GMT
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Cleanup of obsolete workflow runs
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const script = require('./.github/actions/workflow-cleanup/index.js')
+            await script({ github, context, core, exec });

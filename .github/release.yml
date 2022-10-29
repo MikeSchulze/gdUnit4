@@ -1,0 +1,19 @@
+# release.yml
+
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+
+  categories:
+    - title: Improvements
+      labels:
+        - enhancement
+
+    - title: Bug Fixes
+      labels:
+        - bug
+
+    - title: Other Changes
+      labels:
+        - "*"

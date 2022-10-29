@@ -1,0 +1,7 @@
+# Exclude files not needed for AssetLib users.
+
+/.gitattributes        export-ignore
+/.gitignore            export-ignore
+/.github               export-ignore
+/LICENSE               export-ignore
+/README.md             export-ignore

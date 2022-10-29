@@ -1,0 +1,17 @@
+class Area4D extends Resource:
+
+const SOUND := 1
+const ATMOSPHERE := 2
+var _meta := Dictionary()
+
+func _init(x :int, atmospere :AtmosphereData = null):
+	_meta[ATMOSPHERE] = atmospere
+
+func get_sound() -> SoundData:
+	# sounds are optional
+	if _meta.has(SOUND):
+		return _meta[SOUND] as SoundData
+	return null
+
+func get_atmoshere() -> AtmosphereData:
+	return _meta[ATMOSPHERE] as AtmosphereData

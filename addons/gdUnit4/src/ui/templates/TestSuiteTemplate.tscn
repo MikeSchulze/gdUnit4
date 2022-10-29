@@ -1,0 +1,172 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.gd" type="Script" id=1]
+
+[node name="TestSuiteTemplate" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+offset_right = 1024.0
+offset_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+offset_right = 1024.0
+offset_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="sub_category" type="Panel" parent="ScrollContainer/VBoxContainer"]
+offset_right = 1024.0
+offset_bottom = 30.0
+minimum_size = Vector2( 0, 30 )
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/sub_category"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = 4.0
+offset_bottom = 1.0
+custom_colors/font_color = Color( 0.196078, 0.631373, 0.639216, 1 )
+text = "Test Suite Template
+"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Editor" type="TextEdit" parent="ScrollContainer/VBoxContainer"]
+offset_top = 34.0
+offset_right = 1024.0
+offset_bottom = 434.0
+minimum_size = Vector2( 0, 400 )
+size_flags_horizontal = 3
+custom_colors/font_color_selected = Color( 0.41, 0.61, 0.91, 0.35 )
+custom_colors/font_color = Color( 0.8, 0.8075, 0.8275, 1 )
+custom_colors/background_color = Color( 0.125, 0.14375, 0.19375, 1 )
+custom_colors/font_color_readonly = Color( 0.8, 0.8075, 0.8275, 1 )
+syntax_highlighter = true
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer/Editor"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -28.0
+offset_bottom = 2.0
+minimum_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/Editor/MarginContainer"]
+offset_right = 1024.0
+offset_bottom = 30.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+
+[node name="Tags" type="Button" parent="ScrollContainer/VBoxContainer/Editor/MarginContainer/HBoxContainer"]
+offset_left = 711.0
+offset_right = 820.0
+offset_bottom = 30.0
+tooltip_text = "Shows supported tags."
+text = "Supported Tags"
+
+[node name="SelectType" type="OptionButton" parent="ScrollContainer/VBoxContainer/Editor/MarginContainer/HBoxContainer"]
+offset_left = 824.0
+offset_right = 1024.0
+offset_bottom = 30.0
+minimum_size = Vector2( 200, 0 )
+tooltip_text = "Select the script type specific template."
+text = "GD - GDScript"
+items = [ "GD - GDScript", null, false, 1000, null, "C# - CSharpScript", null, false, 2000, null ]
+selected = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
+offset_top = 438.0
+offset_right = 1024.0
+offset_bottom = 468.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/Panel"]
+offset_right = 1024.0
+offset_bottom = 30.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+
+[node name="Restore" type="Button" parent="ScrollContainer/VBoxContainer/Panel/HBoxContainer"]
+offset_left = 820.0
+offset_right = 920.0
+offset_bottom = 30.0
+minimum_size = Vector2( 100, 30 )
+text = "Restore"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Save" type="Button" parent="ScrollContainer/VBoxContainer/Panel/HBoxContainer"]
+offset_left = 924.0
+offset_right = 1024.0
+offset_bottom = 30.0
+minimum_size = Vector2( 100, 30 )
+disabled = true
+text = "Save"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tags" type="Popup" parent="."]
+offset_right = 1024.0
+offset_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Tags"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="TextEdit" type="TextEdit" parent="Tags/MarginContainer"]
+offset_right = 1008.0
+offset_bottom = 584.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_colors/font_color_selected = Color( 0.41, 0.61, 0.91, 0.35 )
+custom_colors/font_color = Color( 0.8, 0.8075, 0.8275, 1 )
+custom_colors/background_color = Color( 0.125, 0.14375, 0.19375, 1 )
+custom_colors/font_color_readonly = Color( 0.8, 0.8075, 0.8275, 1 )
+readonly = true
+syntax_highlighter = true
+context_menu_enabled = false
+shortcut_keys_enabled = false
+virtual_keyboard_enabled = false
+
+[connection signal="text_changed" from="ScrollContainer/VBoxContainer/Editor" to="." method="_on_Editor_text_changed"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/Editor/MarginContainer/HBoxContainer/Tags" to="." method="_on_Tags_pressed"]
+[connection signal="item_selected" from="ScrollContainer/VBoxContainer/Editor/MarginContainer/HBoxContainer/SelectType" to="." method="_on_SelectType_item_selected"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/Panel/HBoxContainer/Restore" to="." method="_on_Restore_pressed"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/Panel/HBoxContainer/Save" to="." method="_on_Save_pressed"]
