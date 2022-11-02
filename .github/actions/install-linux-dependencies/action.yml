@@ -1,0 +1,26 @@
+name: install-linux-dependencies
+description: "Installs Linux Dependencies"
+
+runs:
+  using: composite
+  steps:
+
+    #- name: Cache X11 Download
+    #  uses: actions/cache@v3
+    #  id: cache-x11-driver
+    #  with:
+    #    path: '/usr/lib/xorg/modules/'
+    #    key: ${{ runner.OS }}-x11-driver-cache
+    #    restore-keys: |
+    #      ${{ runner.OS }}-x11-driver-cache
+
+    - name: Install Linux Dependencies
+    #  if: steps.cache-x11-driver.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install xorg openbox x11-xserver-utils
+        sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
+            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev \
+            libdbus-1-dev libudev-dev libxi-dev libxrandr-dev yasm xvfb wget unzip \
+            llvm libspeechd-dev speech-dispatcher fontconfig libfontconfig-dev

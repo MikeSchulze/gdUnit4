@@ -1,0 +1,26 @@
+name: install-vulkan-driver
+description: "Installs The Vulkan Driver"
+
+runs:
+  using: composite
+  steps:
+
+    - name: Cache Vulkan Drivers
+      uses: actions/cache@v3
+      id: cache-vulkan-driver
+      with:
+        path: '/usr/share/vulkan'
+        key: ${{ runner.OS }}-vulkan-driver
+        restore-keys: |
+          ${{ runner.OS }}-vulkan-driver
+
+    - name: Install Vulkan Drivers
+      if: steps.cache-vulkan-driver.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        sudo add-apt-repository ppa:oibaf/graphics-drivers
+        sudo apt update
+        sudo apt upgrade
+        sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils
+        ls -lsR /usr/share/vulkan
+        vulkaninfo | less

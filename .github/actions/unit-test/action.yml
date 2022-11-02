@@ -10,9 +10,36 @@ inputs:
 
 runs:
   using: composite
+
   steps:
-    - name: "Unit Test"
+    - name: "Unit Test Linux"
+      if: ${{ runner.OS == 'Linux' }}
       env:
-        GODOT_BIN: ${{ inputs.godot-bin }}
+        GODOT_BIN: "/home/runner/godot-linux/godot"
       shell: bash
-      run: ./runtest.sh --add ${{ inputs.test-includes }} --continue
+      run: |
+        export DISPLAY=:99
+        sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+        chmod +x ./runtest.sh
+        ./runtest.sh --add ${{ inputs.test-includes }} --continue
+
+    - name: "Unit Test Windows cmd"
+      if: ${{ runner.OS == 'Windows' }}
+      env:
+        GODOT_BIN: "C:\\Users\\runneradmin/godot-win/godot.exe"
+      shell: cmd
+      run: |
+        echo "%HOMEPATH%"
+        set unix_path=${{ inputs.godot-bin }}
+        set win_path=%unix_path:~1%
+        set win_path=%HOMEPATH%%unix_path:~1%
+        set win_path=%win_path:/=\%
+        echo "%win_path%"
+        echo "%GODOT_BIN%"
+
+        C:\\Users\\runneradmin/godot-win/godot.exe --version
+
+        
+        chmod +x ./runtest.cmd
+        ./runtest.cmd --add ${{ inputs.test-includes }} --continue
+      #  set GODOT_BIN=%win_path%
