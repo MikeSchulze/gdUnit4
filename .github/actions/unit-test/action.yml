@@ -37,9 +37,9 @@ runs:
         echo "%win_path%"
         echo "%GODOT_BIN%"
 
-        C:\\Users\\runneradmin/godot-win/godot.exe --version
+        %GODOT_BIN% --no-window -s -d .\addons\gdUnit4\bin\GdUnitCmdTool.gd
 
         
-        chmod +x ./runtest.cmd
-        ./runtest.cmd --add ${{ inputs.test-includes }} --continue
+      #  chmod +x ./runtest.cmd
+      #  ./runtest.cmd --add ${{ inputs.test-includes }} --continue
       #  set GODOT_BIN=%win_path%
