@@ -34,13 +34,21 @@ jobs:
             godot-executable_path: '~/godot-linux/godot'
             godot-cache-path: '~/godot-linux'
             godot-mono: false
-            install-linux-dependencies: false
+            install-linux-dependencies: true
 
     steps:
       - uses: actions/checkout@v3
         with:
           lfs: true
           submodules: 'recursive'
+
+      - name: "Install Vulkan"
+        if: ${{ matrix.install-linux-dependencies && !cancelled() }}
+        uses: ./.github/actions/install-vulkan
+
+      - name: "Install Linux Dependencies"
+        if: ${{ matrix.install-linux-dependencies && !cancelled() }}
+        uses: ./.github/actions/install-linux-dependencies
 
       - name: Godot cache
         uses: ./.github/actions/godot-install
@@ -50,13 +58,6 @@ jobs:
           godot-bin-name: ${{ matrix.godot-bin-name }}
           godot-cache-path: ${{ matrix.godot-cache-path }}
 
-      - name: "Install Vulkan"
-        if: ${{ matrix.install-linux-dependencies && !cancelled() }}
-        uses: ./.github/actions/install-vulkan
-
-      - name: "Install Linux Dependencies"
-        if: ${{ matrix.install-linux-dependencies && !cancelled() }}
-        uses: ./.github/actions/install-linux-dependencies
 
       - name: "Setup .NET"
         # we only setup .Net for mono versions
