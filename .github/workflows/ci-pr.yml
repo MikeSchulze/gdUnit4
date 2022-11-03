@@ -19,10 +19,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     continue-on-error: false
+    container:
+      image: barichello/godot-ci:3.5
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         godot-version: ['4.0']
         godot-status-version: ['beta4']
         include:
@@ -32,28 +34,9 @@ jobs:
             godot-executable_path: '~/godot-linux/godot'
             godot-cache-path: '~/godot-linux'
             godot-mono: false
-            install-linux-dependencies: true
-          - os: windows-latest
-            name: Godot Windows Build
-            godot-bin-name: 'win64.exe'
-            godot-executable_path: '~/godot-win/godot.exe'
-            godot-cache-path: '~/godot-win'
-            godot-mono: false
             install-linux-dependencies: false
 
     steps:
-      - name: "Print Matrix"
-        shell: bash
-        run: |
-          echo ${{ matrix.os }}
-          echo "godot-bin-name ${{ matrix.godot-bin-name }}"
-          echo "godot-mono ${{ matrix.godot-mono }}"
-          echo "install-vulkan ${{ matrix.install-vulkan }}"
-          echo "install-linux-dependencies ${{ matrix.install-linux-dependencies }}"
-          pwd
-          echo $GITHUB_WORKSPACE
-          echo $RUNNER_TEMP
-
       - uses: actions/checkout@v3
         with:
           lfs: true

@@ -18,10 +18,12 @@ runs:
         GODOT_BIN: "/home/runner/godot-linux/godot"
       shell: bash
       run: |
-        export DISPLAY=:99
-        sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
         chmod +x ./runtest.sh
         ./runtest.sh --add ${{ inputs.test-includes }} --continue
+
+      #  export DISPLAY=:99
+      #  sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+
 
     - name: "Unit Test Windows cmd"
       if: ${{ runner.OS == 'Windows' }}
