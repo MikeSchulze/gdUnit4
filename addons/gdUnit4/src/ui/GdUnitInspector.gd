@@ -172,7 +172,6 @@ func add_script_editor_context_menu():
 		var regex := RegEx.new()
 		regex.compile("(^func[ ,\t])(test_[a-zA-Z0-9_]*)")
 		var result := regex.search(text_edit.get_line(cursor_line))
-		#var debug = id == GdUnitContextMenuItem.MENU_ID.TEST_DEBUG
 		if result:
 			var func_name := result.get_string(2).strip_edges()
 			prints("Run test:", func_name, "debug", debug)
