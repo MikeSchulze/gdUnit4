@@ -179,7 +179,7 @@ func test_create_test_case():
 	var result := _TestSuiteScanner.create_test_case(test_suite_path, "last_name", source_path)
 	assert_that(result.is_success()).is_true()
 	var info :Dictionary = result.value()
-	assert_int(info.get("line")).is_equal(9)
+	assert_int(info.get("line")).is_equal(11)
 	assert_file(info.get("path")).exists()\
 		.is_file()\
 		.is_script()\
@@ -193,14 +193,15 @@ func test_create_test_case():
 			"# TestSuite generated from",
 			"const __source = '%s'" % source_path,
 			"",
+			"",
 			"func test_last_name() -> void:",
-			"	# remove_at this line and complete your test",
+			"	# remove this line and complete your test",
 			"	assert_not_yet_implemented()",
 			""])
 	# try to add again
 	result = _TestSuiteScanner.create_test_case(test_suite_path, "last_name", source_path)
 	assert_that(result.is_success()).is_true()
-	assert_that(result.value()).is_equal({"line" : 10, "path": test_suite_path})
+	assert_that(result.value()).is_equal({"line" : 11, "path": test_suite_path})
 
 # https://github.com/MikeSchulze/gdUnit4/issues/25
 func test_build_test_suite_path() -> void:
@@ -295,7 +296,7 @@ func test_scan_by_inheritance_class_path() -> void:
 		ts.free()
 
 func test_get_test_case_line_number() -> void:
-	assert_int(_TestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/TestSuiteScannerTest.gd", "get_test_case_line_number")).is_equal(297)
+	assert_int(_TestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/TestSuiteScannerTest.gd", "get_test_case_line_number")).is_equal(298)
 	assert_int(_TestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/TestSuiteScannerTest.gd", "unknown")).is_equal(-1)
 
 func test__to_naming_convention() -> void:

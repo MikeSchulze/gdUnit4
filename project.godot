@@ -429,6 +429,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/GdUnitConstants.gd"
 }, {
+"base": "RefCounted",
+"class": &"GdUnitContextMenuItem",
+"language": &"GDScript",
+"path": "res://addons/gdUnit4/src/ui/menu/GdUnitContextMenuItem.gd"
+}, {
 "base": "GdUnitAssert",
 "class": &"GdUnitDictionaryAssert",
 "language": &"GDScript",
@@ -1114,6 +1119,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/test/core/ResultTest.gd"
 }, {
+"base": "Object",
+"class": &"ScriptEditorContextMenuHandler",
+"language": &"GDScript",
+"path": "res://addons/gdUnit4/src/ui/menu/ScriptEditorContextMenuHandler.gd"
+}, {
 "base": "RefCounted",
 "class": &"ScriptEditorControls",
 "language": &"GDScript",
@@ -1289,6 +1299,7 @@ _global_script_class_icons={
 "GdUnitClassDoubler": "",
 "GdUnitClassDoublerTest": "",
 "GdUnitConstants": "",
+"GdUnitContextMenuItem": "",
 "GdUnitDictionaryAssert": "",
 "GdUnitDictionaryAssertImpl": "",
 "GdUnitDictionaryAssertImplTest": "",
@@ -1426,6 +1437,7 @@ _global_script_class_icons={
 "RPCMessage": "",
 "Result": "",
 "ResultTest": "",
+"ScriptEditorContextMenuHandler": "",
 "ScriptEditorControls": "",
 "ScriptWithClassName": "",
 "SnakeCaseWithClassName": "",
