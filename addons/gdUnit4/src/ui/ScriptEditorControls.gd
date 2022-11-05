@@ -2,6 +2,7 @@
 class_name ScriptEditorControls
 extends RefCounted
 
+
 # https://github.com/godotengine/godot/blob/master/editor/plugins/script_editor_plugin.h
 # the Editor menu popup items
 enum {
@@ -56,6 +57,9 @@ static func script_editor() -> ScriptEditor:
 # The script is saved when is opened in the editor.
 # The script is closed when <close> is set to true.
 static func save_an_open_script(script_path :String, close := false) -> bool:
+	#prints("save_an_open_script", script_path, close)
+	if !Engine.is_editor_hint():
+		return false
 	var editor_interface := editor_interface()
 	var script_editor := script_editor()
 	var editor_popup := _menu_popup()
@@ -64,12 +68,11 @@ static func save_an_open_script(script_path :String, close := false) -> bool:
 	for open_script in script_editor.get_open_scripts():
 		if open_script.resource_path == script_path:
 			# select the script in the editor
-			#var e: ScriptEditorBase = script_editor.get_open_script_editors()[open_file_index]
 			editor_interface.edit_script(open_script, 0);
 			# save and close
-			editor_popup.emit_signal("id_pressed", FILE_SAVE)
+			editor_popup.id_pressed.emit(FILE_SAVE)
 			if close:
-				editor_popup.emit_signal("id_pressed", FILE_CLOSE)
+				editor_popup.id_pressed.emit(FILE_CLOSE)
 			return true
 		open_file_index +=1
 	return false
@@ -77,7 +80,8 @@ static func save_an_open_script(script_path :String, close := false) -> bool:
 
 # Saves all opened script
 static func save_all_open_script() -> void:
-	_menu_popup().emit_signal("id_pressed", FILE_SAVE_ALL)
+	if Engine.is_editor_hint():
+		_menu_popup().id_pressed.emit(FILE_SAVE_ALL)
 
 
 # Edits the given script.
@@ -93,6 +97,26 @@ static func edit_script(script_path :String, line_number :int = -1):
 	editor_interface.select_file(script_path)
 	var script = load(script_path)
 	editor_interface.edit_script(script, line_number)
+
+
+# Register the given context menu to the current script editor
+# Is called when the plugin is activated
+# The active script is connected to the ScriptEditorContextMenuHandler
+static func register_context_menu(menu :Array) -> void:
+	script_editor().editor_script_changed.connect(ScriptEditorContextMenuHandler.create(menu).bind(script_editor()))
+
+
+# Unregisteres all registerend context menus and gives the ScriptEditorContextMenuHandler> free
+# Is called when the plugin is deactivated
+static func unregister_context_menu() -> void:
+	for connection in script_editor().editor_script_changed.get_connections():
+		var cb :Callable = connection["callable"]
+		if cb.get_object() is ScriptEditorContextMenuHandler:
+			cb.get_object().free()
+
+
+static func filesystem_add_context_menu() -> void:
+	pass
 
 
 static func _menu_popup() -> PopupMenu:

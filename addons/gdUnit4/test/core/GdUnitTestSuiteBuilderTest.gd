@@ -38,7 +38,7 @@ func test_create_gd_success() -> void:
 	assert_result(result).is_success()
 	var info := result.value() as Dictionary
 	assert_str(info.get("path")).is_equal("user://tmp/test/examples/test_person_test.gd")
-	assert_int(info.get("line")).is_equal(9)
+	assert_int(info.get("line")).is_equal(11)
 	assert_tests(load(info.get("path"))).contains_exactly(["test_first_name"])
 	
 	# create additional test checked existing suite based checked function selected by line 15
@@ -47,7 +47,7 @@ func test_create_gd_success() -> void:
 	assert_result(result).is_success()
 	info = result.value() as Dictionary
 	assert_str(info.get("path")).is_equal("user://tmp/test/examples/test_person_test.gd")
-	assert_int(info.get("line")).is_equal(13)
+	assert_int(info.get("line")).is_equal(16)
 	assert_tests(load(info.get("path"))).contains_exactly_in_any_order(["test_first_name", "test_fully_name"])
 
 func test_create_gd_fail() -> void:
