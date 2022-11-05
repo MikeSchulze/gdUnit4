@@ -874,7 +874,7 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/GdUnitTestSuite.gd"
 }, {
-"base": "Resource",
+"base": "RefCounted",
 "class": &"GdUnitTestSuiteBuilder",
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/core/GdUnitTestSuiteBuilder.gd"
@@ -1113,6 +1113,11 @@ _global_script_classes=[{
 "class": &"ResultTest",
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/test/core/ResultTest.gd"
+}, {
+"base": "RefCounted",
+"class": &"ScriptEditorControls",
+"language": &"GDScript",
+"path": "res://addons/gdUnit4/src/ui/ScriptEditorControls.gd"
 }, {
 "base": "Resource",
 "class": &"ScriptWithClassName",
@@ -1421,6 +1426,7 @@ _global_script_class_icons={
 "RPCMessage": "",
 "Result": "",
 "ResultTest": "",
+"ScriptEditorControls": "",
 "ScriptWithClassName": "",
 "SnakeCaseWithClassName": "",
 "Spell": "",

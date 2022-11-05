@@ -213,25 +213,27 @@ static func get_test_case_line_number(resource_path :String, func_name :String) 
 				return line_number
 	return -1
 
+
 static func add_test_case(resource_path :String, func_name :String)  -> Result:
-	var file := FileAccess.open(resource_path, FileAccess.READ)
-	if file == null:
-		return Result.error("Can't access test suite : %s. Error code %s" % [resource_path, FileAccess.get_open_error()])
-	var line_number := 0
-	while not file.eof_reached():
-		file.get_line()
-		line_number += 1
 	var script := load(resource_path) as GDScript
+	# count all exiting lines and add two as space to add new test case
+	var line_number := count_lines(script) + 2
 	script.source_code +=\
 """
+
 func test_${func_name}() -> void:
-	# remove_at this line and complete your test
+	# remove this line and complete your test
 	assert_not_yet_implemented()
 """.replace("${func_name}", func_name)
 	var error := ResourceSaver.save(script, resource_path)
 	if error != OK:
 		return Result.error("Can't add test case at: %s to '%s'. Error code %s" % [func_name, resource_path, error])
 	return Result.success({ "path" : resource_path, "line" : line_number})
+
+
+static func count_lines(script : GDScript) -> int:
+	return script.source_code.split("\n").size()
+
 
 static func test_suite_exists(test_suite_path :String) -> bool:
 	return FileAccess.file_exists(test_suite_path)
