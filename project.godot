@@ -209,6 +209,16 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/asserts/DefaultValueProvider.gd"
 }, {
+"base": "Node",
+"class": &"EditorFileSystemContextMenuHandler",
+"language": &"GDScript",
+"path": "res://addons/gdUnit4/src/ui/menu/EditorFileSystemContextMenuHandler.gd"
+}, {
+"base": "RefCounted",
+"class": &"EditorFileSystemControls",
+"language": &"GDScript",
+"path": "res://addons/gdUnit4/src/ui/EditorFileSystemControls.gd"
+}, {
 "base": "GdUnitArgumentMatcher",
 "class": &"EqualsArgumentMatcher",
 "language": &"GDScript",
@@ -1255,6 +1265,8 @@ _global_script_class_icons={
 "CustomResourceTestClass": "",
 "DeepStubTestClass": "",
 "DefaultValueProvider": "",
+"EditorFileSystemContextMenuHandler": "",
+"EditorFileSystemControls": "",
 "EqualsArgumentMatcher": "",
 "ExtendedTest": "",
 "Fuzzer": "",
@@ -1388,7 +1400,7 @@ _global_script_class_icons={
 "GdUnitTestCaseReport": "",
 "GdUnitTestResourceLoader": "",
 "GdUnitTestResourceLoaderTest": "",
-"GdUnitTestSuite": "",
+"GdUnitTestSuite": "res://addons/gdUnit4/src/ui/assets/TestSuite.svg",
 "GdUnitTestSuiteBuilder": "",
 "GdUnitTestSuiteBuilderTest": "",
 "GdUnitTestSuiteDefaultTemplate": "",
