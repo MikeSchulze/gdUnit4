@@ -14,6 +14,8 @@
 class_name GdUnitTestSuite
 extends Node
 
+@icon("res://addons/gdUnit4/src/ui/assets/TestSuite.svg")
+
 const NO_ARG = GdUnitConstants.NO_ARG
 
 # This function is called before a test suite starts
