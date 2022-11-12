@@ -24,8 +24,10 @@ var _result :Result
 func _init():
 	# minimize scene window checked debug mode
 	if OS.get_cmdline_args().size() == 1:
-		DisplayServer.window_set_title("GdUnit3 Runner (Debug)")
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
+		DisplayServer.window_set_title("GdUnit3 Runner (Debug Mode)")
+	else:
+		DisplayServer.window_set_title("GdUnit3 Runner (Release Mode)")
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	# store current runner instance to engine meta data to can be access in as a singleton
 	Engine.set_meta(GDUNIT_RUNNER, self)
 	_cs_executor = GdUnit3MonoAPI.create_executor(self)

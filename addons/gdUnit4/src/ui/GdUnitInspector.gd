@@ -190,14 +190,8 @@ func _gdUnit_run(debug :bool) -> void:
 		return
 	var arguments := Array()
 	arguments.append("--no-window")
-	#arguments.append("-d")
-	#arguments.append("-s")
 	arguments.append("res://addons/gdUnit4/src/core/GdUnitRunner.tscn")
-	#prints("arguments", arguments)
-	var output = []
-#	_running_debug_mode = false
-	# prints("execute ", OS.get_executable_path(), arguments)
-	_current_runner_process_id = OS.execute(OS.get_executable_path(), arguments, output, false, false);
+	_current_runner_process_id = OS.create_process(OS.get_executable_path(), arguments, false);
 	_is_running = true
 
 
