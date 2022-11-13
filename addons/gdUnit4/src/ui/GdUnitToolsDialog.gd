@@ -31,16 +31,16 @@ func _sort_by_key(left :GdUnitProperty, right :GdUnitProperty) -> bool:
 func setup_common_properties(properties_parent :Node, property_category) -> void:
 	var category_properties := GdUnitSettings.list_settings(property_category)
 	# sort by key
-	category_properties.sort_custom(Callable(self,"_sort_by_key"))
-	var t := Theme.new()
-	t.set_constant("h_separation", "GridContainer", 12)
+	category_properties.sort_custom(Callable(self, "_sort_by_key"))
+	var theme := Theme.new()
+	theme.set_constant("h_separation", "GridContainer", 12)
 	var last_category := "!"
 	var min_size_overall := 0
 	for p in category_properties:
 		var min_size := 0
 		var grid := GridContainer.new()
 		grid.columns = 4
-		grid.theme = t
+		grid.theme = theme
 		var property : GdUnitProperty = p
 		var current_category = property.category()
 		if current_category != last_category:
@@ -68,7 +68,7 @@ func setup_common_properties(properties_parent :Node, property_category) -> void
 		input.custom_minimum_size = Vector2(_font_size * 15, 0)
 		grid.add_child(input)
 		min_size +=  input.size.x
-		reset_btn.connect("pressed",Callable(self,"_on_btn_property_reset_pressed").bind(property, input, reset_btn))
+		reset_btn.connect("pressed", Callable(self, "_on_btn_property_reset_pressed").bind(property, input, reset_btn))
 		# property help text
 		var info :Node = _properties_template.get_child(2).duplicate()
 		info.text = property.help()
@@ -87,22 +87,22 @@ func _create_input_element(property: GdUnitProperty, reset_btn :Button) -> Node:
 		var values_set := Array(property.value_set())
 		for value in values_set:
 			options.add_item(value)
-		options.connect("item_selected",Callable(self,"_on_option_selected").bind(property, reset_btn))
+		options.connect("item_selected", Callable(self, "_on_option_selected").bind(property, reset_btn))
 		options.select(property.value())
 		return options
 	if property.type() == TYPE_BOOL: 
 		var check_btn := CheckButton.new()
-		check_btn.connect("toggled",Callable(self,"_on_property_text_changed").bind(property, reset_btn))
+		check_btn.connect("toggled", Callable(self, "_on_property_text_changed").bind(property, reset_btn))
 		check_btn.button_pressed = property.value()
 		return check_btn
 	if property.type() in [TYPE_INT, TYPE_STRING]:
-			var input := LineEdit.new()
-			input.connect("text_changed",Callable(self,"_on_property_text_changed").bind(property, reset_btn))
-			input.set_context_menu_enabled(false)
-			input.set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER)
-			input.set_expand_to_text_length_enabled(true)
-			input.text = str(property.value())
-			return input 
+		var input := LineEdit.new()
+		input.connect("text_changed", Callable(self, "_on_property_text_changed").bind(property, reset_btn))
+		input.set_context_menu_enabled(false)
+		input.set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER)
+		input.set_expand_to_text_length_enabled(true)
+		input.text = str(property.value())
+		return input
 	return Control.new()
 
 
