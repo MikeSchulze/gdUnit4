@@ -353,9 +353,9 @@ func test_parse_func_description():
 	var fd := _parser.parse_func_description("func foo():", "clazz_name", [""], 10)
 	assert_str(fd.name()).is_equal("foo")
 	assert_bool(fd.is_static()).is_false()
-	assert_int(fd.return_type()).is_equal(TYPE_NIL)
+	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_VARIANT)
 	assert_array(fd.args()).is_empty()
-	assert_str(fd.typeless()).is_equal("func foo():")
+	assert_str(fd.typeless()).is_equal("func foo() -> Variant:")
 	
 	# static function
 	fd = _parser.parse_func_description("static func foo(arg1 :int, arg2:=false) -> String:", "clazz_name", [""], 22)
@@ -372,12 +372,12 @@ func test_parse_func_description():
 	fd = _parser.parse_func_description("static func foo(arg1 :int, arg2:=false):", "clazz_name", [""], 23)
 	assert_str(fd.name()).is_equal("foo")
 	assert_bool(fd.is_static()).is_true()
-	assert_int(fd.return_type()).is_equal(TYPE_NIL)
+	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_VARIANT)
 	assert_array(fd.args()).contains_exactly([
 		GdFunctionArgument.new("arg1", TYPE_INT),
 		GdFunctionArgument.new("arg2", TYPE_BOOL, "false")
 	])
-	assert_str(fd.typeless()).is_equal("static func foo(arg1, arg2=false):")
+	assert_str(fd.typeless()).is_equal("static func foo(arg1, arg2=false) -> Variant:")
 
 func test_parse_class_inherits():
 	var clazz_path := GdObjects.extract_class_path(CustomClassExtendsCustomClass)
@@ -391,7 +391,7 @@ func test_parse_class_inherits():
 	assert_str(clazz_desccriptor.name()).is_equal("CustomClassExtendsCustomClass")
 	assert_bool(clazz_desccriptor.is_inner_class()).is_false()
 	assert_array(clazz_desccriptor.functions()).contains_exactly([
-		GdFunctionDescriptor.new("foo2", 5, false, false, false, TYPE_NIL, "", []),
+		GdFunctionDescriptor.new("foo2", 5, false, false, false, GdObjects.TYPE_VARIANT, "", []),
 		GdFunctionDescriptor.new("bar2", 8, false, false, false, TYPE_STRING, "", [])
 	])
 	
@@ -402,14 +402,14 @@ func test_parse_class_inherits():
 	assert_bool(clazz_desccriptor.is_inner_class()).is_false()
 	assert_array(clazz_desccriptor.functions()).contains_exactly([
 		GdFunctionDescriptor.new("foo", 4, false, false, false, TYPE_STRING, "", []),
-		GdFunctionDescriptor.new("foo2", 7, false, false, false, TYPE_NIL, "", []),
+		GdFunctionDescriptor.new("foo2", 7, false, false, false, GdObjects.TYPE_VARIANT, "", []),
 		GdFunctionDescriptor.new("foo_void", 10, false, false, false, GdObjects.TYPE_VOID, "", []),
 		GdFunctionDescriptor.new("bar", 13, false, false, false, TYPE_STRING, "", [
 			GdFunctionArgument.new("arg1", TYPE_INT),
 			GdFunctionArgument.new("arg2", TYPE_INT, "23"),
 			GdFunctionArgument.new("name", TYPE_STRING, "\"test\""),
 		]),
-		GdFunctionDescriptor.new("foo5", 16, false, false, false, TYPE_NIL, "", []),
+		GdFunctionDescriptor.new("foo5", 16, false, false, false, GdObjects.TYPE_VARIANT, "", []),
 	])
 	
 	# no other class extends
@@ -456,7 +456,7 @@ func test_extract_func_signature_multiline() -> void:
 func test_parse_func_description_paramized_test():
 	var fd = _parser.parse_func_description("functest_parameterized(a:int,b:int,c:int,expected:int,parameters=[[1,2,3,6],[3,4,5,11],[6,7,8,21]]):", "class", ["path"], 22)
 	
-	assert_that(fd).is_equal(GdFunctionDescriptor.new("test_parameterized", 22, false, false, false, TYPE_NIL, "", [
+	assert_that(fd).is_equal(GdFunctionDescriptor.new("test_parameterized", 22, false, false, false, GdObjects.TYPE_VARIANT, "", [
 		GdFunctionArgument.new("a", TYPE_INT),
 		GdFunctionArgument.new("b", TYPE_INT),
 		GdFunctionArgument.new("c", TYPE_INT),
@@ -473,7 +473,7 @@ func test_parse_func_descriptor_with_fuzzers():
 	var fs = _parser.extract_func_signature(source_code, 0)
 	var fd = _parser.parse_func_description(fs, "class", ["path"], 22)
 	
-	assert_that(fd).is_equal(GdFunctionDescriptor.new("test_foo", 22, false, false, false, TYPE_NIL, "", [
+	assert_that(fd).is_equal(GdFunctionDescriptor.new("test_foo", 22, false, false, false, GdObjects.TYPE_VARIANT, "", [
 		GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "fuzz_a()"),
 		GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "fuzz_b()"),
 		GdFunctionArgument.new("fuzzer_c", GdObjects.TYPE_FUZZER, "fuzz_c()"),
