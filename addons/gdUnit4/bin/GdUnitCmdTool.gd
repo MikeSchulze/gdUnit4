@@ -203,13 +203,12 @@ class CLIRunner extends Node:
 		var test_suites_to_process = Array()
 		var to_execute := config.to_execute()
 		# scan for the requested test suites
-		var _scanner := _TestSuiteScanner.new()
+		var _scanner := GdUnitTestSuiteScanner.new()
 		for resource_path in to_execute.keys():
 			var selected_tests :Array = to_execute.get(resource_path)
 			var scaned_suites = _scanner.scan(resource_path)
 			skip_test_case(scaned_suites, selected_tests)
 			test_suites_to_process += scaned_suites
-		_scanner.free()
 		skip_suites(test_suites_to_process, config)
 		return test_suites_to_process
 

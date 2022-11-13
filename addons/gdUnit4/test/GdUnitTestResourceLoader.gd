@@ -29,11 +29,10 @@ static func load_test_suite_gd(resource_path :String) -> GdUnitTestSuite:
 	var test_suite :GdUnitTestSuite = script.new()
 	test_suite.set_name(new_resource_path.get_file().replace(".gd", ""))
 	# complete test suite wiht parsed test cases
-	var suite_parser := _TestSuiteScanner.new()
-	var test_case_names := suite_parser._extract_test_case_names(script)
+	var suite_scanner := GdUnitTestSuiteScanner.new()
+	var test_case_names := suite_scanner._extract_test_case_names(script)
 	# add test cases to test suite and parse test case line nummber
-	suite_parser._parse_and_add_test_cases(test_suite, script, test_case_names)
-	suite_parser.free()
+	suite_scanner._parse_and_add_test_cases(test_suite, script, test_case_names)
 	GdUnitTools.delete_directory("res://addons/gdUnit4/.tmp")
 	return test_suite
 
@@ -43,12 +42,11 @@ static func load_test_suite_gd_(resource_path :String) -> GdUnitTestSuite:
 	var test_suite :GdUnitTestSuite = script.new()
 	test_suite.set_name(resource_path.get_file().replace(".resource", "").replace(".gd", ""))
 	# complete test suite wiht parsed test cases
-	var suite_parser := _TestSuiteScanner.new()
-	var test_case_names := suite_parser._extract_test_case_names(script)
+	var suite_scanner := GdUnitTestSuiteScanner.new()
+	var test_case_names := suite_scanner._extract_test_case_names(script)
 	# add test cases to test suite and parse test case line nummber
 	script.resource_path = resource_path
-	suite_parser._parse_and_add_test_cases(test_suite, script, test_case_names)
-	suite_parser.free()
+	suite_scanner._parse_and_add_test_cases(test_suite, script, test_case_names)
 	return test_suite
 
 
