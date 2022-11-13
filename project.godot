@@ -915,6 +915,11 @@ _global_script_classes=[{
 "path": "res://addons/gdUnit4/src/report/GdUnitTestSuiteReport.gd"
 }, {
 "base": "RefCounted",
+"class": &"GdUnitTestSuiteScanner",
+"language": &"GDScript",
+"path": "res://addons/gdUnit4/src/core/GdUnitTestSuiteScanner.gd"
+}, {
+"base": "RefCounted",
 "class": &"GdUnitTestSuiteTemplate",
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/core/templates/test_suite/GdUnitTestSuiteTemplate.gd"
@@ -1172,7 +1177,7 @@ _global_script_classes=[{
 "base": "GdUnitTestSuite",
 "class": &"TestSuiteScannerTest",
 "language": &"GDScript",
-"path": "res://addons/gdUnit4/test/core/TestSuiteScannerTest.gd"
+"path": "res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd"
 }, {
 "base": "GdUnitTestSuite",
 "class": &"TestSuiteTemplateTest",
@@ -1213,11 +1218,6 @@ _global_script_classes=[{
 "class": &"_TestCase",
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/core/_TestCase.gd"
-}, {
-"base": "Node",
-"class": &"_TestSuiteScanner",
-"language": &"GDScript",
-"path": "res://addons/gdUnit4/src/core/_TestSuiteScanner.gd"
 }, {
 "base": "RefCounted",
 "class": &"snake_case_class_name",
@@ -1406,6 +1406,7 @@ _global_script_class_icons={
 "GdUnitTestSuiteDefaultTemplate": "",
 "GdUnitTestSuiteDto": "",
 "GdUnitTestSuiteReport": "",
+"GdUnitTestSuiteScanner": "",
 "GdUnitTestSuiteTemplate": "",
 "GdUnitTestSuiteTemplateTest": "",
 "GdUnitTestSuiteTest": "",
@@ -1466,7 +1467,6 @@ _global_script_class_icons={
 "XmlElement": "",
 "XmlElementTest": "",
 "_TestCase": "",
-"_TestSuiteScanner": "",
 "snake_case_class_name": ""
 }
 
@@ -1497,7 +1497,6 @@ enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
 settings/common/update_notification_enabled=false
 report/assert/verbose_errors=false
-report/assert/verbose_warnings=false
 
 [network]
 

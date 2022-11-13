@@ -95,13 +95,12 @@ func load_test_suits() -> Array:
 		return []
 	# scan for the requested test suites
 	var test_suites := Array()
-	var _scanner := _TestSuiteScanner.new()
+	var _scanner := GdUnitTestSuiteScanner.new()
 	for resource_path in to_execute.keys():
 		var selected_tests :Array[StringName] = to_execute.get(resource_path)
 		var scaned_suites := _scanner.scan(resource_path)
 		_filter_test_case(scaned_suites, selected_tests)
 		test_suites += scaned_suites
-	_scanner.free()
 	return test_suites
 
 func gdUnitInit() -> void:
