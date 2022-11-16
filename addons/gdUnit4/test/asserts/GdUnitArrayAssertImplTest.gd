@@ -107,11 +107,11 @@ func test_is_not_equal():
 	assert_array([1, 2, 3, 4, 5], GdUnitAssert.EXPECT_FAIL) \
 		.is_not_equal([1, 2, 3, 4, 5])\
 		.has_failure_message("""
-		Expecting:
-		 '1, 2, 3, 4, 5'
-		 not equal to
-		 '1, 2, 3, 4, 5'"""
-		.dedent().trim_prefix("\n"))
+			Expecting:
+			 '1, 2, 3, 4, 5'
+			 not equal to
+			 '1, 2, 3, 4, 5'"""
+			.dedent().trim_prefix("\n"))
 
 
 func test_is_not_equal_ignoring_case():
@@ -121,11 +121,11 @@ func test_is_not_equal_ignoring_case():
 	assert_array(["this", "is", "a", "message"], GdUnitAssert.EXPECT_FAIL) \
 		.is_not_equal_ignoring_case(["This", "is", "a", "Message"])\
 		.has_failure_message("""
-		Expecting:
-		 'This, is, a, Message'
-		 not equal to (case insensitiv)
-		 'this, is, a, message'"""
-		.dedent().trim_prefix("\n"))
+			Expecting:
+			 'This, is, a, Message'
+			 not equal to (case insensitiv)
+			 'this, is, a, message'"""
+			.dedent().trim_prefix("\n"))
 
 
 func test_is_empty():
