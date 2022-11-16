@@ -4,13 +4,62 @@ extends Resource
 const WARN_COLOR = "#EFF883"
 const ERROR_COLOR = "#CD5C5C"
 const VALUE_COLOR = "#1E90FF"
+const SUB_COLOR :=  Color(1, 0, 0, .3)
+const ADD_COLOR :=  Color(0, 1, 0, .3)
+
+static func _format_dict(value :Dictionary) -> String:
+	if value.is_empty():
+		return "{ }"
+	var as_rows := var_to_str(value).split("\n")
+	for index in range( 1, as_rows.size()-1):
+		as_rows[index] = "	" + as_rows[index]
+	as_rows[-1] = "  " + as_rows[-1]
+	return "\n".join(as_rows)
+
+
+static func _colored_string_div(characters :String) -> String:
+	return _colored_array_div(characters.to_ascii_buffer())
+
+
+static func _colored_array_div(characters :PackedByteArray) -> String:
+	if characters.is_empty():
+		return "<empty>"
+	var result = PackedByteArray()
+	var index = 0
+	var missing_chars := PackedByteArray()
+	var additional_chars := PackedByteArray()
+	
+	while index < characters.size():
+		var character := characters[index]
+		match character:
+			GdDiffTool.DIV_ADD:
+				index += 1
+				additional_chars.append(characters[index])
+			GdDiffTool.DIV_SUB:
+				index += 1
+				missing_chars.append(characters[index])
+			_:
+				if not missing_chars.is_empty():
+					result.append_array(format_chars(missing_chars, SUB_COLOR))
+					missing_chars = PackedByteArray()
+				if not additional_chars.is_empty():
+					result.append_array(format_chars(additional_chars, ADD_COLOR))
+					additional_chars = PackedByteArray()
+				result.append(character)
+		index += 1
+	
+	result.append_array(format_chars(missing_chars, SUB_COLOR))
+	result.append_array(format_chars(additional_chars, ADD_COLOR))
+	return result.get_string_from_utf8()
 
 
 static func _warning(error :String) -> String:
 	return "[color=%s]%s[/color]" % [WARN_COLOR, error]
 
+
 static func _error(error :String) -> String:
 	return "[color=%s]%s[/color]" % [ERROR_COLOR, error]
+
 
 static func _nerror(number) -> String:
 	match typeof(number):
@@ -24,7 +73,7 @@ static func _nerror(number) -> String:
 static func _colored_value(value, delimiter ="\n") -> String:
 	match typeof(value):
 		TYPE_STRING, TYPE_STRING_NAME:
-			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, valueColorDiff(value)]
+			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _colored_string_div(value)]
 		TYPE_INT:
 			return "'[color=%s]%d[/color]'" % [VALUE_COLOR, value]
 		TYPE_FLOAT:
@@ -35,6 +84,10 @@ static func _colored_value(value, delimiter ="\n") -> String:
 			#if value.has_method("_to_string"):
 			#	return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value._to_string()]
 			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
+		TYPE_DICTIONARY:
+			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _format_dict(value)]
+		TYPE_PACKED_BYTE_ARRAY:
+			return "'[color=%s]%s[/color]'" % [VALUE_COLOR,  _colored_array_div(value)]
 		_:
 			if GdObjects.is_array_type(value):
 				return "[color=%s]%s[/color]" % [VALUE_COLOR, GdObjects.array_to_string(value, delimiter)]
@@ -81,13 +134,20 @@ static func error_is_not_null() -> String:
 	return "%s %s" % [_error("Expecting: not to be"), _colored_value(null)]
 
 static func error_equal(current, expected, index_reports :Array = []) -> String:
-	var report = "%s\n %s\n but was\n %s" % [_error("Expecting:"), _colored_value(expected), _colored_value(current)]
+	var report = """
+		%s
+		 %s
+		 but was
+		 %s""".dedent().trim_prefix("\n") % [_error("Expecting:"), _colored_value(expected), _colored_value(current)]
 	if not index_reports.is_empty():
 		report += "\n\n%s\n%s" % [_error("Differences found:"), _index_report_as_table(index_reports)]
 	return report
 
 static func error_not_equal(current, expected) -> String:
 	return "%s\n %s\n not equal to\n %s" % [_error("Expecting:"), _colored_value(expected), _colored_value(current)]
+
+static func error_not_equal_case_insensetiv(current, expected) -> String:
+	return "%s\n %s\n not equal to (case insensitiv)\n %s" % [_error("Expecting:"), _colored_value(expected), _colored_value(current)]
 
 static func error_is_empty(current) -> String:
 	return "%s\n must be empty but was\n %s" % [_error("Expecting:"), _colored_value(current)]
@@ -354,49 +414,18 @@ static func error_has_size(current, expected: int) -> String:
 static func error_contains_exactly(current: Array, expected: Array) -> String:
 	return "%s\n %s\n but was\n %s" % [_error("Expecting exactly equal:"), _colored_value(expected), _colored_value(current)]
 
-const SUB_COLOR :=  Color(1, 0, 0, .3)
-const ADD_COLOR :=  Color(0, 1, 0, .3)
-
-static func valueColorDiff(characters :String) -> String:
-	return colorDiff(characters.to_ascii_buffer())
-
-static func colorDiff(characters :PackedByteArray) -> String:
-	var result = PackedByteArray()
-	var index = 0
-	var missing_chars := PackedByteArray()
-	var additional_chars := PackedByteArray()
-	
-	while index < characters.size():
-		var character := characters[index]
-		match character:
-			GdDiffTool.DIV_ADD:
-				index += 1
-				additional_chars.append(characters[index])
-			GdDiffTool.DIV_SUB:
-				index += 1
-				missing_chars.append(characters[index])
-			_:
-				if not missing_chars.is_empty():
-					result.append_array(format_chars(missing_chars, SUB_COLOR))
-					missing_chars = PackedByteArray()
-				if not additional_chars.is_empty():
-					result.append_array(format_chars(additional_chars, ADD_COLOR))
-					additional_chars = PackedByteArray()
-				result.append(character)
-		index += 1
-	
-	result.append_array(format_chars(missing_chars, SUB_COLOR))
-	result.append_array(format_chars(additional_chars, ADD_COLOR))
-	return result.get_string_from_utf8()
-
 
 static func format_chars(characters :PackedByteArray, type :Color) -> PackedByteArray:
-	if characters.size() == 0 or characters[0] == 10:
+	if characters.size() == 0:# or characters[0] == 10:
 		return characters
 	var result := PackedByteArray()
-	var message := "[bgcolor=#%s][color=with]%s[/color][/bgcolor]" % [type.to_html(), characters.get_string_from_utf8()]
+	var message := "[bgcolor=#%s][color=with]%s[/color][/bgcolor]" % [type.to_html(), characters.get_string_from_utf8().replace("\n", "<LF>")]
 	result.append_array(message.to_utf8_buffer())
 	return result
+
+
+static func format_invalid(value :String) -> String:
+	return "[bgcolor=#%s][color=with]%s[/color][/bgcolor]" % [SUB_COLOR.to_html(), value]
 
 static func humanized(value :String) -> String:
 	return value.replace("_", " ")

@@ -57,7 +57,7 @@ func is_equal(expected) -> GdUnitStringAssert:
 		return report_error(GdAssertMessages.error_equal(current, expected))
 	if not GdObjects.equals(current, expected):
 		var diffs := GdDiffTool.string_diff(current, expected)
-		var formatted_current := GdAssertMessages.colorDiff(diffs[1])
+		var formatted_current := GdAssertMessages._colored_array_div(diffs[1])
 		return report_error(GdAssertMessages.error_equal(formatted_current, expected))
 	return report_success()
 
@@ -67,7 +67,7 @@ func is_equal_ignoring_case(expected) -> GdUnitStringAssert:
 		return report_error(GdAssertMessages.error_equal_ignoring_case(current, expected))
 	if not GdObjects.equals(current, expected, true):
 		var diffs := GdDiffTool.string_diff(current, expected)
-		var formatted_current := GdAssertMessages.colorDiff(diffs[1])
+		var formatted_current := GdAssertMessages._colored_array_div(diffs[1])
 		return report_error(GdAssertMessages.error_equal_ignoring_case(formatted_current, expected))
 	return report_success()
 
