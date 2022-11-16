@@ -95,16 +95,16 @@ func test_is_value():
 	
 	assert_result(Result.success(""), GdUnitAssert.EXPECT_FAIL) \
 		.is_value("abc") \
-		.has_failure_message("Expecting to contain same value:\n 'abc'\n but was\n ''.")
+		.has_failure_message("Expecting to contain same value:\n 'abc'\n but was\n '<empty>'.")
 	assert_result(Result.success("abc"), GdUnitAssert.EXPECT_FAIL) \
 		.is_value("") \
-		.has_failure_message("Expecting to contain same value:\n ''\n but was\n 'abc'.")
+		.has_failure_message("Expecting to contain same value:\n '<empty>'\n but was\n 'abc'.")
 	assert_result(Result.success(result_value), GdUnitAssert.EXPECT_FAIL) \
 		.is_value("") \
-		.has_failure_message("Expecting to contain same value:\n ''\n but was\n <Node>.")
+		.has_failure_message("Expecting to contain same value:\n '<empty>'\n but was\n <Node>.")
 	assert_result(null, GdUnitAssert.EXPECT_FAIL) \
 		.is_value("") \
-		.has_failure_message("Expecting to contain same value:\n ''\n but was\n '<null>'.")
+		.has_failure_message("Expecting to contain same value:\n '<empty>'\n but was\n '<null>'.")
 
 
 func test_override_failure_message() -> void:

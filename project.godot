@@ -369,16 +369,6 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd"
 }, {
-"base": "GdUnitTestSuite",
-"class": &"GdUnitArrayAssertImplTest",
-"language": &"GDScript",
-"path": "res://addons/gdUnit4/test/asserts/GdUnitArrayAssertImplTest.gd"
-}, {
-"base": "GdUnitTestSuite",
-"class": &"GdUnitArrayAssertImpl_PoolByteArrayTest",
-"language": &"GDScript",
-"path": "res://addons/gdUnit4/test/asserts/GdUnitArrayAssertImpl_PoolByteArrayTest.gd"
-}, {
 "base": "RefCounted",
 "class": &"GdUnitAssert",
 "language": &"GDScript",
@@ -453,11 +443,6 @@ _global_script_classes=[{
 "class": &"GdUnitDictionaryAssertImpl",
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/asserts/GdUnitDictionaryAssertImpl.gd"
-}, {
-"base": "GdUnitTestSuite",
-"class": &"GdUnitDictionaryAssertImplTest",
-"language": &"GDScript",
-"path": "res://addons/gdUnit4/test/asserts/GdUnitDictionaryAssertImplTest.gd"
 }, {
 "base": "Resource",
 "class": &"GdUnitEvent",
@@ -1297,8 +1282,6 @@ _global_script_class_icons={
 "GdUnitArgumentMatchersTest": "",
 "GdUnitArrayAssert": "",
 "GdUnitArrayAssertImpl": "",
-"GdUnitArrayAssertImplTest": "",
-"GdUnitArrayAssertImpl_PoolByteArrayTest": "",
 "GdUnitAssert": "",
 "GdUnitAssertImpl": "",
 "GdUnitAssertImplTest": "",
@@ -1314,7 +1297,6 @@ _global_script_class_icons={
 "GdUnitContextMenuItem": "",
 "GdUnitDictionaryAssert": "",
 "GdUnitDictionaryAssertImpl": "",
-"GdUnitDictionaryAssertImplTest": "",
 "GdUnitEvent": "",
 "GdUnitEventTest": "",
 "GdUnitExecutor": "",
@@ -1497,6 +1479,7 @@ enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
 settings/common/update_notification_enabled=false
 report/assert/verbose_errors=false
+report/assert/verbose_warnings=false
 
 [network]
 

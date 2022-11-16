@@ -220,14 +220,12 @@ static func resource_as_string(resource_path :String) -> String:
 static func normalize_text(text :String) -> String:
 	return text.replace("\r", "");
 
+
 static func max_length(left, right) -> int:
 	var ls = str(left).length()
 	var rs = str(right).length()
 	return rs if ls < rs else ls
 
-static func expand_value(value, length :int) -> String:
-	var format := "%+"+ str(length)+"s"
-	return format % str(value)
 
 static func free_instance(instance :Variant) -> void:
 	# is instance already freed?
