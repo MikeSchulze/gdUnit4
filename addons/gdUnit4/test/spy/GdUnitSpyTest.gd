@@ -136,7 +136,7 @@ func test_spy_copied_class_members_on_node():
 	node.set_name("foo")
 	assert_that(spy(node).name).is_equal("foo")
 
-func _test_spy_on_inner_class():
+func test_spy_on_inner_class():
 	var instance := AdvancedTestClass.AtmosphereData.new()
 	var spy_instance = spy(instance)
 	
@@ -391,7 +391,7 @@ func test_spy_Node_use_real_func_vararg():
 	assert_that(spy_node).is_not_null()
 	
 	assert_bool(_test_signal_is_emited).is_false()
-	spy_node.connect("ready",Callable(self,"_emit_ready"))
+	spy_node.connect("ready", Callable(self, "_emit_ready"))
 	spy_node.emit_signal("ready", "aa", "bb", "cc")
 	
 	# sync signal is emited
