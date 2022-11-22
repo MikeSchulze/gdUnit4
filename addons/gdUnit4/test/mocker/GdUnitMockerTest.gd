@@ -570,7 +570,7 @@ func _test_mock_godot_class_calls_sub_function():
 	verify(mock, 1).set_mesh(any_class(Mesh))
 	verify(mock, 1)._mesh_changed()
 
-func _test_mock_class_with_inner_classs():
+func test_mock_class_with_inner_classs():
 	var mock_advanced = mock(AdvancedTestClass)
 	assert_that(mock_advanced).is_not_null()
 

@@ -1,12 +1,12 @@
 class_name CmdCommand
 extends RefCounted
 
-var _name :String
-var _arguments :PackedStringArray
+var _name: String
+var _arguments: PackedStringArray
 
-func _init(name :String, arguments := PackedStringArray()):
+func _init(name: String, arguments: = []):
 	_name = name
-	_arguments = arguments
+	_arguments = PackedStringArray(arguments)
 
 func name() -> String:
 	return _name
@@ -14,7 +14,7 @@ func name() -> String:
 func arguments() -> PackedStringArray:
 	return _arguments
 
-func add_argument(arg :String) -> void:
+func add_argument(arg: String) -> void:
 	_arguments.append(arg)
 
 func _to_string():
