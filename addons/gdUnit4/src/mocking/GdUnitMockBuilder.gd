@@ -20,7 +20,7 @@ static func is_push_errors() -> bool:
 	return is_push_errors_enabled() or GdUnitSettings.is_report_push_errors()
 
 static func build(caller :Object, clazz, mock_mode :String, debug_write := false) -> Object:
-	var memory_pool :int = caller.get_meta(GdUnitMemoryPool.META_PARAM)
+	var memory_pool :GdUnitMemoryPool.POOL = caller.get_meta(GdUnitMemoryPool.META_PARAM)
 	var push_errors := is_push_errors()
 	if not is_mockable(clazz, push_errors):
 		return null
@@ -38,7 +38,7 @@ static func build(caller :Object, clazz, mock_mode :String, debug_write := false
 	mock_instance.__set_singleton()
 	mock_instance.__set_mode(mock_mode)
 	mock_instance.__set_caller(caller)
-	return GdUnitTools.register_auto_free(mock_instance, memory_pool)
+	return GdUnitMemoryPool.register_auto_free(mock_instance, memory_pool)
 
 static func mock_on_scene(caller :Object, scene :PackedScene, memory_pool :int, debug_write :bool) -> Object:
 	var push_errors := is_push_errors()
@@ -62,7 +62,7 @@ static func mock_on_scene(caller :Object, scene :PackedScene, memory_pool :int, 
 	scene_instance.__set_singleton()
 	scene_instance.__set_mode(GdUnitMock.CALL_REAL_FUNC)
 	scene_instance.__set_caller(caller)
-	return GdUnitTools.register_auto_free(scene_instance, memory_pool)
+	return GdUnitMemoryPool.register_auto_free(scene_instance, memory_pool)
 
 
 static func get_class_info(clazz :Variant) -> Dictionary:

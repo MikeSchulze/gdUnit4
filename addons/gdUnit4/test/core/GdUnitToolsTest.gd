@@ -252,13 +252,3 @@ func test_find_tar_path_on_windows() -> void:
 func test_find_tar_path_on_non_windows() -> void:
 	assert_str(GdUnitTools._find_tar_path("MacOS")).is_equal("tar")
 	assert_str(GdUnitTools._find_tar_path("X11")).is_equal("tar")
-
-func test_is_auto_free_registered() -> void:
-	var node = auto_free(Node.new())
-	GdUnitTools.register_auto_free(node, GdUnitTools.MEMORY_POOL_TESTRUN)
-	# test checked selected pool
-	assert_bool(GdUnitTools.is_auto_free_registered(node, GdUnitTools.MEMORY_POOL_TESTSUITE)).is_false()
-	assert_bool(GdUnitTools.is_auto_free_registered(node, GdUnitTools.MEMORY_POOL_TESTCASE)).is_false()
-	assert_bool(GdUnitTools.is_auto_free_registered(node, GdUnitTools.MEMORY_POOL_TESTRUN)).is_true()
-	# test checked all pools
-	assert_bool(GdUnitTools.is_auto_free_registered(node)).is_true()

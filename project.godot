@@ -569,7 +569,7 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/test/monitor/GdUnitMemMonitorTest.gd"
 }, {
-"base": "Node",
+"base": "RefCounted",
 "class": &"GdUnitMemoryPool",
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd"

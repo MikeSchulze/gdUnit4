@@ -52,7 +52,7 @@ func _notification(what):
 		if is_instance_valid(_current_scene):
 			_scene_tree.root.remove_child(_current_scene)
 			# don't free already memory managed instances
-			if not GdUnitTools.is_auto_free_registered(_current_scene):
+			if not GdUnitMemoryPool.is_auto_free_registered(_current_scene):
 				_current_scene.free()
 		_scene_tree = null
 		_current_scene = null
