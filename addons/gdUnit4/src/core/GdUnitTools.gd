@@ -3,20 +3,6 @@ extends RefCounted
 
 const GDUNIT_TEMP := "user://tmp"
 
-enum {
-	MEMORY_POOL_TESTSUITE,
-	MEMORY_POOL_TESTCASE,
-	MEMORY_POOL_TESTRUN,
-	METHOD_FLAGS,
-}
-
-const _store := {
-	MEMORY_POOL_TESTSUITE : [],
-	MEMORY_POOL_TESTCASE : [],
-	MEMORY_POOL_TESTRUN : [],
-	METHOD_FLAGS : [],
-}
-
 static func temp_dir() -> String:
 	if not DirAccess.dir_exists_absolute(GDUNIT_TEMP):
 		DirAccess.make_dir_recursive_absolute(GDUNIT_TEMP)
@@ -272,41 +258,6 @@ static func release_double(instance :Object):
 	if instance.has_method("__release_double"):
 		instance.call("__release_double")
 
-# register an instance to be freed when a test suite is finished
-static func register_auto_free(obj, pool :int) -> Variant:
-	# only register real object values
-	if not obj is Object:
-		return obj
-	if obj is MainLoop:
-		push_error("avoid to add mainloop to auto_free queue  %s" % obj)
-		return
-	# only register pure objects
-	if obj is GdUnitSceneRunner:
-		_store[pool].push_front(obj)
-	else:
-		_store[pool].append(obj)
-	return obj
-
-# runs over all registered objects and frees it
-static func run_auto_free(pool :int):
-	var obj_pool :Array = _store[pool]
-	#prints("run_auto_free checked Pool:", pool, obj_pool.size())
-	while not obj_pool.is_empty():
-		var obj :Object = obj_pool.pop_front()
-		free_instance(obj)
-
-# tests if given object is registered for auto freeing
-static func is_auto_free_registered(obj, pool :int = -1) -> bool:
-	# only register real object values
-	if not obj is Object:
-		return false
-	# check all pools?
-	if pool == -1:
-		return is_auto_free_registered(obj, MEMORY_POOL_TESTSUITE)\
-			or is_auto_free_registered(obj, MEMORY_POOL_TESTCASE)\
-			or is_auto_free_registered(obj, MEMORY_POOL_TESTRUN)
-	# check checked a specific pool
-	return _store[pool].has(obj)
 
 # test is Godot mono running
 static func is_mono_supported() -> bool:

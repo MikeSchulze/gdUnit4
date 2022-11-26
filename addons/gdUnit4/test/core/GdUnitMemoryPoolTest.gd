@@ -8,14 +8,16 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd'
 var _pool :GdUnitMemoryPool
 var _source :Object
 
+
 func before_test():
 	_source = Node.new()
 	_pool = GdUnitMemoryPool.new()
-	_pool.set_pool(_source, GdUnitMemoryPool.TEST_EXECUTE, true)
+	_pool.set_pool(_source, GdUnitMemoryPool.POOL.EXECUTE, true)
+
 
 func after_test():
-	_pool.free()
 	_source.free()
+
 
 func test_orphan_nodes_report_enabled() -> void:
 	# enable orphan detection
@@ -31,6 +33,7 @@ func test_orphan_nodes_report_enabled() -> void:
 	orphan1.free()
 	orphan2.free()
 
+
 func test_orphan_nodes_report_disabled() -> void:
 	# disable orphan detection
 	_pool.configure(false)
@@ -44,3 +47,14 @@ func test_orphan_nodes_report_disabled() -> void:
 	# manual cleanup
 	orphan1.free()
 	orphan2.free()
+
+
+func test_is_auto_free_registered() -> void:
+	var node = auto_free(Node.new())
+	GdUnitMemoryPool.register_auto_free(node, GdUnitMemoryPool.POOL.EXECUTE)
+	# test checked selected pool
+	assert_bool(GdUnitMemoryPool.is_auto_free_registered(node, GdUnitMemoryPool.POOL.TESTSUITE)).is_false()
+	assert_bool(GdUnitMemoryPool.is_auto_free_registered(node, GdUnitMemoryPool.POOL.TESTCASE)).is_false()
+	assert_bool(GdUnitMemoryPool.is_auto_free_registered(node, GdUnitMemoryPool.POOL.EXECUTE)).is_true()
+	# test checked all pools
+	assert_bool(GdUnitMemoryPool.is_auto_free_registered(node)).is_true()

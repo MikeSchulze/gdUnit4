@@ -69,7 +69,7 @@ func error_as_string(error_number :int) -> String:
 
 # A litle helper to auto freeing your created objects after test execution
 func auto_free(obj) -> Variant:
-	return GdUnitTools.register_auto_free(obj, get_meta(GdUnitMemoryPool.META_PARAM))
+	return GdUnitMemoryPool.register_auto_free(obj, get_meta(GdUnitMemoryPool.META_PARAM))
 
 # Discard the error message triggered by a timeout (interruption).
 # By default, an interrupted test is reported as an error.
