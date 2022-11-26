@@ -1,4 +1,7 @@
-################################################################################
+
+## Main class for all GdUnit test suites
+
+#################################################################################
 # This class is the main class to implement your unit tests
 # You have to extend and implement your test cases as described
 # e.g
