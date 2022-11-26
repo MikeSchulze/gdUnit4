@@ -294,11 +294,6 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/core/GdFunctionDoubler.gd"
 }, {
-"base": "Node",
-"class": &"GdMarkDownReader",
-"language": &"GDScript",
-"path": "res://addons/gdUnit4/src/update/GdMarkDownReader.gd"
-}, {
 "base": "GdUnitTestSuite",
 "class": &"GdMarkDownReaderTest",
 "language": &"GDScript",
@@ -934,16 +929,6 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/src/GdUnitTuple.gd"
 }, {
-"base": "Window",
-"class": &"GdUnitUpdate",
-"language": &"GDScript",
-"path": "res://addons/gdUnit4/src/update/GdUnitUpdate.gd"
-}, {
-"base": "Node",
-"class": &"GdUnitUpdateClient",
-"language": &"GDScript",
-"path": "res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd"
-}, {
 "base": "GdUnitTestSuite",
 "class": &"GdUnitUpdateTest",
 "language": &"GDScript",
@@ -1267,7 +1252,6 @@ _global_script_class_icons={
 "GdFunctionDescriptor": "",
 "GdFunctionDescriptorTest": "",
 "GdFunctionDoubler": "",
-"GdMarkDownReader": "",
 "GdMarkDownReaderTest": "",
 "GdObjects": "",
 "GdScriptParser": "",
@@ -1395,8 +1379,6 @@ _global_script_class_icons={
 "GdUnitTools": "",
 "GdUnitToolsTest": "",
 "GdUnitTuple": "",
-"GdUnitUpdate": "",
-"GdUnitUpdateClient": "",
 "GdUnitUpdateTest": "",
 "GdUnitValueExtractor": "",
 "GdUnitVector2Assert": "",
@@ -1477,7 +1459,6 @@ enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
 [gdunit4]
 
-settings/common/update_notification_enabled=false
 report/assert/verbose_errors=false
 report/assert/verbose_warnings=false
 

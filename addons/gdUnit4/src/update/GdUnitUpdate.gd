@@ -1,17 +1,19 @@
 @tool
-class_name GdUnitUpdate
 extends Window
 
 signal request_completed(response)
 
-@onready var _md_reader :GdMarkDownReader = $GdMarkDownReader
+const GdMarkDownReader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
+const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
+
+@onready var _md_reader :GdMarkDownReader = GdMarkDownReader.new()
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
-@onready var _header :Label = $GridContainer/PanelContainer/header
-@onready var _content :RichTextLabel = $GridContainer/PanelContainer2/ScrollContainer/content
+@onready var _header :Label = $Panel/GridContainer/PanelContainer/header
+@onready var _content :RichTextLabel = $Panel/GridContainer/PanelContainer2/ScrollContainer/content
 @onready var _info_popup :Popup = $UpdateProgress
 @onready var _info_content :Label = $UpdateProgress/Progress/label
 @onready var _info_progress :ProgressBar = $UpdateProgress/Progress/bar
-@onready var _update_button :Button = $GridContainer/Panel/HBoxContainer/update
+@onready var _update_button :Button = $Panel/GridContainer/Panel/HBoxContainer/update
 
 const MENU_ACTION_FILE_CLOSE_ALL = 13
 
@@ -22,10 +24,14 @@ var _show_update :bool = false
 var _download_zip_url :String
 var _update_in_progress :bool = false
 
+
 func _ready():
+	theme = ThemeDB.get_default_theme()
 	_update_button.disabled = true
 	_md_reader.set_http_client(_update_client)
+	GdUnitFonts.init_fonts(_content)
 	request_releases()
+
 
 func request_releases():
 	var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_latest_version()
@@ -40,39 +46,47 @@ func request_releases():
 		_download_zip_url = extract_zip_url(response)
 		_show_update = true
 
+
 func _colored(message :String, color :Color) -> String:
 	return "[color=#%s]%s[/color]" % [color.to_html(), message]
 
+
 func _h4_message(message :String, color :Color) -> String:
-	return "[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h4.tres]%s[/font]" % _colored(message, color)
+	return "[font_size=16]%s[/font_size]" % _colored(message, color)
+
 
 func _process(_delta):
 	if _show_update:
 		var spinner := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
-		_content.text = _h4_message("\n\n\nRequest release infos ... [img=24x24]%s[/img]" % spinner, Color.SNOW)
+		_content.clear()
+		_content.append_text(_h4_message("\n\n\nRequest release infos ... [img=24x24]%s[/img]" % spinner, Color.SNOW))
 		popup_centered_ratio(.5)
 		_show_update = false
 		var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_releases()
+		_content.clear()
 		if response.code() == 200:
 			var content :String = await extract_releases(response, _current_version)
 			# finally force rescan to import images as textures
 			if Engine.is_editor_hint():
 				await rescan()
-			_content.text = content
+			_content.append_text(content)
 			_update_button.set_disabled(false)
 		else:
-			_content.text = _h4_message("\n\n\nError checked request available releases!", Color.RED)
+			_content.append_text(_h4_message("\n\n\nError checked request available releases!", Color.RED))
+
 
 static func extract_latest_version(response :GdUnitUpdateClient.HttpResponse) -> GdUnit4Version:
 	var body :Array = response.response()
 	return GdUnit4Version.parse(body[0]["name"])
 
+
 static func extract_zip_url(response :GdUnitUpdateClient.HttpResponse) -> String:
 	var body :Array = response.response()
 	return body[0]["zipball_url"]
 
+
 func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version :) -> String:
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	var result :String = ""
 	for release in response.response():
 		if GdUnit4Version.parse(release["tag_name"]).equals(current_version):
@@ -83,8 +97,9 @@ func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version
 		result += "\n"
 	return result
 
+
 func rescan(update_scripts :bool = false) -> void:
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	var plugin := EditorPlugin.new()
 	var fs := plugin.get_editor_interface().get_resource_filesystem()
 	fs.scan_sources()
@@ -94,21 +109,26 @@ func rescan(update_scripts :bool = false) -> void:
 		plugin.get_editor_interface().get_resource_filesystem().update_script_classes()
 	plugin.free()
 
+
 func is_update_in_progress() -> bool:
 	return _update_in_progress
+
 
 func init_progress(max_value : int) -> void:
 	_info_popup.popup_centered_clamped()
 	_info_progress.max_value = max_value
 	_info_progress.value = 0
 
+
 func stop_progress() -> void:
 	_info_popup.hide()
+
 
 func update_progress(message :String) -> void:
 	_info_content.text = message
 	_info_progress.value += 1
 	prints("Update ..", message)
+
 
 static func close_open_editor_scripts() -> void:
 	var plugin := EditorPlugin.new()
@@ -117,11 +137,12 @@ static func close_open_editor_scripts() -> void:
 	script_editor._menu_option(MENU_ACTION_FILE_CLOSE_ALL)
 	plugin.free()
 
+
 func delete_obsolete_files() -> void:
-	
 	for file_to_delete in ["res://gdUnit4.csproj", "res://gdUnit4.sln"]:
 		if FileAccess.file_exists(file_to_delete):
 			DirAccess.remove_absolute(file_to_delete)
+
 
 func _prepare_update() -> Dictionary:
 	_update_in_progress = true
@@ -135,6 +156,7 @@ func _prepare_update() -> Dictionary:
 		"tmp_path" : tmp_path,
 		"zip_file" : zip_file
 	}
+
 
 func _on_update_pressed():
 	var paths := _prepare_update()
@@ -203,32 +225,39 @@ func _on_update_pressed():
 	enable_gdUnit()
 	queue_free()
 
+
 static func enable_gdUnit() -> void:
 	var plugin := EditorPlugin.new()
 	plugin.get_editor_interface().set_plugin_enabled("gdUnit4", true)
 	plugin.free()
+
 
 static func disable_gdUnit() -> void:
 	var plugin := EditorPlugin.new()
 	plugin.get_editor_interface().set_plugin_enabled("gdUnit4", false)
 	plugin.free()
 
+
 func _on_show_next_toggled(enabled :bool):
 	GdUnitSettings.set_update_notification(enabled)
+
 
 func _on_cancel_pressed():
 	hide()
 	queue_free()
+
 
 func _on_content_meta_clicked(meta :String):
 	var properties = str_to_var(meta)
 	if properties.has("url"):
 		OS.shell_open(properties.get("url"))
 
+
 func _on_content_meta_hover_started(meta :String):
 	var properties = str_to_var(meta)
 	if properties.has("tool_tip"):
-		_content.set_tooltip(properties.get("tool_tip"))
+		_content.set_tooltip_text(properties.get("tool_tip"))
+
 
 func _on_content_meta_hover_ended(meta):
-	_content.set_tooltip("")
+	_content.set_tooltip_text("")

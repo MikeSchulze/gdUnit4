@@ -3,7 +3,8 @@ class_name GdUnitUpdateTest
 extends GdUnitTestSuite
 
 # TestSuite generated from
-const __source = 'res://addons/gdUnit4/src/update/GdUnitUpdate.gd'
+const GdUnitUpdate = preload('res://addons/gdUnit4/src/update/GdUnitUpdate.gd')
+
 
 func after_test():
 	clean_temp_dir()

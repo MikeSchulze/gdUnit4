@@ -2,6 +2,7 @@
 extends Window
 
 const EAXAMPLE_URL := "https://github.com/MikeSchulze/gdUnit4-examples/archive/refs/heads/master.zip"
+const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
 
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
 @onready var _version_label :RichTextLabel = $v/MarginContainer/GridContainer/PanelContainer/Panel/CenterContainer2/version

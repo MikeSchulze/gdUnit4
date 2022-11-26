@@ -1,5 +1,8 @@
 extends Control
 
+const GdMarkDownReader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
+const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
+
 @onready var _input :TextEdit = $HSplitContainer/TextEdit
 @onready var _text :RichTextLabel = $HSplitContainer/RichTextLabel
 
@@ -7,13 +10,14 @@ extends Control
 
 var _md_reader := GdMarkDownReader.new()
 
+
 func _ready():
-	add_child(_md_reader)
 	_md_reader.set_http_client(_update_client)
 	
 	var source := GdUnitTools.resource_as_string("res://addons/gdUnit4/test/update/resources/markdown.txt")
 	_text.text = await _md_reader.to_bbcode(source)
 	#prints("_ready", _text.text )
+
 
 func set_text(text :String) :
 	_text.text = text

@@ -9,18 +9,21 @@ var _patches := Dictionary()
 func scan(current :) -> void:
 	_scan(_base_dir, current)
 
-func _scan(scan_path :String, current :) -> void:
+
+func _scan(scan_path :String, current) -> void:
 	_patches = Dictionary()
 	var patch_paths := _collect_patch_versions(scan_path, current)
 	for path in patch_paths:
 		prints("scan for patches checked '%s'" % path)
 		_patches[path] = _scan_patches(path)
 
+
 func patch_count() -> int:
 	var count := 0
 	for key in _patches.keys():
 		count += _patches[key].size()
 	return count
+
 
 func execute() -> void:
 	for key in _patches.keys():
@@ -31,6 +34,7 @@ func execute() -> void:
 				prints("execute patch", patch.version(), patch.get_script().resource_path)
 				if not patch.execute():
 					prints("error checked execution patch %s" % patch_root + "/" + path)
+
 
 func _collect_patch_versions(scan_path :String, current :) -> PackedStringArray:
 	if not DirAccess.dir_exists_absolute(scan_path):
@@ -49,6 +53,7 @@ func _collect_patch_versions(scan_path :String, current :) -> PackedStringArray:
 				patches.append(scan_path + next)
 	patches.sort()
 	return PackedStringArray(patches)
+
 
 func _scan_patches(path :String) -> PackedStringArray:
 	var patches := Array()

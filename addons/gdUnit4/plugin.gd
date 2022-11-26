@@ -29,9 +29,9 @@ func _enter_tree():
 	_singleton = GdUnitSingleton.new()
 	GdUnitSettings.setup()
 	# show possible update notification when is enabled
-	#if GdUnitSettings.is_update_notification_enabled():
-	#	_update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdate.tscn").instantiate()
-	#	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, _update_tool)
+	if GdUnitSettings.is_update_notification_enabled():
+		_update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdate.tscn").instantiate()
+		add_child(_update_tool)
 	# install SignalHandler singleton
 	add_autoload_singleton("GdUnitSignals", "res://addons/gdUnit4/src/core/GdUnitSignals.gd")
 	# install the GdUnit inspector
@@ -62,7 +62,6 @@ func _exit_tree():
 		_server_node.free()
 	# Delete and release the update tool only when it is not in use, otherwise it will interrupt the execution of the update
 	if is_instance_valid(_update_tool) and not _update_tool.is_update_in_progress():
-		remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, _update_tool)
 		_update_tool.free()
 	remove_autoload_singleton("GdUnitSignals")
 	if Engine.has_meta("GdUnitEditorPlugin"):
