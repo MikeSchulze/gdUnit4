@@ -7,6 +7,23 @@ var _gd_console :Node
 var _update_tool :Node
 var _singleton :GdUnitSingleton
 
+
+# removes GdUnit classes inherits from Godot.Node from the node inspecor, ohterwise it takes very long to popup the dialog
+func _fixup_node_inspector() -> void:
+	var classes := PackedStringArray([
+		"GdUnitTestSuite",
+		"_TestCase",
+		"GdMarkDownReader",
+		"GdUnitInspecor",
+		"GdUnitExecutor",
+		"GdUnitUpdateClient",
+		"GdUnitUpdate",
+		"GdUnitTcpClient",
+		"GdUnitTcpServer"])
+	for clazz in classes:
+		remove_custom_type(clazz)
+
+
 func _enter_tree():
 	Engine.set_meta("GdUnitEditorPlugin", self)
 	_singleton = GdUnitSingleton.new()
@@ -29,7 +46,9 @@ func _enter_tree():
 	var err := _gd_inspector.connect("gdunit_runner_stop",Callable(_server_node,"_on_gdunit_runner_stop"))
 	if err != OK:
 		prints("ERROR", GdUnitTools.error_as_string(err))
+	_fixup_node_inspector()
 	prints("Loading GdUnit3 Plugin success")
+
 
 func _exit_tree():
 	if is_instance_valid(_gd_inspector):
