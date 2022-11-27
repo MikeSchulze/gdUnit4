@@ -13,11 +13,8 @@ func _fixup_node_inspector() -> void:
 	var classes := PackedStringArray([
 		"GdUnitTestSuite",
 		"_TestCase",
-		"GdMarkDownReader",
 		"GdUnitInspecor",
 		"GdUnitExecutor",
-		"GdUnitUpdateClient",
-		"GdUnitUpdate",
 		"GdUnitTcpClient",
 		"GdUnitTcpServer"])
 	for clazz in classes:
