@@ -84,6 +84,10 @@ static func save_all_open_script() -> void:
 		_menu_popup().id_pressed.emit(FILE_SAVE_ALL)
 
 
+static func close_open_editor_scripts() -> void:
+	if Engine.is_editor_hint():
+		_menu_popup().id_pressed.emit(CLOSE_ALL)
+
 # Edits the given script.
 # The script is openend in the current editor and selected in the file system dock.
 # The line and column on which to open the script can also be specified.

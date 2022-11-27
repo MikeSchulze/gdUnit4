@@ -5,17 +5,18 @@ signal request_completed(response)
 
 const GdMarkDownReader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
 const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
+const spinner_icon := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
 
 @onready var _md_reader :GdMarkDownReader = GdMarkDownReader.new()
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
 @onready var _header :Label = $Panel/GridContainer/PanelContainer/header
-@onready var _content :RichTextLabel = $Panel/GridContainer/PanelContainer2/ScrollContainer/content
-@onready var _info_popup :Popup = $UpdateProgress
-@onready var _info_content :Label = $UpdateProgress/Progress/label
-@onready var _info_progress :ProgressBar = $UpdateProgress/Progress/bar
 @onready var _update_button :Button = $Panel/GridContainer/Panel/HBoxContainer/update
+@onready var _content :RichTextLabel = $Panel/GridContainer/PanelContainer2/ScrollContainer/MarginContainer/content
+@onready var _progress_panel :Control = $Panel/UpdateProgress
+@onready var _progress_content :Label = $Panel/UpdateProgress/Progress/label
+@onready var _progress_bar :ProgressBar = $Panel/UpdateProgress/Progress/bar
 
-const MENU_ACTION_FILE_CLOSE_ALL = 13
+var _debug_mode := false
 
 var _patcher :GdUnitPatcher = GdUnitPatcher.new()
 var _current_version := GdUnit4Version.current()
@@ -26,14 +27,23 @@ var _update_in_progress :bool = false
 
 
 func _ready():
-	theme = ThemeDB.get_default_theme()
+	#set_theme(ThemeDB.get_default_theme().duplicate())
+	#prints("get_default_theme", ThemeDB.get_default_theme())
+	#prints("get_project_theme", ThemeDB.get_project_theme())
+	#theme_changed.emit(theme)
 	_update_button.disabled = true
 	_md_reader.set_http_client(_update_client)
 	GdUnitFonts.init_fonts(_content)
 	request_releases()
+	if _debug_mode:
+		size = Vector2(1024, 800)
 
 
-func request_releases():
+func request_releases() -> void:
+	if _debug_mode:
+		_header.text = "Debug mode"
+		_show_update = true
+		return
 	var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_latest_version()
 	if response.code() != 200:
 		push_warning("Update information cannot be retrieved from GitHub! \n %s" % response.response())
@@ -57,13 +67,19 @@ func _h4_message(message :String, color :Color) -> String:
 
 func _process(_delta):
 	if _show_update:
-		var spinner := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
 		_content.clear()
-		_content.append_text(_h4_message("\n\n\nRequest release infos ... [img=24x24]%s[/img]" % spinner, Color.SNOW))
+		_content.append_text(_h4_message("\n\n\nRequest release infos ... [img=24x24]%s[/img]" % spinner_icon, Color.SNOW))
 		popup_centered_ratio(.5)
 		_show_update = false
-		var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_releases()
 		_content.clear()
+		if _debug_mode:
+			popup_centered_ratio(.5)
+			var content :String = FileAccess.open("res://addons/gdUnit4/test/update/resources/markdown.txt", FileAccess.READ).get_as_text()
+			var bbcode = await _md_reader.to_bbcode(content)
+			_content.append_text(bbcode)
+			_update_button.set_disabled(false)
+			return
+		var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_releases()
 		if response.code() == 200:
 			var content :String = await extract_releases(response, _current_version)
 			# finally force rescan to import images as textures
@@ -85,7 +101,7 @@ static func extract_zip_url(response :GdUnitUpdateClient.HttpResponse) -> String
 	return body[0]["zipball_url"]
 
 
-func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version :) -> String:
+func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version) -> String:
 	await get_tree().process_frame
 	var result :String = ""
 	for release in response.response():
@@ -100,14 +116,15 @@ func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version
 
 func rescan(update_scripts :bool = false) -> void:
 	await get_tree().process_frame
-	var plugin := EditorPlugin.new()
-	var fs := plugin.get_editor_interface().get_resource_filesystem()
-	fs.scan_sources()
-	while fs.is_scanning():
-		await get_tree().create_timer(1).timeout
-	if update_scripts:
-		plugin.get_editor_interface().get_resource_filesystem().update_script_classes()
-	plugin.free()
+	if Engine.is_editor_hint():
+		var plugin := EditorPlugin.new()
+		var fs := plugin.get_editor_interface().get_resource_filesystem()
+		fs.scan_sources()
+		while fs.is_scanning():
+			await get_tree().create_timer(1).timeout
+		if update_scripts:
+			plugin.get_editor_interface().get_resource_filesystem().update_script_classes()
+		plugin.free()
 
 
 func is_update_in_progress() -> bool:
@@ -115,33 +132,20 @@ func is_update_in_progress() -> bool:
 
 
 func init_progress(max_value : int) -> void:
-	_info_popup.popup_centered_clamped()
-	_info_progress.max_value = max_value
-	_info_progress.value = 0
+	_progress_panel.show()
+	_progress_bar.max_value = max_value
+	_progress_bar.value = 0
 
 
 func stop_progress() -> void:
-	_info_popup.hide()
+	_progress_panel.hide()
 
 
 func update_progress(message :String) -> void:
-	_info_content.text = message
-	_info_progress.value += 1
+	_progress_content.text = message
+	_progress_bar.value += 1
+	await get_tree().process_frame
 	prints("Update ..", message)
-
-
-static func close_open_editor_scripts() -> void:
-	var plugin := EditorPlugin.new()
-	var script_editor := plugin.get_editor_interface().get_script_editor()
-	prints("Closing all currently opened scripts ..")
-	script_editor._menu_option(MENU_ACTION_FILE_CLOSE_ALL)
-	plugin.free()
-
-
-func delete_obsolete_files() -> void:
-	for file_to_delete in ["res://gdUnit4.csproj", "res://gdUnit4.sln"]:
-		if FileAccess.file_exists(file_to_delete):
-			DirAccess.remove_absolute(file_to_delete)
 
 
 func _prepare_update() -> Dictionary:
@@ -163,7 +167,15 @@ func _on_update_pressed():
 	var zip_file = paths.get("zip_file")
 	var tmp_path = paths.get("tmp_path")
 	
-	var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_zip_package(_download_zip_url, zip_file)
+	_content.clear()
+	_content.append_text(_h4_message("\nRun Update ... [img=24x24]%s[/img]" % spinner_icon, Color.SNOW))
+	
+	var response :GdUnitUpdateClient.HttpResponse
+	if _debug_mode:
+		response = GdUnitUpdateClient.HttpResponse.new(200, PackedByteArray())
+		zip_file = "res://update.zip"
+	else:
+		response = await _update_client.request_zip_package(_download_zip_url, zip_file)
 	if response.code() != 200:
 		push_warning("Update information cannot be retrieved from GitHub! \n Error code: %d : %s" % [response.code(), response.response()])
 		update_progress("Update failed! Try it later again.")
@@ -173,18 +185,14 @@ func _on_update_pressed():
 	update_progress("disable GdUnit3 ..")
 	
 	# remove_at update content to prevent resource loading issues during update (deleted resources)
-	_content.text = ""
-	_content.text = _colored("### Updating ...", Color.SNOW)
 	# close gdUnit scripts before update
-	close_open_editor_scripts()
+	if !_debug_mode:
+		ScriptEditorControls.close_open_editor_scripts()
 	disable_gdUnit()
 	
 	# extract zip to tmp
-	var source := ProjectSettings.globalize_path(zip_file)
-	var dest := ProjectSettings.globalize_path(tmp_path)
-	
-	update_progress("extracting zip '%s' to '%s'" % [source, dest])
-	var result := GdUnitTools.extract_package(source, dest)
+	update_progress("extracting zip '%s' to '%s'" % [zip_file, tmp_path])
+	var result := extract_zip(zip_file, tmp_path)
 	if result.is_error():
 		update_progress("Update failed! %s" % result.error_message())
 		await get_tree().create_timer(3).timeout
@@ -192,24 +200,12 @@ func _on_update_pressed():
 		enable_gdUnit()
 		return
 	
-	# find extracted directory name
-	var dir := DirAccess.open(tmp_path)
-	dir.list_dir_begin() # TODO GODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
-	var file_name = dir.get_next()
-	while file_name != "":
-		if dir.current_is_dir() and file_name.begins_with("MikeSchulze-gdUnit4"):
-			break
-		file_name = dir.get_next()
-	var source_dir = tmp_path + "/" + file_name
-	
 	# delete the old version at first
-	update_progress("uninstall GdUnit3 ..")
-	GdUnitTools.delete_directory("res://addons/gdUnit4/")
-	GdUnitTools.delete_directory("res://addons/GdCommons/")
+	update_progress("uninstall GdUnit4 ..")
+	#GdUnitTools.delete_directory("res://addons/gdUnit4/")
 	
-	update_progress("install new GdUnit3 version ..")
-	GdUnitTools.copy_directory(source_dir, "res://", true)
-	delete_obsolete_files()
+	update_progress("install new GdUnit4 version ..")
+	GdUnitTools.copy_directory(tmp_path, "res://addons_test", true)
 	
 	update_progress("refresh editor resources ..")
 	await rescan(true)
@@ -217,26 +213,53 @@ func _on_update_pressed():
 	update_progress("executing patches ..")
 	_patcher.execute()
 	
-	update_progress("enable GdUnit3 ..")
+	update_progress("enable GdUnit4 ..")
 	await get_tree().create_timer(.5).timeout
 	update_progress("New GdUnit successfully installed")
+	stop_progress()
+	_content.text = _colored("New GdUnit version successfully installed", Color.SNOW)
 	await get_tree().create_timer(1).timeout
 	hide()
 	enable_gdUnit()
 	queue_free()
+	await get_tree().process_frame
 
 
 static func enable_gdUnit() -> void:
-	var plugin := EditorPlugin.new()
-	plugin.get_editor_interface().set_plugin_enabled("gdUnit4", true)
-	plugin.free()
+	if Engine.is_editor_hint():
+		var plugin := EditorPlugin.new()
+		plugin.get_editor_interface().set_plugin_enabled("gdUnit4", true)
+		plugin.free()
 
 
 static func disable_gdUnit() -> void:
-	var plugin := EditorPlugin.new()
-	plugin.get_editor_interface().set_plugin_enabled("gdUnit4", false)
-	plugin.free()
+	if Engine.is_editor_hint():
+		var plugin := EditorPlugin.new()
+		plugin.get_editor_interface().set_plugin_enabled("gdUnit4", false)
+		plugin.free()
 
+
+static func extract_zip(zip_package :String, dest_path :String) -> Result:
+	var zip: ZIPReader = ZIPReader.new()
+	var err := zip.open(zip_package)
+	if err != OK:
+		return Result.error("Extracting `%s` failed! Please collect the error log and report this. Error %s" % [zip_package, error_string(err) ])
+	var zip_entries: PackedStringArray = zip.get_files()
+	# Get base path and step over archive path and addons folder
+	var archive_path = zip_entries[0]
+	#var addons_path = zip_entries[1]
+	zip_entries.remove_at(0)
+	
+	for zip_entry in zip_entries:
+		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
+		prints(zip_entry, "->", new_file_path)
+		if zip_entry.ends_with("/"):
+			DirAccess.make_dir_recursive_absolute(new_file_path)
+			continue
+		var file: FileAccess = FileAccess.open(new_file_path, FileAccess.WRITE)
+		file.store_buffer(zip.read_file(zip_entry))
+	zip.close()
+	return Result.success(dest_path)
 
 func _on_show_next_toggled(enabled :bool):
 	GdUnitSettings.set_update_notification(enabled)
