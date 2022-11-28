@@ -259,3 +259,25 @@ static func append_array(array, append :Array) -> void:
 	else:
 		for element in append:
 			array.append(element)
+
+
+static func extract_zip(zip_package :String, dest_path :String) -> Result:
+	var zip: ZIPReader = ZIPReader.new()
+	var err := zip.open(zip_package)
+	if err != OK:
+		return Result.error("Extracting `%s` failed! Please collect the error log and report this. Error Code: %s" % [zip_package, err])
+	var zip_entries: PackedStringArray = zip.get_files()
+	# Get base path and step over archive folder
+	var archive_path = zip_entries[0]
+	zip_entries.remove_at(0)
+	
+	for zip_entry in zip_entries:
+		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
+		prints(zip_entry, "->", new_file_path)
+		if zip_entry.ends_with("/"):
+			DirAccess.make_dir_recursive_absolute(new_file_path)
+			continue
+		var file: FileAccess = FileAccess.open(new_file_path, FileAccess.WRITE)
+		file.store_buffer(zip.read_file(zip_entry))
+	zip.close()
+	return Result.success(dest_path)

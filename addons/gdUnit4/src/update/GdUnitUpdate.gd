@@ -192,7 +192,7 @@ func _on_update_pressed():
 	
 	# extract zip to tmp
 	update_progress("extracting zip '%s' to '%s'" % [zip_file, tmp_path])
-	var result := extract_zip(zip_file, tmp_path)
+	var result := GdUnitTools.extract_zip(zip_file, tmp_path)
 	if result.is_error():
 		update_progress("Update failed! %s" % result.error_message())
 		await get_tree().create_timer(3).timeout
@@ -238,28 +238,6 @@ static func disable_gdUnit() -> void:
 		plugin.get_editor_interface().set_plugin_enabled("gdUnit4", false)
 		plugin.free()
 
-
-static func extract_zip(zip_package :String, dest_path :String) -> Result:
-	var zip: ZIPReader = ZIPReader.new()
-	var err := zip.open(zip_package)
-	if err != OK:
-		return Result.error("Extracting `%s` failed! Please collect the error log and report this. Error %s" % [zip_package, error_string(err) ])
-	var zip_entries: PackedStringArray = zip.get_files()
-	# Get base path and step over archive path and addons folder
-	var archive_path = zip_entries[0]
-	#var addons_path = zip_entries[1]
-	zip_entries.remove_at(0)
-	
-	for zip_entry in zip_entries:
-		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
-		prints(zip_entry, "->", new_file_path)
-		if zip_entry.ends_with("/"):
-			DirAccess.make_dir_recursive_absolute(new_file_path)
-			continue
-		var file: FileAccess = FileAccess.open(new_file_path, FileAccess.WRITE)
-		file.store_buffer(zip.read_file(zip_entry))
-	zip.close()
-	return Result.success(dest_path)
 
 func _on_show_next_toggled(enabled :bool):
 	GdUnitSettings.set_update_notification(enabled)
