@@ -73,7 +73,6 @@ func _process(_delta):
 		_show_update = false
 		_content.clear()
 		if _debug_mode:
-			popup_centered_ratio(.5)
 			var content :String = FileAccess.open("res://addons/gdUnit4/test/update/resources/markdown.txt", FileAccess.READ).get_as_text()
 			var bbcode = await _md_reader.to_bbcode(content)
 			_content.append_text(bbcode)
@@ -202,10 +201,10 @@ func _on_update_pressed():
 	
 	# delete the old version at first
 	update_progress("uninstall GdUnit4 ..")
-	#GdUnitTools.delete_directory("res://addons/gdUnit4/")
+	GdUnitTools.delete_directory("res://addons/gdUnit4/")
 	
 	update_progress("install new GdUnit4 version ..")
-	GdUnitTools.copy_directory(tmp_path, "res://addons_test", true)
+	GdUnitTools.copy_directory(tmp_path, "res://", true)
 	
 	update_progress("refresh editor resources ..")
 	await rescan(true)
