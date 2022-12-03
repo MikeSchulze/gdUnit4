@@ -1,6 +1,6 @@
-[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h2.tres]GdUnit3 v0.9.4 - Release Candidate[/font]
+[font_size=20]GdUnit3 v0.9.4 - Release Candidate[/font_size]
 
-[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h3.tres]Improvements[/font]
+[font_size=16]Improvements[/font_size]
 [img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] Added project settings to configure:
 [img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] [b]Verbose Orphans[/b] to enable/disable report detected orphans
 [img]res://addons/gdUnit4/src/update/119266895-e09d1900-bbec-11eb-91e9-45409ba2edb2.png[/img]
@@ -9,7 +9,7 @@
 [img]res://addons/gdUnit4/src/update/119266875-d1b66680-bbec-11eb-856f-8fac9b0ed31c.png[/img]
 
 
-[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h3.tres]Bugfixes[/font]
+[font_size=16]Bugfixes[/font_size]
 [img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] GdUnit inspecor:
    [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] Fixed invalid test case state visualisation for detected orphan nodes   (#63)
    [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] Fixed a ui bug to auto select the first report failure after a test run

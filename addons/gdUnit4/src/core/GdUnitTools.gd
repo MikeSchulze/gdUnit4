@@ -139,39 +139,6 @@ static func delete_path_index_lower_equals_than(path :String, prefix :String, in
 	return deleted
 
 
-static func _list_installed_tar_paths() -> PackedStringArray:
-	var stdout = Array()
-	OS.execute("where", ["tar"], stdout, true)
-	if stdout.size() > 0:
-		return PackedStringArray(stdout[0].split("\n"))
-	return PackedStringArray()
-
-static func _find_tar_path(os_name :String) -> String:
-	if os_name.to_upper() != "WINDOWS":
-		return "tar"
-	var paths := _list_installed_tar_paths()
-	for path in paths:
-		if path.find("\\System32\\tar") != -1:
-			return path.strip_escapes()
-	return "tar"
-
-static func extract_package(source :String, dest:String) -> Result:
-	prints("Detect OS :", OS.get_name())
-	var tar_path := _find_tar_path( OS.get_name())
-	var err = OS.execute(tar_path, ["-xf", source, "-C", dest])
-	if err != 0:
-		var cmd = "%s -xf \"%s\" -C \"%s\"" % [tar_path, source, dest]
-		prints("Extracting by `%s` failed with error code: %d" % [cmd, err])
-		prints("Fallback to unzip")
-		err = OS.execute("unzip", [source, "-d", dest])
-		if err != 0:
-			cmd = "unzip %s -d %s" % [source, dest]
-			prints("Extracting by `%s` failed with error code: %d" % [cmd, err])
-			return Result.error("Extracting `%s` failed! Please collect the error log and report this." % source)
-	prints("%s successfully extracted" % source)
-	return Result.success(dest)
-
-
 static func scan_dir(path :String) -> PackedStringArray:
 	var dir := DirAccess.open(path)
 	if dir == null or not dir.dir_exists(path):
@@ -292,3 +259,24 @@ static func append_array(array, append :Array) -> void:
 	else:
 		for element in append:
 			array.append(element)
+
+
+static func extract_zip(zip_package :String, dest_path :String) -> Result:
+	var zip: ZIPReader = ZIPReader.new()
+	var err := zip.open(zip_package)
+	if err != OK:
+		return Result.error("Extracting `%s` failed! Please collect the error log and report this. Error Code: %s" % [zip_package, err])
+	var zip_entries: PackedStringArray = zip.get_files()
+	# Get base path and step over archive folder
+	var archive_path = zip_entries[0]
+	zip_entries.remove_at(0)
+	
+	for zip_entry in zip_entries:
+		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
+		if zip_entry.ends_with("/"):
+			DirAccess.make_dir_recursive_absolute(new_file_path)
+			continue
+		var file: FileAccess = FileAccess.open(new_file_path, FileAccess.WRITE)
+		file.store_buffer(zip.read_file(zip_entry))
+	zip.close()
+	return Result.success(dest_path)

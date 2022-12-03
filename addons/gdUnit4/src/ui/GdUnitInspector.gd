@@ -28,7 +28,8 @@ func _ready():
 	GdUnitSignals.gdunit_client_connected.connect(Callable(self, "_on_client_connected"))
 	GdUnitSignals.gdunit_client_disconnected.connect(Callable(self, "_on_client_disconnected"))
 	GdUnitSignals.gdunit_event.connect(Callable(self, "_on_event"))
-	
+	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin") as EditorPlugin
+	_editor_interface = plugin.get_editor_interface()
 	if Engine.is_editor_hint():
 		_getEditorThemes(_editor_interface)
 	# preload previous test execution
@@ -61,10 +62,6 @@ func _check_test_run_stopped_manually():
 
 func _is_test_running_but_stop_pressed():
 	return _editor_interface and _running_debug_mode and _is_running and not _editor_interface.is_playing_scene()
-
-
-func set_editor_interface(editor_interface :EditorInterface) -> void:
-	_editor_interface = editor_interface
 
 
 func _getEditorThemes(interface :EditorInterface) -> void:

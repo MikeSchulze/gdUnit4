@@ -1,74 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://bqfpidewtpeg0"]
+[gd_scene load_steps=2 format=3 uid="uid://bqfpidewtpeg0"]
 
 [ext_resource type="Script" path="res://addons/gdUnit4/src/ui/parts/InspectorTreeMainPanel.gd" id="1"]
-[ext_resource type="FontFile" uid="uid://bmpjsqg5ta60q" path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-Regular.ttf" id="2_eo550"]
-[ext_resource type="FontFile" uid="uid://bkq03m43nqgy1" path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-Bold.ttf" id="3_6xw7w"]
-[ext_resource type="FontFile" uid="uid://doadflpipckck" path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-Italic.ttf" id="4_t4a7n"]
-[ext_resource type="FontFile" uid="uid://c3tchq6x6i7eb" path="res://addons/gdUnit4/src/update/assets/fonts/static/RobotoMono-BoldItalic.ttf" id="5_u45s8"]
-
-[sub_resource type="FontFile" id="FontFile_vbojv"]
-subpixel_positioning = 0
-msdf_pixel_range = 14
-msdf_size = 128
-fixed_size = 14
-fallbacks = [ExtResource("2_eo550")]
-face_index = null
-embolden = null
-transform = null
-cache/0/14/0/ascent = 0.0
-cache/0/14/0/descent = 0.0
-cache/0/14/0/underline_position = 0.0
-cache/0/14/0/underline_thickness = 0.0
-cache/0/14/0/scale = 1.0
-cache/0/14/0/kerning_overrides/14/0 = Vector2(0, 0)
-
-[sub_resource type="FontFile" id="FontFile_e022h"]
-subpixel_positioning = 0
-msdf_pixel_range = 14
-msdf_size = 128
-fixed_size = 14
-fallbacks = [ExtResource("3_6xw7w")]
-face_index = null
-embolden = null
-transform = null
-cache/0/14/0/ascent = 0.0
-cache/0/14/0/descent = 0.0
-cache/0/14/0/underline_position = 0.0
-cache/0/14/0/underline_thickness = 0.0
-cache/0/14/0/scale = 1.0
-cache/0/14/0/kerning_overrides/14/0 = Vector2(0, 0)
-
-[sub_resource type="FontFile" id="FontFile_xpv3c"]
-subpixel_positioning = 0
-msdf_pixel_range = 14
-msdf_size = 128
-fixed_size = 14
-fallbacks = [ExtResource("4_t4a7n")]
-face_index = null
-embolden = null
-transform = null
-cache/0/14/0/ascent = 0.0
-cache/0/14/0/descent = 0.0
-cache/0/14/0/underline_position = 0.0
-cache/0/14/0/underline_thickness = 0.0
-cache/0/14/0/scale = 1.0
-cache/0/14/0/kerning_overrides/14/0 = Vector2(0, 0)
-
-[sub_resource type="FontFile" id="FontFile_c0cbd"]
-subpixel_positioning = 0
-msdf_pixel_range = 14
-msdf_size = 128
-fixed_size = 14
-fallbacks = [ExtResource("5_u45s8")]
-face_index = null
-embolden = null
-transform = null
-cache/0/14/0/ascent = 0.0
-cache/0/14/0/descent = 0.0
-cache/0/14/0/underline_position = 0.0
-cache/0/14/0/underline_thickness = 0.0
-cache/0/14/0/scale = 1.0
-cache/0/14/0/kerning_overrides/14/0 = Vector2(0, 0)
 
 [node name="MainPanel" type="VSplitContainer"]
 use_parent_material = true
@@ -119,16 +51,6 @@ offset_bottom = 118.0
 size_flags_horizontal = 3
 size_flags_vertical = 11
 focus_mode = 2
-theme_override_fonts/normal_font = SubResource("FontFile_vbojv")
-theme_override_fonts/bold_font = SubResource("FontFile_e022h")
-theme_override_fonts/italics_font = SubResource("FontFile_xpv3c")
-theme_override_fonts/bold_italics_font = SubResource("FontFile_c0cbd")
-theme_override_fonts/mono_font = SubResource("FontFile_vbojv")
-theme_override_font_sizes/normal_font_size = 14
-theme_override_font_sizes/bold_font_size = 14
-theme_override_font_sizes/italics_font_size = 14
-theme_override_font_sizes/bold_italics_font_size = 14
-theme_override_font_sizes/mono_font_size = 14
 bbcode_enabled = true
 fit_content_height = true
 selection_enabled = true

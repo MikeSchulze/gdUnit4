@@ -2,6 +2,7 @@
 extends Window
 
 const EAXAMPLE_URL := "https://github.com/MikeSchulze/gdUnit4-examples/archive/refs/heads/master.zip"
+const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
 
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
 @onready var _version_label :RichTextLabel = $v/MarginContainer/GridContainer/PanelContainer/Panel/CenterContainer2/version
@@ -132,23 +133,13 @@ func _install_examples() -> void:
 		stop_progress()
 		return
 	# extract zip to tmp
-	var source := ProjectSettings.globalize_path(zip_file)
-	var dest := ProjectSettings.globalize_path(tmp_path)
-	update_progress("Extracting zip '%s' to '%s'" % [source, dest])
-	await get_tree().process_frame
-	
-	var result := GdUnitTools.extract_package(source, dest)
+	update_progress("Install examples into project")
+	var result := GdUnitTools.extract_zip(zip_file, "res://gdUnit4-examples/")
 	if result.is_error():
 		update_progress("Install examples failed! %s" % result.error_message())
 		await get_tree().create_timer(3).timeout
 		stop_progress()
 		return
-	
-	var source_dir = tmp_path + "/gdUnit4-examples-master"
-	update_progress("Install examples into project")
-	await get_tree().process_frame
-	GdUnitTools.copy_directory(source_dir, "res://gdUnit4-examples/", true)
-	
 	update_progress("Refresh project")
 	await rescan(true)
 	update_progress("Examples successfully installed")

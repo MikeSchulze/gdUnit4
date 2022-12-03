@@ -13,11 +13,8 @@ func _fixup_node_inspector() -> void:
 	var classes := PackedStringArray([
 		"GdUnitTestSuite",
 		"_TestCase",
-		"GdMarkDownReader",
 		"GdUnitInspecor",
 		"GdUnitExecutor",
-		"GdUnitUpdateClient",
-		"GdUnitUpdate",
 		"GdUnitTcpClient",
 		"GdUnitTcpServer"])
 	for clazz in classes:
@@ -28,15 +25,10 @@ func _enter_tree():
 	Engine.set_meta("GdUnitEditorPlugin", self)
 	_singleton = GdUnitSingleton.new()
 	GdUnitSettings.setup()
-	# show possible update notification when is enabled
-	#if GdUnitSettings.is_update_notification_enabled():
-	#	_update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdate.tscn").instantiate()
-	#	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, _update_tool)
 	# install SignalHandler singleton
 	add_autoload_singleton("GdUnitSignals", "res://addons/gdUnit4/src/core/GdUnitSignals.gd")
 	# install the GdUnit inspector
 	_gd_inspector = load("res://addons/gdUnit4/src/ui/GdUnitInspector.tscn").instantiate()
-	_gd_inspector.set_editor_interface(get_editor_interface())
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, _gd_inspector)
 	# install the GdUnit Console
 	_gd_console = load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn").instantiate()
@@ -47,7 +39,16 @@ func _enter_tree():
 	if err != OK:
 		prints("ERROR", GdUnitTools.error_as_string(err))
 	_fixup_node_inspector()
-	prints("Loading GdUnit3 Plugin success")
+	prints("Loading GdUnit4 Plugin success")
+	# show possible update notification when is enabled
+	if GdUnitSettings.is_update_notification_enabled():
+		# grap first valid parent used for dialogs
+		var windows := GdObjects.find_nodes_by_class(Engine.get_main_loop().root, "AcceptDialog", true)
+		var parent :Node = windows[0].get_parent()
+		_update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdate.tscn").instantiate()
+		parent.call_deferred("add_child", _update_tool)
+		#var parent :Node = Control.new()
+		#add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, parent)
 
 
 func _exit_tree():
@@ -62,9 +63,8 @@ func _exit_tree():
 		_server_node.free()
 	# Delete and release the update tool only when it is not in use, otherwise it will interrupt the execution of the update
 	if is_instance_valid(_update_tool) and not _update_tool.is_update_in_progress():
-		remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, _update_tool)
-		_update_tool.free()
+		_update_tool.queue_free()
 	remove_autoload_singleton("GdUnitSignals")
 	if Engine.has_meta("GdUnitEditorPlugin"):
 		Engine.remove_meta("GdUnitEditorPlugin")
-	prints("Unload GdUnit3 Plugin success")
+	prints("Unload GdUnit4 Plugin success")

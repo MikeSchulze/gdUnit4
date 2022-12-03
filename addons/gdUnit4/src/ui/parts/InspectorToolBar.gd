@@ -18,6 +18,7 @@ func _ready():
 	var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 	var editiorTheme := editor.get_editor_interface().get_base_control().theme
 	_button_run.icon = editiorTheme.get_icon("Play", "EditorIcons")
+	_button_run_debug.icon = debug_icon_image
 	_button_stop.icon = editiorTheme.get_icon("Stop", "EditorIcons")
 	_tool_button.icon = editiorTheme.get_icon("Tools", "EditorIcons")
 	_button_wiki.icon = editiorTheme.get_icon("HelpSearch", "EditorIcons")

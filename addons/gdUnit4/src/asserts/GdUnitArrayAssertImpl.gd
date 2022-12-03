@@ -81,7 +81,7 @@ func report_error(error :String) -> GdUnitArrayAssert:
 # -------- Base Assert wrapping ------------------------------------------------
 func has_failure_message(expected: String) -> GdUnitArrayAssert:
 	# normalize text to get rid of windows vs unix line formatting
-	_base.has_failure_message(GdUnitTools.normalize_text(expected))
+	_base.has_failure_message(expected)
 	return self
 
 

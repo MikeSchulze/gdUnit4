@@ -1,0 +1,9 @@
+[font_size=24]Header 1 Text[/font_size]
+[font_size=24][center]Header 1Centered Text[/center][/font_size]
+
+[font_size=20]Header 2 Text[/font_size]
+[font_size=20][center]Header 2 Centered Text[/center][/font_size]
+
+[font_size=20][center]Header 2 Centered Text
+Multiline Test
+Is here[/center][/font_size]
