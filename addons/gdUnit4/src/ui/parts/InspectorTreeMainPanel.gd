@@ -116,7 +116,15 @@ func _ready():
 	GdUnitSignals.gdunit_add_test_suite.connect(Callable(self, "_on_gdunit_add_test_suite"))
 	GdUnitSignals.gdunit_event.connect(Callable(self, "_on_gdunit_event"))
 
-static func load_resized_texture(path :String, width :int = 16, height :int = 16) -> Texture2D:
+
+# we need current to manually redraw bacause of the animation bug
+# https://github.com/godotengine/godot/issues/69330
+func _process(_delta):
+	if is_visible_in_tree():
+		queue_redraw()
+
+
+func load_resized_texture(path :String, width :int = 16, height :int = 16) -> Texture2D:
 	var texture :Texture2D = load(path)
 	var image := texture.get_image()
 	if width > 0 && height > 0:
