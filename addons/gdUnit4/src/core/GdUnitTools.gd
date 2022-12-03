@@ -273,7 +273,6 @@ static func extract_zip(zip_package :String, dest_path :String) -> Result:
 	
 	for zip_entry in zip_entries:
 		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
-		prints(zip_entry, "->", new_file_path)
 		if zip_entry.ends_with("/"):
 			DirAccess.make_dir_recursive_absolute(new_file_path)
 			continue

@@ -39,11 +39,16 @@ func _enter_tree():
 	if err != OK:
 		prints("ERROR", GdUnitTools.error_as_string(err))
 	_fixup_node_inspector()
-	prints("Loading GdUnit3 Plugin success")
+	prints("Loading GdUnit4 Plugin success")
 	# show possible update notification when is enabled
 	if GdUnitSettings.is_update_notification_enabled():
+		# grap first valid parent used for dialogs
+		var windows := GdObjects.find_nodes_by_class(Engine.get_main_loop().root, "AcceptDialog", true)
+		var parent :Node = windows[0].get_parent()
 		_update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdate.tscn").instantiate()
-		Engine.get_main_loop().root.call_deferred("add_child", _update_tool)
+		parent.call_deferred("add_child", _update_tool)
+		#var parent :Node = Control.new()
+		#add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, parent)
 
 
 func _exit_tree():
@@ -62,4 +67,4 @@ func _exit_tree():
 	remove_autoload_singleton("GdUnitSignals")
 	if Engine.has_meta("GdUnitEditorPlugin"):
 		Engine.remove_meta("GdUnitEditorPlugin")
-	prints("Unload GdUnit3 Plugin success")
+	prints("Unload GdUnit4 Plugin success")

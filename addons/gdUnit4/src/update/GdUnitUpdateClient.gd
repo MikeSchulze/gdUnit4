@@ -7,7 +7,7 @@ class HttpResponse:
 	var _code :int
 	var _body :PackedByteArray
 	
-	func _init(code :int,body :PackedByteArray):
+	func _init(code :int, body :PackedByteArray):
 		_code = code
 		_body = body
 	
