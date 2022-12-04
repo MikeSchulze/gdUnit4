@@ -4,7 +4,6 @@ extends EditorPlugin
 var _gd_inspector :Node
 var _server_node
 var _gd_console :Node
-var _update_tool :Node
 var _singleton :GdUnitSingleton
 
 
@@ -40,15 +39,6 @@ func _enter_tree():
 		prints("ERROR", GdUnitTools.error_as_string(err))
 	_fixup_node_inspector()
 	prints("Loading GdUnit4 Plugin success")
-	# show possible update notification when is enabled
-	if GdUnitSettings.is_update_notification_enabled():
-		# grap first valid parent used for dialogs
-		var windows := GdObjects.find_nodes_by_class(Engine.get_main_loop().root, "AcceptDialog", true)
-		var parent :Node = windows[0].get_parent()
-		_update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdate.tscn").instantiate()
-		parent.call_deferred("add_child", _update_tool)
-		#var parent :Node = Control.new()
-		#add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, parent)
 
 
 func _exit_tree():
@@ -61,9 +51,6 @@ func _exit_tree():
 	if is_instance_valid(_server_node):
 		remove_child(_server_node)
 		_server_node.free()
-	# Delete and release the update tool only when it is not in use, otherwise it will interrupt the execution of the update
-	if is_instance_valid(_update_tool) and not _update_tool.is_update_in_progress():
-		_update_tool.queue_free()
 	remove_autoload_singleton("GdUnitSignals")
 	if Engine.has_meta("GdUnitEditorPlugin"):
 		Engine.remove_meta("GdUnitEditorPlugin")

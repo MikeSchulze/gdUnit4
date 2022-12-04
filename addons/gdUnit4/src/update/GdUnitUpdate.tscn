@@ -1,130 +1,58 @@
-[gd_scene load_steps=5 format=3 uid="uid://b81vt73tk73qe"]
+[gd_scene load_steps=4 format=3 uid="uid://2eahgaw88y6q"]
 
 [ext_resource type="Script" path="res://addons/gdUnit4/src/update/GdUnitUpdate.gd" id="1"]
-[ext_resource type="Script" path="res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd" id="8"]
 
 [sub_resource type="Gradient" id="Gradient_p52or"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_t52i5"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_d6nsq"]
 gradient = SubResource("Gradient_p52or")
 
-[node name="Control" type="Popup"]
-title = "GdUnit Update Notification"
-position = Vector2i(0, 112)
-size = Vector2i(800, 400)
-exclusive = true
-unresizable = false
-borderless = false
+[node name="GdUnitUpdate" type="ConfirmationDialog"]
+title = "Update GdUnit4 to new version"
+size = Vector2i(800, 177)
+visible = true
+transient = false
 always_on_top = true
-min_size = Vector2i(800, 400)
+popup_window = true
+extend_to_title = true
+ok_button_text = "Update"
+dialog_hide_on_ok = false
+dialog_close_on_escape = false
 script = ExtResource("1")
 
-[node name="GdUnitUpdateClient" type="Node" parent="."]
-script = ExtResource("8")
-
-[node name="Panel" type="Panel" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="GridContainer" type="VBoxContainer" parent="Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-alignment = 1
-
-[node name="PanelContainer" type="MarginContainer" parent="Panel/GridContainer"]
-layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 34.0
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="header" type="Label" parent="Panel/GridContainer/PanelContainer"]
-layout_mode = 2
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 1148.0
-offset_bottom = 30.0
-size_flags_horizontal = 9
-
-[node name="PanelContainer2" type="PanelContainer" parent="Panel/GridContainer"]
-layout_mode = 2
-offset_top = 38.0
-offset_right = 1152.0
-offset_bottom = 596.0
-size_flags_vertical = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/GridContainer/PanelContainer2"]
-layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 558.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Panel/GridContainer/PanelContainer2/ScrollContainer"]
-layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 558.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="content" type="RichTextLabel" parent="Panel/GridContainer/PanelContainer2/ScrollContainer/MarginContainer"]
-layout_mode = 2
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 1148.0
-offset_bottom = 554.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-bbcode_enabled = true
-
-[node name="UpdateProgress" type="PanelContainer" parent="Panel/GridContainer/PanelContainer2"]
+[node name="UpdateProgress" type="PanelContainer" parent="."]
 process_mode = 3
-visible = false
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(600, 120)
 layout_direction = 2
-layout_mode = 2
-offset_top = 518.0
-offset_right = 1152.0
-offset_bottom = 558.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 8
-
-[node name="Progress" type="TextureRect" parent="Panel/GridContainer/PanelContainer2/UpdateProgress"]
-layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -360.0
+offset_bottom = -520.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = SubResource("GradientTexture2D_t52i5")
+
+[node name="Progress" type="TextureRect" parent="UpdateProgress"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture2D_d6nsq")
 ignore_texture_size = true
 
-[node name="bar" type="ProgressBar" parent="Panel/GridContainer/PanelContainer2/UpdateProgress/Progress"]
+[node name="bar" type="ProgressBar" parent="UpdateProgress/Progress"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+rounded = true
 
-[node name="label" type="Label" parent="Panel/GridContainer/PanelContainer2/UpdateProgress/Progress"]
+[node name="label" type="Label" parent="UpdateProgress/Progress"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -135,62 +63,6 @@ offset_right = -4.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
-vertical_alignment = 1
+vertical_alignment = 2
 
-[node name="Panel" type="MarginContainer" parent="Panel/GridContainer"]
-layout_mode = 2
-offset_top = 600.0
-offset_right = 1152.0
-offset_bottom = 648.0
-size_flags_vertical = 4
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/GridContainer/Panel"]
-use_parent_material = true
-layout_mode = 2
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 1148.0
-offset_bottom = 44.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 4
-
-[node name="show_next" type="CheckBox" parent="Panel/GridContainer/Panel/HBoxContainer"]
-layout_mode = 2
-offset_top = 4.0
-offset_right = 147.0
-offset_bottom = 35.0
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "show next time"
-
-[node name="update" type="Button" parent="Panel/GridContainer/Panel/HBoxContainer"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-offset_left = 580.0
-offset_right = 645.0
-offset_bottom = 40.0
-size_flags_horizontal = 10
-size_flags_vertical = 4
-text = "Update"
-
-[node name="close" type="Button" parent="Panel/GridContainer/Panel/HBoxContainer"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-offset_left = 649.0
-offset_right = 1144.0
-offset_bottom = 40.0
-size_flags_horizontal = 3
-size_flags_vertical = 4
-text = "Close"
-
-[connection signal="meta_clicked" from="Panel/GridContainer/PanelContainer2/ScrollContainer/MarginContainer/content" to="." method="_on_content_meta_clicked"]
-[connection signal="meta_hover_ended" from="Panel/GridContainer/PanelContainer2/ScrollContainer/MarginContainer/content" to="." method="_on_content_meta_hover_ended"]
-[connection signal="meta_hover_started" from="Panel/GridContainer/PanelContainer2/ScrollContainer/MarginContainer/content" to="." method="_on_content_meta_hover_started"]
-[connection signal="toggled" from="Panel/GridContainer/Panel/HBoxContainer/show_next" to="." method="_on_show_next_toggled"]
-[connection signal="pressed" from="Panel/GridContainer/Panel/HBoxContainer/update" to="." method="_on_update_pressed"]
-[connection signal="pressed" from="Panel/GridContainer/Panel/HBoxContainer/close" to="." method="_on_cancel_pressed"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]
