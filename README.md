@@ -11,7 +11,6 @@
 
 <h2 align="center">Please read the following disclaimer carefully before proceeding!
 
-This is an alpha version based on the Godot 4.0 v3 alpha.
 This version is NOT bug free and may cause the Godot editor to crash.
 If you find a bug or problem please report it via [report bug](https://github.com/MikeSchulze/gdUnit4/issues/new/choose).
 
