@@ -1,6 +1,7 @@
-#warning-ignore-all:unused_argument
 extends GdUnitTestSuite
 
+@warning_ignore("unused_parameter")
+@warning_ignore(return_value_discarded)
 
 func test_parameterized_bool_value(a: int, expected :bool, test_parameters := [
 	[0, false],

@@ -306,7 +306,7 @@ func test_extract_class_name_from_instance():
 	# extract inner class name
 	assert_result(extract_class_name(AdvancedTestClass.SoundData.new())).is_equal("AdvancedTestClass.SoundData")
 	assert_result(extract_class_name(AdvancedTestClass.AtmosphereData.new())).is_equal("AdvancedTestClass.AtmosphereData")
-	# assert_result(extract_class_name(AdvancedTestClass.Area4D.new())).is_equal("AdvancedTestClass.Area4D")
+	assert_result(extract_class_name(AdvancedTestClass.Area4D.new(0))).is_equal("AdvancedTestClass.Area4D")
 	assert_result(extract_class_name(CustomClass.InnerClassC.new())).is_equal("CustomClass.InnerClassC")
 
 # verify enigne class names are not converted by configured naming convention

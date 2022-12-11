@@ -322,9 +322,8 @@ static func is_engine_type(value) -> bool:
 	return str(value).contains("GDScriptNativeClass")
 
 static func is_type(value :Variant) -> bool:
-	var isObject := typeof(value) == TYPE_OBJECT
 	# is an build-in type
-	if not isObject:
+	if typeof(value) != TYPE_OBJECT:
 		return false
 	# is a engine class type
 	if is_engine_type(value):
