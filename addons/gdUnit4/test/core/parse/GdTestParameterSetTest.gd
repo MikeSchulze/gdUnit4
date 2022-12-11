@@ -41,7 +41,7 @@ func test_example_e(a: Object, b :Object, expected :String, test_parameters := [
 	pass
 
 # verify the used 'test_parameters' is completly resolved
-func _test_extract_parameters() -> void:
+func test_extract_parameters() -> void:
 	var script :GDScript = load("res://addons/gdUnit4/test/core/parse/GdTestParameterSetTest.gd")
 	var parser := GdScriptParser.new()
 	var source := parser.load_source_code(script, [script.resource_path])
