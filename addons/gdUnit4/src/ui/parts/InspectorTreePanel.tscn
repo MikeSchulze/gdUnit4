@@ -18,16 +18,12 @@ script = ExtResource("1")
 
 [node name="Panel" type="PanelContainer" parent="."]
 layout_mode = 2
-offset_right = 228.0
-offset_bottom = 518.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Tree" type="Tree" parent="Panel"]
 use_parent_material = true
 layout_mode = 2
-offset_right = 228.0
-offset_bottom = 518.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 allow_rmb_select = true
@@ -37,17 +33,12 @@ select_mode = 1
 [node name="report" type="PanelContainer" parent="."]
 clip_contents = true
 layout_mode = 2
-offset_top = 530.0
-offset_right = 228.0
-offset_bottom = 648.0
 size_flags_horizontal = 11
 size_flags_vertical = 11
 
 [node name="report_template" type="RichTextLabel" parent="report"]
 use_parent_material = true
 layout_mode = 2
-offset_right = 228.0
-offset_bottom = 118.0
 size_flags_horizontal = 3
 size_flags_vertical = 11
 focus_mode = 2
@@ -58,31 +49,33 @@ selection_enabled = true
 [node name="ScrollContainer" type="ScrollContainer" parent="report"]
 use_parent_material = true
 layout_mode = 2
-offset_right = 228.0
-offset_bottom = 118.0
 size_flags_horizontal = 3
 size_flags_vertical = 11
 
 [node name="list" type="VBoxContainer" parent="report/ScrollContainer"]
 clip_contents = true
 layout_mode = 2
-offset_right = 228.0
-offset_bottom = 118.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="contextMenu" type="PopupPanel" parent="."]
+size = Vector2i(103, 80)
 
 [node name="items" type="VBoxContainer" parent="contextMenu"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 99.0
-offset_bottom = 96.0
+offset_right = -1053.0
+offset_bottom = -572.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="debug" type="MenuButton" parent="contextMenu/items"]
 layout_mode = 2
-offset_right = 84.0
-offset_bottom = 20.0
 size_flags_horizontal = 11
 size_flags_vertical = 9
 keep_pressed_outside = true
@@ -91,9 +84,6 @@ switch_on_hover = true
 
 [node name="run" type="MenuButton" parent="contextMenu/items"]
 layout_mode = 2
-offset_top = 24.0
-offset_right = 84.0
-offset_bottom = 44.0
 size_flags_horizontal = 11
 size_flags_vertical = 9
 keep_pressed_outside = true
