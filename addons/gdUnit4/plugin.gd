@@ -24,8 +24,6 @@ func _enter_tree():
 	Engine.set_meta("GdUnitEditorPlugin", self)
 	_singleton = GdUnitSingleton.new()
 	GdUnitSettings.setup()
-	# install SignalHandler singleton
-	add_autoload_singleton("GdUnitSignals", "res://addons/gdUnit4/src/core/GdUnitSignals.gd")
 	# install the GdUnit inspector
 	_gd_inspector = load("res://addons/gdUnit4/src/ui/GdUnitInspector.tscn").instantiate()
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, _gd_inspector)
@@ -51,7 +49,6 @@ func _exit_tree():
 	if is_instance_valid(_server_node):
 		remove_child(_server_node)
 		_server_node.free()
-	remove_autoload_singleton("GdUnitSignals")
 	if Engine.has_meta("GdUnitEditorPlugin"):
 		Engine.remove_meta("GdUnitEditorPlugin")
 	prints("Unload GdUnit4 Plugin success")

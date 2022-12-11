@@ -22,10 +22,10 @@ var _summary = {
 func _ready():
 	init_colors()
 	GdUnit4Version.init_version_label(title)
-	GdUnitSignals.gdunit_event.connect(Callable(self, "_on_gdunit_event"))
-	GdUnitSignals.gdunit_message.connect(Callable(self, "_on_gdunit_message"))
-	GdUnitSignals.gdunit_client_connected.connect(Callable(self, "_on_gdunit_client_connected"))
-	GdUnitSignals.gdunit_client_disconnected.connect(Callable(self, "_on_gdunit_client_disconnected"))
+	GdUnitSignals.instance().gdunit_event.connect(Callable(self, "_on_gdunit_event"))
+	GdUnitSignals.instance().gdunit_message.connect(Callable(self, "_on_gdunit_message"))
+	GdUnitSignals.instance().gdunit_client_connected.connect(Callable(self, "_on_gdunit_client_connected"))
+	GdUnitSignals.instance().gdunit_client_disconnected.connect(Callable(self, "_on_gdunit_client_disconnected"))
 	output.clear()
 
 func _notification(what):
