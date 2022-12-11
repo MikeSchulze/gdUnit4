@@ -52,8 +52,7 @@ class CLIRunner extends Node:
 		if GdUnitTools.is_mono_supported():
 			_cs_executor = GdUnit3MonoAPI.create_executor(self)
 		
-		var gdUnitSignals = Engine.get_singleton("GdUnitSignals")
-		var err = gdUnitSignals.gdunit_event.connect(Callable(self, "_on_gdunit_event"))
+		var err = GdUnitSignals.instance().gdunit_event.connect(Callable(self, "_on_gdunit_event"))
 		if err != OK:
 			prints("gdUnitSignals failed")
 			push_error("Error checked startup, can't connect executor for 'send_event'")
@@ -65,11 +64,9 @@ class CLIRunner extends Node:
 	func _process(_delta):
 		match _state:
 			INIT:
-				prints("INIT")
 				gdUnitInit()
 				_state = RUN
 			RUN:
-				prints("RUN")
 				# all test suites executed
 				if _test_suites_to_process.is_empty():
 					_state = STOP
@@ -83,7 +80,6 @@ class CLIRunner extends Node:
 					await executor.ExecutionCompleted
 					set_process(true)
 			STOP:
-				prints("STOP")
 				_state = EXIT
 				_on_gdunit_event(GdUnitStop.new())
 				get_tree().quit(report_exit_code(_report))
@@ -342,10 +338,5 @@ class CLIRunner extends Node:
 		_console.prints_color(" %s" % LocalTime.elapsed(event.elapsed_time()), Color.CORNFLOWER_BLUE)
 
 func _initialize():
-	Engine.register_singleton("GdUnitSignals", load("res://addons/gdUnit4/src/core/GdUnitSignals.gd").new())
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	root.add_child(CLIRunner.new())
-
-func _finalize():
-	Engine.unregister_singleton("GdUnitSignals")
-
-

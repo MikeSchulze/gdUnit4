@@ -10,6 +10,7 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitTestSuiteBuilder.gd'
 var _test_suite_builder :GdUnitTestSuiteBuilder
 var _example_source_gd :String
 
+
 func before_test():
 	var temp := create_temp_dir("examples")
 	var result := GdUnitTools.copy_file("res://addons/gdUnit4/test/core/resources/sources/test_person.gd", temp)
@@ -17,10 +18,14 @@ func before_test():
 	_example_source_gd = result.value() as String
 	_test_suite_builder = GdUnitTestSuiteBuilder.new()
 
+
 func after_test():
 	clean_temp_dir()
 
+
 func assert_tests(test_suite :Script) -> GdUnitArrayAssert:
+	# needs to be reload to get fresh method list
+	test_suite.reload()
 	var methods := test_suite.get_script_method_list()
 	var test_cases := Array()
 	for method in methods:
@@ -28,6 +33,7 @@ func assert_tests(test_suite :Script) -> GdUnitArrayAssert:
 		if name.begins_with("test_"):
 			test_cases.append(name)
 	return assert_array(test_cases)
+
 
 func test_create_gd_success() -> void:
 	var source := load(_example_source_gd)
@@ -49,6 +55,7 @@ func test_create_gd_success() -> void:
 	assert_str(info.get("path")).is_equal("user://tmp/test/examples/test_person_test.gd")
 	assert_int(info.get("line")).is_equal(16)
 	assert_tests(load(info.get("path"))).contains_exactly_in_any_order(["test_first_name", "test_fully_name"])
+
 
 func test_create_gd_fail() -> void:
 	var source := load(_example_source_gd)

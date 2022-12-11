@@ -50,11 +50,11 @@ static func extract_test_parameters(source :GDScript, fd :GdFunctionDescriptor) 
 		.replace("${clazz_path}", source.resource_path)\
 		.replace("${test_params}", parameter_arg.value_as_string())
 	var script = GDScript.new()
-	script.source_code =  source_code
+	script.source_code = source_code
 	# enable this lines only for debuging
-	script.resource_path = GdUnitTools.create_temp_dir("parameter_extract") + "/%s__.gd" % fd.name()
-	DirAccess.remove_absolute(script.resource_path)
-	ResourceSaver.save(script, script.resource_path)
+	#script.resource_path = GdUnitTools.create_temp_dir("parameter_extract") + "/%s__.gd" % fd.name()
+	#DirAccess.remove_absolute(script.resource_path)
+	#ResourceSaver.save(script, script.resource_path)
 	var result = script.reload()
 	if result != OK:
 		push_error("Extracting test parameters failed! Script loading error: %s" % result)
