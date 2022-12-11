@@ -6,7 +6,7 @@ extends ProgressBar
 @onready var style :StyleBoxFlat = bar.get("theme_override_styles/fill")
 
 func _ready():
-	GdUnitSignals.gdunit_event.connect(Callable(self, "_on_gdunit_event"))
+	GdUnitSignals.instance().gdunit_event.connect(Callable(self, "_on_gdunit_event"))
 	style.bg_color = Color.DARK_GREEN
 	#var plugin := EditorPlugin.new()
 	#var settings := plugin.get_editor_interface().get_editor_settings()

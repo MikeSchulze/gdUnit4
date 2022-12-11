@@ -39,7 +39,7 @@ func _ready():
 		_state = EXIT
 		return
 	_client.connect("connection_failed", Callable(self, "_on_connection_failed"))
-	GdUnitSignals.gdunit_event.connect(Callable(self, "_on_gdunit_event"))
+	GdUnitSignals.instance().gdunit_event.connect(Callable(self, "_on_gdunit_event"))
 	var result := _client.start("127.0.0.1", _config.server_port())
 	if result.is_error():
 		push_error(result.error_message())

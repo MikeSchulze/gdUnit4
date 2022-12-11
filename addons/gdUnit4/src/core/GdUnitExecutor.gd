@@ -47,7 +47,7 @@ func fire_event(event :GdUnitEvent) -> void:
 		if Engine.has_singleton("GdUnitSignals"):
 			Engine.get_singleton("GdUnitSignals").gdunit_event.emit(event)
 		else:
-			GdUnitSignals.gdunit_event.emit(event)
+			GdUnitSignals.instance().gdunit_event.emit(event)
 
 func fire_test_skipped(test_suite :GdUnitTestSuite, test_case :_TestCase):
 	fire_event(GdUnitEvent.new()\

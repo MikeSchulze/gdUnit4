@@ -774,6 +774,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/gdUnit4/test/core/GdUnitSignalAwaiterTest.gd"
 }, {
+"base": "RefCounted",
+"class": &"GdUnitSignals",
+"language": &"GDScript",
+"path": "res://addons/gdUnit4/src/core/GdUnitSignals.gd"
+}, {
 "base": "GdUnitStaticDictionary",
 "class": &"GdUnitSingleton",
 "language": &"GDScript",
@@ -1348,6 +1353,7 @@ _global_script_class_icons={
 "GdUnitSignalAssertImplTest": "",
 "GdUnitSignalAwaiter": "",
 "GdUnitSignalAwaiterTest": "",
+"GdUnitSignals": "",
 "GdUnitSingleton": "",
 "GdUnitSpyBuilder": "",
 "GdUnitSpyBuilderTest": "",
@@ -1443,10 +1449,6 @@ config/icon="res://icon.png"
 [audio]
 
 default_bus_layout=""
-
-[autoload]
-
-GdUnitSignals="*res://addons/gdUnit4/src/core/GdUnitSignals.gd"
 
 [debug]
 

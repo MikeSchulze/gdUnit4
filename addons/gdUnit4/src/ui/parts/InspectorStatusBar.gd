@@ -13,7 +13,7 @@ var total_failed := 0
 var total_errors := 0
 
 func _ready():
-	GdUnitSignals.gdunit_event.connect(Callable(self, "_on_gdunit_event"))
+	GdUnitSignals.instance().gdunit_event.connect(Callable(self, "_on_gdunit_event"))
 	_failures.text = "0"
 	_errors.text = "0"
 

@@ -18,10 +18,10 @@ func _ready():
 	_server.connect("rpc_data", Callable(self, "_receive_rpc_data"))
 
 func _on_client_connected(client_id :int) -> void:
-	GdUnitSignals.gdunit_client_connected.emit(client_id)
+	GdUnitSignals.instance().gdunit_client_connected.emit(client_id)
 
 func _on_client_disconnected(client_id :int) -> void:
-	GdUnitSignals.gdunit_client_disconnected.emit(client_id)
+	GdUnitSignals.instance().gdunit_client_disconnected.emit(client_id)
 
 func _on_gdunit_runner_stop(client_id :int):
 	if _server:
@@ -29,10 +29,10 @@ func _on_gdunit_runner_stop(client_id :int):
 
 func _receive_rpc_data(rpc :RPC) -> void:
 	if rpc is RPCMessage:
-		GdUnitSignals.gdunit_message.emit(rpc.message())
+		GdUnitSignals.instance().gdunit_message.emit(rpc.message())
 		return
 	if rpc is RPCGdUnitEvent:
-		GdUnitSignals.gdunit_event.emit(rpc.event())
+		GdUnitSignals.instance().gdunit_event.emit(rpc.event())
 		return
 	if rpc is RPCGdUnitTestSuite:
-		GdUnitSignals.gdunit_add_test_suite.emit(rpc.dto())
+		GdUnitSignals.instance().gdunit_add_test_suite.emit(rpc.dto())
