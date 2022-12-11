@@ -4,7 +4,7 @@
 
 
 ---
-<h1 align="center">GdUnit4 Alpha </h1>
+<h1 align="center">GdUnit4 Beta </h1>
 <h3 align="center">This is the first alpha version of GdUnit4 which is based on Godot v4.0.beta8.official [45cac42c0] </h3>
 
 <h1 align="center">ATTENTION!</h1>
