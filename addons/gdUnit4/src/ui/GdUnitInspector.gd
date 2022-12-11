@@ -34,6 +34,9 @@ func _ready():
 		_getEditorThemes(_editor_interface)
 	# preload previous test execution
 	_runner_config.load()
+	if GdUnitSettings.is_update_notification_enabled():
+		var update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
+		add_child(update_tool)
 
 
 func _enter_tree():
