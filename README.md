@@ -9,6 +9,9 @@
 
 <h1 align="center">ATTENTION!</h1>
 
+# You need the deaktivate the old version before deinstall and install this version!
+# If you run into GdUnitSignals errors, please check you have deinstall the autoload of GdUnitSignals
+
 <h2 align="center">Please read the following disclaimer carefully before proceeding!
 
 This version is NOT bug free and may cause the Godot editor to crash.
