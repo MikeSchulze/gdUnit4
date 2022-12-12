@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dvrma0lq0yg8r"]
 
-[ext_resource type="Texture2D" uid="uid://df84cyfuh76m8" path="res://icon.png" id="1"]
 [ext_resource type="Script" path="res://addons/gdUnit4/src/ui/GdUnitToolsDialog.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://c7sk0yhd52lg3" path="res://addons/gdUnit4/src/ui/assets/icon.png" id="2_w63lb"]
 [ext_resource type="PackedScene" uid="uid://dte0m2endcgtu" path="res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.tscn" id="4"]
 [ext_resource type="Script" path="res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd" id="8_2ggr0"]
 
@@ -9,8 +9,8 @@
 disable_3d = true
 gui_embed_subwindows = true
 title = "GdUnitTools"
-position = Vector2i(64, 64)
-size = Vector2i(384, 384)
+position = Vector2i(176, 152)
+size = Vector2i(1056, 909)
 visible = false
 transient = true
 extend_to_title = true
@@ -81,8 +81,6 @@ size_flags_vertical = 3
 [node name="MarginContainer" type="MarginContainer" parent="v"]
 use_parent_material = true
 layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 609.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 4
@@ -92,47 +90,31 @@ theme_override_constants/margin_right = 4
 [node name="GridContainer" type="HBoxContainer" parent="v/MarginContainer"]
 use_parent_material = true
 layout_mode = 2
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 1148.0
-offset_bottom = 609.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="PanelContainer" type="MarginContainer" parent="v/MarginContainer/GridContainer"]
 use_parent_material = true
 layout_mode = 2
-offset_right = 200.0
-offset_bottom = 605.0
 size_flags_vertical = 3
 
 [node name="Panel" type="VBoxContainer" parent="v/MarginContainer/GridContainer/PanelContainer"]
 use_parent_material = true
 layout_mode = 2
-offset_right = 200.0
-offset_bottom = 605.0
-grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="CenterContainer" type="CenterContainer" parent="v/MarginContainer/GridContainer/PanelContainer/Panel"]
 use_parent_material = true
 layout_mode = 2
-offset_right = 200.0
-offset_bottom = 120.0
-grow_horizontal = 2
-grow_vertical = 2
 size_flags_horizontal = 3
 
 [node name="logo" type="TextureRect" parent="v/MarginContainer/GridContainer/PanelContainer/Panel/CenterContainer"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
-offset_left = 40.0
-offset_right = 160.0
-offset_bottom = 120.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
-texture = ExtResource("1")
+texture = ExtResource("2_w63lb")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -140,56 +122,38 @@ stretch_mode = 5
 use_parent_material = true
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-offset_top = 124.0
-offset_right = 200.0
-offset_bottom = 154.0
-grow_horizontal = 2
 size_flags_horizontal = 3
 
 [node name="version" type="RichTextLabel" parent="v/MarginContainer/GridContainer/PanelContainer/Panel/CenterContainer2"]
 use_parent_material = true
 clip_contents = false
 layout_mode = 2
-offset_right = 200.0
-offset_bottom = 30.0
 size_flags_horizontal = 3
 bbcode_enabled = true
-text = "[center][color=#9887c4]gd[/color][color=#7a57d6]Unit[/color][color=#9887c4]4[/color] [color=#9887c4]4.0.0-alpha[/color][/center]"
 scroll_active = false
 meta_underlined = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="v/MarginContainer/GridContainer/PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-offset_right = 200.0
-offset_bottom = 605.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 2
 
 [node name="btn_report_bug" type="Button" parent="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 504.0
-offset_right = 200.0
-offset_bottom = 535.0
 size_flags_horizontal = 3
 tooltip_text = "Press to create a bug report"
 text = "Report Bug"
 
 [node name="btn_request_feature" type="Button" parent="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 539.0
-offset_right = 200.0
-offset_bottom = 570.0
 size_flags_horizontal = 3
 tooltip_text = "Press to create a feature request"
 text = "Request Feature"
 
 [node name="btn_install_examples" type="Button" parent="v/MarginContainer/GridContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 574.0
-offset_right = 200.0
-offset_bottom = 605.0
 size_flags_horizontal = 3
 tooltip_text = "Press to install the advanced test examples"
 disabled = true
@@ -197,27 +161,16 @@ text = "Install Examples"
 
 [node name="Properties" type="TabContainer" parent="v/MarginContainer/GridContainer"]
 layout_mode = 2
-offset_left = 204.0
-offset_right = 1144.0
-offset_bottom = 605.0
 size_flags_horizontal = 11
 size_flags_vertical = 11
 
 [node name="Common" type="ScrollContainer" parent="v/MarginContainer/GridContainer/Properties"]
 layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 31.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="v/MarginContainer/GridContainer/Properties/Common"]
 clip_contents = true
 custom_minimum_size = Vector2(1431, 0)
 layout_mode = 2
-offset_right = 1431.0
-offset_bottom = 574.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -226,31 +179,15 @@ visible = false
 clip_contents = true
 custom_minimum_size = Vector2(871, 0)
 layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 40.0
-offset_right = -4.0
-offset_bottom = 24.0
-grow_horizontal = 2
-grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Templates" parent="v/MarginContainer/GridContainer/Properties" instance=ExtResource("4")]
 visible = false
 layout_mode = 2
-offset_left = 4.0
-offset_top = 32.0
-offset_right = 4.0
-offset_bottom = 32.0
 
 [node name="MarginContainer2" type="MarginContainer" parent="v"]
 layout_mode = 2
-offset_top = 613.0
-offset_right = 1152.0
-offset_bottom = 648.0
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_right = 4
@@ -258,17 +195,12 @@ theme_override_constants/margin_bottom = 4
 
 [node name="HBoxContainer" type="HBoxContainer" parent="v/MarginContainer2"]
 layout_mode = 2
-offset_left = 4.0
-offset_right = 1148.0
-offset_bottom = 31.0
 size_flags_horizontal = 3
 alignment = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="v/MarginContainer2/HBoxContainer"]
 visible = false
 layout_mode = 2
-offset_right = 1090.0
-offset_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -286,9 +218,6 @@ clip_text = true
 [node name="btn_close" type="Button" parent="v/MarginContainer2/HBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-offset_left = 944.0
-offset_right = 1144.0
-offset_bottom = 31.0
 text = "Close"
 
 [node name="GdUnitUpdateClient" type="Node" parent="."]
