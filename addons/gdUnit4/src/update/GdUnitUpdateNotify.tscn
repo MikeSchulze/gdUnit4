@@ -8,7 +8,6 @@ title = "GdUnit Update Notification"
 position = Vector2i(397, 182)
 size = Vector2i(800, 400)
 visible = false
-transient = true
 exclusive = true
 always_on_top = true
 popup_window = true
@@ -97,6 +96,7 @@ custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+disabled = true
 text = "Update"
 
 [node name="close" type="Button" parent="Panel/GridContainer/Panel/HBoxContainer"]
