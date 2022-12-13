@@ -45,7 +45,8 @@ jobs:
           apt-get -y install software-properties-common
           add-apt-repository universe
           apt-get -y update
-          apt-get -y install git-all
+          apt-get -y install git
+          apt-get -y install git-lfs
 
       - name: Checkout GdUnit Repository
         uses: actions/checkout@v3
