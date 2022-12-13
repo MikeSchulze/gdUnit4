@@ -40,6 +40,7 @@ jobs:
       - name: "Install Git"
         shell: bash
         run: |
+          apt-get update
           apt-get install git
 
       - name: Checkout GdUnit Repository
