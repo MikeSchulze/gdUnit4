@@ -40,8 +40,10 @@ jobs:
       - name: "Install Git"
         shell: bash
         run: |
-          add-apt-repository universe
           apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
+          apt-get -y update
+          apt-get -y install software-properties-common
+          add-apt-repository universe
           apt-get -y update
           apt-get -y install git-all
 
