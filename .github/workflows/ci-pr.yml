@@ -37,7 +37,13 @@ jobs:
             install-linux-dependencies: true
 
     steps:
-      - uses: actions/checkout@v3
+      - name: "Install Git"
+        shell: bash
+        run: |
+          sudo apt install git
+
+      - name: Checkout GdUnit Repository
+        uses: actions/checkout@v3
         with:
           lfs: true
           submodules: 'recursive'
