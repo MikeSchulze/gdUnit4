@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
-          apt-get update
+          apt-get update && apt-get -y upgrade
           apt-get install git
 
       - name: Checkout GdUnit Repository
