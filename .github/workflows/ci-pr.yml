@@ -40,7 +40,7 @@ jobs:
       - name: "Install Git"
         shell: bash
         run: |
-          apt install git
+          apt-get install git-all
 
       - name: Checkout GdUnit Repository
         uses: actions/checkout@v3
