@@ -40,6 +40,7 @@ jobs:
       - name: "Install Git"
         shell: bash
         run: |
+          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
           apt-get update
           apt-get install git
 
