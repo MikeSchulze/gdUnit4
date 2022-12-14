@@ -44,6 +44,7 @@ jobs:
           apt-get -y update
           apt-get -y install software-properties-common
           apt-get -y install libxcursor1
+          apt-get -y install libxinerama1
           add-apt-repository universe
           apt-get -y update
           apt-get -y install git
