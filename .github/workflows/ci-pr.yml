@@ -43,9 +43,11 @@ jobs:
           apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
           apt-get -y update
           apt-get -y install software-properties-common
-          apt-get -y install libxcursor1
-          apt-get -y install libxinerama1
-          apt-get -y install libxrandr2
+          apt-get install xorg openbox x11-xserver-utils
+          apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
+            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev \
+            libdbus-1-dev libudev-dev libxi-dev libxrandr-dev yasm xvfb wget unzip \
+            llvm libspeechd-dev speech-dispatcher fontconfig libfontconfig-dev
           add-apt-repository universe
           apt-get -y update
           apt-get -y install git
