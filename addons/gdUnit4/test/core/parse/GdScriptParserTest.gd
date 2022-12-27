@@ -439,6 +439,7 @@ func test_is_func_end() -> void:
 	assert_bool(_parser.is_func_end("		):")).is_true()
 	assert_bool(_parser.is_func_end("	-> void:")).is_true()
 	assert_bool(_parser.is_func_end("		) -> void :")).is_true()
+	assert_bool(_parser.is_func_end("func test_a(arg1, arg2 = {1:2} ):")).is_true()
 
 func test_extract_func_signature_multiline() -> void:
 	var source_code = [

@@ -26,7 +26,6 @@ var TOKEN_BRACKET_CLOSE := Token.new(")")
 var TOKEN_ARRAY_OPEN := Token.new("[")
 var TOKEN_ARRAY_CLOSE := Token.new("]")
 var TOKEN_NEW_LINE := Token.new("\n")
-
 var OPERATOR_ADD := Operator.new("+")
 var OPERATOR_SUB := Operator.new("-")
 var OPERATOR_MUL := Operator.new("*")
@@ -54,7 +53,6 @@ var TOKENS := [
 	TOKEN_ARGUMENT_SEPARATOR,
 	TOKEN_FUNCTION_RETURN_TYPE,
 	TOKEN_NEW_LINE,
-
 	OPERATOR_ADD,
 	OPERATOR_SUB,
 	OPERATOR_MUL,
@@ -88,7 +86,7 @@ class Token extends RefCounted:
 	var _consumed: int
 	var _is_operator: bool
 	var _regex :RegEx
-
+	
 	func _init(token: String, is_operator := false, regex :RegEx = null):
 		_token = token
 		_is_operator = is_operator
@@ -123,7 +121,7 @@ class Token extends RefCounted:
 class Operator extends Token:
 	func _init(value: String):
 		super(value, true)
-		
+	
 	func _to_string():
 		return "OperatorToken{%s}" % [_token]
 
@@ -435,10 +433,9 @@ func parse_arguments(row: String) -> Array[GdFunctionArgument]:
 			while current_index < len(input):
 				token = next_token(input, current_index)
 				current_index += token._consumed
-				
 				if token == TOKEN_ARGUMENT_TYPE:
 						token = next_token(input, current_index)
-						arg_type = GdObjects.string_as_typeof(token._token) 
+						arg_type = GdObjects.string_as_typeof(token._token)
 				elif token == TOKEN_ARGUMENT_TYPE_ASIGNMENT:
 						arg_value = _parse_end_function(input.substr(current_index), true)
 						current_index += arg_value.length()
@@ -573,10 +570,9 @@ func extract_source_code(script_path :PackedStringArray) -> PackedStringArray:
 func extract_func_signature(rows :PackedStringArray, index :int) -> String:
 	var signature = ""
 	for rowIndex in range(index, rows.size()):
-		var row :String = rows[rowIndex]
-		signature += row.trim_prefix("\t").trim_suffix("\t")
+		signature += rows[rowIndex].strip_edges()
 		if is_func_end(signature):
-			return clean_up_row(signature).replace("\n", "")
+			return clean_up_row(signature)
 	push_error("Can't fully extract function signature of '%s'" % rows[index])
 	return ""
 
@@ -589,7 +585,7 @@ func load_source_code(script :GDScript, script_path :PackedStringArray) -> Packe
 			var class_path := GdObjects.extract_class_path(value)
 			if class_path.size() > 1:
 				_scanned_inner_classes.append(class_path[1])
-
+	
 	var source_code := to_unix_format(script.source_code)
 	var source_rows := source_code.split("\n")
 	# extract all inner class names
@@ -719,21 +715,7 @@ func is_inner_class(clazz_path :PackedStringArray) -> bool:
 
 
 func is_func_end(row :String) -> bool:
-	var input := clean_up_row(row)
-	var current_index = 0
-	var token :Token = null
-	while current_index < len(input):
-		# function ends without return type definition
-		if TOKEN_FUNCTION_END.match(input, current_index):
-			return true
-		# function ends with return type definition
-		if TOKEN_FUNCTION_RETURN_TYPE.match(input, current_index):
-			return true
-		token = next_token(input, current_index) as Token
-		if token == TOKEN_NOT_MATCH:
-			return false
-		current_index += token._consumed
-	return false
+	return row.strip_edges(false, true).ends_with(":")
 
 
 func _patch_inner_class_names(value :String, clazz_name :String) -> String:

@@ -5,7 +5,7 @@ var _name: String
 var _type: int
 var _default_value :Variant
 
-const UNDEFINED :Variant = "<-NO_ARG->"
+const UNDEFINED = "<-NO_ARG->"
 const ARG_PARAMETERIZED_TEST := "test_parameters"
 
 func _init(name :String, type :int = TYPE_MAX, default_value :Variant = UNDEFINED):
