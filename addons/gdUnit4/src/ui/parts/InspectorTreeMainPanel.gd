@@ -1,7 +1,7 @@
 @tool
 extends VSplitContainer
 
-signal run_testcase
+signal run_testcase(test_suite_resource_path, test_case, test_param_index, run_debug)
 signal run_testsuite
 
 
@@ -48,6 +48,7 @@ const META_GDUNIT_REPORT := "gdUnit_report"
 const META_GDUNIT_ORPHAN := "gdUnit_orphan"
 const META_RESOURCE_PATH := "resource_path"
 const META_LINE_NUMBER := "line_number"
+const META_TEST_PARAM_INDEX := "test_param_index"
 
 var _editor :EditorPlugin
 var _tree_root :TreeItem
@@ -404,6 +405,7 @@ func add_test(parent :TreeItem, test_case :GdUnitTestCaseDto) -> void:
 	item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_CASE)
 	item.set_meta(META_RESOURCE_PATH, parent.get_meta(META_RESOURCE_PATH))
 	item.set_meta(META_LINE_NUMBER, test_case.line_number())
+	item.set_meta(META_TEST_PARAM_INDEX, -1)
 	add_tree_item_to_cache(parent.get_meta(META_RESOURCE_PATH), test_name, item)
 	
 	var test_case_names := test_case.test_case_names()
@@ -424,6 +426,7 @@ func add_test_cases(parent :TreeItem, test_case_names :Array) -> void:
 		item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_CASE)
 		item.set_meta(META_RESOURCE_PATH, parent.get_meta(META_RESOURCE_PATH))
 		item.set_meta(META_LINE_NUMBER, parent.get_meta(META_LINE_NUMBER))
+		item.set_meta(META_TEST_PARAM_INDEX, index)
 		add_tree_item_to_cache(parent.get_meta(META_RESOURCE_PATH), test_case_name, item)
 
 ################################################################################
@@ -439,12 +442,16 @@ func _on_run_pressed(run_debug :bool) -> void:
 	var item := _tree.get_selected()
 	if item.get_meta(META_GDUNIT_TYPE) == GdUnitType.TEST_SUITE:
 		var resource_path = item.get_meta(META_RESOURCE_PATH)
-		emit_signal("run_testsuite", [resource_path], run_debug)
+		run_testsuite.emit([resource_path], run_debug)
 		return
 	var parent = item.get_parent()
 	var test_suite_resource_path = parent.get_meta(META_RESOURCE_PATH)
-	var test_case = item.get_text(0)
-	emit_signal("run_testcase", test_suite_resource_path, test_case, run_debug)
+	var test_case = item.get_meta(META_GDUNIT_NAME)
+	# handle parameterized test selection
+	var test_param_index = item.get_meta(META_TEST_PARAM_INDEX)
+	if test_param_index != -1:
+		test_case = parent.get_meta(META_GDUNIT_NAME)
+	run_testcase.emit(test_suite_resource_path, test_case, test_param_index, run_debug)
 
 func _on_Tree_item_selected() -> void:
 	# only show report checked manual item selection
