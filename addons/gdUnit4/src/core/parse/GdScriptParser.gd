@@ -371,25 +371,10 @@ func parse_func_return_type(row: String) -> int:
 
 func parse_return_token(row: String) -> Token:
 	var input := clean_up_row(row)
-	var current_index := 0
-	var token :Token = null
-	var bracket := 0
-	while current_index < len(input):
-		token = next_token(input, current_index) as Token
-		current_index += token._consumed
-		if token == TOKEN_BRACKET_OPEN:
-			bracket += 1
-		if token == TOKEN_BRACKET_CLOSE:
-			bracket -= 1
-		# function end reached ?
-		if bracket == 0 and token == TOKEN_BRACKET_CLOSE:
-			token = next_token(input, current_index) as Token
-			current_index += token._consumed
-			if token == TOKEN_FUNCTION_RETURN_TYPE:
-				return next_token(input, current_index) as Token
-			else:
-				return TOKEN_NOT_MATCH
-	return TOKEN_NOT_MATCH
+	var index := input.rfind(TOKEN_FUNCTION_RETURN_TYPE._token)
+	if index == -1:
+		return TOKEN_NOT_MATCH
+	return next_token(input, index + TOKEN_FUNCTION_RETURN_TYPE._consumed)
 
 
 # Parses the argument into a argument signature
