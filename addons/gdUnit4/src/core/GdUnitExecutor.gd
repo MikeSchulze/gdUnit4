@@ -236,8 +236,12 @@ func execute_test_case_parameterized(test_suite :GdUnitTestSuite, test_case :_Te
 	var current_failed_count = _total_test_failed
 	var current_warning_count =_total_test_warnings
 	var test_case_parameters := test_case.test_parameters()
+	var test_parameter_index := test_case.test_parameter_index()
 	var test_case_names := test_case.test_case_names()
 	for test_case_index in test_case.test_parameters().size():
+		# is test_parameter_index is set, we run this parameterized test only
+		if test_parameter_index != -1 and test_parameter_index != test_case_index:
+			continue
 		await test_before(test_suite, test_case, test_case_names[test_case_index])
 		set_stage(STAGE_TEST_CASE_EXECUTE)
 		_memory_pool.set_pool(test_suite, GdUnitMemoryPool.POOL.EXECUTE, true)

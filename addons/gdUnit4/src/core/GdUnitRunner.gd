@@ -1,7 +1,5 @@
 extends Node
 
-const GDUNIT_RUNNER = "GdUnitRunner"
-
 signal sync_rpc_id_result_received
 
 @onready var _client :GdUnitTcpClient = $GdUnitTcpClient
@@ -13,6 +11,9 @@ enum {
 	STOP,
 	EXIT
 }
+
+const GDUNIT_RUNNER = "GdUnitRunner"
+
 var _config := GdUnitRunnerConfig.new()
 var _test_suites_to_process :Array
 var _state = INIT
@@ -20,6 +21,7 @@ var _cs_executor
 
 # holds the received sync rpc result
 var _result :Result
+
 
 func _init():
 	# minimize scene window checked debug mode
@@ -31,6 +33,7 @@ func _init():
 	# store current runner instance to engine meta data to can be access in as a singleton
 	Engine.set_meta(GDUNIT_RUNNER, self)
 	_cs_executor = GdUnit3MonoAPI.create_executor(self)
+
 
 func _ready():
 	var config_result := _config.load()
@@ -46,14 +49,17 @@ func _ready():
 		return
 	_state = INIT
 
+
 func _on_connection_failed(message :String):
 	prints("_on_connection_failed", message, _test_suites_to_process)
 	_state = STOP
+
 
 func _notification(what):
 	#prints("GdUnitRunner", self, GdObjects.notification_as_string(what))
 	if what == NOTIFICATION_PREDELETE:
 		Engine.remove_meta(GDUNIT_RUNNER)
+
 
 func _process(delta):
 	match _state:
@@ -87,6 +93,7 @@ func _process(delta):
 			await get_tree().process_frame
 			get_tree().quit(0)
 
+
 func load_test_suits() -> Array:
 	var to_execute := _config.to_execute()
 	if to_execute.is_empty():
@@ -103,6 +110,7 @@ func load_test_suits() -> Array:
 		test_suites += scaned_suites
 	return test_suites
 
+
 func gdUnitInit() -> void:
 	#enable_manuall_polling()
 	send_message("Scaned %d test suites" % _test_suites_to_process.size())
@@ -111,14 +119,29 @@ func gdUnitInit() -> void:
 	for test_suite in _test_suites_to_process:
 		send_test_suite(test_suite)
 
-func _filter_test_case(test_suites :Array, includes_tests :Array[StringName]) -> void:
-	if includes_tests.is_empty():
+
+func _filter_test_case(test_suites :Array, included_tests :Array[StringName]) -> void:
+	if included_tests.is_empty():
 		return
 	for test_suite in test_suites:
 		for test_case in test_suite.get_children():
-			if not includes_tests.has(test_case.get_name()):
-				test_suite.remove_child(test_case)
-				test_case.free()
+			_do_filter_test_case(test_suite, test_case, included_tests)
+
+
+func _do_filter_test_case(test_suite :Node, test_case :Node, included_tests :Array[StringName]) -> void:
+	for included_test in included_tests:
+		var test_meta :PackedStringArray = included_test.split(":")
+		var test_name := test_meta[0]
+		if test_case.get_name() == test_name:
+			# we have a paremeterized test selection
+			if test_meta.size() > 1:
+				var test_param_index := test_meta[1]
+				test_case.set_test_parameter_index(test_param_index.to_int())
+			return
+	# the test is filtered out
+	test_suite.remove_child(test_case)
+	test_case.free()
+
 
 func _collect_test_case_count(testSuites :Array) -> int:
 	var total :int = 0
@@ -126,15 +149,19 @@ func _collect_test_case_count(testSuites :Array) -> int:
 		total += (test_suite as Node).get_child_count()
 	return total
 
+
 # RPC send functions
 func send_message(message :String):
 	_client.rpc_send(RPCMessage.of(message))
 
+
 func send_test_suite(test_suite):
 	_client.rpc_send(RPCGdUnitTestSuite.of(test_suite))
 
+
 func _on_gdunit_event(event :GdUnitEvent):
 	_client.rpc_send(RPCGdUnitEvent.of(event))
+
 
 func PublishEvent(data) -> void:
 	var event := GdUnitEvent.new().deserialize(data.AsDictionary())
