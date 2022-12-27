@@ -59,16 +59,20 @@ var _item_hash := Dictionary()
 func _build_cache_key(resource_path :String, test_name :String) -> Array:
 	return [resource_path, test_name]
 
+
 func get_tree_item(event :GdUnitEvent) -> TreeItem:
 	var key := _build_cache_key(event.resource_path(), event.test_name())
 	return _item_hash.get(key, null)
+
 
 func add_tree_item_to_cache(resource_path :String, test_name :String, item :TreeItem) -> void:
 	var key := _build_cache_key(resource_path, test_name)
 	_item_hash[key] = item
 
+
 func clear_tree_item_cache() -> void:
 	_item_hash.clear()
+
 
 static func _find_item(parent :TreeItem, resource_path :String, test_case :String = "") -> TreeItem:
 	var item = _find_by_resource_path(parent, resource_path)
@@ -78,11 +82,13 @@ static func _find_item(parent :TreeItem, resource_path :String, test_case :Strin
 		return item
 	return _find_by_name(item, test_case)
 
+
 static func _find_by_resource_path(parent :TreeItem, resource_path :String) -> TreeItem:
 	for item in parent.get_children():
 		if item.get_meta(META_RESOURCE_PATH) == resource_path:
 			return item
 	return null
+
 
 static func _find_by_name(parent :TreeItem, name :String) -> TreeItem:
 	for item in parent.get_children():
@@ -90,25 +96,32 @@ static func _find_by_name(parent :TreeItem, name :String) -> TreeItem:
 			return item
 	return null
 
+
 static func is_state_running(item :TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == STATE.RUNNING
+
 
 static func is_state_success(item :TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == STATE.SUCCESS
 
+
 static func is_state_warning(item :TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == STATE.WARNING
+
 
 static func is_state_failed(item :TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == STATE.FAILED
 
+
 static func is_state_error(item :TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_STATE) and (item.get_meta(META_GDUNIT_STATE) == STATE.ERROR or item.get_meta(META_GDUNIT_STATE) == STATE.ABORDED)
+
 
 static func is_item_state_orphan(item :TreeItem) -> bool:
 	if item.has_meta(META_GDUNIT_ORPHAN):
 		return item.get_meta(META_GDUNIT_ORPHAN) as bool
 	return false
+
 
 func _ready():
 	init_tree()
@@ -132,12 +145,14 @@ func load_resized_texture(path :String, width :int = 16, height :int = 16) -> Te
 		image.resize(width, height)
 	return ImageTexture.create_from_image(image)
 
+
 func init_tree() -> void:
 	cleanup_tree()
 	_tree.set_hide_root(true)
 	_tree.ensure_cursor_is_visible()
 	_tree.allow_rmb_select = true
 	_tree_root = _tree.create_item()
+
 
 func cleanup_tree() -> void:
 	clear_failures()
@@ -155,11 +170,13 @@ func cleanup_tree() -> void:
 	for child in _report_list.get_children():
 		_report_list.remove_child(child)
 
+
 func select_item(item :TreeItem) -> void:
 	if not item.is_selected(0):
 		item.select(0)
 	#	_tree.ensure_cursor_is_visible()
 		_tree.scroll_to_item(item)
+
 
 func set_state_running(item :TreeItem) -> void:
 	item.set_custom_color(0, Color.DARK_GREEN)
@@ -172,11 +189,13 @@ func set_state_running(item :TreeItem) -> void:
 	# force scrolling to current test case
 	select_item(item)
 
+
 func set_state_succeded(item :TreeItem) -> void:
 	item.set_custom_color(0, Color.GREEN)
 	item.set_icon(0, ICON_TEST_SUCCESS)
 	item.set_meta(META_GDUNIT_STATE, STATE.SUCCESS)
-	item.collapsed = true
+	item.collapsed = GdUnitSettings.is_inspector_node_collapse()
+
 
 func set_state_skipped(item :TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.SKIPPED)
@@ -185,11 +204,13 @@ func set_state_skipped(item :TreeItem) -> void:
 	item.set_icon(0, ICON_TEST_DEFAULT)
 	item.collapsed = false
 
+
 func set_state_warnings(item :TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.WARNING)
 	item.set_custom_color(0, Color.YELLOW)
 	item.set_icon(0, ICON_TEST_SUCCESS)
 	item.collapsed = false
+
 
 func set_state_failed(item :TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.FAILED)
@@ -197,12 +218,14 @@ func set_state_failed(item :TreeItem) -> void:
 	item.set_icon(0, ICON_TEST_FAILED)
 	item.collapsed = false
 
+
 func set_state_error(item :TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.ERROR)
 	item.set_custom_color(0, Color.DARK_RED)
 	item.set_suffix(0, "timeout! " + item.get_suffix(0))
 	item.set_icon(0, ICON_TEST_ERROR)
 	item.collapsed = false
+
 
 func set_state_aborted(item :TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.ABORDED)
@@ -212,8 +235,10 @@ func set_state_aborted(item :TreeItem) -> void:
 	item.clear_custom_bg_color(0)
 	item.collapsed = false
 
+
 func set_elapsed_time(item :TreeItem, time :int) -> void:
 	item.set_suffix(0, "(%s)" % LocalTime.elapsed(time))
+
 
 func set_state_orphan(item :TreeItem, event: GdUnitEvent) -> void:
 	var orphan_count = event.statistic(GdUnitEvent.ORPHAN_NODES)
@@ -231,6 +256,7 @@ func set_state_orphan(item :TreeItem, event: GdUnitEvent) -> void:
 	elif is_state_error(item):
 		item.set_icon(0, ICON_TEST_ERRORS_ORPHAN)
 
+
 func update_state(item: TreeItem, event :GdUnitEvent) -> void:
 	if is_state_running(item) and event.is_success():
 		set_state_succeded(item)
@@ -247,12 +273,14 @@ func update_state(item: TreeItem, event :GdUnitEvent) -> void:
 			add_report(item, report)
 	set_state_orphan(item, event)
 
+
 func add_report(item :TreeItem, report: GdUnitReport) -> void:
 	var reports = []
 	if item.has_meta(META_GDUNIT_REPORT):
 		reports = item.get_meta(META_GDUNIT_REPORT)
 	reports.append(report)
 	item.set_meta(META_GDUNIT_REPORT, reports)
+
 
 func abort_running() -> void:
 	for parent in _tree_root.get_children():
@@ -262,16 +290,20 @@ func abort_running() -> void:
 				if is_state_running(item):
 					set_state_aborted(item)
 
+
 func select_first_failure() -> void:
 	if not _current_failures.is_empty():
 		select_item(_current_failures[0])
+
 
 func select_last_failure() -> void:
 	if not _current_failures.is_empty():
 		select_item(_current_failures[-1])
 
+
 func clear_failures() -> void:
 	_current_failures.clear()
+
 
 func collect_failures_and_errors() -> Array:
 	clear_failures()
@@ -287,6 +319,7 @@ func collect_failures_and_errors() -> Array:
 						_current_failures.remove_at(index)
 	return _current_failures
 
+
 func select_next_failure() -> void:
 	var current_selected := _tree.get_selected()
 	if current_selected == null:
@@ -299,6 +332,7 @@ func select_next_failure() -> void:
 		select_item(_current_failures[0])
 	else:
 		select_item(_current_failures[index+1])
+
 
 func select_previous_failure() -> void:
 	var current_selected := _tree.get_selected()
@@ -313,6 +347,7 @@ func select_previous_failure() -> void:
 	else:
 		select_item(_current_failures[index-1])
 
+
 func select_first_orphan() -> void:
 	for parent in _tree_root.get_children():
 		if not is_state_success(parent):
@@ -321,6 +356,7 @@ func select_first_orphan() -> void:
 					parent.set_collapsed(false)
 					select_item(item)
 					return
+
 
 func show_failed_report(selected_item) -> void:
 	# clear old reports
@@ -338,6 +374,7 @@ func show_failed_report(selected_item) -> void:
 		reportNode.append_text(report.to_string())
 		reportNode.visible = true
 
+
 func update_test_suite(event :GdUnitEvent) -> void:
 	var item := _find_by_resource_path(_tree_root, event.resource_path())
 	if not item:
@@ -349,6 +386,7 @@ func update_test_suite(event :GdUnitEvent) -> void:
 	if event.type() == GdUnitEvent.TESTSUITE_AFTER:
 		set_elapsed_time(item, event.elapsed_time())
 	update_state(item, event)
+
 
 func update_test_case(event :GdUnitEvent) -> void:
 	var item := get_tree_item(event)
@@ -362,6 +400,7 @@ func update_test_case(event :GdUnitEvent) -> void:
 		set_elapsed_time(item, event.elapsed_time())
 		_update_parent_item_state(item, event.is_success())
 	update_state(item, event)
+
 
 func add_test_suite(test_suite :GdUnitTestSuiteDto) -> void:
 	var item := _tree.create_item(_tree_root)
@@ -381,6 +420,7 @@ func add_test_suite(test_suite :GdUnitTestSuiteDto) -> void:
 	for test_case in test_suite.test_cases():
 		add_test(item, test_case)
 
+
 func _update_item_counter(item: TreeItem):
 	if item.has_meta(META_GDUNIT_TOTAL_TESTS):
 		item.set_text(0, "(%s/%s) %s" % [
@@ -388,12 +428,14 @@ func _update_item_counter(item: TreeItem):
 			item.get_meta(META_GDUNIT_TOTAL_TESTS),
 			item.get_meta(META_GDUNIT_NAME)])
 
+
 func _update_parent_item_state(item: TreeItem, success : bool):
 	if success:
 		var parent_item := item.get_parent()
 		var successes: int = parent_item.get_meta(META_GDUNIT_SUCCESS_TESTS)
 		parent_item.set_meta(META_GDUNIT_SUCCESS_TESTS, successes + 1)
 		_update_item_counter(parent_item)
+
 
 func add_test(parent :TreeItem, test_case :GdUnitTestCaseDto) -> void:
 	var item := _tree.create_item(parent)
@@ -415,6 +457,7 @@ func add_test(parent :TreeItem, test_case :GdUnitTestCaseDto) -> void:
 		_update_item_counter(item)
 		add_test_cases(item, test_case_names)
 
+
 func add_test_cases(parent :TreeItem, test_case_names :Array) -> void:
 	for index in test_case_names.size():
 		var test_case_name = test_case_names[index]
@@ -429,6 +472,7 @@ func add_test_cases(parent :TreeItem, test_case_names :Array) -> void:
 		item.set_meta(META_TEST_PARAM_INDEX, index)
 		add_tree_item_to_cache(parent.get_meta(META_RESOURCE_PATH), test_case_name, item)
 
+
 ################################################################################
 # Tree signal receiver
 ################################################################################
@@ -436,6 +480,7 @@ func _on_tree_item_mouse_selected(position :Vector2, mouse_button_index :int):
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
 		_context_menu.position = position + _tree.get_global_position()
 		_context_menu.popup()
+
 
 func _on_run_pressed(run_debug :bool) -> void:
 	_context_menu.hide()
@@ -453,6 +498,7 @@ func _on_run_pressed(run_debug :bool) -> void:
 		test_case = parent.get_meta(META_GDUNIT_NAME)
 	run_testcase.emit(test_suite_resource_path, test_case, test_param_index, run_debug)
 
+
 func _on_Tree_item_selected() -> void:
 	# only show report checked manual item selection
 	# we need to check the run mode here otherwise it will be called every selection
@@ -460,13 +506,14 @@ func _on_Tree_item_selected() -> void:
 		var selected_item :TreeItem = _tree.get_selected()
 		show_failed_report(selected_item)
 
+
 # Opens the test suite
 func _on_Tree_item_activated() -> void:
 	var selected_item := _tree.get_selected()
 	var resource_path = selected_item.get_meta(META_RESOURCE_PATH)
 	var line_number = selected_item.get_meta(META_LINE_NUMBER)
 	var resource = load(resource_path)
-
+	
 	if selected_item.has_meta(META_GDUNIT_REPORT):
 		var reports :Array = selected_item.get_meta(META_GDUNIT_REPORT)
 		var report_line_number = reports[0].line_number()
@@ -474,14 +521,16 @@ func _on_Tree_item_activated() -> void:
 		# in non debug mode the line number is not available
 		if report_line_number != -1:
 			line_number = report_line_number
-
+	
 	var editor_interface := _editor.get_editor_interface()
 	editor_interface.get_file_system_dock().navigate_to_path(resource_path)
 	editor_interface.edit_resource(resource)
 	editor_interface.get_script_editor().goto_line(line_number-1)
 
+
 func _on_Tree_item_double_clicked() -> void:
 	_on_Tree_item_activated()
+
 
 ################################################################################
 # external signal receiver
@@ -491,6 +540,7 @@ func _on_GdUnit_gdunit_runner_start():
 	_context_menu_debug.disabled = true
 	clear_failures()
 
+
 func _on_GdUnit_gdunit_runner_stop(client_id :int):
 	_context_menu_run.disabled = false
 	_context_menu_debug.disabled = false
@@ -498,8 +548,10 @@ func _on_GdUnit_gdunit_runner_stop(client_id :int):
 	collect_failures_and_errors()
 	select_first_failure()
 
+
 func _on_gdunit_add_test_suite(test_suite :GdUnitTestSuiteDto) -> void:
 	add_test_suite(test_suite)
+
 
 func _on_gdunit_event(event :GdUnitEvent) -> void:
 	match event.type():
@@ -517,12 +569,14 @@ func _on_gdunit_event(event :GdUnitEvent) -> void:
 		GdUnitEvent.TESTSUITE_AFTER:
 			update_test_suite(event)
 
+
 func _on_Monitor_jump_to_orphan_nodes():
 	select_first_orphan()
+
 
 func _on_StatusBar_failure_next():
 	select_next_failure()
 
+
 func _on_StatusBar_failure_prevous():
 	select_previous_failure()
-
