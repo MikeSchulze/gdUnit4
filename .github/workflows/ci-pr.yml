@@ -8,9 +8,6 @@ on:
       - '**.md'
   workflow_dispatch:
 
-env:
-  GODOT_BIN: "/usr/local/bin/godot"
-
 concurrency:
   group: ci-pr-${{ github.event.number }}
   cancel-in-progress: true
@@ -18,49 +15,88 @@ concurrency:
 jobs:
 
   unit-test:
-    strategy:
-      fail-fast: false
-      matrix:
-        godot-build: ['', 'mono-']
-        godot-version: [4.0]
-
-    name: "CI on Godot ${{ matrix.godot-build }}v${{ matrix.godot-version }}"
-    runs-on: ubuntu-latest
+    name: "Unit tests on Godot v${{ matrix.godot-version }}-${{ matrix.godot-status-version }} (${{ matrix.name }})"
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     continue-on-error: false
     container:
-      image: barichello/godot-ci:${{ matrix.godot-build }}${{ matrix.godot-version }}
+      image: nvidia/vulkan:1.3-470
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        godot-version: ['4.0']
+        godot-status-version: ['beta4']
+        include:
+          - os: ubuntu-latest
+            name: Godot 🐧 Linux Build
+            godot-bin-name: 'linux.x86_64'
+            godot-executable_path: '~/godot-linux/godot'
+            godot-cache-path: '~/godot-linux'
+            godot-mono: false
+            install-linux-dependencies: true
 
     steps:
-      - name: "Checkout Repository"
+      - name: "Install Git"
+        shell: bash
+        run: |
+          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
+          apt-get -y update
+          apt-get -y install software-properties-common
+          apt-get -y install xorg openbox x11-xserver-utils
+          apt-get -y install build-essential pkg-config libx11-dev libxcursor-dev \
+            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev \
+            libdbus-1-dev libudev-dev libxi-dev libxrandr-dev yasm xvfb wget unzip \
+            llvm libspeechd-dev speech-dispatcher fontconfig libfontconfig-dev
+          add-apt-repository universe
+          apt-get -y update
+          apt-get -y install git
+          apt-get -y install git-lfs
+          apt-get -y install unzip
+
+
+      - name: Checkout GdUnit Repository
         uses: actions/checkout@v3
         with:
           lfs: true
           submodules: 'recursive'
 
+      - name: Godot cache
+        uses: ./.github/actions/godot-install
+        with:
+          godot-version: ${{ matrix.godot-version }}
+          godot-status-version: ${{ matrix.godot-status-version }}
+          godot-bin-name: ${{ matrix.godot-bin-name }}
+          godot-cache-path: ${{ matrix.godot-cache-path }}
+
       - name: "Setup .NET"
-        if: ${{ startsWith( matrix.godot-build, 'mono') }} # we only setup .Net for mono versions
+        # we only setup .Net for mono versions
+        if: ${{ matrix.godot-mono && !cancelled() }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
 
       - name: "Compile C#"
-        if: ${{ startsWith( matrix.godot-build, 'mono') }} # we only compile .Net for mono versions
+        # we only compile .Net for mono versions
+        if: ${{ matrix.godot-mono && !cancelled() }}
         run: |
-          ${{ env.GODOT_BIN }} project.godot --build-solutions --quit --no-window
+          ${{ matrix.godot-executable_path }} project.godot --build-solutions --quit --no-window
 
       - name: "Update Project"
         if: ${{ !cancelled() }}
         timeout-minutes: 1
         continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
+        shell: bash
         run: |
-          ${{ env.GODOT_BIN }} -e --path . -s res://addons/gdUnit4/src/core/scan_project.gd --no-window
+          ls -lsR ${{ matrix.godot-cache-path }}
+          ${{ matrix.godot-executable_path }} --version
+          ${{ matrix.godot-executable_path }} -e --path . -s res://addons/gdUnit4/src/core/scan_project.gd --no-window
 
       #- name: "Run example mono Test"
       #  timeout-minutes: 1
       #  uses: ./.github/actions/unit-test
       #  with:
-      #    godot-bin: ${{ env.GODOT_BIN }}
+      #    godot-bin: ${{ matrix.godot-executable_path }}
       #    test-includes: "res://addons/gdUnit4/test/mono"
 
       - name: "Run Unit Test"
@@ -68,16 +104,16 @@ jobs:
         timeout-minutes: 10
         uses: ./.github/actions/unit-test
         with:
-          godot-bin: ${{ env.GODOT_BIN }}
+          godot-bin: ${{ matrix.godot-executable_path }}
           test-includes: "res://addons/gdUnit4/test/"
 
-      - name: "Run Unit Test Examples"
-        if: ${{ !cancelled() }}
-        timeout-minutes: 1
-        uses: ./.github/actions/unit-test
-        with:
-          godot-bin: ${{ env.GODOT_BIN }}
-          test-includes: "res://gdUnit4-examples"
+      #- name: "Run Unit Test Examples"
+      #  if: ${{ !cancelled() }}
+      #  timeout-minutes: 1
+      #  uses: ./.github/actions/unit-test
+      #  with:
+      #    godot-bin: ${{ matrix.godot-executable_path }}
+      #    test-includes: "res://gdUnit4-examples"
 
       - name: "Publish Unit Test Reports"
         if: ${{ !cancelled() }}
