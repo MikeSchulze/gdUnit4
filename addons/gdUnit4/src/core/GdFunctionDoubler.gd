@@ -65,7 +65,6 @@ func get_template(return_type :int, is_vararg :bool, has_args :bool) -> String:
 
 func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	var func_signature := func_descriptor.typeless()
-	var is_virtual := func_descriptor.is_virtual()
 	var is_static := func_descriptor.is_static()
 	var is_engine := func_descriptor.is_engine()
 	var is_vararg := func_descriptor.is_vararg()
@@ -73,7 +72,7 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	var func_name := func_descriptor.name()
 	var args := func_descriptor.args()
 	var varargs := func_descriptor.varargs()
-	var default_return_value = default_return_value(func_descriptor.return_type())
+	var default_return_value := default_return_value(func_descriptor.return_type())
 	var arg_names := extract_arg_names(args)
 	var vararg_names := extract_arg_names(varargs)
 	
@@ -90,7 +89,6 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	double += func_template\
 		.replace("$(args)", to_comma_separated_values(arg_names))\
 		.replace("$(varargs)", ", ".join(vararg_names))\
-		.replace("$(is_virtual)", str(is_virtual).to_lower()) \
 		.replace("$(await)", await_is_coroutine(is_coroutine)) \
 		.replace("$(func_name)", func_name )\
 		.replace("$(func_arg)", ", ".join(arg_names))\
@@ -100,13 +98,20 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 		double = double.replace("$(instance)", "__instance().")
 	else:
 		double = double.replace("$(instance)", "")
-	return double.split("\n")
+	var source_code := double.split("\n")
+	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
+	if func_name in ["_ready", "_input", "_gui_input", "_input_event", "_unhandled_input"]:
+		source_code.remove_at(source_code.size()-1)
+		source_code.remove_at(source_code.size()-1)
+	return source_code
+
 
 func extract_arg_names(argument_signatures :Array[GdFunctionArgument]) -> PackedStringArray:
 	var arg_names := PackedStringArray()
 	for arg in argument_signatures:
 		arg_names.append(arg._name)
 	return arg_names
+
 
 static func extract_constructor_args(args :Array) -> PackedStringArray:
 	var constructor_args := PackedStringArray()

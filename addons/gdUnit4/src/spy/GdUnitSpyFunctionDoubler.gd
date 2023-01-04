@@ -9,9 +9,7 @@ const TEMPLATE_RETURN_VARIANT = \
 		return ${default_return_value}
 	else:
 		$(instance)__save_function_interaction(args)
-	if $(is_virtual) == false:
-		return $(await)super.$(func_name)($(func_arg))
-	return ${default_return_value}
+	return $(await)super.$(func_name)($(func_arg))
 """
 
 const TEMPLATE_RETURN_VOID = \
@@ -22,8 +20,7 @@ const TEMPLATE_RETURN_VOID = \
 		return
 	else:
 		$(instance)__save_function_interaction(args)
-	if $(is_virtual) == false:
-		$(await)super.$(func_name)($(func_arg))
+	$(await)super.$(func_name)($(func_arg))
 """
 
 const TEMPLATE_RETURN_VOID_VARARG =\
@@ -36,19 +33,18 @@ const TEMPLATE_RETURN_VOID_VARARG =\
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	if $(is_virtual) == false:
-		match varargs.size():
-			0: $(await)super.$(func_name)($(func_arg))
-			1: $(await)super.$(func_name)($(func_arg), varargs[0])
-			2: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1])
-			3: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2])
-			4: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3])
-			5: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
-			6: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
-			7: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
-			8: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
-			9: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
-			10: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
+	match varargs.size():
+		0: $(await)super.$(func_name)($(func_arg))
+		1: $(await)super.$(func_name)($(func_arg), varargs[0])
+		2: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1])
+		3: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2])
+		4: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3])
+		5: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
+		6: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
+		7: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
+		8: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
+		9: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
+		10: $(await)super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
 """
 
 const TEMPLATE_RETURN_VARIANT_VARARG =\
@@ -61,19 +57,19 @@ const TEMPLATE_RETURN_VARIANT_VARARG =\
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	if $(is_virtual) == false:
-		match varargs.size():
-			0: $(await)return super.$(func_name)($(func_arg))
-			1: $(await)return super.$(func_name)($(func_arg), varargs[0])
-			2: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1])
-			3: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2])
-			4: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3])
-			5: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
-			6: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
-			7: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
-			8: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
-			9: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
-			10: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
+	match varargs.size():
+		0: $(await)return super.$(func_name)($(func_arg))
+		1: $(await)return super.$(func_name)($(func_arg), varargs[0])
+		2: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1])
+		3: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2])
+		4: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3])
+		5: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
+		6: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
+		7: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
+		8: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
+		9: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
+		10: $(await)return super.$(func_name)($(func_arg), varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
+	push_error("To many function arguments %s, only 10 args current supported!" % varargs)
 	return ${default_return_value}
 """
 
@@ -87,19 +83,18 @@ const TEMPLATE_RETURN_VOID_VARARG_ONLY =\
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	if $(is_virtual) == false:
-		match varargs.size():
-			0: $(await)super.$(func_name)()
-			1: $(await)super.$(func_name)(varargs[0])
-			2: $(await)super.$(func_name)(varargs[0], varargs[1])
-			3: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2])
-			4: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3])
-			5: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
-			6: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
-			7: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
-			8: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
-			9: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
-			10: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
+	match varargs.size():
+		0: $(await)super.$(func_name)()
+		1: $(await)super.$(func_name)(varargs[0])
+		2: $(await)super.$(func_name)(varargs[0], varargs[1])
+		3: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2])
+		4: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3])
+		5: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
+		6: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
+		7: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
+		8: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
+		9: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
+		10: $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
 """
 
 const TEMPLATE_RETURN_VARIANT_VARARG_ONLY =\
@@ -112,19 +107,19 @@ const TEMPLATE_RETURN_VARIANT_VARARG_ONLY =\
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	if $(is_virtual) == false:
-		match varargs.size():
-			0: return $(await)super.$(func_name)()
-			1: return $(await)super.$(func_name)(varargs[0])
-			2: return $(await)super.$(func_name)(varargs[0], varargs[1])
-			3: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2])
-			4: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3])
-			5: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
-			6: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
-			7: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
-			8: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
-			9: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
-			10: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
+	match varargs.size():
+		0: return $(await)super.$(func_name)()
+		1: return $(await)super.$(func_name)(varargs[0])
+		2: return $(await)super.$(func_name)(varargs[0], varargs[1])
+		3: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2])
+		4: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3])
+		5: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
+		6: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
+		7: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
+		8: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
+		9: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
+		10: return $(await)super.$(func_name)(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
+	push_error("To many function arguments %s, only 10 args current supported!" % varargs)
 	return ${default_return_value}
 """
 

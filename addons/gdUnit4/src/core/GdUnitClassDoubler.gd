@@ -35,6 +35,7 @@ const EXLCUDE_SCENE_FUNCTIONS = [
 
 const EXCLUDE_FUNCTIONS = ["new", "free", "get_instance_id", "get_tree"]
 
+
 # loads the doubler template
 # class_info = { "class_name": <>, "class_path" : <>}
 static func load_template(template :Object, class_info :Dictionary) -> PackedStringArray:
@@ -53,6 +54,7 @@ static func load_template(template :Object, class_info :Dictionary) -> PackedStr
 	lines.remove_at(eol)
 	return lines
 
+
 static func extends_clazz(class_info :Dictionary) -> String:
 	var clazz_name :String = class_info.get("class_name")
 	var clazz_path :PackedStringArray = class_info.get("class_path", [])
@@ -63,8 +65,9 @@ static func extends_clazz(class_info :Dictionary) -> String:
 		return "extends '%s'" % clazz_path[0]
 	return "extends %s" % clazz_name
 
+
 # double all functions of given instance
-static func double_functions(clazz_name :String, clazz_path :PackedStringArray, func_doubler: GdFunctionDoubler, exclude_functions :Array) -> PackedStringArray:
+static func double_functions(instance :Object, clazz_name :String, clazz_path :PackedStringArray, func_doubler: GdFunctionDoubler, exclude_functions :Array) -> PackedStringArray:
 	var doubled_source := PackedStringArray()
 	var parser := GdScriptParser.new()
 	var exclude_override_functions := EXCLUDE_VIRTUAL_FUNCTIONS + EXCLUDE_FUNCTIONS + exclude_functions
@@ -91,9 +94,13 @@ static func double_functions(clazz_name :String, clazz_path :PackedStringArray, 
 		var func_descriptor := GdFunctionDescriptor.extract_from(method)
 		if functions.has(func_descriptor.name()) or exclude_override_functions.has(func_descriptor.name()):
 			continue
+		# do not double on not implemented virtual functions
+		if instance != null and not instance.has_method(func_descriptor.name()):
+			continue
 		functions.append(func_descriptor.name())
 		doubled_source += func_doubler.double(func_descriptor)
 	return doubled_source
+
 
 # hot fix https://github.com/godotengine/godot/issues/67544
 static func _hotfix_invalid_method_descriptors(method :Dictionary):

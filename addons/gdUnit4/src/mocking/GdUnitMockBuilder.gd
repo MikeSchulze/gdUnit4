@@ -39,6 +39,7 @@ static func build(caller :Object, clazz, mock_mode :String, debug_write := false
 	mock_instance.__set_caller(caller)
 	return GdUnitMemoryPool.register_auto_free(mock_instance, memory_pool)
 
+
 static func mock_on_scene(caller :Object, scene :PackedScene, memory_pool :int, debug_write :bool) -> Object:
 	var push_errors := is_push_errors()
 	if not scene.can_instantiate():
@@ -72,6 +73,7 @@ static func get_class_info(clazz :Variant) -> Dictionary:
 		"class_path" : clazz_path
 	}
 
+
 static func mock_on_script(clazz :Variant, function_excludes :PackedStringArray, debug_write :bool) -> GDScript:
 	var push_errors := is_push_errors()
 	var function_doubler := GdUnitMockFunctionDoubler.new(push_errors)
@@ -80,7 +82,7 @@ static func mock_on_script(clazz :Variant, function_excludes :PackedStringArray,
 	
 	var clazz_name :String = class_info.get("class_name")
 	var clazz_path :PackedStringArray = class_info.get("class_path", [clazz_name])
-	lines += double_functions(clazz_name, clazz_path, function_doubler, function_excludes)
+	lines += double_functions(null, clazz_name, clazz_path, function_doubler, function_excludes)
 	
 	var mock := GDScript.new()
 	mock.source_code = "\n".join(lines)
@@ -95,6 +97,7 @@ static func mock_on_script(clazz :Variant, function_excludes :PackedStringArray,
 		push_error("Critical!!!, MockBuilder error, please contact the developer.")
 		return null
 	return mock
+
 
 static func is_mockable(clazz :Variant, push_errors :bool=false) -> bool:
 	var clazz_type := typeof(clazz)

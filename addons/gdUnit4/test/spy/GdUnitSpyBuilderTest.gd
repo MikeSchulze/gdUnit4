@@ -13,6 +13,7 @@ static func get_function_description(clazz_name :String, method_name :String) ->
 			return GdFunctionDescriptor.extract_from(method_descriptor)
 	return null
 
+
 func test_double__init() -> void:
 	var doubler := GdUnitSpyFunctionDoubler.new(false)
 	# void _init() virtual
@@ -23,6 +24,7 @@ func test_double__init() -> void:
 		"	pass",
 		""]
 	assert_array(doubler.double(fd)).contains_exactly(expected)
+
 
 func test_double_return_typed_function_without_arg() -> void:
 	var doubler := GdUnitSpyFunctionDoubler.new(false)
@@ -37,11 +39,10 @@ func test_double_return_typed_function_without_arg() -> void:
 		"		return \"\"",
 		"	else:",
 		"		__save_function_interaction(args)",
-		"	if false == false:",
-		"		return super.get_class()",
-		"	return \"\"",
+		"	return super.get_class()",
 		""]
 	assert_array(doubler.double(fd)).contains_exactly(expected)
+
 
 func test_double_return_typed_function_with_args() -> void:
 	var doubler := GdUnitSpyFunctionDoubler.new(false)

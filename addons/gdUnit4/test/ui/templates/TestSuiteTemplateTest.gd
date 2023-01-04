@@ -11,6 +11,8 @@ func test_show() -> void:
 	var template = spy("res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.tscn")
 	scene_runner(template)
 	
+	# verify the followup functions are called by _ready()
+	verify(template)._ready()
 	verify(template).setup_editor_colors()
 	verify(template).setup_supported_types()
 	verify(template).load_template(GdUnitTestSuiteTemplate.TEMPLATE_ID_GD)
