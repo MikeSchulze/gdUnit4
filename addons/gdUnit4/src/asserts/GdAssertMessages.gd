@@ -7,6 +7,7 @@ const VALUE_COLOR = "#1E90FF"
 const SUB_COLOR :=  Color(1, 0, 0, .3)
 const ADD_COLOR :=  Color(0, 1, 0, .3)
 
+
 static func _format_dict(value :Dictionary) -> String:
 	if value.is_empty():
 		return "{ }"
@@ -15,6 +16,20 @@ static func _format_dict(value :Dictionary) -> String:
 		as_rows[index] = "	" + as_rows[index]
 	as_rows[-1] = "  " + as_rows[-1]
 	return "\n".join(as_rows)
+
+
+# improved version of InputEvent as text
+static func input_event_as_text(event :InputEvent) -> String:
+	var text := ""
+	if event is InputEventKey:
+		text += "InputEventKey : key='%s', pressed=%s, keycode=%d, physical_keycode=%s" % [event.as_text(), event.pressed, event.keycode, event.physical_keycode]
+	else:
+		text += event.as_text()
+	if event is InputEventMouse:
+		text += ", global_position %s" % event.global_position
+	if event is InputEventWithModifiers:
+		text += ", shift=%s, alt=%s, control=%s, meta=%s, command=%s" % [event.shift_pressed, event.alt_pressed, event.ctrl_pressed, event.meta_pressed, event.command_or_control_autoremap]
+	return text
 
 
 static func _colored_string_div(characters :String) -> String:
@@ -85,7 +100,7 @@ static func _colored_value(value, delimiter ="\n", detailed := false) -> String:
 			if value == null:
 				return "'[color=%s]<null>[/color]'" % [VALUE_COLOR]
 			if value is InputEvent:
-				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.as_text()]
+				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, input_event_as_text(value)]
 			if detailed and value.has_method("_to_string"):
 				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value._to_string()]
 			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
@@ -406,6 +421,8 @@ static func error_signal_emitted(signal_name :String, args :Array, elapsed :Stri
 		return "%s %s but is emitted after %s" % [_error("Expecting do not emit signal:"), _colored_value(signal_name + "()"), elapsed]
 	return "%s %s but is emitted after %s" % [_error("Expecting do not emit signal:"), _colored_value(signal_name + "(" + str(args) + ")"), elapsed]
 
+static func error_await_signal_on_invalid_instance(source, signal_name :String, args :Array) -> String:
+	return "%s\n await_signal_on(%s, %s, %s)" % [_error("Invalid source! Can't await on signal:"), _colored_value(source), signal_name, args]
 
 static func result_type(type :int) -> String:
 	match type:
@@ -460,7 +477,7 @@ static func _to_typed_args(args :Array) -> PackedStringArray:
 
 static func _format_arg(arg) -> String:
 	if arg is InputEvent:
-		return arg.as_text()
+		return input_event_as_text(arg)
 	return str(arg)
 
 
