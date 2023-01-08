@@ -11,7 +11,8 @@ title: Home
 ## What is GdUnit3?
 **Gd**(*Godot*)**Unit**(*Unit Testing*)**3**(*Godot 3.x*)
 
-GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and Scenes within the Godot editor. GdUnit3 is very useful for [TDD (test driven development)](https://en.wikipedia.org/wiki/Test-driven_development){:target="_blank"} and will help you get your code bug-free.
+GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and Scenes within the Godot editor.<br>
+You can use it for  [TDD (test driven development)](https://en.wikipedia.org/wiki/Test-driven_development){:target="_blank"} and will help you get your code bug-free.
 
 
 ## You are welcome to:
@@ -56,7 +57,9 @@ class_name GdUnitExampleTest
 extends GdUnitTestSuite
 
 func test_example():
-	assert_str("This is a example message").has_length(25).starts_with("This is a ex")
+  assert_str("This is a example message")\
+    .has_length(25)\
+    .starts_with("This is a ex")
 ```
 {% endtab %}
 
@@ -73,7 +76,9 @@ namespace examples
         [TestCase]
         public void Example()
         {
-            AssertString("This is a example message").HasLength(25).StartsWith("This is a ex");
+            AssertString("This is a example message")
+              .HasLength(25)
+              .StartsWith("This is a ex");
         }
     }
 }

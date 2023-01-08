@@ -20,7 +20,7 @@
 
 .tab>*>a {
     display: block;
-    text-align: center;
+    text-align: left;
     padding: 0px 10px;
     color: #999;
     border-bottom: 4px solid transparent;
@@ -72,4 +72,8 @@ ul.tab-content>li::before {
 
 .tab-content li.active {
     display: initial;
+}
+
+th, td {
+    text-align: left;
 }

@@ -30,6 +30,12 @@ Use the scene runner with **ISceneRunner.Load(\<scene\>)** in which you load the
 {% endtabs %}
 
 
+{% include advice.html
+content="You need to complete key or mouse simulations finally a minimum of one frame to complete the input event!<br>
+You have to add `yield(await_idle_frame(), 'completed')`"
+%}
+
+
 For more advanced example, see [Tutorial - Testing Scenes](/gdUnit3/tutorials/tutorial_scene_runner/#using-scene-runner)
 
 ### Function Overview
@@ -41,9 +47,10 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit3/tutorials/tu
 |[simulate_key_pressed](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_pressed) | Simulates that a key has been pressed |
 |[simulate_key_press](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed |
 |[simulate_key_release](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released |
-|[simulate_mouse_move](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to relative position by given speed |
+|[simulate_mouse_move](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to final position |
+|[simulate_mouse_move_relative](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_move_relative) | Simulates a mouse move by an offset and speed |
 |[simulate_mouse_button_pressed](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_pressed) | Simulates a mouse button pressed |
-|[simulate_mouse_button_press](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_press) ] | Simulates a mouse button press (holding) |
+|[simulate_mouse_button_press](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_press) | Simulates a mouse button press (holding) |
 |[simulate_mouse_button_release](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_release) | Simulates a mouse button released |
 |[simulate_frames](/gdUnit3/advanced_testing/sceneRunner/#simulate_frames) | Simulates scene processing for a certain number of frames (respecting time factor)|
 |[set_mouse_pos](/gdUnit3/advanced_testing/sceneRunner/#set_mouse_pos) | Sets the mouse cursor to given position relative to the viewport.|
@@ -62,7 +69,7 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit3/tutorials/tu
 |[SimulateKeyPressed](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_pressed) | Simulates that a key has been pressed |
 |[SimulateKeyPress](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed |
 |[SimulateKeyRelease](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released |
-|[SimulateMouseMove](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to relative position by given speed |
+|[SimulateMouseMove](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to final position |
 |[SimulateMouseButtonPressed](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_pressed) | Simulates a mouse button pressed |
 |[SimulateMouseButtonPress](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_press) ] | Simulates a mouse button press (holding) |
 |[SimulateMouseButtonRelease](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_release) | Simulates a mouse button released |
@@ -92,9 +99,11 @@ Simulates that a key has been pressed.
 ```ruby
     # simulate the enter key is pressed
     runner.simulate_key_pressed(KEY_ENTER)
+    yield(await_idle_frame(), "completed")
 
     # simulates key combination ctrl+C is pressed
     runner.simulate_key_pressed(KEY_C, false, true)
+    yield(await_idle_frame(), "completed")
 ```
 {% endtab %}
 {% tab scene-runner-simulate_key_pressed C# %}
@@ -131,9 +140,11 @@ Simulates that a key is press.
 ```ruby
     # simulate the enter key is press
     runner.simulate_key_press(KEY_ENTER)
+    yield(await_idle_frame(), "completed")
 
     # simulates key combination ctrl+C is pressed
     runner.simulate_key_press(KEY_C, false, true)
+    yield(await_idle_frame(), "completed")
 ```
 {% endtab %}
 {% tab scene-runner-simulate_key_press c# %}
@@ -171,9 +182,11 @@ Simulates that a key has been released
 ```ruby
     # simulate a enter key is released
     runner.simulate_key_release(KEY_ENTER)
+    yield(await_idle_frame(), "completed")
 
     # simulates key combination ctrl+C is released
     runner.simulate_key_release(KEY_C, false, true)
+    yield(await_idle_frame(), "completed")
 ```
 {% endtab %}
 {% tab scene-runner-simulate_key_release C# %}
@@ -199,20 +212,21 @@ Simulates that a key has been released
 
 
 ### simulate_mouse_move
-Simulates a mouse moved to relative position by given speed
+Simulates a mouse moved to final position
 {% tabs scene-runner-simulate_mouse_move %}
 {% tab scene-runner-simulate_mouse_move GdScript %}
 ```ruby
-    # relative: The mouse position relative to the previous position (position at the last frame).
-    # speed : The mouse speed in pixels per second.‚
-    func simulate_mouse_move(<relative> :Vector2, [speed] :Vector2) -> GdUnitSceneRunner:
+    # position: The final mouse position
+    func simulate_mouse_move(<position> :Vector2) -> GdUnitSceneRunner:
 ```
 ```ruby
     # set mouse pos to a inital position
     runner.set_mouse_pos(Vector2(160, 20))
+    yield(await_idle_frame(), "completed")
 
-    # simulates a mouse move to final position 200,40
+    # simulates a mouse move to final position 200, 40
     runner.simulate_mouse_move(Vector2(200, 40))
+    yield(await_idle_frame(), "completed")
 ```
 {% endtab %}
 {% tab scene-runner-simulate_mouse_move C# %}
@@ -236,17 +250,41 @@ Simulates a mouse moved to relative position by given speed
 {% endtabs %}
 
 
+### simulate_mouse_move_relative
+Simulates a mouse move by given offset and speed to the final position.
+{% tabs scene-runner-simulate_mouse_move_relative %}
+{% tab scene-runner-simulate_mouse_move_relative GdScript %}
+```ruby
+    # relative: The relative position, e.g. the mouse position offset
+    # speed : The mouse speed in pixels per second.
+    func simulate_mouse_move_relative(<relative> :Vector2, <speed> :Vector2) -> GdUnitSceneRunner:
+```
+```ruby
+    # set mouse pos to a inital position
+    runner.set_mouse_pos(Vector2(10, 20))
+    yield(await_idle_frame(), "completed")
+
+    # simulates a full mouse move from current position + the given offset (400, 200) with a speed of (.2, 1)
+    # the final position will be (410, 220) when is completed
+    yield(runner.simulate_mouse_move_relative(Vector2(400, 200), Vector2(.2, 1)), "completed")
+```
+{% endtab %}
+{% endtabs %}
+
+
 ### simulate_mouse_button_pressed
 Simulates a mouse button pressed
 {% tabs scene-runner-simulate_mouse_button_pressed %}
 {% tab scene-runner-simulate_mouse_button_pressed GdScript %}
 ```ruby
     # buttonIndex: The mouse button identifier, one of the ButtonList button or button wheel constants.
-    func simulate_mouse_button_pressed(<buttonIndex> :int) -> GdUnitSceneRunner:
+    # double_click: set to true to simmulate a doubleclick
+    func simulate_mouse_button_pressed(<buttonIndex> :int, <double_click>:=false) -> GdUnitSceneRunner:
 ```
 ```ruby
     # simulates mouse left button pressed
     runner.simulate_mouse_button_pressed(BUTTON_LEFT)
+    yield(await_idle_frame(), "completed")
 ```
 {% endtab %}
 {% tab scene-runner-simulate_mouse_button_pressed C# %}
@@ -272,11 +310,13 @@ Simulates a mouse button press (holding)
 {% tab scene-runner-simulate_mouse_button_press GdScript %}
 ```ruby
     # buttonIndex: The mouse button identifier, one of the ButtonList button or button wheel constants.
-    func simulate_mouse_button_press(<buttonIndex> :int) -> GdUnitSceneRunner:
+    # double_click: set to true to simmulate a doubleclick
+    func simulate_mouse_button_press(<buttonIndex> :int, <double_click>:=false) -> GdUnitSceneRunner:
 ```
 ```ruby
     # simulates mouse left button is press
     runner.simulate_mouse_button_press(BUTTON_LEFT)
+    yield(await_idle_frame(), "completed")
 ```
 {% endtab %}
 {% tab scene-runner-simulate_mouse_button_press C# %}
@@ -307,6 +347,7 @@ Simulates a mouse button released
 ```ruby
     # simulates mouse left button is released
     runner.simulate_mouse_button_release(BUTTON_LEFT)
+    yield(await_idle_frame(), "completed")
 ```
 {% endtab %}
 {% tab scene-runner-simulate_mouse_button_release C# %}
@@ -559,6 +600,7 @@ Sets the mouse cursor to given position relative to the viewport.
 ```ruby
     # sets the current mouse position to 100, 100
     runner.set_mouse_pos(Vector2(100, 100))
+    yield(await_idle_frame(), "completed")
 ```
 {% endtab %}
 {% tab scene-runner-set_mouse_pos C# %}

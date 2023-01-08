@@ -93,7 +93,8 @@ func test_full_name() -> void:
 {% endtabs %}
 
 
-Do re run the test by press the "Run Button" on the inspector
+Now run the test again by pressing the **Run Debug Button** in the inspector.<br>
+For more details about the inspector buttons, see [Button Bar](/gdUnit3/faq/inspector/#button-bar)
 
 ![](/gdUnit3/assets/images/first-steps/rerun-test.png)
 
