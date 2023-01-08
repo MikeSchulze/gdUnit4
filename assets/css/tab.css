@@ -26,7 +26,6 @@
     border-bottom: 4px solid transparent;
     border-bottom-color: transparent;
     font-size: 12px;
-    text-transform: uppercase;
     transition: color .1s ease-in-out;
     line-height: 20px;
 }

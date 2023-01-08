@@ -3,7 +3,7 @@ layout: default
 title: Home
 ---
 
-# GdUnit3 V2.3.0
+# GdUnit3 V2.4.0
 
 ![GdUnit3](\gdUnit3\assets\images\background.png)
 

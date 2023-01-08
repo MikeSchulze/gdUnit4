@@ -6,6 +6,31 @@ nav_order: 3
 
 # Create your first Test
 
+## Before you start
+Create a new folder **first_steps** in your root project and copy this class into it.<br>
+It should be located at `res://first-steps/TestPerson.gd`
+{% tabs first-step-test_class %}
+{% tab first-step-test_class TestPerson.gd %}
+```ruby
+class_name TestPerson
+extends Node
+
+var _first_name :String
+var _last_name :String
+
+func _init(first_name :String, last_name :String):
+	_first_name = first_name
+	_last_name = last_name
+
+func full_name() -> String:
+	return _first_name + " " + _last_name
+
+```
+{% endtab %}
+{% endtabs %}
+
+## Create the Test
+
 The fastest way to create a test is to use the built-in "Create Test" function.
 To do this, open your script that you want to test and right-click on a function and then click "Create Test".
 
@@ -44,16 +69,30 @@ By double-clicking on the failed test you can jump directly to the test failure.
 
 
 ## Complete your first Test
-To define your test, you must specify what you want to test. For testing, GdUnit provides a large number of asserts to compare an actual value with an expected value.
+To define your test, you must specify what you want to test.<br>
+For testing, GdUnit provides a large number of asserts to compare an actual value with an expected value.
 
-Remeber we generated a test for the function `func full_name() -> String:` with has a return type of **String**.
-To verify the return value of the function replace the `assert_not_yet_implemented()` with:
+Remember that we did a test for the function `func full_name() -> String:` with has a return type of **String**.
+To verify the return value of the function replace to complte your test by:
+
+{% tabs first-step-test_case %}
+{% tab first-step-test_case (load by path) %}
+```ruby
+func test_full_name() -> void:
+   var person = load("res://first-steps/TestPerson.gd").new("King", "Arthur")
+   assert_str(person.full_name()).is_equal("King Arthur")
+```
+{% endtab %}
+{% tab first-step-test_case (by class_name) %}
 ```ruby
 func test_full_name() -> void:
    var person := TestPerson.new("King", "Arthur")
    assert_str(person.full_name()).is_equal("King Arthur")
-
 ```
+{% endtab %}
+{% endtabs %}
+
+
 Do re run the test by press the "Run Button" on the inspector
 
 ![](/gdUnit3/assets/images/first-steps/rerun-test.png)
