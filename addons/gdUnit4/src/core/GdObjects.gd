@@ -63,10 +63,6 @@ const TYPE_AS_STRING_MAPPINGS := {
 	TYPE_VARIANT: "Variant"
 }
 
-# holds flipped copy of TYPE_AS_STRING_MAPPINGS initalisized by func 'string_as_typeof'
-const STRING_AS_TYPE_MAPPINGS := {
-}
-
 const NOTIFICATION_AS_STRING_MAPPINGS := {
 	TYPE_OBJECT: {
 		Object.NOTIFICATION_POSTINITIALIZE : "POSTINITIALIZE",
@@ -273,13 +269,9 @@ static func typeof_as_string(value) -> String:
 static func all_types() -> PackedInt32Array:
 	return PackedInt32Array(TYPE_AS_STRING_MAPPINGS.keys())
 
-static func string_as_typeof(type :String) -> int:
-	# init STRING_AS_TYPE_MAPPINGS if empty by build a flipped copy
-	if STRING_AS_TYPE_MAPPINGS.is_empty():
-		for key in TYPE_AS_STRING_MAPPINGS.keys():
-			var value = TYPE_AS_STRING_MAPPINGS[key]
-			STRING_AS_TYPE_MAPPINGS[value] = key
-	return STRING_AS_TYPE_MAPPINGS.get(type, TYPE_VARIANT)
+static func string_as_typeof(type_name :String) -> int:
+	var type = TYPE_AS_STRING_MAPPINGS.find_key(type_name)
+	return type if type != null else TYPE_VARIANT
 
 static func is_primitive_type(value) -> bool:
 	match typeof(value):

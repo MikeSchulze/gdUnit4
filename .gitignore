@@ -12,6 +12,7 @@ data_*/
 mono_crash.*.json
 
 # submodules
+gdUnit3-examples/
 gdUnit4-examples/
 
 

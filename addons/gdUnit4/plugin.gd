@@ -4,7 +4,6 @@ extends EditorPlugin
 var _gd_inspector :Node
 var _server_node
 var _gd_console :Node
-var _singleton :GdUnitSingleton
 
 
 # removes GdUnit classes inherits from Godot.Node from the node inspecor, ohterwise it takes very long to popup the dialog
@@ -22,7 +21,6 @@ func _fixup_node_inspector() -> void:
 
 func _enter_tree():
 	Engine.set_meta("GdUnitEditorPlugin", self)
-	_singleton = GdUnitSingleton.new()
 	GdUnitSettings.setup()
 	# install the GdUnit inspector
 	_gd_inspector = load("res://addons/gdUnit4/src/ui/GdUnitInspector.tscn").instantiate()
@@ -52,3 +50,4 @@ func _exit_tree():
 	if Engine.has_meta("GdUnitEditorPlugin"):
 		Engine.remove_meta("GdUnitEditorPlugin")
 	prints("Unload GdUnit4 Plugin success")
+	GdUnitSingleton.dispose()

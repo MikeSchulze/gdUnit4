@@ -240,9 +240,8 @@ static func add_test_case(resource_path :String, func_name :String)  -> Result:
 	var line_number := count_lines(script) + 2
 	var func_body := TEST_FUNC_TEMPLATE.replace("${func_name}", func_name)
 	if Engine.is_editor_hint():
-		var ep := EditorPlugin.new()
+		var ep :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 		var settings := ep.get_editor_interface().get_editor_settings()
-		ep.free()
 		var ident_type :int = settings.get_setting("text_editor/behavior/indent/type")
 		var ident_size :int = settings.get_setting("text_editor/behavior/indent/size")
 		if ident_type == 1:

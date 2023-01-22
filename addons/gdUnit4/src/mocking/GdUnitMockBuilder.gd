@@ -3,21 +3,20 @@ extends GdUnitClassDoubler
 
 
 # holds mocker runtime configuration
-const _config := [{}]
+const KEY_REPORT_PUSH_ERRORS = "report_push_errors"
 
 # only for testing
 static func do_push_errors(enabled :bool) -> void:
-	var key = "report_push_errors"
-	_config[0][key] = enabled
-	
+	GdUnitStaticDictionary.add_value(KEY_REPORT_PUSH_ERRORS, enabled)
+
+
 static func is_push_errors_enabled() -> bool:
-	var key = "report_push_errors"
-	if _config[0].has(key):
-		return _config[0][key] == true
-	return false
+	return GdUnitStaticDictionary.get_value(KEY_REPORT_PUSH_ERRORS, false)
+
 
 static func is_push_errors() -> bool:
 	return is_push_errors_enabled() or GdUnitSettings.is_report_push_errors()
+
 
 static func build(caller :Object, clazz, mock_mode :String, debug_write := false) -> Object:
 	var memory_pool :GdUnitMemoryPool.POOL = caller.get_meta(GdUnitMemoryPool.META_PARAM)

@@ -14,10 +14,10 @@
 #-------------------------------------------------------------------------------
 # For detailed instructions show http://gdUnit/plapla
 ################################################################################
+@icon("res://addons/gdUnit4/src/ui/assets/TestSuite.svg")
 class_name GdUnitTestSuite
 extends Node
 
-@icon("res://addons/gdUnit4/src/ui/assets/TestSuite.svg")
 
 const NO_ARG = GdUnitConstants.NO_ARG
 

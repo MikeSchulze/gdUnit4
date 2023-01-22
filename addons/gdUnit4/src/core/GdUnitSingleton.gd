@@ -5,27 +5,27 @@
 # around plugin handling 
 ################################################################################
 class_name GdUnitSingleton
-extends GdUnitStaticDictionary
+extends RefCounted
 
-static func get_singleton(name: String) -> Object:
-	var singleton = get_value(name)
-	if singleton == null:
-		push_error("No singleton instance with '" + name + "' found.")
+
+static func instance(name :String, clazz :Callable) -> Variant:
+	if Engine.has_meta(name):
+		return Engine.get_meta(name)
+	var singleton := clazz.call()
+	Engine.set_meta(name, singleton)
+	GdUnitTools.prints_verbose("Register singleton '%s:%s'" % [name, singleton])
+	var singletons := Engine.get_meta("GdUnitSingeltons", PackedStringArray())
+	singletons.append(name)
+	Engine.set_meta("GdUnitSingeltons", singletons)
 	return singleton
 
-static func add_singleton(name: String, path: String) -> Object:
-	var singleton :Object = load(path).new()
-	if singleton.has_method("set_name"):
-		singleton.set_name(name)
-	add_value(name, singleton)
-	#print_debug("Added singleton ", name, " ",singleton)
-	return singleton
 
-static func get_or_create_singleton(name: String, path: String) -> Object:
-	if has_key(name):
-		return get_value(name)
-	return add_singleton(name, path)
-
-static func remove_singleton(name: String) -> void:
-	if !erase(name):
-		push_error("Remove singleton '" + name + "' failed. No global instance found.")
+static func dispose() -> void:
+	GdUnitTools.prints_verbose("Cleanup singleton references")
+	var singletons := Engine.get_meta("GdUnitSingeltons", PackedStringArray())
+	for singleton in singletons:
+		var instance := Engine.get_meta(singleton)
+		GdUnitTools.prints_verbose("Free singeleton '%s:%s'" % [singleton, instance])
+		GdUnitTools.free_instance(instance)
+		Engine.remove_meta(singleton)
+	Engine.remove_meta("GdUnitSingeltons")

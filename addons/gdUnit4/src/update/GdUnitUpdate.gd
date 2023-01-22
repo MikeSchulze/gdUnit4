@@ -8,7 +8,7 @@ extends ConfirmationDialog
 
 
 var _debug_mode := false
-var _plugin :EditorPlugin = EditorPlugin.new()
+var _plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 
 
 func init_progress(max_value : int) -> void:
