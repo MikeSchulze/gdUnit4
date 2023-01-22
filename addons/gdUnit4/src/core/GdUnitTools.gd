@@ -180,6 +180,11 @@ static func max_length(left, right) -> int:
 	return rs if ls < rs else ls
 
 
+static func prints_verbose(message :String) -> void:
+	if OS.is_stdout_verbose():
+		print_debug(message)
+
+
 static func free_instance(instance :Variant) -> void:
 	# is instance already freed?
 	if not is_instance_valid(instance) or str(instance).contains("GDScriptNativeClass"):

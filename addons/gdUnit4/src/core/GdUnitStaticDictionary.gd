@@ -1,52 +1,56 @@
 # implements a Dictionary with static accessors
 class_name GdUnitStaticDictionary
-extends RefCounted
+extends GdUnitSingleton
 
-const __store := [{}]
+static func __data() -> Dictionary:
+	return instance("GdUnitStaticVariables", func(): return {})
 
 static func add_value(key : Variant, value : Variant, overwrite := false) -> Variant:
-	if overwrite and __store[0].has(key):
+	var data :Dictionary = __data()
+	if overwrite and data.has(key):
 		push_error("An value already exists with key: %s" % key)
 		return null
-	__store[0][key] = value
+	data[key] = value
+	#Engine.set_meta("GdUnitStaticVariables", data)
 	return value
 
 static func erase(key: Variant) -> bool:
-	if __store[0].has(key):
-		__store[0].erase(key)
+	var data :Dictionary = __data()
+	if data.has(key):
+		data.erase(key)
+		#Engine.set_meta("GdUnitStaticVariables", data)
 		return true
 	return false
 
 static func clear() -> void:
-	__store[0].clear()
+	Engine.set_meta("GdUnitStaticVariables", {})
 
 func find_key(value: Variant) -> Variant:
-	return __store[0].find_key(value)
+	return __data().find_key(value)
 
 static func get_value(key: Variant, default: Variant = null) -> Variant:
-	return __store[0][key]
+	return __data().get(key, default)
 
 static func has_key(key: Variant) -> bool:
-	return __store[0].has(key)
+	return __data().has(key)
 
 static func has_keys(keys: Array)  -> bool:
-	return __store[0].has_all(keys)
+	return __data().has_all(keys)
 
 static func hash() -> int:
-	return __store[0].hash()
+	return __data().hash()
 
 static func is_empty() -> bool:
-	prints(__store)
-	return __store[0].is_empty()
-	
+	return __data().is_empty()
+
 static func keys() -> Array:
-	return __store[0].keys()
-	
+	return __data().keys()
+
 static func size() -> int:
-	return __store[0].size()
-	
+	return __data().size()
+
 static func values() -> Array:
-	return __store[0].values()
+	return __data().values()
 
 func _to_string() -> String:
-	return str(__store[0].keys())
+	return str(__data().keys())

@@ -82,6 +82,7 @@ class CLIRunner extends Node:
 			STOP:
 				_state = EXIT
 				_on_gdunit_event(GdUnitStop.new())
+				GdUnitSingleton.dispose()
 				get_tree().quit(report_exit_code(_report))
 
 	func set_report_dir(path :String) -> void:

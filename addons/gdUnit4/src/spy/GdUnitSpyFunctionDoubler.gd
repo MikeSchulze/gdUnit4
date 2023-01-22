@@ -136,4 +136,4 @@ func get_template(return_type :int, is_vararg :bool, is_args :bool) -> String:
 		return TEMPLATE_RETURN_VOID_VARARG if return_type == TYPE_NIL else TEMPLATE_RETURN_VARIANT_VARARG
 	if is_vararg and not is_args:
 		return TEMPLATE_RETURN_VOID_VARARG_ONLY if return_type == TYPE_NIL else TEMPLATE_RETURN_VARIANT_VARARG_ONLY
-	return TEMPLATE_RETURN_VOID if return_type == TYPE_NIL else TEMPLATE_RETURN_VARIANT
+	return TEMPLATE_RETURN_VOID if (return_type == TYPE_NIL or return_type == GdObjects.TYPE_VOID) else TEMPLATE_RETURN_VARIANT

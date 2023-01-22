@@ -15,13 +15,12 @@ var _expect_result :int
 var _report_consumer : GdUnitReportConsumer
 var _caller : WeakRef
 var _interrupted := false
-var _signal_collector := SignalCollector.instance()
+var _signal_collector :SignalCollector = SignalCollector.instance("SignalCollector", func(): return SignalCollector.new())
 
 # This is an singelton implementation and reused for each GdUnitSignalAssert
 # It connects to all signals of given emitter and collects received signals and arguments
 # The collected signals are cleand finally when the emitter is freed.
-class SignalCollector extends GdUnitStaticDictionary:
-	const CLASS_NAME = "SignalCollector"
+class SignalCollector extends GdUnitSingleton:
 	const SIGNAL_BLACK_LIST = []#["tree_exiting", "tree_exited", "child_exiting_tree"]
 	
 	# {
@@ -31,11 +30,6 @@ class SignalCollector extends GdUnitStaticDictionary:
 	#	}
 	# }
 	var _collected_signals :Dictionary = {}
-	
-	static func instance() -> SignalCollector:
-		if has_key(CLASS_NAME):
-			return get_value(CLASS_NAME)
-		return add_value(CLASS_NAME, SignalCollector.new())
 	
 	# connect to all possible signals defined by the emitter
 	# prepares the signal collection to store received signals and arguments

@@ -82,7 +82,6 @@ func prints_error(message :String) -> CmdConsole:
 
 func prints_warning(message :String) -> CmdConsole:
 	return color(Color.GOLDENROD).printl(message).end_color().new_line()
-	return self
 
 func prints_color(message :String, color :Color, flags := 0) -> CmdConsole:
 	return print_color(message, color, flags).new_line()

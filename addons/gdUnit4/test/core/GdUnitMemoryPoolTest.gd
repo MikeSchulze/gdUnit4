@@ -58,3 +58,14 @@ func test_is_auto_free_registered() -> void:
 	assert_bool(GdUnitMemoryPool.is_auto_free_registered(node, GdUnitMemoryPool.POOL.EXECUTE)).is_true()
 	# test checked all pools
 	assert_bool(GdUnitMemoryPool.is_auto_free_registered(node)).is_true()
+
+
+func test_full_test():
+	var node = Node.new()
+	GdUnitMemoryPool.register_auto_free(node, GdUnitMemoryPool.POOL.UNIT_TEST_ONLY)
+	assert_bool(GdUnitMemoryPool.is_auto_free_registered(node, GdUnitMemoryPool.POOL.UNIT_TEST_ONLY)).is_true()
+	GdUnitMemoryPool.run_auto_free(GdUnitMemoryPool.POOL.UNIT_TEST_ONLY)
+	assert_bool(GdUnitMemoryPool.is_auto_free_registered(node, GdUnitMemoryPool.POOL.UNIT_TEST_ONLY)).is_false()
+	
+	var store :GdUnitMemoryPool.MemoryStore = GdUnitSingleton.instance("UNIT_TEST_ONLY", func(): return null)
+	assert_array(store._store).is_empty()
