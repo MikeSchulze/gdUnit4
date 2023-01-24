@@ -222,3 +222,19 @@ func test_extract_package_invalid_package() -> void:
 	assert_result(result).is_error()\
 		.contains_message("Extracting `%s` failed! Please collect the error log and report this. Error Code: 1" % source)
 	assert_array(GdUnitTools.scan_dir(tmp_path)).is_empty()
+
+
+func test_free_instance() -> void:
+	# on valid instances
+	assert_that(GdUnitTools.free_instance(RefCounted.new())).is_true()
+	assert_that(GdUnitTools.free_instance(Node.new())).is_true()
+	assert_that(GdUnitTools.free_instance(JavaClass.new())).is_true()
+	
+	# on invalid instances
+	assert_that(GdUnitTools.free_instance(null)).is_false()
+	assert_that(GdUnitTools.free_instance(RefCounted)).is_false()
+	
+	# on already freed instances
+	var node := Node.new()
+	node.free()
+	assert_that(GdUnitTools.free_instance(node)).is_false()
