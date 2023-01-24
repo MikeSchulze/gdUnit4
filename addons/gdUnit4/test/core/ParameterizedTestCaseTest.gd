@@ -136,3 +136,18 @@ func test_parameterized_dict_values(data: Dictionary, expected :String, test_par
 	]):
 	collect_test_call("test_parameterized_dict_values", [data, expected])
 	assert_that(str(data).replace(" ", "")).is_equal(expected)
+
+
+func test_dictionary_div_number_types(
+	value : Dictionary,
+	expected : Dictionary,
+	test_parameters : Array = [
+		[{ top = 50.0,	bottom = 50.0,	left = 50.0,	right = 50.0},	{ top = 50, 	bottom = 50,	left = 50,  	right = 50}],
+		[{ top = 50.0,	bottom = 50.0,	left = 50.0,	right = 50.0},	{ top = 50.0,	bottom = 50.0,	left = 50.0,	right = 50.0}],
+		[{ top = 50,	bottom = 50,	left = 50,  	right = 50},	{ top = 50.0,	bottom = 50.0,	left = 50.0,	right = 50.0}],
+		[{ top = 50,	bottom = 50,	left = 50,  	right = 50},	{ top = 50, 	bottom = 50,	left = 50,  	right = 50}],
+	]
+) -> void:
+	# allow to compare type unsave
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, false)
+	assert_that(value).is_equal(expected)

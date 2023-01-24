@@ -549,6 +549,7 @@ func test_fuzzer_before_before(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterati
 	assert_array(_stack).is_empty()
 	_stack.push_back(1)
 
+
 func test_execute_parameterizied_tests() -> void:
 	# this is a more complex failure state, we expect to find multipe failures on different stages
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteParameterizedTests.resource")
@@ -561,48 +562,66 @@ func test_execute_parameterizied_tests() -> void:
 		"test_parameterized_string_values",
 		"test_parameterized_Vector2_values",
 		"test_parameterized_Vector3_values",
-		"test_parameterized_obj_values"]
+		"test_parameterized_obj_values",
+		"test_dictionary_div_number_types"]
 	assert_array(test_suite.get_children()).extract("get_name").contains_exactly(expected_test_cases)
 	# simulate test suite execution
 	var events = await execute(test_suite)
-	# use this crasy hack to avoid invalid await status
-	# https://github.com/godotengine/godot/issues/67943
-	var value = ""
-	value += "foo"
-	
-	# verify all events are send
 	var suite_name = "TestSuiteParameterizedTests"
-	var expected_events := Array()
-	expected_events.append(tuple(GdUnitEvent.TESTSUITE_BEFORE, suite_name, "before", expected_test_cases.size()))
-	expected_events.append(tuple(GdUnitEvent.TESTSUITE_AFTER, suite_name, "after", 0))
-	expected_events.append_array(add_expected_test_case_events(suite_name, "test_parameterized_bool_value",
-		[[0, false],[1, true]]))
-	expected_events.append_array(add_expected_test_case_events(suite_name, "test_parameterized_int_values",
-		[[1, 2, 3, 6],
-		[3, 4, 5, 12],
-		[6, 7, 8, 21]]))
-	assert_array(events).extractv(
-		extr("type"), extr("suite_name"), extr("test_name"), extr("total_count"))\
-		.contains(expected_events)
 	
-	# verify all three testcases of 'test_parameterized_int_values_fail' are correct executed and it reports the failures
+	# the test is partial failing because of diverent type in the dictionary
 	assert_array(events).extractv(
 		extr("type"), extr("suite_name"), extr("test_name"), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
 		.contains([
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_parameterized_int_values_fail", false, true, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_parameterized_int_values_fail", [1, 2, 3, 6]), false, false, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_parameterized_int_values_fail", [3, 4, 5, 11]), false, true, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_parameterized_int_values_fail", [6, 7, 8, 22]), false, true, 0)])
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 0, [
+				{ top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}, { top = 50, bottom = 50, left = 50, right = 50}
+			]), false, true, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 1, [
+				{ top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
+			]), false, false, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 2, [
+				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
+			]), false, true, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 3, [
+				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
+			]), false, false, 0)
+		])
+	
+	# rerun the same tests again with allow to compare type unsave
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, false)
+	# simulate test suite execution
+	test_suite = resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteParameterizedTests.resource")
+	events = await execute(test_suite)
+	
+	# the test should now be successful
+	assert_array(events).extractv(
+		extr("type"), extr("suite_name"), extr("test_name"), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
+		.contains([
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 0, [
+				{ top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}, { top = 50, bottom = 50, left = 50, right = 50}
+			]), false, false, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 1, [
+				{ top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
+			]), false, false, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 2, [
+				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
+			]), false, false, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 3, [
+				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
+			]), false, false, 0)
+		])
+
 
 func add_expected_test_case_events(suite_name :String, test_name :String, parameters :Array = []) -> Array:
 	var expected_events := Array()
 	expected_events.append(tuple(GdUnitEvent.TESTCASE_BEFORE, suite_name, test_name, 0))
-	for param in parameters:
-		var test_case_name := buld_test_case_name(test_name, param)
+	for index in parameters.size():
+		var test_case_name := buld_test_case_name(test_name, index, parameters[index])
 		expected_events.append(tuple(GdUnitEvent.TESTCASE_BEFORE, suite_name, test_case_name, 0))
 		expected_events.append(tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, test_case_name, 0))
 	expected_events.append(tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, test_name, 0))
 	return expected_events
 
-func buld_test_case_name(test_name :String, parameter :Array) -> String:
-	return "%s %s" % [test_name, str(parameter)]
+
+func buld_test_case_name(test_name :String, index :int, parameter :Array) -> String:
+	return "%s:%d %s" % [test_name, index, str(parameter)]
