@@ -224,11 +224,20 @@ func test_extract_package_invalid_package() -> void:
 	assert_array(GdUnitTools.scan_dir(tmp_path)).is_empty()
 
 
+class InnerTestNodeClass extends Node:
+	pass
+
+class InnerTestRefCountedClass extends RefCounted:
+	pass
+
+
 func test_free_instance() -> void:
 	# on valid instances
 	assert_that(GdUnitTools.free_instance(RefCounted.new())).is_true()
 	assert_that(GdUnitTools.free_instance(Node.new())).is_true()
 	assert_that(GdUnitTools.free_instance(JavaClass.new())).is_true()
+	assert_that(GdUnitTools.free_instance(InnerTestNodeClass.new())).is_true()
+	assert_that(GdUnitTools.free_instance(InnerTestRefCountedClass.new())).is_true()
 	
 	# on invalid instances
 	assert_that(GdUnitTools.free_instance(null)).is_false()
