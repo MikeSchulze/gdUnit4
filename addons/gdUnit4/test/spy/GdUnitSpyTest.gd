@@ -136,9 +136,10 @@ func test_spy_copied_class_members_on_node():
 	node.set_name("foo")
 	assert_that(spy(node).name).is_equal("foo")
 
+
 func test_spy_on_inner_class():
-	var instance := AdvancedTestClass.AtmosphereData.new()
-	var spy_instance = spy(instance)
+	var instance :AdvancedTestClass.AtmosphereData = auto_free(AdvancedTestClass.AtmosphereData.new())
+	var spy_instance :AdvancedTestClass.AtmosphereData = spy(instance)
 	
 	# verify we have currently no interactions
 	verify_no_interactions(spy_instance)
