@@ -27,6 +27,12 @@ func test_equals_string():
 	assert_bool(GdObjects.equals(d, Vector2.ONE)).is_false()
 	assert_bool(GdObjects.equals(d, Vector3.ONE)).is_false()
 
+
+func test_equals_stringname():
+	assert_bool(GdObjects.equals("",  &"")).is_true()
+	assert_bool(GdObjects.equals("abc", &"abc")).is_true()
+	assert_bool(GdObjects.equals("abc", &"abC")).is_false()
+
 func test_equals_array():
 	var a := []
 	var b := []
@@ -197,6 +203,7 @@ func _is_instance(value) -> bool:
 	return GdObjects.is_instance(auto_free(value))
 
 func test_is_instance_true():
+	assert_bool(_is_instance(RefCounted.new())).is_true()
 	assert_bool(_is_instance(Node.new())).is_true()
 	assert_bool(_is_instance(AStar3D.new())).is_true()
 	assert_bool(_is_instance(PackedScene.new())).is_true()
@@ -208,6 +215,7 @@ func test_is_instance_true():
 	assert_bool(_is_instance(CustomClass.InnerClassC.new())).is_true()
 
 func test_is_instance_false():
+	assert_bool(_is_instance(RefCounted)).is_false()
 	assert_bool(_is_instance(Node)).is_false()
 	assert_bool(_is_instance(AStar3D)).is_false()
 	assert_bool(_is_instance(PackedScene)).is_false()
