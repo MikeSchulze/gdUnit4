@@ -87,6 +87,7 @@ func _on_gdunit_event(event :GdUnitEvent):
 		GdUnitEvent.STOP:
 			print_message("Summary:", Color.DODGER_BLUE)
 			println_message("| %d total | %d error | %d failed | %d skipped | %d orphans |" % [_summary["total_count"], _summary["error_count"], _summary["failed_count"], _summary["skipped_count"], _summary["orphan_nodes"]], _text_color, 1)
+			print_message("[wave][/wave]")
 		
 		GdUnitEvent.TESTSUITE_BEFORE:
 			init_statistics(event)
@@ -116,7 +117,7 @@ func _on_gdunit_event(event :GdUnitEvent):
 			elif event.is_skipped():
 				print_message("SKIPPED", Color.GOLDENROD)
 			elif event.is_error() or event.is_failed():
-				print_message("FAILED", Color.FIREBRICK)
+				print_message("[wave]FAILED[/wave]", Color.FIREBRICK)
 			elif event.is_warning():
 				print_message("WARNING", Color.YELLOW)
 			println_message(" %+12s" % LocalTime.elapsed(event.elapsed_time()))
