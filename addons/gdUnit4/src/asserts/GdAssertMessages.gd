@@ -124,6 +124,11 @@ static func fuzzer_interuped(iterations: int, error: String) -> String:
 		_error("test iterations"), 
 		error]
 
+
+static func test_timeout(timeout :int) -> String:
+	return "%s\n %s" % [_error("Timeout !"), _colored_value("Test timed out after %s" %  LocalTime.elapsed(timeout))]
+
+
 static func error_not_implemented() -> String:
 	return _error("Test not implemented!")
 

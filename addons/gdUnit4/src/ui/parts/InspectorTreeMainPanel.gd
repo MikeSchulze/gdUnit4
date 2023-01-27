@@ -225,7 +225,7 @@ func set_state_failed(item :TreeItem) -> void:
 func set_state_error(item :TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.ERROR)
 	item.set_custom_color(0, Color.DARK_RED)
-	item.set_suffix(0, "timeout! " + item.get_suffix(0))
+	item.set_suffix(0, item.get_suffix(0))
 	item.set_icon(0, ICON_TEST_ERROR)
 	item.collapsed = false
 
