@@ -11,8 +11,8 @@ const CUSTOM_TEMPLATE = \
 """# GdUnit generated TestSuite
 class_name ${suite_class_name}
 extends GdUnitTestSuite
-@warning_ignore(unused_parameter)
-@warning_ignore(return_value_discarded)
+@warning_ignore("unused_parameter")
+@warning_ignore("return_value_discarded")
 
 func before() -> void:
 	var ${source_var}_1 := ${source_class}.new()
@@ -31,8 +31,8 @@ func test_build_template_default() -> void:
 """# GdUnit generated TestSuite
 class_name ScriptWithClassNameTest
 extends GdUnitTestSuite
-@warning_ignore(unused_parameter)
-@warning_ignore(return_value_discarded)
+@warning_ignore("unused_parameter")
+@warning_ignore("return_value_discarded")
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/test/core/resources/script_with_class_name.gd'
@@ -47,8 +47,8 @@ func test_build_template_custom1() -> void:
 """# GdUnit generated TestSuite
 class_name ScriptWithClassNameTest
 extends GdUnitTestSuite
-@warning_ignore(unused_parameter)
-@warning_ignore(return_value_discarded)
+@warning_ignore("unused_parameter")
+@warning_ignore("return_value_discarded")
 
 func before() -> void:
 	var script_with_class_name_1 := ScriptWithClassName.new()
@@ -64,8 +64,8 @@ func test_build_template_custom2() -> void:
 """# GdUnit generated TestSuite
 class_name ScriptWithoutClassNameTest
 extends GdUnitTestSuite
-@warning_ignore(unused_parameter)
-@warning_ignore(return_value_discarded)
+@warning_ignore("unused_parameter")
+@warning_ignore("return_value_discarded")
 
 func before() -> void:
 	var script_without_class_name_1 := ScriptWithoutClassName.new()
@@ -82,8 +82,8 @@ func test_build_template_custom3() -> void:
 """# GdUnit generated TestSuite
 class_name PascalCaseWithClassNameTest
 extends GdUnitTestSuite
-@warning_ignore(unused_parameter)
-@warning_ignore(return_value_discarded)
+@warning_ignore("unused_parameter")
+@warning_ignore("return_value_discarded")
 
 func before() -> void:
 	var pascal_case_with_class_name_1 := PascalCaseWithClassName.new()
