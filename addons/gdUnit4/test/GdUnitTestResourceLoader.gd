@@ -13,7 +13,7 @@ static func load_test_suite(resource_path :String, script_type = GD_SUITE) -> No
 			return load_test_suite_gd(resource_path)
 		CS_SUITE:
 			return load_test_suite_cs(resource_path)
-	assert("type '%s' is not impleented" % script_type)
+	assert("type '%s' is not implemented" % script_type)
 	return null
 
 
@@ -38,21 +38,38 @@ static func load_test_suite_cs(resource_path :String) -> Node:
 	script.reload()
 	return null
 
-static func load_cs_script(resource_path :String) -> Script:
+
+static func load_cs_script(resource_path :String, debug_write := false) -> Script:
 	if not GdUnitTools.is_mono_supported():
 		return null
 	var script = ClassDB.instantiate("CSharpScript")
 	script.source_code = GdUnitTools.resource_as_string(resource_path)
 	script.resource_path = GdUnitTools.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".cs")
-	DirAccess.remove_absolute(script.resource_path)
-	ResourceSaver.save(script.resource_path, script)
+	if debug_write:
+		print_debug("save resource:", script.resource_path)
+		DirAccess.remove_absolute(script.resource_path)
+		var err := ResourceSaver.save(script, script.resource_path)
+		if err != OK:
+			print_debug("Can't save debug resource", script.resource_path, "Error:", error_string(err))
+		script.take_over_path(script.resource_path)
+	else:
+		script.take_over_path(resource_path)
 	script.reload()
 	return script
 
-static func load_gd_script(resource_path :String) -> GDScript:
+
+static func load_gd_script(resource_path :String, debug_write := false) -> GDScript:
 	var script := GDScript.new()
 	script.source_code = GdUnitTools.resource_as_string(resource_path)
-	script.take_over_path(resource_path)
+	script.resource_path = GdUnitTools.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".gd")
+	if debug_write:
+		print_debug("save resource:", script.resource_path)
+		DirAccess.remove_absolute(script.resource_path)
+		var err := ResourceSaver.save(script, script.resource_path)
+		if err != OK:
+			print_debug("Can't save debug resource", script.resource_path, "Error:", error_string(err))
+		script.take_over_path(script.resource_path)
+	else:
+		script.take_over_path(resource_path)
 	script.reload()
 	return script
-	
