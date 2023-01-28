@@ -566,11 +566,11 @@ func test_execute_parameterizied_tests() -> void:
 		"test_dictionary_div_number_types"]
 	assert_array(test_suite.get_children()).extract("get_name").contains_exactly(expected_test_cases)
 	# simulate test suite execution
+	# run the tests with to compare type save
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
 	var events = await execute(test_suite)
 	var suite_name = "TestSuiteParameterizedTests"
 	
-	# run the tests with to compare type save
-	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
 	# the test is partial failing because of diverent type in the dictionary
 	assert_array(events).extractv(
 		extr("type"), extr("suite_name"), extr("test_name"), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
@@ -612,7 +612,8 @@ func test_execute_parameterizied_tests() -> void:
 				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
 			]), false, false, 0)
 		])
-
+	# restore default settings
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
 
 func add_expected_test_case_events(suite_name :String, test_name :String, parameters :Array = []) -> Array:
 	var expected_events := Array()
