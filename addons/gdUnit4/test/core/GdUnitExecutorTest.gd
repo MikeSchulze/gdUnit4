@@ -471,7 +471,7 @@ func test_execute_error_on_test_timeout() -> void:
 		[],
 		[],
 		# verify error reports to 'test_case1'
-		["Test timed out after 2s 0ms"],
+		["Timeout !\n 'Test timed out after 2s 0ms'"],
 		[],
 		[],
 		[])
@@ -569,6 +569,8 @@ func test_execute_parameterizied_tests() -> void:
 	var events = await execute(test_suite)
 	var suite_name = "TestSuiteParameterizedTests"
 	
+	# run the tests with to compare type save
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
 	# the test is partial failing because of diverent type in the dictionary
 	assert_array(events).extractv(
 		extr("type"), extr("suite_name"), extr("test_name"), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\

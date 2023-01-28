@@ -324,10 +324,10 @@ static func _is_type_equivalent(type_a, type_b) -> bool:
 		or type_a == type_b)
 
 
-static func is_engine_type(value :Variant) -> bool:
+static func is_engine_type(value :Object) -> bool:
 	if value is GDScript or value is ScriptExtension:
 		return false
-	return str(value).contains("GDScriptNativeClass")
+	return value.is_class("GDScriptNativeClass")
 
 
 static func is_type(value :Variant) -> bool:

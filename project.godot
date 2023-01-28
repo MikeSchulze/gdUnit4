@@ -29,9 +29,10 @@ enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
 [gdunit4]
 
+settings/common/update_notification_enabled=false
 report/assert/verbose_errors=false
 report/assert/verbose_warnings=false
-settings/common/update_notification_enabled=false
+
 
 [network]
 

@@ -18,7 +18,7 @@ var TOKEN_FUNCTION_RETURN_TYPE := Token.new("->")
 var TOKEN_FUNCTION_END := Token.new("):")
 var TOKEN_ARGUMENT_ASIGNMENT := Token.new("=")
 var TOKEN_ARGUMENT_TYPE_ASIGNMENT := Token.new(":=")
-var TOKEN_ARGUMENT_FUZZER := FuzzerToken.new(prepare_regex("((?!(fuzzer_(seed|iterations)))fuzzer?\\w+)(=|:=|:Fuzzer=)"))
+var TOKEN_ARGUMENT_FUZZER := FuzzerToken.new(GdUnitTools.to_regex("((?!(fuzzer_(seed|iterations)))fuzzer?\\w+)(=|:=|:Fuzzer=)"))
 var TOKEN_ARGUMENT_TYPE := Token.new(":")
 var TOKEN_ARGUMENT_SEPARATOR := Token.new(",")
 var TOKEN_BRACKET_OPEN := Token.new("(")
@@ -63,14 +63,6 @@ var TOKENS := [
 var _regex_clazz_name :RegEx
 var _base_clazz :String
 var _scanned_inner_classes := PackedStringArray()
-
-
-static func prepare_regex(pattern :String) -> RegEx:
-	var regex := RegEx.new()
-	var err := regex.compile(pattern)
-	if err != OK:
-		push_error("Can't compiling regx '%s'.\n ERROR: %s" % [pattern, GdUnitTools.error_as_string(err)])
-	return regex
 
 
 static func clean_up_row(row :String) -> String:
@@ -276,7 +268,7 @@ class TokenInnerClass extends Token:
 
 
 func _init():
-	_regex_clazz_name = prepare_regex("(class)([a-zA-Z0-9]+)(extends[a-zA-Z]+:)|(class)([a-zA-Z0-9]+)(:)")
+	_regex_clazz_name = GdUnitTools.to_regex("(class)([a-zA-Z0-9]+)(extends[a-zA-Z]+:)|(class)([a-zA-Z0-9]+)(:)")
 
 
 func get_token(input :String, current_index) -> Token:
