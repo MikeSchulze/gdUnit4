@@ -522,10 +522,6 @@ func _on_Tree_item_activated() -> void:
 	editor_interface.get_script_editor().goto_line(line_number-1)
 
 
-func _on_Tree_item_double_clicked() -> void:
-	_on_Tree_item_activated()
-
-
 ################################################################################
 # external signal receiver
 ################################################################################
