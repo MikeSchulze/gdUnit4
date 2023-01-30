@@ -1,16 +1,16 @@
 
-<h1 align="center">GdUnit4 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MikeSchulze/gdunit4" width="12%"> </h1>
+<h1 align="center">GdUnit4 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MikeSchulze/gdunit4" width="18%"> </h1>
 <h2 align="center">A Godot Embedded Unit Testing Framework</h2>
 
 
 ---
 <h1 align="center">GdUnit4 Beta </h1>
-<h3 align="center">This is a beta version of GdUnit4 which is based on Godot v4.0.beta14.official (master branch)</h3>
+<p align="center">This is a beta version of GdUnit4 which is based on Godot <strong>v4.0.beta16.official</strong> (master branch)</p>
 
 <h1 align="center">ATTENTION!</h1>
 
-# You need the deactivate the old version before deinstall and install this version!
-# If you run into GdUnitSignals errors, please check you have deinstall the autoload of GdUnitSignals
+### You need the deactivate the old version before deinstall and install this version!
+
 
 <h2 align="center">Please read the following disclaimer carefully before proceeding!
 
