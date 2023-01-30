@@ -11,20 +11,25 @@ var _executor :GdUnitExecutor
 var _events :Array = Array()
 var _stack : Array = []
 
+
 func before():
 	_executor = GdUnitExecutor.new(true)
 	_executor.gdunit_event_test.connect(Callable(self, "_on_gdunit_event_test"))
 	add_child(_executor)
 
+
 func before_test():
 	# clean the stack before every test run
 	_stack.clear()
 
+
 func resource(resource_path :String) -> GdUnitTestSuite:
 	return GdUnitTestResourceLoader.load_test_suite(resource_path) as GdUnitTestSuite
 
+
 func _on_gdunit_event_test(event :GdUnitEvent) -> void:
 	_events.append(event)
+
 
 func execute(test_suite :GdUnitTestSuite, enable_orphan_detection := true):
 	add_child(test_suite)
@@ -33,6 +38,7 @@ func execute(test_suite :GdUnitTestSuite, enable_orphan_detection := true):
 	_executor.execute(test_suite)
 	await _executor.ExecutionCompleted
 	return _events
+
 
 func filter_failures(events :Array) -> Array:
 	var filtered_events := Array()
@@ -43,8 +49,10 @@ func filter_failures(events :Array) -> Array:
 			filtered_events.append(event)
 	return filtered_events
 
+
 func flating_message(message :String) -> String:
 	return GdUnitAssertImpl._normalize_bbcode(message)
+
 
 func assert_event_reports(events :Array, reports1 :Array, reports2 :Array, reports3 :Array, reports4 :Array, reports5 :Array, reports6 :Array) -> void:
 	var expected_reports := [reports1, reports2, reports3, reports4, reports5, reports6]
@@ -61,8 +69,8 @@ func assert_event_reports(events :Array, reports1 :Array, reports2 :Array, repor
 			else:
 				assert_str("<N/A>").is_equal(expected[m])
 
+
 func assert_event_list(events :Array, suite_name :String, test_case_names = ["test_case1", "test_case2"]) -> void:
-	
 	var expected_events := Array()
 	expected_events.append(tuple(GdUnitEvent.TESTSUITE_BEFORE, suite_name, "before", test_case_names.size()))
 	for test_case in test_case_names:
@@ -74,11 +82,14 @@ func assert_event_list(events :Array, suite_name :String, test_case_names = ["te
 		extr("type"), extr("suite_name"), extr("test_name"), extr("total_count"))\
 		.contains_exactly(expected_events)
 
+
 func assert_event_counters(events :Array) -> GdUnitArrayAssert:
 	return assert_array(events).extractv(extr("type"), extr("error_count"), extr("failed_count"), extr("orphan_nodes"))
 
+
 func assert_event_states(events :Array) -> GdUnitArrayAssert:
 	return assert_array(events).extractv(extr("test_name"), extr("is_success"), extr("is_warning"), extr("is_failed"), extr("is_error"))
+
 
 func test_execute_success() -> void:
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteAllStagesSuccess.resource")
@@ -107,6 +118,7 @@ func test_execute_success() -> void:
 	])
 	# all success no reports expected
 	assert_event_reports(events, [], [], [], [], [], [])
+
 
 func test_execute_failure_on_stage_before() -> void:
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageBefore.resource")
@@ -145,6 +157,7 @@ func test_execute_failure_on_stage_before() -> void:
 		[], 
 		["failed on before()"])
 
+
 func test_execute_failure_on_stage_after() -> void:
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageAfter.resource")
 	# verify all test cases loaded
@@ -181,6 +194,7 @@ func test_execute_failure_on_stage_after() -> void:
 		[], 
 		[],
 		["failed on after()"])
+
 
 func test_execute_failure_on_stage_before_test() -> void:
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageBeforeTest.resource")
@@ -222,6 +236,7 @@ func test_execute_failure_on_stage_before_test() -> void:
 		["failed on before_test()"],
 		[])
 
+
 func test_execute_failure_on_stage_after_test() -> void:
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageAfterTest.resource")
 	# verify all test cases loaded
@@ -262,6 +277,7 @@ func test_execute_failure_on_stage_after_test() -> void:
 		["failed on after_test()"],
 		[])
 
+
 func test_execute_failure_on_stage_test_case1() -> void:
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageTestCase1.resource")
 	# verify all test cases loaded
@@ -298,6 +314,7 @@ func test_execute_failure_on_stage_test_case1() -> void:
 		[], 
 		[], 
 		[])
+
 
 func test_execute_failure_on_multiple_stages() -> void:
 	# this is a more complex failure state, we expect to find multipe failures on different stages
@@ -340,6 +357,7 @@ func test_execute_failure_on_multiple_stages() -> void:
 		["failed on before_test()"],
 		# and one failure detected at stage 'after'
 		["failed on after()"])
+
 
 # GD-63
 func test_execute_failure_and_orphans() -> void:
@@ -392,6 +410,7 @@ func test_execute_failure_and_orphans() -> void:
 		# and one failure detected at stage 'after'
 		["WARNING:\n Detected <1> orphan nodes during test suite setup stage! Check before() and after()!"])
 
+
 # GD-62
 func test_execute_failure_and_orphans_report_orphan_disabled() -> void:
 	# this is a more complex failure state, we expect to find multipe orphans on different stages
@@ -433,6 +452,7 @@ func test_execute_failure_and_orphans_report_orphan_disabled() -> void:
 		# ends with a failure
 		["faild on test_case2()"],
 		[])
+
 
 # GD-66
 func test_execute_error_on_test_timeout() -> void:
@@ -476,6 +496,7 @@ func test_execute_error_on_test_timeout() -> void:
 		[],
 		[])
 
+
 func test_execute_failure_fuzzer_iteration() -> void:
 	# this tests a timeout on a test case reported as error
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/GdUnitFuzzerTest.resource")
@@ -516,6 +537,7 @@ func test_execute_failure_fuzzer_iteration() -> void:
 		["Found an error after '3' test iterations\n Expecting: 'false' but is 'true'"],
 		[])
 
+
 func test_execute_add_child_on_before_GD_106() -> void:
 	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAddChildStageBefore.resource")
 	# verify all test cases loaded
@@ -543,6 +565,7 @@ func test_execute_add_child_on_before_GD_106() -> void:
 	])
 	# all success no reports expected
 	assert_event_reports(events, [], [], [], [], [], [])
+
 
 func test_fuzzer_before_before(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 1000):
 	# verify the used stack is cleaned by 'before_test'
@@ -614,6 +637,7 @@ func test_execute_parameterizied_tests() -> void:
 		])
 	# restore default settings
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
+
 
 func add_expected_test_case_events(suite_name :String, test_name :String, parameters :Array = []) -> Array:
 	var expected_events := Array()

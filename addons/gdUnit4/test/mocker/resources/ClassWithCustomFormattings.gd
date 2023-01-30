@@ -29,3 +29,13 @@ func a4(set_name:String,
 	set_network_sync:bool=false
 ):
 	pass
+
+func a5(
+	value : Array,
+	expected : String,
+	test_parameters : Array = [
+		[ ["a"], "a" ],
+		[ ["a", "very", "long", "argument"], "a very long argument" ],
+	]
+):
+	pass
