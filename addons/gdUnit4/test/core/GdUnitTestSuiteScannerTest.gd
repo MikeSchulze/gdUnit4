@@ -218,21 +218,21 @@ func test_create_test_case():
 func test_build_test_suite_path() -> void:
 	# checked project root
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://new_script.gd")).is_equal("res://test/new_script_test.gd")
-
+	
 	# checked project without src folder
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://foo/bar/new_script.gd")).is_equal("res://test/foo/bar/new_script_test.gd")
-
+	
 	# project code structured by 'src'
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://src/new_script.gd")).is_equal("res://test/new_script_test.gd")
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://src/foo/bar/new_script.gd")).is_equal("res://test/foo/bar/new_script_test.gd")
 	# folder name contains 'src' in name
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://foo/srcare/new_script.gd")).is_equal("res://test/foo/srcare/new_script_test.gd")
-
+	
 	# checked plugins without src folder
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://addons/plugin/foo/bar/new_script.gd")).is_equal("res://addons/plugin/test/foo/bar/new_script_test.gd")
 	# plugin code structured by 'src'
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://addons/plugin/src/foo/bar/new_script.gd")).is_equal("res://addons/plugin/test/foo/bar/new_script_test.gd")
-
+	
 	# checked user temp folder
 	var tmp_path := GdUnitTools.create_temp_dir("projectX/entity")
 	var source_path := tmp_path + "/Person.gd"
@@ -246,7 +246,7 @@ func test_parse_and_add_test_cases() -> void:
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
 	test_suite.set_script( load("res://addons/gdUnit4/test/core/resources/test_script_with_arguments.gd"))
 	var line_number :int = 0
-
+	
 	var test_case_names := PackedStringArray([
 		"test_no_args",
 		"test_with_timeout",
@@ -262,23 +262,23 @@ func test_parse_and_add_test_cases() -> void:
 		.contains_exactly([
 			tuple("test_no_args", default_time, [], Fuzzer.ITERATION_DEFAULT_COUNT),
 			tuple("test_with_timeout", 2000, [], Fuzzer.ITERATION_DEFAULT_COUNT),
-			tuple("test_with_fuzzer", default_time, [GdFunctionArgument.new("fuzzer", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10,22)")], Fuzzer.ITERATION_DEFAULT_COUNT),
-			tuple("test_with_fuzzer_iterations", default_time, [GdFunctionArgument.new("fuzzer", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10,22)")], 10),
-			tuple("test_with_multible_fuzzers", default_time, [GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10,22)"),
-				GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(23,42)")], 10),
-			tuple("test_multiline_arguments_a", default_time, [GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10,22)"),
-				GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(23,42)")], 42),
-			tuple("test_multiline_arguments_b", default_time, [GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10,22)"),
-				GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(23,42)")], 23),
-			tuple("test_multiline_arguments_c", 2000, [GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10,22)"),
-				GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(23,42)")], 33)
+			tuple("test_with_fuzzer", default_time, [GdFunctionArgument.new("fuzzer", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10, 22)")], Fuzzer.ITERATION_DEFAULT_COUNT),
+			tuple("test_with_fuzzer_iterations", default_time, [GdFunctionArgument.new("fuzzer", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10, 22)")], 10),
+			tuple("test_with_multible_fuzzers", default_time, [GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10, 22)"),
+				GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(23, 42)")], 10),
+			tuple("test_multiline_arguments_a", default_time, [GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10, 22)"),
+				GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(23, 42)")], 42),
+			tuple("test_multiline_arguments_b", default_time, [GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10, 22)"),
+				GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(23, 42)")], 23),
+			tuple("test_multiline_arguments_c", 2000, [GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-10, 22)"),
+				GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(23, 42)")], 33)
 			])
 
 
 func test_scan_by_inheritance_class_name() -> void:
 	var scanner :GdUnitTestSuiteScanner = auto_free(GdUnitTestSuiteScanner.new())
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/")
-
+	
 	assert_array(test_suites).extractv(extr("get_name"), extr("get_script.get_path"), extr("get_children.get_name"))\
 		.contains_exactly_in_any_order([
 			tuple("BaseTest", "res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/BaseTest.gd", [&"test_foo1"]),
@@ -293,7 +293,7 @@ func test_scan_by_inheritance_class_name() -> void:
 func test_scan_by_inheritance_class_path() -> void:
 	var scanner :GdUnitTestSuiteScanner = auto_free(GdUnitTestSuiteScanner.new())
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_path/")
-
+	
 	assert_array(test_suites).extractv(extr("get_name"), extr("get_script.get_path"), extr("get_children.get_name"))\
 		.contains_exactly_in_any_order([
 			tuple("BaseTest", "res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_path/BaseTest.gd", [&"test_foo1"]),
@@ -315,12 +315,12 @@ func test__to_naming_convention() -> void:
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("MyClass")).is_equal("MyClassTest")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("my_class")).is_equal("my_class_test")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("myclass")).is_equal("myclass_test")
-
+	
 	ProjectSettings.set_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.SNAKE_CASE)
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("MyClass")).is_equal("my_class_test")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("my_class")).is_equal("my_class_test")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("myclass")).is_equal("myclass_test")
-
+	
 	ProjectSettings.set_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.PASCAL_CASE)
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("MyClass")).is_equal("MyClassTest")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("my_class")).is_equal("MyClassTest")
@@ -340,7 +340,7 @@ func test_is_script_format_supported() -> void:
 
 func test_load_parameterized_test_suite():
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteInvalidParameterizedTests.resource"))
-
+	
 	assert_that(test_suite.name).is_equal("TestSuiteInvalidParameterizedTests")
 	assert_that(test_suite.get_children()).extractv(extr("get_name"), extr("is_skipped"))\
 		.contains_exactly_in_any_order([
