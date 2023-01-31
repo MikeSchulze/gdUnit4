@@ -90,7 +90,6 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 	# double regular class functions
 	var clazz_functions := GdObjects.extract_class_functions(clazz_name, clazz_path)
 	for method in clazz_functions:
-		_hotfix_invalid_method_descriptors(method)
 		var func_descriptor := GdFunctionDescriptor.extract_from(method)
 		if functions.has(func_descriptor.name()) or exclude_override_functions.has(func_descriptor.name()):
 			continue
@@ -100,9 +99,3 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 		functions.append(func_descriptor.name())
 		doubled_source += func_doubler.double(func_descriptor)
 	return doubled_source
-
-
-# hot fix https://github.com/godotengine/godot/issues/67544
-static func _hotfix_invalid_method_descriptors(method :Dictionary):
-	if method["name"] == "get_script":
-		method["return"]["type"] = GdObjects.TYPE_VARIANT
