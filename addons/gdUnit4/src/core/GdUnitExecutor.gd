@@ -346,7 +346,7 @@ func dispose_timers(test_suite :GdUnitTestSuite):
 static func create_fuzzers(test_suite :GdUnitTestSuite, test_case :_TestCase) -> Array[Fuzzer]:
 	if not test_case.has_fuzzer():
 		return Array()
-	var fuzzers :Array[Fuzzer]= Array()
+	var fuzzers :Array[Fuzzer] = []
 	for fuzzer_arg in test_case.fuzzer_arguments():
 		var fuzzer := FuzzerTool.create_fuzzer(test_suite.get_script(), fuzzer_arg)
 		fuzzer._iteration_index = 0
