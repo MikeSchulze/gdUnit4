@@ -18,7 +18,7 @@ static func is_push_errors() -> bool:
 	return is_push_errors_enabled() or GdUnitSettings.is_report_push_errors()
 
 
-static func build(caller :Object, clazz, mock_mode :String, debug_write := false) -> Object:
+static func build(caller :Object, clazz, mock_mode :String, debug_write := true) -> Object:
 	var memory_pool :GdUnitMemoryPool.POOL = caller.get_meta(GdUnitMemoryPool.META_PARAM)
 	var push_errors := is_push_errors()
 	if not is_mockable(clazz, push_errors):
@@ -29,7 +29,7 @@ static func build(caller :Object, clazz, mock_mode :String, debug_write := false
 	elif typeof(clazz) == TYPE_STRING and clazz.ends_with(".tscn"):
 		return mock_on_scene(caller, load(clazz), memory_pool, debug_write)
 	# mocking a script
-	var mock := mock_on_script(clazz, ["set_script", "get_script"], debug_write)
+	var mock := mock_on_script(null, clazz, ["set_script", "get_script"], debug_write)
 	if mock == null:
 		return null
 	var mock_instance = mock.new()
@@ -55,7 +55,7 @@ static func mock_on_scene(caller :Object, scene :PackedScene, memory_pool :int, 
 		return null
 	
 	var script_path = scene_instance.get_script().get_path()
-	var mock = mock_on_script(script_path, GdUnitClassDoubler.EXLCUDE_SCENE_FUNCTIONS, debug_write)
+	var mock = mock_on_script(scene_instance, script_path, GdUnitClassDoubler.EXLCUDE_SCENE_FUNCTIONS, debug_write)
 	if mock == null:
 		return null
 	scene_instance.set_script(mock)
@@ -74,7 +74,7 @@ static func get_class_info(clazz :Variant) -> Dictionary:
 	}
 
 
-static func mock_on_script(clazz :Variant, function_excludes :PackedStringArray, debug_write :bool) -> GDScript:
+static func mock_on_script(instance :Object, clazz :Variant, function_excludes :PackedStringArray, debug_write :bool) -> GDScript:
 	var push_errors := is_push_errors()
 	var function_doubler := GdUnitMockFunctionDoubler.new(push_errors)
 	var class_info := get_class_info(clazz)
@@ -82,7 +82,7 @@ static func mock_on_script(clazz :Variant, function_excludes :PackedStringArray,
 	
 	var clazz_name :String = class_info.get("class_name")
 	var clazz_path :PackedStringArray = class_info.get("class_path", [clazz_name])
-	lines += double_functions(null, clazz_name, clazz_path, function_doubler, function_excludes)
+	lines += double_functions(instance, clazz_name, clazz_path, function_doubler, function_excludes)
 	
 	var mock := GDScript.new()
 	mock.source_code = "\n".join(lines)

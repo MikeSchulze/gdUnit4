@@ -88,6 +88,7 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	func_template = GdScriptParser.to_unix_format(func_template)
 	double += func_template\
 		.replace("$(args)", to_comma_separated_values(arg_names))\
+		.replace("$(arguments)", ", ".join(arg_names))\
 		.replace("$(varargs)", ", ".join(vararg_names))\
 		.replace("$(await)", await_is_coroutine(is_coroutine)) \
 		.replace("$(func_name)", func_name )\
@@ -103,6 +104,9 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	if func_name in ["_ready", "_input", "_gui_input", "_input_event", "_unhandled_input"]:
 		source_code.remove_at(source_code.size()-1)
 		source_code.remove_at(source_code.size()-1)
+		source_code.remove_at(source_code.size()-1)
+	source_code.append("\n")
+	#source_code.append("\n")
 	return source_code
 
 

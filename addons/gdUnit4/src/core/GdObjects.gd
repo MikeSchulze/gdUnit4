@@ -578,7 +578,7 @@ static func extract_inner_clazz_names(clazz_name :String, script_path :PackedStr
 static func extract_class_functions(clazz_name :String, script_path :PackedStringArray) -> Array:
 	if ClassDB.class_get_method_list(clazz_name):
 		return ClassDB.class_get_method_list(clazz_name)
-
+	
 	if not FileAccess.file_exists(script_path[0]):
 		return Array()
 	var script :GDScript = load(script_path[0])

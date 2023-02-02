@@ -362,16 +362,16 @@ func test_spy_snake_case_named_class_by_resource_path():
 	var spy_a = spy(instance_a)
 	assert_object(spy_a).is_not_null()
 	
-	spy_a._ready()
-	verify(spy_a)._ready()
+	spy_a.custom_func()
+	verify(spy_a).custom_func()
 	verify_no_more_interactions(spy_a)
 	
 	var instance_b = load("res://addons/gdUnit4/test/mocker/resources/snake_case_class_name.gd").new()
 	var spy_b = spy(instance_b)
 	assert_object(spy_b).is_not_null()
 	
-	spy_b._ready()
-	verify(spy_b)._ready()
+	spy_b.custom_func()
+	verify(spy_b).custom_func()
 	verify_no_more_interactions(spy_b)
 
 
@@ -379,8 +379,8 @@ func test_spy_snake_case_named_class_by_class():
 	var spy = spy(snake_case_class_name.new())
 	assert_object(spy).is_not_null()
 	
-	spy._ready()
-	verify(spy)._ready()
+	spy.custom_func()
+	verify(spy).custom_func()
 	verify_no_more_interactions(spy)
 	
 	# try checked Godot class
@@ -408,23 +408,33 @@ func test_spy_preload_class_GD_166() -> void:
 	assert_str(spy_instance.type_name).is_equal("FOO")
 
 
-var _test_signal_is_emited := false
-func _emit_ready(a, b, c):
-	_test_signal_is_emited = true
+var _test_signal_args := Array()
+func _emit_ready(a, b, c = null):
+	_test_signal_args = [a, b, c]
 
 
 # https://github.com/MikeSchulze/gdUnit4/issues/38
 func test_spy_Node_use_real_func_vararg():
-	var spy_node :Node = spy(auto_free(Node.new()))
+	# setup
+	var instance := Node.new()
+	instance.connect("ready", _emit_ready)
+	assert_that(_test_signal_args).is_empty()
+	var spy_node = spy(auto_free(instance))
 	assert_that(spy_node).is_not_null()
 	
-	assert_bool(_test_signal_is_emited).is_false()
-	spy_node.connect("ready", Callable(self, "_emit_ready"))
+	# test emit it
 	spy_node.emit_signal("ready", "aa", "bb", "cc")
-	
-	# sync signal is emited
+	# verify is emitted
+	verify(spy_node).emit_signal("ready", "aa", "bb", "cc")
 	await get_tree().process_frame
-	assert_bool(_test_signal_is_emited).is_true()
+	assert_that(_test_signal_args).is_equal(["aa", "bb", "cc"])
+	
+	# test emit it
+	spy_node.emit_signal("ready", "aa", "xxx")
+	# verify is emitted
+	verify(spy_node).emit_signal("ready", "aa", "xxx")
+	await get_tree().process_frame
+	assert_that(_test_signal_args).is_equal(["aa", "xxx", null])
 
 
 class ClassWithSignal:
@@ -548,7 +558,7 @@ func test_spy_scene_by_path_fail_has_no_script_attached():
 
 
 func test_spy_scene_initalize():
-	var spy_scene = spy("res://addons/gdUnit3/test/mocker/resources/scenes/TestScene.tscn")
+	var spy_scene = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(spy_scene).is_not_null()
 	
 	# Add as child to a scene tree to trigger _ready to initalize all variables

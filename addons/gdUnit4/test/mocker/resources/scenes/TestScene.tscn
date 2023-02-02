@@ -22,56 +22,35 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2i(0, 40)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 40.0
 
 [node name="test1" type="Button" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2i(100, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-offset_right = 100.0
-offset_bottom = 40.0
 text = "Test 1"
 
 [node name="test2" type="Button" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2i(100, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-offset_left = 104.0
-offset_right = 204.0
-offset_bottom = 40.0
 text = "Test 2"
 
 [node name="test3" type="Button" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2i(100, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-offset_left = 208.0
-offset_right = 308.0
-offset_bottom = 40.0
 text = "Test 3"
 
 [node name="PanelContainer" type="TabContainer" parent="VBoxContainer"]
 layout_mode = 2
-offset_top = 44.0
-offset_right = 1152.0
-offset_bottom = 648.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 31.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="Panel1" type="ColorRect" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2i(100, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-offset_right = 100.0
-offset_bottom = 573.0
 
 [node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/Panel1"]
 layout_mode = 1
@@ -82,11 +61,8 @@ grow_horizontal = 2
 text = "Panel 1"
 
 [node name="Panel2" type="ColorRect" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2i(100, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-offset_left = 104.0
-offset_right = 204.0
-offset_bottom = 573.0
 
 [node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/Panel2"]
 layout_mode = 1
@@ -97,11 +73,8 @@ grow_horizontal = 2
 text = "Panel 2"
 
 [node name="Panel3" type="ColorRect" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2i(100, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-offset_left = 208.0
-offset_right = 308.0
-offset_bottom = 573.0
 
 [node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/Panel3"]
 layout_mode = 1

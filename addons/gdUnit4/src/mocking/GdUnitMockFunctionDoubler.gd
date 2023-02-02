@@ -15,7 +15,7 @@ const TEMPLATE_FUNC_WITH_RETURN_VALUE =\
 	if $(instance)__saved_return_values.has(args):
 		return $(instance)__saved_return_values.get(args)
 	
-	if $(is_virtual) == false and $(instance)__working_mode == GdUnitMock.CALL_REAL_FUNC:
+	if $(instance)__working_mode == GdUnitMock.CALL_REAL_FUNC:
 		return $(await)super.$(func_name)($(func_arg))
 	return ${default_return_value}
 """
@@ -33,7 +33,7 @@ const TEMPLATE_FUNC_WITH_RETURN_VOID =\
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	if $(is_virtual) == false and $(instance)__working_mode == GdUnitMock.CALL_REAL_FUNC:
+	if $(instance)__working_mode == GdUnitMock.CALL_REAL_FUNC:
 		$(await)super.$(func_name)($(func_arg))
 """
 
@@ -51,7 +51,7 @@ const TEMPLATE_FUNC_VARARG_RETURN_VALUE =\
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	if $(is_virtual) == false and $(instance)__working_mode == GdUnitMock.CALL_REAL_FUNC:
+	if $(instance)__working_mode == GdUnitMock.CALL_REAL_FUNC:
 		match varargs.size():
 			0: return $(await)super.$(func_name)($(func_arg))
 			1: return $(await)super.$(func_name)($(func_arg), varargs[0])

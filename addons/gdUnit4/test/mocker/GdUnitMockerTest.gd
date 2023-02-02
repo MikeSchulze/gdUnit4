@@ -685,9 +685,9 @@ func test_verify_fail():
 	verify(mocked_node, 1, GdUnitAssert.EXPECT_FAIL).set_process(true)
 	var expected_error := """
 		Expecting interaction on:
-			'set_process(True :bool)'	1 time's
+			'set_process(true :bool)'	1 time's
 		But found interactions on:
-			'set_process(True :bool)'	2 time's"""
+			'set_process(true :bool)'	2 time's"""
 	assert_last_error(expected_error)
 
 
@@ -711,7 +711,7 @@ func test_verify_func_interaction_wiht_PoolStringArray_fail():
 		Expecting interaction on:
 			'set_values([] :Array)'	1 time's
 		But found interactions on:
-			'set_values([] :PoolStringArray)'	1 time's"""
+			'set_values([] :PackedStringArray)'	1 time's"""
 	expected_error = GdScriptParser.to_unix_format(expected_error)
 	assert_last_error(expected_error)
 	
@@ -725,8 +725,8 @@ func test_verify_func_interaction_wiht_PoolStringArray_fail():
 		Expecting interaction on:
 			'set_values([] :Array)'	1 time's
 		But found interactions on:
-			'set_values([] :PoolStringArray)'	1 time's
-			'set_values([a, b] :PoolStringArray)'	1 time's
+			'set_values([] :PackedStringArray)'	1 time's
+			'set_values(["a", "b"] :PackedStringArray)'	1 time's
 			'set_values([1, 2] :Array)'	1 time's"""
 	expected_error = GdScriptParser.to_unix_format(expected_error)
 	assert_last_error(expected_error)
@@ -767,8 +767,8 @@ func test_verify_no_interactions_fails():
 	var expected_error ="""
 		Expecting no more interactions!
 		But found interactions on:
-			'set_process(False :bool)'	1 time's
-			'set_process(True :bool)'	2 time's""".dedent().trim_prefix("\n")
+			'set_process(false :bool)'	1 time's
+			'set_process(true :bool)'	2 time's""".dedent().trim_prefix("\n")
 	# it should fail because we have interactions 
 	verify_no_interactions(mocked_node, GdUnitAssert.EXPECT_FAIL)\
 		.has_failure_message(expected_error)
@@ -818,8 +818,8 @@ func test_verify_no_more_interactions_but_has():
 		Expecting no more interactions!
 		But found interactions on:
 			'is_inside_tree()'	2 time's
-			'find_node(mask :String, True :bool, True :bool)'	1 time's
-			'find_node(mask :String, False :bool, False :bool)'	1 time's""".dedent().trim_prefix("\n")
+			'find_child(mask :String, true :bool, true :bool)'	1 time's
+			'find_child(mask :String, false :bool, false :bool)'	1 time's""".dedent().trim_prefix("\n")
 	verify_no_more_interactions(mocked_node, GdUnitAssert.EXPECT_FAIL)\
 		.has_failure_message(expected_error)
 
@@ -828,15 +828,15 @@ func test_mock_snake_case_named_class_by_resource_path():
 	var mock_a = mock("res://addons/gdUnit4/test/mocker/resources/snake_case.gd")
 	assert_object(mock_a).is_not_null()
 	
-	mock_a._ready()
-	verify(mock_a)._ready()
+	mock_a.custom_func()
+	verify(mock_a).custom_func()
 	verify_no_more_interactions(mock_a)
 	
 	var mock_b = mock("res://addons/gdUnit4/test/mocker/resources/snake_case_class_name.gd")
 	assert_object(mock_b).is_not_null()
 	
-	mock_b._ready()
-	verify(mock_b)._ready()
+	mock_b.custom_func()
+	verify(mock_b).custom_func()
 	verify_no_more_interactions(mock_b)
 
 
@@ -856,8 +856,8 @@ func test_mock_snake_case_named_class_by_class():
 	var mock = mock(snake_case_class_name)
 	assert_object(mock).is_not_null()
 	
-	mock._ready()
-	verify(mock)._ready()
+	mock.custom_func()
+	verify(mock).custom_func()
 	verify_no_more_interactions(mock)
 	
 	# try checked Godot class
