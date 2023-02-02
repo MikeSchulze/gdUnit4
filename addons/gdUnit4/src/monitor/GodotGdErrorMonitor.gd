@@ -29,7 +29,7 @@ func stop():
 
 
 func reports() -> Array[GdUnitReport]:
-	var reports :Array[GdUnitReport] = Array()
+	var reports :Array[GdUnitReport] = []
 	if _report_enabled:
 		var loggs := _collect_log_entries()
 		for index in loggs.size():

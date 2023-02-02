@@ -96,7 +96,7 @@ func add_file_system_dock_context_menu() -> void:
 		return !_runButton.disabled
 	var run_test := func run_test(resource_paths :PackedStringArray, debug :bool):
 		run_test_suites(resource_paths, debug)
-	var menu := [
+	var menu :Array[GdUnitContextMenuItem] = [
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", is_test_suite.bind(true), is_enabled, run_test.bind(false)),
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", is_test_suite.bind(true), is_enabled, run_test.bind(true)),
 	]
@@ -133,7 +133,7 @@ func add_script_editor_context_menu():
 		var info := result.value() as Dictionary
 		ScriptEditorControls.edit_script(info.get("path"), info.get("line"))
 
-	var menu := [
+	var menu :Array[GdUnitContextMenuItem] = [
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", is_test_suite.bind(true), is_enabled, run_test.bind(false)),
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", is_test_suite.bind(true), is_enabled, run_test.bind(true)),
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.CREATE_TEST, "Create Test", is_test_suite.bind(false), is_enabled, create_test)

@@ -21,7 +21,7 @@ func _init(name :String,
 	return_type :int,
 	return_class :String,
 	args : Array[GdFunctionArgument],
-	varargs :Array = []):
+	varargs :Array[GdFunctionArgument] = []):
 	_name = name
 	_line_number = line_number
 	_return_type = return_type
