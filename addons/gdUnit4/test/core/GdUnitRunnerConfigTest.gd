@@ -43,7 +43,7 @@ func test_self_test():
 	
 	# configure self test
 	var to_execute := config.self_test().to_execute()
-	assert_dict(to_execute).contains_key_value("res://addons/gdUnit4/test/", [])
+	assert_dict(to_execute).contains_key_value("res://addons/gdUnit4/test/", PackedStringArray())
 
 func test_add_test_suite():
 	var config := GdUnitRunnerConfig.new()
@@ -51,14 +51,14 @@ func test_add_test_suite():
 	config.skip_test_suite("res://bar")
 	
 	config.add_test_suite("res://foo")
-	assert_dict(config.to_execute()).contains_key_value("res://foo", [])
+	assert_dict(config.to_execute()).contains_key_value("res://foo", PackedStringArray())
 	# add two more
 	config.add_test_suite("res://foo2")
 	config.add_test_suite("res://bar/foo")
 	assert_dict(config.to_execute())\
-		.contains_key_value("res://foo", [])\
-		.contains_key_value("res://foo2", [])\
-		.contains_key_value("res://bar/foo", [])
+		.contains_key_value("res://foo", PackedStringArray())\
+		.contains_key_value("res://foo2", PackedStringArray())\
+		.contains_key_value("res://bar/foo", PackedStringArray())
 
 func test_add_test_suites():
 	var config := GdUnitRunnerConfig.new()
@@ -68,9 +68,9 @@ func test_add_test_suites():
 	config.add_test_suites(PackedStringArray(["res://foo2", "res://bar/foo", "res://foo1"]))
 	
 	assert_dict(config.to_execute())\
-		.contains_key_value("res://foo1", [])\
-		.contains_key_value("res://foo2", [])\
-		.contains_key_value("res://bar/foo", [])
+		.contains_key_value("res://foo1", PackedStringArray())\
+		.contains_key_value("res://foo2", PackedStringArray())\
+		.contains_key_value("res://bar/foo", PackedStringArray())
 
 func test_add_test_case():
 	var config := GdUnitRunnerConfig.new()
@@ -78,13 +78,13 @@ func test_add_test_case():
 	config.skip_test_suite("res://bar")
 	
 	config.add_test_case("res://foo1", "testcaseA")
-	assert_dict(config.to_execute()).contains_key_value("res://foo1", ["testcaseA"])
+	assert_dict(config.to_execute()).contains_key_value("res://foo1", PackedStringArray(["testcaseA"]))
 	# add two more
 	config.add_test_case("res://foo1", "testcaseB")
 	config.add_test_case("res://foo2", "testcaseX")
 	assert_dict(config.to_execute())\
-		.contains_key_value("res://foo1", ["testcaseA", "testcaseB"])\
-		.contains_key_value("res://foo2", ["testcaseX"])
+		.contains_key_value("res://foo1", PackedStringArray(["testcaseA", "testcaseB"]))\
+		.contains_key_value("res://foo2", PackedStringArray(["testcaseX"]))
 
 func test_add_test_suites_and_test_cases_combi():
 	var config := GdUnitRunnerConfig.new()
@@ -98,25 +98,25 @@ func test_add_test_suites_and_test_cases_combi():
 	
 	assert_dict(config.to_execute())\
 		.has_size(6)\
-		.contains_key_value("res://foo1", ["testcaseA", "testcaseB"])\
-		.contains_key_value("res://foo2", [])\
-		.contains_key_value("res://foo3", [])\
-		.contains_key_value("res://foo4", [])\
-		.contains_key_value("res://bar/foo3", [])\
-		.contains_key_value("res://bar/foo", [])
+		.contains_key_value("res://foo1", PackedStringArray(["testcaseA", "testcaseB"]))\
+		.contains_key_value("res://foo2", PackedStringArray())\
+		.contains_key_value("res://foo3", PackedStringArray())\
+		.contains_key_value("res://foo4", PackedStringArray())\
+		.contains_key_value("res://bar/foo3", PackedStringArray())\
+		.contains_key_value("res://bar/foo", PackedStringArray())
 
 func test_skip_test_suite():
 	var config := GdUnitRunnerConfig.new()
 	
 	config.skip_test_suite("res://foo1")
-	assert_dict(config.skipped()).contains_key_value("res://foo1", [])
+	assert_dict(config.skipped()).contains_key_value("res://foo1", PackedStringArray())
 	# add two more
 	config.skip_test_suite("res://foo2")
 	config.skip_test_suite("res://bar/foo1")
 	assert_dict(config.skipped())\
-		.contains_key_value("res://foo1", [])\
-		.contains_key_value("res://foo2", [])\
-		.contains_key_value("res://bar/foo1", [])
+		.contains_key_value("res://foo1", PackedStringArray())\
+		.contains_key_value("res://foo2", PackedStringArray())\
+		.contains_key_value("res://bar/foo1", PackedStringArray())
 
 func test_skip_test_suite_and_test_case():
 	var possible_paths :PackedStringArray = [
@@ -133,21 +133,21 @@ func test_skip_test_suite_and_test_case():
 		config.skip_test_suite(path)
 	assert_dict(config.skipped())\
 		.has_size(3)\
-		.contains_key_value("res://foo/MyTest.gd", ["test_x", "test_y"])\
-		.contains_key_value("MyTest", ["test"])\
-		.contains_key_value("MyTestX", [])
+		.contains_key_value("res://foo/MyTest.gd", PackedStringArray(["test_x", "test_y"]))\
+		.contains_key_value("MyTest", PackedStringArray(["test"]))\
+		.contains_key_value("MyTestX", PackedStringArray())
 
 func test_skip_test_case():
 	var config := GdUnitRunnerConfig.new()
 	
 	config.skip_test_case("res://foo1", "testcaseA")
-	assert_dict(config.skipped()).contains_key_value("res://foo1", ["testcaseA"])
+	assert_dict(config.skipped()).contains_key_value("res://foo1", PackedStringArray(["testcaseA"]))
 	# add two more
 	config.skip_test_case("res://foo1", "testcaseB")
 	config.skip_test_case("res://foo2", "testcaseX")
 	assert_dict(config.skipped())\
-		.contains_key_value("res://foo1", ["testcaseA", "testcaseB"])\
-		.contains_key_value("res://foo2", ["testcaseX"])
+		.contains_key_value("res://foo1", PackedStringArray(["testcaseA", "testcaseB"]))\
+		.contains_key_value("res://foo2", PackedStringArray(["testcaseX"]))
 
 func test_load_fail():
 	var config := GdUnitRunnerConfig.new()

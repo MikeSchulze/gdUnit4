@@ -104,7 +104,7 @@ func load_test_suits() -> Array:
 	var test_suites := Array()
 	var _scanner := GdUnitTestSuiteScanner.new()
 	for resource_path in to_execute.keys():
-		var selected_tests :Array[StringName] = to_execute.get(resource_path)
+		var selected_tests :PackedStringArray = to_execute.get(resource_path)
 		var scaned_suites := _scanner.scan(resource_path)
 		_filter_test_case(scaned_suites, selected_tests)
 		test_suites += scaned_suites
@@ -120,7 +120,7 @@ func gdUnitInit() -> void:
 		send_test_suite(test_suite)
 
 
-func _filter_test_case(test_suites :Array, included_tests :Array[StringName]) -> void:
+func _filter_test_case(test_suites :Array, included_tests :PackedStringArray) -> void:
 	if included_tests.is_empty():
 		return
 	for test_suite in test_suites:
@@ -128,7 +128,7 @@ func _filter_test_case(test_suites :Array, included_tests :Array[StringName]) ->
 			_do_filter_test_case(test_suite, test_case, included_tests)
 
 
-func _do_filter_test_case(test_suite :Node, test_case :Node, included_tests :Array[StringName]) -> void:
+func _do_filter_test_case(test_suite :Node, test_case :Node, included_tests :PackedStringArray) -> void:
 	for included_test in included_tests:
 		var test_meta :PackedStringArray = included_test.split(":")
 		var test_name := test_meta[0]

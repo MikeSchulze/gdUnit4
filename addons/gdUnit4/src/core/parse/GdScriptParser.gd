@@ -375,7 +375,7 @@ func parse_return_token(input: String) -> Token:
 # Parses the argument into a argument signature
 # e.g. func foo(arg1 :int, arg2 = 20) -> [arg1, arg2]
 func parse_arguments(input: String) -> Array[GdFunctionArgument]:
-	var args := Array()
+	var args :Array[GdFunctionArgument] = []
 	var current_index := 0
 	var token :Token = null
 	var bracket := 0
