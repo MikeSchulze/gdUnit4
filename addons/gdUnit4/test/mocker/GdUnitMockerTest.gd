@@ -20,6 +20,15 @@ func assert_last_error(expected :String):
 	gd_assert.has_failure_message(expected.dedent().trim_prefix("\n"))
 
 
+
+func test_mock_instance_id_is_unique():
+	var m1  = mock(RefCounted)
+	var m2  = mock(RefCounted)
+	# test the internal instance id is unique
+	assert_that(m1.__instance_id()).is_not_equal(m2.__instance_id())
+	assert_object(m1).is_not_same(m2)
+
+
 func test_is_mockable_godot_classes():
 	# verify enigne classes
 	for clazz_name in ClassDB.get_class_list():
@@ -149,25 +158,33 @@ func test_mock_extends_godot_class() -> void:
 		.contains("extends World3D")
 
 
-var _test_signal_is_emited := false
-func _emit_ready(a, b, c):
-	prints("_emit_ready", a, b, c)
-	_test_signal_is_emited = true
+var _test_signal_args := Array()
+func _emit_ready(a, b, c = null):
+	_test_signal_args = [a, b, c]
 
 
 func test_mock_Node_use_real_func_vararg():
+	# setup
 	var mocked_node = mock(Node, CALL_REAL_FUNC)
 	assert_that(mocked_node).is_not_null()
+	assert_that(_test_signal_args).is_empty()
+	mocked_node.connect("ready", _emit_ready)
 	
-	assert_bool(_test_signal_is_emited).is_false()
-	var err := mocked_node.connect("ready", Callable(self, "_emit_ready"))
-	prints(error_as_string(err))
-	err = mocked_node.emit_signal("ready", "aa", "bb", "cc")
-	prints(error_as_string(err))
+	# test emit it
+	mocked_node.emit_signal("ready", "aa", "bb", "cc")
 	
-	# sync signal is emited
+	# verify is emitted
+	verify(mocked_node).emit_signal("ready", "aa", "bb", "cc")
 	await get_tree().process_frame
-	assert_bool(_test_signal_is_emited).is_true()
+	assert_that(_test_signal_args).is_equal(["aa", "bb", "cc"])
+	
+	# test emit it
+	mocked_node.emit_signal("ready", "aa", "xxx")
+	
+	# verify is emitted
+	verify(mocked_node).emit_signal("ready", "aa", "xxx")
+	await get_tree().process_frame
+	assert_that(_test_signal_args).is_equal(["aa", "xxx", null])
 
 
 class ClassWithSignal:

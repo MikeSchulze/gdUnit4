@@ -42,6 +42,8 @@ const DEFAULT_TYPED_RETURN_VALUES := {
 	TYPE_PACKED_COLOR_ARRAY: "PackedColorArray()",
 }
 
+var _push_errors :String
+
 static func default_return_value(type :int) -> String:
 	if DEFAULT_TYPED_RETURN_VALUES.size() != TYPE_MAX:
 		push_error("missing default definitions! Expexting %d bud is %d" % [DEFAULT_TYPED_RETURN_VALUES.size(), TYPE_MAX])
@@ -54,19 +56,18 @@ static func default_return_value(type :int) -> String:
 	return "null"
 
 
-var _push_errors :String
-
 func _init(push_errors :bool = false):
 	_push_errors = "true" if push_errors else "false"
 
-func get_template(return_type :int, is_vararg :bool, has_args :bool) -> String:
+
+func get_template(return_type :int, is_vararg :bool) -> String:
 	push_error("Must be implemented!")
 	return ""
+
 
 func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	var func_signature := func_descriptor.typeless()
 	var is_static := func_descriptor.is_static()
-	var is_engine := func_descriptor.is_engine()
 	var is_vararg := func_descriptor.is_vararg()
 	var is_coroutine := func_descriptor.is_coroutine()
 	var func_name := func_descriptor.name()
@@ -83,31 +84,21 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 		return constructor.split("\n")
 	
 	var double := func_signature + "\n"
-	var func_template := get_template(func_descriptor.return_type(), is_vararg, not arg_names.is_empty())
+	var func_template := get_template(func_descriptor.return_type(), is_vararg).trim_prefix("\n")
 	# fix to  unix format, this is need when the template is edited under windows than the template is stored with \r\n
 	func_template = GdScriptParser.to_unix_format(func_template)
 	double += func_template\
-		.replace("$(args)", to_comma_separated_values(arg_names))\
 		.replace("$(arguments)", ", ".join(arg_names))\
 		.replace("$(varargs)", ", ".join(vararg_names))\
 		.replace("$(await)", await_is_coroutine(is_coroutine)) \
 		.replace("$(func_name)", func_name )\
-		.replace("$(func_arg)", ", ".join(arg_names))\
 		.replace("${default_return_value}", default_return_value)\
 		.replace("$(push_errors)", _push_errors)
 	if is_static:
 		double = double.replace("$(instance)", "__instance().")
 	else:
 		double = double.replace("$(instance)", "")
-	var source_code := double.split("\n")
-	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
-	if func_name in ["_ready", "_input", "_gui_input", "_input_event", "_unhandled_input"]:
-		source_code.remove_at(source_code.size()-1)
-		source_code.remove_at(source_code.size()-1)
-		source_code.remove_at(source_code.size()-1)
-	source_code.append("\n")
-	#source_code.append("\n")
-	return source_code
+	return double.split("\n")
 
 
 func extract_arg_names(argument_signatures :Array[GdFunctionArgument]) -> PackedStringArray:
@@ -126,17 +117,13 @@ static func extract_constructor_args(args :Array) -> PackedStringArray:
 		constructor_args.append(arg_name + "=" + default_value)
 	return constructor_args
 
+
 static func get_default(arg :GdFunctionArgument) -> String:
 	if arg.has_default():
 		return arg.value_as_string()
 	else:
 		return default_return_value(arg.type())
 
-static func to_comma_separated_values(values :Array) -> String:
-	if values.size() == 0:
-		return ""
-	return ", "  + ", ".join(values)
 
 static func await_is_coroutine(is_coroutine :bool) -> String:
 	return "await " if is_coroutine else ""
-	

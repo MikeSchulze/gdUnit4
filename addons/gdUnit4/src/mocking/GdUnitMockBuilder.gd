@@ -29,15 +29,38 @@ static func build(caller :Object, clazz, mock_mode :String, debug_write := true)
 	elif typeof(clazz) == TYPE_STRING and clazz.ends_with(".tscn"):
 		return mock_on_scene(caller, load(clazz), memory_pool, debug_write)
 	# mocking a script
-	var mock := mock_on_script(null, clazz, ["set_script", "get_script"], debug_write)
+	var instance := create_instance(clazz)
+	var mock := mock_on_script(instance, clazz, [ "get_script"], debug_write)
+	if not instance is RefCounted:
+		instance.free()
 	if mock == null:
 		return null
 	var mock_instance = mock.new()
-	mock_instance.set_script(mock)
+	mock_instance.__set_script(mock)
 	mock_instance.__set_singleton()
 	mock_instance.__set_mode(mock_mode)
 	mock_instance.__set_caller(caller)
+	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
+	mock_instance.__exclude_method_call(["_ready", "_input", "_gui_input", "_input_event", "_unhandled_input"])
 	return GdUnitMemoryPool.register_auto_free(mock_instance, memory_pool)
+
+
+static func create_instance(clazz) -> Object:
+	if typeof(clazz) == TYPE_OBJECT and  (clazz as Object).is_class("GDScriptNativeClass"):
+		return clazz.new()
+	elif (clazz is GDScript) || (typeof(clazz) == TYPE_STRING and clazz.ends_with(".gd")):
+		var script :GDScript = null
+		if clazz is GDScript:
+			script = clazz
+		else:
+			script = load(clazz)
+			
+		var args = GdObjects.build_function_default_arguments(script, "_init")
+		return script.callv("new", args)
+	elif typeof(clazz) == TYPE_STRING and ClassDB.can_instantiate(clazz):
+		return  ClassDB.instantiate(clazz)
+	push_error("Can't create a mock validation instance from class: `%s`" % clazz)
+	return null
 
 
 static func mock_on_scene(caller :Object, scene :PackedScene, memory_pool :int, debug_write :bool) -> Object:
@@ -78,7 +101,7 @@ static func mock_on_script(instance :Object, clazz :Variant, function_excludes :
 	var push_errors := is_push_errors()
 	var function_doubler := GdUnitMockFunctionDoubler.new(push_errors)
 	var class_info := get_class_info(clazz)
-	var lines := load_template(GdUnitMockImpl, class_info)
+	var lines := load_template(GdUnitMockImpl, class_info, instance)
 	
 	var clazz_name :String = class_info.get("class_name")
 	var clazz_path :PackedStringArray = class_info.get("class_path", [clazz_name])

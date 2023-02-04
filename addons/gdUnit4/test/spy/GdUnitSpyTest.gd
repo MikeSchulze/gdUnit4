@@ -12,6 +12,14 @@ func assert_last_error(expected :String, expected_line_number :int = -1):
 		assert_int(last_failure_line_number).is_equal(expected_line_number)
 
 
+func test_spy_instance_id_is_unique():
+	var m1  = spy(RefCounted.new())
+	var m2  = spy(RefCounted.new())
+	# test the internal instance id is unique
+	assert_that(m1.__instance_id()).is_not_equal(m2.__instance_id())
+	assert_object(m1).is_not_same(m2)
+
+
 func test_cant_spy_is_not_a_instance():
 	# returns null because spy needs an 'real' instance to by spy checked
 	var spy_node = spy(Node)
@@ -112,7 +120,7 @@ func test_spy_class_with_custom_formattings() -> void:
 	verify(spy, 1).a1("set_name", "", true)
 	verify_no_more_interactions(spy)
 	verify_no_interactions(spy, GdUnitAssert.EXPECT_FAIL)
-	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(114)
+	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(122)
 
 
 func test_spy_copied_class_members():
@@ -205,7 +213,7 @@ func test_verify_fail():
 			'set_process(true :bool)'	1 time's
 		But found interactions on:
 			'set_process(true :bool)'	2 time's"""
-	assert_last_error(expected_error, 202)
+	assert_last_error(expected_error, 210)
 
 
 func test_verify_func_interaction_wiht_PoolStringArray():
@@ -229,7 +237,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 			'set_values([] :Array)'	1 time's
 		But found interactions on:
 			'set_values([] :PackedStringArray)'	1 time's"""
-	assert_last_error(expected_error, 226)
+	assert_last_error(expected_error, 234)
 	
 	reset(spy_instance)
 	# try again with called two times and different args
@@ -244,7 +252,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 			'set_values([] :PackedStringArray)'	1 time's
 			'set_values(["a", "b"] :PackedStringArray)'	1 time's
 			'set_values([1, 2] :Array)'	1 time's"""
-	assert_last_error(expected_error, 239)
+	assert_last_error(expected_error, 247)
 
 
 func test_reset():

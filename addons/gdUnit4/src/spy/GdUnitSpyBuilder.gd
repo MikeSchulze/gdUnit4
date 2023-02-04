@@ -48,7 +48,7 @@ static func spy_on_script(instance, function_excludes :PackedStringArray, debug_
 		if GdUnitSettings.is_verbose_assert_errors():
 			push_error("Can't build spy for class type '%s'! Using an instance instead e.g. 'spy(<instance>)'" % [clazz_name])
 		return null
-	var lines := load_template(GdUnitSpyImpl, class_info)
+	var lines := load_template(GdUnitSpyImpl, class_info, instance)
 	lines += double_functions(instance, clazz_name, clazz_path, GdUnitSpyFunctionDoubler.new(), function_excludes)
 	
 	var spy := GDScript.new()

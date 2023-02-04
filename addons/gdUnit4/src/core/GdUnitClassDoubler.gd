@@ -11,7 +11,6 @@ const EXCLUDE_VIRTUAL_FUNCTIONS = [
 	#"_set",
 	#"_to_string",
 	#"_ready",
-	"_input",
 	"_process",
 	"_enter_tree",
 	# https://github.com/godotengine/godot/issues/67461
@@ -38,8 +37,10 @@ const EXCLUDE_FUNCTIONS = ["new", "free", "get_instance_id", "get_tree"]
 
 # loads the doubler template
 # class_info = { "class_name": <>, "class_path" : <>}
-static func load_template(template :Object, class_info :Dictionary) -> PackedStringArray:
+static func load_template(template :Object, class_info :Dictionary, instance :Object) -> PackedStringArray:
 	var source_code = template.new().get_script().source_code
+	# store instance id
+	source_code = source_code.replace("${instance_id}", "instance_%d" % instance.get_instance_id())
 	var lines := GdScriptParser.to_unix_format(source_code).split("\n")
 	# replace template class_name with Doubled<class> name and extends form source class
 	lines.remove_at(2)
@@ -66,42 +67,12 @@ static func extends_clazz(class_info :Dictionary) -> String:
 	return "extends %s" % clazz_name
 
 
-
-
-static func get_core_methods(instance :Object, clazz :String = null) -> Array[Dictionary]:
-	if clazz:
-		if ClassDB.class_exists(clazz):
-			return ClassDB.class_get_method_list(clazz)
-	
-	if instance != null and instance.get_script() != null:
-		var base_clazz :String = instance.get_script().get_instance_base_type()
-		if ClassDB.class_exists(base_clazz):
-			return ClassDB.class_get_method_list(base_clazz)
-	return Array()
-
 # double all functions of given instance
 static func double_functions(instance :Object, clazz_name :String, clazz_path :PackedStringArray, func_doubler: GdFunctionDoubler, exclude_functions :Array) -> PackedStringArray:
 	var doubled_source := PackedStringArray()
 	var parser := GdScriptParser.new()
 	var exclude_override_functions := EXCLUDE_VIRTUAL_FUNCTIONS + EXCLUDE_FUNCTIONS + exclude_functions
 	var functions := Array()
-	
-	
-	if 1==0 and instance:
-		
-		
-		for m in get_core_methods(instance, clazz_name):
-			var function_flags = m["flags"]
-			var is_virtual :bool = function_flags & METHOD_FLAG_VIRTUAL
-			var is_static :bool = function_flags & METHOD_FLAG_STATIC
-			var is_vararg :bool = function_flags & METHOD_FLAG_VARARG
-			var is_const :bool = function_flags & METHOD_FLAG_CONST
-			var is_core :bool = function_flags & METHOD_FLAG_OBJECT_CORE
-			var is_default :bool = function_flags & METHOD_FLAGS_DEFAULT
-			prints(m["name"], function_flags, "is_virtual=", is_virtual, "is_static=", is_static, "is_core=", is_core)
-			if m["name"] == "_ready":
-				print_debug("")
-			
 	
 	# double script functions
 	if not ClassDB.class_exists(clazz_name):
@@ -112,6 +83,9 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 		var class_descriptor :GdClassDescriptor = result.value()
 		while class_descriptor != null:
 			for func_descriptor in class_descriptor.functions():
+				if instance != null and not instance.has_method(func_descriptor.name()):
+					#prints("no virtual func implemented",clazz_name, func_descriptor.name() )
+					continue
 				if functions.has(func_descriptor.name()) or exclude_override_functions.has(func_descriptor.name()):
 					continue
 				doubled_source += func_doubler.double(func_descriptor)
@@ -126,7 +100,7 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 			continue
 		# do not double on not implemented virtual functions
 		if instance != null and not instance.has_method(func_descriptor.name()):
-			#prints("no virtual func implemented",clazz_name, func_descriptor )
+			#prints("no virtual func implemented",clazz_name, func_descriptor.name() )
 			continue
 		functions.append(func_descriptor.name())
 		doubled_source += func_doubler.double(func_descriptor)
