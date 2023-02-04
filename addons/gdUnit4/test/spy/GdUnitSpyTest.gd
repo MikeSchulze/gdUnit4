@@ -583,3 +583,25 @@ func test_spy_scene_initalize():
 	
 	# check exports
 	assert_str(spy_scene._initial_color.to_html()).is_equal(Color.RED.to_html())
+
+
+class CustomNode extends Node:
+	
+	func _ready():
+		# we call this function to verify the _ready is only once called
+		# this is need to verify `add_child` is calling the original implementation only once
+		only_one_time_call()
+	
+	func only_one_time_call() -> void:
+		pass
+
+
+func test_spy_ready_called_once():
+	var spy_node = spy(auto_free(CustomNode.new()))
+	
+	# Add as child to a scene tree to trigger _ready to initalize all variables
+	add_child(spy_node)
+	
+	# ensure _ready is recoreded and onyl once called
+	verify(spy_node, 1)._ready()
+	verify(spy_node, 1).only_one_time_call()

@@ -80,7 +80,7 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	# save original constructor arguments
 	if func_name == "_init":
 		var constructor_args := ",".join(extract_constructor_args(args))
-		var constructor := "func _init(%s):\n	super._init(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
+		var constructor := "func _init(%s):\n	super(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
 	
 	var double := func_signature + "\n"

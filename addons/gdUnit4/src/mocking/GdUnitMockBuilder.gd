@@ -40,8 +40,6 @@ static func build(caller :Object, clazz, mock_mode :String, debug_write := true)
 	mock_instance.__set_singleton()
 	mock_instance.__set_mode(mock_mode)
 	mock_instance.__set_caller(caller)
-	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
-	mock_instance.__exclude_method_call(["_ready", "_input", "_gui_input", "_input_event", "_unhandled_input"])
 	return GdUnitMemoryPool.register_auto_free(mock_instance, memory_pool)
 
 

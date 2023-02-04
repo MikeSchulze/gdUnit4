@@ -24,6 +24,8 @@ static func build(caller :Object, to_spy, push_errors :bool = true, debug_write 
 	GdUnitObjectInteractions.reset(spy_instance)
 	spy_instance.__set_singleton(to_spy)
 	spy_instance.__set_caller(caller)
+	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
+	spy_instance.__exclude_method_call([ "_input", "_gui_input", "_input_event", "_unhandled_input"])
 	return GdUnitMemoryPool.register_auto_free(spy_instance, memory_pool)
 
 

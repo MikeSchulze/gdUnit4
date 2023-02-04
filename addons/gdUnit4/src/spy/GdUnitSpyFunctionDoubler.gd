@@ -11,7 +11,9 @@ const TEMPLATE_RETURN_VARIANT = """
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	return $(await)super($(arguments))
+	if $(instance)__do_call_real_func("$(func_name)"):
+		return $(await)super($(arguments))
+	return ${default_return_value}
 
 """
 
@@ -25,7 +27,8 @@ const TEMPLATE_RETURN_VOID = """
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	$(await)super($(arguments))
+	if $(instance)__do_call_real_func("$(func_name)"):
+		$(await)super($(arguments))
 
 """
 
@@ -40,7 +43,7 @@ const TEMPLATE_RETURN_VOID_VARARG = """
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	$(await)__call_func("$(func_name)", [$(arguments)] + varargs)
+	$(await)$(instance)__call_func("$(func_name)", [$(arguments)] + varargs)
 
 """
 
@@ -55,7 +58,7 @@ const TEMPLATE_RETURN_VARIANT_VARARG = """
 	else:
 		$(instance)__save_function_interaction(args)
 	
-	return $(await)__call_func("$(func_name)", [$(arguments)] + varargs)
+	return $(await)$(instance)__call_func("$(func_name)", [$(arguments)] + varargs)
 
 """
 

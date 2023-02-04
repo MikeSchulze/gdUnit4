@@ -906,7 +906,7 @@ func test_mock_func_with_default_build_in_type():
 	verify_no_more_interactions(mock)
 
 
-func _test_mock_virtual_function_is_not_called_twice() -> void:
+func test_mock_virtual_function_is_not_called_twice() -> void:
 	# this test verifies the special handling of virtual functions by Godot
 	# virtual functions are handeld in a special way 
 	# node.cpp
@@ -921,23 +921,21 @@ func _test_mock_virtual_function_is_not_called_twice() -> void:
 	var mock = mock(ClassWithOverridenVirtuals, CALL_REAL_FUNC)
 	assert_object(mock).is_not_null()
 	
-	# inital state
-	assert_int(mock._x).is_equal(200)
+	# inital constructor 
+	assert_that(mock._x).is_equal("_init")
 	
 	# add_child calls internally by "default" _ready() where is a virtual function
-	# mock has to not call real implementation at twice for virtual functions
 	add_child(mock)
 	
-	# verify it by member _x is only one time doubled
-	# the _ready func is multiply the inital x value by two
-	assert_int(mock._x).is_equal(400)
+	# verify _ready func is only once called
+	assert_that(mock._x).is_equal("_ready")
 	
 	# now simulate an input event calls '_input'
 	var action = InputEventKey.new()
 	action.pressed = false
 	action.keycode = KEY_ENTER
 	get_tree().root.push_input(action)
-	assert_int(mock._x).is_equal(410)
+	assert_that(mock._x).is_equal("ui_accept")
 
 
 func test_mock_scene_by_path():
