@@ -6,13 +6,6 @@ const EXCLUDE_VIRTUAL_FUNCTIONS = [
 	# we have to exclude notifications because NOTIFICATION_PREDELETE is try
 	# to delete already freed spy/mock resources and will result in a conflict
 	"_notification",
-	#"_get_property_list",
-	#"_get",
-	#"_set",
-	#"_to_string",
-	#"_ready",
-	"_process",
-	"_enter_tree",
 	# https://github.com/godotengine/godot/issues/67461
 	"get_name",
 	"get_path",
@@ -26,10 +19,6 @@ const EXLCUDE_SCENE_FUNCTIONS = [
 	"get_script",
 	# needs to exclude otherwise verify fails checked collection arguments checked calling to string
 	"_to_string",
-	# _ready is not called anymore when add_child
-	"_ready",
-	"_input",
-	"_enter_tree"
 ]
 
 const EXCLUDE_FUNCTIONS = ["new", "free", "get_instance_id", "get_tree"]

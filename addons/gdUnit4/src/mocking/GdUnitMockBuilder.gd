@@ -18,7 +18,7 @@ static func is_push_errors() -> bool:
 	return is_push_errors_enabled() or GdUnitSettings.is_report_push_errors()
 
 
-static func build(caller :Object, clazz, mock_mode :String, debug_write := true) -> Object:
+static func build(caller :Object, clazz, mock_mode :String, debug_write := false) -> Object:
 	var memory_pool :GdUnitMemoryPool.POOL = caller.get_meta(GdUnitMemoryPool.META_PARAM)
 	var push_errors := is_push_errors()
 	if not is_mockable(clazz, push_errors):
