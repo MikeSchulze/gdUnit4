@@ -83,7 +83,7 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 		var constructor := "func _init(%s):\n	super(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
 	
-	var double := func_signature + "\n"
+	var double := func_signature
 	var func_template := get_template(func_descriptor.return_type(), is_vararg).trim_prefix("\n")
 	# fix to  unix format, this is need when the template is edited under windows than the template is stored with \r\n
 	func_template = GdScriptParser.to_unix_format(func_template)
