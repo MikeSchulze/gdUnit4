@@ -219,6 +219,31 @@ func test_double_static_return_void_function_with_args() -> void:
 	assert_array(doubler.double(fd)).contains_exactly(expected)
 
 
+func test_double_static_script_function_with_args_return_bool() -> void:
+	var doubler := GdUnitSpyFunctionDoubler.new(false)
+	
+	var fd := GdFunctionDescriptor.new( "foo", 23, false, true, false, TYPE_BOOL, "", [
+		GdFunctionArgument.new("arg1", TYPE_BOOL),
+		GdFunctionArgument.new("arg2", TYPE_STRING, '"default"')
+	])
+	var expected := [
+		'static func foo(arg1, arg2="default") -> bool:',
+		'	var args :Array = ["foo", arg1, arg2]',
+		'	',
+		'	if __instance().__is_verify_interactions():',
+		'		__instance().__verify_interactions(args)',
+		'		return false',
+		'	else:',
+		'		__instance().__save_function_interaction(args)',
+		'	',
+		'	if __instance().__do_call_real_func("foo"):',
+		'		return super(arg1, arg2)',
+		'	return false',
+		'',
+		'']
+	assert_array(doubler.double(fd)).contains_exactly(expected)
+
+
 func test_double_virtual_return_void_function_with_arg() -> void:
 	var doubler := GdUnitSpyFunctionDoubler.new(false)
 	# void _input(event: InputEvent) virtual
