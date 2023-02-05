@@ -30,7 +30,7 @@ func test_extract_from_func_without_return_type():
 		GdFunctionArgument.new("force_readable_name_", TYPE_BOOL, "false")
 	])
 	# void add_sibling(node: Node, child_node: Node, legible_unique_name: bool = false)
-	assert_str(fd.typeless()).is_equal("func add_sibling(sibling_, force_readable_name_=false):")
+	assert_str(fd.typeless()).is_equal("func add_sibling(sibling_, force_readable_name_=false) -> void:")
 
 
 func test_extract_from_func_with_return_type():
@@ -89,7 +89,7 @@ func test_extract_from_descriptor_is_virtual_func():
 	assert_int(fd.return_type()).is_equal(TYPE_NIL)
 	assert_array(fd.args()).is_empty()
 	# void _enter_tree() virtual
-	assert_str(fd.typeless()).is_equal("func _enter_tree():")
+	assert_str(fd.typeless()).is_equal("func _enter_tree() -> void:")
 
 
 func test_extract_from_descriptor_is_virtual_func_full_check():

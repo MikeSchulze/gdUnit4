@@ -91,7 +91,7 @@ func varargs() -> Array[GdFunctionArgument]:
 func typeless() -> String:
 	var func_signature := ""
 	if _return_type == TYPE_NIL:
-		func_signature = "func %s(%s):" % [name(), typeless_args()]
+		func_signature = "func %s(%s) -> void:" % [name(), typeless_args()]
 	elif _return_type == GdObjects.TYPE_VARIANT:
 		func_signature = "func %s(%s) -> Variant:" % [name(), typeless_args()]
 	else:
