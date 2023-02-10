@@ -5,7 +5,7 @@
 
 ---
 <h1 align="center">GdUnit4 Beta </h1>
-<p align="center">This is a beta version of GdUnit4 which is based on Godot <strong>v4.0.beta16.official</strong> (master branch)</p>
+<p align="center">This is a beta version of GdUnit4 which is based on Godot <strong>v4.0.rc1.official [8843d9ad3]</strong> (master branch)</p>
 
 <h1 align="center">ATTENTION!</h1>
 
@@ -40,8 +40,8 @@ The C# support is currently not enabled and is untested.
 
 ## What is GdUnit4
 gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot editor. GdUnit4 is very useful for test-driven development and will help you get your code bug-free.
- 
- 
+
+
 ## Features
 * Fully embedded in the Godot editor
 * Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnitInspector
@@ -54,8 +54,8 @@ gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot edit
 * Parameterized Tests (Test Cases)
 * Mocking a class to simulate the implementation in which you define the output of the certain function
 * Spy on an instance to verify that a function has been called with certain parameters.
-* Mock or Spy on a Scene 
-* Provides a scene runner to simulate interactions on a scene 
+* Mock or Spy on a Scene
+* Provides a scene runner to simulate interactions on a scene
   * Simulate by Input events like mouse and/or keyboard
   * Simulate scene processing by a certain number of frames
   * Simulate scene processing by waiting for a specific signal
@@ -63,11 +63,11 @@ gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot edit
 * Command Line Tool
 * CI - Continuous Integration support
   * generates HTML report
-  * generates JUnit report 
+  * generates JUnit report
 * Visual Studio Code extension
 ---
 
- 
+
 ## Short Example
  ```
  # this assertion succeeds
@@ -76,7 +76,7 @@ assert_int(13).is_not_negative()
 # this assertion fails because the value '-13' is negative
 assert_int(-13).is_not_negative()
  ```
- 
+
  ---
 
 ## Documentation
@@ -118,7 +118,3 @@ assert_int(-13).is_not_negative()
 ### Thank you for supporting my project!
 ---
 ## Sponsors:
-
-
-
-

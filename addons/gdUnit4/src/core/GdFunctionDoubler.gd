@@ -44,7 +44,9 @@ const DEFAULT_TYPED_RETURN_VALUES := {
 
 var _push_errors :String
 
-static func default_return_value(type :int) -> String:
+static func default_return_value(type :Variant) -> String:
+	if type is StringName:
+		return type
 	if DEFAULT_TYPED_RETURN_VALUES.size() != TYPE_MAX:
 		push_error("missing default definitions! Expexting %d bud is %d" % [DEFAULT_TYPED_RETURN_VALUES.size(), TYPE_MAX])
 		for type_key in range(0, DEFAULT_TYPED_RETURN_VALUES.size()):
@@ -60,7 +62,7 @@ func _init(push_errors :bool = false):
 	_push_errors = "true" if push_errors else "false"
 
 
-func get_template(return_type :int, is_vararg :bool) -> String:
+func get_template(return_type :Variant, is_vararg :bool) -> String:
 	push_error("Must be implemented!")
 	return ""
 
@@ -83,10 +85,12 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 		var constructor := "func _init(%s):\n	super(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
 	
-	var double := func_signature
-	var func_template := get_template(func_descriptor.return_type(), is_vararg).trim_prefix("\n")
+	var double := ""
+	if func_descriptor.is_engine():
+		double += '@warning_ignore("native_method_override")\n'
+	double += func_signature
 	# fix to  unix format, this is need when the template is edited under windows than the template is stored with \r\n
-	func_template = GdScriptParser.to_unix_format(func_template)
+	var func_template := get_template(func_descriptor.return_type(), is_vararg).replace("\r\n", "\n")
 	double += func_template\
 		.replace("$(arguments)", ", ".join(arg_names))\
 		.replace("$(varargs)", ", ".join(vararg_names))\
@@ -94,6 +98,7 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 		.replace("$(func_name)", func_name )\
 		.replace("${default_return_value}", default_return_value)\
 		.replace("$(push_errors)", _push_errors)
+	
 	if is_static:
 		double = double.replace("$(instance)", "__instance().")
 	else:

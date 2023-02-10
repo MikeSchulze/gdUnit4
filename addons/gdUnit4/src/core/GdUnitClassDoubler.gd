@@ -85,7 +85,14 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 	var clazz_functions := GdObjects.extract_class_functions(clazz_name, clazz_path)
 	for method in clazz_functions:
 		var func_descriptor := GdFunctionDescriptor.extract_from(method)
+		# exclude private core functions
+		if func_descriptor.is_private():
+			continue
 		if functions.has(func_descriptor.name()) or exclude_override_functions.has(func_descriptor.name()):
+			continue
+		# GD-110: Hotfix do not double invalid engine functions
+		if is_invalid_method_descriptior(clazz_name, method):
+			#prints("'%s': invalid method descriptor found! %s" % [clazz_name, method])
 			continue
 		# do not double on not implemented virtual functions
 		if instance != null and not instance.has_method(func_descriptor.name()):
@@ -94,3 +101,18 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 		functions.append(func_descriptor.name())
 		doubled_source += func_doubler.double(func_descriptor)
 	return doubled_source
+
+
+# GD-110
+static func is_invalid_method_descriptior(clazz :String, method :Dictionary) -> bool:
+	var return_info = method["return"]
+	var type :int = return_info["type"]
+	var usage :int = return_info["usage"]
+	var clazz_name :String = return_info["class_name"]
+	# is method returning a type int with a given 'class_name' we have an enum
+	# and the PROPERTY_USAGE_CLASS_IS_ENUM must be set
+	if type == TYPE_INT and not clazz_name.is_empty() and not (usage & PROPERTY_USAGE_CLASS_IS_ENUM):
+		return true
+	if clazz_name == "Variant.Type":
+		return true
+	return false
