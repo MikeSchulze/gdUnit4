@@ -31,6 +31,7 @@ func test_double_return_typed_function_without_arg() -> void:
 	# String get_class() const
 	var fd := get_function_description("Object", "get_class")
 	var expected := [
+		'@warning_ignore("native_method_override")',
 		'func get_class() -> String:',
 		'	var args :Array = ["get_class", ]',
 		'	',
@@ -53,6 +54,7 @@ func test_double_return_typed_function_with_args() -> void:
 	# bool is_connected(signal: String,Callable(target: Object,method: String)) const
 	var fd := get_function_description("Object", "is_connected")
 	var expected := [
+		'@warning_ignore("native_method_override")',
 		'func is_connected(signal_, callable_) -> bool:',
 		'	var args :Array = ["is_connected", signal_, callable_]',
 		'	',
@@ -75,6 +77,7 @@ func test_double_return_void_function_with_args() -> void:
 	# void disconnect(signal: StringName, callable: Callable)
 	var fd := get_function_description("Object", "disconnect")
 	var expected := [
+		'@warning_ignore("native_method_override")',
 		'func disconnect(signal_, callable_) -> void:',
 		'	var args :Array = ["disconnect", signal_, callable_]',
 		'	',
@@ -96,6 +99,7 @@ func test_double_return_void_function_without_args() -> void:
 	# void free()
 	var fd := get_function_description("Object", "free")
 	var expected := [
+		'@warning_ignore("native_method_override")',
 		'func free() -> void:',
 		'	var args :Array = ["free", ]',
 		'	',
@@ -117,6 +121,7 @@ func test_double_return_typed_function_with_args_and_varargs() -> void:
 	# Error emit_signal(signal: StringName, ...) vararg
 	var fd := get_function_description("Object", "emit_signal")
 	var expected := [
+		'@warning_ignore("native_method_override")',
 		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> int:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args :Array = ["emit_signal", signal_] + varargs',
@@ -249,6 +254,7 @@ func test_double_virtual_return_void_function_with_arg() -> void:
 	# void _input(event: InputEvent) virtual
 	var fd := get_function_description("Node", "_input")
 	var expected := [
+		'@warning_ignore("native_method_override")',
 		'func _input(event_) -> void:',
 		'	var args :Array = ["_input", event_]',
 		'	',
@@ -270,6 +276,7 @@ func test_double_virtual_return_void_function_without_arg() -> void:
 	# void _ready() virtual
 	var fd := get_function_description("Node", "_ready")
 	var expected := [
+		'@warning_ignore("native_method_override")',
 		'func _ready() -> void:',
 		'	var args :Array = ["_ready", ]',
 		'	',

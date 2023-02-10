@@ -78,7 +78,9 @@ func _init(push_errors :bool = false):
 	super._init(push_errors)
 
 
-func get_template(return_type, is_vararg :bool) -> String:
+func get_template(return_type :Variant, is_vararg :bool) -> String:
 	if is_vararg:
 		return TEMPLATE_FUNC_VARARG_RETURN_VALUE
+	if return_type is StringName:
+		return TEMPLATE_FUNC_WITH_RETURN_VALUE
 	return TEMPLATE_FUNC_WITH_RETURN_VOID if (return_type == TYPE_NIL or return_type == GdObjects.TYPE_VOID) else TEMPLATE_FUNC_WITH_RETURN_VALUE

@@ -7,7 +7,7 @@ var _is_engine :bool
 var _is_coroutine :bool
 var _name :String
 var _line_number :int
-var _return_type :int
+var _return_type :Variant
 var _return_class :String
 var _args : Array[GdFunctionArgument]
 var _varargs :Array[GdFunctionArgument]
@@ -18,7 +18,7 @@ func _init(name :String,
 	is_virtual :bool,
 	is_static :bool,
 	is_engine :bool,
-	return_type :int,
+	return_type :Variant,
 	return_class :String,
 	args : Array[GdFunctionArgument],
 	varargs :Array[GdFunctionArgument] = []):
@@ -70,7 +70,11 @@ func is_parameterized() -> bool:
 	return false
 
 
-func return_type() -> int:
+func is_private() -> bool:
+	return name().begins_with("_") and not is_virtual()
+
+
+func return_type() -> Variant:
 	return _return_type
 
 
@@ -90,7 +94,9 @@ func varargs() -> Array[GdFunctionArgument]:
 
 func typeless() -> String:
 	var func_signature := ""
-	if _return_type == TYPE_NIL:
+	if _return_type is StringName:
+		func_signature = "func %s(%s) -> %s:" % [name(), typeless_args(), _return_type]
+	elif _return_type == TYPE_NIL:
 		func_signature = "func %s(%s) -> void:" % [name(), typeless_args()]
 	elif _return_type == GdObjects.TYPE_VARIANT:
 		func_signature = "func %s(%s) -> Variant:" % [name(), typeless_args()]
@@ -157,10 +163,38 @@ static func extract_from(method_descriptor :Dictionary) -> GdFunctionDescriptor:
 		_build_varargs(is_vararg)
 	)
 
+# temporary exclude GlobalScope enums
+const enum_fix := [
+	"Side",
+	"Corner",
+	"Orientation",
+	"ClockDirection",
+	"HorizontalAlignment",
+	"VerticalAlignment",
+	"InlineAlignment",
+	"EulerOrder",
+	"Error",
+	"Key",
+	"MIDIMessage",
+	"MouseButton",
+	"MouseButtonMask",
+	"JoyButton",
+	"JoyAxis",
+	"PropertyHint",
+	"PropertyUsageFlags",
+	"MethodFlags",
+	"Variant.Type",
+	"Control.LayoutMode"]
 
-static func _extract_return_type(return_info :Dictionary) -> int:
+static func _extract_return_type(return_info :Dictionary) -> Variant:
 	var type :int = return_info["type"]
 	var usage :int = return_info["usage"]
+	if type == TYPE_INT and usage & PROPERTY_USAGE_CLASS_IS_ENUM:
+		var enum_value :Variant = return_info["class_name"]
+		# GD-110: bug Error is not work as enum, convert it to int
+		if enum_fix.has(enum_value):
+			return TYPE_INT
+		return enum_value
 	if type == TYPE_NIL and usage & PROPERTY_USAGE_NIL_IS_VARIANT:
 		return GdObjects.TYPE_VARIANT
 	return type
