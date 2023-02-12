@@ -71,7 +71,7 @@ static func _nerror(number) -> String:
 			return "[color=%s]%s[/color]" % [ERROR_COLOR, str(number)]
 
 
-static func _colored_value(value, delimiter ="\n") -> String:
+static func _colored_value(value, delimiter ="\n", detailed := false) -> String:
 	match typeof(value):
 		TYPE_STRING, TYPE_STRING_NAME:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _colored_string_div(value)]
@@ -86,8 +86,8 @@ static func _colored_value(value, delimiter ="\n") -> String:
 				return "'[color=%s]<null>[/color]'" % [VALUE_COLOR]
 			if value is InputEvent:
 				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.as_text()]
-			#if value.has_method("_to_string"):
-			#	return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value._to_string()]
+			if detailed and value.has_method("_to_string"):
+				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value._to_string()]
 			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
 		TYPE_DICTIONARY:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _format_dict(value)]
@@ -156,18 +156,18 @@ static func error_equal(current, expected, index_reports :Array = []) -> String:
 		%s
 		 %s
 		 but was
-		 %s""".dedent().trim_prefix("\n") % [_error("Expecting:"), _colored_value(expected), _colored_value(current)]
+		 %s""".dedent().trim_prefix("\n") % [_error("Expecting:"), _colored_value(expected, true), _colored_value(current, true)]
 	if not index_reports.is_empty():
 		report += "\n\n%s\n%s" % [_error("Differences found:"), _index_report_as_table(index_reports)]
 	return report
 
 
 static func error_not_equal(current, expected) -> String:
-	return "%s\n %s\n not equal to\n %s" % [_error("Expecting:"), _colored_value(expected), _colored_value(current)]
+	return "%s\n %s\n not equal to\n %s" % [_error("Expecting:"), _colored_value(expected, true), _colored_value(current, true)]
 
 
 static func error_not_equal_case_insensetiv(current, expected) -> String:
-	return "%s\n %s\n not equal to (case insensitiv)\n %s" % [_error("Expecting:"), _colored_value(expected), _colored_value(current)]
+	return "%s\n %s\n not equal to (case insensitiv)\n %s" % [_error("Expecting:"), _colored_value(expected, true), _colored_value(current, true)]
 
 
 static func error_is_empty(current) -> String:

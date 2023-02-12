@@ -158,7 +158,7 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 		var property_name = property["name"]
 		var property_type = property["type"]
 		var property_value = obj.get(property_name)
-		if property_value is GDScript:
+		if property_value is GDScript or property_value is Callable:
 			continue
 		if (property["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE|PROPERTY_USAGE_DEFAULT
 			and not property["usage"] & PROPERTY_USAGE_CATEGORY
@@ -171,7 +171,7 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 				hashed_objects[obj] = true
 				dict[property_name] = obj2dict(property_value, hashed_objects)
 			else:
-				dict[property_name] = "%d:%s" % [property_type, property_value]
+				dict[property_name] = property_value
 	return {"%s" % clazz_name : dict}
 
 
@@ -214,10 +214,11 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 					return false
 				if obj_a.get_class() != obj_b.get_class():
 					return false
-				var a = inst_to_dict(obj_a) if is_instance_valid(obj_a) and obj_a.get_script() != null else var_to_str(obj_a)
-				var b = inst_to_dict(obj_b) if is_instance_valid(obj_b) and obj_b.get_script() != null else var_to_str(obj_b)
-				return str(a) == str(b)
+				var a = obj2dict(obj_a)
+				var b = obj2dict(obj_b)
+				return _equals(a, b, case_sensitive, deep_check, deep_stack, stack_depth)
 			return obj_a == obj_b
+		
 		TYPE_ARRAY:
 			var arr_a:= obj_a as Array
 			var arr_b:= obj_b as Array
@@ -227,6 +228,7 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 				if not _equals(arr_a[index], arr_b[index], case_sensitive, deep_check, deep_stack, stack_depth):
 					return false
 			return true
+		
 		TYPE_DICTIONARY:
 			var dic_a:= obj_a as Dictionary
 			var dic_b:= obj_b as Dictionary
@@ -238,6 +240,7 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 				if not _equals(value_a, value_b, case_sensitive, deep_check, deep_stack, stack_depth):
 					return false
 			return true
+		
 		TYPE_STRING:
 			if case_sensitive:
 				return obj_a.to_lower() == obj_b.to_lower()
@@ -600,13 +603,11 @@ static func extract_class_functions(clazz_name :String, script_path :PackedStrin
 # if the class is public in the global space than return true otherwise false
 # public class means the script class is defined by 'class_name <name>'
 static func is_public_script_class(clazz_name) -> bool:
-	if ProjectSettings.has_setting("_global_script_classes"):
-		var script_classes:Array = ProjectSettings.get_setting("_global_script_classes") as Array
-		for element in script_classes:
-			var class_info :Dictionary = element
-			if class_info.has("class"):
-				if element["class"] == clazz_name:
-					return true
+	var script_classes:Array[Dictionary] = ProjectSettings.get_global_class_list()
+	for class_info in script_classes:
+		if class_info.has("class"):
+			if class_info["class"] == clazz_name:
+				return true
 	return false
 
 static func build_function_default_arguments(script :GDScript, func_name :String) -> Array:
