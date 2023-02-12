@@ -86,8 +86,8 @@ static func _colored_value(value, delimiter ="\n") -> String:
 				return "'[color=%s]<null>[/color]'" % [VALUE_COLOR]
 			if value is InputEvent:
 				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.as_text()]
-			#if value.has_method("_to_string"):
-			#	return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value._to_string()]
+			if value.has_method("_to_string"):
+				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value._to_string()]
 			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
 		TYPE_DICTIONARY:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _format_dict(value)]
