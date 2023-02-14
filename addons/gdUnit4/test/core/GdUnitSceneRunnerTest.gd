@@ -135,7 +135,7 @@ func test_simulate_scene_inteaction_in_combination_with_spy():
 
 
 func test_simulate_scene_interact_with_buttons():
-	var spyed_scene = spy("res://addons/gdUnit3/test/mocker/resources/scenes/TestScene.tscn")
+	var spyed_scene = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var runner := scene_runner(spyed_scene)
 	# test button 1 interaction
 	await await_millis(1000)
@@ -204,7 +204,7 @@ func test_await_signal_without_time_factor() -> void:
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300)
-	if assert_failed_at(189, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
+	if assert_failed_at(206, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
 		return
 	fail("test should failed after 300ms checked 'await_signal'")
 
@@ -223,7 +223,7 @@ func test_await_signal_with_time_factor() -> void:
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30)
-	if assert_failed_at(207, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
+	if assert_failed_at(225, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
 		return
 	fail("test should failed after 30ms checked 'await_signal'")
 
@@ -308,7 +308,7 @@ func test_runner_by_scene_instance() -> void:
 
 
 func test_mouse_drag_and_drop() -> void:
-	var spy_scene = spy("res://addons/gdUnit3/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
+	var spy_scene = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
 	var runner := scene_runner(spy_scene)
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 	
@@ -317,8 +317,10 @@ func test_mouse_drag_and_drop() -> void:
 	
 	var save_mouse_pos := get_tree().root.get_mouse_position()
 	# set inital mouse pos over the left slot
-	var mouse_pos := slot_left.position + Vector2(10, 10)
+	var mouse_pos := slot_left.global_position + Vector2(10, 10)
 	runner.set_mouse_pos(mouse_pos)
+	await await_millis(1000)
+	
 	await await_idle_frame()
 	var event := InputEventMouseMotion.new()
 	event.position = mouse_pos
