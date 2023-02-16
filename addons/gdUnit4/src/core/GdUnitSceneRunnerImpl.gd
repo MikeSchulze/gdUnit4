@@ -58,6 +58,15 @@ func _init(test_suite :WeakRef, scene, verbose :bool, hide_push_errors = false):
 	_scene_tree = Engine.get_main_loop()
 	_scene_tree.root.add_child(_current_scene)
 	_simulate_start_time = LocalTime.now()
+	# we need to set inital a valid window otherwise the warp_mouse() is not handled
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	# set inital mouse pos to 0,0
+	var max_iteration_to_wait = 0
+	while get_global_mouse_position() != Vector2.ZERO and max_iteration_to_wait < 100:
+		Input.warp_mouse(Vector2.ZERO)
+		max_iteration_to_wait += 1
+	# see https://github.com/godotengine/godot/issues/73461
+	#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 
 
 func _notification(what):
@@ -232,8 +241,7 @@ func await_signal_on(source :Object, signal_name :String, args := [], timeout :=
 
 # maximizes the window to bring the scene visible
 func maximize_view() -> GdUnitSceneRunner:
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
-	#DisplayServer.center_window()
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	DisplayServer.window_move_to_foreground()
 	return self
 
@@ -279,11 +287,12 @@ func __deactivate_time_factor() -> void:
 # copy over current active modifiers
 func _apply_input_modifiers(event :InputEvent) -> void:
 	if _last_input_event is InputEventWithModifiers and event is InputEventWithModifiers:
+		event.meta_pressed = event.meta_pressed or _last_input_event.meta_pressed
 		event.alt_pressed = event.alt_pressed or _last_input_event.alt_pressed
 		event.shift_pressed = event.shift_pressed or _last_input_event.shift_pressed
 		event.ctrl_pressed = event.ctrl_pressed or _last_input_event.ctrl_pressed
-		event.meta_pressed = event.meta_pressed or _last_input_event.meta_pressed
-		event.command_or_control_autoremap = event.command_or_control_autoremap or _last_input_event.command_or_control_autoremap
+		# this line results into reset the control_pressed state!!!
+		#event.command_or_control_autoremap = event.command_or_control_autoremap or _last_input_event.command_or_control_autoremap
 
 
 # copy over current active mouse mask and combine with curren mask
@@ -309,12 +318,7 @@ func _apply_input_mouse_position(event :InputEvent) -> void:
 func _handle_input_event(event :InputEvent):
 	if event is InputEventMouse:
 		Input.warp_mouse(event.position)
-	# before v3.5 the use_accumulated_input is false but should be true
-	if Engine.get_version_info().hex < 0x030500:
-		Input.set_use_accumulated_input(true)
 	Input.parse_input_event(event)
-	# do explicit flush input events: https://github.com/godotengine/godot/issues/63969
-	#if Engine.get_version_info().hex >= 0x030500 and Input.use_accumulated_input:
 	Input.flush_buffered_events()
 	
 	if is_instance_valid(_current_scene):

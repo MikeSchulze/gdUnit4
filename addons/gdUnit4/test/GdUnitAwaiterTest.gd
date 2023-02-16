@@ -81,6 +81,4 @@ func test_await_signal_on_invalid_source_timedout() -> void:
 	fail("test should failed after 400ms on 'await_signal_on'")
 
 func invalid_node() -> Node:
-	var node = Node.new()
-	node.free()
-	return node
+	return null

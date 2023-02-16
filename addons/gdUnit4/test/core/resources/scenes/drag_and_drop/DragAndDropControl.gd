@@ -7,16 +7,18 @@ extends PanelContainer
 # position is local to this control. Drag may be forced with force_drag().
 func _get_drag_data(_position: Vector2) -> Variant:
 	var x :TextureRect = $TextureRect
-	var data: = {texture = $TextureRect.texture}
-	var drag_texture := $TextureRect.duplicate()
+	var data: = {texture = x.texture}
+	var drag_texture := x.duplicate()
+	drag_texture.size = x.size
+	drag_texture.position = x.global_position * -0.2
 	
 	# set drag preview
-	var control := Control.new()
+	var control := Panel.new()
 	control.add_child(drag_texture)
 	# center texture relative to mouse pos
-	drag_texture.position = -0.5 * x.global_position
 	set_drag_preview(control)
 	return data
+
 
 # Godot calls this method to test if data from a control's get_drag_data() can be dropped at position. position is local to this control.
 func _can_drop_data(_position: Vector2, data :Variant) -> bool:

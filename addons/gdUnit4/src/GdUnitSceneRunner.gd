@@ -23,6 +23,12 @@ func set_mouse_pos(pos :Vector2) -> GdUnitSceneRunner:
 func get_mouse_position() -> Vector2:
 	return Vector2.ZERO
 
+
+# Gets the current global mouse position of the current window
+func get_global_mouse_position() -> Vector2:
+	return Vector2.ZERO
+
+
 # Simulates that a key has been pressed
 # key_code : the key code e.g. 'KEY_ENTER'
 # shift_pressed : false by default set to true if simmulate shift is press
