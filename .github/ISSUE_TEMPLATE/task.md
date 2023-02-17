@@ -2,7 +2,7 @@
 name: Task
 about: A small task to implement
 title: ''
-labels: task
+labels: ''
 assignees: MikeSchulze
 
 ---
