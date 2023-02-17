@@ -68,7 +68,6 @@ jobs:
         continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
         shell: bash
         run: |
-          ls -lsR ${{ matrix.godot-cache-path }}
           ${{ matrix.godot-executable_path }} --version
           ${{ matrix.godot-executable_path }} -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless
 
@@ -85,7 +84,7 @@ jobs:
         uses: ./.github/actions/unit-test
         with:
           godot-bin: ${{ matrix.godot-executable_path }}
-          test-includes: "res://addons/gdUnit4/test/assets"
+          test-includes: "res://addons/gdUnit4/test/asserts/"
 
       #- name: "Run Unit Test Examples"
       #  if: ${{ !cancelled() }}
