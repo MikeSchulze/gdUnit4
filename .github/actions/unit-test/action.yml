@@ -1,9 +1,9 @@
 name: unit-test
-description: "Run unit tests for GdUnit4 API"
+description: "Runs the unit tests on GdUnit4 API"
 
 inputs:
   test-includes:
-    description: "Paths to include for test run"
+    description: "The path to include tests to be run"
     required: true
   godot-bin:
     required: true
@@ -19,9 +19,10 @@ runs:
       shell: bash
       run: |
         chmod +x ./runtest.sh
-        ./runtest.sh --add ${{ inputs.test-includes }} --continue --headless
+        ./runtest.sh --add ${{ inputs.test-includes }} --continue
 
 
+# not tested yet
     - name: "Unit Test Windows cmd"
       if: ${{ runner.OS == 'Windows' }}
       env:
@@ -36,7 +37,7 @@ runs:
         echo "%win_path%"
         echo "%GODOT_BIN%"
 
-        %GODOT_BIN% --no-window -s -d .\addons\gdUnit4\bin\GdUnitCmdTool.gd
+        %GODOT_BIN% -s -d .\addons\gdUnit4\bin\GdUnitCmdTool.gd
 
         
       #  chmod +x ./runtest.cmd

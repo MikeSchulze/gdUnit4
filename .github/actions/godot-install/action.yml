@@ -3,10 +3,10 @@ description: "Installs the Godot Runtime"
 
 inputs:
   godot-version:
-    description: "The Godot Engine version"
+    description: "The Godot engine version"
     required: true
   godot-status-version:
-    description: "The Godot Engine status version"
+    description: "The Godot engine status version"
     required: true
   godot-bin-name:
     required: true
@@ -18,7 +18,7 @@ runs:
   using: composite
   steps:
 
-    - name: Cache Godot Binary Download
+    - name: "Cache Godot Binary Download"
       uses: actions/cache@v3
       id: godot-cache-binary
       with:
@@ -27,7 +27,7 @@ runs:
         restore-keys: |
           ${{ runner.OS }}-Godot_v${{ inputs.godot-version }}-${{ inputs.godot-status-version }}
 
-    - name: Install Linux Godot ${{ inputs.godot-version }}
+    - name: "Install Linux Godot ${{ inputs.godot-version }}"
       if: steps.godot-cache-binary.outputs.cache-hit != 'true'
       env:
         GODOT_PACKAGE : Godot_v${{ inputs.godot-version }}-${{ inputs.godot-status-version }}_${{ inputs.godot-bin-name }}.zip

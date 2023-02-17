@@ -35,13 +35,13 @@ jobs:
             install-linux-dependencies: true
 
     steps:
-      - name: Checkout GdUnit Repository
+      - name: "Checkout GdUnit Repository"
         uses: actions/checkout@v3
         with:
           lfs: true
           submodules: 'recursive'
 
-      - name: Godot cache
+      - name: "Install Godot ${{ matrix.godot-version }}"
         uses: ./.github/actions/godot-install
         with:
           godot-version: ${{ matrix.godot-version }}
@@ -62,7 +62,7 @@ jobs:
         run: |
           ${{ matrix.godot-executable_path }} project.godot --build-solutions --quit --no-window
 
-      - name: "Update Project"
+      - name: "Update Godot project cache"
         if: ${{ !cancelled() }}
         timeout-minutes: 1
         continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
@@ -78,13 +78,13 @@ jobs:
       #    godot-bin: ${{ matrix.godot-executable_path }}
       #    test-includes: "res://addons/gdUnit4/test/mono"
 
-      - name: "Run Unit Test"
+      - name: "Run Unit Tests"
         if: ${{ !cancelled() }}
         timeout-minutes: 10
         uses: ./.github/actions/unit-test
         with:
           godot-bin: ${{ matrix.godot-executable_path }}
-          test-includes: "res://addons/gdUnit4/test/asserts/"
+          test-includes: "res://addons/gdUnit4/test/"
 
       #- name: "Run Unit Test Examples"
       #  if: ${{ !cancelled() }}
