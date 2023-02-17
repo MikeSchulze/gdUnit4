@@ -4,7 +4,7 @@ extends GdUnitClassDoubler
 
 
 static func build(caller :Object, to_spy, push_errors :bool = true, debug_write = false):
-	var memory_pool :int = caller.get_meta(GdUnitMemoryPool.META_PARAM)
+	var memory_pool :GdUnitMemoryPool.POOL = caller.get_meta(GdUnitMemoryPool.META_PARAM)
 	
 	# if resource path load it before
 	if GdObjects.is_scene_resource_path(to_spy):
@@ -24,7 +24,10 @@ static func build(caller :Object, to_spy, push_errors :bool = true, debug_write 
 	GdUnitObjectInteractions.reset(spy_instance)
 	spy_instance.__set_singleton(to_spy)
 	spy_instance.__set_caller(caller)
-	return GdUnitTools.register_auto_free(spy_instance, memory_pool)
+	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
+	spy_instance.__exclude_method_call([ "_input", "_gui_input", "_input_event", "_unhandled_input"])
+	return GdUnitMemoryPool.register_auto_free(spy_instance, memory_pool)
+
 
 static func get_class_info(clazz :Variant) -> Dictionary:
 	var clazz_path := GdObjects.extract_class_path(clazz)
@@ -33,6 +36,7 @@ static func get_class_info(clazz :Variant) -> Dictionary:
 		"class_name" : clazz_name,
 		"class_path" : clazz_path
 	}
+
 
 static func spy_on_script(instance, function_excludes :PackedStringArray, debug_write) -> GDScript:
 	if GdObjects.is_array_type(instance):
@@ -46,8 +50,8 @@ static func spy_on_script(instance, function_excludes :PackedStringArray, debug_
 		if GdUnitSettings.is_verbose_assert_errors():
 			push_error("Can't build spy for class type '%s'! Using an instance instead e.g. 'spy(<instance>)'" % [clazz_name])
 		return null
-	var lines := load_template(GdUnitSpyImpl, class_info)
-	lines += double_functions(clazz_name, clazz_path, GdUnitSpyFunctionDoubler.new(), function_excludes)
+	var lines := load_template(GdUnitSpyImpl, class_info, instance)
+	lines += double_functions(instance, clazz_name, clazz_path, GdUnitSpyFunctionDoubler.new(), function_excludes)
 	
 	var spy := GDScript.new()
 	spy.source_code = "\n".join(lines)
@@ -63,7 +67,8 @@ static func spy_on_script(instance, function_excludes :PackedStringArray, debug_
 		return null
 	return spy
 
-static func spy_on_scene(caller :Object, scene :Node, memory_pool, debug_write) -> Object:
+
+static func spy_on_scene(caller :Object, scene :Node, memory_pool :GdUnitMemoryPool.POOL, debug_write) -> Object:
 	if scene.get_script() == null:
 		if GdUnitSettings.is_verbose_assert_errors():
 			push_error("Can't create a spy checked a scene without script '%s'" % scene.get_scene_file_path())
@@ -77,9 +82,11 @@ static func spy_on_scene(caller :Object, scene :Node, memory_pool, debug_write) 
 	# replace original script whit spy 
 	scene.set_script(spy)
 	scene.__set_caller(caller)
-	return GdUnitTools.register_auto_free(scene, memory_pool)
+	return GdUnitMemoryPool.register_auto_free(scene, memory_pool)
+
 
 const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
+
 
 static func copy_properties(source :Object, dest :Object) -> void:
 	for property in source.get_property_list():

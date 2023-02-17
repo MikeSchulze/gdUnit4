@@ -3,20 +3,6 @@ extends RefCounted
 
 const GDUNIT_TEMP := "user://tmp"
 
-enum {
-	MEMORY_POOL_TESTSUITE,
-	MEMORY_POOL_TESTCASE,
-	MEMORY_POOL_TESTRUN,
-	METHOD_FLAGS,
-}
-
-const _store := {
-	MEMORY_POOL_TESTSUITE : [],
-	MEMORY_POOL_TESTCASE : [],
-	MEMORY_POOL_TESTRUN : [],
-	METHOD_FLAGS : [],
-}
-
 static func temp_dir() -> String:
 	if not DirAccess.dir_exists_absolute(GDUNIT_TEMP):
 		DirAccess.make_dir_recursive_absolute(GDUNIT_TEMP)
@@ -153,39 +139,6 @@ static func delete_path_index_lower_equals_than(path :String, prefix :String, in
 	return deleted
 
 
-static func _list_installed_tar_paths() -> PackedStringArray:
-	var stdout = Array()
-	OS.execute("where", ["tar"], stdout, true)
-	if stdout.size() > 0:
-		return PackedStringArray(stdout[0].split("\n"))
-	return PackedStringArray()
-
-static func _find_tar_path(os_name :String) -> String:
-	if os_name.to_upper() != "WINDOWS":
-		return "tar"
-	var paths := _list_installed_tar_paths()
-	for path in paths:
-		if path.find("\\System32\\tar") != -1:
-			return path.strip_escapes()
-	return "tar"
-
-static func extract_package(source :String, dest:String) -> Result:
-	prints("Detect OS :", OS.get_name())
-	var tar_path := _find_tar_path( OS.get_name())
-	var err = OS.execute(tar_path, ["-xf", source, "-C", dest])
-	if err != 0:
-		var cmd = "%s -xf \"%s\" -C \"%s\"" % [tar_path, source, dest]
-		prints("Extracting by `%s` failed with error code: %d" % [cmd, err])
-		prints("Fallback to unzip")
-		err = OS.execute("unzip", [source, "-d", dest])
-		if err != 0:
-			cmd = "unzip %s -d %s" % [source, dest]
-			prints("Extracting by `%s` failed with error code: %d" % [cmd, err])
-			return Result.error("Extracting `%s` failed! Please collect the error log and report this." % source)
-	prints("%s successfully extracted" % source)
-	return Result.success(dest)
-
-
 static func scan_dir(path :String) -> PackedStringArray:
 	var dir := DirAccess.open(path)
 	if dir == null or not dir.dir_exists(path):
@@ -220,42 +173,45 @@ static func resource_as_string(resource_path :String) -> String:
 static func normalize_text(text :String) -> String:
 	return text.replace("\r", "");
 
+
 static func max_length(left, right) -> int:
 	var ls = str(left).length()
 	var rs = str(right).length()
 	return rs if ls < rs else ls
 
-static func expand_value(value, length :int) -> String:
-	var format := "%+"+ str(length)+"s"
-	return format % str(value)
 
-static func free_instance(instance :Variant) -> void:
+static func to_regex(pattern :String) -> RegEx:
+	var regex := RegEx.new()
+	var err := regex.compile(pattern)
+	if err != OK:
+		push_error("Can't compiling regx '%s'.\n ERROR: %s" % [pattern, GdUnitTools.error_as_string(err)])
+	return regex
+
+
+static func prints_verbose(message :String) -> void:
+	if OS.is_stdout_verbose():
+		print_debug(message)
+
+
+static func free_instance(instance :Variant) -> bool:
 	# is instance already freed?
-	if not is_instance_valid(instance) or str(instance).contains("GDScriptNativeClass"):
-		return
-	# needs to manually exculde JavaClass
-	# see https://github.com/godotengine/godot/issues/44932
-	if not(instance is JavaClass):
-		if not instance is RefCounted:
-			release_double(instance)
-			release_connections(instance)
-			if instance is Timer:
-				instance.stop()
-				#instance.queue_free()
-				instance.call_deferred("free")
-				return
-			instance.free()
-		else:
-			instance.notification(Object.NOTIFICATION_PREDELETE)
-			release_double(instance)
+	if not is_instance_valid(instance) or ClassDB.class_get_property(instance, "new"):
+		return false
+	
+	release_double(instance)
+	if instance is RefCounted:
+		instance.notification(Object.NOTIFICATION_PREDELETE)
+		return true
+	else:
+		release_connections(instance)
+		if instance is Timer:
+			instance.stop()
+			#instance.queue_free()
+			instance.call_deferred("free")
+			return true
+		instance.free()
+		return !is_instance_valid(instance)
 
-#static func release_connections(instance :Object):
-#	for connection in instance.get_incoming_connections():
-#		var signal_name = connection["signal_name"]
-#		var source = connection["source"]
-#		var method = connection["method_name"]
-#		if source == instance:
-#			source.disconnect(signal_name,Callable(instance,method))
 
 static func release_connections(instance :Object):
 	if is_instance_valid(instance):
@@ -269,46 +225,12 @@ static func release_connections(instance :Object):
 			if instance.has_signal(signal_.get_name()) and instance.is_connected(signal_.get_name(), callable_):
 				instance.disconnect(signal_.get_name(), callable_)
 
+
 # if instance an mock or spy we need manually freeing the self reference
-static func release_double(instance :Object):
+static func release_double(instance :Object) -> void:
 	if instance.has_method("__release_double"):
 		instance.call("__release_double")
 
-# register an instance to be freed when a test suite is finished
-static func register_auto_free(obj, pool :int) -> Variant:
-	# only register real object values
-	if not obj is Object:
-		return obj
-	if obj is MainLoop:
-		push_error("avoid to add mainloop to auto_free queue  %s" % obj)
-		return
-	# only register pure objects
-	if obj is GdUnitSceneRunner:
-		_store[pool].push_front(obj)
-	else:
-		_store[pool].append(obj)
-	return obj
-
-# runs over all registered objects and frees it
-static func run_auto_free(pool :int):
-	var obj_pool :Array = _store[pool]
-	#prints("run_auto_free checked Pool:", pool, obj_pool.size())
-	while not obj_pool.is_empty():
-		var obj :Object = obj_pool.pop_front()
-		free_instance(obj)
-
-# tests if given object is registered for auto freeing
-static func is_auto_free_registered(obj, pool :int = -1) -> bool:
-	# only register real object values
-	if not obj is Object:
-		return false
-	# check all pools?
-	if pool == -1:
-		return is_auto_free_registered(obj, MEMORY_POOL_TESTSUITE)\
-			or is_auto_free_registered(obj, MEMORY_POOL_TESTCASE)\
-			or is_auto_free_registered(obj, MEMORY_POOL_TESTRUN)
-	# check checked a specific pool
-	return _store[pool].has(obj)
 
 # test is Godot mono running
 static func is_mono_supported() -> bool:
@@ -343,3 +265,24 @@ static func append_array(array, append :Array) -> void:
 	else:
 		for element in append:
 			array.append(element)
+
+
+static func extract_zip(zip_package :String, dest_path :String) -> Result:
+	var zip: ZIPReader = ZIPReader.new()
+	var err := zip.open(zip_package)
+	if err != OK:
+		return Result.error("Extracting `%s` failed! Please collect the error log and report this. Error Code: %s" % [zip_package, err])
+	var zip_entries: PackedStringArray = zip.get_files()
+	# Get base path and step over archive folder
+	var archive_path = zip_entries[0]
+	zip_entries.remove_at(0)
+	
+	for zip_entry in zip_entries:
+		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
+		if zip_entry.ends_with("/"):
+			DirAccess.make_dir_recursive_absolute(new_file_path)
+			continue
+		var file: FileAccess = FileAccess.open(new_file_path, FileAccess.WRITE)
+		file.store_buffer(zip.read_file(zip_entry))
+	zip.close()
+	return Result.success(dest_path)

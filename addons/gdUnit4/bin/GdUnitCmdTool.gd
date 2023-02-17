@@ -52,8 +52,7 @@ class CLIRunner extends Node:
 		if GdUnitTools.is_mono_supported():
 			_cs_executor = GdUnit3MonoAPI.create_executor(self)
 		
-		var gdUnitSignals = Engine.get_singleton("GdUnitSignals")
-		var err = gdUnitSignals.gdunit_event.connect(Callable(self, "_on_gdunit_event"))
+		var err = GdUnitSignals.instance().gdunit_event.connect(Callable(self, "_on_gdunit_event"))
 		if err != OK:
 			prints("gdUnitSignals failed")
 			push_error("Error checked startup, can't connect executor for 'send_event'")
@@ -65,11 +64,9 @@ class CLIRunner extends Node:
 	func _process(_delta):
 		match _state:
 			INIT:
-				prints("INIT")
 				gdUnitInit()
 				_state = RUN
 			RUN:
-				prints("RUN")
 				# all test suites executed
 				if _test_suites_to_process.is_empty():
 					_state = STOP
@@ -83,9 +80,9 @@ class CLIRunner extends Node:
 					await executor.ExecutionCompleted
 					set_process(true)
 			STOP:
-				prints("STOP")
 				_state = EXIT
 				_on_gdunit_event(GdUnitStop.new())
+				GdUnitSingleton.dispose()
 				get_tree().quit(report_exit_code(_report))
 
 	func set_report_dir(path :String) -> void:
@@ -106,7 +103,7 @@ class CLIRunner extends Node:
 		_executor.fail_fast(false)
 
 	func run_self_test() -> void:
-		_console.prints_color("Run GdUnit3 self tests.", Color.DEEP_SKY_BLUE)
+		_console.prints_color("Run GdUnit4 self tests.", Color.DEEP_SKY_BLUE)
 		disable_fail_fast()
 		_runner_config.self_test()
 
@@ -114,7 +111,7 @@ class CLIRunner extends Node:
 		_console.prints_color("Godot %s" % Engine.get_version_info().get("string"), Color.DARK_SALMON)
 		var config = ConfigFile.new()
 		config.load('addons/gdUnit4/plugin.cfg')
-		_console.prints_color("GdUnit3 %s" % config.get_value('plugin', 'version'), Color.DARK_SALMON)
+		_console.prints_color("GdUnit4 %s" % config.get_value('plugin', 'version'), Color.DARK_SALMON)
 		get_tree().quit(RETURN_SUCCESS)
 
 	func show_options(show_advanced :bool = false) -> void:
@@ -150,7 +147,7 @@ class CLIRunner extends Node:
 
 	func gdUnitInit() -> void:
 		_console.prints_color("----------------------------------------------------------------------------------------------", Color.DARK_SALMON)
-		_console.prints_color(" GdUnit3 Comandline Tool", Color.DARK_SALMON)
+		_console.prints_color(" GdUnit4 Comandline Tool", Color.DARK_SALMON)
 		_console.new_line()
 		
 		var cmd_parser := CmdArgumentParser.new(_cmd_options, "GdUnitCmdTool.gd")
@@ -203,13 +200,12 @@ class CLIRunner extends Node:
 		var test_suites_to_process = Array()
 		var to_execute := config.to_execute()
 		# scan for the requested test suites
-		var _scanner := _TestSuiteScanner.new()
+		var _scanner := GdUnitTestSuiteScanner.new()
 		for resource_path in to_execute.keys():
 			var selected_tests :Array = to_execute.get(resource_path)
 			var scaned_suites = _scanner.scan(resource_path)
 			skip_test_case(scaned_suites, selected_tests)
 			test_suites_to_process += scaned_suites
-		_scanner.free()
 		skip_suites(test_suites_to_process, config)
 		return test_suites_to_process
 
@@ -343,10 +339,5 @@ class CLIRunner extends Node:
 		_console.prints_color(" %s" % LocalTime.elapsed(event.elapsed_time()), Color.CORNFLOWER_BLUE)
 
 func _initialize():
-	Engine.register_singleton("GdUnitSignals", load("res://addons/gdUnit4/src/core/GdUnitSignals.gd").new())
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	root.add_child(CLIRunner.new())
-
-func _finalize():
-	Engine.unregister_singleton("GdUnitSignals")
-
-

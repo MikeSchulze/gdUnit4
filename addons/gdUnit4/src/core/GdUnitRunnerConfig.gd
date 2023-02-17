@@ -20,39 +20,50 @@ var _config := {
 		SERVER_PORT : -1
 	}
 
+
 func clear() -> GdUnitRunnerConfig:
 	_config[INCLUDED] = Dictionary()
 	_config[SKIPPED] = Dictionary()
 	return self
 
+
 func set_server_port(port :int) -> GdUnitRunnerConfig:
 	_config[SERVER_PORT] = port
 	return self
 
+
 func server_port() -> int:
 	return _config.get(SERVER_PORT, -1)
+
 
 func self_test() -> GdUnitRunnerConfig:
 	add_test_suite("res://addons/gdUnit4/test/")
 	add_test_suite("res://addons/gdUnit4/mono/test/")
 	return self
 
+
 func add_test_suite(resource_path :String) -> GdUnitRunnerConfig:
 	var to_execute := to_execute()
-	to_execute[resource_path] = to_execute.get(resource_path, Array())
+	to_execute[resource_path] = to_execute.get(resource_path, PackedStringArray())
 	return self
+
 
 func add_test_suites(resource_paths :PackedStringArray) -> GdUnitRunnerConfig:
 	for resource_path in resource_paths:
 		add_test_suite(resource_path)
 	return self
 
-func add_test_case(resource_path :String, test_name :StringName) -> GdUnitRunnerConfig:
+
+func add_test_case(resource_path :String, test_name :StringName, test_param_index :int = -1) -> GdUnitRunnerConfig:
 	var to_execute := to_execute()
-	var test_cases :Array[StringName] = to_execute.get(resource_path, [])
-	test_cases.append(test_name)
+	var test_cases :PackedStringArray = to_execute.get(resource_path, PackedStringArray())
+	if test_param_index != -1:
+		test_cases.append("%s:%d" % [test_name, test_param_index])
+	else:
+		test_cases.append(test_name)
 	to_execute[resource_path] = test_cases
 	return self
+
 
 # supports full path or suite name with optional test case name
 # <test_suite_name|path>[:<test_case_name>]
@@ -64,27 +75,32 @@ func skip_test_suite(value :StringName) -> GdUnitRunnerConfig:
 		parts.pop_front()
 	parts[0] = GdUnitTools.make_qualified_path(parts[0])
 	match parts.size():
-		1: skipped()[parts[0]] = Array()
+		1: skipped()[parts[0]] = PackedStringArray()
 		2: skip_test_case(parts[0], parts[1])
 	return self
+
 
 func skip_test_suites(resource_paths :PackedStringArray) -> GdUnitRunnerConfig:
 	for resource_path in resource_paths:
 		skip_test_suite(resource_path)
 	return self
 
+
 func skip_test_case(resource_path :String, test_name :StringName) -> GdUnitRunnerConfig:
 	var to_ignore := skipped()
-	var test_cases :Array[StringName] = to_ignore.get(resource_path, [])
+	var test_cases :PackedStringArray = to_ignore.get(resource_path, PackedStringArray())
 	test_cases.append(test_name)
 	to_ignore[resource_path] = test_cases
 	return self
 
+
 func to_execute() -> Dictionary:
-	return _config.get(INCLUDED, {"res://" : []})
+	return _config.get(INCLUDED, {"res://" : PackedStringArray()})
+
 
 func skipped() -> Dictionary:
-	return _config.get(SKIPPED, Array())
+	return _config.get(SKIPPED, PackedStringArray())
+
 
 func save(path :String = CONFIG_FILE) -> Result:
 	var file := FileAccess.open(path, FileAccess.WRITE)
@@ -94,6 +110,7 @@ func save(path :String = CONFIG_FILE) -> Result:
 	_config[VERSION] = CONFIG_VERSION
 	file.store_string(JSON.new().stringify(_config))
 	return Result.success(path)
+
 
 func load(path :String = CONFIG_FILE) -> Result:
 	if not FileAccess.file_exists(path):
@@ -115,10 +132,20 @@ func load(path :String = CONFIG_FILE) -> Result:
 		fix_value_types()
 	return Result.success(path)
 
+
 func fix_value_types():
 	# fix float value to int json stores all numbers as float
 	var server_port :int = _config.get(SERVER_PORT, -1)
 	_config[SERVER_PORT] = server_port
+	convert_Array_to_PackedStringArray(_config[INCLUDED])
+	convert_Array_to_PackedStringArray(_config[SKIPPED])
+
+
+func convert_Array_to_PackedStringArray(data :Dictionary):
+	for key in data.keys():
+		var values :Array = data[key]
+		data[key] = PackedStringArray(values)
+
 
 func _to_string() -> String:
 	return str(_config)

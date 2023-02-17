@@ -1,6 +1,6 @@
 @tool
 class_name ClassWithVariables
-extends Resource
+extends Node
 
 enum{
 	A,
@@ -24,7 +24,7 @@ const T2 = 2
 
 signal source_changed( text )
 
-@onready var name_label = "../HBoxContainer/Effect Name"
+@onready var name_label = load("res://addons/gdUnit4/test/mocker/resources/ClassWithNameA.gd")
 
 @export var path: NodePath = ".."
 

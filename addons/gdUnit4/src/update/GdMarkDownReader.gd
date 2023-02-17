@@ -1,21 +1,30 @@
-@tool
-class_name GdMarkDownReader
-extends Node
+extends RefCounted
 
-var md_replace_patterns = [
+const exclude_font_size := "\b(?!(?:(font_size))\b)"
+
+var md_replace_patterns := [
 	# horizontal rules
 	[regex("(?m)^ {0,3}---$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
 	[regex("(?m)^[ ]{0,3}___$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
 	[regex("(?m)^[ ]{0,3}\\*\\*\\*$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
 	
 	# headers
-	[regex("(?m)^##### (.*)"), "[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h5.tres]$1[/font]"],
-	[regex("(?m)^#### (.*)"), "[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h4.tres]$1[/font]"],
-	[regex("(?m)^### (.*)"), "[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h3.tres]$1[/font]"],
-	[regex("(?m)^## (.*)"), "[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h2.tres]$1[/font]"],
-	[regex("(?m)^# (.*)"), "[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h1.tres]$1[/font]"],
-	[regex("(?m)^(.+)=={2,}$"), "[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h2.tres]$1[/font]"],
-	[regex("(?m)^(.+)--{2,}$"), "[font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-h1.tres]$1[/font]"],
+	[regex("(?m)^##### (.*)"), "[font_size=8]$1[/font_size]"],
+	[regex("(?m)^#### (.*)"), "[font_size=12]$1[/font_size]"],
+	[regex("(?m)^### (.*)"), "[font_size=16]$1[/font_size]"],
+	[regex("(?m)^## (.*)"), "[font_size=20]$1[/font_size]"],
+	[regex("(?m)^# (.*)"), "[font_size=24]$1[/font_size]"],
+	[regex("(?m)^(.+)=={2,}$"), "[font_size=20]$1[/font_size]"],
+	[regex("(?m)^(.+)--{2,}$"), "[font_size=24]$1[/font_size]"],
+	# html headers
+	[regex("<h1>((.*?\\R?)+)<\\/h1>"), "[font_size=24]$1[/font_size]"],
+	[regex("<h1[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h1>"), "[font_size=24][center]$1[/center][/font_size]"],
+	[regex("<h2>((.*?\\R?)+)<\\/h2>"), "[font_size=20]$1[/font_size]"],
+	[regex("<h2[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h2>"), "[font_size=20][center]$1[/center][/font_size]"],
+	[regex("<h3>((.*?\\R?)+)<\\/h3>"), "[font_size=16]$1[/font_size]"],
+	[regex("<h3[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h3>"), "[font_size=16][center]$1[/center][/font_size]"],
+	[regex("<h4>((.*?\\R?)+)<\\/h4>"), "[font_size=12]$1[/font_size]"],
+	[regex("<h4[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h4>"), "[font_size=12][center]$1[/center][/font_size]"],
 	
 	# asterics
 	#[regex("(\\*)"), "xxx$1xxx"],
@@ -42,7 +51,7 @@ var md_replace_patterns = [
 	[regex("[\\*]{2}(.*?)[\\*]{2}"), "[b]$1[/b]"],
 	# italic font
 	[regex("<i>(.*?)<\\/i>"), "[i]$1[/i]"],
-	[regex("_(.*?)_"), "[i]$1[/i]"],
+	[regex(exclude_font_size+"_(.*?)_"), "[i]$1[/i]"],
 	[regex("\\*(.*?)\\*"), "[i]$1[/i]"],
 
 	# strikethrough font
@@ -67,20 +76,7 @@ var md_replace_patterns = [
 var _img_replace_regex := RegEx.new()
 var _image_urls := Array()
 var _on_table_tag := false
-var _client :GdUnitUpdateClient
-
-func _init():
-	_img_replace_regex.compile("\\[img\\]((.*?))\\[/img\\]")
-
-func set_http_client(client :GdUnitUpdateClient) -> void:
-	_client = client
-
-func _notification(what):
-	if what == NOTIFICATION_PREDELETE:
-		# finally remove_at the downloaded images
-		for image in _image_urls:
-			DirAccess.remove_absolute(image)
-			DirAccess.remove_absolute(image + ".import")
+var _client
 
 static func regex(pattern :String) -> RegEx:
 	var regex := RegEx.new()
@@ -90,21 +86,41 @@ static func regex(pattern :String) -> RegEx:
 		return null
 	return regex
 
+
+
+func _init():
+	_img_replace_regex.compile("\\[img\\]((.*?))\\[/img\\]")
+
+
+func set_http_client(client) -> void:
+	_client = client
+
+
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		# finally remove_at the downloaded images
+		for image in _image_urls:
+			DirAccess.remove_absolute(image)
+			DirAccess.remove_absolute(image + ".import")
+
+
 func list_replace(indent :int) -> String:
-	var replace_pattern = "[img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img]" if indent %2 else "[img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img]"
+	var replace_pattern := "[img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img]" if indent %2 else "[img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img]"
 	replace_pattern += " $1"
 	
 	for index in indent:
 		replace_pattern = replace_pattern.insert(0, "   ")
 	return replace_pattern
 
+
 func code_block(replace :String, border :bool = false) -> String:
-	var code_block := "[code][color=aqua][font=res://addons/gdUnit4/src/update/assets/fonts/RobotoMono-code.tres]%s[/font][/color][/code]" % replace
+	var code_block := "[code][color=aqua][font_size=16]%s[/font_size][/color][/code]" % replace
 	if border:
 		return "[img=1400x14]res://addons/gdUnit4/src/update/assets/border_top.png[/img]"\
 			+ "[indent]" + code_block + "[/indent]"\
 			+ "[img=1400x14]res://addons/gdUnit4/src/update/assets/border_bottom.png[/img]\n"
 	return code_block
+
 
 func to_bbcode(input :String) -> String:
 	var bbcode := Array()
@@ -119,18 +135,20 @@ func to_bbcode(input :String) -> String:
 			input = regex.sub(input, bb_replace, true)
 	return input
 
+
 func process_tables(input :String) -> String:
 	var bbcode := Array()
 	var lines := Array(input.split("\n"))
 	while not lines.is_empty():
 		if is_table(lines[0]):
-			GdUnitTools.append_array(bbcode, parse_table(lines))
+			bbcode.append_array(parse_table(lines))
 			continue
 		bbcode.append(lines.pop_front())
 	return "\n".join(PackedStringArray(bbcode))
 
+
 class Table:
-	var _columns : int
+	var _columns :int
 	var _rows := Array()
 	
 	class Row:
@@ -192,6 +210,7 @@ class Table:
 		bb_code.append("[/table]\n")
 		return bb_code
 
+
 func parse_table(lines :Array) -> PackedStringArray:
 	var line :String = lines[0]
 	var table := Table.new(line.count("|") + 1)
@@ -201,16 +220,20 @@ func parse_table(lines :Array) -> PackedStringArray:
 			break
 	return table.to_bbcode()
 
+
 func is_table(line :String) -> bool:
 	return line.find("|") != -1
+
 
 func open_table(line :String) -> String:
 	_on_table_tag = true
 	return "[table=%d]" % (line.count("|") + 1)
 
+
 func close_table() -> String:
 	_on_table_tag = false
 	return "[/table]"
+
 
 func extract_cells(line :String, bold := false) -> String:
 	var cells := ""
@@ -219,6 +242,7 @@ func extract_cells(line :String, bold := false) -> String:
 			cell = "[b]%s[/b]" % cell
 		cells += "[cell]%s[/cell]" % cell
 	return cells
+
 
 func process_image_references(regex :RegEx, input :String) -> String:
 	var to_replace := PackedStringArray()
@@ -250,6 +274,7 @@ func process_image_references(regex :RegEx, input :String) -> String:
 			extracted_references = extracted_references.replace(reference, image_url)
 	return extracted_references
 
+
 func process_image(regex :RegEx, input :String) -> String:
 	var to_replace := PackedStringArray()
 	var tool_tips :=  PackedStringArray()
@@ -267,6 +292,7 @@ func process_image(regex :RegEx, input :String) -> String:
 		var re := regex.sub(replace, "[img]$2[/img]")
 		input = input.replace(replace, re)
 	return await _process_external_image_resources(input)
+
 
 func _process_external_image_resources(input :String) -> String:
 	# scan all img for external resources and download it

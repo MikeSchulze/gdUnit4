@@ -15,13 +15,12 @@ var _expect_result :int
 var _report_consumer : GdUnitReportConsumer
 var _caller : WeakRef
 var _interrupted := false
-var _signal_collector := SignalCollector.instance()
+var _signal_collector :SignalCollector = SignalCollector.instance("SignalCollector", func(): return SignalCollector.new())
 
 # This is an singelton implementation and reused for each GdUnitSignalAssert
 # It connects to all signals of given emitter and collects received signals and arguments
 # The collected signals are cleand finally when the emitter is freed.
-class SignalCollector extends GdUnitStaticDictionary:
-	const CLASS_NAME = "SignalCollector"
+class SignalCollector extends GdUnitSingleton:
 	const SIGNAL_BLACK_LIST = []#["tree_exiting", "tree_exited", "child_exiting_tree"]
 	
 	# {
@@ -31,11 +30,6 @@ class SignalCollector extends GdUnitStaticDictionary:
 	#	}
 	# }
 	var _collected_signals :Dictionary = {}
-	
-	static func instance() -> SignalCollector:
-		if has_key(CLASS_NAME):
-			return get_value(CLASS_NAME)
-		return add_value(CLASS_NAME, SignalCollector.new())
 	
 	# connect to all possible signals defined by the emitter
 	# prepares the signal collection to store received signals and arguments
@@ -47,7 +41,7 @@ class SignalCollector extends GdUnitStaticDictionary:
 			_collected_signals[emitter] = Dictionary()
 			# connect to 'tree_exiting' of the emitter to finally release all acquired resources/connections.
 			if !emitter.is_connected("tree_exiting", Callable(self, "unregister_emitter")):
-				emitter.connect("tree_exiting", Callable(self, "unregister_emitter").bind(self, emitter))
+				emitter.connect("tree_exiting", Callable(self, "unregister_emitter").bind(emitter))
 			# connect to all signals of the emitter we want to collect
 			for signal_def in emitter.get_signal_list():
 				var signal_name = signal_def["name"]
@@ -57,11 +51,13 @@ class SignalCollector extends GdUnitStaticDictionary:
 				if SIGNAL_BLACK_LIST.find(signal_name) != -1:
 					continue
 				if !emitter.is_connected(signal_name,Callable(self, "_on_signal_emmited")):
-					emitter.connect(signal_name, Callable(self, "_on_signal_emmited").bind(emitter, signal_name))
+					var err := emitter.connect(signal_name, Callable(self, "_on_signal_emmited").bind(emitter, signal_name))
+					if err != OK:
+						push_error("Can't connect to signal %s on %s. Error: %s" % [signal_name, emitter, error_string(err)])
 	
 	# unregister all acquired resources/connections, otherwise it ends up in orphans
 	# is called when the emitter is removed from the parent
-	func unregister_emitter(receiver :SignalCollector, emitter :Object):
+	func unregister_emitter(emitter :Object):
 		GdUnitTools.release_connections(emitter)
 		if is_instance_valid(emitter):
 			_collected_signals.erase(emitter)
@@ -88,6 +84,8 @@ class SignalCollector extends GdUnitStaticDictionary:
 	
 	func match(emitter :Object, signal_name :String, args :Array) -> bool:
 		#prints("match", signal_name,  _collected_signals[emitter][signal_name]);
+		if _collected_signals.is_empty():
+			return false
 		for received_args in _collected_signals[emitter][signal_name]:
 			#prints("testing", signal_name, received_args, "vs", args)
 			if GdObjects.equals(received_args, args):
@@ -142,7 +140,7 @@ func has_failure_message(expected: String) -> GdUnitSignalAssert:
 	if current_error != expected:
 		_expect_fail = false
 		var diffs := GdDiffTool.string_diff(current_error, expected)
-		var current := GdAssertMessages.colorDiff(diffs[1])
+		var current := GdAssertMessages._colored_array_div(diffs[1])
 		_custom_failure_message = ""
 		report_error(GdAssertMessages.error_not_same_error(current, expected))
 	return self
@@ -152,7 +150,7 @@ func starts_with_failure_message(expected: String) -> GdUnitSignalAssert:
 	if not current_error.begins_with(expected):
 		_expect_fail = false
 		var diffs := GdDiffTool.string_diff(current_error, expected)
-		var current := GdAssertMessages.colorDiff(diffs[1])
+		var current := GdAssertMessages._colored_array_div(diffs[1])
 		_custom_failure_message = ""
 		report_error(GdAssertMessages.error_not_same_error(current, expected))
 	return self

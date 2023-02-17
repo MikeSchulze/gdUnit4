@@ -38,7 +38,7 @@ func test_parameterized_to_less_args_at_index_1(a: int, b :int, expected :int, t
 
 func test_parameterized_invalid_struct(a: int, b :int, expected :int, test_parameters := [
 	[1, 2, 6],
-	"foo",
+	["foo"],
 	[6, 7, 21] ]):
 	pass
 

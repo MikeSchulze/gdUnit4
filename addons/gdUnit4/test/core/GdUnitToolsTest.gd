@@ -192,73 +192,58 @@ func test_delete_directory_content_only() -> void:
 	assert_bool(DirAccess.dir_exists_absolute(tmp_dir)).is_true()
 	assert_array(GdUnitTools.scan_dir(tmp_dir)).is_empty()
 
+
 func test_extract_package() -> void:
 	clean_temp_dir()
 	var tmp_path := GdUnitTools.create_temp_dir("test_update")
-	var source := ProjectSettings.globalize_path("res://addons/gdUnit4/test/update/resources/update.zip")
-	var dest := ProjectSettings.globalize_path(tmp_path)
+	var source := "res://addons/gdUnit4/test/update/resources/update.zip"
 	
 	# the temp should be inital empty
-	assert_array(GdUnitTools.scan_dir(dest)).is_empty()
+	assert_array(GdUnitTools.scan_dir(tmp_path)).is_empty()
 	# now extract to temp
-	var result := GdUnitTools.extract_package(source, dest)
+	var result := GdUnitTools.extract_zip(source, tmp_path)
 	assert_result(result).is_success()
-	assert_array(GdUnitTools.scan_dir(dest)).contains_exactly(["MikeSchulze-gdUnit4-910d61e"])
-	assert_array(GdUnitTools.scan_dir(dest + "/MikeSchulze-gdUnit4-910d61e")).contains_exactly_in_any_order([
+	assert_array(GdUnitTools.scan_dir(tmp_path)).contains_exactly_in_any_order([
 		"addons",
 		"runtest.cmd",
 		"runtest.sh",
 	])
 
+
 func test_extract_package_invalid_package() -> void:
 	clean_temp_dir()
 	var tmp_path := GdUnitTools.create_temp_dir("test_update")
-	var source := ProjectSettings.globalize_path("res://addons/gdUnit4/test/update/resources/update_invalid.zip")
-	var dest := ProjectSettings.globalize_path(tmp_path)
+	var source := "res://addons/gdUnit4/test/update/resources/update_invalid.zip"
 	
 	# the temp should be inital empty
-	assert_array(GdUnitTools.scan_dir(dest)).is_empty()
+	assert_array(GdUnitTools.scan_dir(tmp_path)).is_empty()
 	# now extract to temp
-	var result := GdUnitTools.extract_package(source, dest)
+	var result := GdUnitTools.extract_zip(source, tmp_path)
 	assert_result(result).is_error()\
-		.contains_message("Extracting `%s` failed! Please collect the error log and report this." % source)
-	assert_array(GdUnitTools.scan_dir(dest)).is_empty()
+		.contains_message("Extracting `%s` failed! Please collect the error log and report this. Error Code: 1" % source)
+	assert_array(GdUnitTools.scan_dir(tmp_path)).is_empty()
 
 
-func test_find_tar_path_on_windows() -> void:
-	# only execute this test checked windows systems
-	if OS.get_name() != "Windows":
-		return
-	# simulate a OS window where many tar versions are installed
-	var update = mock(GdUnitTools, CALL_REAL_FUNC)
-	var possible_windows_paths = PackedStringArray([
-		"C:\\my_tar\\tar.exe",
-		"D:\\tools\\tar.exe",
-		"C:\\Windows\\System32\\tar.exe",
-	])
-	do_return(possible_windows_paths).checked(update)._list_installed_tar_paths()
-	# checked windows we want to find the windows provided tar version
-	assert_str(update._find_tar_path("Windows")).is_equal("C:\\Windows\\System32\\tar.exe")
+class InnerTestNodeClass extends Node:
+	pass
+
+class InnerTestRefCountedClass extends RefCounted:
+	pass
+
+
+func test_free_instance() -> void:
+	# on valid instances
+	assert_that(GdUnitTools.free_instance(RefCounted.new())).is_true()
+	assert_that(GdUnitTools.free_instance(Node.new())).is_true()
+	assert_that(GdUnitTools.free_instance(JavaClass.new())).is_true()
+	assert_that(GdUnitTools.free_instance(InnerTestNodeClass.new())).is_true()
+	assert_that(GdUnitTools.free_instance(InnerTestRefCountedClass.new())).is_true()
 	
-	# Windows is installed checked D:
-	possible_windows_paths = PackedStringArray([
-		"C:\\my_tar\\tar.exe",
-		"D:\\tools\\tar.exe",
-		"D:\\Windows\\System32\\tar.exe",
-	])
-	do_return(possible_windows_paths).checked(update)._list_installed_tar_paths()
-	assert_str(update._find_tar_path("Windows")).is_equal("D:\\Windows\\System32\\tar.exe")
-
-func test_find_tar_path_on_non_windows() -> void:
-	assert_str(GdUnitTools._find_tar_path("MacOS")).is_equal("tar")
-	assert_str(GdUnitTools._find_tar_path("X11")).is_equal("tar")
-
-func test_is_auto_free_registered() -> void:
-	var node = auto_free(Node.new())
-	GdUnitTools.register_auto_free(node, GdUnitTools.MEMORY_POOL_TESTRUN)
-	# test checked selected pool
-	assert_bool(GdUnitTools.is_auto_free_registered(node, GdUnitTools.MEMORY_POOL_TESTSUITE)).is_false()
-	assert_bool(GdUnitTools.is_auto_free_registered(node, GdUnitTools.MEMORY_POOL_TESTCASE)).is_false()
-	assert_bool(GdUnitTools.is_auto_free_registered(node, GdUnitTools.MEMORY_POOL_TESTRUN)).is_true()
-	# test checked all pools
-	assert_bool(GdUnitTools.is_auto_free_registered(node)).is_true()
+	# on invalid instances
+	assert_that(GdUnitTools.free_instance(null)).is_false()
+	assert_that(GdUnitTools.free_instance(RefCounted)).is_false()
+	
+	# on already freed instances
+	var node := Node.new()
+	node.free()
+	assert_that(GdUnitTools.free_instance(node)).is_false()

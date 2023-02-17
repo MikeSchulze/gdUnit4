@@ -10,11 +10,21 @@ const COLOR_CYCLE := [Color.ROYAL_BLUE, Color.CHARTREUSE, Color.YELLOW_GREEN]
 
 @export var _initial_color := Color.RED
 
+
 func _ready():
-	connect("panel_color_change", Callable(self, "_on_panel_color_changed"))
+	connect("panel_color_change", _on_panel_color_changed)
+	# we call this function to verify the _ready is only once called
+	# this is need to verify `add_child` is calling the original implementation only once
+	only_one_time_call()
+
+
+func only_one_time_call() -> void:
+	pass
+
 
 #func _notification(what):
 #	prints("TestScene", GdObjects.notification_as_string(what))
+
 
 func _on_test_pressed(button_id :int):
 	var box :ColorRect
@@ -28,8 +38,10 @@ func _on_test_pressed(button_id :int):
 		await get_tree().create_timer(1).timeout
 	emit_signal("panel_color_change", box, Color.GRAY)
 
+
 func _on_panel_color_changed(box :ColorRect, color :Color):
 	box.color = color
+
 
 func create_timer(timeout :float) -> Timer:
 	var timer :Timer = Timer.new()
@@ -39,9 +51,11 @@ func create_timer(timeout :float) -> Timer:
 	timer.start(timeout)
 	return timer
 
+
 func _on_timeout(timer :Timer):
 	remove_child(timer)
 	timer.queue_free()
+
 
 func color_cycle() -> String:
 	prints("color_cycle")
@@ -56,26 +70,32 @@ func color_cycle() -> String:
 	prints("cycle end")
 	return "black"
 
+
 func start_color_cycle():
 	color_cycle()
+
 
 # used for manuall spy checked created spy
 func _create_spell() -> Spell:
 	return Spell.new()
+
 
 func create_spell() -> Spell:
 	var spell := _create_spell()
 	spell.connect("spell_explode", Callable(self, "_destroy_spell"))
 	return spell
 
+
 func _destroy_spell(spell :Spell) -> void:
 	#prints("_destroy_spell", spell)
 	remove_child(spell)
 	spell.queue_free()
 
+
 func _input(event):
 	if event.is_action_released("ui_accept"):
 		add_child(create_spell())
+
 
 func add(a: int, b :int) -> int:
 	return a + b

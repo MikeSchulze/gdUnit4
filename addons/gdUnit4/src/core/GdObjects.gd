@@ -63,10 +63,6 @@ const TYPE_AS_STRING_MAPPINGS := {
 	TYPE_VARIANT: "Variant"
 }
 
-# holds flipped copy of TYPE_AS_STRING_MAPPINGS initalisized by func 'string_as_typeof'
-const STRING_AS_TYPE_MAPPINGS := {
-}
-
 const NOTIFICATION_AS_STRING_MAPPINGS := {
 	TYPE_OBJECT: {
 		Object.NOTIFICATION_POSTINITIALIZE : "POSTINITIALIZE",
@@ -131,6 +127,7 @@ const NOTIFICATION_AS_STRING_MAPPINGS := {
 	}
 }
 
+
 static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false ) -> bool:
 	var a := obj_a.duplicate()
 	var b := obj_b.duplicate()
@@ -138,8 +135,49 @@ static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = fal
 	b.sort()
 	return equals(a, b, case_sensitive)
 
+
+# prototype of better object to dictionary
+static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
+	if obj == null:
+		return {}
+	var clazz_name := obj.get_class()
+	var dict := Dictionary()
+	var clazz_path := ""
+	
+	if is_instance_valid(obj) and obj.get_script() != null:
+		var d := inst_to_dict(obj)
+		clazz_path = d["@path"]
+		if d["@subpath"] != NodePath(""):
+			clazz_name = d["@subpath"]
+			dict["@inner_class"] = true
+		else:
+			clazz_name = clazz_path.get_file().replace(".gd", "")
+	dict["@path"] = clazz_path
+	
+	for property in obj.get_property_list():
+		var property_name = property["name"]
+		var property_type = property["type"]
+		var property_value = obj.get(property_name)
+		if property_value is GDScript or property_value is Callable:
+			continue
+		if (property["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE|PROPERTY_USAGE_DEFAULT
+			and not property["usage"] & PROPERTY_USAGE_CATEGORY
+			and not property["usage"] == 0):
+			if property_type == TYPE_OBJECT:
+				# prevent recursion
+				if hashed_objects.has(obj):
+					dict[property_name] = str(property_value)
+					continue
+				hashed_objects[obj] = true
+				dict[property_name] = obj2dict(property_value, hashed_objects)
+			else:
+				dict[property_name] = property_value
+	return {"%s" % clazz_name : dict}
+
+
 static func equals(obj_a, obj_b, case_sensitive :bool = false, deep_check :bool = true ) -> bool:
 	return _equals(obj_a, obj_b, case_sensitive, deep_check, [], 0)
+
 
 static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_stack, stack_depth :int ) -> bool:
 	var type_a := typeof(obj_a)
@@ -150,8 +188,8 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 		return false
 	
 	stack_depth += 1
-	# is different types (don't match TYPE_STRING_NAME vs TYPE_STRING)
-	if type_a != TYPE_STRING_NAME and type_b != TYPE_STRING_NAME and type_a != type_b:
+	# fast fail is different types
+	if not _is_type_equivalent(type_a, type_b):
 		return false
 	# is same instance
 	if obj_a == obj_b:
@@ -169,11 +207,18 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 			deep_stack.append(obj_a)
 			deep_stack.append(obj_b)
 			if deep_check:
-				var a = var_to_str(obj_a) if obj_a.get_script() == null else inst_to_dict(obj_a)
-				var b = var_to_str(obj_b) if obj_b.get_script() == null else inst_to_dict(obj_b)
+				# prototype of better deep check
+				#return equals(obj2dict(obj_a), obj2dict(obj_b))
+				# fail fast
+				if not is_instance_valid(obj_a) or not is_instance_valid(obj_b):
+					return false
+				if obj_a.get_class() != obj_b.get_class():
+					return false
+				var a = obj2dict(obj_a)
+				var b = obj2dict(obj_b)
 				return _equals(a, b, case_sensitive, deep_check, deep_stack, stack_depth)
-				#return str(a) == str(b)
 			return obj_a == obj_b
+		
 		TYPE_ARRAY:
 			var arr_a:= obj_a as Array
 			var arr_b:= obj_b as Array
@@ -183,6 +228,7 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 				if not _equals(arr_a[index], arr_b[index], case_sensitive, deep_check, deep_stack, stack_depth):
 					return false
 			return true
+		
 		TYPE_DICTIONARY:
 			var dic_a:= obj_a as Dictionary
 			var dic_b:= obj_b as Dictionary
@@ -194,6 +240,7 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 				if not _equals(value_a, value_b, case_sensitive, deep_check, deep_stack, stack_depth):
 					return false
 			return true
+		
 		TYPE_STRING:
 			if case_sensitive:
 				return obj_a.to_lower() == obj_b.to_lower()
@@ -273,13 +320,9 @@ static func typeof_as_string(value) -> String:
 static func all_types() -> PackedInt32Array:
 	return PackedInt32Array(TYPE_AS_STRING_MAPPINGS.keys())
 
-static func string_as_typeof(type :String) -> int:
-	# init STRING_AS_TYPE_MAPPINGS if empty by build a flipped copy
-	if STRING_AS_TYPE_MAPPINGS.is_empty():
-		for key in TYPE_AS_STRING_MAPPINGS.keys():
-			var value = TYPE_AS_STRING_MAPPINGS[key]
-			STRING_AS_TYPE_MAPPINGS[value] = key
-	return STRING_AS_TYPE_MAPPINGS.get(type, TYPE_VARIANT)
+static func string_as_typeof(type_name :String) -> int:
+	var type = TYPE_AS_STRING_MAPPINGS.find_key(type_name)
+	return type if type != null else TYPE_VARIANT
 
 static func is_primitive_type(value) -> bool:
 	match typeof(value):
@@ -316,15 +359,28 @@ static func is_type_array(type :int) -> bool:
 			return true
 	return false
 
-static func is_engine_type(value) -> bool:
+
+static func _is_type_equivalent(type_a, type_b) -> bool:
+	# don't test for TYPE_STRING_NAME equivalenz
+	if type_a == TYPE_STRING_NAME or type_b == TYPE_STRING_NAME:
+		return true
+	if GdUnitSettings.is_strict_number_type_compare():
+		return type_a == type_b
+	return (
+		(type_a == TYPE_FLOAT and type_b == TYPE_INT)
+		or (type_a == TYPE_INT and type_b == TYPE_FLOAT)
+		or type_a == type_b)
+
+
+static func is_engine_type(value :Object) -> bool:
 	if value is GDScript or value is ScriptExtension:
 		return false
-	return str(value).contains("GDScriptNativeClass")
+	return value.is_class("GDScriptNativeClass")
+
 
 static func is_type(value :Variant) -> bool:
-	var isObject := typeof(value) == TYPE_OBJECT
 	# is an build-in type
-	if not isObject:
+	if typeof(value) != TYPE_OBJECT:
 		return false
 	# is a engine class type
 	if is_engine_type(value):
@@ -347,7 +403,7 @@ static func is_same(left, right) -> bool:
 	return equals(left, right)
 
 static func is_object(value) -> bool:
-	return value != null and typeof(value) == TYPE_OBJECT
+	return typeof(value) == TYPE_OBJECT
 
 static func is_script(value) -> bool:
 	return is_object(value) and value is Script
@@ -386,14 +442,9 @@ static func is_gd_testsuite(script :Script) -> bool:
 				stack.push_back(base)
 	return false
 
-static func is_instance(value) -> bool:
+static func is_instance(value :Variant) -> bool:
 	if not is_instance_valid(value) or is_native_class(value):
 		return false
-	#var is_script = is_script(value)
-	#if is_script and value.script != null:
-	#	prints("script",value)
-	#	return true
-	# is engine script instances?
 	if is_script(value) and value.get_instance_base_type() == "":
 		return true
 	if is_scene(value):
@@ -530,7 +581,7 @@ static func extract_inner_clazz_names(clazz_name :String, script_path :PackedStr
 static func extract_class_functions(clazz_name :String, script_path :PackedStringArray) -> Array:
 	if ClassDB.class_get_method_list(clazz_name):
 		return ClassDB.class_get_method_list(clazz_name)
-
+	
 	if not FileAccess.file_exists(script_path[0]):
 		return Array()
 	var script :GDScript = load(script_path[0])
@@ -552,13 +603,11 @@ static func extract_class_functions(clazz_name :String, script_path :PackedStrin
 # if the class is public in the global space than return true otherwise false
 # public class means the script class is defined by 'class_name <name>'
 static func is_public_script_class(clazz_name) -> bool:
-	if ProjectSettings.has_setting("_global_script_classes"):
-		var script_classes:Array = ProjectSettings.get_setting("_global_script_classes") as Array
-		for element in script_classes:
-			var class_info :Dictionary = element
-			if class_info.has("class"):
-				if element["class"] == clazz_name:
-					return true
+	var script_classes:Array[Dictionary] = ProjectSettings.get_global_class_list()
+	for class_info in script_classes:
+		if class_info.has("class"):
+			if class_info["class"] == clazz_name:
+				return true
 	return false
 
 static func build_function_default_arguments(script :GDScript, func_name :String) -> Array:

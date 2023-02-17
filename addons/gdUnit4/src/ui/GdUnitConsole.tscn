@@ -5,10 +5,13 @@
 [node name="Control" type="Control"]
 use_parent_material = true
 clip_contents = true
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1")
@@ -20,42 +23,38 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer"]
-use_parent_material = true
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 23.0
-grow_horizontal = 2
-size_flags_horizontal = 3
+auto_translate = false
+localize_numeral_system = false
+mouse_filter = 2
 
 [node name="header_title" type="RichTextLabel" parent="VBoxContainer/Header"]
-use_parent_material = true
 layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 23.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+auto_translate = false
+localize_numeral_system = false
+mouse_filter = 2
 bbcode_enabled = true
-text = "[center][color=#9887c4]gd[/color][color=#7a57d6]Unit[/color][color=#9887c4]3[/color] [color=#9887c4]2.3.0[/color][/center]"
-fit_content_height = true
 scroll_active = false
+autowrap_mode = 0
+shortcut_keys_enabled = false
 
 [node name="Console" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
-offset_top = 27.0
-offset_right = 1152.0
-offset_bottom = 648.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextEdit" type="RichTextLabel" parent="VBoxContainer/Console"]
 use_parent_material = true
 layout_mode = 2
-offset_right = 1152.0
-offset_bottom = 621.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true

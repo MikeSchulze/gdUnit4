@@ -3,7 +3,10 @@ class_name GodotClassNameFuzzer
 extends Fuzzer
 
 var class_names := []
-const EXCLUDED_CLASSES = ["JavaClass", "_ClassDB", "MainLoop", "JNISingleton", "SceneTree", "WebRTC", "WebRTCPeerConnection", "Tween"]
+const EXCLUDED_CLASSES = ["JavaClass", "_ClassDB", "MainLoop", "JNISingleton", "SceneTree", "WebRTC", "WebRTCPeerConnection", "Tween", "TextServerAdvanced",
+# GD-110 - missing enum `Vector3.Axis`
+"Sprite3D", "AnimatedSprite3D",
+]
 
 func _init(no_singleton :bool = false,only_instancialbe :bool = false):
 	#class_names = ClassDB.get_class_list()

@@ -33,7 +33,7 @@ func before_test():
 	add_child(signal_emitter)
 
 func after():
-	assert_bool(GdUnitSignalAssertImpl.SignalCollector.instance()._collected_signals.is_empty())\
+	assert_bool(GdUnitSignalAssertImpl.SignalCollector.instance("SignalCollector", func(): pass)._collected_signals.is_empty())\
 		.override_failure_message("Expecting the signal collector must be empty")\
 		.is_true()
 

@@ -2,25 +2,40 @@
 # warning-ignore:unused_argument
 class_name GdUnitSpyImpl
 
-var __instance_delegator
+const __INSTANCE_ID = "${instance_id}"
 
-# self reference holder, use this kind of hack to store static function calls 
-# it is important to manually free by '__release_double' otherwise it ends up in orphan instance
-const __store := [{}]
+var __instance_delegator
+var __excluded_methods :PackedStringArray = []
+
 
 static func __instance():
-	var key = "instance"
-	return __store[0][key]
+	return GdUnitStaticDictionary.get_value(__INSTANCE_ID)
+
+
+func __instance_id() -> String:
+	return __INSTANCE_ID
+
 
 func __set_singleton(delegator):
 	# store self need to mock static functions
-	var key = "instance"
-	__store[0][key] = self
+	GdUnitStaticDictionary.add_value(__INSTANCE_ID, self)
 	__instance_delegator = delegator
 	#assert(__self[0] != null, "Invalid mock")
 
+
 func __release_double():
 	# we need to release the self reference manually to prevent orphan nodes
-	__store.clear()
+	GdUnitStaticDictionary.erase(__INSTANCE_ID)
 	__instance_delegator = null
 
+
+func __do_call_real_func(func_name :String) -> bool:
+	return not __excluded_methods.has(func_name)
+
+
+func __exclude_method_call(exluded_methods :PackedStringArray) -> void:
+	__excluded_methods.append_array(exluded_methods)
+
+
+func __call_func(func_name :String, arguments :Array):
+	return __instance_delegator.callv(func_name, arguments)

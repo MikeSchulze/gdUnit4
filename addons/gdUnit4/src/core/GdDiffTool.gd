@@ -2,8 +2,10 @@
 class_name GdDiffTool
 extends RefCounted
 
-const DIV_ADD :int = 14
-const DIV_SUB :int = 15
+
+const DIV_ADD :int = 214
+const DIV_SUB :int = 215
+
 
 static func _diff(lb: PackedByteArray, rb: PackedByteArray, lookup: Array, ldiff: Array, rdiff: Array):
 	var loffset = lb.size()
@@ -35,15 +37,17 @@ static func _diff(lb: PackedByteArray, rb: PackedByteArray, lookup: Array, ldiff
 			continue
 		break
 
+
 # lookup[i][j] stores the length of LCS of substring X[0..i-1], Y[0..j-1]
 static func _createLookUp(lb: PackedByteArray, rb: PackedByteArray) -> Array:
-	var lookup:Array = Array()
+	var lookup := Array()
 	lookup.resize(lb.size() + 1)
 	for i in lookup.size():
 		var x = []
 		x.resize(rb.size() + 1)
 		lookup[i] = x
 	return lookup
+
 
 static func _buildLookup(lb: PackedByteArray, rb: PackedByteArray) -> Array:
 	var lookup := _createLookUp(lb, rb)
@@ -65,21 +69,16 @@ static func _buildLookup(lb: PackedByteArray, rb: PackedByteArray) -> Array:
 				lookup[i][j] = max(lookup[i - 1][j], lookup[i][j - 1]);
 	return lookup
 
+
 static func string_diff(left, right) -> Array[PackedByteArray]:
 	var lb := PackedByteArray() if left == null else str(left).to_ascii_buffer()
 	var rb := PackedByteArray() if right == null else str(right).to_ascii_buffer()
 	var ldiff := Array()
 	var rdiff := Array()
-	var lookup =  _buildLookup(lb, rb);
+	var lookup := _buildLookup(lb, rb);
 	_diff(lb, rb, lookup, ldiff, rdiff)
 	return [PackedByteArray(ldiff), PackedByteArray(rdiff)]
 
-static func as_invalid(value) -> String:
-	var x := PackedByteArray()
-	for c in str(value).to_ascii_buffer():
-		x.append(DIV_SUB)
-		x.append(c)
-	return x.get_string_from_utf8()
 
 # prototype
 static func longestCommonSubsequence(text1 :String, text2 :String) -> PackedStringArray:
@@ -114,6 +113,7 @@ static func longestCommonSubsequence(text1 :String, text2 :String) -> PackedStri
 		else:
 			j += 1
 	return lcsResultList
+
 
 static func markTextDifferences(text1 :String, text2 :String, lcsList :PackedStringArray, insertColor :Color, deleteColor:Color) -> String:
 	var stringBuffer = ""

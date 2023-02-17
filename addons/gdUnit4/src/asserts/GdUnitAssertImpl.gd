@@ -18,6 +18,9 @@ static func _get_line_number() -> int:
 		return -1
 	for stack_info in stack_trace:
 		var function :String = stack_info.get("function")
+		# we catch helper asserts to skip over to return the correct line number
+		if function.begins_with("assert_"):
+			continue
 		var source :String = stack_info.get("source")
 		if source.is_empty() \
 			or source.begins_with("user://") \
@@ -74,24 +77,26 @@ static func _normalize_bbcode(message :String) -> String:
 	rtl.append_text(message if message else "")
 	var normalized = rtl.get_parsed_text()
 	rtl.free()
-	return normalized
+	return normalized.replace("\r", "")
 
 func has_failure_message(expected :String):
+	var expected_error := GdUnitTools.normalize_text(expected)
 	var current_error := _normalize_bbcode(_current_error_message)
-	if current_error != expected:
+	if current_error != expected_error:
 		_expect_fail = false
-		var diffs := GdDiffTool.string_diff(current_error, expected)
-		var current := GdAssertMessages.colorDiff(diffs[1])
-		report_error(GdAssertMessages.error_not_same_error(current, expected))
+		var diffs := GdDiffTool.string_diff(current_error, expected_error)
+		var current := GdAssertMessages._colored_array_div(diffs[1])
+		report_error(GdAssertMessages.error_not_same_error(current, expected_error))
 	return self
 
 func starts_with_failure_message(expected :String):
+	var expected_error := GdUnitTools.normalize_text(expected)
 	var current_error := _normalize_bbcode(_current_error_message)
-	if current_error.find(expected) != 0:
+	if current_error.find(expected_error) != 0:
 		_expect_fail = false
-		var diffs := GdDiffTool.string_diff(current_error, expected)
-		var current := GdAssertMessages.colorDiff(diffs[1])
-		report_error(GdAssertMessages.error_not_same_error(current, expected))
+		var diffs := GdDiffTool.string_diff(current_error, expected_error)
+		var current := GdAssertMessages._colored_array_div(diffs[1])
+		report_error(GdAssertMessages.error_not_same_error(current, expected_error))
 	return self
 
 func override_failure_message(message :String):

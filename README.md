@@ -1,17 +1,19 @@
 
-<h1 align="center">GdUnit4 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MikeSchulze/gdunit4" width="12%"> </h1>
+<h1 align="center">GdUnit4 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MikeSchulze/gdunit4" width="18%"> </h1>
 <h2 align="center">A Godot Embedded Unit Testing Framework</h2>
 
 
 ---
-<h1 align="center">GdUnit4 Alpha </h1>
-<h3 align="center">This is the first alpha version of GdUnit4 which is based on Godot v4.0.beta3.official [01ae26d31] </h3>
+<h1 align="center">GdUnit4 Beta </h1>
+<p align="center">This is a beta version of GdUnit4 which is based on Godot <strong>v4.0.rc1.official [8843d9ad3]</strong> (master branch)</p>
 
 <h1 align="center">ATTENTION!</h1>
 
+### You need the deactivate the old version before deinstall and install this version!
+
+
 <h2 align="center">Please read the following disclaimer carefully before proceeding!
 
-This is an alpha version based on the Godot 4.0 v3 alpha.
 This version is NOT bug free and may cause the Godot editor to crash.
 If you find a bug or problem please report it via [report bug](https://github.com/MikeSchulze/gdUnit4/issues/new/choose).
 
@@ -38,8 +40,8 @@ The C# support is currently not enabled and is untested.
 
 ## What is GdUnit4
 gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot editor. GdUnit4 is very useful for test-driven development and will help you get your code bug-free.
- 
- 
+
+
 ## Features
 * Fully embedded in the Godot editor
 * Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnitInspector
@@ -52,8 +54,8 @@ gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot edit
 * Parameterized Tests (Test Cases)
 * Mocking a class to simulate the implementation in which you define the output of the certain function
 * Spy on an instance to verify that a function has been called with certain parameters.
-* Mock or Spy on a Scene 
-* Provides a scene runner to simulate interactions on a scene 
+* Mock or Spy on a Scene
+* Provides a scene runner to simulate interactions on a scene
   * Simulate by Input events like mouse and/or keyboard
   * Simulate scene processing by a certain number of frames
   * Simulate scene processing by waiting for a specific signal
@@ -61,11 +63,11 @@ gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot edit
 * Command Line Tool
 * CI - Continuous Integration support
   * generates HTML report
-  * generates JUnit report 
+  * generates JUnit report
 * Visual Studio Code extension
 ---
 
- 
+
 ## Short Example
  ```
  # this assertion succeeds
@@ -74,7 +76,7 @@ assert_int(13).is_not_negative()
 # this assertion fails because the value '-13' is negative
 assert_int(-13).is_not_negative()
  ```
- 
+
  ---
 
 ## Documentation
@@ -116,7 +118,3 @@ assert_int(-13).is_not_negative()
 ### Thank you for supporting my project!
 ---
 ## Sponsors:
-
-
-
-

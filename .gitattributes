@@ -12,9 +12,11 @@
 /gdUnit4.csproj        export-ignore
 /gdUnit4.sln           export-ignore
 /CONTRIBUTING.md       export-ignore
+/LICENSE               export-ignore
 
 
 /addons/gdUnit4/test   export-ignore
+/gdUnit3-examples      export-ignore
 /gdUnit4-examples      export-ignore
 
 # github page assets

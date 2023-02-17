@@ -1,3 +1,18 @@
+------ HTML Headers ---
+[font_size=24]Header 1 Text[/font_size]
+[font_size=24][center]Header 1Centered Text[/center][/font_size]
+
+[font_size=20]Header 2 Text[/font_size]
+[font_size=20][center]Header 2 Centered Text[/center][/font_size]
+
+[font_size=20][center]Header 2 Centered Text
+Multiline Test
+Is here[/center][/font_size]
+
+---
+
+------ Markdown -------------
+
 # Heading 1
 ## Heading 2
 ### Heading 3
@@ -32,21 +47,21 @@ To start an ordered list, write this:
 *  this will show as number "2"
 *  this will show as number "3."
 9. any number, +, -, or * will keep the list going.
-    * just indent by 4 spaces (or tab) to make a sub-list
-        1. keep indenting for more sub lists
-    * here i'm back to the second level
+	* just indent by 4 spaces (or tab) to make a sub-list
+		1. keep indenting for more sub lists
+	* here i'm back to the second level
 
 
 
 - Asserts:
   - Added new `assert_vector2` to verify Vector2 values (#69 )
   - Added new `assert_vector3` to verify Vector3 values (#69 )
-    - ahss
-      - kaka
-       - kaka
-        - kaka
-         - lll
-          -  kkk
+	- ahss
+	  - kaka
+	   - kaka
+		- kaka
+		 - lll
+		  -  kkk
 
 
 - Fuzzers:

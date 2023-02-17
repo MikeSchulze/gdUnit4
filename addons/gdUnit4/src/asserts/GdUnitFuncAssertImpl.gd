@@ -50,7 +50,7 @@ func has_failure_message(expected: String) -> GdUnitFuncAssert:
 	if current_error != expected:
 		_expect_fail = false
 		var diffs := GdDiffTool.string_diff(current_error, expected)
-		var current := GdAssertMessages.colorDiff(diffs[1])
+		var current := GdAssertMessages._colored_array_div(diffs[1])
 		_custom_failure_message = ""
 		report_error(GdAssertMessages.error_not_same_error(current, expected))
 	return self
@@ -60,7 +60,7 @@ func starts_with_failure_message(expected: String) -> GdUnitFuncAssert:
 	if not current_error.begins_with(expected):
 		_expect_fail = false
 		var diffs := GdDiffTool.string_diff(current_error, expected)
-		var current := GdAssertMessages.colorDiff(diffs[1])
+		var current := GdAssertMessages._colored_array_div(diffs[1])
 		_custom_failure_message = ""
 		report_error(GdAssertMessages.error_not_same_error(current, expected))
 	return self
@@ -128,6 +128,9 @@ func _validate_callback(func_name :String, expected = null) -> GdUnitFuncAssert:
 	timeout.connect("timeout", Callable(self, "_on_timeout"))
 	timeout.start((_timeout/1000.0)*time_scale)
 	
+	var sleep := Timer.new()
+	caller.add_child(sleep)
+	
 	while true:
 		next_current_value()
 		var current = await value_provided
@@ -136,8 +139,11 @@ func _validate_callback(func_name :String, expected = null) -> GdUnitFuncAssert:
 		var is_success = assert_cb.call(current, expected)
 		if _expect_result != EXPECT_FAIL and is_success:
 			break
-		await Engine.get_main_loop().process_frame
+		sleep.start(0.05)
+		await sleep.timeout
 	
+	sleep.stop()
+	sleep.queue_free()
 	timeout.stop()
 	timeout.disconnect("timeout", Callable(self, "_on_timeout"))
 	timeout.free()

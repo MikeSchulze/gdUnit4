@@ -1,4 +1,4 @@
-extends RefCounted
+extends Node
 
 
 func test_no_args():

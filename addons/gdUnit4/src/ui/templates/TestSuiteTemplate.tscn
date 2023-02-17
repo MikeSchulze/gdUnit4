@@ -1,172 +1,127 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://dte0m2endcgtu"]
 
-[ext_resource path="res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.gd" id="1"]
 
 [node name="TestSuiteTemplate" type="MarginContainer"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("1")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-offset_right = 1024.0
-offset_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
-offset_right = 1024.0
-offset_bottom = 600.0
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="sub_category" type="Panel" parent="ScrollContainer/VBoxContainer"]
-offset_right = 1024.0
-offset_bottom = 30.0
-minimum_size = Vector2( 0, 30 )
+[node name="sub_category" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
 size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/sub_category"]
+[node name="Label" type="Label" parent="VBoxContainer/sub_category"]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 4.0
 offset_right = 4.0
 offset_bottom = 1.0
-custom_colors/font_color = Color( 0.196078, 0.631373, 0.639216, 1 )
+grow_horizontal = 2
+grow_vertical = 2
 text = "Test Suite Template
 "
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="Editor" type="TextEdit" parent="ScrollContainer/VBoxContainer"]
-offset_top = 34.0
-offset_right = 1024.0
-offset_bottom = 434.0
-minimum_size = Vector2( 0, 400 )
+[node name="EdiorLayout" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Editor" type="CodeEdit" parent="VBoxContainer/EdiorLayout"]
+layout_mode = 2
 size_flags_horizontal = 3
-custom_colors/font_color_selected = Color( 0.41, 0.61, 0.91, 0.35 )
-custom_colors/font_color = Color( 0.8, 0.8075, 0.8275, 1 )
-custom_colors/background_color = Color( 0.125, 0.14375, 0.19375, 1 )
-custom_colors/font_color_readonly = Color( 0.8, 0.8075, 0.8275, 1 )
-syntax_highlighter = true
+size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer/Editor"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/EdiorLayout/Editor"]
+layout_mode = 1
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -28.0
-offset_bottom = 2.0
-minimum_size = Vector2( 0, 20 )
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/Editor/MarginContainer"]
-offset_right = 1024.0
-offset_bottom = 30.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/EdiorLayout/Editor/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
 alignment = 2
 
-[node name="Tags" type="Button" parent="ScrollContainer/VBoxContainer/Editor/MarginContainer/HBoxContainer"]
-offset_left = 711.0
-offset_right = 820.0
-offset_bottom = 30.0
+[node name="Tags" type="Button" parent="VBoxContainer/EdiorLayout/Editor/MarginContainer/HBoxContainer"]
+layout_mode = 2
 tooltip_text = "Shows supported tags."
 text = "Supported Tags"
 
-[node name="SelectType" type="OptionButton" parent="ScrollContainer/VBoxContainer/Editor/MarginContainer/HBoxContainer"]
-offset_left = 824.0
-offset_right = 1024.0
-offset_bottom = 30.0
-minimum_size = Vector2( 200, 0 )
+[node name="SelectType" type="OptionButton" parent="VBoxContainer/EdiorLayout/Editor/MarginContainer/HBoxContainer"]
+layout_mode = 2
 tooltip_text = "Select the script type specific template."
-text = "GD - GDScript"
-items = [ "GD - GDScript", null, false, 1000, null, "C# - CSharpScript", null, false, 2000, null ]
+item_count = 2
 selected = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+popup/item_0/text = "GD - GDScript"
+popup/item_0/id = 1000
+popup/item_1/text = "C# - CSharpScript"
+popup/item_1/id = 2000
 
-[node name="Panel" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
-offset_top = 438.0
-offset_right = 1024.0
-offset_bottom = 468.0
+[node name="Panel" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/Panel"]
-offset_right = 1024.0
-offset_bottom = 30.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Panel"]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 2
 
-[node name="Restore" type="Button" parent="ScrollContainer/VBoxContainer/Panel/HBoxContainer"]
-offset_left = 820.0
-offset_right = 920.0
-offset_bottom = 30.0
-minimum_size = Vector2( 100, 30 )
+[node name="Restore" type="Button" parent="VBoxContainer/Panel/HBoxContainer"]
+layout_mode = 2
 text = "Restore"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="Save" type="Button" parent="ScrollContainer/VBoxContainer/Panel/HBoxContainer"]
-offset_left = 924.0
-offset_right = 1024.0
-offset_bottom = 30.0
-minimum_size = Vector2( 100, 30 )
+[node name="Save" type="Button" parent="VBoxContainer/Panel/HBoxContainer"]
+layout_mode = 2
 disabled = true
 text = "Save"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="Tags" type="Popup" parent="."]
-offset_right = 1024.0
-offset_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="Tags" type="PopupPanel" parent="."]
+size = Vector2i(300, 100)
+unresizable = false
+content_scale_aspect = 4
 
 [node name="MarginContainer" type="MarginContainer" parent="Tags"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -856.0
+offset_bottom = -552.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="TextEdit" type="TextEdit" parent="Tags/MarginContainer"]
-offset_right = 1008.0
-offset_bottom = 584.0
+[node name="TextEdit" type="CodeEdit" parent="Tags/MarginContainer"]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_colors/font_color_selected = Color( 0.41, 0.61, 0.91, 0.35 )
-custom_colors/font_color = Color( 0.8, 0.8075, 0.8275, 1 )
-custom_colors/background_color = Color( 0.125, 0.14375, 0.19375, 1 )
-custom_colors/font_color_readonly = Color( 0.8, 0.8075, 0.8275, 1 )
-readonly = true
-syntax_highlighter = true
+editable = false
 context_menu_enabled = false
 shortcut_keys_enabled = false
 virtual_keyboard_enabled = false
 
-[connection signal="text_changed" from="ScrollContainer/VBoxContainer/Editor" to="." method="_on_Editor_text_changed"]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/Editor/MarginContainer/HBoxContainer/Tags" to="." method="_on_Tags_pressed"]
-[connection signal="item_selected" from="ScrollContainer/VBoxContainer/Editor/MarginContainer/HBoxContainer/SelectType" to="." method="_on_SelectType_item_selected"]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/Panel/HBoxContainer/Restore" to="." method="_on_Restore_pressed"]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/Panel/HBoxContainer/Save" to="." method="_on_Save_pressed"]
+[connection signal="text_changed" from="VBoxContainer/EdiorLayout/Editor" to="." method="_on_Editor_text_changed"]
+[connection signal="pressed" from="VBoxContainer/EdiorLayout/Editor/MarginContainer/HBoxContainer/Tags" to="." method="_on_Tags_pressed"]
+[connection signal="item_selected" from="VBoxContainer/EdiorLayout/Editor/MarginContainer/HBoxContainer/SelectType" to="." method="_on_SelectType_item_selected"]
+[connection signal="pressed" from="VBoxContainer/Panel/HBoxContainer/Restore" to="." method="_on_Restore_pressed"]
+[connection signal="pressed" from="VBoxContainer/Panel/HBoxContainer/Save" to="." method="_on_Save_pressed"]

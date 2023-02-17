@@ -1,9 +1,16 @@
-class_name _TestSuiteScanner
-extends Node
+class_name GdUnitTestSuiteScanner
+extends RefCounted
 
+const TEST_FUNC_TEMPLATE ="""
+
+func test_${func_name}() -> void:
+	# remove this line and complete your test
+	assert_not_yet_implemented()
+"""
 
 var _script_parser := GdScriptParser.new()
 var _extends_test_suite_classes := Array()
+
 
 func scan_testsuite_classes() -> void:
 	# scan and cache extends GdUnitTestSuite by class name an resource paths
@@ -14,6 +21,7 @@ func scan_testsuite_classes() -> void:
 			var script_meta = element as Dictionary
 			if script_meta["base"] == "GdUnitTestSuite":
 				_extends_test_suite_classes.append(script_meta["class"])
+
 
 func scan(resource_path :String) -> Array:
 	scan_testsuite_classes()
@@ -27,6 +35,7 @@ func scan(resource_path :String) -> Array:
 			prints("Given directory or file does not exists:", resource_path)
 			return []
 	return _scan_test_suites(base_dir, [])
+
 
 func _scan_test_suites(dir :DirAccess, collected_suites :Array) -> Array:
 	prints("Scanning for test suites in:", dir.get_current_dir())
@@ -45,11 +54,13 @@ func _scan_test_suites(dir :DirAccess, collected_suites :Array) -> Array:
 		file_name = dir.get_next()
 	return collected_suites
 
+
 static func _file(dir :DirAccess, file_name :String) -> String:
 	var current_dir := dir.get_current_dir()
 	if current_dir.ends_with("/"):
 		return current_dir + file_name
 	return current_dir + "/" + file_name
+
 
 func _parse_is_test_suite(resource_path :String) -> Node:
 	if not _is_script_format_supported(resource_path):
@@ -63,11 +74,13 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 		return _parse_test_suite(script)
 	return null
 
+
 static func _is_script_format_supported(resource_path :String) -> bool:
 	var ext := resource_path.get_extension()
 	if ext == "gd":
 		return true
 	return GdUnit3MonoAPI.is_csharp_file(resource_path)
+
 
 func _parse_test_suite(script :GDScript) -> GdUnitTestSuite:
 	var test_suite = script.new()
@@ -87,6 +100,7 @@ func _parse_test_suite(script :GDScript) -> GdUnitTestSuite:
 			base_script = base_script.get_base_script()
 	return test_suite
 
+
 func _extract_test_case_names(script :GDScript) -> PackedStringArray:
 	var names := PackedStringArray()
 	for method in script.get_script_method_list():
@@ -97,8 +111,10 @@ func _extract_test_case_names(script :GDScript) -> PackedStringArray:
 			names.append(funcName)
 	return names
 
+
 static func parse_test_suite_name(script :Script) -> String:
 	return script.resource_path.get_file().replace(".gd", "")
+
 
 func _parse_and_add_test_cases(test_suite, script :GDScript, test_case_names :PackedStringArray):
 	var test_cases_to_find = Array(test_case_names)
@@ -138,6 +154,7 @@ func _parse_and_add_test_cases(test_suite, script :GDScript, test_case_names :Pa
 					test.skip(true, error)
 				test.set_test_parameters(test_paramaters)
 
+
 # converts given file name by configured naming convention
 static func _to_naming_convention(file_name :String) -> String:
 	var nc :int = GdUnitSettings.get_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, 0)
@@ -152,6 +169,7 @@ static func _to_naming_convention(file_name :String) -> String:
 			return GdObjects.to_pascal_case(file_name + "Test")
 	push_error("Unexpected case")
 	return "-<Unexpected>-"
+
 
 static func resolve_test_suite_path(source_script_path :String, test_root_folder :String = "test") -> String:
 	var file_extension := source_script_path.get_extension()
@@ -183,6 +201,7 @@ static func resolve_test_suite_path(source_script_path :String, test_root_folder
 				test_suite_path += "/" + paths[index]
 	return test_suite_path.replace(file_name, suite_name)
 
+
 static func create_test_suite(test_suite_path :String, source_path :String) -> Result:
 	# create directory if not exists
 	if not DirAccess.dir_exists_absolute(test_suite_path.get_base_dir()):
@@ -196,6 +215,7 @@ static func create_test_suite(test_suite_path :String, source_path :String) -> R
 	if error != OK:
 		return Result.error("Can't create test suite at: %s. Error code %s" % [test_suite_path, error])
 	return Result.success(test_suite_path)
+
 
 static func get_test_case_line_number(resource_path :String, func_name :String) -> int:
 	var file := FileAccess.open(resource_path, FileAccess.READ)
@@ -213,25 +233,29 @@ static func get_test_case_line_number(resource_path :String, func_name :String) 
 				return line_number
 	return -1
 
+
 static func add_test_case(resource_path :String, func_name :String)  -> Result:
-	var file := FileAccess.open(resource_path, FileAccess.READ)
-	if file == null:
-		return Result.error("Can't access test suite : %s. Error code %s" % [resource_path, FileAccess.get_open_error()])
-	var line_number := 0
-	while not file.eof_reached():
-		file.get_line()
-		line_number += 1
 	var script := load(resource_path) as GDScript
-	script.source_code +=\
-"""
-func test_${func_name}() -> void:
-	# remove_at this line and complete your test
-	assert_not_yet_implemented()
-""".replace("${func_name}", func_name)
+	# count all exiting lines and add two as space to add new test case
+	var line_number := count_lines(script) + 2
+	var func_body := TEST_FUNC_TEMPLATE.replace("${func_name}", func_name)
+	if Engine.is_editor_hint():
+		var ep :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
+		var settings := ep.get_editor_interface().get_editor_settings()
+		var ident_type :int = settings.get_setting("text_editor/behavior/indent/type")
+		var ident_size :int = settings.get_setting("text_editor/behavior/indent/size")
+		if ident_type == 1:
+			func_body = func_body.replace("	", "".lpad(ident_size, " "))
+	script.source_code += func_body
 	var error := ResourceSaver.save(script, resource_path)
 	if error != OK:
 		return Result.error("Can't add test case at: %s to '%s'. Error code %s" % [func_name, resource_path, error])
 	return Result.success({ "path" : resource_path, "line" : line_number})
+
+
+static func count_lines(script : GDScript) -> int:
+	return script.source_code.split("\n").size()
+
 
 static func test_suite_exists(test_suite_path :String) -> bool:
 	return FileAccess.file_exists(test_suite_path)
