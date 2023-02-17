@@ -19,16 +19,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     continue-on-error: false
-    container:
-      image: nvidia/vulkan:1.3-470
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         godot-version: ['4.0']
         godot-status-version: ['rc2']
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             name: Godot 🐧 Linux Build
             godot-bin-name: 'linux.x86_64'
             godot-executable_path: '~/godot-linux/godot'
@@ -37,23 +35,6 @@ jobs:
             install-linux-dependencies: true
 
     steps:
-      - name: "Install Git"
-        shell: bash
-        run: |
-          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
-          apt-get -y update
-          apt-get -y install software-properties-common
-          apt-get -y install xorg openbox x11-xserver-utils
-          apt-get -y install build-essential pkg-config libx11-dev libxcursor-dev \
-            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev \
-            libdbus-1-dev libudev-dev libxi-dev libxrandr-dev yasm xvfb wget unzip
-          add-apt-repository universe
-          apt-get -y update
-          apt-get -y install git
-          apt-get -y install git-lfs
-
-
-
       - name: Checkout GdUnit Repository
         uses: actions/checkout@v3
         with:
