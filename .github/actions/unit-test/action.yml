@@ -19,10 +19,7 @@ runs:
       shell: bash
       run: |
         chmod +x ./runtest.sh
-        ./runtest.sh --add ${{ inputs.test-includes }} --continue
-
-      #  export DISPLAY=:99
-      #  sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+        ./runtest.sh --add ${{ inputs.test-includes }} --continue --headless
 
 
     - name: "Unit Test Windows cmd"

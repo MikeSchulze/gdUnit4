@@ -26,7 +26,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         godot-version: ['4.0']
-        godot-status-version: ['beta4']
+        godot-status-version: ['rc2']
         include:
           - os: ubuntu-latest
             name: Godot 🐧 Linux Build
@@ -46,13 +46,12 @@ jobs:
           apt-get -y install xorg openbox x11-xserver-utils
           apt-get -y install build-essential pkg-config libx11-dev libxcursor-dev \
             libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev \
-            libdbus-1-dev libudev-dev libxi-dev libxrandr-dev yasm xvfb wget unzip \
-            llvm libspeechd-dev speech-dispatcher fontconfig libfontconfig-dev
+            libdbus-1-dev libudev-dev libxi-dev libxrandr-dev yasm xvfb wget unzip
           add-apt-repository universe
           apt-get -y update
           apt-get -y install git
           apt-get -y install git-lfs
-          apt-get -y install unzip
+
 
 
       - name: Checkout GdUnit Repository
@@ -90,7 +89,7 @@ jobs:
         run: |
           ls -lsR ${{ matrix.godot-cache-path }}
           ${{ matrix.godot-executable_path }} --version
-          ${{ matrix.godot-executable_path }} -e --path . -s res://addons/gdUnit4/src/core/scan_project.gd --no-window
+          ${{ matrix.godot-executable_path }} -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless
 
       #- name: "Run example mono Test"
       #  timeout-minutes: 1
@@ -105,7 +104,7 @@ jobs:
         uses: ./.github/actions/unit-test
         with:
           godot-bin: ${{ matrix.godot-executable_path }}
-          test-includes: "res://addons/gdUnit4/test/"
+          test-includes: "res://addons/gdUnit4/test/assets"
 
       #- name: "Run Unit Test Examples"
       #  if: ${{ !cancelled() }}
