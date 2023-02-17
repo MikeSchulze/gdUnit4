@@ -651,4 +651,4 @@ func add_expected_test_case_events(suite_name :String, test_name :String, parame
 
 
 func buld_test_case_name(test_name :String, index :int, parameter :Array) -> String:
-	return "%s:%d %s" % [test_name, index, str(parameter)]
+	return "%s:%d %s" % [test_name, index, str(parameter).replace('"', "'")]
