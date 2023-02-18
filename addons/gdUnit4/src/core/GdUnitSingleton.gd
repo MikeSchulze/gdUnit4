@@ -26,18 +26,23 @@ static func instance(name :String, clazz :Callable) -> Variant:
 static func unregister(singleton :String) -> void:
 	var singletons :PackedStringArray = Engine.get_meta(MEATA_KEY, PackedStringArray())
 	if singletons.has(singleton):
+		GdUnitTools.prints_verbose("	Unregister singleton '%s'" % singleton);
 		var index := singletons.find(singleton)
 		singletons.remove_at(index)
 		var instance := Engine.get_meta(singleton)
-		GdUnitTools.prints_verbose("Free singeleton '%s:%s'" % [singleton, instance])
+		GdUnitTools.prints_verbose("	Free singeleton instance '%s:%s'" % [singleton, instance])
 		GdUnitTools.free_instance(instance)
 		Engine.remove_meta(singleton)
+		GdUnitTools.prints_verbose("	Succesfully freed '%s'" % singleton)
 	Engine.set_meta(MEATA_KEY, singletons)
 
 
 static func dispose() -> void:
-	GdUnitTools.prints_verbose("Cleanup singletons ..")
-	var singletons := Engine.get_meta(MEATA_KEY, PackedStringArray())
+	# use a copy because unregister is modify the singletons array
+	var singletons := PackedStringArray(Engine.get_meta(MEATA_KEY, PackedStringArray()))
+	GdUnitTools.prints_verbose("----------------------------------------------------------------")
+	GdUnitTools.prints_verbose("Cleanup singletons %s" % singletons)
 	for singleton in singletons:
 		unregister(singleton)
 	Engine.remove_meta(MEATA_KEY)
+	GdUnitTools.prints_verbose("----------------------------------------------------------------")
