@@ -7,6 +7,8 @@ signal test_execution_completed()
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitExecutor.gd'
 
+const GdUnitExecutor = preload("res://addons/gdUnit4/src/core/GdUnitExecutor.gd")
+
 var _executor :GdUnitExecutor
 var _events :Array = Array()
 var _stack : Array = []
