@@ -7,7 +7,8 @@ if [ -z "$GODOT_BIN" ]; then
 fi
 
 # we not use no-window because of issue https://github.com/godotengine/godot/issues/55379
-$GODOT_BIN --rendering-driver opengl3 --path . -s -d ./addons/gdUnit4/bin/GdUnitCmdTool.gd $*
+export DISPLAY='IP:10.0'
+$GODOT_BIN --display-driver x11 --path . -s -d ./addons/gdUnit4/bin/GdUnitCmdTool.gd $*
 exit_code=$?
 $GODOT_BIN --headless --path . --quiet -s -d ./addons/gdUnit4/bin/GdUnitCopyLog.gd $* > /dev/null
 exit $exit_code
