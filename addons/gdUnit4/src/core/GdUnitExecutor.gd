@@ -164,6 +164,7 @@ func test_after(test_suite :GdUnitTestSuite, test_case :_TestCase, test_case_nam
 	var error_count := _report_collector.count_errors(STAGE_TEST_CASE_BEFORE|STAGE_TEST_CASE_EXECUTE|STAGE_TEST_CASE_AFTER) if is_error else 0
 	var failure_count := _report_collector.count_failures(STAGE_TEST_CASE_BEFORE|STAGE_TEST_CASE_EXECUTE|STAGE_TEST_CASE_AFTER)
 	var is_warning := _report_collector.has_warnings(STAGE_TEST_CASE_BEFORE|STAGE_TEST_CASE_EXECUTE|STAGE_TEST_CASE_AFTER)
+	var is_skipped := _report_collector.is_skipped(STAGE_TEST_CASE_EXECUTE)
 	
 	_total_test_errors += error_count
 	_total_test_failed += failure_count
@@ -175,8 +176,8 @@ func test_after(test_suite :GdUnitTestSuite, test_case :_TestCase, test_case_nam
 		GdUnitEvent.ERROR_COUNT: error_count,
 		GdUnitEvent.FAILED: failure_count > 0,
 		GdUnitEvent.FAILED_COUNT: failure_count,
-		GdUnitEvent.SKIPPED: test_case.is_skipped(),
-		GdUnitEvent.SKIPPED_COUNT: int(test_case.is_skipped()),
+		GdUnitEvent.SKIPPED: test_case.is_skipped() or is_skipped,
+		GdUnitEvent.SKIPPED_COUNT: int(test_case.is_skipped() or is_skipped),
 	}
 	
 	if fire_event:

@@ -356,6 +356,9 @@ class CLIRunner extends Node:
 				_console.prints_color("	Report:", Color.DARK_TURQUOISE, CmdConsole.BOLD|CmdConsole.UNDERLINE)
 				for line in _rtf.get_parsed_text().split("\n"):
 					_console.prints_color("		%s" % line, Color.DARK_TURQUOISE)
+			elif(report.is_skipped()):
+				for line in _rtf.get_parsed_text().split("\n"):
+					_console.prints_color("		%s" % line, Color.GOLDENROD)
 		_console.new_line()
 	
 	

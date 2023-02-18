@@ -392,6 +392,10 @@ func assert_not_yet_implemented():
 func fail(message :String):
 	GdUnitAssertImpl.new(self, null).report_error(message)
 
+func skip_test(message :String) -> void:
+	GdUnitAssertImpl.new(self, null).report_skipped("Test is skipped!: " + message)
+
+
 # --- internal stuff do not override!!!
 func ResourcePath() -> String:
 	return get_script().resource_path

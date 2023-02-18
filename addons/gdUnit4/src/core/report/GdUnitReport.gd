@@ -9,7 +9,8 @@ enum {
 	ORPHAN,
 	TERMINATED,
 	INTERUPTED,
-	ABORT
+	ABORT,
+	SKIPPED
 }
 
 var _type :int
@@ -30,6 +31,9 @@ func line_number() -> int:
 	
 func message() -> String:
 	return _message
+
+func is_skipped() -> bool:
+	return _type == SKIPPED
 
 func is_warning() -> bool:
 	return _type == WARN
