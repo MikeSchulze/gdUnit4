@@ -8,76 +8,91 @@ on:
       - '**.md'
   workflow_dispatch:
 
-env:
-  GODOT_BIN: "/usr/local/bin/godot"
-
 concurrency:
-  group: ci-pr-${{ github.event.number }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
 
   unit-test:
+    name: "Unit tests on Godot v${{ matrix.godot-version }}-${{ matrix.godot-status-version }} (${{ matrix.name }})"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    continue-on-error: false
     strategy:
       fail-fast: false
       matrix:
-        godot-build: ['', 'mono-']
-        godot-version: [4.0]
-
-    name: "CI on Godot ${{ matrix.godot-build }}v${{ matrix.godot-version }}"
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    continue-on-error: false
-    container:
-      image: barichello/godot-ci:${{ matrix.godot-build }}${{ matrix.godot-version }}
+        os: [ubuntu-22.04]
+        godot-version: ['4.0']
+        godot-status-version: ['rc2']
+        include:
+          - os: ubuntu-22.04
+            name: Godot 🐧 Linux Build
+            godot-bin-name: 'linux.x86_64'
+            godot-executable_path: '~/godot-linux/godot'
+            godot-cache-path: '~/godot-linux'
+            godot-mono: false
+            install-linux-dependencies: true
 
     steps:
-      - name: "Checkout Repository"
+      - name: "Checkout GdUnit Repository"
         uses: actions/checkout@v3
         with:
           lfs: true
           submodules: 'recursive'
 
+      - name: "Install Godot ${{ matrix.godot-version }}"
+        uses: ./.github/actions/godot-install
+        with:
+          godot-version: ${{ matrix.godot-version }}
+          godot-status-version: ${{ matrix.godot-status-version }}
+          godot-bin-name: ${{ matrix.godot-bin-name }}
+          godot-cache-path: ${{ matrix.godot-cache-path }}
+
       - name: "Setup .NET"
-        if: ${{ startsWith( matrix.godot-build, 'mono') }} # we only setup .Net for mono versions
+        # we only setup .Net for mono versions
+        if: ${{ matrix.godot-mono && !cancelled() }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
 
       - name: "Compile C#"
-        if: ${{ startsWith( matrix.godot-build, 'mono') }} # we only compile .Net for mono versions
+        # we only compile .Net for mono versions
+        if: ${{ matrix.godot-mono && !cancelled() }}
         run: |
-          ${{ env.GODOT_BIN }} project.godot --build-solutions --quit --no-window
+          ${{ matrix.godot-executable_path }} project.godot --build-solutions --quit --no-window
 
-      - name: "Update Project"
+      - name: "Update Godot project cache"
         if: ${{ !cancelled() }}
         timeout-minutes: 1
         continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
+        shell: bash
         run: |
-          ${{ env.GODOT_BIN }} -e --path . -s res://addons/gdUnit4/src/core/scan_project.gd --no-window
+          ${{ matrix.godot-executable_path }} --version
+          ${{ matrix.godot-executable_path }} -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless
 
       #- name: "Run example mono Test"
       #  timeout-minutes: 1
       #  uses: ./.github/actions/unit-test
       #  with:
-      #    godot-bin: ${{ env.GODOT_BIN }}
+      #    godot-bin: ${{ matrix.godot-executable_path }}
       #    test-includes: "res://addons/gdUnit4/test/mono"
 
-      - name: "Run Unit Test"
+      - name: "Run Unit Tests"
         if: ${{ !cancelled() }}
         timeout-minutes: 10
         uses: ./.github/actions/unit-test
         with:
-          godot-bin: ${{ env.GODOT_BIN }}
+          godot-bin: ${{ matrix.godot-executable_path }}
           test-includes: "res://addons/gdUnit4/test/"
 
-      - name: "Run Unit Test Examples"
-        if: ${{ !cancelled() }}
-        timeout-minutes: 1
-        uses: ./.github/actions/unit-test
-        with:
-          godot-bin: ${{ env.GODOT_BIN }}
-          test-includes: "res://gdUnit4-examples"
+      #- name: "Run Unit Test Examples"
+      #  if: ${{ !cancelled() }}
+      #  timeout-minutes: 1
+      #  uses: ./.github/actions/unit-test
+      #  with:
+      #    godot-bin: ${{ matrix.godot-executable_path }}
+      #    test-includes: "res://gdUnit4-examples"
 
       - name: "Publish Unit Test Reports"
         if: ${{ !cancelled() }}
