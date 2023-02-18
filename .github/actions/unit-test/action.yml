@@ -19,7 +19,7 @@ runs:
       shell: bash
       run: |
         chmod +x ./runtest.sh
-        ./runtest.sh --add ${{ inputs.test-includes }} --continue
+        ./runtest.sh --add ${{ inputs.test-includes }} --continue --verbose
 
 
 # not tested yet
