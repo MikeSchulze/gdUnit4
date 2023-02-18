@@ -84,7 +84,7 @@ jobs:
         uses: ./.github/actions/unit-test
         with:
           godot-bin: ${{ matrix.godot-executable_path }}
-          test-includes: "res://addons/gdUnit4/test/asserts/"
+          test-includes: "res://addons/gdUnit4/test/"
 
       #- name: "Run Unit Test Examples"
       #  if: ${{ !cancelled() }}
