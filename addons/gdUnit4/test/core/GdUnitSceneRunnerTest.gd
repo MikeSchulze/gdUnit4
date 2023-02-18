@@ -189,7 +189,7 @@ func test_await_signal_without_time_factor() -> void:
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300)
-	if assert_failed_at(189, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
+	if assert_failed_at(191, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
 		return
 	fail("test should failed after 300ms checked 'await_signal'")
 
@@ -207,7 +207,7 @@ func test_await_signal_with_time_factor() -> void:
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30)
-	if assert_failed_at(207, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
+	if assert_failed_at(209, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
 		return
 	fail("test should failed after 30ms checked 'await_signal'")
 
