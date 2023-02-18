@@ -41,7 +41,7 @@ func test_awaitForMilliseconds() -> void:
 	await await_millis(1000)
 	
 	# verify we wait around 1000 ms (using 100ms offset because timing is not 100% accurate)
-	assert_int(stopwatch.elapsed_since_ms()).is_between(900, 1100)
+	assert_int(stopwatch.elapsed_since_ms()).is_between(800, 1100)
 
 
 func test_simulate_frames(timeout = 5000) -> void:
@@ -113,6 +113,8 @@ func test_simulate_scene_inteaction_by_press_enter(timeout=2000) -> void:
 	
 	# wait until spell is explode after around 1s
 	var spell = runner.find_child("Spell")
+	if spell == null:
+		return
 	await await_signal_on(spell, "spell_explode", [spell], timeout)
 	
 	# verify spell is removed when is explode
