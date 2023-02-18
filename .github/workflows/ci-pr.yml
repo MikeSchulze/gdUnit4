@@ -41,6 +41,14 @@ jobs:
           lfs: true
           submodules: 'recursive'
 
+      - name: "Install X11"
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade
+          sudo apt-get -y install xorg openbox
+          export DISPLAY='0.0'
+
       - name: "Install Godot ${{ matrix.godot-version }}"
         uses: ./.github/actions/godot-install
         with:
