@@ -14,7 +14,6 @@ runs:
   steps:
     - name: Setup xvfb for screen 0
       run: |
-        sudo apt-get -y install xvfb
         Xvfb :1 -screen 0 1600x1200x24 &
     - name: "Unit Test Linux"
       if: ${{ runner.OS == 'Linux' }}
