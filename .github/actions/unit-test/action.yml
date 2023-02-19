@@ -12,9 +12,6 @@ runs:
   using: composite
 
   steps:
-    - name: Setup xvfb for screen 0
-      run: |
-        Xvfb :1 -screen 0 1600x1200x24 &
     - name: "Unit Test Linux"
       if: ${{ runner.OS == 'Linux' }}
       env:
@@ -22,8 +19,9 @@ runs:
         GODOT_BIN: "/home/runner/godot-linux/godot"
       shell: bash
       run: |
+        Xvfb :1 -screen 0 1600x1200x24 &
         chmod +x ./runtest.sh
-        ./runtest.sh --add ${{ inputs.test-includes }} --rendering-driver opengl3 --continue --verbose
+        ./runtest.sh --add ${{ inputs.test-includes }} --display-driver opengl3 --rendering-driver opengl3 --screen 0 --continue --verbose
     - name: Tear down xvfb
       run: killall Xvfb
 
