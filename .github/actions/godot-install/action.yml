@@ -19,7 +19,7 @@ runs:
   steps:
 
     - name: "Cache Godot Binary Download"
-      uses: actions/cache@v3.2.5
+      uses: actions/cache@v3
       id: godot-cache-binary
       with:
         path: ${{ inputs.godot-cache-path }}

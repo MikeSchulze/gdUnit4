@@ -41,18 +41,6 @@ jobs:
           lfs: true
           submodules: 'recursive'
 
-      - name: "Install OpenGl Drivers"
-        shell: bash
-        run: |
-          sudo apt-get -y update
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          export DISPLAY=:99
-          sudo apt-get install cmake pkg-config
-          sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
-          sudo apt-get install libglew-dev libglfw3-dev libglm-dev
-          sudo apt-get install libao-dev libmpg123-dev
-          glxinfo | grep OpenGL
-
       - name: "Install Godot ${{ matrix.godot-version }}"
         uses: ./.github/actions/godot-install
         with:

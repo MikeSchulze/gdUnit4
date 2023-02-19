@@ -24,6 +24,7 @@ runs:
         ./runtest.sh --add ${{ inputs.test-includes }} --display-driver x11 --rendering-driver opengl3 --screen 0 --continue --verbose
         killall Xvfb
 
+
 # not tested yet
     - name: "Unit Test Windows cmd"
       if: ${{ runner.OS == 'Windows' }}
