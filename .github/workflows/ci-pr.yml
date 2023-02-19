@@ -32,7 +32,7 @@ jobs:
             godot-executable_path: '~/godot-linux/godot'
             godot-cache-path: '~/godot-linux'
             godot-mono: false
-            install-linux-dependencies: true
+            install-opengl: true
 
     steps:
       - name: "Checkout GdUnit Repository"
@@ -60,6 +60,19 @@ jobs:
           godot-status-version: ${{ matrix.godot-status-version }}
           godot-bin-name: ${{ matrix.godot-bin-name }}
           godot-cache-path: ${{ matrix.godot-cache-path }}
+
+      - name: "Install OpenGl Drivers"
+        if: ${{ matrix.install-opengl && !cancelled() }}
+        shell: bash
+        run: |
+          sudo apt-get -y update
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          export DISPLAY=:99
+          sudo apt-get install cmake pkg-config
+          sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+          sudo apt-get install libglew-dev libglfw3-dev libglm-dev
+          sudo apt-get install libao-dev libmpg123-dev
+          glxinfo | grep OpenGL
 
       - name: "Setup .NET"
         # we only setup .Net for mono versions

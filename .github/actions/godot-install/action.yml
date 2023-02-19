@@ -24,8 +24,8 @@ runs:
       with:
         path: ${{ inputs.godot-cache-path }}
         key: ${{ runner.OS }}-Godot_v${{ inputs.godot-version }}-${{ inputs.godot-status-version }}
-#        restore-keys: |
-#          ${{ runner.OS }}-Godot_v${{ inputs.godot-version }}-${{ inputs.godot-status-version }}
+        restore-keys: |
+          ${{ runner.OS }}-Godot_v${{ inputs.godot-version }}-${{ inputs.godot-status-version }}
 
     - name: "Install Linux Godot ${{ inputs.godot-version }}"
       if: steps.godot-cache-binary.outputs.cache-hit != 'true'
@@ -37,13 +37,11 @@ runs:
       run: |
         mkdir -p ${{ inputs.godot-cache-path }}
         chmod 770 ${{ inputs.godot-cache-path }}
-        echo "$HOME"
         DIR="$HOME/.config/godot"
         if [ ! -d "$DIR" ]; then
           mkdir -p "$DIR"
           chmod 770 "$DIR"
         fi
-
         wget https://downloads.tuxfamily.org/godotengine/${{ inputs.godot-version }}/${{ inputs.godot-status-version }}/${{ env.GODOT_PACKAGE }} -P ${{ inputs.godot-cache-path }}
         unzip ${{ inputs.godot-cache-path }}/${{ env.GODOT_PACKAGE }} -d ${{ inputs.godot-cache-path }}
         if ${{runner.OS == 'Linux'}}; then
