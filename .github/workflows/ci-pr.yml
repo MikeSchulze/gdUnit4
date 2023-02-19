@@ -45,10 +45,6 @@ jobs:
         shell: bash
         run: |
           sudo apt-get -y update
-#          sudo apt-get -y upgrade
-#          sudo apt-get -y install ubuntu-desktop
-#          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-#          export DISPLAY=:0.0
           sudo apt-get install cmake pkg-config
           sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
           sudo apt-get install libglew-dev libglfw3-dev libglm-dev
