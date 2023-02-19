@@ -21,7 +21,7 @@ runs:
       run: |
         Xvfb :1 -screen 0 1600x1200x24 &
         chmod +x ./runtest.sh
-        ./runtest.sh --add ${{ inputs.test-includes }} --display-driver opengl3 --rendering-driver opengl3 --screen 0 --continue --verbose
+        ./runtest.sh --add ${{ inputs.test-includes }} --display-driver x11 --rendering-driver opengl3 --screen 0 --continue --verbose
         killall Xvfb
 
 # not tested yet
