@@ -361,10 +361,10 @@ class CLIRunner extends Node:
 	func _print_failure_report(reports :Array) -> void:
 		for report in reports:
 			_rtf.clear()
-			_rtf.add_text(report._to_string())
+			_rtf.parse_bbcode(report._to_string())
 			if(report.is_failure() or report.is_error() or report.is_warning()):
 				_console.prints_color("	Report:", Color.DARK_TURQUOISE, CmdConsole.BOLD|CmdConsole.UNDERLINE)
-				for line in _rtf.text.split("\n"):
+				for line in _rtf.get_parsed_text().split("\n"):
 					_console.prints_color("		%s" % line, Color.DARK_TURQUOISE)
 		_console.new_line()
 	

@@ -17,6 +17,7 @@ const TYPE_CANVAS	= TYPE_MAX + 2003
 # used as default value for varargs
 const TYPE_VARARG_PLACEHOLDER_VALUE = "__null__"
 
+
 const TYPE_AS_STRING_MAPPINGS := {
 	TYPE_NIL: "null",
 	TYPE_BOOL: "bool",
@@ -62,6 +63,7 @@ const TYPE_AS_STRING_MAPPINGS := {
 	TYPE_FUZZER: "Fuzzer",
 	TYPE_VARIANT: "Variant"
 }
+
 
 const NOTIFICATION_AS_STRING_MAPPINGS := {
 	TYPE_OBJECT: {
@@ -248,6 +250,7 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 				return obj_a == obj_b
 	return obj_a == obj_b
 
+
 static func notification_as_string(instance :Variant, notification :int) -> String:
 	var error := "Unknown notification: '%s' at instance:  %s" % [notification, instance]
 	if instance == null:
@@ -258,11 +261,13 @@ static func notification_as_string(instance :Variant, notification :int) -> Stri
 		return NOTIFICATION_AS_STRING_MAPPINGS[TYPE_CONTROL].get(notification, error)
 	return NOTIFICATION_AS_STRING_MAPPINGS[TYPE_OBJECT].get(notification, error)
 
+
 static func string_to_type(value :String) -> int:
 	for type in TYPE_AS_STRING_MAPPINGS.keys():
 		if TYPE_AS_STRING_MAPPINGS.get(type) == value:
 			return type
 	return TYPE_NIL
+
 
 static func to_camel_case(value :String) -> String:
 	var p := to_pascal_case(value)
@@ -270,8 +275,10 @@ static func to_camel_case(value :String) -> String:
 		p[0] = p[0].to_lower()
 	return p
 
+
 static func to_pascal_case(value :String) -> String:
 	return value.capitalize().replace(" ", "")
+
 
 static func to_snake_case(value :String) -> String:
 	var result = PackedStringArray()
@@ -281,6 +288,7 @@ static func to_snake_case(value :String) -> String:
 			result.append('_')
 		result.append(lower_ch)
 	return ''.join(result)
+
 
 # Converts from one type to another as best as possible.
 # The Type parameter uses the values Variant.Type and the extended GdObject.Type
@@ -303,6 +311,7 @@ static func convert(value :Variant, type :int) -> Variant:
 			push_error("To convert a value '%s':'%s' to type '%s' current not supported!" % [value, typeof_as_string(value), type_as_string(type)])
 			return null
 
+
 static func is_snake_case(value :String) -> bool:
 	for ch in value:
 		if ch == '_':
@@ -311,18 +320,23 @@ static func is_snake_case(value :String) -> bool:
 			return false
 	return true
 
+
 static func type_as_string(type :int) -> String:
 	return TYPE_AS_STRING_MAPPINGS.get(type, "Variant")
+
 
 static func typeof_as_string(value) -> String:
 	return TYPE_AS_STRING_MAPPINGS.get(typeof(value), "Unknown type")
 
+
 static func all_types() -> PackedInt32Array:
 	return PackedInt32Array(TYPE_AS_STRING_MAPPINGS.keys())
+
 
 static func string_as_typeof(type_name :String) -> int:
 	var type = TYPE_AS_STRING_MAPPINGS.find_key(type_name)
 	return type if type != null else TYPE_VARIANT
+
 
 static func is_primitive_type(value) -> bool:
 	match typeof(value):
@@ -402,33 +416,43 @@ static func is_same(left, right) -> bool:
 		return left.get_instance_id() == right.get_instance_id()
 	return equals(left, right)
 
+
 static func is_object(value) -> bool:
 	return typeof(value) == TYPE_OBJECT
+
 
 static func is_script(value) -> bool:
 	return is_object(value) and value is Script
 
+
 static func is_test_suite(script :Script) -> bool:
 	return is_gd_testsuite(script) or GdUnit3MonoAPI.is_test_suite(script.resource_path)
+
 
 static func is_native_class(value) -> bool:
 	return is_object(value) and is_engine_type(value)
 
+
 static func is_scene(value) -> bool:
 	return is_object(value) and value is PackedScene
+
 
 static func is_scene_resource_path(value) -> bool:
 	return value is String and value.ends_with(".tscn")
 
+
 static func is_gd_script(script :Script) -> bool:
 	return script is GDScript
+
 
 static func is_cs_script(script :Script) -> bool:
 	# we need to check by stringify name because checked non mono Godot the class CSharpScript is not available
 	return str(script).find("CSharpScript") != -1
 
+
 static func is_cs_test_suite(instance :Node) -> bool:
 	return instance.get("IsCsTestSuite") == true
+
 
 static func is_gd_testsuite(script :Script) -> bool:
 	if is_gd_script(script):
@@ -442,6 +466,7 @@ static func is_gd_testsuite(script :Script) -> bool:
 				stack.push_back(base)
 	return false
 
+
 static func is_instance(value :Variant) -> bool:
 	if not is_instance_valid(value) or is_native_class(value):
 		return false
@@ -451,6 +476,7 @@ static func is_instance(value :Variant) -> bool:
 		return true
 	return not value.has_method('new') and not value.has_method('instance')
 
+
 # only object form type Node and attached filename
 static func is_instance_scene(instance) -> bool:
 	if instance is Node:
@@ -458,13 +484,16 @@ static func is_instance_scene(instance) -> bool:
 		return node.get_scene_file_path() != null and not node.get_scene_file_path().is_empty()
 	return false
 
+
 static func is_instanceof(obj :Object, type: Object) -> bool:
 	return is_type(type) and obj is type
+
 
 static func can_be_instantiate(obj :Variant) -> bool:
 	if not obj or is_engine_type(obj):
 		return false
 	return obj.has_method("new")
+
 
 static func create_instance(clazz) -> Result:
 	match typeof(clazz):
@@ -491,6 +520,7 @@ static func create_instance(clazz) -> Result:
 					return Result.error("Can't create instance for '%s'." % clazz)
 	return Result.error("Can't create instance for class '%s'." % clazz)
 
+
 static func extract_class_path(clazz) -> PackedStringArray:
 	var clazz_path := PackedStringArray()
 	if clazz is String:
@@ -502,7 +532,7 @@ static func extract_class_path(clazz) -> PackedStringArray:
 		if script != null:
 			return extract_class_path(script)
 		return clazz_path
-
+	
 	if clazz is GDScript:
 		# if not found we go the expensive way and extract the path form the script by creating an instance
 		var arg_list := build_function_default_arguments(clazz, "_init")
@@ -518,6 +548,7 @@ static func extract_class_path(clazz) -> PackedStringArray:
 		return clazz_path
 	return clazz_path
 
+
 static func extract_class_name_from_class_path(clazz_path :PackedStringArray) -> String:
 	var base_clazz := clazz_path[0]
 	# return original class name if engine class
@@ -528,17 +559,18 @@ static func extract_class_name_from_class_path(clazz_path :PackedStringArray) ->
 		clazz_name += "." + clazz_path[path_index]
 	return  clazz_name
 
+
 static func extract_class_name(clazz) -> Result:
 	if clazz == null:
 		return Result.error("Can't extract class name form a null value.")
-
+	
 	if is_instance(clazz):
 		# is instance a script instance?
 		var script := clazz.script as GDScript
 		if script != null:
 			return extract_class_name(script)
 		return Result.success(clazz.get_class())
-
+	
 	# extract name form full qualified class path
 	if clazz is String:
 		if ClassDB.class_exists(clazz):
@@ -546,16 +578,16 @@ static func extract_class_name(clazz) -> Result:
 		var source_sript :Script = load(clazz)
 		var clazz_name = load("res://addons/gdUnit4/src/core/parse/GdScriptParser.gd").new().get_class_name(source_sript)
 		return Result.success(to_pascal_case(clazz_name))
-
+	
 	if is_primitive_type(clazz):
 		return Result.error("Can't extract class name for an primitive '%s'" % type_as_string(typeof(clazz)))
-
+	
 	if is_script(clazz):
 		if clazz.resource_path.is_empty():
 			var class_path = extract_class_name_from_class_path(extract_class_path(clazz))
 			return Result.success(class_path);
 		return extract_class_name(clazz.resource_path)
-
+	
 	# need to create an instance for a class typ the extract the class name
 	var instance = clazz.new()
 	if instance == null:
@@ -564,9 +596,10 @@ static func extract_class_name(clazz) -> Result:
 	GdUnitTools.free_instance(instance)
 	return result
 
+
 static func extract_inner_clazz_names(clazz_name :String, script_path :PackedStringArray) -> PackedStringArray:
 	var inner_classes := PackedStringArray()
-
+	
 	if ClassDB.class_exists(clazz_name):
 		return inner_classes
 	var script :GDScript = load(script_path[0])
@@ -577,6 +610,7 @@ static func extract_inner_clazz_names(clazz_name :String, script_path :PackedStr
 			var class_path := extract_class_path(value)
 			inner_classes.append(class_path[1])
 	return inner_classes
+
 
 static func extract_class_functions(clazz_name :String, script_path :PackedStringArray) -> Array:
 	if ClassDB.class_get_method_list(clazz_name):
@@ -610,6 +644,7 @@ static func is_public_script_class(clazz_name) -> bool:
 				return true
 	return false
 
+
 static func build_function_default_arguments(script :GDScript, func_name :String) -> Array:
 	var arg_list := Array()
 	for func_sig in script.get_script_method_list():
@@ -622,10 +657,11 @@ static func build_function_default_arguments(script :GDScript, func_name :String
 			return arg_list
 	return arg_list
 
+
 static func default_value_by_type(type :int):
 	assert(type < TYPE_MAX)
 	assert(type >= 0)
-
+	
 	match type:
 		TYPE_NIL: return null
 		TYPE_BOOL: return false
@@ -661,9 +697,10 @@ static func default_value_by_type(type :int):
 		TYPE_PACKED_STRING_ARRAY: return PackedStringArray()
 		TYPE_PACKED_VECTOR2_ARRAY: return PackedVector2Array()
 		TYPE_PACKED_VECTOR3_ARRAY: return PackedVector3Array()
-
+	
 	push_error("Can't determine a default value for type: '%s', Please create a Bug issue and attach the stacktrace please." % type)
 	return null
+
 
 static func array_to_string(elements :Array, delimiter := "\n", max_elements := -1) -> String:
 	if elements == null:
@@ -681,6 +718,7 @@ static func array_to_string(elements :Array, delimiter := "\n", max_elements := 
 		index += 1
 	return formatted
 
+
 # Filters an array by given value
 static func array_filter_value(array :Array, filter_value) -> Array:
 	var filtered_array := Array()
@@ -689,16 +727,19 @@ static func array_filter_value(array :Array, filter_value) -> Array:
 			filtered_array.append(element)
 	return filtered_array
 
+
 # Erases a value from given array by using equals(l,r) to find the element to erase
 static func array_erase_value(array :Array, value) -> void:
 	for element in array:
 		if equals(element, value):
 			array.erase(element)
 
+
 static func find_nodes_by_class(root: Node, cls: String, recursive: bool = false) -> Array:
 	if not recursive:
 		return _find_nodes_by_class_no_rec(root, cls)
 	return _find_nodes_by_class(root, cls)
+
 
 static func _find_nodes_by_class_no_rec(parent: Node, cls: String) -> Array:
 	var result = []
@@ -706,6 +747,7 @@ static func _find_nodes_by_class_no_rec(parent: Node, cls: String) -> Array:
 		if ch.get_class() == cls:
 			result.append(ch)
 	return result
+
 
 static func _find_nodes_by_class(root: Node, cls: String) -> Array:
 	var result = []

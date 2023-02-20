@@ -44,7 +44,7 @@ func failure_report() -> String:
 func convert_rtf_to_html(bbcode :String) -> String:
 	_rtf.clear()
 	_rtf.parse_bbcode(bbcode)
-	var as_text: = _rtf.text
+	var as_text: = _rtf.get_parsed_text()
 	var converted := PackedStringArray()
 	var lines := as_text.split("\n")
 	for line in lines:
