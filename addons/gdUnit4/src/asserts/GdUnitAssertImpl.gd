@@ -68,13 +68,6 @@ func report_error(error_message :String, failure_line_number: int = -1) -> GdUni
 		return GdAssertReports.report_error(error_message, self, line_number)
 	return GdAssertReports.report_error(_custom_failure_message, self, line_number)
 
-
-func report_skipped(message :String) -> GdUnitAssert:
-	var line_number := _get_line_number()
-	send_report(GdUnitReport.new().create(GdUnitReport.SKIPPED, line_number, message));
-	return self
-
-
 func test_fail():
 	return report_error(GdAssertMessages.error_not_implemented())
 

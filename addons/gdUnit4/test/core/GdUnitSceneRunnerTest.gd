@@ -137,9 +137,6 @@ func test_simulate_scene_inteaction_in_combination_with_spy():
 
 
 func test_simulate_scene_interact_with_buttons():
-	if DisplayServer.get_name() == "headless":
-		skip_test("Can't run on headleass mode, it not supports set mouse position events")
-		return
 	var spyed_scene = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var runner := scene_runner(spyed_scene)
 	# test button 1 interaction
@@ -209,7 +206,7 @@ func test_await_signal_without_time_factor() -> void:
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300)
-	if assert_failed_at(211, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
+	if assert_failed_at(208, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
 		return
 	fail("test should failed after 300ms checked 'await_signal'")
 
@@ -228,7 +225,7 @@ func test_await_signal_with_time_factor() -> void:
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30)
-	if assert_failed_at(230, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
+	if assert_failed_at(227, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
 		return
 	fail("test should failed after 30ms checked 'await_signal'")
 
@@ -313,9 +310,6 @@ func test_runner_by_scene_instance() -> void:
 
 
 func test_mouse_drag_and_drop() -> void:
-	if DisplayServer.get_name() == "headless":
-		skip_test("Can't run on headleass mode, it not supports set mouse position events")
-		return
 	var spy_scene = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
 	var runner := scene_runner(spy_scene)
 	

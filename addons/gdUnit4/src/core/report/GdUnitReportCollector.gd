@@ -86,14 +86,6 @@ func has_warnings(execution_states :int) -> bool:
 					return true
 	return false
 
-func is_skipped(execution_states :int) -> bool:
-	for state in ALL_REPORT_STATES:
-		if execution_states&state == state:
-			for report in get_reports_by_state(state):
-				if report.type() == GdUnitReport.SKIPPED:
-					return true
-	return false
-
 func set_stage(stage :int) -> void:
 	_current_stage = stage
 

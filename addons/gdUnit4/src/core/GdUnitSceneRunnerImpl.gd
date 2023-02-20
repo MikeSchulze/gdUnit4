@@ -21,7 +21,6 @@ var _simulate_start_time :LocalTime
 var _last_input_event :InputEvent = null
 var _mouse_button_on_press := []
 var _key_on_press := []
-var _headless_mode := false
 
 # time factor settings
 var _time_factor := 1.0
@@ -59,9 +58,6 @@ func _init(test_suite :WeakRef, scene, verbose :bool, hide_push_errors = false):
 	_scene_tree = Engine.get_main_loop()
 	_scene_tree.root.add_child(_current_scene)
 	_simulate_start_time = LocalTime.now()
-	if DisplayServer.get_name() == "headless":
-		_headless_mode = true
-	
 	# we need to set inital a valid window otherwise the warp_mouse() is not handled
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	# set inital mouse pos to 0,0
@@ -69,8 +65,6 @@ func _init(test_suite :WeakRef, scene, verbose :bool, hide_push_errors = false):
 	while get_global_mouse_position() != Vector2.ZERO and max_iteration_to_wait < 100:
 		Input.warp_mouse(Vector2.ZERO)
 		max_iteration_to_wait += 1
-	# see https://github.com/godotengine/godot/issues/73461
-	#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 
 
 func _notification(what):
@@ -318,15 +312,8 @@ func _apply_input_mouse_position(event :InputEvent) -> void:
 		event.position = _last_input_event.position
 
 
-# for handling read https://docs.godotengine.org/en/3.5/tutorials/inputs/inputevent.html
+# for handling read https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html?highlight=inputevent#how-does-it-work
 func _handle_input_event(event :InputEvent):
-	if _headless_mode:
-		if event is InputEventMouse:
-			# set mouse pos is not working on headless mode
-			_current_scene.get_viewport().warp_mouse(event.position)
-		_current_scene.get_viewport().push_input(event)
-		return
-	
 	if event is InputEventMouse:
 		Input.warp_mouse(event.position)
 	Input.parse_input_event(event)
