@@ -9,7 +9,7 @@ enum {
 	ORPHAN,
 	TERMINATED,
 	INTERUPTED,
-	ABORT,
+	ABORT
 }
 
 var _type :int
