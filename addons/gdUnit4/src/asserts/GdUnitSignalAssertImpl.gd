@@ -12,8 +12,6 @@ var _expect_fail := false
 var _is_failed := false
 var _timeout := DEFAULT_TIMEOUT
 var _expect_result :int
-var _report_consumer : GdUnitReportConsumer
-var _caller : WeakRef
 var _interrupted := false
 var _signal_collector :SignalCollector = SignalCollector.instance("SignalCollector", func(): return SignalCollector.new())
 
@@ -102,22 +100,14 @@ class SignalCollector extends GdUnitSingleton:
 				prints("\t\t", signal_name, args)
 		prints("}")
 
-func _init(caller :WeakRef, emitter :Object, expect_result := EXPECT_SUCCESS):
+func _init(emitter :Object, expect_result := EXPECT_SUCCESS):
 	_line_number = GdUnitAssertImpl._get_line_number()
-	_caller = caller
 	_emitter =  emitter
 	_expect_result = expect_result
 	GdAssertReports.reset_last_error_line_number()
-	# set report consumer to be use to report the final result
-	_report_consumer = caller.get_ref().get_meta(GdUnitReportConsumer.META_PARAM)
 	# we expect the test will fail
 	if expect_result == EXPECT_FAIL:
 		_expect_fail = true
-
-func _notification(what):
-	#prints(GdObjects.notification_as_string(what))
-	if what == NOTIFICATION_PREDELETE:
-		_caller = null
 
 func report_success() -> GdUnitAssert:
 	return GdAssertReports.report_success(self)
@@ -131,8 +121,7 @@ func report_error(error_message :String) -> GdUnitAssert:
 	return GdAssertReports.report_error(_custom_failure_message, self, _line_number)
 
 func send_report(report :GdUnitReport)-> void:
-	if is_instance_valid(_report_consumer):
-		_report_consumer.consume(report)
+	GdUnitSignals.instance().gdunit_report.emit(report)
 
 # -------- Base Assert wrapping ------------------------------------------------
 func has_failure_message(expected: String) -> GdUnitSignalAssert:
@@ -192,10 +181,9 @@ func _wail_until_signal(signal_name :String, expected_args :Array, expect_not_em
 		report_error("Can't wait for non-existion signal '%s' checked object '%s'." % [signal_name,_emitter.get_class()])
 		return self
 	_signal_collector.register_emitter(_emitter)
-	var caller = _caller.get_ref()
 	var time_scale = Engine.get_time_scale()
 	var timeout = Timer.new()
-	caller.add_child(timeout)
+	Engine.get_main_loop().root.add_child(timeout)
 	timeout.set_one_shot(true)
 	timeout.connect("timeout",Callable(self,"_on_timeout"))
 	timeout.start((_timeout/1000.0)*time_scale)

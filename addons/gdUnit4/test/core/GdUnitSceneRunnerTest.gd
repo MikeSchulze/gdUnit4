@@ -344,4 +344,4 @@ func test_mouse_drag_and_drop() -> void:
 
 # we override the scene runner function for test purposes to hide push_error notifications
 func scene_runner(scene, verbose := false) -> GdUnitSceneRunner:
-	return auto_free(GdUnitSceneRunnerImpl.new(weakref(self), scene, verbose, true))
+	return auto_free(GdUnitSceneRunnerImpl.new(scene, verbose, true))

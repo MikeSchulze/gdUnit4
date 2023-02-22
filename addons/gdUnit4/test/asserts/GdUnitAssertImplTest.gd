@@ -90,7 +90,7 @@ func test_override_failure_message() -> void:
 
 
 func test_construct_with_value() -> void:
-	var assert_imp := GdUnitAssertImpl.new(self, "a value")
+	var assert_imp := GdUnitAssertImpl.new("a value")
 	assert_bool(assert_imp._current_value_provider is DefaultValueProvider).is_true()
 	assert_str(assert_imp.__current()).is_equal("a value")
 
@@ -102,7 +102,7 @@ func next_value() -> int:
 
 
 func test_construct_with_value_provider() -> void:
-	var assert_imp := GdUnitAssertImpl.new(self, CallBackValueProvider.new(self, "next_value"))
+	var assert_imp := GdUnitAssertImpl.new(CallBackValueProvider.new(self, "next_value"))
 	assert_bool(assert_imp._current_value_provider is CallBackValueProvider).is_true()
 	assert_int(assert_imp.__current()).is_equal(1)
 	assert_int(assert_imp.__current()).is_equal(2)

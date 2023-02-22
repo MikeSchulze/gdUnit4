@@ -20,6 +20,7 @@ var _skip_info := ""
 var _expect_to_interupt := false
 var _timer : Timer
 var _interupted :bool = false
+var _failed := false
 var _timeout :int
 var _default_timeout :int
 var _monitor := GodotGdErrorMonitor.new()
@@ -44,8 +45,10 @@ func configure(name: String, line_number: int, script_path: String, timeout :int
 
 
 func execute(test_parameter := Array(), iteration := 0):
+	
 	_current_iteration = iteration - 1
 	if iteration == 0:
+		_set_failure_handler()
 		set_timeout()
 	_monitor.start()
 	if not test_parameter.is_empty():
@@ -63,6 +66,7 @@ func execute(test_parameter := Array(), iteration := 0):
 
 func dispose():
 	stop_timer()
+	_remove_failure_handler()
 
 
 func _execute_test_case(name :String, test_parameter :Array):
@@ -87,6 +91,24 @@ func set_timeout():
 	_timer.set_wait_time(time)
 	_timer.set_autostart(false)
 	_timer.start()
+
+
+func _set_failure_handler() -> void:
+	if not GdUnitSignals.instance().gdunit_set_test_failed.is_connected(_failure_received):
+		GdUnitSignals.instance().gdunit_set_test_failed.connect(_failure_received)
+
+
+func _remove_failure_handler() -> void:
+	if GdUnitSignals.instance().gdunit_set_test_failed.is_connected(_failure_received):
+		GdUnitSignals.instance().gdunit_set_test_failed.disconnect(_failure_received)
+	
+
+func _failure_received(is_failed :bool) -> void:
+	# is already failed?
+	if _failed:
+		return
+	_failed = is_failed
+	Engine.set_meta("GD_TEST_FAILURE", is_failed)
 
 
 func _test_case_timeout():

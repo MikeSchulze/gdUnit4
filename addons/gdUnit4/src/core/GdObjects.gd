@@ -534,6 +534,9 @@ static func extract_class_path(clazz) -> PackedStringArray:
 		return clazz_path
 	
 	if clazz is GDScript:
+		if not clazz.resource_path.is_empty():
+			clazz_path.append(clazz.resource_path)
+			return clazz_path
 		# if not found we go the expensive way and extract the path form the script by creating an instance
 		var arg_list := build_function_default_arguments(clazz, "_init")
 		var instance = clazz.callv("new", arg_list)

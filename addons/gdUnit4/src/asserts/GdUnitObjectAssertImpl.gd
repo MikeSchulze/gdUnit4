@@ -3,8 +3,8 @@ extends GdUnitObjectAssert
 
 var _base :GdUnitAssert
 
-func _init(caller :Object,current,expect_result :int):
-	_base = GdUnitAssertImpl.new(caller, current, expect_result)
+func _init(current, expect_result :int):
+	_base = GdUnitAssertImpl.new(current, expect_result)
 	if current is ValueProvider or current == null:
 		return
 	if _base.__validate_value_type(current, TYPE_BOOL)\
