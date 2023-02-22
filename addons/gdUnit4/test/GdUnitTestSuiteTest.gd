@@ -5,6 +5,24 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/GdUnitTestSuite.gd'
 
+var _events :Array[GdUnitEvent] = []
+
+func collect_report(event :GdUnitEvent):
+	_events.push_back(event)
+
+
+func before():
+	# register to receive test reports
+	GdUnitSignals.instance().gdunit_event.connect(collect_report)
+
+
+func after():
+	# verify the test case `test_unknown_argument_in_test_case` was skipped
+	assert_array(_events).extractv(extr("type"), extr("is_skipped"), extr("test_name"))\
+		.contains([tuple(GdUnitEvent.TESTCASE_AFTER, true, "test_unknown_argument_in_test_case")])
+	GdUnitSignals.instance().gdunit_event.disconnect(collect_report)
+
+
 func test_assert_that_types() -> void:
 	assert_object(assert_that(true)).is_instanceof(GdUnitBoolAssert)
 	assert_object(assert_that(1)).is_instanceof(GdUnitIntAssert)
@@ -18,3 +36,7 @@ func test_assert_that_types() -> void:
 	# all not a built-in types mapped to default GdUnitAssert
 	assert_object(assert_that(Color.RED)).is_instanceof(GdUnitAssertImpl)
 	assert_object(assert_that(Plane.PLANE_XY)).is_instanceof(GdUnitAssertImpl)
+
+
+func test_unknown_argument_in_test_case(invalid_arg) -> void:
+	fail("This test case should be not executed, it must be skipped.")

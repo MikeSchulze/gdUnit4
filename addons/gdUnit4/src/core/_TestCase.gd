@@ -16,7 +16,7 @@ var _test_param_index := -1
 var _line_number: int = -1
 var _script_path: String
 var _skipped := false
-var _error := ""
+var _skip_info := ""
 var _expect_to_interupt := false
 var _timer : Timer
 var _interupted :bool = false
@@ -31,14 +31,13 @@ func _init():
 	_default_timeout = GdUnitSettings.test_timeout()
 
 
-func configure(name: String, line_number: int, script_path: String, timeout :int = DEFAULT_TIMEOUT, fuzzers :Array = [], iterations: int = 1, seed_ :int = -1, skipped := false) -> _TestCase:
+func configure(name: String, line_number: int, script_path: String, timeout :int = DEFAULT_TIMEOUT, fuzzers :Array = [], iterations: int = 1, seed_ :int = -1) -> _TestCase:
 	set_name(name)
 	_line_number = line_number
 	_fuzzers = fuzzers
 	_iterations = iterations
 	_seed = seed_
 	_script_path = script_path
-	_skipped = skipped
 	_timeout = _default_timeout
 	if timeout != DEFAULT_TIMEOUT:
 		_timeout = timeout
@@ -154,6 +153,9 @@ func report() -> GdUnitReport:
 	return _report
 
 
+func skip_info() -> String:
+	return _skip_info
+
 func line_number() -> int:
 	return _line_number
 
@@ -193,7 +195,7 @@ func generate_seed() -> void:
 
 func skip(skipped :bool, error :String = "") -> void:
 	_skipped = skipped
-	_error = error
+	_skip_info = error
 
 
 func set_test_parameters(test_parameters :Array) -> void:

@@ -14,18 +14,19 @@ var _consume_reports := true
 
 
 var _reports_by_state :Dictionary = {
-	STAGE_TEST_SUITE_BEFORE : Array(),
-	STAGE_TEST_SUITE_AFTER : Array(),
-	STAGE_TEST_CASE_BEFORE : Array(),
-	STAGE_TEST_CASE_AFTER : Array(),
-	STAGE_TEST_CASE_EXECUTE : Array(),
+	STAGE_TEST_SUITE_BEFORE : [] as Array[GdUnitReport],
+	STAGE_TEST_SUITE_AFTER : [] as Array[GdUnitReport],
+	STAGE_TEST_CASE_BEFORE : [] as Array[GdUnitReport],
+	STAGE_TEST_CASE_AFTER : [] as Array[GdUnitReport],
+	STAGE_TEST_CASE_EXECUTE : [] as Array[GdUnitReport],
 }
+
 
 func _init():
 	GdUnitSignals.instance().gdunit_report.connect(consume)
 
 
-func get_reports_by_state(execution_state :int) -> Array:
+func get_reports_by_state(execution_state :int) -> Array[GdUnitReport]:
 	return _reports_by_state.get(execution_state)
 
 
@@ -47,8 +48,8 @@ func clear_reports(execution_states :int) -> void:
 			get_reports_by_state(state).clear()
 
 
-func get_reports(execution_states :int) -> Array:
-	var reports :Array = Array()
+func get_reports(execution_states :int) -> Array[GdUnitReport]:
+	var reports :Array[GdUnitReport] = []
 	for state in ALL_REPORT_STATES:
 		if execution_states&state == state:
 			GdUnitTools.append_array(reports, get_reports_by_state(state))
@@ -104,6 +105,7 @@ func has_warnings(execution_states :int) -> bool:
 
 func set_stage(stage :int) -> void:
 	_current_stage = stage
+
 
 
 # we need to disable report collection for testing purposes
