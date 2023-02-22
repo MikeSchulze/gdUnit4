@@ -9,15 +9,20 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitExecutor.gd'
 
 const GdUnitExecutor = preload("res://addons/gdUnit4/src/core/GdUnitExecutor.gd")
 
-var _executor :GdUnitExecutor
-var _events :Array = Array()
-var _stack : Array = []
+var _debug_executor :GdUnitExecutor
+var _events :Array[GdUnitEvent] = []
+var _stack : Array[int] = []
 
 
 func before():
-	_executor = GdUnitExecutor.new(true)
-	_executor.gdunit_event_test.connect(Callable(self, "_on_gdunit_event_test"))
-	add_child(_executor)
+	_debug_executor = GdUnitExecutor.new(true)
+	add_child(_debug_executor)
+	GdUnitSignals.instance().gdunit_event_debug.connect(_on_gdunit_event_test)
+
+
+func after():
+	GdUnitSignals.instance().gdunit_event_debug.disconnect(_on_gdunit_event_test)
+	_debug_executor.free()
 
 
 func before_test():
@@ -36,10 +41,17 @@ func _on_gdunit_event_test(event :GdUnitEvent) -> void:
 func execute(test_suite :GdUnitTestSuite, enable_orphan_detection := true):
 	add_child(test_suite)
 	_events.clear()
-	_executor._memory_pool.configure(enable_orphan_detection)
-	_executor.execute(test_suite)
-	await _executor.ExecutionCompleted
+	_debug_executor._memory_pool.configure(enable_orphan_detection)
+	gdunit_executor_receive_reports(false)
+	_debug_executor.execute(test_suite)
+	await _debug_executor.ExecutionCompleted
+	gdunit_executor_receive_reports(true)
 	return _events
+
+
+func gdunit_executor_receive_reports(enabled :bool) -> void:
+	var executor :GdUnitExecutor = get_tree().root.find_child("GdUnitExecutor", true, false)
+	executor.set_consume_reports(enabled)
 
 
 func filter_failures(events :Array) -> Array:

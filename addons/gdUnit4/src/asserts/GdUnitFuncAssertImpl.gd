@@ -12,17 +12,12 @@ var _expect_fail := false
 var _is_failed := false
 var _timeout := DEFAULT_TIMEOUT
 var _expect_result :int
-var _report_consumer : GdUnitReportConsumer
-var _caller : WeakRef
 var _interrupted := false
 
-func _init(caller :WeakRef, instance :Object, func_name :String, args := Array(), expect_result := EXPECT_SUCCESS):
+func _init(instance :Object, func_name :String, args := Array(), expect_result := EXPECT_SUCCESS):
 	_line_number = GdUnitAssertImpl._get_line_number()
 	_expect_result = expect_result
-	_caller = caller
 	GdAssertReports.reset_last_error_line_number()
-	# set report consumer to be use to report the final result
-	_report_consumer = caller.get_ref().get_meta(GdUnitReportConsumer.META_PARAM)
 	# we expect the test will fail
 	if expect_result == EXPECT_FAIL:
 		_expect_fail = true
@@ -41,8 +36,7 @@ func report_error(error_message :String) -> GdUnitAssert:
 	return GdAssertReports.report_error(_custom_failure_message, self, _line_number)
 
 func send_report(report :GdUnitReport)-> void:
-	if is_instance_valid(_report_consumer):
-		_report_consumer.consume(report)
+	GdUnitSignals.instance().gdunit_report.emit(report)
 
 # -------- Base Assert wrapping ------------------------------------------------
 func has_failure_message(expected: String) -> GdUnitFuncAssert:
@@ -119,17 +113,16 @@ func _validate_callback(func_name :String, expected = null) -> GdUnitFuncAssert:
 	if _is_failed:
 		#await Engine.get_main_loop().process_frame
 		return self
-	var caller = _caller.get_ref()
 	var assert_cb := Callable(self, "_" + func_name)
 	var time_scale = Engine.get_time_scale()
 	var timeout = Timer.new()
-	caller.add_child(timeout)
+	Engine.get_main_loop().root.add_child(timeout)
 	timeout.set_one_shot(true)
 	timeout.connect("timeout", Callable(self, "_on_timeout"))
 	timeout.start((_timeout/1000.0)*time_scale)
 	
 	var sleep := Timer.new()
-	caller.add_child(sleep)
+	Engine.get_main_loop().root.add_child(sleep)
 	
 	while true:
 		next_current_value()
@@ -149,10 +142,6 @@ func _validate_callback(func_name :String, expected = null) -> GdUnitFuncAssert:
 	timeout.free()
 	_current_value_provider.dispose()
 	await Engine.get_main_loop().process_frame
-	#if caller deleted? the test is intrrupted by a timeout
-	if not is_instance_valid(caller):
-		dispose()
-		return
 	if _interrupted:
 		report_error(GdAssertMessages.error_interrupted(func_name, expected, LocalTime.elapsed(_timeout)))
 	else:
@@ -171,5 +160,4 @@ func _on_timeout():
 # it is important to free all references/connections to prevent orphan nodes
 func dispose():
 	GdUnitTools.release_connections(self)
-	_caller = null
 	_current_value_provider = null

@@ -1,6 +1,6 @@
 # collects all reports seperated as warnings and failures/errors
 class_name GdUnitReportCollector
-extends GdUnitReportConsumer
+extends RefCounted
 
 const STAGE_TEST_SUITE_BEFORE = 1
 const STAGE_TEST_SUITE_AFTER = 2
@@ -10,6 +10,7 @@ const STAGE_TEST_CASE_AFTER = 16
 
 var ALL_REPORT_STATES := [STAGE_TEST_SUITE_BEFORE, STAGE_TEST_SUITE_AFTER, STAGE_TEST_CASE_BEFORE, STAGE_TEST_CASE_EXECUTE, STAGE_TEST_CASE_AFTER]
 var _current_stage :int
+var _consume_reports := true
 
 
 var _reports_by_state :Dictionary = {
@@ -20,22 +21,31 @@ var _reports_by_state :Dictionary = {
 	STAGE_TEST_CASE_EXECUTE : Array(),
 }
 
+func _init():
+	GdUnitSignals.instance().gdunit_report.connect(consume)
+
+
 func get_reports_by_state(execution_state :int) -> Array:
 	return _reports_by_state.get(execution_state)
+
 
 func add_report(execution_state :int, report :GdUnitReport) -> void:
 	get_reports_by_state(execution_state).append(report)
 
+
 func push_front(execution_state :int, report :GdUnitReport) -> void:
 	get_reports_by_state(execution_state).push_front(report)
 
+
 func pop_front(execution_state :int) -> GdUnitReport:
 	return get_reports_by_state(execution_state).pop_front()
+
 
 func clear_reports(execution_states :int) -> void:
 	for state in ALL_REPORT_STATES:
 		if execution_states&state == state:
 			get_reports_by_state(state).clear()
+
 
 func get_reports(execution_states :int) -> Array:
 	var reports :Array = Array()
@@ -44,6 +54,7 @@ func get_reports(execution_states :int) -> Array:
 			GdUnitTools.append_array(reports, get_reports_by_state(state))
 	return reports
 
+
 func has_errors(execution_states :int) -> bool:
 	for state in ALL_REPORT_STATES:
 		if execution_states&state == state:
@@ -51,6 +62,7 @@ func has_errors(execution_states :int) -> bool:
 				if report.is_error():
 					return true
 	return false
+
 
 func count_errors(execution_states :int) -> int:
 	var count := 0
@@ -61,6 +73,7 @@ func count_errors(execution_states :int) -> int:
 					count += 1
 	return count
 
+
 func has_failures(execution_states :int) -> bool:
 	for state in ALL_REPORT_STATES:
 		if execution_states&state == state:
@@ -68,6 +81,7 @@ func has_failures(execution_states :int) -> bool:
 				if report.type() == GdUnitReport.FAILURE:
 					return true
 	return false
+
 
 func count_failures(execution_states :int) -> int:
 	var count := 0
@@ -78,6 +92,7 @@ func count_failures(execution_states :int) -> int:
 					count += 1
 	return count
 
+
 func has_warnings(execution_states :int) -> bool:
 	for state in ALL_REPORT_STATES:
 		if execution_states&state == state:
@@ -86,8 +101,16 @@ func has_warnings(execution_states :int) -> bool:
 					return true
 	return false
 
+
 func set_stage(stage :int) -> void:
 	_current_stage = stage
 
+
+# we need to disable report collection for testing purposes
+func set_consume_reports(enabled :bool) -> void:
+	_consume_reports = enabled
+
+
 func consume(report :GdUnitReport) -> void:
-	add_report(_current_stage, report)
+	if _consume_reports:
+		add_report(_current_stage, report)

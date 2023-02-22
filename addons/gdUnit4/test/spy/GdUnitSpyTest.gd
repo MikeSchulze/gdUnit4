@@ -4,7 +4,7 @@ extends GdUnitTestSuite
 # small helper to verify last assert error
 func assert_last_error(expected :String, expected_line_number :int = -1):
 	var last_failure_line_number := GdAssertReports.get_last_error_line_number()
-	var gd_assert := GdUnitAssertImpl.new(self, "")
+	var gd_assert := GdUnitAssertImpl.new("")
 	if Engine.has_meta(GdAssertReports.LAST_ERROR):
 		gd_assert._current_error_message = Engine.get_meta(GdAssertReports.LAST_ERROR)
 	gd_assert.has_failure_message(expected.dedent().trim_prefix("\n").replace("\r", ""))
