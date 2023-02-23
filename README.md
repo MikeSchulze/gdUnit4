@@ -118,3 +118,4 @@ assert_int(-13).is_not_negative()
 ### Thank you for supporting my project!
 ---
 ## Sponsors:
+* bitbrain - [<img src="https://github.com/bitbrain.png" alt="bitbrain" width="125"/>](https://github.com/bitbrain)
