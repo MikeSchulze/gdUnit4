@@ -122,13 +122,13 @@ func test_double_return_typed_function_with_args_and_varargs() -> void:
 	var fd := get_function_description("Object", "emit_signal")
 	var expected := [
 		'@warning_ignore("native_method_override")',
-		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> int:',
+		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args :Array = ["emit_signal", signal_] + varargs',
 		'	',
 		'	if __is_verify_interactions():',
 		'		__verify_interactions(args)',
-		'		return 0',
+		'		return OK',
 		'	else:',
 		'		__save_function_interaction(args)',
 		'	',

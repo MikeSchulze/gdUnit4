@@ -104,17 +104,17 @@ func test_double_int_function_with_varargs() -> void:
 	var fd := get_function_description("Object", "emit_signal")
 	var expected := [
 		'@warning_ignore("native_method_override")',
-		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> int:',
+		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args :Array = ["emit_signal", signal_] + varargs',
 		'	',
 		'	if __is_prepare_return_value():',
 		'		if false:',
 		'			push_error("Mocking a void function \'emit_signal(<args>) -> void:\' is not allowed.")',
-		'		return 0',
+		'		return OK',
 		'	if __is_verify_interactions():',
 		'		__verify_interactions(args)',
-		'		return 0',
+		'		return OK',
 		'	else:',
 		'		__save_function_interaction(args)',
 		'	',
@@ -131,7 +131,7 @@ func test_double_int_function_with_varargs() -> void:
 		'			8: return super(signal_, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])',
 		'			9: return super(signal_, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])',
 		'			10: return super(signal_, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])',
-		'	return 0',
+		'	return OK',
 		'',
 		'']
 	assert_array(doubler.double(fd)).contains_exactly(expected)
@@ -234,7 +234,7 @@ func test_double_virtual_script_function_with_arg() -> void:
 
 func test_mock_on_script_path_without_class_name() -> void:
 	var instance = load("res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd").new()
-	var script := GdUnitMockBuilder.mock_on_script(instance, "res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd", [], false);
+	var script := GdUnitMockBuilder.mock_on_script(instance, "res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd", [], true);
 	assert_that(script.resource_name).is_equal("MockClassWithoutNameA.gd")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid

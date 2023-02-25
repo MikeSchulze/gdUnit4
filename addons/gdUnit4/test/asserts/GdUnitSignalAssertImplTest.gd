@@ -19,11 +19,11 @@ class TestEmitter extends Node:
 		_trigger_count = trigger_count
 	
 	func _process(_delta):
-		#prints("_process", _count, _delta)
 		if _count >= _trigger_count:
-			emit_signal("test_signal_counted", _count)
+			test_signal_counted.emit(_count)
+		
 		if _count == 20:
-			emit_signal("test_signal")
+			test_signal.emit()
 		_count += 1
 
 var signal_emitter :TestEmitter
