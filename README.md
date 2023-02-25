@@ -5,7 +5,7 @@
 
 ---
 <h1 align="center">GdUnit4 Beta </h1>
-<p align="center">This is a beta version of GdUnit4 which is based on Godot <strong>v4.0.rc4.official [e0de3573f]</strong> (master branch)</p>
+<p align="center">This is a beta version of GdUnit4 which is based on Godot <strong>v4.0.rc5.official [6296b4600]</strong> (master branch)</p>
 
 <h1 align="center">ATTENTION!</h1>
 
