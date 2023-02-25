@@ -86,8 +86,15 @@ func set_timeout():
 	var time :float = _timeout * 0.001
 	_timer = Timer.new()
 	add_child(_timer)
+	_timer.timeout.connect(func do_interrupt():
+		if has_fuzzer():
+			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
+		else:
+			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout()))
+		_interupted = true
+		completed.emit()
+	)
 	_timer.set_one_shot(true)
-	_timer.connect('timeout', Callable(self, '_test_case_timeout'))
 	_timer.set_wait_time(time)
 	_timer.set_autostart(false)
 	_timer.start()
@@ -111,20 +118,9 @@ func _failure_received(is_failed :bool) -> void:
 	Engine.set_meta("GD_TEST_FAILURE", is_failed)
 
 
-func _test_case_timeout():
-	if has_fuzzer():
-		_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
-	else:
-		_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout()))
-	_interupted = true
-	completed.emit()
-
-
 func stop_timer() :
 	# finish outstanding timeouts
 	if is_instance_valid(_timer):
-		if _timer.is_connected("timeout", Callable(self, '_test_case_timeout')):
-			_timer.disconnect("timeout", Callable(self, '_test_case_timeout'))
 		_timer.stop()
 		_timer.call_deferred("free")
 

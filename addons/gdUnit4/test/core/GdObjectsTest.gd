@@ -228,10 +228,6 @@ func test_is_instance_false():
 	assert_bool(_is_instance(TestClassForIsType)).is_false()
 	assert_bool(_is_instance(CustomClass.InnerClassC)).is_false()
 
-func test_is_instanceof():
-	var obj = auto_free(Camera3D.new())
-	assert_bool(GdObjects.is_instanceof(obj, Node)).is_true()
-	assert_bool(GdObjects.is_instanceof(obj, AStar2D)).is_false()
 
 # shorter helper func to extract class name and using auto_free
 func extract_class_name(value) -> Result:
@@ -497,8 +493,7 @@ func test_extract_class_functions() -> void:
 			assert_str(GdFunctionDescriptor.extract_from(f)._to_string()).is_equal("[Line:-1] func get_path() -> String:")
 
 func test_all_types() -> void:
-	
-	var expected_types :Array[int] = [] 
+	var expected_types :Array[int] = []
 	for type_index in TYPE_MAX:
 		expected_types.append(type_index)
 	expected_types.append(GdObjects.TYPE_VOID)

@@ -12,6 +12,7 @@ const TYPE_NODE 	= TYPE_MAX + 2001
 # missing Godot types
 const TYPE_CONTROL	= TYPE_MAX + 2002
 const TYPE_CANVAS	= TYPE_MAX + 2003
+const TYPE_ENUM		= TYPE_MAX + 2004
 
 
 # used as default value for varargs
@@ -483,10 +484,6 @@ static func is_instance_scene(instance) -> bool:
 		var node := instance as Node
 		return node.get_scene_file_path() != null and not node.get_scene_file_path().is_empty()
 	return false
-
-
-static func is_instanceof(obj :Object, type: Object) -> bool:
-	return is_type(type) and obj is type
 
 
 static func can_be_instantiate(obj :Variant) -> bool:

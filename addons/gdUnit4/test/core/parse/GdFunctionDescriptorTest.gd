@@ -61,7 +61,7 @@ func test_extract_from_func_with_vararg():
 	assert_bool(fd.is_static()).is_false()
 	assert_bool(fd.is_engine()).is_true()
 	assert_bool(fd.is_vararg()).is_true()
-	assert_int(fd.return_type()).is_equal(TYPE_INT)
+	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_ENUM)
 	assert_array(fd.args()).contains_exactly([GdFunctionArgument.new("signal_", TYPE_STRING_NAME)])
 	assert_array(fd.varargs()).contains_exactly([
 		GdFunctionArgument.new("vararg0_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
@@ -75,7 +75,7 @@ func test_extract_from_func_with_vararg():
 		GdFunctionArgument.new("vararg8_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
 		GdFunctionArgument.new("vararg9_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
 	])
-	assert_str(fd.typeless()).is_equal("func emit_signal(signal_, vararg0_=\"__null__\", vararg1_=\"__null__\", vararg2_=\"__null__\", vararg3_=\"__null__\", vararg4_=\"__null__\", vararg5_=\"__null__\", vararg6_=\"__null__\", vararg7_=\"__null__\", vararg8_=\"__null__\", vararg9_=\"__null__\") -> int:")
+	assert_str(fd.typeless()).is_equal("func emit_signal(signal_, vararg0_=\"__null__\", vararg1_=\"__null__\", vararg2_=\"__null__\", vararg3_=\"__null__\", vararg4_=\"__null__\", vararg5_=\"__null__\", vararg6_=\"__null__\", vararg7_=\"__null__\", vararg8_=\"__null__\", vararg9_=\"__null__\") -> Error:")
 
 
 func test_extract_from_descriptor_is_virtual_func():
