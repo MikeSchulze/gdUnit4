@@ -4,15 +4,15 @@
 
 
 ---
-<h1 align="center">GdUnit4 Beta </h1>
-<p align="center">This is a beta version of GdUnit4 which is based on Godot <strong>v4.0.rc5.official [6296b4600]</strong> (master branch)</p>
+<h1 align="center">GdUnit4</h1>
+<p align="center">This version of GdUnit4 is based on Godot <strong>v4.0.stable.official [92bee43ad]</strong> (master branch)</p>
 
 <h1 align="center">ATTENTION!</h1>
 
-### You need the deactivate the old version before deinstall and install this version!
-
-
 <h2 align="center">Please read the following disclaimer carefully before proceeding!
+
+You need the deactivate the old version before deinstall and install this version!
+
 
 This version is NOT bug free and may cause the Godot editor to crash.
 If you find a bug or problem please report it via [report bug](https://github.com/MikeSchulze/gdUnit4/issues/new/choose).
