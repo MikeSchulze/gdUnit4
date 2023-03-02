@@ -24,7 +24,7 @@ The C# support is currently not enabled and is untested.
 ---
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Godot-v4.x.x-%23478cbf?logo=godot-engine&logoColor=cyian&color=red">
+  <img src="https://img.shields.io/badge/Godot-v4.0.stable-%23478cbf?logo=godot-engine&logoColor=cyian&color=red">
 </p>
 
 <p align="center"><a href="https://github.com/MikeSchulze/gdUnit4"><img src="https://github.com/MikeSchulze/gdUnit4/blob/master/assets/gdUnit4-animated.gif" width="100%"/></p><br/>
@@ -32,8 +32,8 @@ The C# support is currently not enabled and is untested.
 
 <p align="center">
   <img alt="GitHub branch checks state" src="https://img.shields.io/github/checks-status/MikeSchulze/gdunit4/master"></br>
-  <img src="https://github.com/MikeSchulze/gdUnit4/actions/workflows/selftest-4.x.yml/badge.svg?branch=master"></br>
-  <img src="https://github.com/MikeSchulze/gdUnit4/actions/workflows/selftest-4.x-mono.yml/badge.svg?branch=master"></br>
+  <img src="https://github.com/MikeSchulze/gdUnit4/actions/workflows/ci-master.yml/badge.svg?branch=master"></br>
+  <img src="https://github.com/MikeSchulze/gdUnit4/actions/workflows/ci-mono-master.yml/badge.svg?branch=master"></br>
 </p>
 
 
