@@ -50,4 +50,5 @@ func _exit_tree():
 	if Engine.has_meta("GdUnitEditorPlugin"):
 		Engine.remove_meta("GdUnitEditorPlugin")
 	prints("Unload GdUnit4 Plugin success")
+	GdUnitSignals.dispose()
 	GdUnitSingleton.dispose()
