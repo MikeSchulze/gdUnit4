@@ -20,7 +20,7 @@ runs:
       shell: bash
       run: |
         Xvfb :1 -screen 0 1600x1200x24 &
-        chmod +x ./runtest.sh
+        chmod +x ./addons/gdunit4/runtest.sh
         ./addons/gdunit4/runtest.sh --add ${{ inputs.test-includes }} --display-driver x11 --rendering-driver opengl3 --screen 0 --continue --verbose
         killall Xvfb
 
