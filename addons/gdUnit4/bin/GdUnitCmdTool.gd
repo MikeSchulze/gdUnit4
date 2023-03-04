@@ -155,7 +155,7 @@ class CLIRunner extends Node:
 		_console.new_line()
 	
 	
-	func load_test_config(path :String = "GdUnitRunner.cfg") -> void:
+	func load_test_config(path := GdUnitRunnerConfig.CONFIG_FILE) -> void:
 		_console.print_color("Loading test configuration %s\n" % path, Color.CORNFLOWER_BLUE)
 		_runner_config.load(path)
 	

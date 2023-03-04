@@ -8,7 +8,7 @@ const SKIPPED = "skipped"
 const SERVER_PORT = "server_port"
 const EXIT_FAIL_FAST ="exit_on_first_fail"
 
-const CONFIG_FILE = "res://GdUnitRunner.cfg"
+const CONFIG_FILE = "res://addons/gdUnit4/GdUnitRunner.cfg"
 
 var _config := {
 		VERSION : CONFIG_VERSION,
