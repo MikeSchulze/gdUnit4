@@ -3,8 +3,8 @@
 
 # Godot-specific ignores
 .godot/
-.import/
-*.*.import
+assets/*.*.import
+/*.*.import
 
 # Mono-specific ignores
 .mono/
