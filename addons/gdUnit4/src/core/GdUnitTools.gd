@@ -194,15 +194,19 @@ static func prints_verbose(message :String) -> void:
 
 
 static func free_instance(instance :Variant) -> bool:
-	# is instance already freed?
-	if not is_instance_valid(instance) or ClassDB.class_get_property(instance, "new"):
-		return false
-	
-	release_double(instance)
+	if instance is Array:
+		for element in instance:
+			free_instance(element)
+		instance.clear()
+		return true
 	if instance is RefCounted:
 		instance.notification(Object.NOTIFICATION_PREDELETE)
 		return true
 	else:
+			# is instance already freed?
+		if not is_instance_valid(instance) or ClassDB.class_get_property(instance, "new"):
+			return false
+		release_double(instance)
 		release_connections(instance)
 		if instance is Timer:
 			instance.stop()
@@ -223,14 +227,35 @@ static func release_connections(instance :Object):
 			#prints("signal", signal_.get_name(), signal_.get_object())
 			#prints("callable", callable_.get_object())
 			if instance.has_signal(signal_.get_name()) and instance.is_connected(signal_.get_name(), callable_):
+				prints("disconnect signal", signal_.get_name(), callable_)
 				instance.disconnect(signal_.get_name(), callable_)
-	
+	release_timers()
+
+static func release_timers():
 	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
 	for node in Engine.get_main_loop().root.get_children():
 		if node.is_in_group("GdUnitTimers"):
+			prints("found gdunit timer artifact", node, is_instance_valid(node))
 			if is_instance_valid(node):
 				node.stop()
 				node.free()
+
+
+
+static func register_assert(value):
+	var asserts :Array = GdUnitSingleton.instance("GdUnitAsserts", func(): return [])
+	asserts.push_back(value)
+
+
+static func release_asserts():
+	pass
+
+# the finally cleaup unfreed resources and singletons
+static func dispose_all():
+	release_timers()
+	release_asserts()
+	GdUnitSignals.dispose()
+	GdUnitSingleton.dispose()
 
 
 # if instance an mock or spy we need manually freeing the self reference

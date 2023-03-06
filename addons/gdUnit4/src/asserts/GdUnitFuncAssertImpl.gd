@@ -15,8 +15,12 @@ var _timeout := DEFAULT_TIMEOUT
 var _expect_result :int
 var _interrupted := false
 
+var _sleep_timer :Timer = null
+
 
 func _init(instance :Object, func_name :String, args := Array(), expect_result := EXPECT_SUCCESS):
+	prints("init GdUnitFuncAssertImpl", _to_string())
+	GdUnitTools.register_assert(self)
 	_line_number = GdUnitAssertImpl._get_line_number()
 	_expect_result = expect_result
 	GdAssertReports.reset_last_error_line_number()
@@ -29,6 +33,17 @@ func _init(instance :Object, func_name :String, args := Array(), expect_result :
 	else:
 		_current_value_provider = CallBackValueProvider.new(instance, func_name, args)
 
+func _to_string():
+	return "GdUnitFuncAssertImpl" + str(get_instance_id())
+
+
+func _notification(what):
+	prints("GdUnitFuncAssert:", GdObjects.notification_as_string(self, what))
+	
+	dispose()
+	while is_instance_valid(self) and get_reference_count() > 0:
+		prints("get_reference_count", get_reference_count())
+		unreference()
 
 func report_success() -> GdUnitAssert:
 	return GdAssertReports.report_success(self)
@@ -112,7 +127,7 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 		return self
 	var time_scale = Engine.get_time_scale()
 	var timer := Timer.new()
-	timer.set_name("gdunit_interrupt_timer_%d" % timer.get_instance_id())
+	timer.set_name("gdunit_funcassert_interrupt_timer_%d" % timer.get_instance_id())
 	Engine.get_main_loop().root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
 	timer.timeout.connect(func do_interrupt():
@@ -121,9 +136,9 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 		, CONNECT_REFERENCE_COUNTED)
 	timer.set_one_shot(true)
 	timer.start((_timeout/1000.0)*time_scale)
-	var sleep := Timer.new()
-	sleep.set_name("gdunit_sleep_timer_%d" % sleep.get_instance_id() )
-	Engine.get_main_loop().root.add_child(sleep)
+	_sleep_timer = Timer.new()
+	_sleep_timer.set_name("gdunit_funcassert_sleep_timer_%d" % _sleep_timer.get_instance_id() )
+	Engine.get_main_loop().root.add_child(_sleep_timer)
 	
 	while true:
 		next_current_value()
@@ -133,11 +148,12 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 		var is_success = predicate.call(current, expected)
 		if _expect_result != EXPECT_FAIL and is_success:
 			break
-		sleep.start(0.05)
-		await sleep.timeout
+		_sleep_timer.start(0.05)
+		await _sleep_timer.timeout
 	
-	sleep.stop()
-	sleep.queue_free()
+	prints("---> free sleep timer")
+	_sleep_timer.stop()
+	_sleep_timer.queue_free()
 	
 	await Engine.get_main_loop().process_frame
 	dispose()
@@ -159,5 +175,11 @@ func next_current_value():
 # it is important to free all references/connections to prevent orphan nodes
 func dispose():
 	GdUnitTools.release_connections(self)
-	_current_value_provider.dispose()
-	_current_value_provider = null
+	if is_instance_valid(_current_value_provider):
+		_current_value_provider.dispose()
+		_current_value_provider = null
+	if is_instance_valid(_sleep_timer):
+		prints("free sleep timer")
+		_sleep_timer.stop()
+		_sleep_timer.free()
+		_sleep_timer = null

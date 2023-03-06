@@ -97,6 +97,12 @@ class CLIRunner extends Node:
 			_rtf.free()
 		GdUnitSignals.dispose()
 		GdUnitSingleton.dispose()
+		GdUnitTools.release_timers()
+		await get_tree().physics_frame
+		prints("-Orphan nodes report-----------------------")
+		Window.print_orphan_nodes()
+		prints("-SceneTree report-----------------------")
+		get_tree().root.print_tree_pretty()
 		get_tree().quit(code)
 	
 	
