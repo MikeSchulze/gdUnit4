@@ -5,16 +5,20 @@ extends Resource
 var _id :String
 
 # constructs new Monitor with given id
+@warning_ignore("shadowed_variable")
 func _init(id :String):
 	_id = id
+
 
 # Returns the id of the monitor to uniqe identify
 func id() -> String:
 	return _id
 
+
 # starts monitoring
 func start():
 	pass
+
 
 # stops monitoring
 func stop():

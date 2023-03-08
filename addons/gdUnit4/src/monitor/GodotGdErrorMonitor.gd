@@ -28,6 +28,7 @@ func stop():
 	pass
 
 
+@warning_ignore("shadowed_variable")
 func reports() -> Array[GdUnitReport]:
 	var reports :Array[GdUnitReport] = []
 	if _report_enabled:
@@ -35,9 +36,9 @@ func reports() -> Array[GdUnitReport]:
 		for index in loggs.size():
 			var message := loggs[index]
 			if _is_report_script_errors() and message.contains(USER_SCRIPT_ERROR):
-				reports.append(_report_runtime_error(message, loggs[index+1]))
+				reports.append(GodotGdErrorMonitor._report_runtime_error(message, loggs[index+1]))
 			if _is_report_push_errors() and message.contains(USER_PUSH_ERROR):
-				reports.append(_report_user_error(message, loggs[index+1]))
+				reports.append(GodotGdErrorMonitor._report_user_error(message, loggs[index+1]))
 	return reports
 
 

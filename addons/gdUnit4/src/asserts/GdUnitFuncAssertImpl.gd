@@ -67,12 +67,12 @@ func starts_with_failure_message(expected: String) -> GdUnitFuncAssert:
 	return self
 
 
-func override_failure_message(message :String) -> GdUnitAssert:
+func override_failure_message(message :String) -> GdUnitFuncAssert:
 	_custom_failure_message = message
 	return self
 
 
-func wait_until(timeout := 2000) -> GdUnitAssert:
+func wait_until(timeout := 2000) -> GdUnitFuncAssert:
 	if timeout <= 0:
 		push_warning("Invalid timeout param, alloed timeouts must be grater than 0. Use default timeout instead")
 		_timeout = DEFAULT_TIMEOUT
@@ -81,27 +81,27 @@ func wait_until(timeout := 2000) -> GdUnitAssert:
 	return self
 
 
-func is_null() -> GdUnitAssert:
-	return await _validate_callback(func is_null(c, e): return c == null)
+func is_null() -> GdUnitFuncAssert:
+	return await _validate_callback(func is_null(c, _e): return c == null)
 
 
-func is_not_null() -> GdUnitAssert:
-	return await _validate_callback(func is_not_null(c, e): return c != null)
+func is_not_null() -> GdUnitFuncAssert:
+	return await _validate_callback(func is_not_null(c, _e): return c != null)
 
 
-func is_false() -> GdUnitAssert:
-	return await _validate_callback(func is_false(c, e): return c == false)
+func is_false() -> GdUnitFuncAssert:
+	return await _validate_callback(func is_false(c, _e): return c == false)
 
 
-func is_true() -> GdUnitAssert:
-	return await _validate_callback(func is_true(c, e): return c == true)
+func is_true() -> GdUnitFuncAssert:
+	return await _validate_callback(func is_true(c, _e): return c == true)
 
 
-func is_equal(expected) -> GdUnitAssert:
+func is_equal(expected) -> GdUnitFuncAssert:
 	return await _validate_callback(func is_equal(c, e): return GdObjects.equals(c, e), expected)
 
 
-func is_not_equal(expected) -> GdUnitAssert:
+func is_not_equal(expected) -> GdUnitFuncAssert:
 	return await _validate_callback(func is_not_equal(c, e): return not GdObjects.equals(c, e), expected)
 
 
@@ -151,6 +151,7 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 	return self
 
 
+@warning_ignore("redundant_await")
 func next_current_value():
 	var current = await _current_value_provider.get_value()
 	call_deferred("emit_signal", "value_provided", current)

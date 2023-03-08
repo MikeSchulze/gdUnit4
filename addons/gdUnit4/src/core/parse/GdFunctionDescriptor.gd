@@ -13,6 +13,7 @@ var _args : Array[GdFunctionArgument]
 var _varargs :Array[GdFunctionArgument]
 
 
+@warning_ignore("shadowed_variable")
 func _init(name :String,
 	line_number :int,
 	is_virtual :bool,
@@ -134,15 +135,16 @@ func _to_string() -> String:
 	return func_template % [line_number(), name(), typed_args(), return_type_as_string()]
 
 
+@warning_ignore("shadowed_variable")
 # extract function description given by Object.get_method_list()
 static func extract_from(method_descriptor :Dictionary) -> GdFunctionDescriptor:
 	var function_flags :int = method_descriptor["flags"]
 	var is_virtual :bool = function_flags & METHOD_FLAG_VIRTUAL
 	var is_static :bool = function_flags & METHOD_FLAG_STATIC
 	var is_vararg :bool = function_flags & METHOD_FLAG_VARARG
-	var is_const :bool = function_flags & METHOD_FLAG_CONST
-	var is_core :bool = function_flags & METHOD_FLAG_OBJECT_CORE
-	var is_default :bool = function_flags & METHOD_FLAGS_DEFAULT
+	#var is_const :bool = function_flags & METHOD_FLAG_CONST
+	#var is_core :bool = function_flags & METHOD_FLAG_OBJECT_CORE
+	#var is_default :bool = function_flags & METHOD_FLAGS_DEFAULT
 	#prints("is_virtual: ", is_virtual)
 	#prints("is_static: ", is_static)
 	#prints("is_const: ", is_const)
@@ -195,6 +197,7 @@ static func _extract_return_type(return_info :Dictionary) -> Variant:
 	return type
 
 
+@warning_ignore("shadowed_variable")
 static func _extract_args(method_descriptor :Dictionary) -> Array[GdFunctionArgument]:
 	var args :Array[GdFunctionArgument] = []
 	var arguments :Array = method_descriptor["args"]
@@ -211,6 +214,7 @@ static func _extract_args(method_descriptor :Dictionary) -> Array[GdFunctionArgu
 	return args
 
 
+@warning_ignore("shadowed_variable")
 static func _build_varargs(is_vararg :bool) -> Array[GdFunctionArgument]:
 	var varargs :Array[GdFunctionArgument] = []
 	if not is_vararg:
@@ -269,7 +273,6 @@ static func _argument_default_value(arg :Dictionary, default_value) -> String:
 		TYPE_PACKED_COLOR_ARRAY:
 			return GdDefaultValueDecoder.decode(type, default_value)
 		TYPE_OBJECT:
-			var clazz_name := arg["class_name"] as String
 			if default_value == null:
 				return "null"
 	if GdObjects.is_primitive_type(default_value):

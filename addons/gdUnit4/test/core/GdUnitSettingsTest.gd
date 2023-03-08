@@ -93,7 +93,7 @@ func test_migrate_property_change_key() -> void:
 	# cleanup
 	ProjectSettings.clear(new_property_X)
 
-func convert_value(value :String) -> String:
+func convert_value(_value :String) -> String:
 	return "bar"
 
 func test_migrate_property_change_value() -> void:

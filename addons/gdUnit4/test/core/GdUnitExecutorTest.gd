@@ -581,6 +581,7 @@ func test_execute_add_child_on_before_GD_106() -> void:
 	assert_event_reports(events, [], [], [], [], [], [])
 
 
+@warning_ignore("unused_parameter")
 func test_fuzzer_before_before(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 1000):
 	# verify the used stack is cleaned by 'before_test'
 	assert_array(_stack).is_empty()

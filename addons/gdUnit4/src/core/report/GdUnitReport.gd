@@ -18,6 +18,7 @@ var _line_number :int
 var _message :String
 
 
+@warning_ignore("shadowed_variable")
 func create(type, line_number :int, message :String) -> GdUnitReport:
 	_type = type
 	_line_number = line_number

@@ -19,9 +19,9 @@ const META_KEY := "GdUnitSignals"
 static func instance() -> GdUnitSignals:
 	if Engine.has_meta(META_KEY):
 		return Engine.get_meta(META_KEY)
-	var instance := GdUnitSignals.new()
-	Engine.set_meta(META_KEY, instance)
-	return instance
+	var instance_ := GdUnitSignals.new()
+	Engine.set_meta(META_KEY, instance_)
+	return instance_
 
 
 static func dispose() -> void:

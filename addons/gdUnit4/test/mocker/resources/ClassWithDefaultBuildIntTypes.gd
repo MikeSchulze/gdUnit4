@@ -1,8 +1,8 @@
 class_name ClassWithDefaultBuildIntTypes
 extends RefCounted
 
-func foo(value :String, color := Color.RED):
+func foo(_value :String, _color := Color.RED):
 	pass
 
-func bar(value :String, direction := Vector3.FORWARD, aabb := AABB()):
+func bar(_value :String, _direction := Vector3.FORWARD, _aabb := AABB()):
 	pass

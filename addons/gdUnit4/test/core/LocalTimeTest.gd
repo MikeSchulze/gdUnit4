@@ -22,6 +22,7 @@ func test_now():
 	#  Time.get_datetime_dict_from_system() does not provide milliseconds
 	#assert_that(local_time.millis()).is_equal(0)
 
+@warning_ignore("integer_division")
 func test_of_unix_time():
 	var time := LocalTime._get_system_time_msecs()
 	var local_time := LocalTime.of_unix_time(time)
@@ -47,7 +48,7 @@ func test_plus_seconds():
 	var start_time = time2._time
 	for iteration in 10000:
 		var t = LocalTime.of_unix_time(start_time)
-		var seconds:int = randf_range(0, 1000)
+		var seconds:int = randi_range(0, 1000)
 		t.plus(LocalTime.TimeUnit.SECOND, seconds)
 		var expected :=  LocalTime.of_unix_time(start_time + (seconds * LocalTime.MILLIS_PER_SECOND))
 		assert_str(t._to_string()).is_equal(expected._to_string())

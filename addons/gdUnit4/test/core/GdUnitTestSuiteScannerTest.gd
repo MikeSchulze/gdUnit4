@@ -245,7 +245,6 @@ func test_parse_and_add_test_cases() -> void:
 	# fake a test suite
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
 	test_suite.set_script( load("res://addons/gdUnit4/test/core/resources/test_script_with_arguments.gd"))
-	var line_number :int = 0
 	
 	var test_case_names := PackedStringArray([
 		"test_no_args",
@@ -306,7 +305,7 @@ func test_scan_by_inheritance_class_path() -> void:
 
 
 func test_get_test_case_line_number() -> void:
-	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "get_test_case_line_number")).is_equal(308)
+	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "get_test_case_line_number")).is_equal(307)
 	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "unknown")).is_equal(-1)
 
 

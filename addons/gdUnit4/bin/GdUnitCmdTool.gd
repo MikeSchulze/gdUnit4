@@ -157,7 +157,7 @@ class CLIRunner extends Node:
 	
 	func load_test_config(path := GdUnitRunnerConfig.CONFIG_FILE) -> void:
 		_console.print_color("Loading test configuration %s\n" % path, Color.CORNFLOWER_BLUE)
-		_runner_config.load(path)
+		_runner_config.load_config(path)
 	
 	
 	func show_help() -> void:
@@ -233,9 +233,9 @@ class CLIRunner extends Node:
 		var to_execute := config.to_execute()
 		# scan for the requested test suites
 		var _scanner := GdUnitTestSuiteScanner.new()
-		for resource_path in to_execute.keys():
-			var selected_tests :PackedStringArray = to_execute.get(resource_path)
-			var scaned_suites := _scanner.scan(resource_path)
+		for resource_path_ in to_execute.keys():
+			var selected_tests :PackedStringArray = to_execute.get(resource_path_)
+			var scaned_suites := _scanner.scan(resource_path_)
 			skip_test_case(scaned_suites, selected_tests)
 			test_suites_to_process.append_array(scaned_suites)
 		skip_suites(test_suites_to_process, config)

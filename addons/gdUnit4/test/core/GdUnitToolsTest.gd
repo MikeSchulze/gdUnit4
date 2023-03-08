@@ -28,7 +28,7 @@ func test_create_temp_dir():
 		'level': 42
 	}
 	var file := FileAccess.open(file_to_save, FileAccess.WRITE)
-	file.store_line(JSON.new().stringify(data))
+	file.store_line(JSON.stringify(data))
 	assert_bool(FileAccess.file_exists(file_to_save)).is_true()
 
 func test_error_as_string():
@@ -146,8 +146,8 @@ func test_scan_dir() -> void:
 			"file_a",
 			"file_b"])
 
-func _create_file(path :String, name :String) -> void:
-	var file := create_temp_file(path, name)
+func _create_file(p_path :String, p_name :String) -> void:
+	var file := create_temp_file(p_path, p_name)
 	file.store_string("some content")
 
 func test_delete_directory() -> void:

@@ -14,6 +14,7 @@ func after_test():
 	assert_str("test after").is_equal("test after")
 
 # configure test with timeout of 2s
+@warning_ignore('unused_parameter')
 func test_case1(timeout=2000):
 	assert_str("test_case1").is_equal("test_case1")
 	# wait 3s to let the test fail by timeout

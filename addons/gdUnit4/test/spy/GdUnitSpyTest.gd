@@ -115,11 +115,11 @@ func test_spy_on_custom_class():
 # GD-291 https://github.com/MikeSchulze/gdUnit4/issues/291
 func test_spy_class_with_custom_formattings() -> void:
 	var resource = load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomFormattings.gd")
-	var spy = spy(auto_free(resource.new("test")))
-	spy.a1("set_name", "", true)
-	verify(spy, 1).a1("set_name", "", true)
-	verify_no_more_interactions(spy)
-	verify_no_interactions(spy, GdUnitAssert.EXPECT_FAIL)
+	var do_spy = spy(auto_free(resource.new("test")))
+	do_spy.a1("set_name", "", true)
+	verify(do_spy, 1).a1("set_name", "", true)
+	verify_no_more_interactions(do_spy)
+	verify_no_interactions(do_spy, GdUnitAssert.EXPECT_FAIL)
 	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(122)
 
 
@@ -384,12 +384,12 @@ func test_spy_snake_case_named_class_by_resource_path():
 
 
 func test_spy_snake_case_named_class_by_class():
-	var spy = spy(snake_case_class_name.new())
-	assert_object(spy).is_not_null()
+	var do_spy = spy(snake_case_class_name.new())
+	assert_object(do_spy).is_not_null()
 	
-	spy.custom_func()
-	verify(spy).custom_func()
-	verify_no_more_interactions(spy)
+	do_spy.custom_func()
+	verify(do_spy).custom_func()
+	verify_no_more_interactions(do_spy)
 	
 	# try checked Godot class
 	var spy_tcp_server = spy(TCPServer.new())

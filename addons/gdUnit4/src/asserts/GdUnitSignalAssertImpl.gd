@@ -9,7 +9,8 @@ var _current_error_message :String = ""
 var _custom_failure_message :String = ""
 var _line_number := -1
 var _expect_fail := false
-var _is_failed := false
+@warning_ignore("unused_private_class_variable")
+var _is_failed :bool = false
 var _timeout := DEFAULT_TIMEOUT
 var _expect_result :int
 var _interrupted := false
@@ -214,7 +215,7 @@ func _wail_until_signal(signal_name :String, expected_args :Array, expect_not_em
 		if is_instance_valid(_emitter):
 			is_signal_emitted = _signal_collector.match(_emitter, signal_name, expected_args)
 			if is_signal_emitted and expect_not_emitted:
-				report_error(GdAssertMessages.error_signal_emitted(signal_name, expected_args, LocalTime.elapsed(_timeout-timer.time_left*1000)))
+				report_error(GdAssertMessages.error_signal_emitted(signal_name, expected_args, LocalTime.elapsed(int(_timeout-timer.time_left*1000))))
 		
 	if _interrupted and not expect_not_emitted:
 		report_error(GdAssertMessages.error_wait_signal(signal_name, expected_args, LocalTime.elapsed(_timeout)))

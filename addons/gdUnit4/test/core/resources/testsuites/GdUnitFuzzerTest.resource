@@ -1,6 +1,6 @@
 # this test suite simulates long running test cases
 extends GdUnitTestSuite
-
+@warning_ignore('unused_parameter')
 
 var _stack : Array
 
@@ -13,6 +13,7 @@ func before_test():
 	_stack.clear()
 
 
+@warning_ignore('unused_parameter')
 func test_multi_yielding_with_fuzzer(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 10):
 	# verify the used stack is cleaned by 'before_test'
 	assert_array(_stack).is_empty()
@@ -29,6 +30,7 @@ func test_multi_yielding_with_fuzzer(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_i
 	await get_tree().process_frame
 	prints("Go")
 
+@warning_ignore('unused_parameter')
 func test_multi_yielding_with_fuzzer_fail_after_3_iterations(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 10):
 	prints("test iteration %d" % fuzzer.iteration_index())
 	# should never be greater than 3 because we interuppted after three iterations

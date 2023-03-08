@@ -5,6 +5,7 @@ signal spell_explode
 
 const SPELL_LIVE_TIME = 1000
 
+@warning_ignore("unused_private_class_variable")
 var _spell_fired :bool = false
 var _spell_live_time :float = 0
 var _spell_pos :Vector3 = Vector3.ZERO

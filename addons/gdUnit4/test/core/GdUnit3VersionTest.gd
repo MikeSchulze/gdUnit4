@@ -27,6 +27,8 @@ func test_to_string() -> void:
 	assert_str(str(version)).is_equal("v0.9.1")
 	assert_str("%s" % version).is_equal("v0.9.1")
 
+
+@warning_ignore("unused_parameter")
 func test_is_greater_major(fuzzer_major := Fuzzers.rangei(1, 20), fuzzer_minor := Fuzzers.rangei(0, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations = 500) -> void:
 	var version := GdUnit4Version.new(0, 9, 1)
 	var current := GdUnit4Version.new(fuzzer_major.next_value(), fuzzer_minor.next_value(), fuzzer_patch.next_value());
@@ -34,6 +36,8 @@ func test_is_greater_major(fuzzer_major := Fuzzers.rangei(1, 20), fuzzer_minor :
 		.override_failure_message("Expect %s is greater then %s" % [current, version])\
 		.is_true()
 
+
+@warning_ignore("unused_parameter")
 func test_is_not_greater_major(fuzzer_major := Fuzzers.rangei(1, 10), fuzzer_minor := Fuzzers.rangei(0, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations = 500) -> void:
 	var version := GdUnit4Version.new(11, 0, 0)
 	var current := GdUnit4Version.new(fuzzer_major.next_value(), fuzzer_minor.next_value(), fuzzer_patch.next_value());
@@ -41,6 +45,8 @@ func test_is_not_greater_major(fuzzer_major := Fuzzers.rangei(1, 10), fuzzer_min
 		.override_failure_message("Expect %s is not greater then %s" % [current, version])\
 		.is_false()
 
+
+@warning_ignore("unused_parameter")
 func test_is_greater_minor(fuzzer_minor := Fuzzers.rangei(3, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations = 500) -> void:
 	var version := GdUnit4Version.new(0, 2, 1)
 	var current := GdUnit4Version.new(0, fuzzer_minor.next_value(), fuzzer_patch.next_value());
@@ -48,6 +54,8 @@ func test_is_greater_minor(fuzzer_minor := Fuzzers.rangei(3, 20), fuzzer_patch :
 		.override_failure_message("Expect %s is greater then %s" % [current, version])\
 		.is_true()
 
+
+@warning_ignore("unused_parameter")
 func test_is_greater_patch(fuzzer_patch := Fuzzers.rangei(1, 20), fuzzer_iterations = 500) -> void:
 	var version := GdUnit4Version.new(0, 2, 0)
 	var current := GdUnit4Version.new(0, 2, fuzzer_patch.next_value());
