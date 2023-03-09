@@ -70,12 +70,13 @@ func test_is_mockable__overriden_func_get_class():
 		.is_true()
 
 
+@warning_ignore("unused_parameter")
 func test_mock_godot_class_fullcheck(fuzzer=GodotClassNameFuzzer.new(), fuzzer_iterations=200):
 	var clazz_name = fuzzer.next_value()
 	# try to create a mock
 	if GdUnitMockBuilder.is_mockable(clazz_name):
-		var mock = mock(clazz_name, CALL_REAL_FUNC)
-		assert_that(mock)\
+		var m = mock(clazz_name, CALL_REAL_FUNC)
+		assert_that(m)\
 			.override_failure_message("The class %s should be mockable" % clazz_name)\
 			.is_not_null()
 
@@ -100,8 +101,8 @@ func test_mock_fail():
 
 
 func test_mock_special_classes():
-	var mock = mock("JavaClass") as JavaClass
-	assert_that(mock).is_not_null()
+	var m = mock("JavaClass") as JavaClass
+	assert_that(m).is_not_null()
 
 
 func test_mock_Node():
@@ -133,21 +134,21 @@ func test_mock_Node():
 
 
 func test_mock_source_with_class_name_by_resource_path() -> void:
-	var resource_path := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
-	var m = mock(resource_path)
+	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
+	var m = mock(resource_path_)
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
 		.contains("class_name DoubledMunderwoodPathingWorld")\
-		.contains("extends '%s'" % resource_path)
+		.contains("extends '%s'" % resource_path_)
 
 
 func test_mock_source_with_class_name_by_class() -> void:
-	var resource_path := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
+	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
 	var m = mock(Munderwood_Pathing_World)
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
 		.contains("class_name DoubledMunderwoodPathingWorld")\
-		.contains("extends '%s'" % resource_path)
+		.contains("extends '%s'" % resource_path_)
 
 
 func test_mock_extends_godot_class() -> void:
@@ -230,402 +231,395 @@ func _test_mock_verify_emit_signal():
 
 
 func test_mock_custom_class_by_class_name():
-	var mock = mock(CustomResourceTestClass)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomResourceTestClass)
+	assert_that(m).is_not_null()
 	
 	# test we have initial no interactions checked this mock
-	verify_no_interactions(mock)
+	verify_no_interactions(m)
 	# test mocked function returns default typed value
-	assert_that(mock.foo()).is_equal("")
+	assert_that(m.foo()).is_equal("")
 	
 	# now mock return value for function 'foo' to 'overwriten value'
-	do_return("overriden value").checked(mock).foo()
+	do_return("overriden value").checked(m).foo()
 	# verify the return value is overwritten
-	assert_that(mock.foo()).is_equal("overriden value")
+	assert_that(m.foo()).is_equal("overriden value")
 	
 	# now mock return values by custom arguments
-	do_return("arg_1").checked(mock).bar(1)
-	do_return("arg_2").checked(mock).bar(2)
+	do_return("arg_1").checked(m).bar(1)
+	do_return("arg_2").checked(m).bar(2)
 	
-	assert_that(mock.bar(1)).is_equal("arg_1")
-	assert_that(mock.bar(2)).is_equal("arg_2")
+	assert_that(m.bar(1)).is_equal("arg_1")
+	assert_that(m.bar(2)).is_equal("arg_2")
 
 
 func test_mock_custom_class_by_resource_path():
-	var mock = mock("res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd")
-	assert_that(mock).is_not_null()
+	var m = mock("res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd")
+	assert_that(m).is_not_null()
 	
 	# test we have initial no interactions checked this mock
-	verify_no_interactions(mock)
+	verify_no_interactions(m)
 	# test mocked function returns default typed value
-	assert_that(mock.foo()).is_equal("")
+	assert_that(m.foo()).is_equal("")
 	
 	# now mock return value for function 'foo' to 'overwriten value'
-	do_return("overriden value").checked(mock).foo()
+	do_return("overriden value").checked(m).foo()
 	# verify the return value is overwritten
-	assert_that(mock.foo()).is_equal("overriden value")
+	assert_that(m.foo()).is_equal("overriden value")
 	
 	# now mock return values by custom arguments
-	do_return("arg_1").checked(mock).bar(1)
-	do_return("arg_2").checked(mock).bar(2)
+	do_return("arg_1").checked(m).bar(1)
+	do_return("arg_2").checked(m).bar(2)
 	
-	assert_that(mock.bar(1)).is_equal("arg_1")
-	assert_that(mock.bar(2)).is_equal("arg_2")
+	assert_that(m.bar(1)).is_equal("arg_1")
+	assert_that(m.bar(2)).is_equal("arg_2")
 
 
 func test_mock_custom_class_func_foo_use_real_func():
-	var mock = mock(CustomResourceTestClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
 	# test mocked function returns value from real function
-	assert_that(mock.foo()).is_equal("foo")
+	assert_that(m.foo()).is_equal("foo")
 	# now mock return value for function 'foo' to 'overwriten value'
-	do_return("overridden value").checked(mock).foo()
+	do_return("overridden value").checked(m).foo()
 	# verify the return value is overwritten
-	assert_that(mock.foo()).is_equal("overridden value")
+	assert_that(m.foo()).is_equal("overridden value")
 
 
 func test_mock_custom_class_void_func():
-	var mock = mock(CustomResourceTestClass)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomResourceTestClass)
+	assert_that(m).is_not_null()
 	# test mocked void function returns null by default
-	assert_that(mock.foo_void()).is_null()
+	assert_that(m.foo_void()).is_null()
 	# try now mock return value for a void function. results into an error
-	do_return("overridden value").checked(mock).foo_void()
+	do_return("overridden value").checked(m).foo_void()
 	# verify it has no affect for void func
-	assert_that(mock.foo_void()).is_null()
+	assert_that(m.foo_void()).is_null()
 
 
 func test_mock_custom_class_void_func_real_func():
-	var mock = mock(CustomResourceTestClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
 	# test mocked void function returns null by default
-	assert_that(mock.foo_void()).is_null()
+	assert_that(m.foo_void()).is_null()
 	# try now mock return value for a void function. results into an error
-	do_return("overridden value").checked(mock).foo_void()
+	do_return("overridden value").checked(m).foo_void()
 	# verify it has no affect for void func
-	assert_that(mock.foo_void()).is_null()
+	assert_that(m.foo_void()).is_null()
 
 
 func test_mock_custom_class_func_foo_call_times():
-	var mock = mock(CustomResourceTestClass)
-	assert_that(mock).is_not_null()
-	verify(mock, 0).foo()
-	mock.foo()
-	verify(mock, 1).foo()
-	mock.foo()
-	verify(mock, 2).foo()
-	mock.foo()
-	mock.foo()
-	verify(mock, 4).foo()
+	var m = mock(CustomResourceTestClass)
+	assert_that(m).is_not_null()
+	verify(m, 0).foo()
+	m.foo()
+	verify(m, 1).foo()
+	m.foo()
+	verify(m, 2).foo()
+	m.foo()
+	m.foo()
+	verify(m, 4).foo()
 
 
 func test_mock_custom_class_func_foo_call_times_real_func():
-	var mock = mock(CustomResourceTestClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
-	verify(mock, 0).foo()
-	mock.foo()
-	verify(mock, 1).foo()
-	mock.foo()
-	verify(mock, 2).foo()
-	mock.foo()
-	mock.foo()
-	verify(mock, 4).foo()
+	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
+	verify(m, 0).foo()
+	m.foo()
+	verify(m, 1).foo()
+	m.foo()
+	verify(m, 2).foo()
+	m.foo()
+	m.foo()
+	verify(m, 4).foo()
 
 
 func test_mock_custom_class_func_foo_full_test():
-	var mock = mock(CustomResourceTestClass)
-	assert_that(mock).is_not_null()
-	verify(mock, 0).foo()
-	assert_that(mock.foo()).is_equal("")
-	verify(mock, 1).foo()
-	do_return("new value").checked(mock).foo()
-	verify(mock, 1).foo()
-	assert_that(mock.foo()).is_equal("new value")
-	verify(mock, 2).foo()
+	var m = mock(CustomResourceTestClass)
+	assert_that(m).is_not_null()
+	verify(m, 0).foo()
+	assert_that(m.foo()).is_equal("")
+	verify(m, 1).foo()
+	do_return("new value").checked(m).foo()
+	verify(m, 1).foo()
+	assert_that(m.foo()).is_equal("new value")
+	verify(m, 2).foo()
 
 
 func test_mock_custom_class_func_foo_full_test_real_func():
-	var mock = mock(CustomResourceTestClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
-	verify(mock, 0).foo()
-	assert_that(mock.foo()).is_equal("foo")
-	verify(mock, 1).foo()
-	do_return("new value").checked(mock).foo()
-	verify(mock, 1).foo()
-	assert_that(mock.foo()).is_equal("new value")
-	verify(mock, 2).foo()
+	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
+	verify(m, 0).foo()
+	assert_that(m.foo()).is_equal("foo")
+	verify(m, 1).foo()
+	do_return("new value").checked(m).foo()
+	verify(m, 1).foo()
+	assert_that(m.foo()).is_equal("new value")
+	verify(m, 2).foo()
 
 
 func test_mock_custom_class_func_bar():
-	var mock = mock(CustomResourceTestClass)
-	assert_that(mock).is_not_null()
-	assert_that(mock.bar(10)).is_equal("")
+	var m = mock(CustomResourceTestClass)
+	assert_that(m).is_not_null()
+	assert_that(m.bar(10)).is_equal("")
 	# verify 'bar' with args [10] is called one time at this point
-	verify(mock, 1).bar(10)
+	verify(m, 1).bar(10)
 	# verify 'bar' with args [10, 20] is never called at this point
-	verify(mock, 0).bar(10, 29)
+	verify(m, 0).bar(10, 29)
 	# verify 'bar' with args [23] is never called at this point
-	verify(mock, 0).bar(23)
+	verify(m, 0).bar(23)
 	
 	# now mock return value for function 'bar' with args [10] to 'overwriten value'
-	do_return("overridden value").checked(mock).bar(10)
+	do_return("overridden value").checked(m).bar(10)
 	# verify the return value is overwritten
-	assert_that(mock.bar(10)).is_equal("overridden value")
+	assert_that(m.bar(10)).is_equal("overridden value")
 	# finally verify function call times
-	verify(mock, 2).bar(10)
-	verify(mock, 0).bar(10, 29)
-	verify(mock, 0).bar(23)
+	verify(m, 2).bar(10)
+	verify(m, 0).bar(10, 29)
+	verify(m, 0).bar(23)
 
 
 func test_mock_custom_class_func_bar_real_func():
-	var mock = mock(CustomResourceTestClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
-	assert_that(mock.bar(10)).is_equal("test_33")
+	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
+	assert_that(m.bar(10)).is_equal("test_33")
 	# verify 'bar' with args [10] is called one time at this point
-	verify(mock, 1).bar(10)
+	verify(m, 1).bar(10)
 	# verify 'bar' with args [10, 20] is never called at this point
-	verify(mock, 0).bar(10, 29)
+	verify(m, 0).bar(10, 29)
 	# verify 'bar' with args [23] is never called at this point
-	verify(mock, 0).bar(23)
+	verify(m, 0).bar(23)
 	
 	# now mock return value for function 'bar' with args [10] to 'overwriten value'
-	do_return("overridden value").checked(mock).bar(10)
+	do_return("overridden value").checked(m).bar(10)
 	# verify the return value is overwritten
-	assert_that(mock.bar(10)).is_equal("overridden value")
+	assert_that(m.bar(10)).is_equal("overridden value")
 	# verify the real implementation is used
-	assert_that(mock.bar(10, 29)).is_equal("test_39")
-	assert_that(mock.bar(10, 20, "other")).is_equal("other_30")
+	assert_that(m.bar(10, 29)).is_equal("test_39")
+	assert_that(m.bar(10, 20, "other")).is_equal("other_30")
 	# finally verify function call times
-	verify(mock, 2).bar(10)
-	verify(mock, 1).bar(10, 29)
-	verify(mock, 0).bar(10, 20)
-	verify(mock, 1).bar(10, 20, "other")
+	verify(m, 2).bar(10)
+	verify(m, 1).bar(10, 29)
+	verify(m, 0).bar(10, 20)
+	verify(m, 1).bar(10, 20, "other")
 
 
 func test_mock_custom_class_extends_Node():
-	var mock = mock(CustomNodeTestClass)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomNodeTestClass)
+	assert_that(m).is_not_null()
 	
 	# test mocked function returns null as default
-	assert_that(mock.get_child_count()).is_equal(0)
-	assert_that(mock.get_children()).contains_exactly([])
+	assert_that(m.get_child_count()).is_equal(0)
+	assert_that(m.get_children()).contains_exactly([])
 	# test seters has no affect
 	var node = auto_free(Node.new())
-	mock.add_child(node)
-	assert_that(mock.get_child_count()).is_equal(0)
-	assert_that(mock.get_children()).contains_exactly([])
-	verify(mock, 1).add_child(node)
-	verify(mock, 2).get_child_count()
-	verify(mock, 2).get_children()
+	m.add_child(node)
+	assert_that(m.get_child_count()).is_equal(0)
+	assert_that(m.get_children()).contains_exactly([])
+	verify(m, 1).add_child(node)
+	verify(m, 2).get_child_count()
+	verify(m, 2).get_children()
 
 
 func test_mock_custom_class_extends_Node_real_func():
-	var mock = mock(CustomNodeTestClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomNodeTestClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
 	# test mocked function returns default mock value
-	assert_that(mock.get_child_count()).is_equal(0)
-	assert_that(mock.get_children()).is_equal([])
+	assert_that(m.get_child_count()).is_equal(0)
+	assert_that(m.get_children()).is_equal([])
 	# test real seters used
 	var nodeA = auto_free(Node.new())
 	var nodeB = auto_free(Node.new())
 	var nodeC = auto_free(Node.new())
-	mock.add_child(nodeA)
-	mock.add_child(nodeB)
-	assert_that(mock.get_child_count()).is_equal(2)
-	assert_that(mock.get_children()).contains_exactly([nodeA, nodeB])
-	verify(mock, 1).add_child(nodeA)
-	verify(mock, 1).add_child(nodeB)
-	verify(mock, 0).add_child(nodeC)
-	verify(mock, 2).get_child_count()
-	verify(mock, 2).get_children()
+	m.add_child(nodeA)
+	m.add_child(nodeB)
+	assert_that(m.get_child_count()).is_equal(2)
+	assert_that(m.get_children()).contains_exactly([nodeA, nodeB])
+	verify(m, 1).add_child(nodeA)
+	verify(m, 1).add_child(nodeB)
+	verify(m, 0).add_child(nodeC)
+	verify(m, 2).get_child_count()
+	verify(m, 2).get_children()
 
 
 func test_mock_custom_class_extends_other_custom_class():
-	var mock = mock(CustomClassExtendsCustomClass)
+	var m = mock(CustomClassExtendsCustomClass)
 	assert_that(mock).is_not_null()
 	
 	# foo() form parent class
-	verify(mock, 0).foo()
+	verify(m, 0).foo()
 	# foo2() overriden 
-	verify(mock, 0).foo2()
+	verify(m, 0).foo2()
 	# bar2() from class 
-	verify(mock, 0).bar2()
+	verify(m, 0).bar2()
 	
-	assert_that(mock.foo()).is_empty()
-	assert_that(mock.foo2()).is_null()
-	assert_that(mock.bar2()).is_empty()
+	assert_that(m.foo()).is_empty()
+	assert_that(m.foo2()).is_null()
+	assert_that(m.bar2()).is_empty()
 	
-	verify(mock, 1).foo()
-	verify(mock, 1).foo2()
-	verify(mock, 1).bar2()
+	verify(m, 1).foo()
+	verify(m, 1).foo2()
+	verify(m, 1).bar2()
 	
 	# override returns
-	do_return("abc1").checked(mock).foo()
-	do_return("abc2").checked(mock).foo2()
-	do_return("abc3").checked(mock).bar2()
+	do_return("abc1").checked(m).foo()
+	do_return("abc2").checked(m).foo2()
+	do_return("abc3").checked(m).bar2()
 	
-	assert_that(mock.foo()).is_equal("abc1")
-	assert_that(mock.foo2()).is_equal("abc2")
-	assert_that(mock.bar2()).is_equal("abc3")
+	assert_that(m.foo()).is_equal("abc1")
+	assert_that(m.foo2()).is_equal("abc2")
+	assert_that(m.bar2()).is_equal("abc3")
 
 
 func test_mock_custom_class_extends_other_custom_class_call_real_func():
-	var mock = mock(CustomClassExtendsCustomClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomClassExtendsCustomClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
 	
 	# foo() form parent class
-	verify(mock, 0).foo()
+	verify(m, 0).foo()
 	# foo2() overriden 
-	verify(mock, 0).foo2()
+	verify(m, 0).foo2()
 	# bar2() from class 
-	verify(mock, 0).bar2()
+	verify(m, 0).bar2()
 	
-	assert_that(mock.foo()).is_equal("foo")
-	assert_that(mock.foo2()).is_equal("foo2 overriden")
-	assert_that(mock.bar2()).is_equal("test_65")
+	assert_that(m.foo()).is_equal("foo")
+	assert_that(m.foo2()).is_equal("foo2 overriden")
+	assert_that(m.bar2()).is_equal("test_65")
 	
-	verify(mock, 1).foo()
-	verify(mock, 1).foo2()
-	verify(mock, 1).bar2()
+	verify(m, 1).foo()
+	verify(m, 1).foo2()
+	verify(m, 1).bar2()
 	
 	# override returns
-	do_return("abc1").checked(mock).foo()
-	do_return("abc2").checked(mock).foo2()
-	do_return("abc3").checked(mock).bar2()
+	do_return("abc1").checked(m).foo()
+	do_return("abc2").checked(m).foo2()
+	do_return("abc3").checked(m).bar2()
 	
-	assert_that(mock.foo()).is_equal("abc1")
-	assert_that(mock.foo2()).is_equal("abc2")
-	assert_that(mock.bar2()).is_equal("abc3")
+	assert_that(m.foo()).is_equal("abc1")
+	assert_that(m.foo2()).is_equal("abc2")
+	assert_that(m.bar2()).is_equal("abc3")
 
 
 func test_mock_static_func():
-	var mock = mock(CustomNodeTestClass)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomNodeTestClass)
+	assert_that(m).is_not_null()
 	# initial not called
-	verify(mock, 0).static_test()
-	verify(mock, 0).static_test_void()
+	verify(m, 0).static_test()
+	verify(m, 0).static_test_void()
 	
-	assert_that(mock.static_test()).is_equal("")
-	assert_that(mock.static_test_void()).is_null()
+	assert_that(m.static_test()).is_equal("")
+	assert_that(m.static_test_void()).is_null()
 	
-	verify(mock, 1).static_test()
-	verify(mock, 1).static_test_void()
-	mock.static_test()
-	mock.static_test_void()
-	mock.static_test_void()
-	verify(mock, 2).static_test()
-	verify(mock, 3).static_test_void()
+	verify(m, 1).static_test()
+	verify(m, 1).static_test_void()
+	m.static_test()
+	m.static_test_void()
+	m.static_test_void()
+	verify(m, 2).static_test()
+	verify(m, 3).static_test_void()
 
 
 func test_mock_static_func_real_func():
-	var mock = mock(CustomNodeTestClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomNodeTestClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
 	# initial not called
-	verify(mock, 0).static_test()
-	verify(mock, 0).static_test_void()
+	verify(m, 0).static_test()
+	verify(m, 0).static_test_void()
 	
-	assert_that(mock.static_test()).is_equal(CustomNodeTestClass.STATIC_FUNC_RETURN_VALUE)
-	assert_that(mock.static_test_void()).is_null()
+	assert_that(m.static_test()).is_equal(CustomNodeTestClass.STATIC_FUNC_RETURN_VALUE)
+	assert_that(m.static_test_void()).is_null()
 	
-	verify(mock, 1).static_test()
-	verify(mock, 1).static_test_void()
-	mock.static_test()
-	mock.static_test_void()
-	mock.static_test_void()
-	verify(mock, 2).static_test()
-	verify(mock, 3).static_test_void()
-
-
-func _test_mock_mode_deep_stub():
-	var mocked_shape = mock(DeepStubTestClass.XShape)
-	#var t := DeepStubTestClass.new()
-	#t.add(mocked_shape)
-	#assert_bool(t.validate()).is_true()
+	verify(m, 1).static_test()
+	verify(m, 1).static_test_void()
+	m.static_test()
+	m.static_test_void()
+	m.static_test_void()
+	verify(m, 2).static_test()
+	verify(m, 3).static_test_void()
 
 
 func test_mock_custom_class_assert_has_no_side_affect():
-	var mock = mock(CustomNodeTestClass)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomNodeTestClass)
+	assert_that(m).is_not_null()
 	var node = Node.new()
 	# verify the assertions has no side affect checked mocked object
-	verify(mock, 0).add_child(node)
+	verify(m, 0).add_child(node)
 	# expect no change checked childrens
-	assert_that(mock.get_children()).contains_exactly([])
+	assert_that(m.get_children()).contains_exactly([])
 	
-	mock.add_child(node)
+	m.add_child(node)
 	# try thre times 'assert_called' to see it has no affect to the mock
-	verify(mock, 1).add_child(node)
-	verify(mock, 1).add_child(node)
-	verify(mock, 1).add_child(node)
-	assert_that(mock.get_children()).contains_exactly([])
+	verify(m, 1).add_child(node)
+	verify(m, 1).add_child(node)
+	verify(m, 1).add_child(node)
+	assert_that(m.get_children()).contains_exactly([])
 	# needs to be manually freed
 	node.free()
 
 
 func test_mock_custom_class_assert_has_no_side_affect_real_func():
-	var mock = mock(CustomNodeTestClass, CALL_REAL_FUNC)
-	assert_that(mock).is_not_null()
+	var m = mock(CustomNodeTestClass, CALL_REAL_FUNC)
+	assert_that(m).is_not_null()
 	var node = Node.new()
 	# verify the assertions has no side affect checked mocked object
-	verify(mock, 0).add_child(node)
+	verify(m, 0).add_child(node)
 	# expect no change checked childrens
-	assert_that(mock.get_children()).contains_exactly([])
+	assert_that(m.get_children()).contains_exactly([])
 	
-	mock.add_child(node)
+	m.add_child(node)
 	# try thre times 'assert_called' to see it has no affect to the mock
-	verify(mock, 1).add_child(node)
-	verify(mock, 1).add_child(node)
-	verify(mock, 1).add_child(node)
-	assert_that(mock.get_children()).contains_exactly([node])
+	verify(m, 1).add_child(node)
+	verify(m, 1).add_child(node)
+	verify(m, 1).add_child(node)
+	assert_that(m.get_children()).contains_exactly([node])
 
 
 # This test verifies a function is calling other internally functions
 # to collect the access times and the override return value is working as expected
 func test_mock_advanced_func_path():
-	var mock = mock(AdvancedTestClass, CALL_REAL_FUNC)
+	var m = mock(AdvancedTestClass, CALL_REAL_FUNC)
 	# initial nothing is called
-	verify(mock, 0).select(AdvancedTestClass.A)
-	verify(mock, 0).select(AdvancedTestClass.B)
-	verify(mock, 0).select(AdvancedTestClass.C)
-	verify(mock, 0).a()
-	verify(mock, 0).b()
-	verify(mock, 0).c()
+	verify(m, 0).select(AdvancedTestClass.A)
+	verify(m, 0).select(AdvancedTestClass.B)
+	verify(m, 0).select(AdvancedTestClass.C)
+	verify(m, 0).a()
+	verify(m, 0).b()
+	verify(m, 0).c()
 	
 	# the function select() swiches based checked input argument to function a(), b() or c()
 	# call select where called internally func a() and returned "a"
-	assert_that(mock.select(AdvancedTestClass.A)).is_equal("a")
+	assert_that(m.select(AdvancedTestClass.A)).is_equal("a")
 	# verify when call select() is also calling original func a()
-	verify(mock, 1).select(AdvancedTestClass.A)
-	verify(mock, 1).a()
+	verify(m, 1).select(AdvancedTestClass.A)
+	verify(m, 1).a()
 	
 	# call select again wiht overriden return value for func a()
-	do_return("overridden a func").checked(mock).a()
-	assert_that(mock.select(AdvancedTestClass.A)).is_equal("overridden a func")
+	do_return("overridden a func").checked(m).a()
+	assert_that(m.select(AdvancedTestClass.A)).is_equal("overridden a func")
 	
 	# verify at this time select() and a() is called two times
-	verify(mock, 2).select(AdvancedTestClass.A)
-	verify(mock, 0).select(AdvancedTestClass.B)
-	verify(mock, 0).select(AdvancedTestClass.C)
-	verify(mock, 2).a()
-	verify(mock, 0).b()
-	verify(mock, 0).c()
+	verify(m, 2).select(AdvancedTestClass.A)
+	verify(m, 0).select(AdvancedTestClass.B)
+	verify(m, 0).select(AdvancedTestClass.C)
+	verify(m, 2).a()
+	verify(m, 0).b()
+	verify(m, 0).c()
 	
 	# finally use select to switch to internally func c()
-	assert_that(mock.select(AdvancedTestClass.C)).is_equal("c")
-	verify(mock, 2).select(AdvancedTestClass.A)
-	verify(mock, 0).select(AdvancedTestClass.B)
-	verify(mock, 1).select(AdvancedTestClass.C)
-	verify(mock, 2).a()
-	verify(mock, 0).b()
-	verify(mock, 1).c()
+	assert_that(m.select(AdvancedTestClass.C)).is_equal("c")
+	verify(m, 2).select(AdvancedTestClass.A)
+	verify(m, 0).select(AdvancedTestClass.B)
+	verify(m, 1).select(AdvancedTestClass.C)
+	verify(m, 2).a()
+	verify(m, 0).b()
+	verify(m, 1).c()
 
 
 func _test_mock_godot_class_calls_sub_function():
-	var mock = mock(MeshInstance3D, CALL_REAL_FUNC)
-	verify(mock, 0)._mesh_changed()
-	mock.set_mesh(QuadMesh.new())
-	verify(mock, 1).set_mesh(any_class(Mesh))
-	verify(mock, 1)._mesh_changed()
+	var m = mock(MeshInstance3D, CALL_REAL_FUNC)
+	verify(m, 0)._mesh_changed()
+	m.set_mesh(QuadMesh.new())
+	verify(m, 1).set_mesh(any_class(Mesh))
+	verify(m, 1)._mesh_changed()
 
 
 func test_mock_class_with_inner_classs():
@@ -870,12 +864,12 @@ func test_mock_snake_case_named_godot_class_by_name():
 
 
 func test_mock_snake_case_named_class_by_class():
-	var mock = mock(snake_case_class_name)
-	assert_object(mock).is_not_null()
+	var m = mock(snake_case_class_name)
+	assert_object(m).is_not_null()
 	
-	mock.custom_func()
-	verify(mock).custom_func()
-	verify_no_more_interactions(mock)
+	m.custom_func()
+	verify(m).custom_func()
+	verify_no_more_interactions(m)
 	
 	# try checked Godot class
 	var mocked_tcp_server = mock(TCPServer)
@@ -889,21 +883,21 @@ func test_mock_snake_case_named_class_by_class():
 
 
 func test_mock_func_with_default_build_in_type():
-	var mock = mock(ClassWithDefaultBuildIntTypes)
-	assert_object(mock).is_not_null()
+	var m = mock(ClassWithDefaultBuildIntTypes)
+	assert_object(m).is_not_null()
 	# call with default arg
-	mock.foo("abc")
-	mock.bar("def")
-	verify(mock).foo("abc", Color.RED)
-	verify(mock).bar("def", Vector3.FORWARD, AABB())
-	verify_no_more_interactions(mock)
+	m.foo("abc")
+	m.bar("def")
+	verify(m).foo("abc", Color.RED)
+	verify(m).bar("def", Vector3.FORWARD, AABB())
+	verify_no_more_interactions(m)
 	
 	# call with custom color arg
-	mock.foo("abc", Color.BLUE)
-	mock.bar("def", Vector3.DOWN, AABB(Vector3.ONE, Vector3.ZERO))
-	verify(mock).foo("abc", Color.BLUE)
-	verify(mock).bar("def", Vector3.DOWN, AABB(Vector3.ONE, Vector3.ZERO))
-	verify_no_more_interactions(mock)
+	m.foo("abc", Color.BLUE)
+	m.bar("def", Vector3.DOWN, AABB(Vector3.ONE, Vector3.ZERO))
+	verify(m).foo("abc", Color.BLUE)
+	verify(m).bar("def", Vector3.DOWN, AABB(Vector3.ONE, Vector3.ZERO))
+	verify_no_more_interactions(m)
 
 
 func test_mock_virtual_function_is_not_called_twice() -> void:
@@ -918,24 +912,24 @@ func test_mock_virtual_function_is_not_called_twice() -> void:
 	#       get_script_instance()->call_multilevel_reversed(SceneStringNames::get_singleton()->_ready,NULL,0);
 	#    }
 
-	var mock = mock(ClassWithOverridenVirtuals, CALL_REAL_FUNC)
-	assert_object(mock).is_not_null()
+	var m = mock(ClassWithOverridenVirtuals, CALL_REAL_FUNC)
+	assert_object(m).is_not_null()
 	
 	# inital constructor 
-	assert_that(mock._x).is_equal("_init")
+	assert_that(m._x).is_equal("_init")
 	
 	# add_child calls internally by "default" _ready() where is a virtual function
-	add_child(mock)
+	add_child(m)
 	
 	# verify _ready func is only once called
-	assert_that(mock._x).is_equal("_ready")
+	assert_that(m._x).is_equal("_ready")
 	
 	# now simulate an input event calls '_input'
 	var action = InputEventKey.new()
 	action.pressed = false
 	action.keycode = KEY_ENTER
 	get_tree().root.push_input(action)
-	assert_that(mock._x).is_equal("ui_accept")
+	assert_that(m._x).is_equal("ui_accept")
 
 
 func test_mock_scene_by_path():
@@ -1003,7 +997,7 @@ func test_mock_scene_execute_func_yielded() -> void:
 
 
 class Base:
-	func _init(value :String):
+	func _init(_value :String):
 		pass
 
 

@@ -38,6 +38,6 @@ func test_on_signal_fail() -> void:
 	GdAssertReports.expect_fail()
 	var monster = auto_free(Monster.new())
 	add_child(monster)
-	var signal_args = await await_signal_on(monster, "move", [4.0])
+	await await_signal_on(monster, "move", [4.0])
 	assert_str(GdAssertReports.current_failure()).is_equal("await_signal_on(move, [4]) timed out after 2000ms")
 	remove_child(monster)

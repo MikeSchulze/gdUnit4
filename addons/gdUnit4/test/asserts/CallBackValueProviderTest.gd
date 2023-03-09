@@ -11,6 +11,7 @@ const __source = 'res://addons/gdUnit4/src/asserts/CallBackValueProvider.gd'
 func next_value() -> String:
 	return "a value"
 
+
 func test_get_value() -> void:
 	var vp := CallBackValueProvider.new(self, "next_value")
 	assert_str(await vp.get_value()).is_equal("a value")

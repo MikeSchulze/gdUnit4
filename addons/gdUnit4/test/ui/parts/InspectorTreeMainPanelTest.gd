@@ -29,7 +29,7 @@ func after_test():
 	_inspector.free()
 
 
-static func toDto(test_suite :Node) -> GdUnitTestSuiteDto:
+func toDto(test_suite :Node) -> GdUnitTestSuiteDto:
 	var dto := GdUnitTestSuiteDto.new()
 	return dto.deserialize(dto.serialize(test_suite)) as GdUnitTestSuiteDto
 
@@ -59,8 +59,8 @@ func mark_as_failure(inspector, test_cases :Array) -> void:
 			item = item.get_next()
 		parent = parent.get_next()
 
-func get_item_state(parent :TreeItem, name :String) -> int:
-	var item = _inspector._find_by_name(parent, name)
+func get_item_state(parent :TreeItem, item_name :String) -> int:
+	var item = _inspector._find_by_name(parent, item_name)
 	return item.get_meta(_inspector.META_GDUNIT_STATE)
 
 func test_collect_failures_and_errors() -> void:

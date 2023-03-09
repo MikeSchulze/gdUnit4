@@ -3,6 +3,7 @@ class_name AdvancedTestClass
 extends Resource
 
 class SoundData:
+	@warning_ignore("unused_private_class_variable")
 	var _sample :String
 	var _randomnes :float
 	
@@ -26,7 +27,7 @@ class AtmosphereData:
 		_type = type
 		_toxigen = toxigen
 	
-	static func to_atmosphere(value :Dictionary) -> AtmosphereData:
+	static func to_atmosphere(_value :Dictionary) -> AtmosphereData:
 		return null
  
 class Area4D extends Resource:
@@ -35,7 +36,7 @@ class Area4D extends Resource:
 	const ATMOSPHERE := 2
 	var _meta := Dictionary()
 
-	func _init(x :int, atmospere :AtmosphereData = null):
+	func _init(_x :int, atmospere :AtmosphereData = null):
 		_meta[ATMOSPHERE] = atmospere
 	
 	func get_sound() -> SoundData:

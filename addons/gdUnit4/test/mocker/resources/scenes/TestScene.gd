@@ -8,6 +8,7 @@ const COLOR_CYCLE := [Color.ROYAL_BLUE, Color.CHARTREUSE, Color.YELLOW_GREEN]
 @onready var _box2 = $VBoxContainer/PanelContainer/HBoxContainer/Panel2
 @onready var _box3 = $VBoxContainer/PanelContainer/HBoxContainer/Panel3
 
+@warning_ignore("unused_private_class_variable")
 @export var _initial_color := Color.RED
 
 

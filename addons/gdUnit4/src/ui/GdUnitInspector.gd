@@ -33,7 +33,7 @@ func _ready():
 	if Engine.is_editor_hint():
 		_getEditorThemes(_editor_interface)
 	# preload previous test execution
-	_runner_config.load()
+	_runner_config.load_config()
 	if GdUnitSettings.is_update_notification_enabled():
 		var update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
 		add_child(update_tool)
@@ -71,7 +71,7 @@ func _getEditorThemes(interface :EditorInterface) -> void:
 	if interface == null:
 		return
 		# example to access current theme
-	var editiorTheme := interface.get_base_control().theme
+	#var editiorTheme := interface.get_base_control().theme
 	# setup inspector button icons
 	#var stylebox_types :PackedStringArray = editiorTheme.get_stylebox_type_list()
 	#for stylebox_type in stylebox_types:
@@ -80,7 +80,7 @@ func _getEditorThemes(interface :EditorInterface) -> void:
 	#		prints(editiorTheme.get_stylebox_list(stylebox_type))
 	#var style:StyleBoxFlat = editiorTheme.get_stylebox("panel", "Tree")
 	#style.bg_color = Color.RED
-	var locale = interface.get_editor_settings().get_setting("interface/editor/editor_language")
+	#var locale = interface.get_editor_settings().get_setting("interface/editor/editor_language")
 	#sessions_label.add_theme_color_override("font_color", get_color("contrast_color_2", "Editor"))
 	#status_label.add_theme_color_override("font_color", get_color("contrast_color_2", "Editor"))
 	#no_sessions_label.add_theme_color_override("font_color", get_color("contrast_color_2", "Editor"))
@@ -92,7 +92,7 @@ func add_file_system_dock_context_menu() -> void:
 		if script == null:
 			return true
 		return GdObjects.is_test_suite(script) == is_test_suite
-	var is_enabled := func is_enabled(script :GDScript):
+	var is_enabled := func is_enabled(_script :GDScript):
 		return !_runButton.disabled
 	var run_test := func run_test(resource_paths :PackedStringArray, debug :bool):
 		run_test_suites(resource_paths, debug)
@@ -106,7 +106,7 @@ func add_file_system_dock_context_menu() -> void:
 func add_script_editor_context_menu():
 	var is_test_suite := func is_visible(script :GDScript, is_test_suite :bool):
 		return GdObjects.is_test_suite(script) == is_test_suite
-	var is_enabled := func is_enabled(script :GDScript):
+	var is_enabled := func is_enabled(_script :GDScript):
 		return !_runButton.disabled
 	var run_test := func run_test(script :Script, text_edit :TextEdit, debug :bool):
 		var cursor_line := text_edit.get_caret_line()
@@ -146,7 +146,7 @@ func run_test_suites(test_suite_paths :PackedStringArray, debug :bool, rerun :bo
 	if not rerun:
 		var result := _runner_config.clear()\
 			.add_test_suites(test_suite_paths)\
-			.save()
+			.save_config()
 		if result.is_error():
 			push_error(result.error_message())
 			return
@@ -158,7 +158,7 @@ func run_test_case(test_suite_resource_path :String, test_case :String, test_par
 	if not rerun:
 		var result := _runner_config.clear()\
 			.add_test_case(test_suite_resource_path, test_case, test_param_index)\
-			.save()
+			.save_config()
 		if result.is_error():
 			push_error(result.error_message())
 			return
@@ -173,7 +173,7 @@ func _gdUnit_run(debug :bool) -> void:
 	grab_focus()
 	show()
 	# save current selected excution config
-	var result := _runner_config.set_server_port(Engine.get_meta("gdunit_server_port")).save()
+	var result := _runner_config.set_server_port(Engine.get_meta("gdunit_server_port")).save_config()
 	if result.is_error():
 		push_error(result.error_message())
 		return

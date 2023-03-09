@@ -11,7 +11,7 @@ func after_test():
 
 
 func test__prepare_update_deletes_old_content() -> void:
-	var update :GdUnitUpdate = auto_free(GdUnitUpdate.new())
+	var _update :GdUnitUpdate = auto_free(GdUnitUpdate.new())
 
 
 

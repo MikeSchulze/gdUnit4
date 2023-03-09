@@ -19,12 +19,12 @@ const script_error = """
 
 
 func test_parse_script_error_line_number() -> void:
-	var line := GodotGdErrorMonitor.new()._parse_error_line_number(script_error.dedent())
+	var line := GodotGdErrorMonitor._parse_error_line_number(script_error.dedent())
 	assert_int(line).is_equal(22)
 
 
 func test_parse_push_error_line_number() -> void:
-	var line := GodotGdErrorMonitor.new()._parse_error_line_number(error_report.dedent())
+	var line := GodotGdErrorMonitor._parse_error_line_number(error_report.dedent())
 	assert_int(line).is_equal(-1)
 
 

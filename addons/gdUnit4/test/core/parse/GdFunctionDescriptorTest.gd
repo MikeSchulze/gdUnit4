@@ -7,7 +7,7 @@ const __source = 'res://addons/gdUnit4/src/core/parse/GdFunctionDescriptor.gd'
 
 
 # helper to get method descriptor
-static func get_method_description(clazz_name :String, method_name :String) -> Dictionary:
+func get_method_description(clazz_name :String, method_name :String) -> Dictionary:
 	var method_list :Array = ClassDB.class_get_method_list(clazz_name)
 	for method_descriptor in method_list:
 		if method_descriptor["name"] == method_name:

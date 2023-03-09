@@ -4,7 +4,7 @@ const SOUND := 1
 const ATMOSPHERE := 2
 var _meta := Dictionary()
 
-func _init(x :int, atmospere :AtmosphereData = null):
+func _init(_x :int, atmospere :AtmosphereData = null):
 	_meta[ATMOSPHERE] = atmospere
 
 func get_sound() -> SoundData:

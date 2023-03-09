@@ -5,27 +5,37 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/parse/GdTestParameterSet.gd'
 
+
+@warning_ignore("unused_parameter")
 func test_example_a(a :int, b :int, test_parameters =[[1,2], [3,4]] ) -> void:
 	pass
 
+
+@warning_ignore("unused_parameter")
 func test_example_b(a :Vector2, b :Vector2, test_parameters =[
 	[Vector2.ZERO, Vector2.ONE], [Vector2(1.1, 3.2), Vector2.DOWN]] ) -> void:
 	pass
 
+
+@warning_ignore("unused_parameter")
 func test_example_c(a :Object, b :Object, test_parameters =[
 	[Resource.new(), Resource.new()],
 	[Resource.new(), null]
 	] ) -> void:
 	pass
 
+
 func build_param(value :float) -> Vector3:
 	return Vector3(value, value, value)
 
+
+@warning_ignore("unused_parameter")
 func test_example_d(a :Vector3, b :Vector3, test_parameters =[
 	[build_param(1), build_param(3)],
 	[Vector3.BACK, Vector3.UP]
 	] ) -> void:
 	pass
+
 
 class TestObj extends RefCounted:
 	var _value :String
@@ -36,9 +46,12 @@ class TestObj extends RefCounted:
 	func _to_string() -> String:
 		return _value
 
+
+@warning_ignore("unused_parameter")
 func test_example_e(a: Object, b :Object, expected :String, test_parameters := [
 	[TestObj.new("abc"), TestObj.new("def"), "abcdef"]]):
 	pass
+
 
 # verify the used 'test_parameters' is completly resolved
 func test_extract_parameters() -> void:

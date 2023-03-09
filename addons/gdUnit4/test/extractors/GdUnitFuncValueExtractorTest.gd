@@ -6,40 +6,42 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/extractors/GdUnitFuncValueExtractor.gd'
 
 class TestNode extends Resource:
-	var _name :String
 	var _parent = null
 	var _children := Array()
 	
 	func _init(name :String,parent = null):
-		_name = name
+		set_name(name)
 		_parent = parent
 		if _parent:
 			_parent._children.append(self)
+	
 	
 	func _notification(what):
 		if what == NOTIFICATION_PREDELETE:
 			_parent = null
 			_children.clear()
 	
-	func get_name() -> String:
-		return _name
 	
 	func get_parent() -> TestNode:
 		return _parent
 	
+	
 	func get_children() -> Array:
 		return _children
 	
+
 
 func test_extract_value_success() -> void:
 	var node = auto_free(TestNode.new("node_a"))
 	
 	assert_str(GdUnitFuncValueExtractor.new("get_name", []).extract_value(node)).is_equal("node_a")
 
+
 func test_extract_value_func_not_exists() -> void:
 	var node = TestNode.new("node_a")
 	
 	assert_str(GdUnitFuncValueExtractor.new("get_foo", []).extract_value(node)).is_equal("n.a.")
+
 
 func test_extract_value_on_null_value() -> void:
 	assert_str(GdUnitFuncValueExtractor.new("get_foo", []).extract_value(null)).is_null()
@@ -51,6 +53,7 @@ func test_extract_value_chanined() -> void:
 	
 	assert_str(GdUnitFuncValueExtractor.new("get_name", []).extract_value(node)).is_equal("node_a")
 	assert_str(GdUnitFuncValueExtractor.new("get_parent.get_name", []).extract_value(node)).is_equal("parent")
+
 
 func test_extract_value_chanined_array_values() -> void:
 	var parent = TestNode.new("parent")

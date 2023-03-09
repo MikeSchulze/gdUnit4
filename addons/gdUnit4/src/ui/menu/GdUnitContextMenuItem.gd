@@ -11,12 +11,12 @@ var _is_enabled :Callable
 var _runnable: Callable
 
 
-func _init(id :MENU_ID, name :StringName, is_visible :Callable, is_enabled: Callable, runnable: Callable):
-	self.id = id
-	self.name = name
-	_is_visible = is_visible
-	_is_enabled = is_enabled
-	_runnable = runnable
+func _init(p_id :MENU_ID, p_name :StringName, p_is_visible :Callable, p_is_enabled: Callable, p_runnable: Callable):
+	self.id = p_id
+	self.name = p_name
+	_is_visible = p_is_visible
+	_is_enabled = p_is_enabled
+	_runnable = p_runnable
 
 
 var id: MENU_ID:
