@@ -9,11 +9,10 @@ const UNDEFINED = "<-NO_ARG->"
 const ARG_PARAMETERIZED_TEST := "test_parameters"
 
 
-@warning_ignore("shadowed_variable")
-func _init(name :String, type :int = TYPE_MAX, default_value :Variant = UNDEFINED):
-	_name = name
-	_type = type
-	_default_value = default_value
+func _init(p_name :String, p_type :int = TYPE_MAX, p_default_value :Variant = UNDEFINED):
+	_name = p_name
+	_type = p_type
+	_default_value = p_default_value
 
 
 func name() -> String:

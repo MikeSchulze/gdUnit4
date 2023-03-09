@@ -79,12 +79,12 @@ class Token extends RefCounted:
 	var _is_operator: bool
 	var _regex :RegEx
 	
-	@warning_ignore("shadowed_variable")
-	func _init(token: String, is_operator := false, regex :RegEx = null) -> void:
-		_token = token
-		_is_operator = is_operator
-		_consumed = token.length()
-		_regex = regex
+	
+	func _init(p_token: String, p_is_operator := false, p_regex :RegEx = null) -> void:
+		_token = p_token
+		_is_operator = p_is_operator
+		_consumed = p_token.length()
+		_regex = p_regex
 	
 	func match(input: String, pos: int) -> bool:
 		if _regex:
@@ -155,43 +155,40 @@ class FuzzerToken extends Token:
 class Variable extends Token:
 	var _plain_value
 	var _typed_value
-	var _type := TYPE_NIL
+	var _type :int = TYPE_NIL
 	
 	
-	@warning_ignore("shadowed_variable", "int_as_enum_without_cast")
-	func _init(value: String):
-		super(value)
-		_type = _scan_type(value)
-		_plain_value = value
-		_typed_value = _cast_to_type(value, _type)
+	func _init(p_value: String):
+		super(p_value)
+		_type = _scan_type(p_value)
+		_plain_value = p_value
+		_typed_value = _cast_to_type(p_value, _type)
 	
 	
-	@warning_ignore("shadowed_variable")
-	func _scan_type(value: String) -> int:
-		if value.begins_with("\"") and value.ends_with("\""):
+	func _scan_type(p_value: String) -> int:
+		if p_value.begins_with("\"") and p_value.ends_with("\""):
 			return TYPE_STRING
-		var type := GdObjects.string_to_type(value)
-		if type != TYPE_NIL:
-			return type
-		if value.is_valid_int():
+		var type_ := GdObjects.string_to_type(p_value)
+		if type_ != TYPE_NIL:
+			return type_
+		if p_value.is_valid_int():
 			return TYPE_INT
-		if value.is_valid_float():
+		if p_value.is_valid_float():
 			return TYPE_FLOAT
-		if value.is_valid_hex_number():
+		if p_value.is_valid_hex_number():
 			return TYPE_INT
 		return TYPE_OBJECT
 	
 	
-	@warning_ignore("shadowed_variable")
-	func _cast_to_type(value :String, type: int) -> Variant:
-		match type:
+	func _cast_to_type(p_value :String, p_type: int) -> Variant:
+		match p_type:
 			TYPE_STRING:
-				return value#.substr(1, value.length() - 2)
+				return p_value#.substr(1, p_value.length() - 2)
 			TYPE_INT:
-				return value.to_int()
+				return p_value.to_int()
 			TYPE_FLOAT:
-				return value.to_float()
-		return value
+				return p_value.to_float()
+		return p_value
 	
 	
 	func is_variable() -> bool:
@@ -336,24 +333,24 @@ func tokenize_inner_class(source_code: String, current: int, token: Token) -> To
 	return TokenInnerClass.new(clazz_name)
 
 
-@warning_ignore("shadowed_variable", "assert_always_false")
+@warning_ignore("assert_always_false")
 func _process_values(left: Token, token_stack: Array, operator: Token) -> Token:
 	# precheck
 	if left.is_variable() and operator.is_operator():
 		var lvalue = left.value()
 		var value = null
-		var next_token = token_stack.pop_front() as Token
+		var next_token_ = token_stack.pop_front() as Token
 	
 		if operator == OPERATOR_ADD:
-			value =  lvalue + next_token.value()
+			value =  lvalue + next_token_.value()
 		elif operator == OPERATOR_SUB:
-			value =  lvalue - next_token.value()
+			value =  lvalue - next_token_.value()
 		elif operator == OPERATOR_MUL:
-			value =  lvalue * next_token.value()
+			value =  lvalue * next_token_.value()
 		elif operator == OPERATOR_DIV:
-			value =  lvalue / next_token.value()
+			value =  lvalue / next_token_.value()
 		elif operator == OPERATOR_REMAINDER:
-			value =  lvalue & next_token.value()
+			value =  lvalue & next_token_.value()
 		else:
 			assert(false, "Unsupported operator %s" % operator)
 		return Variable.new( str(value))
@@ -730,19 +727,18 @@ func extract_functions(script :GDScript, clazz_name :String, clazz_path :PackedS
 	return parse_functions(source_code, clazz_name, clazz_path)
 
 
-@warning_ignore("shadowed_variable")
 func parse(clazz_name :String, clazz_path :PackedStringArray) -> Result:
 	if clazz_path.is_empty():
 		return Result.error("Invalid script path '%s'" % clazz_path)
-	var is_inner_class := is_inner_class(clazz_path)
+	var is_inner_class_ := is_inner_class(clazz_path)
 	var script :GDScript = load(clazz_path[0])
 	var function_descriptors := extract_functions(script, clazz_name, clazz_path)
-	var gd_class := GdClassDescriptor.new(clazz_name, is_inner_class, function_descriptors)
+	var gd_class := GdClassDescriptor.new(clazz_name, is_inner_class_, function_descriptors)
 	# iterate over class dependencies
 	script = script.get_base_script()
 	while script != null:
 		clazz_name = GdObjects.extract_class_name_from_class_path([script.resource_path])
 		function_descriptors = extract_functions(script, clazz_name, clazz_path)
-		gd_class.set_parent_clazz(GdClassDescriptor.new(clazz_name, is_inner_class, function_descriptors))
+		gd_class.set_parent_clazz(GdClassDescriptor.new(clazz_name, is_inner_class_, function_descriptors))
 		script = script.get_base_script()
 	return Result.success(gd_class)

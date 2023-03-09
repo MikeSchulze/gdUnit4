@@ -5,9 +5,8 @@ extends Resource
 var _id :String
 
 # constructs new Monitor with given id
-@warning_ignore("shadowed_variable")
-func _init(id :String):
-	_id = id
+func _init(p_id :String):
+	_id = p_id
 
 
 # Returns the id of the monitor to uniqe identify

@@ -35,12 +35,11 @@ static func of_unix_time(time_ms :int) -> LocalTime:
 	return LocalTime.new(time_ms)
 
 
-@warning_ignore("shadowed_variable")
-static func local_time(hours :int, minutes :int, seconds :int, millis :int) -> LocalTime:
+static func local_time(hours :int, minutes :int, seconds :int, milliseconds :int) -> LocalTime:
 	return LocalTime.new(MILLIS_PER_HOUR * hours\
 		+ MILLIS_PER_MINUTE * minutes\
 		+ MILLIS_PER_SECOND * seconds\
-		+ millis)
+		+ milliseconds)
 
 
 func elapsed_since() -> String:
@@ -66,16 +65,15 @@ func plus(time_unit :TimeUnit, value :int) -> LocalTime:
 	return self
 
 
-@warning_ignore("shadowed_variable")
-static func elapsed(time_ms :int) -> String:
-	var local_time := LocalTime.new(time_ms)
-	if local_time._hour > 0:
-		return "%dh %dmin %ds %dms" % [local_time._hour, local_time._minute, local_time._second, local_time._millisecond]
-	if local_time._minute > 0:
-		return "%dmin %ds %dms" % [local_time._minute, local_time._second, local_time._millisecond]
-	if local_time._second > 0:
-		return "%ds %dms" % [local_time._second, local_time._millisecond]
-	return "%dms" % local_time._millisecond
+static func elapsed(p_time_ms :int) -> String:
+	var local_time_ := LocalTime.new(p_time_ms)
+	if local_time_._hour > 0:
+		return "%dh %dmin %ds %dms" % [local_time_._hour, local_time_._minute, local_time_._second, local_time_._millisecond]
+	if local_time_._minute > 0:
+		return "%dmin %ds %dms" % [local_time_._minute, local_time_._second, local_time_._millisecond]
+	if local_time_._second > 0:
+		return "%ds %dms" % [local_time_._second, local_time_._millisecond]
+	return "%dms" % local_time_._millisecond
 
 
 @warning_ignore("integer_division")

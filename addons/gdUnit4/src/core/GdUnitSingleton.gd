@@ -29,9 +29,9 @@ static func unregister(p_singleton :String) -> void:
 		GdUnitTools.prints_verbose("	Unregister singleton '%s'" % p_singleton);
 		var index := singletons.find(p_singleton)
 		singletons.remove_at(index)
-		var instance :Variant = Engine.get_meta(p_singleton)
-		GdUnitTools.prints_verbose("	Free singeleton instance '%s:%s'" % [p_singleton, instance])
-		GdUnitTools.free_instance(instance)
+		var instance_ :Variant = Engine.get_meta(p_singleton)
+		GdUnitTools.prints_verbose("	Free singeleton instance '%s:%s'" % [p_singleton, instance_])
+		GdUnitTools.free_instance(instance_)
 		Engine.remove_meta(p_singleton)
 		GdUnitTools.prints_verbose("	Succesfully freed '%s'" % p_singleton)
 	Engine.set_meta(MEATA_KEY, singletons)

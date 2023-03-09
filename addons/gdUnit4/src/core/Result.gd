@@ -20,31 +20,28 @@ static func empty() -> Result:
 	return result
 
 
-@warning_ignore("shadowed_variable")
-static func success(value :Variant) -> Result:
-	assert(value != null) #,"The value must not be NULL")
+static func success(p_value :Variant) -> Result:
+	assert(p_value != null, "The value must not be NULL")
 	var result := Result.new()
-	result._value = value
+	result._value = p_value
 	result._state = SUCCESS
 	return result
 
 
-@warning_ignore("shadowed_variable")
-static func warn(warn_message :String, value :Variant = null) -> Result:
-	assert(not warn_message.is_empty()) #,"The message must not be empty")
+static func warn(p_warn_message :String, p_value :Variant = null) -> Result:
+	assert(not p_warn_message.is_empty()) #,"The message must not be empty")
 	var result := Result.new()
-	result._value = value
-	result._warn_message = warn_message
+	result._value = p_value
+	result._warn_message = p_warn_message
 	result._state = WARN
 	return result
 
 
-@warning_ignore("shadowed_variable")
-static func error(error_message :String) -> Result:
-	assert(not error_message.is_empty()) #,"The message must not be empty")
+static func error(p_error_message :String) -> Result:
+	assert(not p_error_message.is_empty(), "The message must not be empty")
 	var result := Result.new()
 	result._value = null
-	result._error_message = error_message
+	result._error_message = p_error_message
 	result._state = ERROR
 	return result
 
@@ -69,10 +66,9 @@ func value() -> Variant:
 	return _value
 
 
-@warning_ignore("shadowed_variable")
-func or_else(value):
+func or_else(p_value):
 	if not is_success():
-		return value
+		return p_value
 	return value()
 
 

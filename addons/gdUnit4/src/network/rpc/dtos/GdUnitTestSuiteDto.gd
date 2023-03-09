@@ -4,21 +4,19 @@ extends GdUnitResourceDto
 var _test_cases_by_name := Dictionary()
 
 
-@warning_ignore("shadowed_variable")
 func serialize(test_suite :Node) -> Dictionary:
 	var serialized := super.serialize(test_suite)
-	var test_cases := Array()
-	serialized["test_cases"] = test_cases
+	var test_cases_ := Array()
+	serialized["test_cases"] = test_cases_
 	for test_case in test_suite.get_children():
-		test_cases.append(GdUnitTestCaseDto.new().serialize(test_case))
+		test_cases_.append(GdUnitTestCaseDto.new().serialize(test_case))
 	return serialized
 
 
-@warning_ignore("shadowed_variable")
 func deserialize(data :Dictionary) -> GdUnitResourceDto:
 	super.deserialize(data)
-	var test_cases :Array = data.get("test_cases", Array())
-	for test_case in test_cases:
+	var test_cases_ :Array = data.get("test_cases", Array())
+	for test_case in test_cases_:
 		add_test_case(GdUnitTestCaseDto.new().deserialize(test_case))
 	return self
 
