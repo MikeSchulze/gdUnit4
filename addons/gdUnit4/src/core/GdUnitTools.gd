@@ -199,6 +199,12 @@ static func free_instance(instance :Variant) -> bool:
 			free_instance(element)
 		instance.clear()
 		return true
+	# do not free an already freed instance
+	if not is_instance_valid(instance):
+		return false
+	# do not free a class refernece
+	if typeof(instance) == TYPE_OBJECT and (instance as Object).is_class("GDScriptNativeClass"):
+		return false
 	if is_instance_valid(instance) and instance is RefCounted:
 		instance.notification(Object.NOTIFICATION_PREDELETE)
 		return true
