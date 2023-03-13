@@ -36,6 +36,7 @@ func test_timeout_after_test_completes():
 	assert_int(counter).is_equal(5)
 
 # set test timeout to 2s
+@warning_ignore("unused_parameter")
 func test_timeout_2s(timeout=2000):
 	assert_str(_before_arg).is_equal("---before---")
 	prints("B", "0s")
@@ -50,6 +51,7 @@ func test_timeout_2s(timeout=2000):
 	prints("B", "end")
 
 # set test timeout to 4s
+@warning_ignore("unused_parameter")
 func test_timeout_4s(timeout=4000):
 	assert_str(_before_arg).is_equal("---before---")
 	prints("C", "0s")
@@ -65,6 +67,7 @@ func test_timeout_4s(timeout=4000):
 	prints("C", "7s")
 	prints("C", "end")
 
+@warning_ignore("unused_parameter")
 func test_timeout_single_yield_wait(timeout=3000):
 	assert_str(_before_arg).is_equal("---before---")
 	prints("D", "0s")
@@ -74,6 +77,7 @@ func test_timeout_single_yield_wait(timeout=3000):
 	assert_bool(true).override_failure_message("The test case must be interupted by a timeout after 3s").is_false()
 	prints("D", "end test test_timeout")
 
+@warning_ignore("unused_parameter")
 func test_timeout_long_running_test_abort(timeout=4000):
 	assert_str(_before_arg).is_equal("---before---")
 	prints("E", "0s")
@@ -83,7 +87,6 @@ func test_timeout_long_running_test_abort(timeout=4000):
 	
 	# simulate long running function
 	while true:
-		var x = 1
 		var elapsed_time := Time.get_ticks_msec() - start_time
 		
 		var sec_time = Time.get_ticks_msec() - sec_start_time
@@ -102,6 +105,7 @@ func test_timeout_long_running_test_abort(timeout=4000):
 	assert_bool(true).override_failure_message("The test case must be abort interupted by a timeout 4s").is_false()
 	prints("F", "end test test_timeout")
 
+@warning_ignore("unused_parameter", "unused_variable")
 func test_timeout_fuzzer(fuzzer := Fuzzers.rangei(-23, 22), timeout=2000):
 	discard_error_interupted_by_timeout()
 	var value = fuzzer.next_value()

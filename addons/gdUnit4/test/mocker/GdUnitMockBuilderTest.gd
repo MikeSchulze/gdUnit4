@@ -7,7 +7,7 @@ const __source = 'res://addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd'
 
 
 # helper to get function descriptor
-static func get_function_description(clazz_name :String, method_name :String) -> GdFunctionDescriptor:
+func get_function_description(clazz_name :String, method_name :String) -> GdFunctionDescriptor:
 	var method_list :Array = ClassDB.class_get_method_list(clazz_name)
 	for method_descriptor in method_list:
 		if method_descriptor["name"] == method_name:
@@ -21,6 +21,7 @@ func test_double_return_typed_function_without_arg() -> void:
 	var fd := get_function_description("Object", "get_class")
 	var expected := [
 		'@warning_ignore("native_method_override")',
+		'@warning_ignore("shadowed_variable")',
 		'func get_class() -> String:',
 		'	var args :Array = ["get_class", ]',
 		'	',
@@ -49,6 +50,7 @@ func test_double_return_typed_function_with_args() -> void:
 	var fd := get_function_description("Object", "is_connected")
 	var expected := [
 		'@warning_ignore("native_method_override")',
+		'@warning_ignore("shadowed_variable")',
 		'func is_connected(signal_, callable_) -> bool:',
 		'	var args :Array = ["is_connected", signal_, callable_]',
 		'	',
@@ -78,6 +80,7 @@ func test_double_return_untyped_function_with_args() -> void:
 	var fd := get_function_description("Object", "disconnect")
 	var expected := [
 		'@warning_ignore("native_method_override")',
+		'@warning_ignore("shadowed_variable")',
 		'func disconnect(signal_, callable_) -> void:',
 		'	var args :Array = ["disconnect", signal_, callable_]',
 		'	',
@@ -104,6 +107,7 @@ func test_double_int_function_with_varargs() -> void:
 	var fd := get_function_description("Object", "emit_signal")
 	var expected := [
 		'@warning_ignore("native_method_override")',
+		'@warning_ignore("shadowed_variable")',
 		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args :Array = ["emit_signal", signal_] + varargs',
@@ -145,6 +149,7 @@ func test_double_untyped_function_with_varargs() -> void:
 		[GdFunctionArgument.new("signal_", TYPE_SIGNAL)],
 		GdFunctionDescriptor._build_varargs(true))
 	var expected := [
+		'@warning_ignore("shadowed_variable")',
 		'func emit_custom(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args :Array = ["emit_custom", signal_] + varargs',
@@ -185,6 +190,7 @@ func test_double_virtual_script_function_without_arg() -> void:
 	var fd := get_function_description("Node", "_ready")
 	var expected := [
 		'@warning_ignore("native_method_override")',
+		'@warning_ignore("shadowed_variable")',
 		'func _ready() -> void:',
 		'	var args :Array = ["_ready", ]',
 		'	',
@@ -212,6 +218,7 @@ func test_double_virtual_script_function_with_arg() -> void:
 	var fd := get_function_description("Node", "_input")
 	var expected := [
 		'@warning_ignore("native_method_override")',
+		'@warning_ignore("shadowed_variable")',
 		'func _input(event_) -> void:',
 		'	var args :Array = ["_input", event_]',
 		'	',

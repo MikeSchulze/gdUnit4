@@ -7,7 +7,6 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitTestSuiteBuilder.gd'
 
-var _test_suite_builder :GdUnitTestSuiteBuilder
 var _example_source_gd :String
 
 
@@ -16,7 +15,6 @@ func before_test():
 	var result := GdUnitTools.copy_file("res://addons/gdUnit4/test/core/resources/sources/test_person.gd", temp)
 	assert_result(result).is_success()
 	_example_source_gd = result.value() as String
-	_test_suite_builder = GdUnitTestSuiteBuilder.new()
 
 
 func after_test():
@@ -29,9 +27,8 @@ func assert_tests(test_suite :Script) -> GdUnitArrayAssert:
 	var methods := test_suite.get_script_method_list()
 	var test_cases := Array()
 	for method in methods:
-		var name :String = method.name
-		if name.begins_with("test_"):
-			test_cases.append(name)
+		if method.name.begins_with("test_"):
+			test_cases.append(method.name)
 	return assert_array(test_cases)
 
 
@@ -39,7 +36,7 @@ func test_create_gd_success() -> void:
 	var source := load(_example_source_gd)
 	
 	# create initial test suite based checked function selected by line 9
-	var result := _test_suite_builder.create(source, 9)
+	var result := GdUnitTestSuiteBuilder.create(source, 9)
 	
 	assert_result(result).is_success()
 	var info := result.value() as Dictionary
@@ -48,7 +45,7 @@ func test_create_gd_success() -> void:
 	assert_tests(load(info.get("path"))).contains_exactly(["test_first_name"])
 	
 	# create additional test checked existing suite based checked function selected by line 15
-	result = _test_suite_builder.create(source, 15)
+	result = GdUnitTestSuiteBuilder.create(source, 15)
 	
 	assert_result(result).is_success()
 	info = result.value() as Dictionary
@@ -61,5 +58,5 @@ func test_create_gd_fail() -> void:
 	var source := load(_example_source_gd)
 	
 	# attempt to create an initial test suite based checked the function selected in line 8, which has no function definition
-	var result := _test_suite_builder.create(source, 8)
+	var result := GdUnitTestSuiteBuilder.create(source, 8)
 	assert_result(result).is_error().contains_message("No function found at line: 8.")

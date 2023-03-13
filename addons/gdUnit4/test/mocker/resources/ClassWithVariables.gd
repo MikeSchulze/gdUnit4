@@ -34,7 +34,7 @@ class ClassA:
 	func foo()->String:
 		return ""
 
-var _data:= Dictionary()
-func foo( value :int = T1):
-	var c = a + b
+
+func foo(_value :int = T1):
+	var _c = a + b
 	pass

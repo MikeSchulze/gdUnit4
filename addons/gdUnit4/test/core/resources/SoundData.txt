@@ -1,3 +1,4 @@
 class SoundData:
+@warning_ignore("unused_private_class_variable")
 var _sample :String
 var _randomnes :float

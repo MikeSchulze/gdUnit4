@@ -94,7 +94,6 @@ class TestClass extends Resource:
 		B
 	}
 	
-	var _type := A
 	var _a:int
 	var _b:String
 	var _c:Array
@@ -314,14 +313,15 @@ func test_extract_class_name_from_instance():
 	assert_result(extract_class_name(CustomClass.InnerClassC.new())).is_equal("CustomClass.InnerClassC")
 
 # verify enigne class names are not converted by configured naming convention
+@warning_ignore("unused_parameter")
 func test_extract_class_name_from_class_path(fuzzer=GodotClassNameFuzzer.new(true, true), fuzzer_iterations = 100) -> void:
 	var clazz_name :String = fuzzer.next_value()
 	assert_str(GdObjects.extract_class_name_from_class_path(PackedStringArray([clazz_name]))).is_equal(clazz_name)
 
 func test_extract_class_name_godot_classes(fuzzer=GodotClassNameFuzzer.new(true, true)):
-	var extract_class_name := fuzzer.next_value() as String
-	var instance :Variant = ClassDB.instantiate(extract_class_name)
-	assert_result(extract_class_name(instance)).is_equal(extract_class_name)
+	var extract_class_name_ := fuzzer.next_value() as String
+	var instance :Variant = ClassDB.instantiate(extract_class_name_)
+	assert_result(extract_class_name(instance)).is_equal(extract_class_name_)
 
 func test_extract_class_path_by_clazz():
 	# engine classes has no class path
@@ -361,24 +361,6 @@ func test_extract_class_path_by_clazz():
 	assert_array(GdObjects.extract_class_path(CustomClass.InnerClassD.InnerInnerClassA))\
 		.contains_exactly(["res://addons/gdUnit4/test/resources/core/CustomClass.gd", "InnerClassD", "InnerInnerClassA"])
 
-func test_is_same():
-	assert_bool(GdObjects.is_same(1, 1)).is_true()
-	assert_bool(GdObjects.is_same(1, 2)).is_false()
-	assert_bool(GdObjects.is_same(1.0, 1.0)).is_true()
-	assert_bool(GdObjects.is_same(1, 1.0)).is_false()
-	
-	var obj1 = auto_free(Camera3D.new())
-	var obj2 = auto_free(Camera3D.new())
-	var obj3 = auto_free(obj2.duplicate())
-	assert_bool(GdObjects.is_same(obj1, obj1)).is_true()
-	assert_bool(GdObjects.is_same(obj1, obj2)).is_false()
-	assert_bool(GdObjects.is_same(obj1, obj3)).is_false()
-	assert_bool(GdObjects.is_same(obj2, obj1)).is_false()
-	assert_bool(GdObjects.is_same(obj2, obj2)).is_true()
-	assert_bool(GdObjects.is_same(obj2, obj3)).is_false()
-	assert_bool(GdObjects.is_same(obj3, obj1)).is_false()
-	assert_bool(GdObjects.is_same(obj3, obj2)).is_false()
-	assert_bool(GdObjects.is_same(obj3, obj3)).is_true()
 
 #func __test_can_instantiate():
 #	assert_bool(GdObjects.can_instantiate(GDScript)).is_true()

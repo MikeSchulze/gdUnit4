@@ -61,6 +61,7 @@ func collect_test_call(test_name :String, values :Array) -> void:
 	_collected_tests[test_name].append(values)
 
 
+@warning_ignore("unused_parameter")
 func test_parameterized_bool_value(a: int, expected :bool, test_parameters := [
 	[0, false],
 	[1, true]]):
@@ -68,6 +69,7 @@ func test_parameterized_bool_value(a: int, expected :bool, test_parameters := [
 	assert_that(bool(a)).is_equal(expected)
 
 
+@warning_ignore("unused_parameter")
 func test_parameterized_int_values(a: int, b :int, c :int, expected :int, test_parameters := [
 	[1, 2, 3, 6],
 	[3, 4, 5, 12],
@@ -77,6 +79,7 @@ func test_parameterized_int_values(a: int, b :int, c :int, expected :int, test_p
 	assert_that(a+b+c).is_equal(expected)
 
 
+@warning_ignore("unused_parameter")
 func test_parameterized_float_values(a: float, b :float, expected :float, test_parameters := [
 	[2.2, 2.2, 4.4],
 	[2.2, 2.3, 4.5],
@@ -86,6 +89,7 @@ func test_parameterized_float_values(a: float, b :float, expected :float, test_p
 	assert_float(a+b).is_equal(expected)
 
 
+@warning_ignore("unused_parameter")
 func test_parameterized_string_values(a: String, b :String, expected :String, test_parameters := [
 	["2.2", "2.2", "2.22.2"],
 	["foo", "bar", "foobar"],
@@ -95,6 +99,7 @@ func test_parameterized_string_values(a: String, b :String, expected :String, te
 	assert_that(a+b).is_equal(expected)
 
 
+@warning_ignore("unused_parameter")
 func test_parameterized_Vector2_values(a: Vector2, b :Vector2, expected :Vector2, test_parameters := [
 	[Vector2.ONE, Vector2.ONE, Vector2(2, 2)],
 	[Vector2.LEFT, Vector2.RIGHT, Vector2.ZERO],
@@ -104,6 +109,7 @@ func test_parameterized_Vector2_values(a: Vector2, b :Vector2, expected :Vector2
 	assert_that(a+b).is_equal(expected)
 
 
+@warning_ignore("unused_parameter")
 func test_parameterized_Vector3_values(a: Vector3, b :Vector3, expected :Vector3, test_parameters := [
 	[Vector3.ONE, Vector3.ONE, Vector3(2, 2, 2)],
 	[Vector3.LEFT, Vector3.RIGHT, Vector3.ZERO],
@@ -123,6 +129,7 @@ class TestObj extends RefCounted:
 		return _value
 
 
+@warning_ignore("unused_parameter")
 func test_parameterized_obj_values(a: Object, b :Object, expected :String, test_parameters := [
 	[TestObj.new("abc"), TestObj.new("def"), "abcdef"]]):
 	
@@ -130,6 +137,7 @@ func test_parameterized_obj_values(a: Object, b :Object, expected :String, test_
 	assert_that(a.to_string()+b.to_string()).is_equal(expected)
 
 
+@warning_ignore("unused_parameter")
 func test_parameterized_dict_values(data: Dictionary, expected :String, test_parameters := [
 	[{"key_a" : "value_a"}, '{"key_a":"value_a"}'],
 	[{"key_b" : "value_b"}, '{"key_b":"value_b"}']
@@ -138,6 +146,7 @@ func test_parameterized_dict_values(data: Dictionary, expected :String, test_par
 	assert_that(str(data).replace(" ", "")).is_equal(expected)
 
 
+@warning_ignore("unused_parameter")
 func test_dictionary_div_number_types(
 	value : Dictionary,
 	expected : Dictionary,
@@ -154,6 +163,7 @@ func test_dictionary_div_number_types(
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
 
 
+@warning_ignore("unused_parameter")
 func test_with_string_paramset(
 	values : Array,
 	expected : String,

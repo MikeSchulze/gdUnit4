@@ -47,6 +47,8 @@ func after():
 		assert_int(current).override_failure_message("Expecting %s itertions but is %s checked test case %s" % [expected, current, test_case]).is_equal(expected)
 
 var _fuzzer_instance_before : Fuzzer = null
+
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_fuzzer_has_same_instance_peer_iteration(fuzzer=TestFuzzer.new(), fuzzer_iterations = 10):
 	_current_iterations["test_fuzzer_has_same_instance_peer_iteration"] += 1
 	assert_object(fuzzer).is_not_null()
@@ -54,18 +56,22 @@ func test_fuzzer_has_same_instance_peer_iteration(fuzzer=TestFuzzer.new(), fuzze
 		assert_that(fuzzer).is_same(_fuzzer_instance_before)
 	_fuzzer_instance_before = fuzzer
 
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_fuzzer_iterations_default(fuzzer := Fuzzers.rangei(-23, 22)):
 	_current_iterations["test_fuzzer_iterations_default"] += 1
 	assert_object(fuzzer).is_not_null()
 
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_fuzzer_iterations_custom_value(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iterations = 234, fuzzer_seed = 100):
 	_current_iterations["test_fuzzer_iterations_custom_value"] += 1
 
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iterations = 100):
 	_current_iterations["test_fuzzer_inject_value"] += 1
 	assert_object(fuzzer).is_not_null()
 	assert_int(fuzzer.next_value()).is_between(-23, 22)
 
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_fuzzer_with_timeout(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iterations = 20, timeout = 100):
 	discard_error_interupted_by_timeout()
 	assert_int(fuzzer.next_value()).is_between(-23, 22)
@@ -76,6 +82,8 @@ func test_fuzzer_with_timeout(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iteratio
 	assert_int(fuzzer.iteration_index()).is_less_equal(10)
 
 var expected_value := [22, 3, -14, -16, 21, 20, 4, -23, -19, -5]
+
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_fuzzer_inject_value_with_seed(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iterations = 10, fuzzer_seed = 187772):
 	assert_object(fuzzer).is_not_null()
 	var iteration_index =  fuzzer.iteration_index()-1
@@ -88,6 +96,8 @@ func test_fuzzer_inject_value_with_seed(fuzzer := Fuzzers.rangei(-23, 22), fuzze
 
 var expected_value_a := [22, -14, 21, 4, -19, -11, 5, 21, -6, -9]
 var expected_value_b := [35, 38, 34, 39, 35, 41, 37, 35, 34, 39]
+
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_multiple_fuzzers_inject_value_with_seed(fuzzer_a := Fuzzers.rangei(-23, 22), fuzzer_b := Fuzzers.rangei(33, 44), fuzzer_iterations = 10, fuzzer_seed = 187772):
 	_current_iterations["test_multiple_fuzzers_inject_value_with_seed"] += 1
 	assert_object(fuzzer_a).is_not_null()
@@ -109,6 +119,7 @@ func test_multiple_fuzzers_inject_value_with_seed(fuzzer_a := Fuzzers.rangei(-23
 		.override_failure_message("Expect value %s checked test iteration %s\n but was %s" % [expected_b, iteration_index_b, current_b])\
 		.is_equal(expected_b)
 
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_fuzzer_error_after_eight_iterations(fuzzer=TestFuzzer.new(), fuzzer_iterations = 10):
 	assert_object(fuzzer).is_not_null()
 	# should fail after 8 iterations
@@ -119,10 +130,12 @@ func test_fuzzer_error_after_eight_iterations(fuzzer=TestFuzzer.new(), fuzzer_it
 	else:
 		assert_int(fuzzer.next_value()).is_between(0, 9)
 
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_fuzzer_custom_func(fuzzer=fuzzer()):
 	assert_object(fuzzer).is_not_null()
 	assert_int(fuzzer.next_value()).is_between(1, 10)
 
+@warning_ignore("shadowed_variable", "unused_parameter")
 func test_multiline_fuzzer_args(
 	fuzzer_a := Fuzzers.rangev2(Vector2(-47, -47), Vector2(47, 47)),
 	fuzzer_b := Fuzzers.rangei(0, 9),

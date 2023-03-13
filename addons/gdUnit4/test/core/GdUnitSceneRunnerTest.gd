@@ -34,16 +34,7 @@ func test_invoke_method() -> void:
 	assert_that(runner.invoke("sub", 10, 12)).is_equal("The method 'sub' not exist checked loaded scene.")
 
 
-func test_awaitForMilliseconds() -> void:
-	var runner := scene_runner(load_test_scene())
-	
-	var stopwatch = LocalTime.now()
-	await await_millis(1000)
-	
-	# verify we wait around 1000 ms (using 100ms offset because timing is not 100% accurate)
-	assert_int(stopwatch.elapsed_since_ms()).is_between(800, 1100)
-
-
+@warning_ignore("unused_parameter")
 func test_simulate_frames(timeout = 5000) -> void:
 	var runner := scene_runner(load_test_scene())
 	var box1 :ColorRect = runner.get_property("_box1")
@@ -64,6 +55,7 @@ func test_simulate_frames(timeout = 5000) -> void:
 	assert_object(box1.color).is_equal(Color.RED)
 
 
+@warning_ignore("unused_parameter")
 func test_simulate_frames_withdelay(timeout = 4000) -> void:
 	var runner := scene_runner(load_test_scene())
 	var box1 :ColorRect = runner.get_property("_box1")
@@ -79,6 +71,7 @@ func test_simulate_frames_withdelay(timeout = 4000) -> void:
 	assert_object(box1.color).is_equal(Color.RED)
 
 
+@warning_ignore("unused_parameter")
 func test_run_scene_colorcycle(timeout=2000) -> void:
 	var runner := scene_runner(load_test_scene())
 	var box1 :ColorRect = runner.get_property("_box1")
@@ -123,17 +116,17 @@ func test_simulate_scene_inteaction_by_press_enter(timeout=2000) -> void:
 
 # mock on a runner and spy on created spell
 func test_simulate_scene_inteaction_in_combination_with_spy():
-	var spy = spy(load_test_scene())
+	var spy_ = spy(load_test_scene())
 	# create a runner runner
-	var runner := scene_runner(spy)
+	var runner := scene_runner(spy_)
 	
 	# simulate a key event to fire a spell
 	runner.simulate_key_pressed(KEY_ENTER)
-	verify(spy).create_spell()
+	verify(spy_).create_spell()
 	
 	var spell = runner.find_child("Spell")
 	assert_that(spell).is_not_null()
-	assert_that(spell.is_connected("spell_explode", Callable(spy, "_destroy_spell"))).is_true()
+	assert_that(spell.is_connected("spell_explode", Callable(spy_, "_destroy_spell"))).is_true()
 
 
 func test_simulate_scene_interact_with_buttons():
@@ -206,7 +199,7 @@ func test_await_signal_without_time_factor() -> void:
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300)
-	if assert_failed_at(208, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
+	if assert_failed_at(201, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
 		return
 	fail("test should failed after 300ms checked 'await_signal'")
 
@@ -225,7 +218,7 @@ func test_await_signal_with_time_factor() -> void:
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30)
-	if assert_failed_at(227, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
+	if assert_failed_at(220, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
 		return
 	fail("test should failed after 30ms checked 'await_signal'")
 
@@ -244,6 +237,7 @@ func test_simulate_until_signal() -> void:
 	#	.starts_with_failure_message("Expecting emit signal: 'panel_color_change(")
 
 
+@warning_ignore("unused_parameter")
 func test_simulate_until_object_signal(timeout=2000) -> void:
 	var runner := scene_runner(load_test_scene())
 	

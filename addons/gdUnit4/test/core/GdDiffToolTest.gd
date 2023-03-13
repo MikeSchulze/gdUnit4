@@ -37,6 +37,8 @@ func test_string_diff():
 	assert_array(diffs[0]).contains_exactly(expected_l_diff)
 	assert_array(diffs[1]).contains_exactly(expected_r_diff)
 
+
+@warning_ignore("unused_parameter")
 func test_string_diff_large_value(fuzzer := Fuzzers.rand_str(1000, 4000), fuzzer_iterations = 10):
 	# test diff with large values not crashes the API GD-100
 	var value :String = fuzzer.next_value()

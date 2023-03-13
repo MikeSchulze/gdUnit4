@@ -38,5 +38,5 @@ func test_assert_that_types() -> void:
 	assert_object(assert_that(Plane.PLANE_XY)).is_instanceof(GdUnitAssertImpl)
 
 
-func test_unknown_argument_in_test_case(invalid_arg) -> void:
+func test_unknown_argument_in_test_case(_invalid_arg) -> void:
 	fail("This test case should be not executed, it must be skipped.")

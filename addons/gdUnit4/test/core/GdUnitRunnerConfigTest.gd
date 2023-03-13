@@ -152,7 +152,7 @@ func test_skip_test_case():
 func test_load_fail():
 	var config := GdUnitRunnerConfig.new()
 	
-	assert_result(config.load("invalid_path"))\
+	assert_result(config.load_config("invalid_path"))\
 		.is_error()\
 		.contains_message("Can't find test runner configuration 'invalid_path'! Please select a test to run.")
 
@@ -166,10 +166,10 @@ func test_save_load():
 	
 	var config_file := create_temp_dir("test_save_load") + "/testconf.cfg"
 
-	assert_result(config.save(config_file)).is_success()
+	assert_result(config.save_config(config_file)).is_success()
 	assert_file(config_file).exists()
 	
 	var config2 := GdUnitRunnerConfig.new()
-	assert_result(config2.load(config_file)).is_success()
+	assert_result(config2.load_config(config_file)).is_success()
 	# verify the config has original enties
 	assert_object(config2).is_equal(config).is_not_same(config)

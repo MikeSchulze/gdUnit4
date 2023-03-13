@@ -8,13 +8,13 @@ class Address:
 	var _street :String
 	var _code :int
 	
-	func _init(street :String,code :int):
+	func _init(street :String, code :int):
 		_street = street
 		_code = code
 
 
-func _init(name :String,street :String,code :int):
-	_name = name
+func _init(name_ :String, street :String, code :int):
+	_name = name_
 	_value = 1024
 	_address = Address.new(street, code)
 

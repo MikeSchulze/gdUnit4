@@ -11,15 +11,15 @@ class NestedFuzzer extends Fuzzer:
 	func next_value()->Dictionary: 
 		return {}
 
-static func _s_max_value() -> int:
-	return MAX_VALUE
+	static func _s_max_value() -> int:
+		return MAX_VALUE
 
 func min_value() -> int:
 	return MIN_VALUE
 
-func fuzzer() -> Fuzzer:
-	return Fuzzers.rangei(min_value(), _s_max_value())
-	
+func get_fuzzer() -> Fuzzer:
+	return Fuzzers.rangei(min_value(), NestedFuzzer._s_max_value())
+
 func non_fuzzer() -> Resource:
 	return Image.new()
 
@@ -38,7 +38,7 @@ func test_create_fuzzer_argument_with_constants():
 	assert_int(fuzzer.next_value()).is_between(-10, 22)
 
 func test_create_fuzzer_argument_with_custom_function():
-	var fuzzer_arg := GdFunctionArgument.new("fuzzer", GdObjects.TYPE_FUZZER, "fuzzer()")
+	var fuzzer_arg := GdFunctionArgument.new("fuzzer", GdObjects.TYPE_FUZZER, "get_fuzzer()")
 	var fuzzer := FuzzerTool.create_fuzzer(self.get_script(), fuzzer_arg)
 	assert_that(fuzzer).is_not_null()
 	assert_that(fuzzer).is_instanceof(Fuzzer)

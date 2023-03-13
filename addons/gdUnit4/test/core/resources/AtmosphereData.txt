@@ -18,5 +18,5 @@ func set_data(type := AIR, toxigen := 0.0) :
 	_type = type
 	_toxigen = toxigen
 
-static func to_atmosphere(value :Dictionary) -> AtmosphereData:
+static func to_atmosphere(_value :Dictionary) -> AtmosphereData:
 	return null

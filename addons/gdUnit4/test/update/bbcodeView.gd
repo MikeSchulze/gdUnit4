@@ -42,5 +42,5 @@ func _on_RichTextLabel_meta_hover_started(meta :String):
 		_text.set_tooltip(properties.get("tool_tip"))
 
 
-func _on_RichTextLabel_meta_hover_ended(meta :String):
+func _on_RichTextLabel_meta_hover_ended(_meta :String):
 	_text.set_tooltip("")

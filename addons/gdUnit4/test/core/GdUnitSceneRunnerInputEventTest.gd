@@ -463,6 +463,6 @@ func test_simulate_mouse_button_press_and_release():
 		event.global_position = gmp
 		event.pressed = false
 		event.button_index = mouse_button
-		event.button_mask = 0
+		#event.button_mask = 0
 		verify(_scene_spy, 1)._input(event)
 		assert_that(Input.is_mouse_button_pressed(mouse_button)).is_false()

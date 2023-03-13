@@ -336,15 +336,15 @@ func test_extract_function_signature() -> void:
 	var path := GdObjects.extract_class_path("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomFormattings.gd")
 	var rows = _parser.extract_source_code(path)
 	
-	assert_that(_parser.extract_func_signature(rows, 9))\
+	assert_that(_parser.extract_func_signature(rows, 12))\
 		.is_equal('func a1(set_name:String, path:String="", load_on_init:bool=false,set_auto_save:bool=false, set_network_sync:bool=false) -> void:')
-	assert_that(_parser.extract_func_signature(rows, 14))\
-		.is_equal('func a2(set_name:String, path:String="", load_on_init:bool=false,set_auto_save:bool=false, set_network_sync:bool=false) -> void:')
 	assert_that(_parser.extract_func_signature(rows, 19))\
+		.is_equal('func a2(set_name:String, path:String="", load_on_init:bool=false,set_auto_save:bool=false, set_network_sync:bool=false) -> void:')
+	assert_that(_parser.extract_func_signature(rows, 26))\
 		.is_equal('func a3(set_name:String, path:String="", load_on_init:bool=false,set_auto_save:bool=false, set_network_sync:bool=false) :')
-	assert_that(_parser.extract_func_signature(rows, 24))\
+	assert_that(_parser.extract_func_signature(rows, 33))\
 		.is_equal('func a4(set_name:String,path:String="",load_on_init:bool=false,set_auto_save:bool=false,set_network_sync:bool=false):')
-	assert_that(_parser.extract_func_signature(rows, 32))\
+	assert_that(_parser.extract_func_signature(rows, 43))\
 		.is_equal('func a5(value : Array,expected : String,test_parameters : Array = [[ ["a"], "a" ],[ ["a", "very", "long", "argument"], "a very long argument" ],]):')
 
 

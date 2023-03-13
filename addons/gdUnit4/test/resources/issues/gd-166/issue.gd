@@ -11,9 +11,11 @@ var type = -1 :
 
 var type_name
 
+
 func _set_type(t:int):
 	type = t
 
-func _set_type_name(type :int):
-	type_name = Type.to_str(type)
+
+func _set_type_name(type_ :int):
+	type_name = Type.to_str(type_)
 	print("type was set to %s" % type_name)
