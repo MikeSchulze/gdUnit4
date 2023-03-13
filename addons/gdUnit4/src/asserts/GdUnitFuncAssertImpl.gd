@@ -19,7 +19,7 @@ var _sleep_timer :Timer = null
 
 
 func _init(instance :Object, func_name :String, args := Array(), expect_result := EXPECT_SUCCESS):
-	prints("init GdUnitFuncAssertImpl", _to_string())
+	# temporary workaround to hold the instance see https://github.com/godotengine/godot/issues/73889
 	GdUnitTools.register_assert(self)
 	_line_number = GdUnitAssertImpl._get_line_number()
 	_expect_result = expect_result
@@ -33,17 +33,18 @@ func _init(instance :Object, func_name :String, args := Array(), expect_result :
 	else:
 		_current_value_provider = CallBackValueProvider.new(instance, func_name, args)
 
+
 func _to_string():
 	return "GdUnitFuncAssertImpl" + str(get_instance_id())
 
 
-func _notification(what):
-	prints("GdUnitFuncAssert:", GdObjects.notification_as_string(self, what))
-	
-	dispose()
-	while is_instance_valid(self) and get_reference_count() > 0:
-		prints("get_reference_count", get_reference_count())
+func _notification(_what):
+	if is_instance_valid(self):
+		dispose()
+	# temporary workaround to hold the instance see https://github.com/godotengine/godot/issues/73889
+	while is_instance_valid(self) and get_reference_count() > 1:
 		unreference()
+
 
 func report_success() -> GdUnitAssert:
 	return GdAssertReports.report_success(self)
@@ -148,13 +149,11 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 		var is_success = predicate.call(current, expected)
 		if _expect_result != EXPECT_FAIL and is_success:
 			break
-		_sleep_timer.start(0.05)
-		await _sleep_timer.timeout
+		if is_instance_valid(_sleep_timer):
+			_sleep_timer.start(0.05)
+			await _sleep_timer.timeout
 	
-	prints("---> free sleep timer")
 	_sleep_timer.stop()
-	_sleep_timer.queue_free()
-	
 	await Engine.get_main_loop().process_frame
 	dispose()
 	if _interrupted:
@@ -167,20 +166,20 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 	return self
 
 
-@warning_ignore("redundant_await")
 func next_current_value():
-	var current = await _current_value_provider.get_value()
-	call_deferred("emit_signal", "value_provided", current)
+	@warning_ignore("redundant_await")
+	if is_instance_valid(_current_value_provider):
+		var current = await _current_value_provider.get_value()
+		call_deferred("emit_signal", "value_provided", current)
 
 
 # it is important to free all references/connections to prevent orphan nodes
 func dispose():
-	GdUnitTools.release_connections(self)
+	GdUnitTools._release_connections(self)
 	if is_instance_valid(_current_value_provider):
 		_current_value_provider.dispose()
 		_current_value_provider = null
 	if is_instance_valid(_sleep_timer):
-		prints("free sleep timer")
 		_sleep_timer.stop()
 		_sleep_timer.free()
 		_sleep_timer = null

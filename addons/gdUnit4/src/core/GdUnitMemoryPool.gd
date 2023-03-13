@@ -100,7 +100,10 @@ func orphan_nodes() -> int:
 
 # register an instance to be freed when a test suite is finished
 static func register_auto_free(obj, pool :POOL) -> Variant:
-	if not is_instance_valid(obj):
+	# do not register on GDScriptNativeClass
+	if typeof(obj) == TYPE_OBJECT and (obj as Object).is_class("GDScriptNativeClass") :
+		return obj
+	if obj is GDScript or obj is ScriptExtension:
 		return obj
 	if obj is MainLoop:
 		push_error("avoid to add mainloop to auto_free queue  %s" % obj)

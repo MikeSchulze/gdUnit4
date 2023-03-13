@@ -207,7 +207,7 @@ static func free_instance(instance :Variant) -> bool:
 		if not is_instance_valid(instance) or ClassDB.class_get_property(instance, "new"):
 			return false
 		release_double(instance)
-		release_connections(instance)
+		#release_connections(instance)
 		if instance is Timer:
 			instance.stop()
 			#instance.queue_free()
@@ -217,7 +217,7 @@ static func free_instance(instance :Variant) -> bool:
 		return !is_instance_valid(instance)
 
 
-static func release_connections(instance :Object):
+static func _release_connections(instance :Object):
 	if is_instance_valid(instance):
 		# disconnect from all connected signals to force freeing, otherwise it ends up in orphans
 		for connection in instance.get_incoming_connections():
@@ -227,15 +227,16 @@ static func release_connections(instance :Object):
 			#prints("signal", signal_.get_name(), signal_.get_object())
 			#prints("callable", callable_.get_object())
 			if instance.has_signal(signal_.get_name()) and instance.is_connected(signal_.get_name(), callable_):
-				prints("disconnect signal", signal_.get_name(), callable_)
+				#prints("disconnect signal", signal_.get_name(), callable_)
 				instance.disconnect(signal_.get_name(), callable_)
 	release_timers()
+
 
 static func release_timers():
 	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
 	for node in Engine.get_main_loop().root.get_children():
 		if node.is_in_group("GdUnitTimers"):
-			prints("found gdunit timer artifact", node, is_instance_valid(node))
+			#prints("found gdunit timer artifact", node, is_instance_valid(node))
 			if is_instance_valid(node):
 				node.stop()
 				node.free()
@@ -248,7 +249,12 @@ static func register_assert(value):
 
 
 static func release_asserts():
-	pass
+	var asserts :Array = GdUnitSingleton.instance("GdUnitAsserts", func(): return [])
+	for index in range(asserts.size()-1, -1, -1):
+		var assert_ = asserts[index]
+		assert_.notification(Object.NOTIFICATION_PREDELETE)
+		asserts.remove_at(index)
+
 
 # the finally cleaup unfreed resources and singletons
 static func dispose_all():

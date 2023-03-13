@@ -51,6 +51,7 @@ class TestValueProvider:
 	func unknown_value():
 		return Vector3.ONE
 
+
 class ValueProvidersWithArguments:
 	
 	func is_type(_type :int) -> bool:
@@ -61,6 +62,7 @@ class ValueProvidersWithArguments:
 	
 	func get_index2(_instance :Object, _name :String, _recursive := false) -> int:
 		return 1
+
 
 class TestIterativeValueProvider:
 	var _max_iterations :int
@@ -85,7 +87,7 @@ class TestIterativeValueProvider:
 			return _final_value
 		return _inital_value
 	
-	func obj_value() -> Object:
+	func obj_value() -> Variant:
 		_current_itteration += 1
 		if _current_itteration >= _max_iterations:
 			return _final_value
@@ -252,7 +254,7 @@ func test_is_equal_wiht_func_arg(timeout = 1300) -> void:
 @warning_ignore("unused_parameter")
 func test_timeout_and_assert_fails(timeout = 500) -> void:
 	# disable temporary the timeout errors for this test
-	#discard_error_interupted_by_timeout()
+	discard_error_interupted_by_timeout()
 	var value_provider := TestIterativeValueProvider.new(1, 10, 10)
 	# wait longer than test timeout, the value will be never '42' 
 	await assert_func(value_provider, "int_value").wait_until(1000).is_equal(42)
@@ -295,7 +297,7 @@ func yielded_function() -> Color:
 	return color
 
 
-func _test_idle_frame_yielded_function() -> void:
+func test_idle_frame_yielded_function() -> void:
 	await assert_func(self, "yielded_function").is_equal(Color.BLACK)
 	assert_fail( await assert_func(self, "yielded_function", [], GdUnitAssert.EXPECT_FAIL).wait_until(500).is_equal(Color.RED))\
 		.has_failure_message("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 500ms")
