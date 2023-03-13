@@ -199,7 +199,7 @@ static func free_instance(instance :Variant) -> bool:
 			free_instance(element)
 		instance.clear()
 		return true
-	if instance is RefCounted:
+	if is_instance_valid(instance) and instance is RefCounted:
 		instance.notification(Object.NOTIFICATION_PREDELETE)
 		return true
 	else:
