@@ -87,6 +87,7 @@ func set_timeout():
 	var time :float = _timeout * 0.001
 	_timer = Timer.new()
 	add_child(_timer)
+	_timer.set_name("gdunit_test_case_timer_%d" % _timer.get_instance_id())
 	_timer.timeout.connect(func do_interrupt():
 		if has_fuzzer():
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
@@ -94,7 +95,7 @@ func set_timeout():
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout()))
 		_interupted = true
 		completed.emit()
-	)
+		, CONNECT_REFERENCE_COUNTED)
 	_timer.set_one_shot(true)
 	_timer.set_wait_time(time)
 	_timer.set_autostart(false)

@@ -355,6 +355,7 @@ func clone_test_suite(test_suite :GdUnitTestSuite) -> GdUnitTestSuite:
 
 
 func dispose_timers(test_suite :GdUnitTestSuite):
+	GdUnitTools.release_timers()
 	for child in test_suite.get_children():
 		if child is Timer:
 			child.stop()
