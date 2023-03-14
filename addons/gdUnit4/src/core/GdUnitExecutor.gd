@@ -2,6 +2,7 @@ extends Node
 
 signal ExecutionCompleted()
 
+
 const INIT = 0
 const STAGE_TEST_SUITE_BEFORE = GdUnitReportCollector.STAGE_TEST_SUITE_BEFORE
 const STAGE_TEST_SUITE_AFTER = GdUnitReportCollector.STAGE_TEST_SUITE_AFTER
@@ -16,9 +17,6 @@ var _memory_pool :GdUnitMemoryPool = GdUnitMemoryPool.new()
 var _report_errors_enabled :bool
 var _report_collector : = GdUnitReportCollector.new()
 
-# we hold here the main instance for the argument matcher (singleton)
-@warning_ignore("unused_private_class_variable")
-var _arument_matcher = GdUnitArgumentMatchers.new()
 
 var _total_test_execution_orphans :int
 var _total_test_warnings :int
@@ -357,6 +355,7 @@ func clone_test_suite(test_suite :GdUnitTestSuite) -> GdUnitTestSuite:
 
 
 func dispose_timers(test_suite :GdUnitTestSuite):
+	GdUnitTools.release_timers()
 	for child in test_suite.get_children():
 		if child is Timer:
 			child.stop()

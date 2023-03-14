@@ -255,8 +255,6 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 @warning_ignore("shadowed_variable_base_class")
 static func notification_as_string(instance :Variant, notification :int) -> String:
 	var error := "Unknown notification: '%s' at instance:  %s" % [notification, instance]
-	if instance == null:
-		return error
 	if instance is Node:
 		return NOTIFICATION_AS_STRING_MAPPINGS[TYPE_NODE].get(notification, error)
 	if instance is Control:

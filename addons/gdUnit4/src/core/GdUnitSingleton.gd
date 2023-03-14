@@ -26,7 +26,7 @@ static func instance(name :String, clazz :Callable) -> Variant:
 static func unregister(p_singleton :String) -> void:
 	var singletons :PackedStringArray = Engine.get_meta(MEATA_KEY, PackedStringArray())
 	if singletons.has(p_singleton):
-		GdUnitTools.prints_verbose("	Unregister singleton '%s'" % p_singleton);
+		GdUnitTools.prints_verbose("\n	Unregister singleton '%s'" % p_singleton);
 		var index := singletons.find(p_singleton)
 		singletons.remove_at(index)
 		var instance_ :Variant = Engine.get_meta(p_singleton)

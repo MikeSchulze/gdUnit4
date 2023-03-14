@@ -59,7 +59,7 @@ class SignalCollector extends GdUnitSingleton:
 	# unregister all acquired resources/connections, otherwise it ends up in orphans
 	# is called when the emitter is removed from the parent
 	func unregister_emitter(emitter :Object):
-		GdUnitTools.release_connections(emitter)
+		GdUnitTools._release_connections(emitter)
 		if is_instance_valid(emitter):
 			_collected_signals.erase(emitter)
 	

@@ -51,6 +51,7 @@ class TestValueProvider:
 	func unknown_value():
 		return Vector3.ONE
 
+
 class ValueProvidersWithArguments:
 	
 	func is_type(_type :int) -> bool:
@@ -61,6 +62,7 @@ class ValueProvidersWithArguments:
 	
 	func get_index2(_instance :Object, _name :String, _recursive := false) -> int:
 		return 1
+
 
 class TestIterativeValueProvider:
 	var _max_iterations :int
@@ -85,7 +87,7 @@ class TestIterativeValueProvider:
 			return _final_value
 		return _inital_value
 	
-	func obj_value() -> Object:
+	func obj_value() -> Variant:
 		_current_itteration += 1
 		if _current_itteration >= _max_iterations:
 			return _final_value
