@@ -66,7 +66,7 @@ func _on_gdunit_runner_stop(_client_id :int):
 	_button_stop.disabled = true
 
 
-func _on_gdunit_settings_changed(property :GdUnitProperty):
+func _on_gdunit_settings_changed(_property :GdUnitProperty):
 	_button_run_overall.visible = GdUnitSettings.is_inspector_toolbar_button_show()
 
 
