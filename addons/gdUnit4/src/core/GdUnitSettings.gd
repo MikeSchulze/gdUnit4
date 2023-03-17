@@ -172,7 +172,6 @@ static func is_inspector_toolbar_button_show() -> bool:
 	return get_setting(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, true)
 
 
-
 static func is_log_enabled() -> bool:
 	return ProjectSettings.get_setting(STDOUT_ENABLE_TO_FILE)
 
@@ -202,11 +201,13 @@ static func extract_value_set_from_help(value :String) -> PackedStringArray:
 
 static func update_property(property :GdUnitProperty) -> void:
 	ProjectSettings.set_setting(property.name(), property.value())
+	GdUnitSignals.instance().gdunit_settings_changed.emit(property)
 	save()
 
 
 static func reset_property(property :GdUnitProperty) -> void:
 	ProjectSettings.set_setting(property.name(), property.default())
+	GdUnitSignals.instance().gdunit_settings_changed.emit(property)
 	save()
 
 

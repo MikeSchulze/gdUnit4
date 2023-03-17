@@ -24,6 +24,7 @@ func _ready():
 	stop_pressed.connect(command_handler._on_stop_pressed)
 	command_handler.gdunit_runner_start.connect(_on_gdunit_runner_start)
 	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
+	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_gdunit_settings_changed)
 	init_buttons()
 
 
@@ -31,6 +32,7 @@ func init_buttons() -> void:
 	var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 	var editiorTheme := editor.get_editor_interface().get_base_control().theme
 	_button_run_overall.icon = overall_icon_image
+	_button_run_overall.visible = GdUnitSettings.is_inspector_toolbar_button_show()
 	_button_run.icon = editiorTheme.get_icon("Play", "EditorIcons")
 	_button_run_debug.icon = debug_icon_image
 	_button_stop.icon = editiorTheme.get_icon("Stop", "EditorIcons")
@@ -62,6 +64,10 @@ func _on_gdunit_runner_stop(_client_id :int):
 	_button_run.disabled = false
 	_button_run_debug.disabled = false
 	_button_stop.disabled = true
+
+
+func _on_gdunit_settings_changed(property :GdUnitProperty):
+	_button_run_overall.visible = GdUnitSettings.is_inspector_toolbar_button_show()
 
 
 func _on_wiki_pressed():
