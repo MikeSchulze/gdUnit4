@@ -16,6 +16,12 @@ func _ready():
 	if GdUnitSettings.is_update_notification_enabled():
 		var update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
 		add_child(update_tool)
+	GdUnitCommandHandler.instance().gdunit_runner_start.connect(func():
+		var tab_container :TabContainer = get_parent_control()
+		for tab_index in tab_container.get_tab_count():
+			if tab_container.get_tab_title(tab_index) == "GdUnit":
+				tab_container.set_current_tab(tab_index)
+	)
 
 
 func _enter_tree():

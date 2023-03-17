@@ -24,7 +24,8 @@ static func instance() -> GdUnitCommandHandler:
 
 
 func _init():
-	_editor_interface = Engine.get_meta("GdUnitEditorPlugin").get_editor_interface()
+	if Engine.is_editor_hint():
+		_editor_interface = Engine.get_meta("GdUnitEditorPlugin").get_editor_interface()
 	GdUnitSignals.instance().gdunit_event.connect(_on_event)
 	GdUnitSignals.instance().gdunit_client_connected.connect(_on_client_connected)
 	GdUnitSignals.instance().gdunit_client_disconnected.connect(_on_client_disconnected)
@@ -33,11 +34,11 @@ func _init():
 
 
 func _do_process() -> void:
-	check_test_run_stopped_manually()
+	_check_test_run_stopped_manually()
 
 
 # is checking if the user has press the editor stop scene
-func check_test_run_stopped_manually():
+func _check_test_run_stopped_manually():
 	if _is_test_running_but_stop_pressed():
 		if GdUnitSettings.is_verbose_assert_warnings():
 			push_warning("Test Runner scene was stopped manually, force stopping the current test run!")
