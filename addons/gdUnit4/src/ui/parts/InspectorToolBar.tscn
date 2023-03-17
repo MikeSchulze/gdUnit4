@@ -28,7 +28,7 @@ layout_mode = 2
 [node name="tool" type="Button" parent="Tools"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "GdUnit3 Tools"
+tooltip_text = "GdUnit Settings"
 
 [node name="VSeparator" type="VSeparator" parent="Tools"]
 layout_mode = 2
