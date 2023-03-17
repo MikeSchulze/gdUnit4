@@ -15,9 +15,6 @@ const TEST_TIMEOUT = GROUP_TEST + "/test_timeout_seconds"
 const TEST_ROOT_FOLDER = GROUP_TEST + "/test_root_folder"
 const TEST_SITE_NAMING_CONVENTION = GROUP_TEST + "/test_suite_naming_convention"
 
-# UI Setiings
-const GROUP_UI = COMMON_SETTINGS + "/ui"
-const INSPECTOR_NODE_COLLAPSE = GROUP_UI + "/inspector_node_collapse"
 
 # Report Setiings
 const REPORT_SETTINGS = MAIN_CATEGORY + "/report"
@@ -41,6 +38,17 @@ const TEMPLATES = MAIN_CATEGORY + "/templates"
 const TEMPLATES_TS = TEMPLATES + "/testsuite"
 const TEMPLATE_TS_GD = TEMPLATES_TS + "/GDScript"
 const TEMPLATE_TS_CS = TEMPLATES_TS + "/CSharpScript"
+
+
+
+# UI Setiings
+const UI_SETTINGS = MAIN_CATEGORY + "/ui"
+const GROUP_UI_INSPECTOR = UI_SETTINGS + "/inspector"
+const INSPECTOR_NODE_COLLAPSE = GROUP_UI_INSPECTOR + "/node_collapse"
+
+# Toolbar Setiings
+const GROUP_UI_TOOLBAR = UI_SETTINGS + "/toolbar"
+const INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL = GROUP_UI_TOOLBAR + "/run_overall"
 
 # defaults
 # server connection timeout in minutes
@@ -69,7 +77,8 @@ static func setup():
 	create_property_if_need(REPORT_ASSERT_ERRORS, true, "Enables/Disables error reporting checked asserts.")
 	create_property_if_need(REPORT_ASSERT_WARNINGS, true, "Enables/Disables warning reporting checked asserts")
 	create_property_if_need(REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true, "Enabled/disabled number values will be compared strictly by type. (real vs int)")
-	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true, "Enables/disables that the testsuite node is closed after a successful test run.")
+	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true, "Enables/Disables that the testsuite node is closed after a successful test run.")
+	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false, "Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")
 	create_property_if_need(TEMPLATE_TS_GD, GdUnitTestSuiteDefaultTemplate.DEFAULT_TEMP_TS_GD, "Defines the test suite template")
 
 
@@ -159,6 +168,10 @@ static func is_inspector_node_collapse() -> bool:
 	return get_setting(INSPECTOR_NODE_COLLAPSE, true)
 
 
+static func is_inspector_toolbar_button_show() -> bool:
+	return get_setting(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, true)
+
+
 static func is_log_enabled() -> bool:
 	return ProjectSettings.get_setting(STDOUT_ENABLE_TO_FILE)
 
@@ -188,11 +201,13 @@ static func extract_value_set_from_help(value :String) -> PackedStringArray:
 
 static func update_property(property :GdUnitProperty) -> void:
 	ProjectSettings.set_setting(property.name(), property.value())
+	GdUnitSignals.instance().gdunit_settings_changed.emit(property)
 	save()
 
 
 static func reset_property(property :GdUnitProperty) -> void:
 	ProjectSettings.set_setting(property.name(), property.default())
+	GdUnitSignals.instance().gdunit_settings_changed.emit(property)
 	save()
 
 

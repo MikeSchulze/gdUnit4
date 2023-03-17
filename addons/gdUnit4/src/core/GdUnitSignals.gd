@@ -12,6 +12,7 @@ signal gdunit_message(message :String)
 signal gdunit_report(report :GdUnitReport)
 signal gdunit_set_test_failed(is_failed :bool)
 
+signal gdunit_settings_changed(property :GdUnitProperty)
 
 const META_KEY := "GdUnitSignals"
 
