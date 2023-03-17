@@ -5,21 +5,23 @@ const EAXAMPLE_URL := "https://github.com/MikeSchulze/gdUnit4-examples/archive/r
 const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
 
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
-@onready var _version_label :RichTextLabel = $v/MarginContainer/GridContainer/PanelContainer/Panel/CenterContainer2/version
-@onready var _btn_install :Button = $v/MarginContainer/GridContainer/PanelContainer/VBoxContainer/btn_install_examples
-@onready var _progress_bar :ProgressBar = $v/MarginContainer2/HBoxContainer/ProgressBar
-@onready var _progress_text :Label = $v/MarginContainer2/HBoxContainer/ProgressBar/Label
+@onready var _version_label :RichTextLabel = %version
+@onready var _btn_install :Button = %btn_install_examples
+@onready var _progress_bar :ProgressBar = %ProgressBar
+@onready var _progress_text :Label = %progress_lbl
 @onready var _properties_template :Node = $property_template
-@onready var _properties_common :Node = $v/MarginContainer/GridContainer/Properties/Common/VBoxContainer
-@onready var _properties_report :Node = $v/MarginContainer/GridContainer/Properties/Report
+@onready var _properties_common :Node = %"common-content"
+@onready var _properties_ui :Node = %"ui-content"
+@onready var _properties_report :Node = %"report-content"
 
-var _font_size :int
+var _font_size :float
 
 
 func _ready():
 	GdUnit4Version.init_version_label(_version_label)
 	_font_size = GdUnitFonts.init_fonts(_version_label)
 	setup_common_properties(_properties_common, GdUnitSettings.COMMON_SETTINGS)
+	setup_common_properties(_properties_ui, GdUnitSettings.UI_SETTINGS)
 	setup_common_properties(_properties_report, GdUnitSettings.REPORT_SETTINGS)
 	await get_tree().process_frame
 	popup_centered_ratio(.75)
@@ -32,16 +34,16 @@ func _sort_by_key(left :GdUnitProperty, right :GdUnitProperty) -> bool:
 func setup_common_properties(properties_parent :Node, property_category) -> void:
 	var category_properties := GdUnitSettings.list_settings(property_category)
 	# sort by key
-	category_properties.sort_custom(Callable(self, "_sort_by_key"))
-	var theme := Theme.new()
-	theme.set_constant("h_separation", "GridContainer", 12)
+	category_properties.sort_custom(_sort_by_key)
+	var theme_ := Theme.new()
+	theme_.set_constant("h_separation", "GridContainer", 12)
 	var last_category := "!"
-	var min_size_overall := 0
+	var min_size_overall := 0.0
 	for p in category_properties:
-		var min_size := 0
+		var min_size_ := 0.0
 		var grid := GridContainer.new()
 		grid.columns = 4
-		grid.theme = theme
+		grid.theme = theme_
 		var property : GdUnitProperty = p
 		var current_category = property.category()
 		if current_category != last_category:
@@ -55,28 +57,28 @@ func setup_common_properties(properties_parent :Node, property_category) -> void
 		label.text = _to_human_readable(property.name())
 		label.custom_minimum_size = Vector2(_font_size * 20, 0)
 		grid.add_child(label)
-		min_size += label.size.x
+		min_size_ += label.size.x
 
 		# property reset btn
 		var reset_btn :Button = _properties_template.get_child(1).duplicate()
 		reset_btn.icon = _get_btn_icon("Reload")
 		reset_btn.disabled = property.value() == property.default()
 		grid.add_child(reset_btn)
-		min_size += reset_btn.size.x
+		min_size_ += reset_btn.size.x
 
 		# property type specific input element
 		var input :Node = _create_input_element(property, reset_btn)
 		input.custom_minimum_size = Vector2(_font_size * 15, 0)
 		grid.add_child(input)
-		min_size +=  input.size.x
-		reset_btn.connect("pressed", Callable(self, "_on_btn_property_reset_pressed").bind(property, input, reset_btn))
+		min_size_ +=  input.size.x
+		reset_btn.pressed.connect(_on_btn_property_reset_pressed.bind(property, input, reset_btn))
 		# property help text
 		var info :Node = _properties_template.get_child(2).duplicate()
 		info.text = property.help()
 		grid.add_child(info)
-		min_size += info.text.length() * _font_size
-		if min_size_overall < min_size:
-			min_size_overall = min_size
+		min_size_ += info.text.length() * _font_size
+		if min_size_overall < min_size_:
+			min_size_overall = min_size_
 		properties_parent.add_child(grid)
 	properties_parent.custom_minimum_size.x = min_size_overall
 
@@ -88,17 +90,17 @@ func _create_input_element(property: GdUnitProperty, reset_btn :Button) -> Node:
 		var values_set := Array(property.value_set())
 		for value in values_set:
 			options.add_item(value)
-		options.connect("item_selected", Callable(self, "_on_option_selected").bind(property, reset_btn))
+		options.item_selected.connect(_on_option_selected.bind(property, reset_btn))
 		options.select(property.value())
 		return options
 	if property.type() == TYPE_BOOL:
 		var check_btn := CheckButton.new()
-		check_btn.connect("toggled", Callable(self, "_on_property_text_changed").bind(property, reset_btn))
+		check_btn.toggled.connect(_on_property_text_changed.bind(property, reset_btn))
 		check_btn.button_pressed = property.value()
 		return check_btn
 	if property.type() in [TYPE_INT, TYPE_STRING]:
 		var input := LineEdit.new()
-		input.connect("text_changed", Callable(self, "_on_property_text_changed").bind(property, reset_btn))
+		input.text_changed.connect(_on_property_text_changed.bind(property, reset_btn))
 		input.set_context_menu_enabled(false)
 		input.set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER)
 		input.set_expand_to_text_length_enabled(true)
@@ -111,11 +113,11 @@ func _to_human_readable(value :String) -> String:
 	return value.split("/")[-1].capitalize()
 
 
-func _get_btn_icon(name :String) -> Texture2D:
+func _get_btn_icon(p_name :String) -> Texture2D:
 	var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 	if editor:
 		var editiorTheme := editor.get_editor_interface().get_base_control().theme
-		return editiorTheme.get_icon(name, "EditorIcons")
+		return editiorTheme.get_icon(p_name, "EditorIcons")
 	return null
 
 

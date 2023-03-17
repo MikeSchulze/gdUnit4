@@ -131,6 +131,10 @@ func _ready():
 		_editor = Engine.get_meta("GdUnitEditorPlugin")
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(_on_gdunit_add_test_suite)
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
+	var command_handler := GdUnitCommandHandler.instance()
+	command_handler.gdunit_runner_start.connect(_on_gdunit_runner_start)
+	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
+
 
 
 # we need current to manually redraw bacause of the animation bug
@@ -525,13 +529,13 @@ func _on_Tree_item_activated() -> void:
 ################################################################################
 # external signal receiver
 ################################################################################
-func _on_GdUnit_gdunit_runner_start():
+func _on_gdunit_runner_start():
 	_context_menu_run.disabled = true
 	_context_menu_debug.disabled = true
 	clear_failures()
 
 
-func _on_GdUnit_gdunit_runner_stop(_client_id :int):
+func _on_gdunit_runner_stop(_client_id :int):
 	_context_menu_run.disabled = false
 	_context_menu_debug.disabled = false
 	abort_running()

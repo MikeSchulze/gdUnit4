@@ -28,6 +28,7 @@ static func release(popup : PopupMenu):
 			popup.disconnect("id_pressed", Callable(handler, "on_context_menu_pressed"))
 		handler.queue_free()
 
+
 func on_context_menu_show(context_menu :PopupMenu, file_tree :Tree) -> void:
 	context_menu.add_separator()
 	var current_index := context_menu.get_item_count()
