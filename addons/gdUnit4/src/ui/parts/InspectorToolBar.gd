@@ -10,7 +10,7 @@ signal stop_pressed()
 @onready var _version_label := %version
 @onready var _button_wiki := %help
 @onready var _tool_button := %tool
-@onready var _button_run_overall := %"run-overall"
+@onready var _button_run_overall :Button = %"run-overall"
 @onready var _button_run := %run
 @onready var _button_run_debug := %debug
 @onready var _button_stop := %stop
@@ -26,6 +26,7 @@ func _ready():
 	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_gdunit_settings_changed)
 	init_buttons()
+	init_shortcuts(command_handler)
 
 
 func init_buttons() -> void:
@@ -38,6 +39,13 @@ func init_buttons() -> void:
 	_button_stop.icon = editiorTheme.get_icon("Stop", "EditorIcons")
 	_tool_button.icon = editiorTheme.get_icon("Tools", "EditorIcons")
 	_button_wiki.icon = editiorTheme.get_icon("HelpSearch", "EditorIcons")
+
+
+func init_shortcuts(command_handler :GdUnitCommandHandler) -> void:
+	_button_run.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RERUN_TESTS)
+	_button_run_overall.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL)
+	_button_run_debug.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG)
+	_button_stop.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.STOP_TEST_RUN)
 
 
 func _on_runoverall_pressed(debug := false):

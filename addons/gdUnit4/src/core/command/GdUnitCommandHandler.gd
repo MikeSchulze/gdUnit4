@@ -5,6 +5,16 @@ extends RefCounted
 signal gdunit_runner_start()
 signal gdunit_runner_stop(client_id :int)
 
+
+const CMD_STOP_TEST_RUN = "Stop Test Run"
+const CMD_RUN_TESTSUITE = "Run TestSuites"
+const CMD_DEBUG_TESTSUITE = "Debug TestSuites"
+const CMD_RUN_OVERALL = "Debug Overall TestSuites"
+const CMD_RUN_TESTCASE = "Run TestCases"
+const CMD_DEBUG_TESTCASE = "Debug TestCases"
+const CMD_CREATE_TESTCASE = "Create TestCase"
+
+
 var _editor_interface :EditorInterface
 # the current test runner config
 var _runner_config := GdUnitRunnerConfig.new()
@@ -17,6 +27,9 @@ var _current_runner_process_id :int = 0
 var _is_running :bool = false
 # holds if the current running tests started in debug mode
 var _running_debug_mode :bool
+
+var _commands := {}
+var _shortcuts := {}
 
 
 static func instance() -> GdUnitCommandHandler:
@@ -31,6 +44,14 @@ func _init():
 	GdUnitSignals.instance().gdunit_client_disconnected.connect(_on_client_disconnected)
 	# preload previous test execution
 	_runner_config.load_config()
+	
+	init_shortcuts()
+	var is_running = func(_script :GDScript) : return !_is_running
+	register_command(GdUnitCommand.new(is_running, cmd_editor_run_test.bind(false), GdUnitShortcut.ShortCut.RUN_TESTCASE))
+	register_command(GdUnitCommand.new(is_running, cmd_editor_run_test.bind(true), GdUnitShortcut.ShortCut.DEBUG_TESTCASE))
+	register_command(GdUnitCommand.new(is_running, cmd_create_test, GdUnitShortcut.ShortCut.CREATE_TEST))
+	register_command(GdUnitCommand.new(is_running, cmd_run_test_suites.bind(false), GdUnitShortcut.ShortCut.RERUN_TESTS))
+	register_command(GdUnitCommand.new(is_running, cmd_run_test_suites.bind(true), GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG))
 
 
 func _do_process() -> void:
@@ -47,6 +68,53 @@ func _check_test_run_stopped_manually():
 
 func _is_test_running_but_stop_pressed():
 	return _editor_interface and _running_debug_mode and _is_running and not _editor_interface.is_playing_scene()
+
+
+func init_shortcuts() -> void:
+	for shortcut in GdUnitShortcut.DEFAULTS.keys():
+		var key_codes :PackedInt32Array = GdUnitShortcut.DEFAULTS.get(shortcut)
+		var inputEvent :InputEventKey = InputEventKey.new()
+		inputEvent.pressed = true
+		for key_code in key_codes:
+			match key_code:
+				KEY_ALT:
+					inputEvent.alt_pressed = true
+				KEY_SHIFT:
+					inputEvent.shift_pressed = true
+				KEY_CTRL:
+					inputEvent.ctrl_pressed = true
+				_:
+					inputEvent.keycode = key_code as Key
+					inputEvent.physical_keycode = key_code as Key
+		register_shortcut(shortcut, inputEvent)
+
+
+func register_shortcut(p_shortcut :GdUnitShortcut.ShortCut, inputEvent :InputEvent) -> void:
+	var shortcut := Shortcut.new()
+	shortcut.set_events([inputEvent])
+	var command_name :String = get_shortcut_command(p_shortcut)
+	_shortcuts[p_shortcut] = GdUnitShortcutAction.new(p_shortcut, shortcut, command_name)
+
+
+func get_shortcut(shortcut_type :GdUnitShortcut.ShortCut) -> Shortcut:
+	return get_shortcut_action(shortcut_type).shortcut
+
+
+func get_shortcut_action(shortcut_type :GdUnitShortcut.ShortCut) -> GdUnitShortcutAction:
+	return _shortcuts.get(shortcut_type)
+
+
+func get_shortcut_command(p_shortcut :GdUnitShortcut.ShortCut) -> String:
+	return GdUnitShortcut.CommandMapping[p_shortcut]
+
+
+func register_command(p_command :GdUnitCommand) -> void:
+	p_command.name = get_shortcut_command(p_command.shortcut)
+	_commands[p_command.name] = p_command
+
+
+func command(cmd_name :String) -> GdUnitCommand:
+	return _commands.get(cmd_name)
 
 
 func cmd_run_test_suites(test_suite_paths :PackedStringArray, debug :bool, rerun := false) -> void:
@@ -75,8 +143,6 @@ func cmd_run_test_case(test_suite_resource_path :String, test_case :String, test
 
 func cmd_run_overall(debug :bool) -> void:
 	var test_suite_paths :PackedStringArray = GdUnitCommandHandler.scan_test_directorys("res://", [])
-	prints("Run overall", test_suite_paths)
-	# create new runner runner_config for fresh run otherwise use saved one
 	var result := _runner_config.clear()\
 		.add_test_suites(test_suite_paths)\
 		.save_config()
@@ -120,6 +186,35 @@ func cmd_stop(client_id :int) -> void:
 		if result != OK:
 			push_error("ERROR checked stopping GdUnit Test Runner. error code: %s" % result)
 	_current_runner_process_id = -1
+
+
+func cmd_editor_run_test(script :Script, text_edit :TextEdit, debug :bool):
+		var cursor_line := text_edit.get_caret_line()
+		#run test case?
+		var regex := RegEx.new()
+		regex.compile("(^func[ ,\t])(test_[a-zA-Z0-9_]*)")
+		var result := regex.search(text_edit.get_line(cursor_line))
+		if result:
+			var func_name := result.get_string(2).strip_edges()
+			prints("Run test:", func_name, "debug", debug)
+			if func_name.begins_with("test_"):
+				cmd_run_test_case(script.resource_path, func_name, -1, debug)
+				return
+		# otherwise run the full test suite
+		var selected_test_suites := [script.resource_path]
+		cmd_run_test_suites(selected_test_suites, debug)
+
+
+func cmd_create_test(script :Script, text_edit :TextEdit) -> void:
+	prints("cmd_create_test", script, text_edit)
+	var cursor_line := text_edit.get_caret_line()
+	var result := GdUnitTestSuiteBuilder.create(script, cursor_line)
+	if result.is_error():
+		# show error dialog
+		push_error("Failed to create test case: %s" % result.error_message())
+		return
+	var info := result.value() as Dictionary
+	ScriptEditorControls.edit_script(info.get("path"), info.get("line"))
 
 
 static func scan_test_directorys(base_directory :String, test_suite_paths :PackedStringArray) -> PackedStringArray:

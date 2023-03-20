@@ -6,17 +6,15 @@ enum MENU_ID {
 	CREATE_TEST = 1010,
 }
 
+
 var _is_visible :Callable
-var _is_enabled :Callable
-var _runnable: Callable
 
 
-func _init(p_id :MENU_ID, p_name :StringName, p_is_visible :Callable, p_is_enabled: Callable, p_runnable: Callable):
+func _init(p_id :MENU_ID, p_name :StringName, p_is_visible :Callable, p_command :GdUnitCommand):
 	self.id = p_id
 	self.name = p_name
+	self.command = p_command
 	_is_visible = p_is_visible
-	_is_enabled = p_is_enabled
-	_runnable = p_runnable
 
 
 var id: MENU_ID:
@@ -33,8 +31,19 @@ var name: StringName:
 		return name
 
 
+var command: GdUnitCommand:
+	set(value):
+		command = value
+	get:
+		return command
+
+
+func shortcut() -> Shortcut:
+	return GdUnitCommandHandler.instance().get_shortcut(command.shortcut)
+
+
 func is_enabled(script :GDScript) -> bool:
-	return _is_enabled.call(script)
+	return command.is_enabled.call(script)
 
 
 func is_visible(script :GDScript) -> bool:
@@ -42,4 +51,4 @@ func is_visible(script :GDScript) -> bool:
 
 
 func execute(args :Array) -> void:
-	_runnable.callv(args)
+	command.runnable.callv(args)
