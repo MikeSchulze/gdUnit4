@@ -79,7 +79,7 @@ static func setup():
 	create_property_if_need(REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true, "Enabled/disabled number values will be compared strictly by type. (real vs int)")
 	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true, "Enables/Disables that the testsuite node is closed after a successful test run.")
 	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false, "Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")
-	create_property_if_need(TEMPLATE_TS_GD, GdUnitTestSuiteDefaultTemplate.DEFAULT_TEMP_TS_GD, "Defines the test suite template")
+	create_property_if_need(TEMPLATE_TS_GD, GdUnitTestSuiteTemplate.default_GD_template(), "Defines the test suite template")
 
 
 static func create_property_if_need(name :String, default :Variant, help :="", value_set := PackedStringArray()) -> void:
