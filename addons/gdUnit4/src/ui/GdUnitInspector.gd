@@ -64,7 +64,7 @@ func add_file_system_dock_context_menu() -> void:
 		return GdObjects.is_test_suite(script) == is_test_suite
 	var menu :Array[GdUnitContextMenuItem] = [
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Testsuites", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE)),
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Testsuites", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_DEBUG_TESTSUITE)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Testsuites", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE_DEBUG)),
 	]
 	EditorFileSystemControls.register_context_menu(menu)
 
@@ -74,7 +74,8 @@ func add_script_editor_context_menu():
 		return GdObjects.is_test_suite(script) == is_test_suite
 	var menu :Array[GdUnitContextMenuItem] = [
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE)),
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", is_test_suite.bind(true),_command_handler.command(GdUnitCommandHandler.CMD_DEBUG_TESTCASE)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", is_test_suite.bind(true),_command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG)),
+		#GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RERUN, "ReRun Tests", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RERUN_TESTS)),
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.CREATE_TEST, "Create Test", is_test_suite.bind(false), _command_handler.command(GdUnitCommandHandler.CMD_CREATE_TESTCASE))
 	]
 	ScriptEditorControls.register_context_menu(menu)

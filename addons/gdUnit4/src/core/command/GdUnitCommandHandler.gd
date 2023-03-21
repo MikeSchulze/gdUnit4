@@ -1,4 +1,3 @@
-@tool
 class_name GdUnitCommandHandler
 extends RefCounted
 
@@ -8,11 +7,14 @@ signal gdunit_runner_stop(client_id :int)
 
 const CMD_STOP_TEST_RUN = "Stop Test Run"
 const CMD_RUN_TESTSUITE = "Run TestSuites"
-const CMD_DEBUG_TESTSUITE = "Debug TestSuites"
+const CMD_RUN_TESTSUITE_DEBUG = "Run TestSuites (Debug)"
+const CMD_RERUN_TESTS = "ReRun Tests"
+const CMD_RERUN_TESTS_DEBUG = "ReRun Tests (Debug)"
 const CMD_RUN_OVERALL = "Debug Overall TestSuites"
 const CMD_RUN_TESTCASE = "Run TestCases"
-const CMD_DEBUG_TESTCASE = "Debug TestCases"
+const CMD_RUN_TESTCASE_DEBUG = "Run TestCases (Debug)"
 const CMD_CREATE_TESTCASE = "Create TestCase"
+
 
 
 var _editor_interface :EditorInterface
@@ -44,14 +46,19 @@ func _init():
 	GdUnitSignals.instance().gdunit_client_disconnected.connect(_on_client_disconnected)
 	# preload previous test execution
 	_runner_config.load_config()
-	
+
 	init_shortcuts()
-	var is_running = func(_script :GDScript) : return !_is_running
-	register_command(GdUnitCommand.new(is_running, cmd_editor_run_test.bind(false), GdUnitShortcut.ShortCut.RUN_TESTCASE))
-	register_command(GdUnitCommand.new(is_running, cmd_editor_run_test.bind(true), GdUnitShortcut.ShortCut.DEBUG_TESTCASE))
-	register_command(GdUnitCommand.new(is_running, cmd_create_test, GdUnitShortcut.ShortCut.CREATE_TEST))
-	register_command(GdUnitCommand.new(is_running, cmd_run_test_suites.bind(false), GdUnitShortcut.ShortCut.RERUN_TESTS))
-	register_command(GdUnitCommand.new(is_running, cmd_run_test_suites.bind(true), GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG))
+	var is_running = func(_script :GDScript) : return _is_running
+	var is_not_running = func(_script :GDScript) : return !_is_running
+	register_command(GdUnitCommand.new(CMD_RUN_OVERALL, is_not_running, cmd_run_overall.bind(true), GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE, is_not_running, cmd_editor_run_test.bind(false), GdUnitShortcut.ShortCut.RUN_TESTCASE))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE_DEBUG, is_not_running, cmd_editor_run_test.bind(true), GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE, is_not_running, cmd_run_test_suites.bind(false), -1))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE_DEBUG, is_not_running, cmd_run_test_suites.bind(false), -1))
+	register_command(GdUnitCommand.new(CMD_RERUN_TESTS, is_not_running, cmd_run.bind(false), GdUnitShortcut.ShortCut.RERUN_TESTS))
+	register_command(GdUnitCommand.new(CMD_RERUN_TESTS_DEBUG, is_not_running, cmd_run.bind(true), GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG))
+	register_command(GdUnitCommand.new(CMD_CREATE_TESTCASE, is_not_running, cmd_create_test, GdUnitShortcut.ShortCut.CREATE_TEST))
+	register_command(GdUnitCommand.new(CMD_STOP_TEST_RUN, is_running, cmd_stop.bind(_client_id), GdUnitShortcut.ShortCut.STOP_TEST_RUN))
 
 
 func _do_process() -> void:
@@ -109,7 +116,6 @@ func get_shortcut_command(p_shortcut :GdUnitShortcut.ShortCut) -> String:
 
 
 func register_command(p_command :GdUnitCommand) -> void:
-	p_command.name = get_shortcut_command(p_command.shortcut)
 	_commands[p_command.name] = p_command
 
 
@@ -188,27 +194,26 @@ func cmd_stop(client_id :int) -> void:
 	_current_runner_process_id = -1
 
 
-func cmd_editor_run_test(script :Script, text_edit :TextEdit, debug :bool):
-		var cursor_line := text_edit.get_caret_line()
-		#run test case?
-		var regex := RegEx.new()
-		regex.compile("(^func[ ,\t])(test_[a-zA-Z0-9_]*)")
-		var result := regex.search(text_edit.get_line(cursor_line))
-		if result:
-			var func_name := result.get_string(2).strip_edges()
-			prints("Run test:", func_name, "debug", debug)
-			if func_name.begins_with("test_"):
-				cmd_run_test_case(script.resource_path, func_name, -1, debug)
-				return
-		# otherwise run the full test suite
-		var selected_test_suites := [script.resource_path]
-		cmd_run_test_suites(selected_test_suites, debug)
+func cmd_editor_run_test(debug :bool):
+	var cursor_line := active_base_editor().get_caret_line()
+	#run test case?
+	var regex := RegEx.new()
+	regex.compile("(^func[ ,\t])(test_[a-zA-Z0-9_]*)")
+	var result := regex.search(active_base_editor().get_line(cursor_line))
+	if result:
+		var func_name := result.get_string(2).strip_edges()
+		prints("Run test:", func_name, "debug", debug)
+		if func_name.begins_with("test_"):
+			cmd_run_test_case(active_script().resource_path, func_name, -1, debug)
+			return
+	# otherwise run the full test suite
+	var selected_test_suites := [active_script().resource_path]
+	cmd_run_test_suites(selected_test_suites, debug)
 
 
-func cmd_create_test(script :Script, text_edit :TextEdit) -> void:
-	prints("cmd_create_test", script, text_edit)
-	var cursor_line := text_edit.get_caret_line()
-	var result := GdUnitTestSuiteBuilder.create(script, cursor_line)
+func cmd_create_test() -> void:
+	var cursor_line := active_base_editor().get_caret_line()
+	var result := GdUnitTestSuiteBuilder.create(active_script(), cursor_line)
 	if result.is_error():
 		# show error dialog
 		push_error("Failed to create test case: %s" % result.error_message())
@@ -244,6 +249,19 @@ func run_release_mode():
 	arguments.append(ProjectSettings.globalize_path("res://"))
 	arguments.append("res://addons/gdUnit4/src/core/GdUnitRunner.tscn")
 	_current_runner_process_id = OS.create_process(OS.get_executable_path(), arguments, false);
+
+
+func script_editor() -> ScriptEditor:
+	return _editor_interface.get_script_editor()
+
+
+func active_base_editor() -> TextEdit:
+	return script_editor().get_current_editor().get_base_editor()
+
+
+func active_script() -> Script:
+	return script_editor().get_current_script()
+
 
 
 ################################################################################

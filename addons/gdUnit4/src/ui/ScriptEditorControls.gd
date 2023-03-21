@@ -106,20 +106,13 @@ static func edit_script(script_path :String, line_number :int = -1):
 # Is called when the plugin is activated
 # The active script is connected to the ScriptEditorContextMenuHandler
 static func register_context_menu(menu :Array[GdUnitContextMenuItem]) -> void:
-	script_editor().editor_script_changed.connect(ScriptEditorContextMenuHandler.create(menu).bind(script_editor()))
+	Engine.get_main_loop().root.call_deferred("add_child", ScriptEditorContextMenuHandler.new(menu, script_editor()))
 
 
 # Unregisteres all registerend context menus and gives the ScriptEditorContextMenuHandler> free
 # Is called when the plugin is deactivated
 static func unregister_context_menu() -> void:
-	for connection in script_editor().editor_script_changed.get_connections():
-		var cb :Callable = connection["callable"]
-		if cb.get_object() is ScriptEditorContextMenuHandler:
-			cb.get_object().free()
-
-
-static func filesystem_add_context_menu() -> void:
-	pass
+	ScriptEditorContextMenuHandler.dispose(script_editor())
 
 
 static func _menu_popup() -> PopupMenu:
