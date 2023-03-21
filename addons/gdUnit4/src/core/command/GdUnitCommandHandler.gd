@@ -5,14 +5,14 @@ signal gdunit_runner_start()
 signal gdunit_runner_stop(client_id :int)
 
 
-const CMD_STOP_TEST_RUN = "Stop Test Run"
+const CMD_RUN_OVERALL = "Debug Overall TestSuites"
+const CMD_RUN_TESTCASE = "Run TestCases"
+const CMD_RUN_TESTCASE_DEBUG = "Run TestCases (Debug)"
 const CMD_RUN_TESTSUITE = "Run TestSuites"
 const CMD_RUN_TESTSUITE_DEBUG = "Run TestSuites (Debug)"
 const CMD_RERUN_TESTS = "ReRun Tests"
 const CMD_RERUN_TESTS_DEBUG = "ReRun Tests (Debug)"
-const CMD_RUN_OVERALL = "Debug Overall TestSuites"
-const CMD_RUN_TESTCASE = "Run TestCases"
-const CMD_RUN_TESTCASE_DEBUG = "Run TestCases (Debug)"
+const CMD_STOP_TEST_RUN = "Stop Test Run"
 const CMD_CREATE_TESTCASE = "Create TestCase"
 
 
@@ -37,7 +37,6 @@ var _shortcuts := {}
 static func instance() -> GdUnitCommandHandler:
 	return GdUnitSingleton.instance("GdUnitCommandHandler", func(): return GdUnitCommandHandler.new())
 
-
 func _init():
 	if Engine.is_editor_hint():
 		_editor_interface = Engine.get_meta("GdUnitEditorPlugin").get_editor_interface()
@@ -53,13 +52,18 @@ func _init():
 	register_command(GdUnitCommand.new(CMD_RUN_OVERALL, is_not_running, cmd_run_overall.bind(true), GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL))
 	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE, is_not_running, cmd_editor_run_test.bind(false), GdUnitShortcut.ShortCut.RUN_TESTCASE))
 	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE_DEBUG, is_not_running, cmd_editor_run_test.bind(true), GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG))
-	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE, is_not_running, cmd_run_test_suites.bind(false), -1))
-	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE_DEBUG, is_not_running, cmd_run_test_suites.bind(false), -1))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE, is_not_running, cmd_run_test_suites.bind(false)))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE_DEBUG, is_not_running, cmd_run_test_suites.bind(false)))
 	register_command(GdUnitCommand.new(CMD_RERUN_TESTS, is_not_running, cmd_run.bind(false), GdUnitShortcut.ShortCut.RERUN_TESTS))
 	register_command(GdUnitCommand.new(CMD_RERUN_TESTS_DEBUG, is_not_running, cmd_run.bind(true), GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG))
 	register_command(GdUnitCommand.new(CMD_CREATE_TESTCASE, is_not_running, cmd_create_test, GdUnitShortcut.ShortCut.CREATE_TEST))
 	register_command(GdUnitCommand.new(CMD_STOP_TEST_RUN, is_running, cmd_stop.bind(_client_id), GdUnitShortcut.ShortCut.STOP_TEST_RUN))
 
+
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		_commands.clear()
+		_shortcuts.clear()
 
 func _do_process() -> void:
 	_check_test_run_stopped_manually()

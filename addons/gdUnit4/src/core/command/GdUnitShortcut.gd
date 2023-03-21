@@ -3,6 +3,7 @@ extends RefCounted
 
 
 enum ShortCut {
+	NONE,
 	RUN_TESTCASE,
 	RUN_TESTCASE_DEBUG,
 	RUN_TESTS_OVERALL,
