@@ -40,11 +40,28 @@ const TEMPLATE_TS_GD = TEMPLATES_TS + "/GDScript"
 const TEMPLATE_TS_CS = TEMPLATES_TS + "/CSharpScript"
 
 
-
 # UI Setiings
 const UI_SETTINGS = MAIN_CATEGORY + "/ui"
 const GROUP_UI_INSPECTOR = UI_SETTINGS + "/inspector"
 const INSPECTOR_NODE_COLLAPSE = GROUP_UI_INSPECTOR + "/node_collapse"
+
+
+# Shortcut Setiings
+const SHORTCUT_SETTINGS = MAIN_CATEGORY + "/Shortcuts"
+const GROUP_SHORTCUT_INSPECTOR = SHORTCUT_SETTINGS + "/inspector"
+const SHORTCUT_INSPECTOR_RERUN_TEST = GROUP_SHORTCUT_INSPECTOR + "/rerun_test"
+const SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG = GROUP_SHORTCUT_INSPECTOR + "/rerun_test_debug"
+const SHORTCUT_INSPECTOR_RUN_TEST_OVERALL = GROUP_SHORTCUT_INSPECTOR + "/run_test_overall"
+const SHORTCUT_INSPECTOR_RUN_TEST_STOP = GROUP_SHORTCUT_INSPECTOR + "/run_test_stop"
+
+const GROUP_SHORTCUT_EDITOR = SHORTCUT_SETTINGS + "/editor"
+const SHORTCUT_EDITOR_RUN_TEST = GROUP_SHORTCUT_EDITOR + "/run_test"
+const SHORTCUT_EDITOR_RUN_TEST_DEBUG = GROUP_SHORTCUT_EDITOR + "/run_tes_debugt"
+
+const GROUP_SHORTCUT_FILESYSTEM = SHORTCUT_SETTINGS + "/filesystem"
+const SHORTCUT_FILESYSTEM_RUN_TEST = GROUP_SHORTCUT_FILESYSTEM + "/run_test"
+const SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG = GROUP_SHORTCUT_FILESYSTEM + "/run_test_debug"
+
 
 # Toolbar Setiings
 const GROUP_UI_TOOLBAR = UI_SETTINGS + "/toolbar"
@@ -80,6 +97,21 @@ static func setup():
 	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true, "Enables/Disables that the testsuite node is closed after a successful test run.")
 	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false, "Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")
 	create_property_if_need(TEMPLATE_TS_GD, GdUnitTestSuiteTemplate.default_GD_template(), "Defines the test suite template")
+	create_shortcut_properties_if_need()
+
+
+static func create_shortcut_properties_if_need() -> void:
+	# inspector
+	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RERUN_TESTS), "Reruns the last executed tests.")
+	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG), "Reruns the last executed tests (Debug).")
+	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_OVERALL, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL), "Runs overall tests (Debug).")
+	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_STOP, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.STOP_TEST_RUN), "Stops current test execution.")
+	# script editor
+	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RUN_TESTCASE), "Runs the actual selected test.")
+	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST_DEBUG, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG), "Runs the actual selected test (Debug).")
+	# filesystem
+	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.NONE), "Runs all testsuites from selected folder or file.")
+	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.NONE), "Runs all testsuites from selected folder or file (Debug).")
 
 
 static func create_property_if_need(name :String, default :Variant, help :="", value_set := PackedStringArray()) -> void:

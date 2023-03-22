@@ -25,12 +25,34 @@ const CommandMapping = {
 }
 
 
-const DEFAULTS := {
-	ShortCut.RUN_TESTCASE : [Key.KEY_ALT, Key.KEY_CTRL, Key.KEY_F5],
-	ShortCut.RUN_TESTCASE_DEBUG : [Key.KEY_ALT, Key.KEY_CTRL, Key.KEY_F6],
+const DEFAULTS_MACOS := {
+	ShortCut.NONE : [],
+	ShortCut.RUN_TESTCASE : [Key.KEY_ALT, Key.KEY_META, Key.KEY_F5],
+	ShortCut.RUN_TESTCASE_DEBUG : [Key.KEY_ALT, Key.KEY_META, Key.KEY_F6],
 	ShortCut.RUN_TESTS_OVERALL : [Key.KEY_ALT, Key.KEY_F4],
 	ShortCut.RERUN_TESTS : [Key.KEY_ALT, Key.KEY_F5],
 	ShortCut.RERUN_TESTS_DEBUG : [Key.KEY_ALT, Key.KEY_F6],
 	ShortCut.STOP_TEST_RUN : [Key.KEY_ALT, Key.KEY_F8],
 	ShortCut.CREATE_TEST : [Key.KEY_ALT, Key.KEY_F10],
 }
+
+const DEFAULTS_WINDOWS := {
+	ShortCut.NONE : [],
+	ShortCut.RUN_TESTCASE : [Key.KEY_ALT, Key.KEY_CTRL, Key.KEY_F5],
+	ShortCut.RUN_TESTCASE_DEBUG : [Key.KEY_ALT, Key.KEY_CTRL, Key.KEY_F6],
+	ShortCut.RUN_TESTS_OVERALL : [Key.KEY_CTRL, Key.KEY_F4],
+	ShortCut.RERUN_TESTS : [Key.KEY_CTRL, Key.KEY_F5],
+	ShortCut.RERUN_TESTS_DEBUG : [Key.KEY_CTRL, Key.KEY_F6],
+	ShortCut.STOP_TEST_RUN : [Key.KEY_CTRL, Key.KEY_F8],
+	ShortCut.CREATE_TEST : [Key.KEY_CTRL, Key.KEY_F10],
+}
+
+
+static func keys(shortcut :ShortCut) -> PackedInt32Array:
+	match OS.get_name():
+		'windows':
+			return DEFAULTS_WINDOWS[shortcut]
+		'macos':
+			return DEFAULTS_MACOS[shortcut]
+		_:
+			return DEFAULTS_WINDOWS[shortcut]

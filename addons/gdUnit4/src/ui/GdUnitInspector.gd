@@ -75,7 +75,6 @@ func add_script_editor_context_menu():
 	var menu :Array[GdUnitContextMenuItem] = [
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE)),
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", is_test_suite.bind(true),_command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG)),
-		#GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RERUN, "ReRun Tests", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RERUN_TESTS)),
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.CREATE_TEST, "Create Test", is_test_suite.bind(false), _command_handler.command(GdUnitCommandHandler.CMD_CREATE_TESTCASE))
 	]
 	ScriptEditorControls.register_context_menu(menu)

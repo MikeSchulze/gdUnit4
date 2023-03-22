@@ -82,8 +82,8 @@ func _is_test_running_but_stop_pressed():
 
 
 func init_shortcuts() -> void:
-	for shortcut in GdUnitShortcut.DEFAULTS.keys():
-		var key_codes :PackedInt32Array = GdUnitShortcut.DEFAULTS.get(shortcut)
+	for shortcut in GdUnitShortcut.ShortCut.values():
+		var key_codes := GdUnitShortcut.keys(shortcut)
 		var inputEvent :InputEventKey = InputEventKey.new()
 		inputEvent.pressed = true
 		for key_code in key_codes:
@@ -116,7 +116,7 @@ func get_shortcut_action(shortcut_type :GdUnitShortcut.ShortCut) -> GdUnitShortc
 
 
 func get_shortcut_command(p_shortcut :GdUnitShortcut.ShortCut) -> String:
-	return GdUnitShortcut.CommandMapping[p_shortcut]
+	return GdUnitShortcut.CommandMapping.get(p_shortcut, "unknown command")
 
 
 func register_command(p_command :GdUnitCommand) -> void:
