@@ -19,7 +19,8 @@ static func dispose(p_editor :ScriptEditor) -> void:
 	if handler:
 		if p_editor.editor_script_changed.is_connected(handler.on_script_changed):
 			p_editor.editor_script_changed.disconnect(handler.on_script_changed)
-		handler.free()
+		Engine.get_main_loop().root.call_deferred("remove_child", handler)
+		handler.queue_free()
 
 
 func _input(event):

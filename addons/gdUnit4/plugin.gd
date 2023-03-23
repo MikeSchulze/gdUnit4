@@ -44,8 +44,7 @@ func _exit_tree():
 	if is_instance_valid(_server_node):
 		remove_child(_server_node)
 		_server_node.free()
+	GdUnitTools.dispose_all()
 	if Engine.has_meta("GdUnitEditorPlugin"):
 		Engine.remove_meta("GdUnitEditorPlugin")
 	prints("Unload GdUnit4 Plugin success")
-	GdUnitSignals.dispose()
-	GdUnitSingleton.dispose()

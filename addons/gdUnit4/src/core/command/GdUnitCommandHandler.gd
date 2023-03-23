@@ -65,6 +65,7 @@ func _notification(what):
 		_commands.clear()
 		_shortcuts.clear()
 
+
 func _do_process() -> void:
 	_check_test_run_stopped_manually()
 

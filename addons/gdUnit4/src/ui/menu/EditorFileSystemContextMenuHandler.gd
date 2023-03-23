@@ -16,13 +16,14 @@ func _init(context_menus :Array[GdUnitContextMenuItem]):
 
 
 static func dispose():
-	var handler = Engine.get_main_loop().root.find_child("EditorFileSystemContextMenuHandler*", false, false)
+	var handler :EditorFileSystemContextMenuHandler = Engine.get_main_loop().root.find_child("EditorFileSystemContextMenuHandler*", false, false)
 	if handler:
 		var popup := _menu_popup()
 		if popup.about_to_popup.is_connected(Callable(handler, "on_context_menu_show")):
 			popup.about_to_popup.disconnect(Callable(handler, "on_context_menu_show"))
 		if popup.id_pressed.is_connected(Callable(handler, "on_context_menu_pressed")):
 			popup.id_pressed.disconnect(Callable(handler, "on_context_menu_pressed"))
+		Engine.get_main_loop().root.call_deferred("remove_child", handler)
 		handler.queue_free()
 
 
