@@ -6,18 +6,6 @@
 ---
 <h1 align="center">GdUnit4</h1>
 <p align="center">This version of GdUnit4 is based on Godot <strong>v4.0.stable.official [92bee43ad]</strong> (master branch)</p>
-
-<h1 align="center">ATTENTION!</h1>
-
-<h2 align="center">Please read the following disclaimer carefully before proceeding!
-
-You need the deactivate the old version before deinstall and install this version!
-
-
-This version is NOT bug free and may cause the Godot editor to crash.
-If you find a bug or problem please report it via [report bug](https://github.com/MikeSchulze/gdUnit4/issues/new/choose).
-
-The C# support is currently not enabled and is untested.
 </h2>
 
 
@@ -39,7 +27,7 @@ The C# support is currently not enabled and is untested.
 
 
 ## What is GdUnit4
-gdunit4 is a framework for testing Gd-Scrips/C# and Scenes within the Godot editor. GdUnit4 is very useful for test-driven development and will help you get your code bug-free.
+GdUnit4 is a framework for testing GDScrips/C# and Scenes within the Godot editor. GdUnit4 is very useful for test-driven development and will help you get your code bug-free.
 
 
 ## Features
@@ -85,7 +73,7 @@ assert_int(-13).is_not_negative()
 </p>
 
 <p align="left" style="font-family: Bedrock; font-size:21pt; color:#7253ed; font-style:bold">
-  <a href="https://mikeschulze.github.io/gdUnit3/">API Documentation</a>
+  <a href="https://mikeschulze.github.io/gdUnit4/">API Documentation</a>
 </p>
 
 
