@@ -14,7 +14,7 @@ const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdate
 @onready var _properties_ui :Node = %"ui-content"
 @onready var _properties_shortcuts :Node = %"shortcut-content"
 @onready var _properties_report :Node = %"report-content"
-@onready var _input_mapper :GdUnitInputMapper = %GdUnitInputMapper
+@onready var _input_capture :GdUnitInputCapture = %GdUnitInputCapture
 var _font_size :float
 
 
@@ -86,7 +86,6 @@ func setup_common_properties(properties_parent :Node, property_category) -> void
 
 
 func _create_input_element(property: GdUnitProperty, reset_btn :Button) -> Node:
-	prints(property)
 	if property.is_selectable_value():
 		var options := OptionButton.new()
 		options.alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -126,7 +125,7 @@ func to_shortcut(keys :PackedInt32Array) -> String:
 			KEY_ALT: input_event.alt_pressed = true
 			KEY_META: input_event.meta_pressed = true
 			_:
-				input_event.keycode = key
+				input_event.keycode = key as Key
 	return input_event.as_text()
 
 
@@ -241,12 +240,12 @@ func _on_option_selected(index :int, property: GdUnitProperty, reset_btn :Button
 
 
 func _on_shortcut_change(input_button :Button, property: GdUnitProperty, reset_btn :Button) -> void:
-	_input_mapper.set_custom_minimum_size(_properties_shortcuts.get_size())
-	_input_mapper.visible = true
-	_input_mapper.show()
+	_input_capture.set_custom_minimum_size(_properties_shortcuts.get_size())
+	_input_capture.visible = true
+	_input_capture.show()
 	set_process_input(false)
-	_input_mapper.reset()
-	var input_event :InputEventKey = await _input_mapper.input_completed
+	_input_capture.reset()
+	var input_event :InputEventKey = await _input_capture.input_completed
 	input_button.text = input_event.as_text()
 	_on_property_text_changed(to_keys(input_event), property, reset_btn)
 	set_process_input(true)

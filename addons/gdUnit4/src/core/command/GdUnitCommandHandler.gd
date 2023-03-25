@@ -15,6 +15,18 @@ const CMD_RERUN_TESTS_DEBUG = "ReRun Tests (Debug)"
 const CMD_STOP_TEST_RUN = "Stop Test Run"
 const CMD_CREATE_TESTCASE = "Create TestCase"
 
+const SETTINGS_SHORTCUT_MAPPING := {
+	"N/A" : GdUnitShortcut.ShortCut.NONE,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RERUN_TEST : GdUnitShortcut.ShortCut.RERUN_TESTS,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RUN_TEST_OVERALL : GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RUN_TEST_STOP : GdUnitShortcut.ShortCut.STOP_TEST_RUN,
+	GdUnitSettings.SHORTCUT_EDITOR_RUN_TEST : GdUnitShortcut.ShortCut.RUN_TESTCASE,
+	GdUnitSettings.SHORTCUT_EDITOR_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG,
+	GdUnitSettings.SHORTCUT_EDITOR_CREATE_TEST : GdUnitShortcut.ShortCut.CREATE_TEST,
+	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST : GdUnitShortcut.ShortCut.RUN_TESTCASE,
+	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG
+}
 
 
 var _editor_interface :EditorInterface
@@ -37,12 +49,16 @@ var _shortcuts := {}
 static func instance() -> GdUnitCommandHandler:
 	return GdUnitSingleton.instance("GdUnitCommandHandler", func(): return GdUnitCommandHandler.new())
 
+
 func _init():
+	assert_shortcut_mappings(SETTINGS_SHORTCUT_MAPPING)
+	
 	if Engine.is_editor_hint():
 		_editor_interface = Engine.get_meta("GdUnitEditorPlugin").get_editor_interface()
 	GdUnitSignals.instance().gdunit_event.connect(_on_event)
 	GdUnitSignals.instance().gdunit_client_connected.connect(_on_client_connected)
 	GdUnitSignals.instance().gdunit_client_disconnected.connect(_on_client_disconnected)
+	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
 	# preload previous test execution
 	_runner_config.load_config()
 
@@ -53,7 +69,7 @@ func _init():
 	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE, is_not_running, cmd_editor_run_test.bind(false), GdUnitShortcut.ShortCut.RUN_TESTCASE))
 	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE_DEBUG, is_not_running, cmd_editor_run_test.bind(true), GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG))
 	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE, is_not_running, cmd_run_test_suites.bind(false)))
-	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE_DEBUG, is_not_running, cmd_run_test_suites.bind(false)))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE_DEBUG, is_not_running, cmd_run_test_suites.bind(true)))
 	register_command(GdUnitCommand.new(CMD_RERUN_TESTS, is_not_running, cmd_run.bind(false), GdUnitShortcut.ShortCut.RERUN_TESTS))
 	register_command(GdUnitCommand.new(CMD_RERUN_TESTS_DEBUG, is_not_running, cmd_run.bind(true), GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG))
 	register_command(GdUnitCommand.new(CMD_CREATE_TESTCASE, is_not_running, cmd_create_test, GdUnitShortcut.ShortCut.CREATE_TEST))
@@ -67,43 +83,60 @@ func _notification(what):
 
 
 func _do_process() -> void:
-	_check_test_run_stopped_manually()
+	check_test_run_stopped_manually()
 
 
 # is checking if the user has press the editor stop scene
-func _check_test_run_stopped_manually():
-	if _is_test_running_but_stop_pressed():
+func check_test_run_stopped_manually():
+	if is_test_running_but_stop_pressed():
 		if GdUnitSettings.is_verbose_assert_warnings():
 			push_warning("Test Runner scene was stopped manually, force stopping the current test run!")
 		cmd_stop(_client_id)
 
 
-func _is_test_running_but_stop_pressed():
+func is_test_running_but_stop_pressed():
 	return _editor_interface and _running_debug_mode and _is_running and not _editor_interface.is_playing_scene()
+
+
+func assert_shortcut_mappings(mappings :Dictionary) -> void:
+	for shortcut in GdUnitShortcut.ShortCut.values():
+		assert(mappings.values().has(shortcut), "missing settings mapping for shortcut '%s'!" % GdUnitShortcut.ShortCut.keys()[shortcut])
 
 
 func init_shortcuts() -> void:
 	for shortcut in GdUnitShortcut.ShortCut.values():
-		var key_codes := GdUnitShortcut.keys(shortcut)
-		var inputEvent :InputEventKey = InputEventKey.new()
-		inputEvent.pressed = true
-		for key_code in key_codes:
-			match key_code:
-				KEY_ALT:
-					inputEvent.alt_pressed = true
-				KEY_SHIFT:
-					inputEvent.shift_pressed = true
-				KEY_CTRL:
-					inputEvent.ctrl_pressed = true
-				_:
-					inputEvent.keycode = key_code as Key
-					inputEvent.physical_keycode = key_code as Key
+		if shortcut == GdUnitShortcut.ShortCut.NONE:
+			continue
+		var property_name :String = SETTINGS_SHORTCUT_MAPPING.find_key(shortcut)
+		var property := GdUnitSettings.get_property(property_name)
+		var keys := GdUnitShortcut.default_keys(shortcut)
+		if property != null:
+			keys = property.value()
+		var inputEvent := create_shortcut_input_even(keys)
 		register_shortcut(shortcut, inputEvent)
 
 
-func register_shortcut(p_shortcut :GdUnitShortcut.ShortCut, inputEvent :InputEvent) -> void:
+func create_shortcut_input_even(key_codes : PackedInt32Array) -> InputEventKey:
+	var inputEvent :InputEventKey = InputEventKey.new()
+	inputEvent.pressed = true
+	for key_code in key_codes:
+		match key_code:
+			KEY_ALT:
+				inputEvent.alt_pressed = true
+			KEY_SHIFT:
+				inputEvent.shift_pressed = true
+			KEY_CTRL:
+				inputEvent.ctrl_pressed = true
+			_:
+				inputEvent.keycode = key_code as Key
+				inputEvent.physical_keycode = key_code as Key
+	return inputEvent
+
+
+func register_shortcut(p_shortcut :GdUnitShortcut.ShortCut, p_input_event :InputEvent) -> void:
+	GdUnitTools.prints_verbose("register shortcut: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[p_shortcut], p_input_event.as_text()])
 	var shortcut := Shortcut.new()
-	shortcut.set_events([inputEvent])
+	shortcut.set_events([p_input_event])
 	var command_name :String = get_shortcut_command(p_shortcut)
 	_shortcuts[p_shortcut] = GdUnitShortcutAction.new(p_shortcut, shortcut, command_name)
 
@@ -287,6 +320,14 @@ func _on_run_pressed(debug := false):
 
 func _on_run_overall_pressed(_debug := false):
 	cmd_run_overall(true)
+
+
+func _on_settings_changed(property :GdUnitProperty):
+	if SETTINGS_SHORTCUT_MAPPING.has(property.name()):
+		var shortcut :GdUnitShortcut.ShortCut = SETTINGS_SHORTCUT_MAPPING.get(property.name())
+		var input_event := create_shortcut_input_even(property.value())
+		prints("shortcut changed: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[shortcut], input_event.as_text()])
+		register_shortcut(shortcut, input_event)
 
 
 ################################################################################

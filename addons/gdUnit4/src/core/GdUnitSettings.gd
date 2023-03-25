@@ -57,6 +57,7 @@ const SHORTCUT_INSPECTOR_RUN_TEST_STOP = GROUP_SHORTCUT_INSPECTOR + "/run_test_s
 const GROUP_SHORTCUT_EDITOR = SHORTCUT_SETTINGS + "/editor"
 const SHORTCUT_EDITOR_RUN_TEST = GROUP_SHORTCUT_EDITOR + "/run_test"
 const SHORTCUT_EDITOR_RUN_TEST_DEBUG = GROUP_SHORTCUT_EDITOR + "/run_test_debug"
+const SHORTCUT_EDITOR_CREATE_TEST = GROUP_SHORTCUT_EDITOR + "/create_test"
 
 const GROUP_SHORTCUT_FILESYSTEM = SHORTCUT_SETTINGS + "/filesystem"
 const SHORTCUT_FILESYSTEM_RUN_TEST = GROUP_SHORTCUT_FILESYSTEM + "/run_test"
@@ -102,16 +103,17 @@ static func setup():
 
 static func create_shortcut_properties_if_need() -> void:
 	# inspector
-	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RERUN_TESTS), "Reruns the last executed tests.")
-	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG), "Reruns the last executed tests (Debug).")
-	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_OVERALL, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL), "Runs overall tests (Debug).")
-	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_STOP, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.STOP_TEST_RUN), "Stops current test execution.")
+	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RERUN_TESTS), "Reruns the last executed tests.")
+	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG), "Reruns the last executed tests (Debug).")
+	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_OVERALL, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL), "Runs overall tests (Debug).")
+	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_STOP, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.STOP_TEST_RUN), "Stops current test execution.")
 	# script editor
-	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RUN_TESTCASE), "Runs the actual selected test.")
-	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST_DEBUG, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG), "Runs the actual selected test (Debug).")
+	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTCASE), "Runs the actual selected test.")
+	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG), "Runs the actual selected test (Debug).")
+	create_property_if_need(SHORTCUT_EDITOR_CREATE_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.CREATE_TEST), "Creates a new testcase for actual selected function.")
 	# filesystem
-	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.NONE), "Runs all testsuites from selected folder or file.")
-	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG, GdUnitShortcut.keys(GdUnitShortcut.ShortCut.NONE), "Runs all testsuites from selected folder or file (Debug).")
+	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.NONE), "Runs all testsuites from selected folder or file.")
+	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.NONE), "Runs all testsuites from selected folder or file (Debug).")
 
 
 static func create_property_if_need(name :String, default :Variant, help :="", value_set := PackedStringArray()) -> void:
@@ -232,9 +234,10 @@ static func extract_value_set_from_help(value :String) -> PackedStringArray:
 
 
 static func update_property(property :GdUnitProperty) -> void:
-	ProjectSettings.set_setting(property.name(), property.value())
-	GdUnitSignals.instance().gdunit_settings_changed.emit(property)
-	save()
+	if get_property(property.name()).value() != property.value():
+		ProjectSettings.set_setting(property.name(), property.value())
+		GdUnitSignals.instance().gdunit_settings_changed.emit(property)
+		save()
 
 
 static func reset_property(property :GdUnitProperty) -> void:

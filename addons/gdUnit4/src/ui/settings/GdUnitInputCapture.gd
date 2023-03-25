@@ -1,5 +1,5 @@
 @tool
-class_name GdUnitInputMapper
+class_name GdUnitInputCapture
 extends Control
 
 
@@ -38,7 +38,6 @@ func _input(event :InputEvent):
 				_input_event.meta_pressed = true
 			_: 
 				_input_event.keycode = event.keycode
-		prints(event.keycode, event.meta_pressed, event.command_or_control_autoremap)
 		_apply_input_modifiers(event)
 		accept_event()
 	
