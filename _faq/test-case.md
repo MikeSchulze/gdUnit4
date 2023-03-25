@@ -112,7 +112,7 @@ GdUnit allows you to define additional test parameters to get more controll over
 
 ### timeout
 Sets the timeout for the TestCase in ms. By default, a TestCase is interrupted after 5 minutes if it has not yet finished.<br>
-The default timeout can be configured on [GdUnit Settings](/gdUnit3/first_steps/settings/#test-timeout-seconds)<br>
+The default timeout can be configured on [GdUnit Settings](/gdUnit4/first_steps/settings/#test-timeout-seconds)<br>
 A test case interrupted by a timeout is marked and reported as failed.
 {% tabs faq-test-case-attr-timeout %}
 {% tab faq-test-case-attr-timeout GdScript %}

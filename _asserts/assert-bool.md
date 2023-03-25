@@ -15,20 +15,20 @@ An assertion tool to verify boolean values.
 
 |Function|Description|
 |--- | --- |
-|[is_true](/gdUnit3/asserts/assert-bool/#is_true)| Verifies that the current value is true.|
-|[is_false](/gdUnit3/asserts/assert-bool/#is_false)| Verifies that the current value is false.|
-|[is_equal](/gdUnit3/asserts/assert-bool/#is_equal)| Verifies that the current value is equal to the given one.|
-|[is_not_equal](/gdUnit3/asserts/assert-bool/#is_not_equal)| Verifies that the current value is not equal to the given one.|
+|[is_true](/gdUnit4/asserts/assert-bool/#is_true)| Verifies that the current value is true.|
+|[is_false](/gdUnit4/asserts/assert-bool/#is_false)| Verifies that the current value is false.|
+|[is_equal](/gdUnit4/asserts/assert-bool/#is_equal)| Verifies that the current value is equal to the given one.|
+|[is_not_equal](/gdUnit4/asserts/assert-bool/#is_not_equal)| Verifies that the current value is not equal to the given one.|
 {% endtab %}
 {% tab assert-bool C# %}
 **IBoolAssert**<br>
 
 |Function|Description|
 |--- | --- |
-|[IsTrue](/gdUnit3/asserts/assert-bool/#is_true)| Verifies that the current value is true.|
-|[IsFalse](/gdUnit3/asserts/assert-bool/#is_false)| Verifies that the current value is false.|
-|[IsEqual](/gdUnit3/asserts/assert-bool/#is_equal)| Verifies that the current value is equal to the given one.|
-|[IsNotEqual](/gdUnit3/asserts/assert-bool/#is_not_equal)| Verifies that the current value is not equal to the given one.|
+|[IsTrue](/gdUnit4/asserts/assert-bool/#is_true)| Verifies that the current value is true.|
+|[IsFalse](/gdUnit4/asserts/assert-bool/#is_false)| Verifies that the current value is false.|
+|[IsEqual](/gdUnit4/asserts/assert-bool/#is_equal)| Verifies that the current value is equal to the given one.|
+|[IsNotEqual](/gdUnit4/asserts/assert-bool/#is_not_equal)| Verifies that the current value is not equal to the given one.|
 {% endtab %}
 {% endtabs %}
 

@@ -60,7 +60,7 @@ And a small test
 
 After test run the test ends with success but it has detects one orphan node.
 
-![](/gdUnit3/assets/images/monitoring/orphan_nodes_example.png)
+![](/gdUnit4/assets/images/monitoring/orphan_nodes_example.png)
 
 Now you can review your implementation, if you don't know where the orphaned node is, take it step by step.
 Means to comment out line by line or a series of lines and run the test again. 

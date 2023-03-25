@@ -6,15 +6,15 @@ nav_order: 2
 
 # Settings
 To open the setting press the tools button on the GdUnit inspector.<br>
-![](/gdUnit3/assets/images/settings/inspector-settings.png)
+![](/gdUnit4/assets/images/settings/inspector-settings.png)
 
-![](/gdUnit3/assets/images/settings/settings-dialog.png)
+![](/gdUnit4/assets/images/settings/settings-dialog.png)
 
 ---
 
 ## Common Settings
 ### Common
-![](/gdUnit3/assets/images/settings/settings-common.png)
+![](/gdUnit4/assets/images/settings/settings-common.png)
 #### **server connection timeout**
 The server connection timeout specifies the maximum time in minutes that the test runner client waits when the communication between editor and runner is interrupted.
 
@@ -22,7 +22,7 @@ The server connection timeout specifies the maximum time in minutes that the tes
 Enables/disables the GdUnit update notification. When enabled, an update notification is displayed when Godot is started to inform about a new update to be installed.
 
 ### Test
-![](/gdUnit3/assets/images/settings/settings-test.png)
+![](/gdUnit4/assets/images/settings/settings-test.png)
 #### **test root folder**
 Defines the root folder where tests are generated.
 
@@ -61,7 +61,7 @@ The default timeout can be overriden on test-case level by using the argument *t
 {% endtabs %}
 
 ### UI
-![](/gdUnit3/assets/images/settings/settings-ui.png)
+![](/gdUnit4/assets/images/settings/settings-ui.png)
 #### **inspector node collapse**
 Controls whether the testsuite node in the Inspector is collapsed after a successful test run.
 By default, the testsuite node is collapsed when all tests are successful.
@@ -69,11 +69,11 @@ By default, the testsuite node is collapsed when all tests are successful.
 ---
 
 ## Report Settings
-![](/gdUnit3/assets/images/settings/settings-report.png)
+![](/gdUnit4/assets/images/settings/settings-report.png)
 
 
 ### Asserts 
-![](/gdUnit3/assets/images/settings/settings-asserts.png)
+![](/gdUnit4/assets/images/settings/settings-asserts.png)
 #### **strict number type compare**
 Controls how numbers are compared.<br>
 By default GdUnit does a typesave comparison and will always fail if you compare **int** with **float** even if they are supposed to have the same value.<br>
@@ -87,7 +87,7 @@ Suppresses internal error reporting for failed assert conditions.
 Suppresses internal warning reporting for failed assert conditions.
 
 ### Godot
-![](/gdUnit3/assets/images/settings/settings-godot.png)
+![](/gdUnit4/assets/images/settings/settings-godot.png)
 #### **Push Error**
 Reports Godot push_error() notifications and let the test fail (default disabled)
 
@@ -95,14 +95,14 @@ Reports Godot push_error() notifications and let the test fail (default disabled
 Reports Godot gd script errors and let the test fail
 
 ### Common
-![](/gdUnit3/assets/images/settings/settings-report-others.png)
+![](/gdUnit4/assets/images/settings/settings-report-others.png)
 #### **verbose orphans**
 Enable/disable the orphan node reporting
 
 ---
 
 ## Templates
-![](/gdUnit3/assets/images/settings/settings-template.png)
+![](/gdUnit4/assets/images/settings/settings-template.png)
 
 #### **test suite template**
 
@@ -110,6 +110,6 @@ This template is used to create your test-suite by using the context menu in the
 
 You can modify and personalize the template using the tags provided.  
 
-![](/gdUnit3/assets/images/settings/settings-template-editor.png)
+![](/gdUnit4/assets/images/settings/settings-template-editor.png)
 All supported tags can be viewed by pressing the *Supported Tags* button.
-![](/gdUnit3/assets/images/settings/settings-template-editor-tags.png)
+![](/gdUnit4/assets/images/settings/settings-template-editor-tags.png)

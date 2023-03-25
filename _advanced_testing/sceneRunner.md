@@ -36,7 +36,7 @@ You have to add `yield(await_idle_frame(), 'completed')`"
 %}
 
 
-For more advanced example, see [Tutorial - Testing Scenes](/gdUnit3/tutorials/tutorial_scene_runner/#using-scene-runner)
+For more advanced example, see [Tutorial - Testing Scenes](/gdUnit4/tutorials/tutorial_scene_runner/#using-scene-runner)
 
 ### Function Overview
 
@@ -44,45 +44,45 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit3/tutorials/tu
 {% tab scene-runner-overview GdScript %}
 |Function|Description|
 |---|---|
-|[simulate_key_pressed](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_pressed) | Simulates that a key has been pressed |
-|[simulate_key_press](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed |
-|[simulate_key_release](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released |
-|[simulate_mouse_move](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to final position |
-|[simulate_mouse_move_relative](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_move_relative) | Simulates a mouse move by an offset and speed |
-|[simulate_mouse_button_pressed](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_pressed) | Simulates a mouse button pressed |
-|[simulate_mouse_button_press](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_press) | Simulates a mouse button press (holding) |
-|[simulate_mouse_button_release](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_release) | Simulates a mouse button released |
-|[simulate_frames](/gdUnit3/advanced_testing/sceneRunner/#simulate_frames) | Simulates scene processing for a certain number of frames (respecting time factor)|
-|[set_mouse_pos](/gdUnit3/advanced_testing/sceneRunner/#set_mouse_pos) | Sets the mouse cursor to given position relative to the viewport.|
-|[await_signal](/gdUnit3/advanced_testing/sceneRunner/#await_signal) | Waits for given signal is emited by the scene until a specified timeout to fail |
-|[await_signal_on](/gdUnit3/advanced_testing/sceneRunner/#await_signal_on) | Waits for given signal is emited by the source until a specified timeout to fail |
-|[await_func](/gdUnit3/advanced_testing/sceneRunner/#await_func) |Waits for the function return value until specified timeout or fails |
-|[await_func_on](/gdUnit3/advanced_testing/sceneRunner/#await_func_on) |Waits for the function return value of specified source until specified timeout or fails |
-|[get_property](/gdUnit3/advanced_testing/sceneRunner/#get_property) | Return the current value of a property |
-|[invoke](/gdUnit3/advanced_testing/sceneRunner/#invoke) | Executes the function specified by name in the scene and returns the result |
-|[set_time_factor](/gdUnit3/advanced_testing/sceneRunner/#set_time_factor) | Sets how fast or slow the scene simulation is processed (clock ticks versus the real).|
-|[maximize_view](/gdUnit3/advanced_testing/sceneRunner/#maximize_view) | maximizes the window to bring the scene visible|
+|[simulate_key_pressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_pressed) | Simulates that a key has been pressed |
+|[simulate_key_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed |
+|[simulate_key_release](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released |
+|[simulate_mouse_move](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to final position |
+|[simulate_mouse_move_relative](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move_relative) | Simulates a mouse move by an offset and speed |
+|[simulate_mouse_button_pressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_pressed) | Simulates a mouse button pressed |
+|[simulate_mouse_button_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_press) | Simulates a mouse button press (holding) |
+|[simulate_mouse_button_release](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_release) | Simulates a mouse button released |
+|[simulate_frames](/gdUnit4/advanced_testing/sceneRunner/#simulate_frames) | Simulates scene processing for a certain number of frames (respecting time factor)|
+|[set_mouse_pos](/gdUnit4/advanced_testing/sceneRunner/#set_mouse_pos) | Sets the mouse cursor to given position relative to the viewport.|
+|[await_signal](/gdUnit4/advanced_testing/sceneRunner/#await_signal) | Waits for given signal is emited by the scene until a specified timeout to fail |
+|[await_signal_on](/gdUnit4/advanced_testing/sceneRunner/#await_signal_on) | Waits for given signal is emited by the source until a specified timeout to fail |
+|[await_func](/gdUnit4/advanced_testing/sceneRunner/#await_func) |Waits for the function return value until specified timeout or fails |
+|[await_func_on](/gdUnit4/advanced_testing/sceneRunner/#await_func_on) |Waits for the function return value of specified source until specified timeout or fails |
+|[get_property](/gdUnit4/advanced_testing/sceneRunner/#get_property) | Return the current value of a property |
+|[invoke](/gdUnit4/advanced_testing/sceneRunner/#invoke) | Executes the function specified by name in the scene and returns the result |
+|[set_time_factor](/gdUnit4/advanced_testing/sceneRunner/#set_time_factor) | Sets how fast or slow the scene simulation is processed (clock ticks versus the real).|
+|[maximize_view](/gdUnit4/advanced_testing/sceneRunner/#maximize_view) | maximizes the window to bring the scene visible|
 {% endtab %}
 {% tab scene-runner-overview C# %}
 |Function|Description|
 |---|---|
-|[SimulateKeyPressed](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_pressed) | Simulates that a key has been pressed |
-|[SimulateKeyPress](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed |
-|[SimulateKeyRelease](/gdUnit3/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released |
-|[SimulateMouseMove](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to final position |
-|[SimulateMouseButtonPressed](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_pressed) | Simulates a mouse button pressed |
-|[SimulateMouseButtonPress](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_press) ] | Simulates a mouse button press (holding) |
-|[SimulateMouseButtonRelease](/gdUnit3/advanced_testing/sceneRunner/#simulate_mouse_button_release) | Simulates a mouse button released |
-|[SimulateFrames](/gdUnit3/advanced_testing/sceneRunner/#simulate_frames) | Simulates scene processing for a certain number of frames (respecting time factor)|
-|[SetMousePos](/gdUnit3/advanced_testing/sceneRunner/#set_mouse_pos) | Sets the mouse cursor to given position relative to the viewport.|
-|[AwaitSignal](/gdUnit3/advanced_testing/sceneRunner/#await_signal) | Waits for given signal is emited by the scene until a specified timeout to fail |
-|[AwaitSignalOn](/gdUnit3/advanced_testing/sceneRunner/#await_signal_on) | Waits for given signal is emited by the source until a specified timeout to fail |
-|[AwaitMethod](/gdUnit3/advanced_testing/sceneRunner/#await_func) |Waits for the function return value until specified timeout or fails |
-|[AwaitMethodOn](/gdUnit3/advanced_testing/sceneRunner/#await_func_on) |Waits for the function return value of specified source until specified timeout or fails |
-|[GetProperty](/gdUnit3/advanced_testing/sceneRunner/#get_property) | Return the current value of a property |
-|[Invoke](/gdUnit3/advanced_testing/sceneRunner/#invoke) | Executes the function specified by name in the scene and returns the result |
-|[SetTimeFactor](/gdUnit3/advanced_testing/sceneRunner/#set_time_factor) | Sets how fast or slow the scene simulation is processed (clock ticks versus the real).|
-|[MoveWindowToForeground](/gdUnit3/advanced_testing/sceneRunner/#maximize_view) | maximizes the window to bring the scene visible|
+|[SimulateKeyPressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_pressed) | Simulates that a key has been pressed |
+|[SimulateKeyPress](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed |
+|[SimulateKeyRelease](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released |
+|[SimulateMouseMove](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to final position |
+|[SimulateMouseButtonPressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_pressed) | Simulates a mouse button pressed |
+|[SimulateMouseButtonPress](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_press) ] | Simulates a mouse button press (holding) |
+|[SimulateMouseButtonRelease](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_release) | Simulates a mouse button released |
+|[SimulateFrames](/gdUnit4/advanced_testing/sceneRunner/#simulate_frames) | Simulates scene processing for a certain number of frames (respecting time factor)|
+|[SetMousePos](/gdUnit4/advanced_testing/sceneRunner/#set_mouse_pos) | Sets the mouse cursor to given position relative to the viewport.|
+|[AwaitSignal](/gdUnit4/advanced_testing/sceneRunner/#await_signal) | Waits for given signal is emited by the scene until a specified timeout to fail |
+|[AwaitSignalOn](/gdUnit4/advanced_testing/sceneRunner/#await_signal_on) | Waits for given signal is emited by the source until a specified timeout to fail |
+|[AwaitMethod](/gdUnit4/advanced_testing/sceneRunner/#await_func) |Waits for the function return value until specified timeout or fails |
+|[AwaitMethodOn](/gdUnit4/advanced_testing/sceneRunner/#await_func_on) |Waits for the function return value of specified source until specified timeout or fails |
+|[GetProperty](/gdUnit4/advanced_testing/sceneRunner/#get_property) | Return the current value of a property |
+|[Invoke](/gdUnit4/advanced_testing/sceneRunner/#invoke) | Executes the function specified by name in the scene and returns the result |
+|[SetTimeFactor](/gdUnit4/advanced_testing/sceneRunner/#set_time_factor) | Sets how fast or slow the scene simulation is processed (clock ticks versus the real).|
+|[MoveWindowToForeground](/gdUnit4/advanced_testing/sceneRunner/#maximize_view) | maximizes the window to bring the scene visible|
 {% endtab %}
 {% endtabs %}
 

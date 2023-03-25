@@ -17,13 +17,13 @@ An assertion tool that waits until a certain time for an expected function retur
 
 |Function|Description|
 |--- | --- |
-|[is_null](/gdUnit3/asserts/assert-function/#is_null) | Verifies that the current value is null.|
-|[is_not_null](/gdUnit3/asserts/assert-function/#is_not_null) | Verifies that the current value is not null.|
-|[is_equal](/gdUnit3/asserts/assert-function/#is_equal) | Verifies that the current value is equal to expected one.|
-|[is_not_equal](/gdUnit3/asserts/assert-function/#is_not_equal) | Verifies that the current value is not equal to expected one.|
-|[is_true](/gdUnit3/asserts/assert-function/#is_true) | Verifies that the current value is true.|
-|[is_false](/gdUnit3/asserts/assert-function/#is_false) | Verifies that the current value is false.|
-|[wait_until](/gdUnit3/asserts/assert-function/#wait_until) | Sets the timeout in ms to wait the function returnd the expected value.|
+|[is_null](/gdUnit4/asserts/assert-function/#is_null) | Verifies that the current value is null.|
+|[is_not_null](/gdUnit4/asserts/assert-function/#is_not_null) | Verifies that the current value is not null.|
+|[is_equal](/gdUnit4/asserts/assert-function/#is_equal) | Verifies that the current value is equal to expected one.|
+|[is_not_equal](/gdUnit4/asserts/assert-function/#is_not_equal) | Verifies that the current value is not equal to expected one.|
+|[is_true](/gdUnit4/asserts/assert-function/#is_true) | Verifies that the current value is true.|
+|[is_false](/gdUnit4/asserts/assert-function/#is_false) | Verifies that the current value is false.|
+|[wait_until](/gdUnit4/asserts/assert-function/#wait_until) | Sets the timeout in ms to wait the function returnd the expected value.|
 {% endtab %}
 {% tab assert-function-overview C# %}
 ## Not supported!

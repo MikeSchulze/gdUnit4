@@ -137,10 +137,10 @@ This way you can check if a certain function is called and how often it was call
 
 |Function |Description |
 |---|---|
-|[verify](/gdUnit3/advanced_testing/mock/#verify) | Verifies certain behavior happened at least once or exact number of times|
-|[verify_no_interactions](/gdUnit3/advanced_testing/mock/#verify_no_interactions) | Verifies no interactions is happen on this mock|
-|[verify_no_more_interactions](/gdUnit3/advanced_testing/mock/#verify_no_more_interactions) | Verifies the given mock has any unverified interaction|
-|[reset](/gdUnit3/advanced_testing/mock/#reset) | Resets the saved function call counters on a mock|
+|[verify](/gdUnit4/advanced_testing/mock/#verify) | Verifies certain behavior happened at least once or exact number of times|
+|[verify_no_interactions](/gdUnit4/advanced_testing/mock/#verify_no_interactions) | Verifies no interactions is happen on this mock|
+|[verify_no_more_interactions](/gdUnit4/advanced_testing/mock/#verify_no_more_interactions) | Verifies the given mock has any unverified interaction|
+|[reset](/gdUnit4/advanced_testing/mock/#reset) | Resets the saved function call counters on a mock|
 
 
 
@@ -260,7 +260,7 @@ When creating a mock, you can specify the working mode that defines the return v
 {% tabs mock-modes %}
 {% tab mock-modes RETURN_DEFAULTS %}
 
-If *RETURN_DEFAULTS* is used, all unoverridden function calls return [default values](/gdUnit3/advanced_testing/mock/#default-values) for a mocked class.
+If *RETURN_DEFAULTS* is used, all unoverridden function calls return [default values](/gdUnit4/advanced_testing/mock/#default-values) for a mocked class.
 
 ```ruby
     var mock := mock(TestClass) as TestClass
@@ -359,4 +359,4 @@ This allows you to verify function calls by a specific type or class argument.
     # verify how often we called the function with a boolean argument
     verify(mocked_node, 3).set_process(any_bool())
 ```
-For more details please show at [Argument Matchers](/gdUnit3/advanced_testing/argument_matchers)
+For more details please show at [Argument Matchers](/gdUnit4/advanced_testing/argument_matchers)

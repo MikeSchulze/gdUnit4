@@ -7,7 +7,7 @@ has_children: true
 
 # Asserts
 
-GdUnit3 is providing a set of assertions where give you helpful error messages and improves yor test code readability. Assertions are type organized and supports fluent syntax writing.<br>
+GdUnit4 is providing a set of assertions where give you helpful error messages and improves yor test code readability. Assertions are type organized and supports fluent syntax writing.<br>
 The pattern for using asserts is defined as `assert_<type>(<current>).<comparison function>([expected])`.<br>
 If you don't know the type of the current value, use the generic `assert_that(<current>)` instead.<br>
 
@@ -31,10 +31,10 @@ func test_hello_world() -> void:
 {% tab assert-example C# %}
 The C# assert are smart and switch to the equivalent assert implementation by auto-typing and should also be used preferentially.<br>
 Alternatively, you can use the typed asserts if you want to<br>
-To use the assert you have to import it via "static GdUnit3.Assertions".
+To use the assert you have to import it via "static GdUnit4.Assertions".
 ```cs
-using GdUnit3;
-using static GdUnit3.Assertions;
+using GdUnit4;
+using static GdUnit4.Assertions;
 
 namespace ExampleProject.Tests
 {
@@ -83,8 +83,8 @@ func test_hello_world_fluent() -> void:
 {% endtab %}
 {% tab assert-fluent-example C# %}
 ```cs
-using GdUnit3;
-using static GdUnit3.Assertions;
+using GdUnit4;
+using static GdUnit4.Assertions;
 
 namespace ExampleProject.Tests
 {
@@ -128,14 +128,14 @@ However, I recommend to always use the type-safe Assert, because GdScript is not
 
 |Assert|Type|
 |--|--|
-|[assert_that](/gdUnit3/asserts/assert-that/)| auto typing|
+|[assert_that](/gdUnit4/asserts/assert-that/)| auto typing|
 {% endtab %}
 {% tab assert-that-types C# %}
 The C# assert are smart and switch to the equivalent assert implementation by auto-typing and should also be used preferentially.<br>
 
 |Assert|Type|
 |--|--|
-|[AssertThat](/gdUnit3/asserts/assert-that/)| auto typing|
+|[AssertThat](/gdUnit4/asserts/assert-that/)| auto typing|
 {% endtab %}
 {% endtabs %}
 
@@ -147,17 +147,17 @@ The C# assert are smart and switch to the equivalent assert implementation by au
 {% tab assert-basic-types GdScript %}
 |Assert|Type|
 |--|--|
-|[assert_str](/gdUnit3/asserts/assert-string/) | string |
-|[assert_bool](/gdUnit3/asserts/assert-bool/) | bool |
-|[assert_int](/gdUnit3/asserts/assert-integer/) | int |
-|[assert_float](/gdUnit3/asserts/assert-float/) | float |
+|[assert_str](/gdUnit4/asserts/assert-string/) | string |
+|[assert_bool](/gdUnit4/asserts/assert-bool/) | bool |
+|[assert_int](/gdUnit4/asserts/assert-integer/) | int |
+|[assert_float](/gdUnit4/asserts/assert-float/) | float |
 {% endtab %}
 {% tab assert-basic-types C# %}
 |Assert|Type|
 |--|--|
-|[IStringAssert](/gdUnit3/asserts/assert-string/) | string |
-|[IBoolAssert](/gdUnit3/asserts/assert-bool/) | bool |
-|[INumberAssert](/gdUnit3/asserts/assert-number/) | number (sbyte,byte,short,ushort,int,uint,long,ulong,float,double,decimal) |
+|[IStringAssert](/gdUnit4/asserts/assert-string/) | string |
+|[IBoolAssert](/gdUnit4/asserts/assert-bool/) | bool |
+|[INumberAssert](/gdUnit4/asserts/assert-number/) | number (sbyte,byte,short,ushort,int,uint,long,ulong,float,double,decimal) |
 {% endtab %}
 {% endtabs %}
 For more details about Build-In types click here 
@@ -171,14 +171,14 @@ For more details about Build-In types click here
 {% tab assert-container-types GdScript %}
 |Assert|Type|
 |--|--|
-|[assert_array](/gdUnit3/asserts/assert-array/) | Array, PoolByteArray, PoolIntArray, PoolRealArray, PoolStringArray, PoolVector2Array, PoolVector3Array, PoolColorArray |
-|[assert_dict](/gdUnit3/asserts/assert-dictionary/) | Dictionary |
+|[assert_array](/gdUnit4/asserts/assert-array/) | Array, PoolByteArray, PoolIntArray, PoolRealArray, PoolStringArray, PoolVector2Array, PoolVector3Array, PoolColorArray |
+|[assert_dict](/gdUnit4/asserts/assert-dictionary/) | Dictionary |
 {% endtab %}
 {% tab assert-container-types C# %}
 |Assert|Type|
 |--|--|
-|[IEnumerableAssert](/gdUnit3/asserts/assert-array/) | IEnumerable |
-|[IDictionaryAssert](/gdUnit3/asserts/assert-dictionary/) | IDictionary |
+|[IEnumerableAssert](/gdUnit4/asserts/assert-array/) | IEnumerable |
+|[IDictionaryAssert](/gdUnit4/asserts/assert-dictionary/) | IDictionary |
 {% endtab %}
 {% endtabs %}
 
@@ -193,17 +193,17 @@ For more details about Build-In types click here
 {% tab assert-engine-types GdScript %}
 |Type|Assert|
 |--|--|
-|[assert_object](/gdUnit3/asserts/assert-object/) | Object|
-|[assert_vector2](/gdUnit3/asserts/assert-vector2/) | Vector2|
-|[assert_vector3](/gdUnit3/asserts/assert-vector3/) | Vector3|
-|[assert_file](/gdUnit3/asserts/assert-file/) | File|
+|[assert_object](/gdUnit4/asserts/assert-object/) | Object|
+|[assert_vector2](/gdUnit4/asserts/assert-vector2/) | Vector2|
+|[assert_vector3](/gdUnit4/asserts/assert-vector3/) | Vector3|
+|[assert_file](/gdUnit4/asserts/assert-file/) | File|
 {% endtab %}
 {% tab assert-engine-types C# %}
 |Type|Assert|
 |--|--|
-|[IObjectAssert](/gdUnit3/asserts/assert-object/) | Godot.Object, System.object|
-|[IVector2Assert](/gdUnit3/asserts/assert-vector2/) | Godot.Vector2|
-|[IVector3Assert](/gdUnit3/asserts/assert-vector3/) | Godot.Vector3|
+|[IObjectAssert](/gdUnit4/asserts/assert-object/) | Godot.Object, System.object|
+|[IVector2Assert](/gdUnit4/asserts/assert-vector2/) | Godot.Vector2|
+|[IVector3Assert](/gdUnit4/asserts/assert-vector3/) | Godot.Vector3|
 {% endtab %}
 {% endtabs %}
 
