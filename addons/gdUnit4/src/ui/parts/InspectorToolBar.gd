@@ -83,5 +83,5 @@ func _on_wiki_pressed():
 
 
 func _on_btn_tool_pressed():
-	var tool_popup = load("res://addons/gdUnit4/src/ui/GdUnitToolsDialog.tscn").instantiate()
+	var tool_popup = load("res://addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.tscn").instantiate()
 	get_parent_control().add_child(tool_popup)

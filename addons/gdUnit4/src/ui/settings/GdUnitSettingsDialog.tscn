@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://jporgcdc2f1w"]
+[gd_scene load_steps=6 format=3 uid="uid://dwgat6j2u77g4"]
 
-[ext_resource type="Script" path="res://addons/gdUnit4/src/ui/GdUnitToolsDialog.gd" id="2"]
+[ext_resource type="Script" path="res://addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://c7sk0yhd52lg3" path="res://addons/gdUnit4/src/ui/assets/icon.png" id="2_w63lb"]
 [ext_resource type="PackedScene" uid="uid://dte0m2endcgtu" path="res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://addons/gdUnit4/src/ui/settings/GdUnitInputCapture.tscn" id="5_xu3j8"]
@@ -10,7 +10,6 @@
 disable_3d = true
 gui_embed_subwindows = true
 initial_position = 1
-title = "GdUnitTools"
 size = Vector2i(384, 384)
 visible = false
 wrap_controls = true
@@ -219,7 +218,7 @@ size_flags_vertical = 3
 [node name="GdUnitInputCapture" parent="Panel/v/MarginContainer/GridContainer/Properties/Shortcuts/shortcut-content" instance=ExtResource("5_xu3j8")]
 unique_name_in_owner = true
 visible = false
-modulate = Color(0.583785, 0.583785, 0.583785, 0.625407)
+modulate = Color(0.543351, 0.543351, 0.543351, 0.589016)
 z_index = 1
 z_as_relative = false
 layout_mode = 2
