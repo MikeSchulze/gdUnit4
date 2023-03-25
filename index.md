@@ -3,22 +3,22 @@ layout: default
 title: Home
 ---
 
-# GdUnit3 V2.4.0
+# GdUnit4 V2.4.0
 
-![GdUnit3](\gdUnit3\assets\images\background.png)
+![GdUnit4](\gdUnit4\assets\images\background.png)
 
 
-## What is GdUnit3?
-**Gd**(*Godot*)**Unit**(*Unit Testing*)**3**(*Godot 3.x*)
+## What is GdUnit4?
+**Gd**(*Godot*)**Unit**(*Unit Testing*)**3**(*Godot 4.x*)
 
-GdUnit3 is an embeded unit testing framework for testing your Gd, C# Scripts and Scenes within the Godot editor.<br>
+GdUnit4 is an embeded unit testing framework for testing your Gd, C# Scripts and Scenes within the Godot editor.<br>
 You can use it for  [TDD (test driven development)](https://en.wikipedia.org/wiki/Test-driven_development){:target="_blank"} and will help you get your code bug-free.
 
 
 ## You are welcome to:
-  * [Give Feedback](https://github.com/MikeSchulze/gdUnit3/discussions/228){:target="_blank"}
-  * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit3/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=){:target="_blank"}
-  * [Report Bugs](https://github.com/MikeSchulze/gdUnit3/issues/new?assignees=MikeSchulze&labels=bug&template=bug_report.md&title=){:target="_blank"}
+  * [Give Feedback](https://github.com/MikeSchulze/gdUnit4/discussions/228){:target="_blank"}
+  * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=){:target="_blank"}
+  * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&template=bug_report.md&title=){:target="_blank"}
 
 ***
 
@@ -67,8 +67,8 @@ func test_example():
 ```cs
 namespace examples
 {
-    using GdUnit3;
-    using static GdUnit3.Assertions;
+    using gdUnit4;
+    using static gdUnit4.Assertions;
 
     [TestSuite]
     public class GdUnitExampleTest

@@ -15,14 +15,14 @@
 # in the templates via {{ site.myvariable }}.
 color_scheme: light
 logo: "/assets/images/logo.png"
-title: GdUnit3 
+title: GdUnit4
 
 aux_links:
-  "GdUnit3 on GitHub":
-    - "//github.com/MikeSchulze/gdUnit3"
+  "GdUnit4 on GitHub":
+    - "//github.com/MikeSchulze/gdUnit4"
 aux_links_new_tab: true
 
-footer_content: "Copyright &copy; 2021-2022 Mike Schulze. Distributed by an <a href=\"https://github.com/MikeSchulze/gdUnit3/blob/master/LICENSE\">MIT license.</a>"
+footer_content: "Copyright &copy; 2021-2023 Mike Schulze. Distributed by an <a href=\"https://github.com/MikeSchulze/gdUnit4/blob/master/LICENSE\">MIT license.</a>"
 
 
 # Define Jekyll collections
@@ -59,8 +59,8 @@ just_the_docs:
 #ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true by default)
 
 email: mikeschulze.lpz@kabelmail.com
-baseurl: "/gdUnit3" # the subpath of your site, e.g. /blog
-# url: "http://GdUnit3.com" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/gdUnit4" # the subpath of your site, e.g. /blog
+# url: "http://GdUnit4.com" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  MikeSchulze
 
 # Build settings
