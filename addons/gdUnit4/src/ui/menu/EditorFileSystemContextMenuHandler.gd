@@ -1,5 +1,5 @@
 class_name EditorFileSystemContextMenuHandler
-extends Node
+extends Control
 
 
 var _context_menus := Dictionary()
@@ -9,23 +9,21 @@ func _init(context_menus :Array[GdUnitContextMenuItem]):
 	set_name("EditorFileSystemContextMenuHandler")
 	for menu in context_menus:
 		_context_menus[menu.id] = menu
+	var popup := _menu_popup()
+	var file_tree := _file_tree()
+	popup.about_to_popup.connect(on_context_menu_show.bind(popup, file_tree))
+	popup.id_pressed.connect(on_context_menu_pressed.bind(file_tree))
 
 
-static func create(file_tree :Tree, popup : PopupMenu, context_menus :Array[GdUnitContextMenuItem]) -> EditorFileSystemContextMenuHandler:
-	var handler := EditorFileSystemContextMenuHandler.new(context_menus)
-	popup.connect("about_to_popup", Callable(handler, "on_context_menu_show").bind(popup, file_tree))
-	popup.connect("id_pressed", Callable(handler, "on_context_menu_pressed").bind(file_tree))
-	Engine.get_main_loop().root.call_deferred("add_child", handler, true)
-	return handler
-
-
-static func release(popup : PopupMenu):
-	var handler = Engine.get_main_loop().root.find_child("EditorFileSystemContextMenuHandler*", false, false)
+static func dispose():
+	var handler :EditorFileSystemContextMenuHandler = Engine.get_main_loop().root.find_child("EditorFileSystemContextMenuHandler*", false, false)
 	if handler:
-		if popup.is_connected("about_to_popup", Callable(handler, "on_context_menu_show")):
-			popup.disconnect("about_to_popup", Callable(handler, "on_context_menu_show"))
-		if popup.is_connected("id_pressed", Callable(handler, "on_context_menu_pressed")):
-			popup.disconnect("id_pressed", Callable(handler, "on_context_menu_pressed"))
+		var popup := _menu_popup()
+		if popup.about_to_popup.is_connected(Callable(handler, "on_context_menu_show")):
+			popup.about_to_popup.disconnect(Callable(handler, "on_context_menu_show"))
+		if popup.id_pressed.is_connected(Callable(handler, "on_context_menu_pressed")):
+			popup.id_pressed.disconnect(Callable(handler, "on_context_menu_pressed"))
+		Engine.get_main_loop().root.call_deferred("remove_child", handler)
 		handler.queue_free()
 
 
@@ -72,8 +70,21 @@ func collect_testsuites(_menu_item :GdUnitContextMenuItem, file_tree :Tree) -> P
 
 
 # Returns the EditorInterface instance
-func editor_interface() -> EditorInterface:
+static func editor_interface() -> EditorInterface:
 	if not Engine.has_meta("GdUnitEditorPlugin"):
 		return null
 	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 	return plugin.get_editor_interface()
+
+
+# Returns the FileSystemDock instance
+static func filesystem_dock() -> FileSystemDock:
+	return editor_interface().get_file_system_dock()
+
+
+static func _file_tree() -> Tree:
+	return GdObjects.find_nodes_by_class(filesystem_dock(), "Tree", true)[-1]
+
+
+static func _menu_popup() -> PopupMenu:
+	return GdObjects.find_nodes_by_class(filesystem_dock(), "PopupMenu")[-1]

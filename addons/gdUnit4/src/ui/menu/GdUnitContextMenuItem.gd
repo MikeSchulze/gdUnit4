@@ -3,20 +3,22 @@ class_name GdUnitContextMenuItem
 enum MENU_ID {
 	TEST_RUN = 1000,
 	TEST_DEBUG = 1001,
+	TEST_RERUN = 1002,
 	CREATE_TEST = 1010,
 }
 
+
 var _is_visible :Callable
-var _is_enabled :Callable
-var _runnable: Callable
 
 
-func _init(p_id :MENU_ID, p_name :StringName, p_is_visible :Callable, p_is_enabled: Callable, p_runnable: Callable):
+func _init(p_id :MENU_ID, p_name :StringName, p_is_visible :Callable, p_command :GdUnitCommand):
+	assert(p_id != null, "(%s) missing parameter 'MENU_ID'" % p_name)
+	assert(p_is_visible != null, "(%s) missing parameter 'GdUnitCommand'" % p_name)
+	assert(p_command != null, "(%s) missing parameter 'GdUnitCommand'" % p_name)
 	self.id = p_id
 	self.name = p_name
-	_is_visible = p_is_visible
-	_is_enabled = p_is_enabled
-	_runnable = p_runnable
+	self.command = p_command
+	self.visible = p_is_visible
 
 
 var id: MENU_ID:
@@ -33,13 +35,34 @@ var name: StringName:
 		return name
 
 
+var command: GdUnitCommand:
+	set(value):
+		command = value
+	get:
+		return command
+
+
+var visible: Callable:
+	set(value):
+		visible = value
+	get:
+		return visible
+
+
+func shortcut() -> Shortcut:
+	return GdUnitCommandHandler.instance().get_shortcut(command.shortcut)
+
+
 func is_enabled(script :GDScript) -> bool:
-	return _is_enabled.call(script)
+	return command.is_enabled.call(script)
 
 
 func is_visible(script :GDScript) -> bool:
-	return _is_visible.call(script)
+	return visible.call(script)
 
 
-func execute(args :Array) -> void:
-	_runnable.callv(args)
+func execute(arguments := []) -> void:
+	if arguments.is_empty():
+		command.runnable.call()
+	else:
+		command.runnable.callv(arguments)

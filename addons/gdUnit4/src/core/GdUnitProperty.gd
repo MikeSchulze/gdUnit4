@@ -38,7 +38,7 @@ func is_selectable_value() -> bool:
 	return not _value_set.is_empty()
 
 
-func set_value(p_value) -> void:
+func set_value(p_value :Variant) -> void:
 	match _type:
 		TYPE_STRING:
 			_value = str(p_value)
@@ -48,6 +48,8 @@ func set_value(p_value) -> void:
 			_value = int(p_value)
 		TYPE_FLOAT:
 			_value = float(p_value)
+		_:
+			_value = p_value
 
 
 func default():

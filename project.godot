@@ -23,16 +23,11 @@ default_bus_layout=""
 gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
-
 [gdunit4]
 
 settings/common/update_notification_enabled=false
 report/assert/verbose_errors=false
 report/assert/verbose_warnings=false
-
 
 [network]
 

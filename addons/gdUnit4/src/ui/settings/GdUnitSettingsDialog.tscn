@@ -1,15 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvrma0lq0yg8r"]
+[gd_scene load_steps=6 format=3 uid="uid://dwgat6j2u77g4"]
 
-[ext_resource type="Script" path="res://addons/gdUnit4/src/ui/GdUnitToolsDialog.gd" id="2"]
+[ext_resource type="Script" path="res://addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://c7sk0yhd52lg3" path="res://addons/gdUnit4/src/ui/assets/icon.png" id="2_w63lb"]
 [ext_resource type="PackedScene" uid="uid://dte0m2endcgtu" path="res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://addons/gdUnit4/src/ui/settings/GdUnitInputCapture.tscn" id="5_xu3j8"]
 [ext_resource type="Script" path="res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd" id="8_2ggr0"]
 
 [node name="Control" type="Window"]
 disable_3d = true
 gui_embed_subwindows = true
 initial_position = 1
-title = "GdUnitTools"
 size = Vector2i(384, 384)
 visible = false
 wrap_controls = true
@@ -67,7 +67,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.196078, 0.631373, 0.639216, 1)
-theme_override_font_sizes/font_size = 16
 
 [node name="GdUnitUpdateClient" type="Node" parent="."]
 script = ExtResource("8_2ggr0")
@@ -203,6 +202,28 @@ custom_minimum_size = Vector2(1249, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="Shortcuts" type="ScrollContainer" parent="Panel/v/MarginContainer/GridContainer/Properties"]
+visible = false
+layout_mode = 2
+
+[node name="shortcut-content" type="VBoxContainer" parent="Panel/v/MarginContainer/GridContainer/Properties/Shortcuts"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(941, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GdUnitInputCapture" parent="Panel/v/MarginContainer/GridContainer/Properties/Shortcuts/shortcut-content" instance=ExtResource("5_xu3j8")]
+unique_name_in_owner = true
+visible = false
+modulate = Color(0.543351, 0.543351, 0.543351, 0.589016)
+z_index = 1
+z_as_relative = false
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 1
 
 [node name="Report" type="ScrollContainer" parent="Panel/v/MarginContainer/GridContainer/Properties"]
 visible = false

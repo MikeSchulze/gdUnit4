@@ -12,17 +12,20 @@ const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdate
 @onready var _properties_template :Node = $property_template
 @onready var _properties_common :Node = %"common-content"
 @onready var _properties_ui :Node = %"ui-content"
+@onready var _properties_shortcuts :Node = %"shortcut-content"
 @onready var _properties_report :Node = %"report-content"
-
+@onready var _input_capture :GdUnitInputCapture = %GdUnitInputCapture
 var _font_size :float
 
 
 func _ready():
 	GdUnit4Version.init_version_label(_version_label)
 	_font_size = GdUnitFonts.init_fonts(_version_label)
+	self.title = "GdUnitSettings"
 	setup_common_properties(_properties_common, GdUnitSettings.COMMON_SETTINGS)
 	setup_common_properties(_properties_ui, GdUnitSettings.UI_SETTINGS)
 	setup_common_properties(_properties_report, GdUnitSettings.REPORT_SETTINGS)
+	setup_common_properties(_properties_shortcuts, GdUnitSettings.SHORTCUT_SETTINGS)
 	await get_tree().process_frame
 	popup_centered_ratio(.75)
 
@@ -106,7 +109,39 @@ func _create_input_element(property: GdUnitProperty, reset_btn :Button) -> Node:
 		input.set_expand_to_text_length_enabled(true)
 		input.text = str(property.value())
 		return input
+	if property.type() == TYPE_PACKED_INT32_ARRAY:
+		var key_input_button := Button.new()
+		key_input_button.text = to_shortcut(property.value())
+		key_input_button.pressed.connect(_on_shortcut_change.bind(key_input_button, property, reset_btn))
+		return key_input_button
 	return Control.new()
+
+
+func to_shortcut(keys :PackedInt32Array) -> String:
+	var input_event := InputEventKey.new()
+	for key in keys:
+		match key:
+			KEY_CTRL: input_event.ctrl_pressed = true
+			KEY_SHIFT: input_event.shift_pressed = true
+			KEY_ALT: input_event.alt_pressed = true
+			KEY_META: input_event.meta_pressed = true
+			_:
+				input_event.keycode = key as Key
+	return input_event.as_text()
+
+
+func to_keys(input_event :InputEventKey) -> PackedInt32Array:
+	var keys := PackedInt32Array()
+	if input_event.ctrl_pressed:
+		keys.append(KEY_CTRL)
+	if input_event.shift_pressed:
+		keys.append(KEY_SHIFT)
+	if input_event.alt_pressed:
+		keys.append(KEY_ALT)
+	if input_event.meta_pressed:
+		keys.append(KEY_META)
+	keys.append(input_event.keycode)
+	return keys
 
 
 func _to_human_readable(value :String) -> String:
@@ -188,9 +223,12 @@ func _on_btn_property_reset_pressed(property: GdUnitProperty, input :Node, reset
 	elif input is OptionButton:
 		input.select(0)
 		_on_option_selected(0, property, reset_btn)
+	elif input is Button:
+		input.text = to_shortcut(property.default())
+		_on_property_text_changed(property.default(), property, reset_btn)
 
 
-func _on_property_text_changed(new_value, property: GdUnitProperty, reset_btn :Button):
+func _on_property_text_changed(new_value :Variant, property: GdUnitProperty, reset_btn :Button):
 	property.set_value(new_value)
 	reset_btn.disabled = property.value() == property.default()
 	GdUnitSettings.update_property(property)
@@ -200,6 +238,18 @@ func _on_option_selected(index :int, property: GdUnitProperty, reset_btn :Button
 	property.set_value(index)
 	reset_btn.disabled = property.value() == property.default()
 	GdUnitSettings.update_property(property)
+
+
+func _on_shortcut_change(input_button :Button, property: GdUnitProperty, reset_btn :Button) -> void:
+	_input_capture.set_custom_minimum_size(_properties_shortcuts.get_size())
+	_input_capture.visible = true
+	_input_capture.show()
+	set_process_input(false)
+	_input_capture.reset()
+	var input_event :InputEventKey = await _input_capture.input_completed
+	input_button.text = input_event.as_text()
+	_on_property_text_changed(to_keys(input_event), property, reset_btn)
+	set_process_input(true)
 
 
 func _init_progress(max_value : int) -> void:
