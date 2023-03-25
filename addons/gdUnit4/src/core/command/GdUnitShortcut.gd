@@ -33,7 +33,7 @@ const DEFAULTS_MACOS := {
 	ShortCut.STOP_TEST_RUN : [Key.KEY_META, Key.KEY_F8],
 	ShortCut.RERUN_TESTS : [Key.KEY_META, Key.KEY_F5],
 	ShortCut.RERUN_TESTS_DEBUG : [Key.KEY_META, Key.KEY_F6],
-	ShortCut.CREATE_TEST : [Key.KEY_META, Key.KEY_F10],
+	ShortCut.CREATE_TEST : [Key.KEY_META, Key.KEY_ALT, Key.KEY_F10],
 }
 
 const DEFAULTS_WINDOWS := {
@@ -44,7 +44,7 @@ const DEFAULTS_WINDOWS := {
 	ShortCut.STOP_TEST_RUN : [Key.KEY_CTRL, Key.KEY_F8],
 	ShortCut.RERUN_TESTS : [Key.KEY_CTRL, Key.KEY_F5],
 	ShortCut.RERUN_TESTS_DEBUG : [Key.KEY_CTRL, Key.KEY_F6],
-	ShortCut.CREATE_TEST : [Key.KEY_CTRL, Key.KEY_F10],
+	ShortCut.CREATE_TEST : [Key.KEY_CTRL, Key.KEY_ALT, Key.KEY_F10],
 }
 
 
