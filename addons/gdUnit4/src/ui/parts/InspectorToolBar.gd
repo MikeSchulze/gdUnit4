@@ -16,6 +16,14 @@ signal stop_pressed()
 @onready var _button_stop := %stop
 
 
+const SETTINGS_SHORTCUT_MAPPING := {
+	GdUnitSettings.SHORTCUT_INSPECTOR_RERUN_TEST : GdUnitShortcut.ShortCut.RERUN_TESTS,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RUN_TEST_OVERALL : GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RUN_TEST_STOP : GdUnitShortcut.ShortCut.STOP_TEST_RUN,
+}
+
+
 func _ready():
 	GdUnit4Version.init_version_label(_version_label)
 	var command_handler := GdUnitCommandHandler.instance()
@@ -46,7 +54,8 @@ func init_shortcuts(command_handler :GdUnitCommandHandler) -> void:
 	_button_run_overall.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL)
 	_button_run_debug.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG)
 	_button_stop.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.STOP_TEST_RUN)
-
+	# register for shortcut changes
+	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed.bind(command_handler))
 
 func _on_runoverall_pressed(debug := false):
 	run_overall_pressed.emit(debug)
@@ -85,3 +94,19 @@ func _on_wiki_pressed():
 func _on_btn_tool_pressed():
 	var tool_popup = load("res://addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.tscn").instantiate()
 	get_parent_control().add_child(tool_popup)
+
+
+func _on_settings_changed(property :GdUnitProperty, command_handler :GdUnitCommandHandler):
+	# needs to wait a frame to be command handler notified first for settings changes
+	await get_tree().process_frame
+	if SETTINGS_SHORTCUT_MAPPING.has(property.name()):
+		var shortcut :GdUnitShortcut.ShortCut = SETTINGS_SHORTCUT_MAPPING.get(property.name(), GdUnitShortcut.ShortCut.NONE)
+		match shortcut:
+			GdUnitShortcut.ShortCut.RERUN_TESTS:
+				_button_run.shortcut = command_handler.get_shortcut(shortcut)
+			GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL:
+				_button_run_overall.shortcut = command_handler.get_shortcut(shortcut)
+			GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG:
+				_button_run_debug.shortcut = command_handler.get_shortcut(shortcut)
+			GdUnitShortcut.ShortCut.STOP_TEST_RUN:
+				_button_stop.shortcut = command_handler.get_shortcut(shortcut)

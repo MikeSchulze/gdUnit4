@@ -326,7 +326,7 @@ func _on_settings_changed(property :GdUnitProperty):
 	if SETTINGS_SHORTCUT_MAPPING.has(property.name()):
 		var shortcut :GdUnitShortcut.ShortCut = SETTINGS_SHORTCUT_MAPPING.get(property.name())
 		var input_event := create_shortcut_input_even(property.value())
-		prints("shortcut changed: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[shortcut], input_event.as_text()])
+		prints("Shortcut changed: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[shortcut], input_event.as_text()])
 		register_shortcut(shortcut, input_event)
 
 
