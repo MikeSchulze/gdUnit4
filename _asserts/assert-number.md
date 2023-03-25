@@ -14,23 +14,23 @@ Supported numbers are **sbyte**, **byte**, **short**, **ushort**, **int**, **uin
 
 |Function|Description|
 |--- | --- |
-|[IsNull](/gdUnit3/asserts/assert-number/#isnull) | Verifies that the current value is null.|
-|[IsNotNull](/gdUnit3/asserts/assert-number/#isnotnull) | Verifies that the current value is not null.|
-|[IsEqual](/gdUnit3/asserts/assert-number/#isequal) | Verifies that the current value is equal to the given one.|
-|[IsNotEqual](/gdUnit3/asserts/assert-number/#isnotequal) | Verifies that the current value is not equal to the given one.|
-|[IsLess](/gdUnit3/asserts/assert-number/#isless) | Verifies that the current value is less than the given one.|
-|[IsLessEqual](/gdUnit3/asserts/assert-number/#islessequal) | Verifies that the current value is less than or equal the given one.|
-|[IsGreater](/gdUnit3/asserts/assert-number/#isgreater) | Verifies that the current value is greater than the given one.|
-|[IsGreaterEqual](/gdUnit3/asserts/assert-number/#isgreaterequal) | Verifies that the current value is greater than or equal the given one.|
-|[IsEven](/gdUnit3/asserts/assert-number/#iseven) | Verifies that the current value is even.|
-|[IsOdd](/gdUnit3/asserts/assert-number/#isodd) | Verifies that the current value is odd.|
-|[IsNegative](/gdUnit3/asserts/assert-number/#isnegative) | Verifies that the current value is negative.|
-|[IsNotNegative](/gdUnit3/asserts/assert-number/#isnotnegative) | Verifies that the current value is not negative.|
-|[IsZero](/gdUnit3/asserts/assert-number/#iszero) | Verifies that the current value is equal to zero.|
-|[IsNotZero](/gdUnit3/asserts/assert-number/#isnotzero) | Verifies that the current value is not equal to zero.|
-|[IsIn](/gdUnit3/asserts/assert-number/#isin) | Verifies that the current value is in the given set of values.|
-|[IsNotIn](/gdUnit3/asserts/assert-number/#isnotin) | Verifies that the current value is not in the given set of values.|
-|[IsBetween](/gdUnit3/asserts/assert-number/#isbetween) | Verifies that the current value is between the given boundaries (inclusive).|
+|[IsNull](/gdUnit4/asserts/assert-number/#isnull) | Verifies that the current value is null.|
+|[IsNotNull](/gdUnit4/asserts/assert-number/#isnotnull) | Verifies that the current value is not null.|
+|[IsEqual](/gdUnit4/asserts/assert-number/#isequal) | Verifies that the current value is equal to the given one.|
+|[IsNotEqual](/gdUnit4/asserts/assert-number/#isnotequal) | Verifies that the current value is not equal to the given one.|
+|[IsLess](/gdUnit4/asserts/assert-number/#isless) | Verifies that the current value is less than the given one.|
+|[IsLessEqual](/gdUnit4/asserts/assert-number/#islessequal) | Verifies that the current value is less than or equal the given one.|
+|[IsGreater](/gdUnit4/asserts/assert-number/#isgreater) | Verifies that the current value is greater than the given one.|
+|[IsGreaterEqual](/gdUnit4/asserts/assert-number/#isgreaterequal) | Verifies that the current value is greater than or equal the given one.|
+|[IsEven](/gdUnit4/asserts/assert-number/#iseven) | Verifies that the current value is even.|
+|[IsOdd](/gdUnit4/asserts/assert-number/#isodd) | Verifies that the current value is odd.|
+|[IsNegative](/gdUnit4/asserts/assert-number/#isnegative) | Verifies that the current value is negative.|
+|[IsNotNegative](/gdUnit4/asserts/assert-number/#isnotnegative) | Verifies that the current value is not negative.|
+|[IsZero](/gdUnit4/asserts/assert-number/#iszero) | Verifies that the current value is equal to zero.|
+|[IsNotZero](/gdUnit4/asserts/assert-number/#isnotzero) | Verifies that the current value is not equal to zero.|
+|[IsIn](/gdUnit4/asserts/assert-number/#isin) | Verifies that the current value is in the given set of values.|
+|[IsNotIn](/gdUnit4/asserts/assert-number/#isnotin) | Verifies that the current value is not in the given set of values.|
+|[IsBetween](/gdUnit4/asserts/assert-number/#isbetween) | Verifies that the current value is between the given boundaries (inclusive).|
 
 
 ---

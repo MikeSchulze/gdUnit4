@@ -53,10 +53,10 @@ This way you can check if a certain function is called and how often it was call
 
 |Function |Description |
 |---|---|
-|[verify](/gdUnit3/advanced_testing/spy/#verify) | Verifies certain behavior happened at least once or exact number of times|
-|[verify_no_interactions](/gdUnit3/advanced_testing/spy/#verify_no_interactions) | Verifies no interactions is happen on this spy|
-|[verify_no_more_interactions](/gdUnit3/advanced_testing/spy/#verify_no_more_interactions) | Verifies the given spy has any unverified interaction|
-|[reset](/gdUnit3/advanced_testing/spy/#reset) | Resets the saved function call counters on a spy|
+|[verify](/gdUnit4/advanced_testing/spy/#verify) | Verifies certain behavior happened at least once or exact number of times|
+|[verify_no_interactions](/gdUnit4/advanced_testing/spy/#verify_no_interactions) | Verifies no interactions is happen on this spy|
+|[verify_no_more_interactions](/gdUnit4/advanced_testing/spy/#verify_no_more_interactions) | Verifies the given spy has any unverified interaction|
+|[reset](/gdUnit4/advanced_testing/spy/#reset) | Resets the saved function call counters on a spy|
 
 
 ### verify_no_interactions
@@ -180,7 +180,7 @@ This allows you to verify function calls by a specific type or class argument.
     # verify how often we called the function with a boolean argument
     verify(spyed_node, 3).set_process(any_bool())
 ```
-For more details please show at [Argument Matchers](/gdUnit3/advanced_testing/argument_matchers)
+For more details please show at [Argument Matchers](/gdUnit4/advanced_testing/argument_matchers)
 
 
 

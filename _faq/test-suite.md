@@ -26,7 +26,7 @@ To define a test you have to use the prefix `test_` e.g. `test_verify_is_string`
 {% endtab %}
 {% tab faq-TestSuite-stages C# %}
 GdUnit use attributes to define the execution stages and tests.<br>
-All GdUnit attributes are contained in the `namespace GdUnit3`
+All GdUnit attributes are contained in the `namespace GdUnit4`
 
 |Stage|Description|
 |---| ---|
@@ -42,7 +42,7 @@ All GdUnit attributes are contained in the `namespace GdUnit3`
 
 ## Stage *before*
 This stage is executed only once at the beginning of a TestSuite execution.<br>
-GdUnit3 allows to use asserts within this stage, occurring errors are reported.
+GdUnit4 allows to use asserts within this stage, occurring errors are reported.
 
 {% tabs faq-TestSuite-before %}
 {% tab faq-TestSuite-before GdScript %}
@@ -63,8 +63,8 @@ func before():
 **[Before]**<br>
 Use this attribute inside your TestSuite to define a method as pre hook to prepare your TestSuite data.
 ```cs
-using GdUnit3;
-using static GdUnit3.Assertions;
+using GdUnit4;
+using static GdUnit4.Assertions;
 
 namespace ExampleProject.Tests
 {
@@ -104,8 +104,8 @@ func before():
 {% endtab %}
 {% tab faq-TestSuite-before C# %}
 ```cs
-using GdUnit3;
-using static GdUnit3.Assertions;
+using GdUnit4;
+using static GdUnit4.Assertions;
 
 namespace ExampleProject.Tests
 {
@@ -130,7 +130,7 @@ namespace ExampleProject.Tests
 
 ## Stage *after*
 This stage is executed only once at the end of a TestSuite execution.<br>
-GdUnit3 allows to use asserts within this stage, occurring errors are reported.
+GdUnit4 allows to use asserts within this stage, occurring errors are reported.
 
 {% tabs faq-TestSuite-after %}
 {% tab faq-TestSuite-after GdScript %}
@@ -151,8 +151,8 @@ func after():
 **[After]**<br>
 Use this attribute inside your TestSuite to define a method as shutdown hook to release your TestSuite data.
 ```cs
-using GdUnit3;
-using static GdUnit3.Assertions;
+using GdUnit4;
+using static GdUnit4.Assertions;
 
 namespace ExampleProject.Tests
 {
@@ -177,7 +177,7 @@ namespace ExampleProject.Tests
 
 ## Stage *before_test*
 This stage is executed before each TestCase.<br>
-GdUnit3 allows to use asserts within the this stage, occurring errors are reported.
+GdUnit4 allows to use asserts within the this stage, occurring errors are reported.
 
 {% tabs faq-TestSuite-before_test %}
 {% tab faq-TestSuite-before_test GdScript %}
@@ -198,8 +198,8 @@ func before_test():
 **[BeforeTest]**<br>
 Use this attribute inside your TestSuite to define a method as pre hook to initalize your TestCase data.
 ```cs
-using GdUnit3;
-using static GdUnit3.Assertions;
+using GdUnit4;
+using static GdUnit4.Assertions;
 
 namespace ExampleProject.Tests
 {
@@ -238,8 +238,8 @@ func before_test():
 {% endtab %}
 {% tab faq-TestSuite-before_test C# %}
 ```cs
-using GdUnit3;
-using static GdUnit3.Assertions;
+using GdUnit4;
+using static GdUnit4.Assertions;
 
 namespace ExampleProject.Tests
 {
@@ -264,7 +264,7 @@ namespace ExampleProject.Tests
 
 ## Stage *after_test*
 This stage is executed after each TestCase.<br>
-GdUnit3 allows to use asserts within the this stage, occurring errors are reported.
+GdUnit4 allows to use asserts within the this stage, occurring errors are reported.
 
 {% tabs faq-TestSuite-after_test %}
 {% tab faq-TestSuite-after_test GdScript %}
@@ -283,8 +283,8 @@ func after_test():
 **[AfterTest]**<br>
 Use this attribute inside your TestSuite to define a method as clean up hook to release your TestCase data if neeed.
 ```cs
-using GdUnit3;
-using static GdUnit3.Assertions;
+using GdUnit4;
+using static GdUnit4.Assertions;
 
 namespace ExampleProject.Tests
 {

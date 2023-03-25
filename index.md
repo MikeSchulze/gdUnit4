@@ -3,13 +3,24 @@ layout: default
 title: Home
 ---
 
-# GdUnit4 V2.4.0
+# GdUnit4 V4.1.0 
+build on (Godot v4.0.stable.official [92bee43ad])
+
+---
+## Please note that the documentation is not yet up to date and will be updated in the next days!
+
+
+# ATTENTION!
+## Please read the following disclaimer carefully before proceeding!
+## You need the deactivate the old version before deinstall and install this version!
+## C# support is currently disabled and will be added with 4.2.0.
+---
 
 ![GdUnit4](\gdUnit4\assets\images\background.png)
 
 
 ## What is GdUnit4?
-**Gd**(*Godot*)**Unit**(*Unit Testing*)**3**(*Godot 4.x*)
+**Gd**(*Godot*)**Unit**(*Unit Testing*)**4**(*Godot 4.x*)
 
 GdUnit4 is an embeded unit testing framework for testing your Gd, C# Scripts and Scenes within the Godot editor.<br>
 You can use it for  [TDD (test driven development)](https://en.wikipedia.org/wiki/Test-driven_development){:target="_blank"} and will help you get your code bug-free.

@@ -13,9 +13,9 @@ Continuous Integration (CI) is a method for automating the integration of code c
 
 
 ### Command Line Tool
-GdUnit3 provides a tool that allows you to deploy your CI  workflow.
+GdUnit4 provides a tool that allows you to deploy your CI  workflow.
 
-For more details please show at [Command Line Tool](/gdUnit3/advanced_testing/cmd)
+For more details please show at [Command Line Tool](/gdUnit4/advanced_testing/cmd)
 
 ### Howto deploy for a specific Godot version
 Using Docker image to export Godot Engine games and deploy to GitLab/GitHub Pages and Itch.io using GitLab CI and GitHub Actions.

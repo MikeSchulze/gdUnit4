@@ -7,15 +7,15 @@ nav_order: 6
 
 # Command Line Tool
 
-### GdUnit3 Command Line Tool
-GdUnit3 provides a tool that allows you to run a specific set of test suites and tests from the command line.
+### GdUnit4 Command Line Tool
+GdUnit4 provides a tool that allows you to run a specific set of test suites and tests from the command line.
 The tool is named `runtest.sh` for linux/macos and `runtest.cmd` for windows and is located in the **project folder** and provides a set of commands.
 To get an overview of the available commands, execute it with the command `-help`.
 
 
 ```
 ----------------------------------------------------------------------------------------------
- GdUnit3 Comandline Tool
+ GdUnit4 Comandline Tool
 
  Usage:
         runtest -a <directory|path of testsiute>
@@ -151,19 +151,19 @@ You can find the reports in the report folder as:
 
 
 #### The HTML report
-![](/gdUnit3/assets/images/reports/GdUnit3Report-main.png)
+![](/gdUnit4/assets/images/reports/GdUnit3Report-main.png)
 
 
 ### Report by Path
 You can switch between the full list of executed test-suites or the view collected by paths.
-![](/gdUnit3/assets/images/reports/GdUnit3Report-sort-by-path.png)
+![](/gdUnit4/assets/images/reports/GdUnit3Report-sort-by-path.png)
 If you click on a test-suite you can view the report for a specific test-suite.
 
 ### Select a Testsuite Report
 By further selecting the test cases, the test errors can be viewed in the "Failure Report" window.
-![](/gdUnit3/assets/images/reports/GdUnit3Report-failure-report.png)
+![](/gdUnit4/assets/images/reports/GdUnit3Report-failure-report.png)
 
 ### Logging
 If logging is enabled in your project, the report saves the current log and can be viewed by clicking `Logging`.
-![](/gdUnit3/assets/images/reports/GdUnit3Report-logging.png)
+![](/gdUnit4/assets/images/reports/GdUnit3Report-logging.png)
 

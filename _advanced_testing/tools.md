@@ -272,7 +272,7 @@ One helping tool is using **auto_free** to manage your object.
 GdUnit will help you by reporting detected orphan nodes for each test run in the status bar.
 A green icon indicates no orphan nodes detected and a red blinking icon warns you to have detected orphan nodes.
 
-![](/gdUnit3/assets/images/monitoring/orphan-nodes.png)
+![](/gdUnit4/assets/images/monitoring/orphan-nodes.png)
 
 Use the button to jump to the first orphan node to inspect.
 Orphan nodes are reported and marked in yellow for each test step as before(), before_test() and the test itself.
@@ -285,4 +285,4 @@ I recommend checking your implementation if any orphan nodes are detected, follo
 On the status bar at the bottom left the total elapsed execution time is shown.
 The execution time is messured to for each testsuite and testcase and can be read on each element in the tree inspector.
 
-![](/gdUnit3/assets/images/monitoring/execution-time.png)
+![](/gdUnit4/assets/images/monitoring/execution-time.png)
