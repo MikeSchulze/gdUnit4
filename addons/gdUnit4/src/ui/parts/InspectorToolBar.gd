@@ -88,7 +88,7 @@ func _on_gdunit_settings_changed(_property :GdUnitProperty):
 
 
 func _on_wiki_pressed():
-	OS.shell_open("https://mikeschulze.github.io/gdUnit3/")
+	OS.shell_open("https://mikeschulze.github.io/gdUnit4/")
 
 
 func _on_btn_tool_pressed():
