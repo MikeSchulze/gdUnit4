@@ -38,4 +38,5 @@ limits/debugger_stdout/max_warnings_per_second=1000
 
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
 environment/default_environment="res://default_env.tres"
