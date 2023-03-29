@@ -11,6 +11,9 @@ nav_order: 2
 A TestCase document described detailed summary of what scenarios will be tested.<br>
 Use a meaningfull name for your test to represent what the test does.
 
+A test is defined as a function that follows the pattern **test_*****name***(*[arguments]*) -> *void* and must start with the prefix **test_** to be identified as a test. The ***name*** is freely selectable but should correspond to the function to be tested. Test *[arguments]* are optional and will be explained later in the advanced testing section.
+
+
 ---
 
 ## Single TestCase

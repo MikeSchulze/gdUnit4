@@ -5,7 +5,13 @@ nav_order: 3
 ---
 
 # GdUnit and C# Testing
-To use the GdUnit C# testing API, you should have Godot-Mono version 3.3.x installed.
+To use the GdUnit C# testing API, you should have Godot-Mono version 4.0.x installed.
+
+
+{% include advice.html
+content="C# support is currently disabled and will be added with 4.2.0."
+%}
+
 
 ## How to enable the C# test support?
 Before using the GdUnit C# test API we need to configure the project.
@@ -55,7 +61,6 @@ Here is a complete example of what your project should look like.
 	</ItemGroup>
 </Project>
 ```
-
 
 ## Test you C# build settings
 
