@@ -1,16 +1,16 @@
 ---
 layout: default
 title: C# Support
-nav_order: 3
+nav_order: 4
 ---
 
-# GdUnit and C# Testing
-To use the GdUnit C# testing API, you should have Godot-Mono version 4.0.x installed.
-
-
 {% include advice.html
-content="C# support is currently disabled and will be added with 4.2.0."
+content="C# is currently <b>not</b> supported with version v4.1.0 and will be reimplemented with version v4.2.0.<br> This page will be updated with the next major release."
 %}
+
+
+# GdUnit and C# Testing
+To use the GdUnit C# testing API, you need to have Godot-Mono version 4.0.x installed.
 
 
 ## How to enable the C# test support?
