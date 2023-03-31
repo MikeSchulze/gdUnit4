@@ -2,186 +2,192 @@
 layout: default
 title: Spying
 parent: Advanced Testing
-nav_order: 3
+nav_order: 5
 ---
 
 # Spy
 
-## ***Spy is current only supported for GdScripts!***
 
-### Definition
+## ***Note: Spy is current only supported for GdScripts.***
+
+## Definition
 A Spy is used to verify a certain behavior during a test and tracks all function calls and their parameters of an instance.
 
 `var to_spy := spy(<instance>)`
 
-### *What is the difference between a spy and an mock?*
+## *What is the difference between a spy and an mock?*
 
-In difference to a mock on a spy the real implementation is called. It will still behave in the same way as the normal instance.
+In contrast to a mock, a spy calls the real implementation. It behaves in the same way as the normal instance.
 
 ---
 
-### How to use a Spy
-To spy on a object you only need to use **spy(\<instance\>)**. A spyed instance is marked for auto free, you don't need to free it manually.
+## How to use a Spy
+To spy on an object, simply use **spy(\<instance\>)**. A spied instance is marked for auto-freeing, so you don't need to free it manually.
 
 ```ruby
     var spy:= spy(auto_free(Node.new()))
 ```
 
-
-Here a small example to use the spy on a instance of the class 'TestClass'.
+Here a small example to use the spy on a instance of the class 'TestClass':
 ```ruby
     class_name TestClass
     extends Node
 
         func message() -> String:
             return "a message"
-```
-``` python
+
     func test_spy():
         var instance = auto_free(TestClass.new())
-        # build a spy on the instance
-        var spy:= spy(instance)
-        # call function `message` on the spy to track the interaction
+
+        # Build a spy on the instance
+        var spy = spy(instance)
+
+        # Call function `message` on the spy to track the interaction
         spy.message()
-        # verify the function 'message' is called one times
+
+        # Verify the function 'message' is called one times
         verify(spy, 1).message()
 ```
 
-### Verification of function calls
-A spy keeps track of all the function calls and their arguments. Use **verify()** on the spy to verify that the specified conditions are met.
-This way you can check if a certain function is called and how often it was called.
+## Verification of Function Calls
+A spy keeps track of all function calls and their arguments. Use the **verify()** method on the spy to verify that certain behavior happened at least once or an exact number of times. This way, you can check if a particular function was called and how many times it was called.
+
 
 |Function |Description |
 |---|---|
-|[verify](/gdUnit4/advanced_testing/spy/#verify) | Verifies certain behavior happened at least once or exact number of times|
-|[verify_no_interactions](/gdUnit4/advanced_testing/spy/#verify_no_interactions) | Verifies no interactions is happen on this spy|
-|[verify_no_more_interactions](/gdUnit4/advanced_testing/spy/#verify_no_more_interactions) | Verifies the given spy has any unverified interaction|
-|[reset](/gdUnit4/advanced_testing/spy/#reset) | Resets the saved function call counters on a spy|
+|[verify](/gdUnit4/advanced_testing/spy/#verify) | Verifies that certain behavior happened at least once or an exact number of times.|
+|[verify_no_interactions](/gdUnit4/advanced_testing/spy/#verify_no_interactions) | Verifies that no interactions happened on the spy.|
+|[verify_no_more_interactions](/gdUnit4/advanced_testing/spy/#verify_no_more_interactions) | Verifies that the given spy has no unverified interactions.|
+|[reset](/gdUnit4/advanced_testing/spy/#reset) | Resets the saved function call counters on a spy.|
 
 
-### verify_no_interactions
-Verifies no interactions is happen on this spy.
+* **verify**<br>
+    The **verify()** method is used to verify that a function was called a certain number of times. It takes two arguments: the spy instance and the expected number of times the function should have been called. You can also use argument matchers to verify that specific arguments were passed to the function.
 
-```ruby
-    verify_no_interactions(<spy>)
-```
-```ruby
-    var spyed_node := spy(Node.new()) as Node
-    
-    # test we have initial no interactions on this spy
-    verify_no_interactions(spyed_node)
+    ```ruby
+        verify(<spy>, <times>).function(<args>)
+    ```
+    Here's an example:
+    ```ruby
+        var spyed_node :Node = spy(Node.new())
+        
+        # Verify we have no interactions currently on this instance
+        verify_no_interactions(spyed_node)
+        
+        # Call with different arguments
+        spyed_node.set_process(false) # 1 times
+        spyed_node.set_process(true) # 1 times
+        spyed_node.set_process(true) # 2 times
+        
+        # Verify how often we called the function with different argument 
+        verify(spyed_node, 1).set_process(false)# in sum one time with false
+        verify(spyed_node, 2).set_process(true) # in sum two times with true
 
-    # interact by calling `get_name()`
-    spyed_node.get_name()
+        # Verify will fail because we expect the function `set_process(true)` to be called 3 times but it was only called 2 times
+        verify(spyed_node, 3).set_process(true)
+    ```
 
-    # now this verification will fail because we have interacted on this spy
-    verify_no_interactions(spyed_node)
-```
+* **verify_no_interactions**<br>
+    The **verify_no_interactions()** method verifies that no function calls were made on the spy.
 
-### verify_no_more_interactions
-Checks whether the specified spy has no further interaction.
+    ```ruby
+        verify_no_interactions(<spy>)
+    ```
+    Here's an example:
+    ```ruby
+        var spyed_node := spy(Node.new()) as Node
+        
+        # Test that we have no initial interactions on this spy
+        verify_no_interactions(spyed_node)
 
-If the spy has recorded more interactions than you verified with `verify()`, an error is reported.
+        # Interact by calling `get_name()`
+        spyed_node.get_name()
 
+        # Now this verification will fail because we have interacted on this spy by calling `get_name`
+        verify_no_interactions(spyed_node)
+    ```
 
-```ruby
-    verify_no_more_interactions(<spy>)
-```
-```ruby
-    var spyed_node := spy(Node.new()) as Node
-    
-    # interact on two functions 
-    spyed_node.is_a_parent_of(null)
-    spyed_node.set_process(false)
-    # verify if interacts
-    verify(spyed_node).is_a_parent_of(null)
-    verify(spyed_node).set_process(false)
-    # finally we want to check no more interactions on this spy was happen
-    verify_no_more_interactions(spyed_node)
-
-    # simmulate a unexpected interaction on `set_process`
-    spyed_node.set_process(false)
-    # no the verify will fail because we have an interacted on `set_process(false)` where we not expected
-    verify_no_more_interactions(spyed_node)
-```
-
-### verify
-Verifies certain behavior happened at least once or exact number of times
-
-
-```ruby
-    verify(<spy>, <times>).function(<args>)
-```
-```ruby
-    var spyed_node :Node = spy(Node.new())
-    
-    # verify we have no interactions currently on this instance
-    verify_no_interactions(spyed_node)
-    
-    # call with different arguments
-    spyed_node.set_process(false) # 1 times
-    spyed_node.set_process(true) # 1 times
-    spyed_node.set_process(true) # 2 times
-    
-    # verify how often we called the function with different argument 
-    verify(spyed_node, 1).set_process(false)# in sum one time with false
-    verify(spyed_node, 2).set_process(true) # in sum two times with true
-
-    # verify will fail because we expect the function `set_process(true)` is called 3 times but was called 2 times
-    verify(spyed_node, 3).set_process(true)
-```
-
-### reset
-Resets the recorded function interactions of given spy.
-
-Sometimes we want to reuse an already created spy for different test scenarios and have to reset the recorded interactions. 
+* **verify_no_more_interactions**<br>
+    The **verify_no_more_interactions()** method verifies that all interactions on the spy have been verified.
+    If the spy has recorded more interactions than you verified with **verify()**, an error is reported.
 
 
-```ruby
-    reset(<spy>)
-```
-```ruby
-    var spyed_node :Node = spy(Node.new())
-    
-    # first testing interact on two functions 
-    spyed_node.is_a_parent_of(null)
-    spyed_node.set_process(false)
-    # verify if interacts,at this point two interactions are recorded
-    verify(spyed_node).is_a_parent_of(null)
-    verify(spyed_node).set_process(false)
+    ```ruby
+        verify_no_more_interactions(<spy>)
+    ```
+    Here's an example:
+    ```ruby
+        var spyed_node := spy(Node.new()) as Node
+        
+        # Interact on two functions 
+        spyed_node.is_a_parent_of(null)
+        spyed_node.set_process(false)
 
+        # Verify that the spy interacts as expected
+        verify(spyed_node).is_a_parent_of(null)
+        verify(spyed_node).set_process(false)
 
-    # now we want to test a other scenario and we need to reset the current recorded interactions
-    reset(spyed_node)
-    # we verify the previously recorded interactions have been removed
-    verify_no_more_interactions(spyed_node)
+        # Check that there are no further interactions with the spy
+        verify_no_more_interactions(spyed_node)
 
-    # continue testing ..
-    spyed_node.set_process(true)
-    verify(spyed_node).set_process(true)
-    verify_no_more_interactions(spyed_node)
-```
+        # Simulate an unexpected interaction with `set_process`
+        spyed_node.set_process(false)
+
+        # Verify that there are no further interactions with the spy
+        # and that the previous unexpected interaction is detected (the test will fail here)
+        verify_no_more_interactions(spyed_node)
+    ```
+
+* **reset**<br>
+    Resets the recorded function interactions of the given spy.<br>
+    Sometimes we want to reuse an already created spy for different test scenarios and have to reset the recorded interactions.
+
+    ```ruby
+        reset(<spy>)
+    ```
+    Here's an example:
+    ```ruby
+        var spyed_node :Node = spy(Node.new())
+        
+        # First, we test by interacting with two functions 
+        spyed_node.is_a_parent_of(null)
+        spyed_node.set_process(false)
+
+        # Verify if the interactions were recorded; at this point, two interactions are recorded
+        verify(spyed_node).is_a_parent_of(null)
+        verify(spyed_node).set_process(false)
+
+        # Now, we want to test a different scenario and we need to reset the current recorded interactions
+        reset(spyed_node)
+        # Verify that the previously recorded interactions have been removed
+        verify_no_more_interactions(spyed_node)
+
+        # Continue testing
+        spyed_node.set_process(true)
+        verify(spyed_node).set_process(true)
+        verify_no_more_interactions(spyed_node)
+    ```
 
 ---
 
-### Argument Matchers and spys
-To simplify the verification of function calls, you can use an argument matcher.
-This allows you to verify function calls by a specific type or class argument.
+## Argument Matchers and spys
+Argument matchers allow you to simplify the verification of function calls by verifying function arguments based on their type or class. This is particularly useful when working with spys because you can use argument matchers to verify function calls without specifying the exact argument values.
+
+For example, instead of verifying that a function was called with a specific boolean argument value, you can use the **any_bool()** argument matcher to verify that the function was called with any boolean value. Here's an example:
 
 
 ```ruby
     var spyed_node :Node = spy(Node.new())
     
-    # call with different arguments
-    spyed_node.set_process(false) # 1 times
-    spyed_node.set_process(true) # 1 times
-    spyed_node.set_process(true) # 2 times
+    # Call the function with different arguments
+    spyed_node.set_process(false) # Called 1 time
+    spyed_node.set_process(true) # Called 1 time
+    spyed_node.set_process(true) # Called 2 times
     
-    # verify how often we called the function with a boolean argument
+    # Verify that the function was called with any boolean value 3 times
     verify(spyed_node, 3).set_process(any_bool())
 ```
-For more details please show at [Argument Matchers](/gdUnit4/advanced_testing/argument_matchers)
+For more details on how to use argument matchers, please see the [Argument Matchers](/gdUnit4/advanced_testing/argument_matchers) section.
 
-
-
-
+---
+<h4> document version v4.1.0 </h4>

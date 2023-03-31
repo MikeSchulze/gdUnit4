@@ -1,40 +1,24 @@
 ---
 layout: default
-title: Tools and Monitoring
+title: Tools and Helpers
 parent: Advanced Testing
-nav_order: 5
+nav_order: 1
 ---
 
-# Tools and Monitoring
+# Tools and Helpers
 
-GdUnit offers numerous functions that make it easier to write tests.
+GdUnit provides several tools to help you write tests, including managing objects to free and accessing a temporary filesystem to store your test data.
 
 ---
 
-### error_as_string
-Map Godot error number to a readable error message. See[Error Codes](https://docs.godotengine.org/de/stable/classes/class_@globalscope.html#enum-globalscope-error){:target="_blank"}
+## auto_free()
+A little helper for automatically releasing the objects you create after test execution.
 
-{% tabs tools-error_as_string %}
-{% tab tools-error_as_string GdScript %}
-```ruby
-    func error_as_string(error_number :int) -> String:
-```
-{% endtab %}
-{% tab tools-error_as_string C# %}
-```cs
-    public static string ErrorAsString(Godot.Error errorNumber);
-    public static string ErrorAsString(int errorNumber);
-```
-{% endtab %}
-{% endtabs %}
+*Note that objects do not manage memory. If a class inherits from Object, you will need to delete its instances manually.*
+*References keep an internal reference counter so that they are automatically released when no longer in use, and only then. Therefore, you do not need to free references manually with Object.free().*
 
-### auto_free()
-A little helper for automatically releasing your created objects after the test execution.
-
-*Objects do not manage memory. If a class inherits from Object, you will have to delete instances of it manually.*
-*References keep an internal reference counter so that they are automatically released when no longer in use, and only then. References therefore do not need to be freed manually with Object.free.*
-
-Use **auto_free()** to automatically released Objects when no longer in use.
+Use **auto_free()** to automatically release objects when they are no longer in use.
+Objects that are covered by **auto_free** only live in the scope where they are used. These scopes include the test suite setup, test case setup, and the tests themselves.
 
 {% tabs tools-auto_free %}
 {% tab tools-auto_free GdScript %}
@@ -49,7 +33,7 @@ Use **auto_free()** to automatically released Objects when no longer in use.
 {% endtab %}
 {% endtabs %}
 
-Example:
+Here’s an small example:
 {% tabs tools-auto_free-example %}
 {% tab tools-auto_free-example GdScript %}
 ```ruby
@@ -66,8 +50,8 @@ Example:
 {% endtabs %}
 
 
-### *A small example test suite to show up memory usage and freeing*
-Objects covered by *auto_free* live only in the scope where it is used. Scopes are: *test suite setup*, *test case setup* and *tests*
+
+Here's an extended example of a test suite to demonstrate the usage of auto_free() and freeing memory:
 
 ```ruby
     extends GdUnitTestSuite
@@ -122,9 +106,9 @@ Objects covered by *auto_free* live only in the scope where it is used. Scopes a
         prints("|%16s | %16s | %16s | %16s |" % [name, _obj_a, _obj_b, _obj_c])
 ```
 
-```
-|                 |           _obj_a |           _obj_b |           _obj_c |
-----------------------------------------------------------------------------
+
+|        State    |           _obj_a |           _obj_b |           _obj_c |
+|--- | --- |
 |        PARENTED |             Null |             Null |             Null |
 |      ENTER_TREE |             Null |             Null |             Null |
 | POST_ENTER_TREE |             Null |             Null |             Null |
@@ -137,13 +121,12 @@ Objects covered by *auto_free* live only in the scope where it is used. Scopes a
 |       EXIT_TREE | [Deleted Object] | [Deleted Object] | [Deleted Object] |
 |      UNPARENTED | [Deleted Object] | [Deleted Object] | [Deleted Object] |
 |       PREDELETE | [Deleted Object] | [Deleted Object] | [Deleted Object] |
-```
 
 
-### create_temp_dir
-Creates a new directory under the temporary directory *user://tmp*.
 
-Useful for storing data during test execution. The directory is automatically deleted after the execution of the test suite.
+## create_temp_dir()
+This helper function creates a new directory under the temporary directory *user://tmp*, which can be useful for storing data during test execution.<br>
+The directory is automatically deleted after the test suite has finished executing.
 
 {% tabs tools-create_temp_dir %}
 {% tab tools-create_temp_dir GdScript %}
@@ -158,8 +141,7 @@ Useful for storing data during test execution. The directory is automatically de
 {% endtab %}
 {% endtabs %}
 
-Example:
-
+Here’s an example:
 ```ruby
     func test_save_game_data():
         # create a temporay directory to store test data
@@ -180,10 +162,8 @@ Example:
 ```
 
 
-### clean_temp_dir
-Deletes the temporary directory.
-
-Is called automatically after each execution of the test suite.
+## clean_temp_dir()
+Deletes the temporary directory created by **create_temp_dir()**. This function is called automatically after each execution of the test suite to ensure that the temporary directory is clean and ready for the next test suite.
 
 {% tabs tools-clean_temp_dir %}
 {% tab tools-clean_temp_dir GdScript %}
@@ -198,20 +178,17 @@ Is called automatically after each execution of the test suite.
 {% endtab %}
 {% endtabs %}
 
-### create_temp_file
-Creates a new File under the temporary directory *user://tmp* + \<relative_path\>
-with given name \<file_name\> and given file \<mode\> (default = File.WRITE).
+## create_temp_file()
+The **create_temp_file()** function creates a new File under the temporary directory *user://tmp* + *\<relative_path\>* with the given name *\<file_name\>* and file *\<mode\>* (default = File.WRITE).<br>
+If successful, the returned File is automatically closed after the execution of the test suite.<br>
+We can create a small test file at the beginning of a test suite in the **before()** function and read it later in the test. It is not necessary to close the file, as the GdUnit test runner will close it automatically.
 
-If success the returned File is automatically closed after the execution of the test suite.
 
 ```ruby
     func create_temp_file(relative_path :String, file_name :String, mode :=File.WRITE) -> File:
 ```
 
-Example:
-We create a small test file in the beginning of a test suite on *before()* and read it later on the test.
-It is not need to close the file (e.g. you forgot it to close), the GdUnit test runner will close it automaticaly.
-
+Here’s an example:
 ```ruby
     # setup test data
     func before():
@@ -231,58 +208,34 @@ It is not need to close the file (e.g. you forgot it to close), the GdUnit test 
 ```
 
 
-### resource_as_array
-Reads a resource by given path \<resource_path\> into an pooled string array.
+## resource_as_array()
+This function reads a resource file located at the given path *\<resource_path\>* and returns its contents as a PackedStringArray.
 
 ```ruby
     func resource_as_array(resource_path :String) -> PoolStringArray:
 ```
 
-Example:
-
+Here’s an example:
 ```ruby
-	var rows = ["row a", "row b"]
-	var file_content := resource_as_array("res://myproject/test/resources/TestRows.txt")
-	assert_array(rows).contains_exactly(file_content)
+    var rows = ["row a", "row b"]
+    var file_content := resource_as_array("res://myproject/test/resources/TestRows.txt")
+    assert_array(rows).contains_exactly(file_content)
 ```
 
 
-### resource_as_string
-Reads a resource by given path \<resource_path\> and returned the content as String.
+## resource_as_string()
+This function reads a resource file located at the given path \<resource_path\> and returned the content as String.
 
 ```ruby
     func resource_as_string(resource_path :String) -> String:
 ```
 
-Example:
-
+Here’s an example:
 ```ruby
-	var rows = "row a\nrow b\n"
-	var file_content := resource_as_string("res://myproject/test/resources/TestRows.txt")
-	assert_string(rows).is_equal(file_content)
+    var rows = "row a\nrow b\n"
+    var file_content := resource_as_string("res://myproject/test/resources/TestRows.txt")
+    assert_string(rows).is_equal(file_content)
 ```
 
-
-## Monitoring
 ---
-### Orphan Nodes or leaking Memory
-In Godot, objects that are not freed are called *orphan nodes*. When you start writing a test, you often have no way of knowing whether all of the objects you created were properly shared after the test was run.
-One helping tool is using **auto_free** to manage your object.
-
-GdUnit will help you by reporting detected orphan nodes for each test run in the status bar.
-A green icon indicates no orphan nodes detected and a red blinking icon warns you to have detected orphan nodes.
-
-![](/gdUnit4/assets/images/monitoring/orphan-nodes.png)
-
-Use the button to jump to the first orphan node to inspect.
-Orphan nodes are reported and marked in yellow for each test step as before(), before_test() and the test itself.
-
-I recommend checking your implementation if any orphan nodes are detected, follow the guide to fix.
-
-
-
-### Test Execution Time
-On the status bar at the bottom left the total elapsed execution time is shown.
-The execution time is messured to for each testsuite and testcase and can be read on each element in the tree inspector.
-
-![](/gdUnit4/assets/images/monitoring/execution-time.png)
+<h4> document version v4.1.0 </h4>
