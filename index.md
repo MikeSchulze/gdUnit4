@@ -4,7 +4,7 @@ title: Home
 ---
 
 ---
-## Note: Documentation is currently being updated
+![](\gdUnit4\assets\images\attention.png){:.centered}
 ## C# support is currently disabled and will be added in version 4.2.0.
 ---
 
