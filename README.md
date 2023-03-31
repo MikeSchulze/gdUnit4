@@ -26,43 +26,45 @@
 
 
 
-## What is GdUnit4
-GdUnit4 is a framework for testing GDScrips/C# and Scenes within the Godot editor. GdUnit4 is very useful for test-driven development and will help you get your code bug-free.
+## What is GdUnit4?
+**Gd**(*Godot*)**Unit**(*Unit Testing*)**4**(*Godot 4.x*)
+
+GdUnit4 is an embedded unit testing framework designed for testing Gd scripts, C# scripts, and scenes in the Godot editor. With GdUnit4, you can easily create and run unit tests to verify the functionality and performance of your code, ensuring that it meets your requirements and specifications.<br>
+GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://en.wikipedia.org/wiki/Test-driven_development)), a popular software development approach that emphasizes creating automated tests before writing any code. By using GdUnit4 for TDD, you can ensure that your code is thoroughly tested and free of bugs, which can save you time and effort in the long run.
 
 
-## Features
-* Fully embedded in the Godot editor
-* Run test-suite(s) by using the context menu on FileSystem, ScriptEditor or GdUnitInspector
-* Create tests directly from the ScriptEditor
-* Configurable template for the creation of a new test-suite
-* A spacious set of Asserts use to verify your code
-* Argument matchers to verify the behavior of a function call by a specified argument type.
-* Fluent syntax support
-* Test Fuzzing support
-* Parameterized Tests (Test Cases)
-* Mocking a class to simulate the implementation in which you define the output of the certain function
-* Spy on an instance to verify that a function has been called with certain parameters.
-* Mock or Spy on a Scene
-* Provides a scene runner to simulate interactions on a scene
-  * Simulate by Input events like mouse and/or keyboard
-  * Simulate scene processing by a certain number of frames
-  * Simulate scene processing by waiting for a specific signal
-* Update Notifier to install the latest version from GitHub
-* Command Line Tool
-* CI - Continuous Integration support
-  * generates HTML report
-  * generates JUnit report
-* Visual Studio Code extension
+## Main Features
+* Support for writing and executing tests in GdScript or C#
+* Embedded test Inspector in Godot for easy navigation of your test suites
+* Convenient interface for running test-suites directly from Godot<br>
+  One of the main features of GdUnit4 is the ability to run test-suites directly from the Godot editor using the context menu. You can run test-suites from the FileSystem panel, the ScriptEditor, or the GdUnit Inspector. To do this, simply right-click on the desired test-suite or test-case and select "Run Test(s)" from the context menu. This will run the selected tests and display the results in the GdUnit Inspector.<br>
+  You can create new test cases directly from the ScriptEditor by right-clicking on the function you want to test and selecting "Create TestCase" from the context menu.
+* Fluent syntax for writing test cases that's easy to read and understand
+* Configurable template for generating new test-suites when creating test-cases
+* Wide range of assertion methods for verifying the behavior and output of your code
+* Argument matchers for verifying that a function call was made with the expected arguments
+* Test Fuzzing support for generating random inputs to test edge cases and boundary conditions
+* Parameterized Tests (Test Cases) for testing functions with multiple sets of inputs and expected outputs
+* Mocking classes to simulate behavior and define output for specific functions
+* Spy feature for verifying that a function was called with the expected parameters
+* Mocking or spying on scenes to simulate behavior and verify that certain functions were called
+* Scene runner for simulating different kinds of inputs and actions, such as mouse clicks and keyboard inputs<br>
+  For example, you can simulate mouse clicks and keyboard inputs by calling the appropriate methods on the runner instance. Additionally, you can wait for a specific signal to be emitted by the scene, or you can wait for a specific function to return a certain value.
+* Automatic update notifier to install the latest version of GdUnit from GitHub
+* Command line tool for running tests outside of Godot editor
+* Visual Studio Code extension for additional features and integrations in managing and running tests
 ---
 
 
-## Short Example
+## Basic Test Example
  ```
- # this assertion succeeds
-assert_int(13).is_not_negative()
+class_name GdUnitExampleTest
+extends GdUnitTestSuite
 
-# this assertion fails because the value '-13' is negative
-assert_int(-13).is_not_negative()
+func test_example():
+  assert_str("This is a example message")\
+    .has_length(25)\
+    .starts_with("This is a ex")
  ```
 
  ---
@@ -81,10 +83,9 @@ assert_int(-13).is_not_negative()
 ---
 
 ### You are welcome to:
-  * [Give Feedback](https://github.com/MikeSchulze/gdUnit4/discussions/228)
-  * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=)
-  * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug%2C+task&template=bug_report.md&title=)
-
+  * [Give Feedback](https://github.com/MikeSchulze/gdUnit4/discussions/228) on the gdUnit GitHub Discussions page.
+  * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=) by creating a new feature request issue on the gdUnit GitHub Issues page.
+  * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug%2C+task&template=bug_report.md&title=)  by creating a new bug report issue on the gdUnit GitHub Issues page.
 
 
 <h1 align="center"></h1>
