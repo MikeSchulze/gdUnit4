@@ -6,21 +6,50 @@ nav_order: 1
 
 # Installation
 
-You have to install the GdUnit4 plugin over the AssetLib in the Godot Editor.
+GdUnit4 is a Godot plugin that needs to be installed before it can be used. To install GdUnit4, you can either use the AssetLib within the Godot application or manually download the latest build from the GdUnit4 GitHub repository and install it yourself.
+
+
+## Installing GdUnit4 from the AssetLib
+To install GdUnit4 from the AssetLib, please follow these steps:
+1. Open the AssetLib from the top menu bar in the Godot application.
+2. In the search bar, enter "GdUnit4".
+3. Select the GdUnit4 plugin from the search results.
 ![](/gdUnit4/assets/images/install/activate-gdunit-step0.png)
+4. Click on the "Download" button to download and install the plugin.
+5. Activate the plugin [follow this steps](/gdUnit4/first_steps/install/#activate-the-plugin)
 
-1. Select the tab AssetLib on the top
-2. Enter GdUnit4 in the search bar
-3. Select GdUnit4 and press the install button
 
-### Activate the plugin
+## Install the Latest Build from GitHub
+Please note that if you install this version, you will be working with a version that has not been officially released yet. The master branch contains the latest development state, and this version may contain bug fixes that have not yet been officially released. To install the latest build from GitHub, follow these steps:
 
+{% include advice.html
+content="Note that installing GdUnit4 from GitHub requires some technical knowledge and is recommended for advanced users. If you encounter any issues during the installation process, please refer to the GdUnit4 documentation or open an issue on the GitHub repository."
+%}
+
+To install the latest build from GitHub, follow these steps:
+1. Download the latest build from GitHub [here](https://github.com/MikeSchulze/gdUnit4/archive/refs/heads/master.zip).
+2. Disable the current GdUnit4 plugin if you have it installed.
+3. Delete the `addons/gdunit4` folder.
+4. Extract the downloaded package to the `addons` folder.
+
+
+
+## Activating the Plugin
+To activate the GdUnit4 plugin, follow these steps:
+1. Open your project settings by navigating to Project -> Project Settings.
 ![](/gdUnit4/assets/images/install/activate-gdunit-step1.png)
-1. Open your project settings by Project->Project Settings, click the Plugins tab and activate GdUnit.
-2. After activation the GdUnit4 inspector is displayed in the top left
-3. Done, GdUnit is ready to use
-
-### GdUnit4 Inspector
-After successful installation and activation you will find the GdUnit4 inspector on the left side.
+2. Click on the Plugins tab and find GdUnit4 in the list of plugins and click the checkbox to activate it.
 ![](/gdUnit4/assets/images/install/activate-gdunit-step2.png)
+3. Once activated, the GdUnit4 inspector will be displayed in the top left corner of the Godot Editor.
 
+Make sure to save your project settings after activating the plugin.
+
+
+## GdUnit4 Inspector
+After successfully installing and activating the GdUnit4 plugin, you will find the GdUnit4 inspector in the upper left corner of the Godot editor.
+* For detailed information about the inspector, please refer to the [GdUnit Inspector](/gdUnit4/faq/inspector/#the-gdunit-test-inspectorexplorer)
+![](/gdUnit4/assets/images/install/activate-gdunit-step3.png)
+
+
+---
+<h4> document version v4.1.0 </h4>

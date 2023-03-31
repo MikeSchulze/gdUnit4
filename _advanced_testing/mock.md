@@ -2,24 +2,23 @@
 layout: default
 title: Mocking
 parent: Advanced Testing
-nav_order: 2
+nav_order: 4
 ---
 
 # Mocking / Mocks
 
-## ***Mocking is current only supported for GdScripts!***
+## ***Note: Mocking is current only supported for GdScripts.***
 
+## Definition
+A mocked object is a dummy implementation of a class, in which you define the expected output of certain function calls. Mocked objects are configured to perform a specific behavior during testing, and they track all function calls and their parameters to the mocked object.
 
-### Definition
-A *mocked* object is a dummy implementation for an class in which you define the output of certain function calls. Mocked objects are configured to perform a certain behavior during a test and tracks all function calls and their parameters to the mocked object.
+This type of testing is sometimes referred to as behavior testing. Behavior testing does not check the result of a function call, but instead checks that a function is called with the correct parameters.
 
-This kind of testing is sometimes called behavior testing. Behavior testing does not check the result of a function call, but it checks that a function is called with the right parameters.
-
-For detailed info about mocks you have [to read](https://en.wikipedia.org/wiki/Mock_object)
+For more detailed information about mocks, [read this](https://en.wikipedia.org/wiki/Mock_object)
 
 ---
 
-Here an small example to mock the class `TestClass`.
+Here an small example to mock the class `TestClass`:
 {% tabs mock-example %}
 {% tab mock-example Example Class %}
 ```ruby
@@ -66,213 +65,263 @@ Here an small example to mock the class `TestClass`.
 
 ---
 
-### How to use a Mock
-To mock a class you only need to use **mock(\<class_name\>)** or **mock(\<resource_path\>)** to create a mocked object instance by given class name or path. A mocked instance is marked for auto free, you don't need to free it manually.
+## How to use a Mock
+To mock a class, you only need to use **mock(\<class_name\>)** or **mock(\<resource_path\>)** to create a mocked object instance using the given class name or path. A mocked instance is marked for auto-free, so you don't need to free it manually.
 
-To enable creation a mock by class name you have to defined the *class_name* in your class otherwise the class must be mock by resource path.
+If you want to create a mock by class name, you have to define the class_name in your class. Otherwise, the class must be mocked by resource path.
 ```ruby
-    # example class 
+    # Example class
     class_name TestClass
     extends Node
         ...
 ```
 ```ruby
-    # create a mocked instance of by class 'TestClass'
+    # Create a mocked instance of the class 'TestClass'
     var mock := mock(TestClass)
-    # or create by using the full resource path if no `class_name` defined
+    # Or create it by using the full resource path if no `class_name` is defined
     var mock := mock("res://project_name/src/TestClass.gd")
 ```
+You can also mock inner classes by using **mock(\<class_name\>)** with some preconditions.
 
-You can also mock inner classes by using **mock(\<class_name\>)** by some preconditions.
 
+## How and Why to Overwrite Functions
+With a mock, you can override a specific function to return custom values. This allows you to simulate a function and return an expected value without calling the actual implementation.
 
-### How and Why we overwrite functions
-With a mock you can override a specific function to return custom values.
-This allows you to simulate a function and return an expected value without calling the actual implementation.
+To override a function on your mocked class, use **do_return(\<value\>)** to specify the return value.
 
-To override a function on your mocked class use **do_return(\<value\>)** to specify the return value.
-#### Syntax
+<b>Syntax</b>
 `do_return(<value>)` `.on(<mock>)` `.<function([args])>)`
 
-First you have to define the return value, then the mock and finally the function you want to override.
+
+1. Mock your class.
+2. Define the return value.
+3. Override the function you want to mock using .on(<mock>) and .function_name([args]).
 ```ruby
+    # Create the mock
     var node := mock(Node) as Node
+    # Define the return value on the mock `node` for function `get_name` 
     do_return("NodeX").on(node).get_name()
 ```
 
-#### Example
+Here is an example:
 ```ruby
-    # create a mock from class `Node`
+    # Create a mock from class `Node`
     var mocked_node := mock(Node) as Node
 
-    # is return 0 by default
+    # It returns 0 by default
     mocked_node.get_child_count()
-    # override function `get_child_count` to return 10
+    # Override function `get_child_count` to return 10
     do_return(10).on(mocked_node).get_child_count()
-    # next call of `get_child_count` will now return 10
+    # The next call of `get_child_count` will now return 10
     mocked_node.get_child_count()
     
-    # is return 'null' by default
+    # It returns 'null' by default
     var node = mocked_node.get_child(0)
     assert_object(node).is_null()
     
-    # override function `get_child` to return a mocked 'Camera' for child index 0
+    # Override function `get_child` to return a mocked 'Camera' for child index 0
     do_return(mock(Camera)).on(mocked_node).get_child(0)
-    # and a mocked 'Area' for child index 1
+    # And a mocked 'Area' for child index 1
     do_return(mock(Area)).on(mocked_node).get_child(1)
     
-    # it returns now on indec 0 the Camera node
+    # It now returns the Camera node at index 0
     var node0 = mocked_node.get_child(0)
     assert_object(node0).is_instanceof(Camera)
-    # and on index 1 the Area node
+    # And the Area node at index 1
     var node1 = mocked_node.get_child(1)
     assert_object(node1).is_instanceof(Area)
 ```
 
 ---
 
-### Verification of function calls
-A mock keeps track of all the function calls and their arguments. Use **verify()** on the mock to verify that the specified conditions are met.
-This way you can check if a certain function is called and how often it was called.
+## Verification of Function Calls
+A mock keeps track of all the function calls and their arguments. Use **verify()** on the mock to check if a certain function is called and how often it was called.
 
 |Function |Description |
 |---|---|
-|[verify](/gdUnit4/advanced_testing/mock/#verify) | Verifies certain behavior happened at least once or exact number of times|
-|[verify_no_interactions](/gdUnit4/advanced_testing/mock/#verify_no_interactions) | Verifies no interactions is happen on this mock|
-|[verify_no_more_interactions](/gdUnit4/advanced_testing/mock/#verify_no_more_interactions) | Verifies the given mock has any unverified interaction|
-|[reset](/gdUnit4/advanced_testing/mock/#reset) | Resets the saved function call counters on a mock|
+|[verify](/gdUnit4/advanced_testing/mock/#verify) | Verifies that certain behavior happened at least once or an exact number of times.|
+|[verify_no_interactions](/gdUnit4/advanced_testing/mock/#verify_no_interactions) |Verifies that no interactions happened on the mock.|
+|[verify_no_more_interactions](/gdUnit4/advanced_testing/mock/#verify_no_more_interactions) | Verifies that the given mock has no unverified interactions.|
+|[reset](/gdUnit4/advanced_testing/mock/#reset) | Resets the saved function call counters on a mock.|
 
 
+* **verify**<br>
+    The verify() method is used to verify that a function was called a certain number of times. It takes two arguments: the mock instance and the expected number of times the function should have been called. You can also use argument matchers to verify that specific arguments were passed to the function.
 
-### verify_no_interactions
-Verifies no interactions is happen on this mock.
+    ```ruby
+        verify(<mock>, <times>).function(<args>)
+    ```
+    Here's an example:
+    ```ruby
+        var mocked_node :Node = mock(Node)
+        
+        # Verify we have no interactions currently on this instance
+        verify_no_interactions(mocked_node)
+        
+        # Call with different arguments
+        mocked_node.set_process(false) # 1 times
+        mocked_node.set_process(true) # 1 times
+        mocked_node.set_process(true) # 2 times
+        
+        # Verify how often we called the function with different argument 
+        verify(mocked_node, 1).set_process(false)# in sum one time with false
+        verify(mocked_node, 2).set_process(true) # in sum two times with true
 
-```ruby
-    verify_no_interactions(<mock>)
-```
-```ruby
-    var mocked_node := mock(Node) as Node
-    
-    # test we have initial no interactions on this mock
-    verify_no_interactions(mocked_node)
+        # Verify will fail because we expect the function `set_process(true)` to be called 3 times but it was only called 2 times
+        verify(mocked_node, 3).set_process(true)
+    ```
 
-    # interact by calling `get_name()`
-    mocked_node.get_name()
+* **verify_no_interactions**<br>
+    Verifies that no interactions happened on the mock.
 
-    # now this verification will fail because we have interacted on this mock
-    verify_no_interactions(mocked_node)
-```
+    ```ruby
+        verify_no_interactions(<mock>)
+    ```
+    Here's an example:
+    ```ruby
+        var mocked_node := mock(Node) as Node
+        
+        # Test that we have no initial interactions on this mock
+        verify_no_interactions(mocked_node)
 
-### verify_no_more_interactions
-Checks whether the specified mock has no further interaction.
+        # Interact by calling `get_name()`
+        mocked_node.get_name()
 
-If the mock has recorded more interactions than you verified with `verify()`, an error is reported.
+        # Now this verification will fail because we have interacted on this mock by calling `get_name`
+        verify_no_interactions(mocked_node)
+    ```
 
+* **verify_no_more_interactions**<br>
+    This method checks if the specified mock has any unverified interactions. If the mock has recorded more interactions than you verified with **verify()**, an error is reported.
 
-```ruby
-    verify_no_more_interactions(<mock>)
-```
-```ruby
-    var mocked_node := mock(Node) as Node
-    
-    # interact on two functions 
-    mocked_node.is_a_parent_of(null)
-    mocked_node.set_process(false)
-    # verify if interacts
-    verify(mocked_node).is_a_parent_of(null)
-    verify(mocked_node).set_process(false)
-    # finally we want to check no more interactions on this mock was happen
-    verify_no_more_interactions(mocked_node)
+    ```ruby
+        verify_no_more_interactions(<mock>)
+    ```
+    Here's an example:
+    ```ruby
+        var mocked_node := mock(Node) as Node
+        
+        # Interact on two functions 
+        mocked_node.is_a_parent_of(null)
+        mocked_node.set_process(false)
 
-    # simmulate a unexpected interaction on `set_process`
-    mocked_node.set_process(false)
-    # no the verify will fail because we have an interacted on `set_process(false)` where we not expected
-    verify_no_more_interactions(mocked_node)
-```
+        # Verify that the mock interacts as expected
+        verify(mocked_node).is_a_parent_of(null)
+        verify(mocked_node).set_process(false)
 
-### verify
-Verifies certain behavior happened at least once or exact number of times
+        # Check that there are no further interactions with the mock
+        verify_no_more_interactions(mocked_node)
 
-
-```ruby
-    verify(<mock>, <times>).function(<args>)
-```
-```ruby
-    var mocked_node :Node = mock(Node)
-    
-    # verify we have no interactions currently on this instance
-    verify_no_interactions(mocked_node)
-    
-    # call with different arguments
-    mocked_node.set_process(false) # 1 times
-    mocked_node.set_process(true) # 1 times
-    mocked_node.set_process(true) # 2 times
-    
-    # verify how often we called the function with different argument 
-    verify(mocked_node, 1).set_process(false)# in sum one time with false
-    verify(mocked_node, 2).set_process(true) # in sum two times with true
-
-    # verify will fail because we expect the function `set_process(true)` is called 3 times but was called 2 times
-    verify(mocked_node, 3).set_process(true)
-```
-
-### reset
-Resets the recorded function interactions of given mock.
-
-Sometimes we want to reuse an already created mock for different test scenarios and have to reset the recorded interactions. 
+        # Simulate an unexpected interaction with `set_process`
+        mocked_node.set_process(false)
+        
+        # Verify that there are no further interactions with the mock
+        # and that the previous unexpected interaction is detected (the test will fail here)
+        verify_no_more_interactions(mocked_node)
+    ```
+    In this example, the **verify_no_more_interactions()** method is used to check that no more interactions occur after the initial two interactions. The second call to **set_process(false)** is not expected and thus will result in a failure of the test.
 
 
-```ruby
-    reset(<mock>)
-```
-```ruby
-    var mocked_node :Node = mock(Node)
-    
-    # first testing interact on two functions 
-    mocked_node.is_a_parent_of(null)
-    mocked_node.set_process(false)
-    # verify if interacts,at this point two interactions are recorded
-    verify(mocked_node).is_a_parent_of(null)
-    verify(mocked_node).set_process(false)
+* **reset**<br>
+    Resets the recorded function interactions of the given mock.<br>
+    Sometimes we want to reuse an already created mock for different test scenarios and have to reset the recorded interactions.
 
 
-    # now we want to test a other scenario and we need to reset the current recorded interactions
-    reset(mocked_node)
-    # we verify the previously recorded interactions have been removed
-    verify_no_more_interactions(mocked_node)
+    ```ruby
+        reset(<mock>)
+    ```
+    Here's an example:
+    ```ruby
+        var mocked_node :Node = mock(Node)
+        
+        # First, we test by interacting with two functions 
+        mocked_node.is_a_parent_of(null)
+        mocked_node.set_process(false)
+        
+        # Verify if the interactions were recorded; at this point, two interactions are recorded
+        verify(mocked_node).is_a_parent_of(null)
+        verify(mocked_node).set_process(false)
 
-    # continue testing ..
-    mocked_node.set_process(true)
-    verify(mocked_node).set_process(true)
-    verify_no_more_interactions(mocked_node)
-```
+        # Now, we want to test a different scenario and we need to reset the current recorded interactions
+        reset(mocked_node)
+        # Verify that the previously recorded interactions have been removed
+        verify_no_more_interactions(mocked_node)
+
+        # Continue testing
+        mocked_node.set_process(true)
+        verify(mocked_node).set_process(true)
+        verify_no_more_interactions(mocked_node)
+    ```
 
 ---
 
-### Mock Working Modes 
-When creating a mock, you can specify the working mode that defines the return value handling of function calls for a mock.
+## Mock Working Modes
+When creating a mock, you can specify the working mode that defines the return value handling of function calls for a mock.<br>
+The available working modes are:
 
-* RETURN_DEFAULTS (default)
-* CALL_REAL_FUNC
-* RETURN_DEEP_STUB (not yet implemented!)
+* **RETURN_DEFAULTS** (default)<br>
+    This working mode returns default values for functions that have not been stubbed. For example, it returns null for functions that return objects and 0 for functions that return integers. You can use this mode if you only want to test specific interactions with the mock and do not care about the return values of other functions.
 
+    The default return values for various types are:
 
+    |Type| Default value|
+    |---|---|
+    | TYPE_NIL | null |
+    | TYPE_BOOL | false |
+    | TYPE_INT | 0 |
+    | TYPE_REAL | 0.0 |
+    | TYPE_STRING | "" |
+    | TYPE_VECTOR2 | Vector2.ZERO |
+    | TYPE_RECT2 | Rect2() |
+    | TYPE_VECTOR3 | Vector3.ZERO |
+    | TYPE_TRANSFORM2D | Transform2D() |
+    | TYPE_PLANE | Plane() |
+    | TYPE_QUAT | Quat() |
+    | TYPE_AABB | AABB() |
+    | TYPE_BASIS | Basis() |
+    | TYPE_TRANSFORM | Transform() |
+    | TYPE_COLOR | Color() |
+    | TYPE_NODE_PATH | NodePath() |
+    | TYPE_RID | RID() |
+    | TYPE_OBJECT | null |
+    | TYPE_DICTIONARY | Dictionary() |
+    | TYPE_ARRAY | Array() |
+    | TYPE_RAW_ARRAY | PackedByteArray() |
+    | TYPE_INT_ARRAY | PackedIntArray() |
+    | TYPE_REAL_ARRAY | PackedRealArray() |
+    | TYPE_STRING_ARRAY | PackedStringArray() |
+    | TYPE_VECTOR2_ARRAY | PackedVector2Array() |
+    | TYPE_VECTOR3_ARRAY | PackedVector3Array() |
+    | TYPE_COLOR_ARRAY | PackedColorArray() |
+    
+    You can customize these default values by configuring the mock object to return a different value for unconfigured function calls using the<br> 
+    `when(<mock>).<function>().thenReturn(<value>)` method.
+
+* **CALL_REAL_FUNC**<br>
+    This working mode calls the real function implementation instead of returning a default value. You can use this mode if you want to test the interaction between the mock and the real function implementation.
+
+* **RETURN_DEEP_STUB** (not yet implemented!)<br>
+    This working mode creates a deep stub for the mock object. It returns another mock object for every function call, allowing you to chain function calls on the mock object. You can use this mode if you want to test complex function interactions with the mock.
+
+It's important to choose the right working mode for your test scenario to ensure that you are testing the intended behavior of the system under test.
+
+Here's an example:
 {% tabs mock-modes %}
 {% tab mock-modes RETURN_DEFAULTS %}
 
-If *RETURN_DEFAULTS* is used, all unoverridden function calls return [default values](/gdUnit4/advanced_testing/mock/#default-values) for a mocked class.
+If *RETURN_DEFAULTS* is used, all functions will return [default values](/gdUnit4/advanced_testing/mock/#default-values) for a mocked class.
 
 ```ruby
     var mock := mock(TestClass) as TestClass
 
-    # returns a default value (for String an empty value)
+    # Returns a default value (for String an empty value)
     assert_str(mock.message()).is_equal("")
 
 ```
 {% endtab %}
 {% tab mock-modes CALL_REAL_FUNC %}
 
-If *CALL_REAL_FUNC* is used, all unoverridden function calls return the value provided by the real implementation for a mocked class.
+If *CALL_REAL_FUNC* is used, all functions will return the value provided by the real implementation for a mocked class.
 Helpful when you only want to mock partial functions of a class.
 
 ```ruby
@@ -307,56 +356,26 @@ Use to return a default value for build-in types or a fully mocked value for Obj
 {% endtab %}
 {% endtabs %}
 
-
-### Default Values
-Unconfigured function calls do return a *default* value for mock working mode **RETURN_DEFAULTS**
-
-|Type| default value|
-|---|---|
-| TYPE_NIL | null |
-| TYPE_BOOL | false |
-| TYPE_INT | 0 |
-| TYPE_REAL | 0.0 |
-| TYPE_STRING | "" |
-| TYPE_VECTOR2 | Vector2.ZERO |
-| TYPE_RECT2 | Rect2() |
-| TYPE_VECTOR3 | Vector3.ZERO |
-| TYPE_TRANSFORM2D | Transform2D() |
-| TYPE_PLANE | Plane() |
-| TYPE_QUAT | Quat() |
-| TYPE_AABB | AABB() |
-| TYPE_BASIS | Basis() |
-| TYPE_TRANSFORM | Transform() |
-| TYPE_COLOR | Color() |
-| TYPE_NODE_PATH | NodePath() |
-| TYPE_RID | RID() |
-| TYPE_OBJECT | null |
-| TYPE_DICTIONARY | Dictionary() |
-| TYPE_ARRAY | Array() |
-| TYPE_RAW_ARRAY | PoolByteArray() |
-| TYPE_INT_ARRAY | PoolIntArray() |
-| TYPE_REAL_ARRAY | PoolRealArray() |
-| TYPE_STRING_ARRAY | PoolStringArray() |
-| TYPE_VECTOR2_ARRAY | PoolVector2Array() |
-| TYPE_VECTOR3_ARRAY | PoolVector3Array() |
-| TYPE_COLOR_ARRAY | PoolColorArray() |
-
 ---
 
-### Argument Matchers and mocks
-To simplify the verification of function calls, you can use an argument matcher.
-This allows you to verify function calls by a specific type or class argument.
+## Argument Matchers and mocks
+Argument matchers allow you to simplify the verification of function calls by verifying function arguments based on their type or class. This is particularly useful when working with mocks because you can use argument matchers to verify function calls without specifying the exact argument values.
+
+For example, instead of verifying that a function was called with a specific boolean argument value, you can use the **any_bool()** argument matcher to verify that the function was called with any boolean value. Here's an example:
 
 
 ```ruby
     var mocked_node :Node = mock(Node)
     
-    # call with different arguments
-    mocked_node.set_process(false) # 1 times
-    mocked_node.set_process(true) # 1 times
-    mocked_node.set_process(true) # 2 times
+    # Call the function with different arguments
+    mocked_node.set_process(false) # Called 1 time
+    mocked_node.set_process(true) # Called 1 time
+    mocked_node.set_process(true) # Called 2 times
     
-    # verify how often we called the function with a boolean argument
+    # Verify that the function was called with any boolean value 3 times
     verify(mocked_node, 3).set_process(any_bool())
 ```
-For more details please show at [Argument Matchers](/gdUnit4/advanced_testing/argument_matchers)
+For more details on how to use argument matchers, please see the [Argument Matchers](/gdUnit4/advanced_testing/argument_matchers) section.
+
+---
+<h4> document version v4.1.0 </h4>

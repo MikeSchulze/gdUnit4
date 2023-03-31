@@ -1,28 +1,32 @@
 ---
 layout: default
 title: TestSuite
-nav_order: 1
+nav_order: 3
 ---
 
 # TestSuite
 
 ## Definition
-A TestSuite is a collection of tests basically alligned to a class you want to test.<br>
-When writing tests, it is common to find that several tests need similar test data to created before and cleanup after test run.<br>
-GdUnit TestSuite runs in execution stages (hooks) where you allow to define preinitalisized test data.
+A TestSuite is a collection of tests that are aligned to a specific class or module that you want to test. When writing tests, it is common to find that several tests require similar test data to be created before and cleaned up after the test run. GdUnit TestSuites allow you to define pre-initialized test data and cleanup functions that will be executed at specific points during test execution.
+
+In addition to containing multiple test cases, a TestSuite can also contain setup and teardown functions that are executed before and after each test case, as well as before and after the entire TestSuite. This allows you to control the test environment and ensure that tests are executed in a consistent and repeatable manner.
+
+
+## TestSuite Hooks
+GdUnit TestSuites provide the following hooks that allow you to control the test environment. GdUnit4 allows you to use asserts within these stages, and any errors that occur will be reported.
 
 {% tabs faq-TestSuite-stages %}
 {% tab faq-TestSuite-stages GdScript %}
-GdUnit use predefined functions to define the execution stages.<br>
-To define a test you have to use the prefix `test_` e.g. `test_verify_is_string`
+GdUnit uses predefined functions to define the execution stages.<br>
+To define a test, you must use the prefix `test_`, e.g. `test_verify_is_string`.
 
 |Stage|Description|
 |---| ---|
-|before | executed only once at TestSuite run is started|
-|after | executed only once at TestSuite run has finished|
-|before_test | executed before each test is started|
-|after_test | executed after each test has finished|
-|test_<name> | executes the test content|
+| before        | executed only once at the start of the TestSuite run        |
+| after         | executed only once at the end of the TestSuite run          |
+| before_test   | executed before each test is started                        |
+| after_test    | executed after each test has finished                       |
+| test_<name>   | executes the test content, where `<name>` is the test name  |
 {% endtab %}
 {% tab faq-TestSuite-stages C# %}
 GdUnit use attributes to define the execution stages and tests.<br>
@@ -30,19 +34,18 @@ All GdUnit attributes are contained in the `namespace GdUnit4`
 
 |Stage|Description|
 |---| ---|
-|[Before] | executed only once at TestSuite run is started|
-|[After] | executed only once at TestSuite run has finished|
-|[BeforeTest] | executed before each test is started|
-|[AfterTest] | executed after each test has finished|
-|[TestCase] | executes the test content|
+|[Before]     | executed only once at the start of the TestSuite run |
+|[After]      | executed only once at the end of the TestSuite run   |
+|[BeforeTest] | executed before each test is started                 |
+|[AfterTest]  | executed after each test has finished                |
+|[TestCase]   | executes the test content                            |
 {% endtab %}
 {% endtabs %}
 
 ---
 
-## Stage *before*
-This stage is executed only once at the beginning of a TestSuite execution.<br>
-GdUnit4 allows to use asserts within this stage, occurring errors are reported.
+## The stage *before*
+This function is executed once at the beginning of the TestSuite and is used to set up any resources or data that will be required by all of the test cases in the suite. For example, if you need to create a database connection or initialize a global configuration object, you would do so in this function.
 
 {% tabs faq-TestSuite-before %}
 {% tab faq-TestSuite-before GdScript %}
@@ -86,8 +89,8 @@ namespace ExampleProject.Tests
 {% endtabs %}
 
 {% include advice.html 
-content="If you create objects in the <b>Before</b> stage, you must release the object at the end in the <b>After</b> stage, otherwise, the object is reported as an orphan node.<br>
-Alternatively, you can use the tool <b>auto_free()</b>,  the object is automatically freed at <b>After</b> stage."
+content="If you create objects in the <b>before</b> stage, you must release the object at the end in the <b>after</b> stage, otherwise, the object is reported as an orphan node.<br>
+Alternatively, you can use the tool <b>auto_free()</b>,  the object is automatically freed at <b>after</b> stage."
 %}
 {% tabs faq-TestSuite-before %}
 {% tab faq-TestSuite-before GdScript %}
@@ -129,8 +132,7 @@ namespace ExampleProject.Tests
 ---
 
 ## Stage *after*
-This stage is executed only once at the end of a TestSuite execution.<br>
-GdUnit4 allows to use asserts within this stage, occurring errors are reported.
+This function is executed once at the end of the TestSuite and is used to clean up any resources or data that was created or modified during the test run. For example, if you need to close a database connection or delete temporary files, you would do so in this function.
 
 {% tabs faq-TestSuite-after %}
 {% tab faq-TestSuite-after GdScript %}
@@ -176,8 +178,7 @@ namespace ExampleProject.Tests
 ---
 
 ## Stage *before_test*
-This stage is executed before each TestCase.<br>
-GdUnit4 allows to use asserts within the this stage, occurring errors are reported.
+This function is executed before each test case and is used to set up any resources or data that are required by the test case. For example, if you need to create a temporary file or initialize a class instance, you would do so in this function.
 
 {% tabs faq-TestSuite-before_test %}
 {% tab faq-TestSuite-before_test GdScript %}
@@ -263,8 +264,7 @@ namespace ExampleProject.Tests
 ---
 
 ## Stage *after_test*
-This stage is executed after each TestCase.<br>
-GdUnit4 allows to use asserts within the this stage, occurring errors are reported.
+This function is executed after each test case and is used to clean up any resources or data that were created or modified during the test case. For example, if you need to delete a temporary file or close a network connection, you would do so in this function.
 
 {% tabs faq-TestSuite-after_test %}
 {% tab faq-TestSuite-after_test GdScript %}
@@ -304,57 +304,61 @@ namespace ExampleProject.Tests
 
 ---
 
-## The execution graph of an TestSuite execution
+## The Execution Graph of a TestSuite Execution
 
 {% tabs faq-TestSuite-overview %}
 {% tab faq-TestSuite-overview GdScript %}
 ```ruby
  (Run)
-   |- func before() -> void: # init the TestSuite
+   |- func before() -> void: # Initialize the TestSuite
    |    ...
    |
-   [...] # loops over all tests
+   [...] # Loops over all tests
       |     
-      |- func before_test() -> void: # init next TestCase
+      |- func before_test() -> void: # Initialize next TestCase
       |    ...
       |
       >--- 
-         | func test_1() -> void: # execute TestCase (1-n iterations)
+         | func test_1() -> void: # Execute TestCase (1-n iterations)
          |   ...
       <---
       |  
-      |- func after_test() -> void: # clean-up current TestCase finished
+      |- func after_test() -> void: # Clean up current TestCase finished
       |     ...
    [...]
    |   
-   | - func after() -> void: # clean-up TestSuite finished
+   |- func after() -> void: # Clean up TestSuite finished
    |      ....
- (END)
+ (End)
 ```
 {% endtab %}
 {% tab faq-TestSuite-overview C# %}
 ```cs
  (Run)
-   |- [Before] // init the TestSuite
+   |- [Before] // Initialize the TestSuite
    |  public void Setup() {}
    |
-   [...] // loops over all tests
+   [...] // Loops over all tests
       |     
-      |- [BeforeTest] // init next TestCase
+      |- [BeforeTest] // Initialize next TestCase
       |  public void SetupTest() {}
       |
       >--- 
-         | [TestCase] // execute TestCase (1-n iterations)
+         | [TestCase] // Execute TestCase (1-n iterations)
          | public void TestCase1() {}
       <---
       |  
-      |- [AfterTest] // clean-up current TestCase finished
+      |- [AfterTest] // Clean up current TestCase finished
       |  public void TearDownTest() {}
    [...]
    |   
-   | - [After] // clean-up TestSuite finished
+   |- [After] // Clean up TestSuite finished
    |   public void TearDownSuite() {}
- (END)
+ (End)
+
 ```
 {% endtab %}
 {% endtabs %}
+
+---
+<h4> document version v4.1.0 </h4>

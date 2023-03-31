@@ -11,6 +11,25 @@ One helping tool is using **auto_free** to manage your object.
 
 ---
 
+
+## Monitoring
+---
+## Orphan Nodes or leaking Memory
+In Godot, objects that are not freed are called *orphan nodes*. When you start writing a test, you often have no way of knowing whether all of the objects you created were properly shared after the test was run.
+One helping tool is using **auto_free** to manage your object.
+
+GdUnit will help you by reporting detected orphan nodes for each test run in the status bar.
+A green icon indicates no orphan nodes detected and a red blinking icon warns you to have detected orphan nodes.
+
+![](/gdUnit4/assets/images/monitoring/orphan-nodes.png)
+
+Use the button to jump to the first orphan node to inspect.
+Orphan nodes are reported and marked in yellow for each test step as before(), before_test() and the test itself.
+
+I recommend checking your implementation if any orphan nodes are detected, follow the guide to fix.
+
+
+
 ### How to fix detected orphan nodes
 With GdUnit you can easily identify orphaned nodes, these are marked as WARNING in the GdUnit inspector.
 I recommend repairing any orphaned nodes discovered to make sure your project does not leak memory over time.
