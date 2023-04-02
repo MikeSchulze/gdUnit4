@@ -5,134 +5,128 @@ parent: Advanced Testing
 nav_order: 7
 ---
 
-# Orphan Nodes or leaking Memory
-In Godot, objects that are not freed are called *orphan nodes*. When you start writing a test, you often have no way of knowing whether all of the objects you created were properly shared after the test was run.
-One helping tool is using **auto_free** to manage your object.
+# Orphan Nodes or Leaking Memory
+When developing in Godot, it's important to ensure that objects are properly freed, otherwise they become orphan nodes that can lead to memory leaks. This is especially important when writing tests, where you may not know if all objects created during the test have been properly freed.
+
+One helpful tool for managing objects is to use the [**auto_free**](/gdUnit4/advanced_testing/tools/#auto_free) function.
 
 ---
 
 
 ## Monitoring
+GdUnit helps you monitor for orphan nodes by reporting any detected orphan nodes for each test run in the status bar. If no orphan nodes are detected, a green icon is displayed, but if orphan nodes are detected, a red blinking icon warns you.
+
+![](/gdUnit4/assets/images/monitoring/orphan-nodes.png){:.centered}
+
+
+You can use the button to jump to the first orphan node to inspect it. Orphan nodes are reported and marked in yellow for each test step, including **before()**, **before_test()**, and the test itself.
+
+{% include advice.html
+content="If any orphan nodes are detected, I recommend reviewing your implementation to find and fix the issue."
+%}
+
 ---
-## Orphan Nodes or leaking Memory
-In Godot, objects that are not freed are called *orphan nodes*. When you start writing a test, you often have no way of knowing whether all of the objects you created were properly shared after the test was run.
-One helping tool is using **auto_free** to manage your object.
-
-GdUnit will help you by reporting detected orphan nodes for each test run in the status bar.
-A green icon indicates no orphan nodes detected and a red blinking icon warns you to have detected orphan nodes.
-
-![](/gdUnit4/assets/images/monitoring/orphan-nodes.png)
-
-Use the button to jump to the first orphan node to inspect.
-Orphan nodes are reported and marked in yellow for each test step as before(), before_test() and the test itself.
-
-I recommend checking your implementation if any orphan nodes are detected, follow the guide to fix.
 
 
-
-### How to fix detected orphan nodes
-With GdUnit you can easily identify orphaned nodes, these are marked as WARNING in the GdUnit inspector.
-I recommend repairing any orphaned nodes discovered to make sure your project does not leak memory over time.
+## How to Fix Detected Orphan Nodes in Godot
+With GdUnit, you can easily identify orphaned nodes that are marked as WARNING in the GdUnit inspector. It is important to fix any orphaned nodes that are discovered to ensure that your project does not leak memory over time.
 
 
-### How do I recognize orphan nodes in my code?
-Finding the code location where the orphaned nodes are located is a little difficult and often time consuming.
+### How to Recognize Orphan Nodes in Your Code
+Finding the code location where the orphaned nodes are located can be a little difficult and often time-consuming. If you are not an expert and have no idea what the problem is, we recommend a step-by-step approach to find and fix orphan nodes. 
 
-If you are not an expert and have no idea what the problem is, I recommend a step-by-step approach.
-
-Here an small example of an class with an orphan node.
-
+Here is a small example of a class with an orphan node:
 ```ruby
-  class_name MyTestClass
-  extends Resource
+  class_name TestOrpahnDetection
+  extends GdUnitTestSuite
+  @warning_ignore('unused_parameter')
+  @warning_ignore('return_value_discarded')
 
 
-  class PathX extends Path:
-    var _valid :bool
+  class MyClass extends Node:
+    var orphan_node = null
     
     func _init():
-      _valid = false
-      
-    func validate() -> PathX:
-      _valid = true
-      return self
-
-  var _path : PathX = PathX.new()
-
-  func calculate_path() -> Path:
-    return _path.validate()
-```
+      orphan_node = Node.new()
 
 
-And a small test
-```ruby
-  class_name MyTes
-  extends GdUnitTestSuite
-
-
-  func test_get_pathx():
-    var t := DeepStubTestClass.new()
+  func test_orphan_detected():
+    var t := MyClass.new()
     assert_object(t).is_not_null()
-    assert_object(t.get_pathx()).is_instanceof(DeepStubTestClass.PathX)
 ```
-
-
-After test run the test ends with success but it has detects one orphan node.
+When we execute the testcase `test_orphan_detected` we will see no failures but it ends with warnings by detect two orphan node.
 
 ![](/gdUnit4/assets/images/monitoring/orphan_nodes_example.png)
 
-Now you can review your implementation, if you don't know where the orphaned node is, take it step by step.
-Means to comment out line by line or a series of lines and run the test again. 
+The orphan_node in the class `MyClass` is not being used or referenced elsewhere, so it will become an orphan node when the instance of MyClass is destroyed.
+Also, the instance of `t` is referenced elsewhere and is not finally released.
+
+
+### How to Fix Orphan Nodes Step by Step
+
+
+**Step One: Fix your Testcase**<br>
+To fix orphan nodes, it is important to ensure that all nodes used in a test case are covered by the [**auto_free**](/gdUnit4/advanced_testing/tools/#auto_free) function. When the test case is finished, **auto_free** will free the instance automatically.
+
+**auto_free** is a GdUnit function that automatically adds the object to the GdUnit object registry and calls free on the object when the test case ends. This ensures that any nodes created during the test case are cleaned up properly.
+
+Here is an example of how to fix the test case from the previous section:
 ```ruby
-  func test_get_pathx():
-    var t := DeepStubTestClass.new()
+  class_name TestOrpahnDetection
+  extends GdUnitTestSuite
+  @warning_ignore('unused_parameter')
+  @warning_ignore('return_value_discarded')
+
+
+  class MyClass extends Node:
+    var orphan_node = null
+    
+    func _init():
+      orphan_node = Node.new()
+
+
+  func test_orphan_detected():
+    var t :MyClass = auto_free(MyClass.new())
     assert_object(t).is_not_null()
-    #assert_object(t.get_pathx()).is_instanceof(DeepStubTestClass.PathX)
 ```
+We added the **auto_free** around the instantiation of MyClass to register the automatic release after the test execution.
 
-Try again after the orphaned node is rediscovered.
+
+If we run the `test_orphan_detected` test case again, we will see that we have fixed an orphaned node, but there is still one present.
+![](/gdUnit4/assets/images/monitoring/orphan_nodes_example_step2.png)
+
+The orphan_node in the class `MyClass` is not being used or referenced elsewhere, so it will become an orphan node when the instance of MyClass is destroyed.
+
+
+
+**Step Two: Fix the orphan node inside of MyClass**<br>
+We need to fix the class `MyClass` now to ensure the node `orphan_node` will be released.<br>
+The best way to fix orphan nodes is to ensure that all nodes are added as children of a parent node. When a parent node is freed, all of its child nodes are also freed. 
+
+Here is an example of how to fix the MyClass example above:
 ```ruby
-  func test_get_pathx():
-    var t := DeepStubTestClass.new()
-    #assert_object(t).is_not_null()
-    #assert_object(t.get_pathx()).is_instanceof(DeepStubTestClass.PathX)
+  class_name TestOrpahnDetection
+  extends GdUnitTestSuite
+  @warning_ignore('unused_parameter')
+  @warning_ignore('return_value_discarded')
+
+
+  class MyClass extends Node:
+    var orphan_node = null
+    
+    func _init():
+      orphan_node = Node.new()
+      add_child(orphan_node)
+
+
+  func test_orphan_detected():
+    var t :MyClass = auto_free(MyClass.new())
+    assert_object(t).is_not_null()
 ```
-
-Since only one line is now active, the error must be located in the constructor.
-Ok let us check the constructor.
-
-The class *MyTestClass* has no cunstructor, you miss the _init() function?
-
-This means that the class has a default constructor and we are not making a mistake here.
-
-So let take a deeper look on the used member variables.
-```ruby
-  ...
-  var _path : PathX = PathX.new()
-
-  func calculate_path() -> Path:
-    return _path.validate()
-```
-
-
-Here we assign a variable with an instance of XPath. The XPath class inherits from a Path where also inherits from a Node.
-A Node is not a reference that is automatically released when it is no longer used (I recomment to read the offical Godot documentation about References vs Objects).
-
-Looks like we've found the problem, but how to fix it?
-
-The example class inherits from a Resource, which implicitly means that all resources should be automatically freed.
-
-We have to now to override the *_notification* func where is called when a resource is freed.
-
-```ruby
-  func _notification(what):
-          # we notified for freeing your resources
-    if what == NOTIFICATION_PREDELETE:
-                  # check if _path a valid object (not already freed)
-      if _path:
-        _path.free()
-```
+In this fixed version of MyClass, the orphan_node is added as a child of a parent_node. When the instance of MyClass is destroyed, the parent_node and orphan_node will also be freed.
 
 Rerun your test and you see the orpahn nodes is fixed.
+![](/gdUnit4/assets/images/monitoring/orphan_nodes_example_step2.png)
 
-Finally activate the commented-out lines and run the test again.
+---
+<h4> document version v4.1.0 </h4>
