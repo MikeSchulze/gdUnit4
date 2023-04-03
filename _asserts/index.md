@@ -117,6 +117,21 @@ namespace ExampleProject.Tests
 {% endtabs %}
 
 
+## How to override the failure messages
+GdUnit generates the failure report based on the used assert, according to the scheme expected vs current value.
+By default each assert generates his own specific failure message when the assertion is failing.
+If you want to override you can use the **override_failure_message** function to report a custom failure.
+
+
+```ruby
+    func test_custom_failure_message() -> void:
+        assert_str("Hello World")\
+            # we do override the default failure message to report a custom failure here
+            .override_failure_message("This is a customized failure message!")\
+            # let the test fail
+            .is_empty()
+```
+
 ---
 
 ## The Generic Assert
