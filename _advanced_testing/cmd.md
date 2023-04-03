@@ -7,9 +7,10 @@ nav_order: 8
 
 # Command Line Tool
 
-### GdUnit4 Command Line Tool
-GdUnit4 provides a tool that allows you to run a specific set of test suites and tests from the command line.
-The tool is named `runtest.sh` for linux/macos and `runtest.cmd` for windows and is located in the **project folder** and provides a set of commands.
+## The GdUnit Command Line Tool
+GdUnit4 provides a command line tool named `res://addons/gdUnit4/bin/GdUnitCmdTool.gd` that allows you to run a specific set of test suites and tests from the command line. The tool provides a set of commands that can be used to control the execution of tests.
+You can use the provided scripts `addons/gdunit4/runtest.sh` for linux/macos and `addons/gdunit4/runtest.cmd` for windows to execute the tool.
+
 To get an overview of the available commands, execute it with the command `-help`.
 
 
@@ -39,7 +40,7 @@ To get an overview of the available commands, execute it with the command `-help
      -conf [testconfiguration.cfg]
 ```
 
-### Preconditions to run on Windows 10
+## Preconditions to run on Windows 10
 - Setup test environment as follow
 
   Add the environment variable `GODOT_BIN` by open a termial and enter the command.
@@ -63,7 +64,7 @@ To get an overview of the available commands, execute it with the command `-help
 Now you can run your tests by `runtest [cmd]`
 
 
-### Preconditions to run on MacOS
+## Preconditions to run on MacOS
 - setup test environment as follow
   
   Add the environment variable `GODOT_BIN` by open a termial and enter the command.
@@ -120,7 +121,7 @@ By default, the last 20 reports are saved, older reports are automatically delet
 
 See next section.
 
-### Advanced Options
+## Advanced Options
 You can control the created reports by advanced options.
 
 ```
@@ -135,7 +136,7 @@ You can control the created reports by advanced options.
 To get an overview of all advaced options use `--help-advanced`.
 
 
-### Return Codes
+## Return Codes
 The tool ends with a certain return code, where you can check if the tests were completed successfully.
 ```
 0   = all tests success
@@ -143,27 +144,29 @@ The tool ends with a certain return code, where you can check if the tests were 
 101 = ends with test warnings
 ```
 
-### The Report
+## The Report
 The GdUnit command line tool generates a modern HTML and JUnit report with which you can quickly get an overview of the executed tests. 
 You can find the reports in the report folder as:
 - index.htm - the HTML report
 - results.xml - the [JUnit report](https://www.ibm.com/docs/en/developer-for-zos/14.1.0?topic=formats-junit-xml-format){:target="_blank"}
 
 
-#### The HTML report
+### The HTML report
 ![](/gdUnit4/assets/images/reports/GdUnit3Report-main.png)
 
 
-### Report by Path
+## Report by Path
 You can switch between the full list of executed test-suites or the view collected by paths.
 ![](/gdUnit4/assets/images/reports/GdUnit3Report-sort-by-path.png)
 If you click on a test-suite you can view the report for a specific test-suite.
 
-### Select a Testsuite Report
+## Select a Testsuite Report
 By further selecting the test cases, the test errors can be viewed in the "Failure Report" window.
 ![](/gdUnit4/assets/images/reports/GdUnit3Report-failure-report.png)
 
-### Logging
+## Logging
 If logging is enabled in your project, the report saves the current log and can be viewed by clicking `Logging`.
 ![](/gdUnit4/assets/images/reports/GdUnit3Report-logging.png)
 
+---
+<h4> document version v4.1.0 </h4>
