@@ -35,7 +35,7 @@ The default timeout of 2s can be overridden by wait_until(<time in ms>)
 ---
 ## Signal Assert Examples
 
-### is_emitted
+## is_emitted
 Waits until the given signal is emitted or the timeout occures and fails
 {% tabs assert-signal-is_emitted %}
 {% tab assert-signal-is_emitted GdScript %}
@@ -44,7 +44,7 @@ Waits until the given signal is emitted or the timeout occures and fails
 ```
 ```ruby
     # waits until the signal "door_opened" is emitted by the instance or fails after default timeout of 2s
-    yield(assert_signal(instance).is_emitted("door_opened"), "completed")
+    await assert_signal(instance).is_emitted("door_opened")
 ```
 {% endtab %}
 {% tab assert-signal-is_emitted C# %}
@@ -61,7 +61,7 @@ Waits until the given signal is emitted or the timeout occures and fails
 {% endtabs %}
 
 
-### is_not_emitted
+## is_not_emitted
 Waits until the specified timeout to check if the signal was NOT emitted
 {% tabs assert-signal-is_not_emitted %}
 {% tab assert-signal-is_not_emitted GdScript %}
@@ -70,7 +70,7 @@ Waits until the specified timeout to check if the signal was NOT emitted
 ```
 ```ruby
     # waits until 2s and verifies the signal "door_locked" is not emitted
-    yield(assert_signal(instance).is_not_emitted("door_locked"), "completed")
+    await assert_signal(instance).is_not_emitted("door_locked")
 ```
 {% endtab %}
 {% tab assert-signal-is_not_emitted C# %}
@@ -87,7 +87,7 @@ Waits until the specified timeout to check if the signal was NOT emitted
 {% endtabs %}
 
 
-### is_signal_exists
+## is_signal_exists
 Verifies if the signal exists on the emitter.
 {% tabs assert-signal-is_signal_exists %}
 {% tab assert-signal-is_signal_exists GdScript %}
@@ -111,7 +111,7 @@ Verifies if the signal exists on the emitter.
 {% endtabs %}
 
 
-### wait_until
+## wait_until
 Sets the timeout in ms to wait.
 {% tabs assert-signal-wait_until %}
 {% tab assert-signal-wait_until GdScript %}
@@ -120,7 +120,7 @@ Sets the timeout in ms to wait.
 ```
 ```ruby
     # waits until 5s the signal "door_closed" is emitted or fail
-    yield(assert_signal(instance).wait_until(5000).is_emitted("door_closed"), "completed")
+    await assert_signal(instance).wait_until(5000).is_emitted("door_closed")
 ```
 {% endtab %}
 {% tab assert-signal-wait_until C# %}
