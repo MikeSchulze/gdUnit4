@@ -2,7 +2,7 @@
 layout: default
 title: Fuzzing
 parent: Advanced Testing
-nav_order: 3
+nav_order: 2
 ---
 
 # Testing with Fuzzers

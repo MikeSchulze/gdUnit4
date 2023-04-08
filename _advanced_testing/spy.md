@@ -2,7 +2,7 @@
 layout: default
 title: Spying
 parent: Advanced Testing
-nav_order: 5
+nav_order: 4
 ---
 
 # Spy
