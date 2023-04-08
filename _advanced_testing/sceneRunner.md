@@ -697,7 +697,7 @@ Here is an example of how to use AwaitSignal:
 {% endtabs %}
 
 ### await_signal_on
-The **await_signal_on** function waits for the return value of a specified function until a specified timeout or fails.
+The **await_signal_on** function allows you to wait for a specified signal to be emitted by a specified source, until a given timeout is reached.
 
 {% tabs scene-runner-await_signal_on %}
 {% tab scene-runner-await_signal_on GdScript %}
