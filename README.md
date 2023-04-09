@@ -33,6 +33,14 @@ GdUnit4 is an embedded unit testing framework designed for testing Gd scripts, C
 GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://en.wikipedia.org/wiki/Test-driven_development)), a popular software development approach that emphasizes creating automated tests before writing any code. By using GdUnit4 for TDD, you can ensure that your code is thoroughly tested and free of bugs, which can save you time and effort in the long run.
 
 
+> __Note__
+>
+>  ${\Large\color{red}CSharp\ support\ is\ currently\ disabled\ and\ will\ be\ reimplement\ with\ V4.2.0!}$
+>
+
+
+
+
 ## Main Features
 * Support for writing and executing tests in GdScript or C#
 * Embedded test Inspector in Godot for easy navigation of your test suites
