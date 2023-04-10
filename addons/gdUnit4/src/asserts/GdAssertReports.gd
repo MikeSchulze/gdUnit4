@@ -10,7 +10,7 @@ static func report_success(_line_number :int) -> void:
 	Engine.remove_meta(LAST_ERROR)
 
 
-static func report_warning( message :String, line_number :int) -> void:
+static func report_warning(message :String, line_number :int) -> void:
 	GdUnitSignals.instance().gdunit_set_test_failed.emit(false)
 	send_report(GdUnitReport.new().create(GdUnitReport.WARN, line_number, message))
 

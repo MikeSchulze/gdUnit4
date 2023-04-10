@@ -9,7 +9,6 @@ var _current_value_provider :ValueProvider
 var _current_error_message :String = ""
 var _custom_failure_message :String = ""
 var _line_number := -1
-var _expect_fail := false
 var _is_failed := false
 var _timeout := DEFAULT_TIMEOUT
 var _expect_result :int
@@ -24,9 +23,8 @@ func _init(instance :Object, func_name :String, args := Array(), expect_result :
 	_line_number = GdUnitAssertImpl._get_line_number()
 	_expect_result = expect_result
 	GdAssertReports.reset_last_error_line_number()
-	# we expect the test will fail
 	if expect_result == EXPECT_FAIL:
-		_expect_fail = true
+		GdAssertReports.expect_fail(true)
 	# verify at first the function name exists
 	if not instance.has_method(func_name):
 		report_error("The function '%s' do not exists checked instance '%s'." % [func_name, instance])
@@ -52,8 +50,8 @@ func report_success() -> GdUnitAssert:
 
 
 func report_error(error_message :String) -> GdUnitAssert:
-	var failure_message := error_message if _custom_failure_message == "" else _custom_failure_message
-	GdAssertReports.report_error(failure_message, _line_number)
+	_current_error_message = error_message if _custom_failure_message == "" else _custom_failure_message
+	GdAssertReports.report_error(_current_error_message, _line_number)
 	return self
 
 
@@ -65,7 +63,6 @@ func send_report(report :GdUnitReport)-> void:
 func has_failure_message(expected: String) -> GdUnitFuncAssert:
 	var current_error := GdUnitAssertImpl._normalize_bbcode(_current_error_message)
 	if current_error != expected:
-		_expect_fail = false
 		var diffs := GdDiffTool.string_diff(current_error, expected)
 		var current := GdAssertMessages._colored_array_div(diffs[1])
 		_custom_failure_message = ""
@@ -76,7 +73,6 @@ func has_failure_message(expected: String) -> GdUnitFuncAssert:
 func starts_with_failure_message(expected: String) -> GdUnitFuncAssert:
 	var current_error := GdUnitAssertImpl._normalize_bbcode(_current_error_message)
 	if not current_error.begins_with(expected):
-		_expect_fail = false
 		var diffs := GdDiffTool.string_diff(current_error, expected)
 		var current := GdAssertMessages._colored_array_div(diffs[1])
 		_custom_failure_message = ""
