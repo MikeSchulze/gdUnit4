@@ -47,13 +47,14 @@ func _notification(_what):
 
 
 func report_success() -> GdUnitAssert:
-	return GdAssertReports.report_success(self)
+	GdAssertReports.report_success(_line_number)
+	return self
 
 
 func report_error(error_message :String) -> GdUnitAssert:
-	if _custom_failure_message == "":
-		return GdAssertReports.report_error(error_message, self, _line_number)
-	return GdAssertReports.report_error(_custom_failure_message, self, _line_number)
+	var failure_message := error_message if _custom_failure_message == "" else _custom_failure_message
+	GdAssertReports.report_error(failure_message, _line_number)
+	return self
 
 
 func send_report(report :GdUnitReport)-> void:

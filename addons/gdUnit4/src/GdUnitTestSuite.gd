@@ -370,7 +370,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 	
 	match typeof(current):
 		TYPE_BOOL:
-			return assert_bool(current, expect_result)
+			return assert_bool(current)
 		TYPE_INT:
 			return assert_int(current, expect_result)
 		TYPE_FLOAT:
@@ -391,8 +391,8 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 			return GdUnitAssertImpl.new(current, expect_result)
 
 
-func assert_bool(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitBoolAssert:
-	return GdUnitBoolAssertImpl.new(current, expect_result)
+func assert_bool(current) -> GdUnitBoolAssert:
+	return GdUnitBoolAssertImpl.new(current)
 
 
 func assert_str(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitStringAssert:
@@ -443,7 +443,14 @@ func assert_signal(instance :Object, expect_result :int = GdUnitAssert.EXPECT_SU
 	return GdUnitSignalAssertImpl.new(instance, expect_result)
 
 
+## Verifiys an assertion is failing as expected
+## This assert is only designed for internal use to verify failing asserts working as expected
+func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
+	return GdUnitFailureAssertImpl.new(assertion)
+
+
 # TODO see https://github.com/MikeSchulze/gdUnit4/issues/4
+## deprecated: will replaced by assert_failure()
 func assert_fail(assertion :GdUnitAssert) -> GdUnitAssert:
 	return assertion
 

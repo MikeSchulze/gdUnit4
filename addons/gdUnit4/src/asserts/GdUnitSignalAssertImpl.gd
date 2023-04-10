@@ -107,8 +107,8 @@ class SignalCollector extends GdUnitSingleton:
 				var args = _collected_signals[emitter][signal_name]
 				prints("\t\t", signal_name, args)
 		prints("}")
-	
-	
+
+
 func _init(emitter :Object, expect_result := EXPECT_SUCCESS):
 	_line_number = GdUnitAssertImpl._get_line_number()
 	_emitter =  emitter
@@ -117,26 +117,28 @@ func _init(emitter :Object, expect_result := EXPECT_SUCCESS):
 	# we expect the test will fail
 	if expect_result == EXPECT_FAIL:
 		_expect_fail = true
-	
-	
+
+
 func report_success() -> GdUnitAssert:
-	return GdAssertReports.report_success(self)
-	
-	
+	GdAssertReports.report_success(_line_number)
+	return self
+
+
 func report_warning(message :String) -> GdUnitAssert:
-	return GdAssertReports.report_warning(self, message, GdUnitAssertImpl._get_line_number())
-	
-	
+	GdAssertReports.report_warning(message, GdUnitAssertImpl._get_line_number())
+	return self
+
+
 func report_error(error_message :String) -> GdUnitAssert:
-	if _custom_failure_message == "":
-		return GdAssertReports.report_error(error_message, self, _line_number)
-	return GdAssertReports.report_error(_custom_failure_message, self, _line_number)
-	
-	
+	var failure_message := error_message if _custom_failure_message == "" else _custom_failure_message
+	GdAssertReports.report_error(failure_message, _line_number)
+	return self
+
+
 func send_report(report :GdUnitReport)-> void:
 	GdUnitSignals.instance().gdunit_report.emit(report)
-	
-	
+
+
 # -------- Base Assert wrapping ------------------------------------------------
 func has_failure_message(expected: String) -> GdUnitSignalAssert:
 	var current_error := GdUnitAssertImpl._normalize_bbcode(_current_error_message)
@@ -158,13 +160,13 @@ func starts_with_failure_message(expected: String) -> GdUnitSignalAssert:
 		_custom_failure_message = ""
 		report_error(GdAssertMessages.error_not_same_error(current, expected))
 	return self
-	
-	
+
+
 func override_failure_message(message :String) -> GdUnitSignalAssert:
 	_custom_failure_message = message
 	return self
-	
-	
+
+
 func wait_until(timeout := 2000) -> GdUnitSignalAssert:
 	if timeout <= 0:
 		report_warning("Invalid timeout parameter, allowed timeouts must be greater than 0, use default timeout instead!")
@@ -172,27 +174,27 @@ func wait_until(timeout := 2000) -> GdUnitSignalAssert:
 	else:
 		_timeout = timeout
 	return self
-	
-	
+
+
 # Verifies the signal exists checked the emitter
 func is_signal_exists(signal_name :String) -> GdUnitSignalAssert:
 	if not _emitter.has_signal(signal_name):
 		report_error("The signal '%s' not exists checked object '%s'." % [signal_name, _emitter.get_class()])
 	return self
-	
-	
+
+
 # Verifies that given signal is emitted until waiting time
 func is_emitted(name :String, args := []) -> GdUnitSignalAssert:
 	_line_number = GdUnitAssertImpl._get_line_number()
 	return await _wail_until_signal(name, args, false)
-	
-	
+
+
 # Verifies that given signal is NOT emitted until waiting time
 func is_not_emitted(name :String, args := []) -> GdUnitSignalAssert:
 	_line_number = GdUnitAssertImpl._get_line_number()
 	return await _wail_until_signal(name, args, true)
-	
-	
+
+
 func _wail_until_signal(signal_name :String, expected_args :Array, expect_not_emitted: bool) -> GdUnitSignalAssert:
 	if _emitter == null:
 		report_error("Can't wait for signal checked a NULL object.")

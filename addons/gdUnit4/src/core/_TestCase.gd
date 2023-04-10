@@ -65,6 +65,8 @@ func execute(p_test_parameter := Array(), p_iteration := 0):
 
 
 func dispose():
+	# unreference last used assert form the test to prevent memory leaks
+	GdUnitThreadManager.get_current_context().set_assert(null)
 	stop_timer()
 	_remove_failure_handler()
 
