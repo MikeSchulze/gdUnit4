@@ -57,6 +57,13 @@ func is_failed() -> GdUnitFailureAssert:
 	return self
 
 
+func has_line(expected :int) -> GdUnitFailureAssert:
+	var current := GdAssertReports.get_last_error_line_number()
+	if current != expected:
+		return _report_error("Expect: to failed on line '%d'\n but was '%d'." % [expected, current])
+	return self
+
+
 func has_message(expected :String) -> GdUnitFailureAssert:
 	var expected_error := GdUnitTools.normalize_text(expected)
 	var current_error := GdUnitAssertImpl._normalize_bbcode(_failure_message)

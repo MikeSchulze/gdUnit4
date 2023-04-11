@@ -374,7 +374,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 		TYPE_INT:
 			return assert_int(current)
 		TYPE_FLOAT:
-			return assert_float(current, expect_result)
+			return assert_float(current)
 		TYPE_STRING:
 			return assert_str(current)
 		TYPE_VECTOR2:
@@ -406,8 +406,9 @@ func assert_int(current) -> GdUnitIntAssert:
 	return GdUnitIntAssertImpl.new(current)
 
 
-func assert_float(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFloatAssert:
-	return GdUnitFloatAssertImpl.new(current, expect_result)
+## An assertion tool to verify float values.
+func assert_float(current) -> GdUnitFloatAssert:
+	return GdUnitFloatAssertImpl.new(current)
 
 
 func assert_vector2(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitVector2Assert:

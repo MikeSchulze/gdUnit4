@@ -13,6 +13,12 @@ func is_failed() -> GdUnitFailureAssert:
 	return self
 
 
+## Verifies the failure line is equal to expected one.
+@warning_ignore("unused_parameter")
+func has_line(expected :int) -> GdUnitFailureAssert:
+	return self
+
+
 ## Verifies the failure message is equal to expected one.
 @warning_ignore("unused_parameter")
 func has_message(expected: String) -> GdUnitFailureAssert:

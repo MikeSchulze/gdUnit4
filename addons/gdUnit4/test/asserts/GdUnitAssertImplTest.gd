@@ -10,38 +10,44 @@ func before():
 
 
 func after():
-	assert_int(10, GdUnitAssert.EXPECT_FAIL).is_equal(42)
-	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(13)
+	assert_failure(func(): assert_int(10).is_equal(42)) \
+		.is_failed() \
+		.has_line(13)
 
 
 func before_test():
-	assert_int(10, GdUnitAssert.EXPECT_FAIL).is_equal(42)
-	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(18)
+	assert_failure(func(): assert_int(10).is_equal(42)) \
+		.is_failed() \
+		.has_line(19)
 
 
 func after_test():
-	assert_int(10, GdUnitAssert.EXPECT_FAIL).is_equal(42)
-	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(23)
+	assert_failure(func(): assert_int(10).is_equal(42)) \
+		.is_failed() \
+		.has_line(25)
 
 
 func test_get_line_number():
 	# test to return the current line number for an failure
-	assert_int(10, GdUnitAssert.EXPECT_FAIL).is_equal(42)
-	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(29)
+	assert_failure(func(): assert_int(10).is_equal(42)) \
+		.is_failed() \
+		.has_line(32)
 
 
 func test_get_line_number_yielded():
 	# test to return the current line number after using yield
 	await get_tree().create_timer(0.100).timeout
-	assert_int(10, GdUnitAssert.EXPECT_FAIL).is_equal(42)
-	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(36)
+	assert_failure(func(): assert_int(10).is_equal(42)) \
+		.is_failed() \
+		.has_line(40)
 
 
 func test_get_line_number_multiline():
 	# test to return the current line number for an failure
 	# https://github.com/godotengine/godot/issues/43326
-	assert_int(10, GdUnitAssert.EXPECT_FAIL).is_not_negative().is_equal(42)
-	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(43)
+	assert_failure(func(): assert_int(10).is_not_negative().is_equal(42)) \
+		.is_failed() \
+		.has_line(48)
 
 
 func test_get_line_number_verify():
