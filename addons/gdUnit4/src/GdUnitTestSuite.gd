@@ -376,7 +376,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 		TYPE_FLOAT:
 			return assert_float(current, expect_result)
 		TYPE_STRING:
-			return assert_str(current, expect_result)
+			return assert_str(current)
 		TYPE_VECTOR2:
 			return assert_vector2(current, expect_result)
 		TYPE_VECTOR3:
@@ -391,12 +391,14 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 			return GdUnitAssertImpl.new(current, expect_result)
 
 
+## An assertion tool to verify boolean values.
 func assert_bool(current) -> GdUnitBoolAssert:
 	return GdUnitBoolAssertImpl.new(current)
 
 
-func assert_str(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitStringAssert:
-	return GdUnitStringAssertImpl.new(current, expect_result)
+## An assertion tool to verify String values.
+func assert_str(current) -> GdUnitStringAssert:
+	return GdUnitStringAssertImpl.new(current)
 
 
 func assert_int(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitIntAssert:
