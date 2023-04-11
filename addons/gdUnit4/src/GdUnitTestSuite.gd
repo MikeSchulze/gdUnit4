@@ -386,7 +386,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 		TYPE_ARRAY:
 			return assert_array(current, expect_result)
 		TYPE_OBJECT, TYPE_NIL:
-			return assert_object(current, expect_result)
+			return assert_object(current)
 		_:
 			return GdUnitAssertImpl.new(current, expect_result)
 
@@ -431,8 +431,9 @@ func assert_file(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 	return GdUnitFileAssertImpl.new(current, expect_result)
 
 
-func assert_object(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitObjectAssert:
-	return GdUnitObjectAssertImpl.new(current, expect_result)
+## An assertion tool to verify Objects.
+func assert_object(current) -> GdUnitObjectAssert:
+	return GdUnitObjectAssertImpl.new(current)
 
 
 func assert_result(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitResultAssert:
