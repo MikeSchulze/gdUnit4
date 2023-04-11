@@ -372,7 +372,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 		TYPE_BOOL:
 			return assert_bool(current)
 		TYPE_INT:
-			return assert_int(current, expect_result)
+			return assert_int(current)
 		TYPE_FLOAT:
 			return assert_float(current, expect_result)
 		TYPE_STRING:
@@ -401,8 +401,9 @@ func assert_str(current) -> GdUnitStringAssert:
 	return GdUnitStringAssertImpl.new(current)
 
 
-func assert_int(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitIntAssert:
-	return GdUnitIntAssertImpl.new(current, expect_result)
+## An assertion tool to verify integer values.
+func assert_int(current) -> GdUnitIntAssert:
+	return GdUnitIntAssertImpl.new(current)
 
 
 func assert_float(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFloatAssert:
