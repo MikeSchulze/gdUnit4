@@ -380,7 +380,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 		TYPE_VECTOR2:
 			return assert_vector2(current)
 		TYPE_VECTOR3:
-			return assert_vector3(current, expect_result)
+			return assert_vector3(current)
 		TYPE_DICTIONARY:
 			return assert_dict(current, expect_result)
 		TYPE_ARRAY:
@@ -416,8 +416,9 @@ func assert_vector2(current) -> GdUnitVector2Assert:
 	return GdUnitVector2AssertImpl.new(current)
 
 
-func assert_vector3(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitVector3Assert:
-	return GdUnitVector3AssertImpl.new(current, expect_result)
+## An assertion tool to verify Vector3 values.
+func assert_vector3(current) -> GdUnitVector3Assert:
+	return GdUnitVector3AssertImpl.new(current)
 
 
 func assert_array(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitArrayAssert:

@@ -62,3 +62,8 @@ func test_assert_failure_on_assert_object() -> void:
 func test_assert_failure_on_assert_vector2() -> void:
 	var  instance := assert_failure(func(): assert_vector2(Vector2.ZERO))
 	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+
+
+func test_assert_failure_on_assert_vector3() -> void:
+	var  instance := assert_failure(func(): assert_vector3(Vector3.ZERO))
+	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
