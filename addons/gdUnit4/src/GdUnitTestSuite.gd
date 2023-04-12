@@ -366,7 +366,7 @@ func tuple(arg0, arg1=GdUnitTuple.NO_ARG, arg2=GdUnitTuple.NO_ARG, arg3=GdUnitTu
 func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitAssert:
 	
 	if GdObjects.is_array_type(current):
-		return assert_array(current, expect_result)
+		return assert_array(current)
 	
 	match typeof(current):
 		TYPE_BOOL:
@@ -384,7 +384,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 		TYPE_DICTIONARY:
 			return assert_dict(current, expect_result)
 		TYPE_ARRAY:
-			return assert_array(current, expect_result)
+			return assert_array(current)
 		TYPE_OBJECT, TYPE_NIL:
 			return assert_object(current)
 		_:
@@ -421,8 +421,9 @@ func assert_vector3(current) -> GdUnitVector3Assert:
 	return GdUnitVector3AssertImpl.new(current)
 
 
-func assert_array(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitArrayAssert:
-	return GdUnitArrayAssertImpl.new(current, expect_result)
+## An assertion tool to verify arrays.
+func assert_array(current) -> GdUnitArrayAssert:
+	return GdUnitArrayAssertImpl.new(current)
 
 
 func assert_dict(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitDictionaryAssert:

@@ -80,5 +80,5 @@ func contains_exactly(expected_rows :Array) -> GdUnitFileAssert:
 		var source_code = GdScriptParser.to_unix_format(instance.get_script().source_code)
 		GdUnitTools.free_instance(instance)
 		var rows := Array(source_code.split("\n"))
-		GdUnitArrayAssertImpl.new(rows, GdUnitAssert.EXPECT_SUCCESS).contains_exactly(expected_rows)
+		GdUnitArrayAssertImpl.new(rows).contains_exactly(expected_rows)
 	return self

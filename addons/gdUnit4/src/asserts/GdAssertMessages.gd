@@ -106,11 +106,9 @@ static func _colored_value(value, delimiter ="\n", detailed := false) -> String:
 			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
 		TYPE_DICTIONARY:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _format_dict(value)]
-		TYPE_PACKED_BYTE_ARRAY:
-			return "'[color=%s]%s[/color]'" % [VALUE_COLOR,  _colored_array_div(value)]
 		_:
 			if GdObjects.is_array_type(value):
-				return "[color=%s]%s[/color]" % [VALUE_COLOR, GdObjects.array_to_string(value, delimiter)]
+				return "[color=%s]%s[/color]" % [VALUE_COLOR, GdObjects.array_to_string(value, ', ')]
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, value]
 
 
