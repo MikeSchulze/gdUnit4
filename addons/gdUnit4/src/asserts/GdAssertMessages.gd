@@ -86,7 +86,7 @@ static func _nerror(number) -> String:
 			return "[color=%s]%s[/color]" % [ERROR_COLOR, str(number)]
 
 
-static func _colored_value(value, delimiter ="\n", detailed := false) -> String:
+static func _colored_value(value, _delimiter ="\n", detailed := false) -> String:
 	match typeof(value):
 		TYPE_STRING, TYPE_STRING_NAME:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _colored_string_div(value)]

@@ -363,7 +363,10 @@ func tuple(arg0, arg1=GdUnitTuple.NO_ARG, arg2=GdUnitTuple.NO_ARG, arg3=GdUnitTu
 
 
 # === Asserts ==================================================================
-func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitAssert:
+
+## The common assertion tool to verify values.
+## It checks the given value by type to fit to the best assert
+func assert_that(current) -> GdUnitAssert:
 	
 	if GdObjects.is_array_type(current):
 		return assert_array(current)
@@ -388,7 +391,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 		TYPE_OBJECT, TYPE_NIL:
 			return assert_object(current)
 		_:
-			return GdUnitAssertImpl.new(current, expect_result)
+			return GdUnitAssertImpl.new(current)
 
 
 ## An assertion tool to verify boolean values.
@@ -431,8 +434,9 @@ func assert_dict(current) -> GdUnitDictionaryAssert:
 	return GdUnitDictionaryAssertImpl.new(current)
 
 
-func assert_file(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFileAssert:
-	return GdUnitFileAssertImpl.new(current, expect_result)
+## An assertion tool to verify FileAccess.
+func assert_file(current) -> GdUnitFileAssert:
+	return GdUnitFileAssertImpl.new(current)
 
 
 ## An assertion tool to verify Objects.

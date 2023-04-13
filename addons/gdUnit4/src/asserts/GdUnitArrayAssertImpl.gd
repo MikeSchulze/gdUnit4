@@ -4,9 +4,9 @@ extends GdUnitArrayAssert
 var _base :GdUnitAssert
 
 func _init(current):
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
-	_base = GdUnitAssertImpl.new(current)
 	if not __validate_value_type(current):
 		report_error("GdUnitArrayAssert inital error, unexpected type <%s>" % GdObjects.typeof_as_string(current))
 

@@ -58,41 +58,44 @@ func test_get_line_number_verify():
 
 func test_is_null():
 	assert_that(null).is_null()
-	# should fail because the current is not null
-	assert_that(Color.RED, GdUnitAssert.EXPECT_FAIL) \
-		.is_null()\
-		.starts_with_failure_message("Expecting: '<null>' but was 'Color(1, 0, 0, 1)'")
+	
+	assert_failure(func(): assert_that(Color.RED).is_null()) \
+		.is_failed() \
+		.starts_with_message("Expecting: '<null>' but was 'Color(1, 0, 0, 1)'")
 
 
 func test_is_not_null():
 	assert_that(Color.RED).is_not_null()
-	# should fail because the current is null
-	assert_that(null, GdUnitAssert.EXPECT_FAIL) \
-		.is_not_null()\
-		.has_failure_message("Expecting: not to be '<null>'")
+	
+	assert_failure(func(): assert_that(null).is_not_null()) \
+		.is_failed() \
+		.has_message("Expecting: not to be '<null>'")
 
 
 func test_is_equal():
 	assert_that(Color.RED).is_equal(Color.RED)
 	assert_that(Plane.PLANE_XY).is_equal(Plane.PLANE_XY)
-	assert_that(Color.RED, GdUnitAssert.EXPECT_FAIL) \
-		.is_equal(Color.GREEN) \
-		.has_failure_message("Expecting:\n 'Color(0, 1, 0, 1)'\n but was\n 'Color(1, 0, 0, 1)'")
+	
+	assert_failure(func(): assert_that(Color.RED).is_equal(Color.GREEN)) \
+		.is_failed() \
+		.has_message("Expecting:\n 'Color(0, 1, 0, 1)'\n but was\n 'Color(1, 0, 0, 1)'")
 
 
 func test_is_not_equal():
 	assert_that(Color.RED).is_not_equal(Color.GREEN)
 	assert_that(Plane.PLANE_XY).is_not_equal(Plane.PLANE_XZ)
-	assert_that(Color.RED, GdUnitAssert.EXPECT_FAIL) \
-		.is_not_equal(Color.RED) \
-		.has_failure_message("Expecting:\n 'Color(1, 0, 0, 1)'\n not equal to\n 'Color(1, 0, 0, 1)'")
+	
+	assert_failure(func(): assert_that(Color.RED).is_not_equal(Color.RED)) \
+		.is_failed() \
+		.has_message("Expecting:\n 'Color(1, 0, 0, 1)'\n not equal to\n 'Color(1, 0, 0, 1)'")
 
 
 func test_override_failure_message() -> void:
-	assert_that(Color.RED, GdUnitAssert.EXPECT_FAIL)\
-		.override_failure_message("Custom failure message")\
-		.is_null()\
-		.has_failure_message("Custom failure message")
+	assert_failure(func(): assert_that(Color.RED) \
+			.override_failure_message("Custom failure message") \
+			.is_null()) \
+		.is_failed() \
+		.has_message("Custom failure message")
 
 
 func test_construct_with_value() -> void:

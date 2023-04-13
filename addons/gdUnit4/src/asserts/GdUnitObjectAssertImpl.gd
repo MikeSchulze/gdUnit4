@@ -5,9 +5,9 @@ var _base :GdUnitAssert
 
 
 func _init(current):
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
-	_base = GdUnitAssertImpl.new(current)
 	if current is ValueProvider or current == null:
 		return
 	if _base.__validate_value_type(current, TYPE_BOOL)\

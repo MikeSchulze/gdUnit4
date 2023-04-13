@@ -5,9 +5,9 @@ var _base :GdUnitAssert
 
 
 func _init(current):
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
-	_base = GdUnitAssertImpl.new(current)
 	if not _base.__validate_value_type(current, TYPE_DICTIONARY):
 		report_error("GdUnitDictionaryAssert inital error, unexpected type <%s>" % GdObjects.typeof_as_string(current))
 

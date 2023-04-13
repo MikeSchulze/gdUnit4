@@ -34,6 +34,7 @@ func test_assert_failure_on_invalid_cb() -> void:
 		.has_message("Invalid Callable! It must be a callable of 'GdUnitAssert'")
 
 
+@warning_ignore("unused_parameter")
 func test_assert_failure_on_assert(test_name :String, assert_type, value, test_parameters = [
 	["GdUnitBoolAssert", GdUnitBoolAssert, true],
 	["GdUnitStringAssert", GdUnitStringAssert, "value"],
@@ -48,3 +49,9 @@ func test_assert_failure_on_assert(test_name :String, assert_type, value, test_p
 	var  instance := assert_failure(func(): assert_that(value))
 	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
 	assert_object(instance._current).is_instanceof(assert_type)
+
+
+func test_assert_failure_on_assert_file() -> void:
+	var  instance := assert_failure(func(): assert_file("res://foo.gd"))
+	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+	assert_object(instance._current).is_instanceof(GdUnitFileAssert)

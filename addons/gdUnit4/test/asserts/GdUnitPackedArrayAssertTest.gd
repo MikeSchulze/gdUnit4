@@ -234,6 +234,7 @@ func test_contains_exactly(_test :String, array, test_parameters = [
 		)
 
 
+@warning_ignore("unused_parameter")
 func test_override_failure_message(_test :String, array, test_parameters = [
 	["Array", Array()],
 	["PackedByteArray", PackedByteArray()],

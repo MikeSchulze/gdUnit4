@@ -4,9 +4,9 @@ extends GdUnitBoolAssert
 var _base: GdUnitAssertImpl
 
 func _init(current):
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
-	_base = GdUnitAssertImpl.new(current)
 	if not _base.__validate_value_type(current, TYPE_BOOL):
 		report_error("GdUnitBoolAssert inital error, unexpected type <%s>" % GdObjects.typeof_as_string(current))
 

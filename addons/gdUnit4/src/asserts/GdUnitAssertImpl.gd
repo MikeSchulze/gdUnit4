@@ -32,10 +32,16 @@ static func _get_line_number() -> int:
 
 
 func _init(current :Variant, expect_result :int = EXPECT_SUCCESS):
+	# save the actual assert instance on the current thread context
+	GdUnitThreadManager.get_current_context().set_assert(self)
 	_current_value_provider = current if current is ValueProvider else DefaultValueProvider.new(current)
 	GdAssertReports.reset_last_error_line_number()
 	if expect_result == EXPECT_FAIL:
 		GdAssertReports.expect_fail(true)
+
+
+func _failure_message() -> String:
+	return _current_error_message
 
 
 func __current() -> Variant:
