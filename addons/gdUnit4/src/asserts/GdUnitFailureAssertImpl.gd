@@ -16,6 +16,7 @@ func _init(assertion :Callable):
 	
 	# execute the given assertion as callable
 	assertion.call()
+	GdAssertReports.expect_fail(false)
 	# get the assert instance from current tread context
 	_current = thread_context.get_assert()
 	if not is_instance_of(_current, GdUnitAssert):

@@ -4,18 +4,19 @@ extends GdUnitDictionaryAssert
 var _base :GdUnitAssert
 
 
-func _init(current, expect_result: int):
-	_base = GdUnitAssertImpl.new(current, expect_result)
+func _init(current):
+	# save the actual assert instance on the current thread context
+	GdUnitThreadManager.get_current_context().set_assert(self)
+	_base = GdUnitAssertImpl.new(current)
 	if not _base.__validate_value_type(current, TYPE_DICTIONARY):
 		report_error("GdUnitDictionaryAssert inital error, unexpected type <%s>" % GdObjects.typeof_as_string(current))
 
 
-func __current() -> Variant:
-	return _base.__current()
-
-
-func __expected(expected) -> Variant:
-	return expected
+func _notification(event):
+	if event == NOTIFICATION_PREDELETE:
+		if _base != null:
+			_base.notification(event)
+			_base = null
 
 
 func report_success() -> GdUnitDictionaryAssert:
@@ -28,15 +29,8 @@ func report_error(error :String) -> GdUnitDictionaryAssert:
 	return self
 
 
-# -------- Base Assert wrapping ------------------------------------------------
-func has_failure_message(expected: String) -> GdUnitDictionaryAssert:
-	_base.has_failure_message(expected)
-	return self
-
-
-func starts_with_failure_message(expected: String) -> GdUnitDictionaryAssert:
-	_base.starts_with_failure_message(expected)
-	return self
+func _failure_message() -> String:
+	return _base._current_error_message
 
 
 func override_failure_message(message :String) -> GdUnitDictionaryAssert:
@@ -44,27 +38,24 @@ func override_failure_message(message :String) -> GdUnitDictionaryAssert:
 	return self
 
 
-func _notification(event):
-	if event == NOTIFICATION_PREDELETE:
-		if _base != null:
-			_base.notification(event)
-			_base = null
+func __current() -> Variant:
+	return _base.__current()
 
 
-#-------------------------------------------------------------------------------
-# Verifies that the current value is null.
+func __expected(expected) -> Variant:
+	return expected
+
+
 func is_null() -> GdUnitDictionaryAssert:
 	_base.is_null()
 	return self
 
 
-# Verifies that the current value is not null.
 func is_not_null() -> GdUnitDictionaryAssert:
 	_base.is_not_null()
 	return self
 
 
-# Verifies that the current dictionary is equal to the given one.
 func is_equal(expected) -> GdUnitDictionaryAssert:
 	var current = __current()
 	expected = __expected(expected)
@@ -74,11 +65,11 @@ func is_equal(expected) -> GdUnitDictionaryAssert:
 		var c := GdAssertMessages._format_dict(current)
 		var e := GdAssertMessages._format_dict(expected)
 		var diff := GdDiffTool.string_diff(c, e)
-		return report_error(GdAssertMessages.error_equal(diff[1], e))
+		var curent_ = GdAssertMessages._colored_array_div(diff[1])
+		return report_error(GdAssertMessages.error_equal(curent_, e))
 	return report_success()
 
 
-# Verifies that the current dictionary is not equal to the given one.
 func is_not_equal(expected) -> GdUnitDictionaryAssert:
 	var current = __current()
 	expected = __expected(expected)
@@ -87,7 +78,6 @@ func is_not_equal(expected) -> GdUnitDictionaryAssert:
 	return report_success()
 
 
-# Verifies that the current dictionary is empty, it has a size of 0.
 func is_empty() -> GdUnitDictionaryAssert:
 	var current = __current()
 	if current == null or not current.is_empty():
@@ -95,7 +85,6 @@ func is_empty() -> GdUnitDictionaryAssert:
 	return report_success()
 
 
-# Verifies that the current dictionary is not empty, it has a size of minimum 1.
 func is_not_empty() -> GdUnitDictionaryAssert:
 	var current = __current()
 	if current == null or current.is_empty():
@@ -103,7 +92,6 @@ func is_not_empty() -> GdUnitDictionaryAssert:
 	return report_success()
 
 
-# Verifies that the current dictionary has a size of given value.
 func has_size(expected: int) -> GdUnitDictionaryAssert:
 	var current = __current()
 	if current == null:
@@ -113,7 +101,6 @@ func has_size(expected: int) -> GdUnitDictionaryAssert:
 	return report_success()
 
 
-# Verifies that the current dictionary contains the given key(s).
 func contains_keys(expected :Array) -> GdUnitDictionaryAssert:
 	var current = __current()
 	if current == null:
@@ -127,7 +114,6 @@ func contains_keys(expected :Array) -> GdUnitDictionaryAssert:
 	return report_success()
 
 
-# Verifies that the current dictionary not contains the given key(s).
 func contains_not_keys(expected :Array) -> GdUnitDictionaryAssert:
 	var current = __current()
 	if current == null:
@@ -143,7 +129,6 @@ func contains_not_keys(expected :Array) -> GdUnitDictionaryAssert:
 	return report_success()
 
 
-# Verifies that the current dictionary contains the given key and value.
 func contains_key_value(key, value) -> GdUnitDictionaryAssert:
 	var current = __current()
 	if current == null:

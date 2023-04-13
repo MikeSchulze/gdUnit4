@@ -382,7 +382,7 @@ func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> G
 		TYPE_VECTOR3:
 			return assert_vector3(current)
 		TYPE_DICTIONARY:
-			return assert_dict(current, expect_result)
+			return assert_dict(current)
 		TYPE_ARRAY:
 			return assert_array(current)
 		TYPE_OBJECT, TYPE_NIL:
@@ -426,8 +426,9 @@ func assert_array(current) -> GdUnitArrayAssert:
 	return GdUnitArrayAssertImpl.new(current)
 
 
-func assert_dict(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitDictionaryAssert:
-	return GdUnitDictionaryAssertImpl.new(current, expect_result)
+## An assertion tool to verify dictionaries.
+func assert_dict(current) -> GdUnitDictionaryAssert:
+	return GdUnitDictionaryAssertImpl.new(current)
 
 
 func assert_file(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFileAssert:

@@ -34,41 +34,17 @@ func test_assert_failure_on_invalid_cb() -> void:
 		.has_message("Invalid Callable! It must be a callable of 'GdUnitAssert'")
 
 
-func test_assert_failure_on_assert_bool() -> void:
-	var  instance := assert_failure(func(): assert_bool(true))
+func test_assert_failure_on_assert(test_name :String, assert_type, value, test_parameters = [
+	["GdUnitBoolAssert", GdUnitBoolAssert, true],
+	["GdUnitStringAssert", GdUnitStringAssert, "value"],
+	["GdUnitIntAssert", GdUnitIntAssert, 42],
+	["GdUnitFloatAssert", GdUnitFloatAssert, 42.0],
+	["GdUnitObjectAssert", GdUnitObjectAssert, RefCounted.new()],
+	["GdUnitVector2Assert", GdUnitVector2Assert, Vector2.ZERO],
+	["GdUnitVector3Assert", GdUnitVector3Assert, Vector3.ZERO],
+	["GdUnitArrayAssert", GdUnitArrayAssert, Array()],
+	["GdUnitDictionaryAssert", GdUnitDictionaryAssert, {}],
+]) -> void:
+	var  instance := assert_failure(func(): assert_that(value))
 	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
-
-
-func test_assert_failure_on_assert_str() -> void:
-	var  instance := assert_failure(func(): assert_str("foo"))
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
-
-
-func test_assert_failure_on_assert_int() -> void:
-	var  instance := assert_failure(func(): assert_int(42))
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
-
-
-func test_assert_failure_on_assert_float() -> void:
-	var  instance := assert_failure(func(): assert_float(42.0))
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
-
-
-func test_assert_failure_on_assert_object() -> void:
-	var  instance := assert_failure(func(): assert_object(RefCounted.new()))
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
-
-
-func test_assert_failure_on_assert_vector2() -> void:
-	var  instance := assert_failure(func(): assert_vector2(Vector2.ZERO))
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
-
-
-func test_assert_failure_on_assert_vector3() -> void:
-	var  instance := assert_failure(func(): assert_vector3(Vector3.ZERO))
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
-
-
-func test_assert_failure_on_assert_array() -> void:
-	var  instance := assert_failure(func(): assert_array([]))
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+	assert_object(instance._current).is_instanceof(assert_type)
