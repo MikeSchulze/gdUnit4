@@ -452,8 +452,9 @@ func assert_func(instance :Object, func_name :String, args := Array(), expect_re
 	return GdUnitFuncAssertImpl.new(instance, func_name, args, expect_result)
 
 
-func assert_signal(instance :Object, expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitSignalAssert:
-	return GdUnitSignalAssertImpl.new(instance, expect_result)
+## An Assertion Tool to verify for emitted signals until a certain time.
+func assert_signal(instance :Object) -> GdUnitSignalAssert:
+	return GdUnitSignalAssertImpl.new(instance)
 
 
 ## Verifiys an assertion is failing as expected

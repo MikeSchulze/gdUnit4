@@ -55,3 +55,9 @@ func test_assert_failure_on_assert_file() -> void:
 	var  instance := assert_failure(func(): assert_file("res://foo.gd"))
 	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
 	assert_object(instance._current).is_instanceof(GdUnitFileAssert)
+
+
+func test_assert_failure_on_assert_signal() -> void:
+	var  instance := assert_failure(func(): assert_signal(null))
+	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+	assert_object(instance._current).is_instanceof(GdUnitSignalAssert)
