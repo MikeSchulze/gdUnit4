@@ -448,8 +448,9 @@ func assert_result(current) -> GdUnitResultAssert:
 	return GdUnitResultAssertImpl.new(current)
 
 
-func assert_func(instance :Object, func_name :String, args := Array(), expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFuncAssert:
-	return GdUnitFuncAssertImpl.new(instance, func_name, args, expect_result)
+## An assertion tool that waits until a certain time for an expected function return value
+func assert_func(instance :Object, func_name :String, args := Array()) -> GdUnitFuncAssert:
+	return GdUnitFuncAssertImpl.new(instance, func_name, args)
 
 
 ## An Assertion Tool to verify for emitted signals until a certain time.
@@ -461,12 +462,6 @@ func assert_signal(instance :Object) -> GdUnitSignalAssert:
 ## This assert is only designed for internal use to verify failing asserts working as expected
 func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
 	return GdUnitFailureAssertImpl.new(assertion)
-
-
-# TODO see https://github.com/MikeSchulze/gdUnit4/issues/4
-## deprecated: will replaced by assert_failure()
-func assert_fail(assertion :GdUnitAssert) -> GdUnitAssert:
-	return assertion
 
 
 ## Utility to check if a test has failed in a particular line and if there is an error message

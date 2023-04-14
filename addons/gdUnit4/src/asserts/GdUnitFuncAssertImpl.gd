@@ -9,7 +9,6 @@ var _current_value_provider :ValueProvider
 var _current_error_message :String = ""
 var _custom_failure_message :String = ""
 var _line_number := -1
-var _is_failed := false
 var _timeout := DEFAULT_TIMEOUT
 var _expect_result :int
 var _interrupted := false
@@ -17,14 +16,13 @@ var _interrupted := false
 var _sleep_timer :Timer = null
 
 
-func _init(instance :Object, func_name :String, args := Array(), expect_result := EXPECT_SUCCESS):
+func _init(instance :Object, func_name :String, args := Array()):
 	# temporary workaround to hold the instance see https://github.com/godotengine/godot/issues/73889
 	GdUnitTools.register_assert(self)
 	_line_number = GdUnitAssertImpl._get_line_number()
-	_expect_result = expect_result
 	GdAssertReports.reset_last_error_line_number()
-	if expect_result == EXPECT_FAIL:
-		GdAssertReports.expect_fail(true)
+	# save the actual assert instance on the current thread context
+	GdUnitThreadManager.get_current_context().set_assert(self)
 	# verify at first the function name exists
 	if not instance.has_method(func_name):
 		report_error("The function '%s' do not exists checked instance '%s'." % [func_name, instance])
@@ -55,29 +53,12 @@ func report_error(error_message :String) -> GdUnitAssert:
 	return self
 
 
+func _failure_message() -> String:
+	return _current_error_message
+
+
 func send_report(report :GdUnitReport)-> void:
 	GdUnitSignals.instance().gdunit_report.emit(report)
-
-
-# -------- Base Assert wrapping ------------------------------------------------
-func has_failure_message(expected: String) -> GdUnitFuncAssert:
-	var current_error := GdUnitAssertImpl._normalize_bbcode(_current_error_message)
-	if current_error != expected:
-		var diffs := GdDiffTool.string_diff(current_error, expected)
-		var current := GdAssertMessages._colored_array_div(diffs[1])
-		_custom_failure_message = ""
-		report_error(GdAssertMessages.error_not_same_error(current, expected))
-	return self
-
-
-func starts_with_failure_message(expected: String) -> GdUnitFuncAssert:
-	var current_error := GdUnitAssertImpl._normalize_bbcode(_current_error_message)
-	if not current_error.begins_with(expected):
-		var diffs := GdDiffTool.string_diff(current_error, expected)
-		var current := GdAssertMessages._colored_array_div(diffs[1])
-		_custom_failure_message = ""
-		report_error(GdAssertMessages.error_not_same_error(current, expected))
-	return self
 
 
 func override_failure_message(message :String) -> GdUnitFuncAssert:
@@ -119,10 +100,6 @@ func is_not_equal(expected) -> GdUnitFuncAssert:
 
 
 func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAssert:
-	# if initial failed?
-	if _is_failed:
-		#await Engine.get_main_loop().process_frame
-		return self
 	var time_scale = Engine.get_time_scale()
 	var timer := Timer.new()
 	timer.set_name("gdunit_funcassert_interrupt_timer_%d" % timer.get_instance_id())

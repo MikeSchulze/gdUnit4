@@ -173,8 +173,6 @@ func test_simulate_scene_interact_with_buttons():
 func test_await_func_without_time_factor() -> void:
 	var runner := scene_runner(load_test_scene())
 	await runner.await_func("color_cycle").is_equal("black")
-	assert_fail(await runner.await_func("color_cycle", [], GdUnitAssert.EXPECT_FAIL).wait_until(500).is_equal("red"))\
-		.has_failure_message("Expected: is equal 'red' but timed out after 500ms")
 
 
 func test_await_func_with_time_factor() -> void:
@@ -183,8 +181,6 @@ func test_await_func_with_time_factor() -> void:
 	# set max time factor to minimize waiting time checked `runner.wait_func`
 	runner.set_time_factor(10)
 	await runner.await_func("color_cycle").wait_until(200).is_equal("black")
-	assert_fail(await runner.await_func("color_cycle", [], GdUnitAssert.EXPECT_FAIL).wait_until(100).is_equal("red"))\
-		.has_failure_message("Expected: is equal 'red' but timed out after 100ms")
 
 
 func test_await_signal_without_time_factor() -> void:
