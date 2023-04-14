@@ -444,8 +444,8 @@ func assert_object(current) -> GdUnitObjectAssert:
 	return GdUnitObjectAssertImpl.new(current)
 
 
-func assert_result(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitResultAssert:
-	return GdUnitResultAssertImpl.new(current, expect_result)
+func assert_result(current) -> GdUnitResultAssert:
+	return GdUnitResultAssertImpl.new(current)
 
 
 func assert_func(instance :Object, func_name :String, args := Array(), expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFuncAssert:
