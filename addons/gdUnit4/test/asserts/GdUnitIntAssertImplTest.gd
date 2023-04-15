@@ -9,7 +9,8 @@ func test_is_null():
 	assert_int(null).is_null()
 	
 	assert_failure(func(): assert_int(23).is_null()) \
-		.starts_with_failure_message("Expecting: '<null>' but was '23'")
+		.is_failed() \
+		.starts_with_message("Expecting: '<null>' but was '23'")
 
 
 func test_is_not_null():

@@ -191,18 +191,18 @@ func do_return(value) -> GdUnitMock:
 
 
 ## Verifies certain behavior happened at least once or exact number of times
-func verify(obj, times := 1, expect_result :int = GdUnitAssert.EXPECT_SUCCESS):
-	return GdUnitObjectInteractions.verify(obj, times, expect_result)
+func verify(obj, times := 1):
+	return GdUnitObjectInteractions.verify(obj, times)
 
 
 ## Verifies no interactions is happen checked this mock or spy
-func verify_no_interactions(obj, expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitAssert:
-	return GdUnitObjectInteractions.verify_no_interactions(obj, expect_result)
+func verify_no_interactions(obj) -> GdUnitAssert:
+	return GdUnitObjectInteractions.verify_no_interactions(obj)
 
 
 ## Verifies the given mock or spy has any unverified interaction.
-func verify_no_more_interactions(obj, expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitAssert:
-	return GdUnitObjectInteractions.verify_no_more_interactions(obj, expect_result)
+func verify_no_more_interactions(obj) -> GdUnitAssert:
+	return GdUnitObjectInteractions.verify_no_more_interactions(obj)
 
 
 ## Resets the saved function call counters checked a mock or spy
@@ -471,6 +471,7 @@ func assert_failed_at(line_number :int, expected_failure :String) -> bool:
 	var last_failure_line = GdAssertReports.get_last_error_line_number()
 	assert_str(last_failure).is_equal(expected_failure)
 	assert_int(last_failure_line).is_equal(line_number)
+	GdAssertReports.expect_fail(true)
 	return is_failed
 
 

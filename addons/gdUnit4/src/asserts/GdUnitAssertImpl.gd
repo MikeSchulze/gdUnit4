@@ -4,7 +4,6 @@ extends GdUnitAssert
 
 var _current_value_provider :ValueProvider
 var _current_error_message :String = ""
-var _expect_fail :bool = false
 var _custom_failure_message :String = ""
 
 
@@ -31,13 +30,11 @@ static func _get_line_number() -> int:
 	return -1
 
 
-func _init(current :Variant, expect_result :int = EXPECT_SUCCESS):
+func _init(current :Variant):
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	_current_value_provider = current if current is ValueProvider else DefaultValueProvider.new(current)
 	GdAssertReports.reset_last_error_line_number()
-	if expect_result == EXPECT_FAIL:
-		GdAssertReports.expect_fail(true)
 
 
 func _failure_message() -> String:
@@ -76,28 +73,6 @@ static func _normalize_bbcode(message :String) -> String:
 	var normalized = rtl.get_parsed_text()
 	rtl.free()
 	return normalized.replace("\r", "")
-
-
-func has_failure_message(expected :String):
-	var expected_error := GdUnitTools.normalize_text(expected)
-	var current_error := GdUnitAssertImpl._normalize_bbcode(_current_error_message)
-	if current_error != expected_error:
-		_expect_fail = false
-		var diffs := GdDiffTool.string_diff(current_error, expected_error)
-		var current := GdAssertMessages._colored_array_div(diffs[1])
-		report_error(GdAssertMessages.error_not_same_error(current, expected_error))
-	return self
-
-
-func starts_with_failure_message(expected :String):
-	var expected_error := GdUnitTools.normalize_text(expected)
-	var current_error := GdUnitAssertImpl._normalize_bbcode(_current_error_message)
-	if current_error.find(expected_error) != 0:
-		_expect_fail = false
-		var diffs := GdDiffTool.string_diff(current_error, expected_error)
-		var current := GdAssertMessages._colored_array_div(diffs[1])
-		report_error(GdAssertMessages.error_not_same_error(current, expected_error))
-	return self
 
 
 func override_failure_message(message :String):

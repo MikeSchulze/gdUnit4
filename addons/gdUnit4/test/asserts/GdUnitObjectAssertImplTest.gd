@@ -65,7 +65,7 @@ func test_is_null():
 	
 	assert_failure(func(): assert_object(auto_free(Node.new())).is_null()) \
 		.is_failed() \
-		.starts_with_failure_message("Expecting: '<null>' but was <Node>")
+		.starts_with_message("Expecting: '<null>' but was <Node>")
 
 
 func test_is_not_null():

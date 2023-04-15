@@ -12,15 +12,6 @@ func after():
 	GdUnitMockBuilder.do_push_errors(true)
 
 
-# small helper to verify last assert error
-func assert_last_error(expected :String):
-	var gd_assert := GdUnitAssertImpl.new("")
-	if Engine.has_meta(GdAssertReports.LAST_ERROR):
-		gd_assert._current_error_message = Engine.get_meta(GdAssertReports.LAST_ERROR)
-	gd_assert.has_failure_message(expected.dedent().trim_prefix("\n").replace("\r", ""))
-
-
-
 func test_mock_instance_id_is_unique():
 	var m1  = mock(RefCounted)
 	var m2  = mock(RefCounted)
@@ -693,13 +684,15 @@ func test_verify_fail():
 	verify(mocked_node, 2).set_process(true)
 	
 	# verify should fail because we interacts two times and not one
-	verify(mocked_node, 1, GdUnitAssert.EXPECT_FAIL).set_process(true)
 	var expected_error := """
 		Expecting interaction on:
 			'set_process(true :bool)'	1 time's
 		But found interactions on:
-			'set_process(true :bool)'	2 time's"""
-	assert_last_error(expected_error)
+			'set_process(true :bool)'	2 time's""" \
+			.dedent().trim_prefix("\n").replace("\r", "")
+	assert_failure(func(): verify(mocked_node, 1).set_process(true)) \
+		.is_failed() \
+		.has_message(expected_error)
 
 
 func test_verify_func_interaction_wiht_PoolStringArray():
@@ -717,30 +710,32 @@ func test_verify_func_interaction_wiht_PoolStringArray_fail():
 	mocked.set_values(PackedStringArray())
 	
 	# try to verify with default array type instead of PackedStringArray type
-	verify(mocked, 1, GdUnitAssert.EXPECT_FAIL).set_values([])
 	var expected_error := """
 		Expecting interaction on:
 			'set_values([] :Array)'	1 time's
 		But found interactions on:
-			'set_values([] :PackedStringArray)'	1 time's"""
-	expected_error = GdScriptParser.to_unix_format(expected_error)
-	assert_last_error(expected_error)
+			'set_values([] :PackedStringArray)'	1 time's""" \
+			.dedent().trim_prefix("\n").replace("\r", "")
+	assert_failure(func(): verify(mocked, 1).set_values([])) \
+		.is_failed() \
+		.has_message(expected_error)
 	
 	reset(mocked)
 	# try again with called two times and different args
 	mocked.set_values(PackedStringArray())
 	mocked.set_values(PackedStringArray(["a", "b"]))
 	mocked.set_values([1, 2])
-	verify(mocked, 1, GdUnitAssert.EXPECT_FAIL).set_values([])
 	expected_error = """
 		Expecting interaction on:
 			'set_values([] :Array)'	1 time's
 		But found interactions on:
 			'set_values([] :PackedStringArray)'	1 time's
 			'set_values(["a", "b"] :PackedStringArray)'	1 time's
-			'set_values([1, 2] :Array)'	1 time's"""
-	expected_error = GdScriptParser.to_unix_format(expected_error)
-	assert_last_error(expected_error)
+			'set_values([1, 2] :Array)'	1 time's""" \
+			.dedent().trim_prefix("\n").replace("\r", "")
+	assert_failure(func(): verify(mocked, 1).set_values([])) \
+		.is_failed() \
+		.has_message(expected_error)
 
 
 func test_reset():
@@ -779,10 +774,12 @@ func test_verify_no_interactions_fails():
 		Expecting no more interactions!
 		But found interactions on:
 			'set_process(false :bool)'	1 time's
-			'set_process(true :bool)'	2 time's""".dedent().trim_prefix("\n")
+			'set_process(true :bool)'	2 time's""" \
+			.dedent().trim_prefix("\n")
 	# it should fail because we have interactions 
-	verify_no_interactions(mocked_node, GdUnitAssert.EXPECT_FAIL)\
-		.has_failure_message(expected_error)
+	assert_failure(func(): verify_no_interactions(mocked_node)) \
+		.is_failed() \
+		.has_message(expected_error)
 
 
 func test_verify_no_more_interactions():
@@ -830,9 +827,11 @@ func test_verify_no_more_interactions_but_has():
 		But found interactions on:
 			'is_inside_tree()'	2 time's
 			'find_child(mask :String, true :bool, true :bool)'	1 time's
-			'find_child(mask :String, false :bool, false :bool)'	1 time's""".dedent().trim_prefix("\n")
-	verify_no_more_interactions(mocked_node, GdUnitAssert.EXPECT_FAIL)\
-		.has_failure_message(expected_error)
+			'find_child(mask :String, false :bool, false :bool)'	1 time's""" \
+			.dedent().trim_prefix("\n")
+	assert_failure(func(): verify_no_more_interactions(mocked_node)) \
+		.is_failed() \
+		.has_message(expected_error)
 
 
 func test_mock_snake_case_named_class_by_resource_path():

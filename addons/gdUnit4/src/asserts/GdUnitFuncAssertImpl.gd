@@ -10,7 +10,6 @@ var _current_error_message :String = ""
 var _custom_failure_message :String = ""
 var _line_number := -1
 var _timeout := DEFAULT_TIMEOUT
-var _expect_result :int
 var _interrupted := false
 
 var _sleep_timer :Timer = null
@@ -121,7 +120,7 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 		if _interrupted:
 			break
 		var is_success = predicate.call(current, expected)
-		if _expect_result != EXPECT_FAIL and is_success:
+		if is_success:
 			break
 		if is_instance_valid(_sleep_timer):
 			_sleep_timer.start(0.05)
