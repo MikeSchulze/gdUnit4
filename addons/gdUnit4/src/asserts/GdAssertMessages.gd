@@ -86,7 +86,7 @@ static func _nerror(number) -> String:
 			return "[color=%s]%s[/color]" % [ERROR_COLOR, str(number)]
 
 
-static func _colored_value(value, delimiter ="\n", detailed := false) -> String:
+static func _colored_value(value, _delimiter ="\n", detailed := false) -> String:
 	match typeof(value):
 		TYPE_STRING, TYPE_STRING_NAME:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _colored_string_div(value)]
@@ -106,11 +106,9 @@ static func _colored_value(value, delimiter ="\n", detailed := false) -> String:
 			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
 		TYPE_DICTIONARY:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _format_dict(value)]
-		TYPE_PACKED_BYTE_ARRAY:
-			return "'[color=%s]%s[/color]'" % [VALUE_COLOR,  _colored_array_div(value)]
 		_:
 			if GdObjects.is_array_type(value):
-				return "[color=%s]%s[/color]" % [VALUE_COLOR, GdObjects.array_to_string(value, delimiter)]
+				return "[color=%s]%s[/color]" % [VALUE_COLOR, GdObjects.array_to_string(value, ', ')]
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, value]
 
 

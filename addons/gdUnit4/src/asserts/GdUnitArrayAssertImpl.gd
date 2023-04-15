@@ -3,10 +3,37 @@ extends GdUnitArrayAssert
 
 var _base :GdUnitAssert
 
-func _init(current, expect_result: int):
-	_base = GdUnitAssertImpl.new(current, expect_result)
+func _init(current):
+	_base = GdUnitAssertImpl.new(current)
+	# save the actual assert instance on the current thread context
+	GdUnitThreadManager.get_current_context().set_assert(self)
 	if not __validate_value_type(current):
 		report_error("GdUnitArrayAssert inital error, unexpected type <%s>" % GdObjects.typeof_as_string(current))
+
+
+func _notification(event):
+	if event == NOTIFICATION_PREDELETE:
+		if _base != null:
+			_base.notification(event)
+			_base = null
+
+
+func report_success() -> GdUnitArrayAssert:
+	_base.report_success()
+	return self
+
+
+func report_error(error :String) -> GdUnitArrayAssert:
+	_base.report_error(error)
+	return self
+
+func _failure_message() -> String:
+	return _base._current_error_message
+
+
+func override_failure_message(message :String) -> GdUnitArrayAssert:
+	_base.override_failure_message(message)
+	return self
 
 
 func __validate_value_type(value) -> bool:
@@ -66,41 +93,6 @@ func _array_div(left :Array, right :Array, _same_order := false) -> Array:
 				GdObjects.array_erase_value(not_found, c)
 				break
 	return [not_expect, not_found]
-
-
-func report_success() -> GdUnitArrayAssert:
-	_base.report_success()
-	return self
-
-
-func report_error(error :String) -> GdUnitArrayAssert:
-	_base.report_error(error)
-	return self
-
-
-# -------- Base Assert wrapping ------------------------------------------------
-func has_failure_message(expected: String) -> GdUnitArrayAssert:
-	# normalize text to get rid of windows vs unix line formatting
-	_base.has_failure_message(expected)
-	return self
-
-
-func starts_with_failure_message(expected: String) -> GdUnitArrayAssert:
-	_base.starts_with_failure_message(expected)
-	return self
-
-
-func override_failure_message(message :String) -> GdUnitArrayAssert:
-	_base.override_failure_message(message)
-	return self
-
-
-func _notification(event):
-	if event == NOTIFICATION_PREDELETE:
-		if _base != null:
-			_base.notification(event)
-			_base = null
-#-------------------------------------------------------------------------------
 
 
 func is_null() -> GdUnitArrayAssert:
@@ -163,7 +155,6 @@ func is_not_equal_ignoring_case(expected) -> GdUnitArrayAssert:
 	return report_success()
 
 
-# Verifies that the current Array is empty, it has a size of 0.
 func is_empty() -> GdUnitArrayAssert:
 	var current_ = __current()
 	if current_ == null or current_.size() > 0:
@@ -171,7 +162,6 @@ func is_empty() -> GdUnitArrayAssert:
 	return report_success()
 
 
-# Verifies that the current Array is not empty, it has a size of minimum 1.
 func is_not_empty() -> GdUnitArrayAssert:
 	var current_ = __current()
 	if current_ != null and current_.size() == 0:
@@ -179,7 +169,6 @@ func is_not_empty() -> GdUnitArrayAssert:
 	return report_success()
 
 
-# Verifies that the current Array has a size of given value.
 func has_size(expected: int) -> GdUnitArrayAssert:
 	var current_ = __current()
 	if current_ == null or current_.size() != expected:
@@ -187,7 +176,6 @@ func has_size(expected: int) -> GdUnitArrayAssert:
 	return report_success()
 
 
-# Verifies that the current Array contains the given values, in any order.
 func contains(expected) -> GdUnitArrayAssert:
 	var current_ = __current()
 	var expected_ = __expected(expected)
@@ -201,7 +189,6 @@ func contains(expected) -> GdUnitArrayAssert:
 	return report_success()
 
 
-# Verifies that the current Array contains only the given values and nothing else, in order.
 func contains_exactly(expected :Array) -> GdUnitArrayAssert:
 	var current_ = __current()
 	var expected_ = __expected(expected)
@@ -220,7 +207,6 @@ func contains_exactly(expected :Array) -> GdUnitArrayAssert:
 	return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected_, not_expect, not_found))
 
 
-# Verifies that the current Array contains exactly only the given values and nothing else, in any order.
 func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
 	var current_ = __current()
 	var expected_ = __expected(expected)
@@ -251,7 +237,6 @@ func is_instanceof(expected) -> GdUnitAssert:
 	return self
 
 
-# extracts all values by given function name or null if not exists
 func extract(func_name :String, args := Array()) -> GdUnitArrayAssert:
 	var extracted_elements := Array()
 	var extractor := GdUnitFuncValueExtractor.new(func_name, args)
@@ -265,7 +250,6 @@ func extract(func_name :String, args := Array()) -> GdUnitArrayAssert:
 	return self
 
 
-# Extracts all values by given extractors into a new ArrayAssert
 func extractv(
 	extr0 :GdUnitValueExtractor, 
 	extr1 :GdUnitValueExtractor = null, 

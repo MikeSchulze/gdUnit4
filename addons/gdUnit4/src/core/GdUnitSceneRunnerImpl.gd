@@ -218,12 +218,12 @@ func simulate_until_object_signal(source :Object, signal_name :String, arg0=NO_A
 	return self
 
 
-func await_func(func_name :String, args := [], expeced := GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFuncAssert:
-	return GdUnitFuncAssertImpl.new(_current_scene, func_name, args, expeced)
+func await_func(func_name :String, args := []) -> GdUnitFuncAssert:
+	return GdUnitFuncAssertImpl.new(_current_scene, func_name, args)
 
 
-func await_func_on(instance :Object, func_name :String, args := [], expeced := GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFuncAssert:
-	return GdUnitFuncAssertImpl.new(instance, func_name, args, expeced)
+func await_func_on(instance :Object, func_name :String, args := []) -> GdUnitFuncAssert:
+	return GdUnitFuncAssertImpl.new(instance, func_name, args)
 
 
 func await_signal(signal_name :String, args := [], timeout := 2000 ):

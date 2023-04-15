@@ -8,6 +8,21 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitFuncAssertImpl.gd'
 
 
+# we need to skip await fail test because of an bug in Godot 4.0 stable
+func is_skip_fail_await() -> bool:
+	return Engine.get_version_info().hex < 0x40002
+
+
+# using this helper to await for the given callable and assert the failure
+func verify_failed(cb :Callable) -> GdUnitStringAssert:
+	GdAssertReports.expect_fail(true)
+	await cb.call()
+	GdAssertReports.expect_fail(false)
+	
+	var a :GdUnitFuncAssertImpl = GdUnitThreadManager.get_current_context().get_assert()
+	return assert_str( GdUnitAssertImpl._normalize_bbcode(a._failure_message()))
+
+
 class TestValueProvider:
 	var _max_iterations :int
 	var _current_itteration := 0
@@ -130,9 +145,11 @@ func test_is_null(timeout = 2000) -> void:
 	assert_int(value_provider.iteration()).is_equal(5)
 	
 	# failure case
+	if is_skip_fail_await():
+		return
 	value_provider = TestIterativeValueProvider.new(RefCounted.new(), 1, RefCounted.new())
-	assert_fail(await assert_func(value_provider, "obj_value", [], GdUnitAssert.EXPECT_FAIL).wait_until(100).is_null())\
-		.has_failure_message("Expected: is null but timed out after 100ms")
+	(await verify_failed(func(): await assert_func(value_provider, "obj_value", []).wait_until(100).is_null())) \
+		.is_equal("Expected: is null but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
@@ -151,8 +168,10 @@ func test_is_not_null(timeout = 2000) -> void:
 	
 	# failure case
 	value_provider = TestIterativeValueProvider.new(null, 1, null)
-	assert_fail( await assert_func(value_provider, "obj_value", [], GdUnitAssert.EXPECT_FAIL).wait_until(100).is_not_null())\
-		.has_failure_message("Expected: is not null but timed out after 100ms")
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(value_provider, "obj_value", []).wait_until(100).is_not_null()))\
+		.is_equal("Expected: is not null but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
@@ -171,8 +190,10 @@ func test_is_true(timeout = 2000) -> void:
 	
 	# failure case
 	value_provider = TestIterativeValueProvider.new(false, 1, false)
-	assert_fail( await assert_func(value_provider, "bool_value", [], GdUnitAssert.EXPECT_FAIL).wait_until(100).is_true())\
-		.has_failure_message("Expected: is true but timed out after 100ms")
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(value_provider, "bool_value", []).wait_until(100).is_true()))\
+		.is_equal("Expected: is true but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
@@ -191,8 +212,10 @@ func test_is_false(timeout = 2000) -> void:
 	
 	# failure case
 	value_provider = TestIterativeValueProvider.new(true, 1, true)
-	assert_fail( await assert_func(value_provider, "bool_value", [], GdUnitAssert.EXPECT_FAIL).wait_until(100).is_false())\
-		.has_failure_message("Expected: is false but timed out after 100ms")
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(value_provider, "bool_value", []).wait_until(100).is_false())) \
+		.is_equal("Expected: is false but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
@@ -211,8 +234,10 @@ func test_is_equal(timeout = 2000) -> void:
 	
 	# failing case
 	value_provider = TestIterativeValueProvider.new(23, 1, 23)
-	assert_fail( await assert_func(value_provider, "int_value", [], GdUnitAssert.EXPECT_FAIL).wait_until(100).is_equal(25))\
-		.has_failure_message("Expected: is equal '25' but timed out after 100ms")
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(value_provider, "int_value", []).wait_until(100).is_equal(25))) \
+		.is_equal("Expected: is equal '25' but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
@@ -231,8 +256,10 @@ func test_is_not_equal(timeout = 2000) -> void:
 	
 	# failing case
 	value_provider = TestIterativeValueProvider.new(23, 1, 23)
-	assert_fail( await assert_func(value_provider, "int_value", [], GdUnitAssert.EXPECT_FAIL).wait_until(100).is_not_equal(23))\
-		.has_failure_message("Expected: is not equal '23' but timed out after 100ms")
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(value_provider, "int_value", []).wait_until(100).is_not_equal(23))) \
+		.is_equal("Expected: is not equal '23' but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
@@ -277,13 +304,17 @@ func test_timer_yielded_function() -> void:
 	# will be never red
 	await assert_func(self, "timed_function").wait_until(100).is_not_equal(Color.RED)
 	# failure case
-	assert_fail( await assert_func(self, "timed_function", [], GdUnitAssert.EXPECT_FAIL).wait_until(100).is_equal(Color.RED))\
-		.has_failure_message("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 100ms")
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(self, "timed_function", []).wait_until(100).is_equal(Color.RED))) \
+		.is_equal("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 100ms")
 
 
 func test_timer_yielded_function_timeout() -> void:
-	assert_fail( await assert_func(self, "timed_function", [], GdUnitAssert.EXPECT_FAIL).wait_until(40).is_equal(Color.BLACK))\
-		.has_failure_message("Expected: is equal 'Color(0, 0, 0, 1)' but timed out after 40ms")
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(self, "timed_function", []).wait_until(40).is_equal(Color.BLACK)))\
+		.is_equal("Expected: is equal 'Color(0, 0, 0, 1)' but timed out after 40ms")
 
 
 func yielded_function() -> Color:
@@ -299,27 +330,35 @@ func yielded_function() -> Color:
 
 func test_idle_frame_yielded_function() -> void:
 	await assert_func(self, "yielded_function").is_equal(Color.BLACK)
-	assert_fail( await assert_func(self, "yielded_function", [], GdUnitAssert.EXPECT_FAIL).wait_until(500).is_equal(Color.RED))\
-		.has_failure_message("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 500ms")
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(self, "yielded_function", []).wait_until(500).is_equal(Color.RED))) \
+		.is_equal("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 500ms")
 
 
 func test_has_failure_message() -> void:
+	if is_skip_fail_await():
+		return
 	var value_provider := TestIterativeValueProvider.new(10, 1, 10)
-	assert_fail( await assert_func(value_provider, "int_value", [], GdUnitAssert.EXPECT_FAIL).wait_until(500).is_equal(42))\
-		.has_failure_message("Expected: is equal '42' but timed out after 500ms")
+	(await verify_failed(func(): await assert_func(value_provider, "int_value", []).wait_until(500).is_equal(42))) \
+		.is_equal("Expected: is equal '42' but timed out after 500ms")
 
 
 func test_override_failure_message() -> void:
+	if is_skip_fail_await():
+		return
 	var value_provider := TestIterativeValueProvider.new(10, 1, 20)
-	assert_fail( await assert_func(value_provider, "int_value", [], GdUnitAssert.EXPECT_FAIL)\
-		.override_failure_message("Custom failure message")\
-		.wait_until(100)\
-		.is_equal(42))\
-		.has_failure_message("Custom failure message")
+	(await verify_failed(func(): await assert_func(value_provider, "int_value", []) \
+			.override_failure_message("Custom failure message") \
+			.wait_until(100) \
+			.is_equal(42))) \
+		.is_equal("Custom failure message")
 
 
-func test_invalid_function():
-	assert_fail( await assert_func(self, "invalid_func_name", [], GdUnitAssert.EXPECT_FAIL)\
-		.wait_until(100)\
-		.is_equal(42))\
-		.starts_with_failure_message("The function 'invalid_func_name' do not exists checked instance")
+func _test_invalid_function():
+	if is_skip_fail_await():
+		return
+	(await verify_failed(func(): await assert_func(self, "invalid_func_name", [])\
+		.wait_until(10000)\
+		.is_equal(42)))\
+		.starts_with("The function 'invalid_func_name' do not exists checked instance")

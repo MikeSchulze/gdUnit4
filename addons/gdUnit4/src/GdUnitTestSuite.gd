@@ -2,13 +2,13 @@
 ## This class is the main class to implement your unit tests[br]
 ## You have to extend and implement your test cases as described[br]
 ## e.g MyTests.gd [br]
-##    [codeblock]
-##    extends GdUnitTestSuite
-##    #
-##    func test_testCaseA():
-##      assert_that("value").is_equal("value")
-##    [/codeblock][br]
-## @tutorial:  https://mikeschulze.github.io/gdUnit3/faq/test-suite/
+## [codeblock]
+## 	extends GdUnitTestSuite
+## 	# testcase
+## 	func test_testCaseA():
+## 	    assert_that("value").is_equal("value")
+## [/codeblock][br]
+## @tutorial:  https://mikeschulze.github.io/gdUnit4/faq/test-suite/
 
 @icon("res://addons/gdUnit4/src/ui/assets/TestSuite.svg")
 class_name GdUnitTestSuite
@@ -191,18 +191,18 @@ func do_return(value) -> GdUnitMock:
 
 
 ## Verifies certain behavior happened at least once or exact number of times
-func verify(obj, times := 1, expect_result :int = GdUnitAssert.EXPECT_SUCCESS):
-	return GdUnitObjectInteractions.verify(obj, times, expect_result)
+func verify(obj, times := 1):
+	return GdUnitObjectInteractions.verify(obj, times)
 
 
 ## Verifies no interactions is happen checked this mock or spy
-func verify_no_interactions(obj, expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitAssert:
-	return GdUnitObjectInteractions.verify_no_interactions(obj, expect_result)
+func verify_no_interactions(obj) -> GdUnitAssert:
+	return GdUnitObjectInteractions.verify_no_interactions(obj)
 
 
 ## Verifies the given mock or spy has any unverified interaction.
-func verify_no_more_interactions(obj, expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitAssert:
-	return GdUnitObjectInteractions.verify_no_more_interactions(obj, expect_result)
+func verify_no_more_interactions(obj) -> GdUnitAssert:
+	return GdUnitObjectInteractions.verify_no_more_interactions(obj)
 
 
 ## Resets the saved function call counters checked a mock or spy
@@ -363,89 +363,110 @@ func tuple(arg0, arg1=GdUnitTuple.NO_ARG, arg2=GdUnitTuple.NO_ARG, arg3=GdUnitTu
 
 
 # === Asserts ==================================================================
-func assert_that(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitAssert:
+
+## The common assertion tool to verify values.
+## It checks the given value by type to fit to the best assert
+func assert_that(current) -> GdUnitAssert:
 	
 	if GdObjects.is_array_type(current):
-		return assert_array(current, expect_result)
+		return assert_array(current)
 	
 	match typeof(current):
 		TYPE_BOOL:
-			return assert_bool(current, expect_result)
+			return assert_bool(current)
 		TYPE_INT:
-			return assert_int(current, expect_result)
+			return assert_int(current)
 		TYPE_FLOAT:
-			return assert_float(current, expect_result)
+			return assert_float(current)
 		TYPE_STRING:
-			return assert_str(current, expect_result)
+			return assert_str(current)
 		TYPE_VECTOR2:
-			return assert_vector2(current, expect_result)
+			return assert_vector2(current)
 		TYPE_VECTOR3:
-			return assert_vector3(current, expect_result)
+			return assert_vector3(current)
 		TYPE_DICTIONARY:
-			return assert_dict(current, expect_result)
+			return assert_dict(current)
 		TYPE_ARRAY:
-			return assert_array(current, expect_result)
+			return assert_array(current)
 		TYPE_OBJECT, TYPE_NIL:
-			return assert_object(current, expect_result)
+			return assert_object(current)
 		_:
-			return GdUnitAssertImpl.new(current, expect_result)
+			return GdUnitAssertImpl.new(current)
 
 
-func assert_bool(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitBoolAssert:
-	return GdUnitBoolAssertImpl.new(current, expect_result)
+## An assertion tool to verify boolean values.
+func assert_bool(current) -> GdUnitBoolAssert:
+	return GdUnitBoolAssertImpl.new(current)
 
 
-func assert_str(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitStringAssert:
-	return GdUnitStringAssertImpl.new(current, expect_result)
+## An assertion tool to verify String values.
+func assert_str(current) -> GdUnitStringAssert:
+	return GdUnitStringAssertImpl.new(current)
 
 
-func assert_int(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitIntAssert:
-	return GdUnitIntAssertImpl.new(current, expect_result)
+## An assertion tool to verify integer values.
+func assert_int(current) -> GdUnitIntAssert:
+	return GdUnitIntAssertImpl.new(current)
 
 
-func assert_float(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFloatAssert:
-	return GdUnitFloatAssertImpl.new(current, expect_result)
+## An assertion tool to verify float values.
+func assert_float(current) -> GdUnitFloatAssert:
+	return GdUnitFloatAssertImpl.new(current)
 
 
-func assert_vector2(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitVector2Assert:
-	return GdUnitVector2AssertImpl.new(current, expect_result)
+## An assertion tool to verify Vector2 values.
+func assert_vector2(current) -> GdUnitVector2Assert:
+	return GdUnitVector2AssertImpl.new(current)
 
 
-func assert_vector3(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitVector3Assert:
-	return GdUnitVector3AssertImpl.new(current, expect_result)
+## An assertion tool to verify Vector3 values.
+func assert_vector3(current) -> GdUnitVector3Assert:
+	return GdUnitVector3AssertImpl.new(current)
 
 
-func assert_array(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitArrayAssert:
-	return GdUnitArrayAssertImpl.new(current, expect_result)
+## An assertion tool to verify arrays.
+func assert_array(current) -> GdUnitArrayAssert:
+	return GdUnitArrayAssertImpl.new(current)
 
 
-func assert_dict(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitDictionaryAssert:
-	return GdUnitDictionaryAssertImpl.new(current, expect_result)
+## An assertion tool to verify dictionaries.
+func assert_dict(current) -> GdUnitDictionaryAssert:
+	return GdUnitDictionaryAssertImpl.new(current)
 
 
-func assert_file(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFileAssert:
-	return GdUnitFileAssertImpl.new(current, expect_result)
+## An assertion tool to verify FileAccess.
+func assert_file(current) -> GdUnitFileAssert:
+	return GdUnitFileAssertImpl.new(current)
 
 
-func assert_object(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitObjectAssert:
-	return GdUnitObjectAssertImpl.new(current, expect_result)
+## An assertion tool to verify Objects.
+func assert_object(current) -> GdUnitObjectAssert:
+	return GdUnitObjectAssertImpl.new(current)
 
 
-func assert_result(current, expect_result: int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitResultAssert:
-	return GdUnitResultAssertImpl.new(current, expect_result)
+func assert_result(current) -> GdUnitResultAssert:
+	return GdUnitResultAssertImpl.new(current)
 
 
-func assert_func(instance :Object, func_name :String, args := Array(), expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitFuncAssert:
-	return GdUnitFuncAssertImpl.new(instance, func_name, args, expect_result)
+## An assertion tool that waits until a certain time for an expected function return value
+func assert_func(instance :Object, func_name :String, args := Array()) -> GdUnitFuncAssert:
+	return GdUnitFuncAssertImpl.new(instance, func_name, args)
 
 
-func assert_signal(instance :Object, expect_result :int = GdUnitAssert.EXPECT_SUCCESS) -> GdUnitSignalAssert:
-	return GdUnitSignalAssertImpl.new(instance, expect_result)
+## An Assertion Tool to verify for emitted signals until a certain time.
+func assert_signal(instance :Object) -> GdUnitSignalAssert:
+	return GdUnitSignalAssertImpl.new(instance)
 
 
-# TODO see https://github.com/MikeSchulze/gdUnit4/issues/4
-func assert_fail(assertion :GdUnitAssert) -> GdUnitAssert:
-	return assertion
+## Verifiys an assertion is failing as expected
+## This assert is only designed for internal use to verify failing asserts working as expected
+## Usage:
+##     [codeblock]
+##		assert_failure(func(): assert_bool(true).is_not_equal(true)) \
+##			.has_message("Expecting:\n 'true'\n not equal to\n 'true'")
+##     [/codeblock]
+func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
+	return GdUnitFailureAssertImpl.new(assertion)
 
 
 ## Utility to check if a test has failed in a particular line and if there is an error message
@@ -455,6 +476,7 @@ func assert_failed_at(line_number :int, expected_failure :String) -> bool:
 	var last_failure_line = GdAssertReports.get_last_error_line_number()
 	assert_str(last_failure).is_equal(expected_failure)
 	assert_int(last_failure_line).is_equal(line_number)
+	GdAssertReports.expect_fail(true)
 	return is_failed
 
 

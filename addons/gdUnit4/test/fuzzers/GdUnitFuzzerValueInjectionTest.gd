@@ -124,9 +124,9 @@ func test_fuzzer_error_after_eight_iterations(fuzzer=TestFuzzer.new(), fuzzer_it
 	assert_object(fuzzer).is_not_null()
 	# should fail after 8 iterations
 	if fuzzer.iteration_index() == 8:
-		assert_int(fuzzer.next_value(), GdUnitAssert.EXPECT_FAIL) \
-			.is_between(0, 9) \
-			.has_failure_message("Expecting:\n '23'\n in range between\n '0' <> '9'")
+		assert_failure(func(): assert_int(fuzzer.next_value()).is_between(0, 9)) \
+			.is_failed() \
+			.has_message("Expecting:\n '23'\n in range between\n '0' <> '9'")
 	else:
 		assert_int(fuzzer.next_value()).is_between(0, 9)
 

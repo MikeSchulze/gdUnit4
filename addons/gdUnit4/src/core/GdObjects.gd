@@ -317,39 +317,24 @@ static func string_as_typeof(type_name :String) -> int:
 
 
 static func is_primitive_type(value) -> bool:
-	match typeof(value):
-		TYPE_BOOL:
-			return true
-		TYPE_STRING:
-			return true
-		TYPE_INT:
-			return true
-		TYPE_FLOAT:
-			return true
-	return false
+	return typeof(value) in [TYPE_BOOL, TYPE_STRING, TYPE_INT, TYPE_FLOAT]
+
 
 static func is_array_type(value) -> bool:
 	return is_type_array(typeof(value))
 
+
 static func is_type_array(type :int) -> bool:
-	match type:
-		TYPE_ARRAY:
-			return true
-		TYPE_PACKED_COLOR_ARRAY:
-			return true
-		TYPE_PACKED_INT32_ARRAY:
-			return true
-		TYPE_PACKED_BYTE_ARRAY:
-			return true
-		TYPE_PACKED_FLOAT32_ARRAY:
-			return true
-		TYPE_PACKED_STRING_ARRAY:
-			return true
-		TYPE_PACKED_VECTOR2_ARRAY:
-			return true
-		TYPE_PACKED_VECTOR3_ARRAY:
-			return true
-	return false
+	return  type in [TYPE_ARRAY,
+		TYPE_PACKED_BYTE_ARRAY,
+		TYPE_PACKED_INT32_ARRAY,
+		TYPE_PACKED_INT64_ARRAY,
+		TYPE_PACKED_FLOAT32_ARRAY,
+		TYPE_PACKED_FLOAT64_ARRAY,
+		TYPE_PACKED_STRING_ARRAY,
+		TYPE_PACKED_VECTOR2_ARRAY,
+		TYPE_PACKED_VECTOR3_ARRAY,
+		TYPE_PACKED_COLOR_ARRAY]
 
 
 static func _is_type_equivalent(type_a, type_b) -> bool:
@@ -682,7 +667,7 @@ static func default_value_by_type(type :int):
 
 static func array_to_string(elements :Array, delimiter := "\n", max_elements := -1) -> String:
 	if elements == null:
-		return "Null"
+		return "<null>"
 	if elements.is_empty():
 		return "empty"
 	var formatted := ""

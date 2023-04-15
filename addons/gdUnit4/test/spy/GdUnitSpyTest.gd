@@ -1,16 +1,6 @@
 class_name GdUnitSpyTest
 extends GdUnitTestSuite
 
-# small helper to verify last assert error
-func assert_last_error(expected :String, expected_line_number :int = -1):
-	var last_failure_line_number := GdAssertReports.get_last_error_line_number()
-	var gd_assert := GdUnitAssertImpl.new("")
-	if Engine.has_meta(GdAssertReports.LAST_ERROR):
-		gd_assert._current_error_message = Engine.get_meta(GdAssertReports.LAST_ERROR)
-	gd_assert.has_failure_message(expected.dedent().trim_prefix("\n").replace("\r", ""))
-	if expected_line_number != -1:
-		assert_int(last_failure_line_number).is_equal(expected_line_number)
-
 
 func test_spy_instance_id_is_unique():
 	var m1  = spy(RefCounted.new())
@@ -119,8 +109,9 @@ func test_spy_class_with_custom_formattings() -> void:
 	do_spy.a1("set_name", "", true)
 	verify(do_spy, 1).a1("set_name", "", true)
 	verify_no_more_interactions(do_spy)
-	verify_no_interactions(do_spy, GdUnitAssert.EXPECT_FAIL)
-	assert_int(GdAssertReports.get_last_error_line_number()).is_equal(122)
+	assert_failure(func(): verify_no_interactions(do_spy))\
+		.is_failed() \
+		.has_line(112)
 
 
 func test_spy_copied_class_members():
@@ -207,13 +198,16 @@ func test_verify_fail():
 	verify(spy_node, 2).set_process(true)
 	
 	# verify should fail because we interacts two times and not one
-	verify(spy_node, 1, GdUnitAssert.EXPECT_FAIL).set_process(true)
 	var expected_error := """
 		Expecting interaction on:
 			'set_process(true :bool)'	1 time's
 		But found interactions on:
-			'set_process(true :bool)'	2 time's"""
-	assert_last_error(expected_error, 210)
+			'set_process(true :bool)'	2 time's""" \
+			.dedent().trim_prefix("\n")
+	assert_failure(func(): verify(spy_node, 1).set_process(true)) \
+		.is_failed() \
+		.has_line(207) \
+		.has_message(expected_error)
 
 
 func test_verify_func_interaction_wiht_PoolStringArray():
@@ -231,28 +225,34 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 	spy_instance.set_values(PackedStringArray())
 	
 	# try to verify with default array type instead of PackedStringArray type
-	verify(spy_instance, 1, GdUnitAssert.EXPECT_FAIL).set_values([])
 	var expected_error := """
 		Expecting interaction on:
 			'set_values([] :Array)'	1 time's
 		But found interactions on:
-			'set_values([] :PackedStringArray)'	1 time's"""
-	assert_last_error(expected_error, 234)
+			'set_values([] :PackedStringArray)'	1 time's""" \
+			.dedent().trim_prefix("\n")
+	assert_failure(func(): verify(spy_instance, 1).set_values([])) \
+		.is_failed() \
+		.has_line(234) \
+		.has_message(expected_error)
 	
 	reset(spy_instance)
 	# try again with called two times and different args
 	spy_instance.set_values(PackedStringArray())
 	spy_instance.set_values(PackedStringArray(["a", "b"]))
 	spy_instance.set_values([1, 2])
-	verify(spy_instance, 1, GdUnitAssert.EXPECT_FAIL).set_values([])
 	expected_error = """
 		Expecting interaction on:
 			'set_values([] :Array)'	1 time's
 		But found interactions on:
 			'set_values([] :PackedStringArray)'	1 time's
 			'set_values(["a", "b"] :PackedStringArray)'	1 time's
-			'set_values([1, 2] :Array)'	1 time's"""
-	assert_last_error(expected_error, 247)
+			'set_values([1, 2] :Array)'	1 time's""" \
+			.dedent().trim_prefix("\n")
+	assert_failure(func(): verify(spy_instance, 1).set_values([])) \
+		.is_failed() \
+		.has_line(252) \
+		.has_message(expected_error)
 
 
 func test_reset():
@@ -294,10 +294,13 @@ func test_verify_no_interactions_fails():
 		Expecting no more interactions!
 		But found interactions on:
 			'set_process(false :bool)'	1 time's
-			'set_process(true :bool)'	2 time's""".dedent().trim_prefix("\n")
+			'set_process(true :bool)'	2 time's""" \
+			.dedent().trim_prefix("\n")
 	# it should fail because we have interactions
-	verify_no_interactions(spy_node, GdUnitAssert.EXPECT_FAIL)\
-		.has_failure_message(expected_error)
+	assert_failure(func(): verify_no_interactions(spy_node)) \
+		.is_failed() \
+		.has_line(300) \
+		.has_message(expected_error)
 
 
 func test_verify_no_more_interactions():
@@ -347,8 +350,12 @@ func test_verify_no_more_interactions_but_has():
 		But found interactions on:
 			'is_inside_tree()'	2 time's
 			'find_child(mask :String, true :bool, true :bool)'	1 time's
-			'find_child(mask :String, false :bool, false :bool)'	1 time's""".dedent().trim_prefix("\n")
-	verify_no_more_interactions(spy_node, GdUnitAssert.EXPECT_FAIL).has_failure_message(expected_error)
+			'find_child(mask :String, false :bool, false :bool)'	1 time's""" \
+			.dedent().trim_prefix("\n")
+	assert_failure(func(): verify_no_more_interactions(spy_node)) \
+		.is_failed() \
+		.has_line(355) \
+		.has_message(expected_error)
 
 
 class ClassWithStaticFunctions:
