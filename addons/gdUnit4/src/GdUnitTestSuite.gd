@@ -2,13 +2,13 @@
 ## This class is the main class to implement your unit tests[br]
 ## You have to extend and implement your test cases as described[br]
 ## e.g MyTests.gd [br]
-##    [codeblock]
-##    extends GdUnitTestSuite
-##    #
-##    func test_testCaseA():
-##      assert_that("value").is_equal("value")
-##    [/codeblock][br]
-## @tutorial:  https://mikeschulze.github.io/gdUnit3/faq/test-suite/
+## [codeblock]
+## 	extends GdUnitTestSuite
+## 	# testcase
+## 	func test_testCaseA():
+## 	    assert_that("value").is_equal("value")
+## [/codeblock][br]
+## @tutorial:  https://mikeschulze.github.io/gdUnit4/faq/test-suite/
 
 @icon("res://addons/gdUnit4/src/ui/assets/TestSuite.svg")
 class_name GdUnitTestSuite
@@ -460,6 +460,11 @@ func assert_signal(instance :Object) -> GdUnitSignalAssert:
 
 ## Verifiys an assertion is failing as expected
 ## This assert is only designed for internal use to verify failing asserts working as expected
+## Usage:
+##     [codeblock]
+##		assert_failure(func(): assert_bool(true).is_not_equal(true)) \
+##			.has_message("Expecting:\n 'true'\n not equal to\n 'true'")
+##     [/codeblock]
 func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
 	return GdUnitFailureAssertImpl.new(assertion)
 
