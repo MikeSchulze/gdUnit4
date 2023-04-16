@@ -665,23 +665,6 @@ static func default_value_by_type(type :int):
 	return null
 
 
-static func array_to_string(elements :Array, delimiter := "\n", max_elements := -1) -> String:
-	if elements == null:
-		return "<null>"
-	if elements.is_empty():
-		return "empty"
-	var formatted := ""
-	var index := 0
-	for element in elements:
-		if max_elements != -1 and index > max_elements:
-			return formatted + delimiter + "..."
-		if formatted.length() > 0 :
-			formatted += delimiter
-		formatted += str(element)
-		index += 1
-	return formatted
-
-
 # Filters an array by given value
 static func array_filter_value(array :Array, filter_value) -> Array:
 	var filtered_array := Array()

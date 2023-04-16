@@ -4,16 +4,18 @@ extends GdUnitSingleton
 
 
 var _decoders = {
-	TYPE_NIL: Callable(self, "_on_type_nill"),
-	TYPE_STRING: Callable(self, "_on_type_string"),
-	TYPE_STRING_NAME: Callable(self, "_on_type_string"),
-	TYPE_BOOL: Callable(self, "_on_type_bool"),
-	TYPE_RID: Callable(self, "_on_type_RID"),
-	TYPE_RECT2: Callable(self, "_on_decode_Rect2").bind(GdDefaultValueDecoder._regex("P: ?(\\(.+\\)), S: ?(\\(.+\\))")),
-	TYPE_RECT2I: Callable(self, "_on_decode_Rect2i").bind(GdDefaultValueDecoder._regex("P: ?(\\(.+\\)), S: ?(\\(.+\\))")),
-	TYPE_TRANSFORM2D: Callable(self, "_on_type_Transform2D"),
-	TYPE_TRANSFORM3D: Callable(self, "_on_type_Transform3D"),
-	TYPE_PACKED_COLOR_ARRAY: Callable(self, "_on_type_PackedColorArray"),
+	TYPE_NIL: func(value): return "null",
+	TYPE_STRING: func(value): return '"%s"' % value,
+	TYPE_STRING_NAME: func(value): return '"%s"' % value,
+	TYPE_BOOL: func(value): return str(value).to_lower(),
+	TYPE_FLOAT: func(value): return '%f' % value,
+	TYPE_COLOR: func(value): return "Color%s" % value,
+	TYPE_RID: _on_type_RID,
+	TYPE_RECT2: _on_decode_Rect2.bind(GdDefaultValueDecoder._regex("P: ?(\\(.+\\)), S: ?(\\(.+\\))")),
+	TYPE_RECT2I: _on_decode_Rect2i.bind(GdDefaultValueDecoder._regex("P: ?(\\(.+\\)), S: ?(\\(.+\\))")),
+	TYPE_TRANSFORM2D: _on_type_Transform2D,
+	TYPE_TRANSFORM3D: _on_type_Transform3D,
+	TYPE_PACKED_COLOR_ARRAY: _on_type_PackedColorArray,
 }
 
 static func _regex(pattern :String) -> RegEx:
@@ -26,24 +28,7 @@ static func _regex(pattern :String) -> RegEx:
 
 
 func get_decoder(type :int) -> Callable:
-	return _decoders.get(type)
-
-
-func _on_type_self(value :Variant) -> String:
-	return str(value)
-
-
-@warning_ignore("unused_parameter")
-func _on_type_nill(value :Variant) -> String:
-	return "null"
-
-
-func _on_type_string(value :Variant) -> String:
-	return "\"%s\"" % value
-
-
-func _on_type_bool(value :Variant) -> String:
-	return str(value).to_lower()
+	return _decoders.get(type, func(value): return '%s' % value)
 
 
 func _on_type_Transform2D(value :Variant) -> String:

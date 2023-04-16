@@ -67,6 +67,31 @@ static func _colored_array_div(characters :PackedByteArray) -> String:
 	result.append_array(format_chars(additional_chars, ADD_COLOR))
 	return result.get_string_from_utf8()
 
+const max_elements := 32
+
+static func array_to_string(elements :Array, encode_value := true) -> String:
+	var delemiter = ", "
+	if elements == null:
+		return "<null>"
+	if elements.is_empty():
+		return "empty"
+	var formatted := ""
+	var index := 0
+	for element in elements:
+		if max_elements != -1 and index > max_elements:
+			return formatted + delemiter + "..."
+		if formatted.length() > 0 :
+			formatted += delemiter
+		formatted += _typed_value(element) if encode_value else str(element)
+		index += 1
+	return formatted
+
+
+static func _typed_value(value) -> String:
+	if value == null:
+		return "<null>"
+	return GdDefaultValueDecoder.decode(typeof(value), value)
+
 
 static func _warning(error :String) -> String:
 	return "[color=%s]%s[/color]" % [WARN_COLOR, error]
@@ -93,9 +118,9 @@ static func _colored_value(value, _delimiter ="\n", detailed := false) -> String
 		TYPE_INT:
 			return "'[color=%s]%d[/color]'" % [VALUE_COLOR, value]
 		TYPE_FLOAT:
-			return "'[color=%s]%f[/color]'" % [VALUE_COLOR, value]
+			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _typed_value(value)]
 		TYPE_COLOR:
-			return "'[color=%s]Color%s[/color]'" % [VALUE_COLOR, value]
+			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _typed_value(value)]
 		TYPE_OBJECT:
 			if value == null:
 				return "'[color=%s]<null>[/color]'" % [VALUE_COLOR]
@@ -108,7 +133,7 @@ static func _colored_value(value, _delimiter ="\n", detailed := false) -> String
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _format_dict(value)]
 		_:
 			if GdObjects.is_array_type(value):
-				return "[color=%s]%s[/color]" % [VALUE_COLOR, GdObjects.array_to_string(value, ', ')]
+				return "[color=%s]%s[/color]" % [VALUE_COLOR, array_to_string(value)]
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, value]
 
 
@@ -355,6 +380,14 @@ static func error_arr_contains_exactly_in_any_order(current, expected :Array, no
 	return error
 
 
+static func error_arr_not_contains(current :Array, expected :Array, found :Array) -> String:
+	var error := "%s\n %s\n do not contains\n %s" % [_error("Expecting:"), _colored_value(current, ", "), _colored_value(expected, ", ")]
+	if not found.is_empty():
+		error += "\n but found elements:\n %s" % _colored_value(found, ", ")
+	return error
+
+
+
 # - DictionaryAssert specific messages ----------------------------------------------
 static func error_contains_keys(current :Array, expected :Array, keys_not_found :Array) -> String:
 	return "%s\n %s\n to contains:\n %s\n but can't find key's:\n %s" % [_error("Expecting keys:"), _colored_value(current, ", "), _colored_value(expected, ", "), _colored_value(keys_not_found, ", ")]
@@ -489,7 +522,7 @@ static func _find_first_diff( left :Array, right :Array) -> String:
 		var l = left[index]
 		var r = "<no entry>" if index >= right.size() else right[index]
 		if not GdObjects.equals(l, r):
-			return "at position %s\n %s vs %s" % [_colored_value(index), _colored_value(l), _colored_value(r)]
+			return "at position %s\n '%s' vs '%s'" % [_colored_value(index), _typed_value(l), _typed_value(r)]
 	return ""
 
 
