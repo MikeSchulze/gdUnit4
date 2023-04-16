@@ -71,7 +71,14 @@ func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
 	return self
 
 
-## Verifies that the current Array do NOT contains the given values, in any order.
+## Verifies that the current Array do NOT contains the given values, in any order.[br]
+## [b]Example:[/b]
+## [codeblock]
+## # will succeed
+## assert_array([1, 2, 3, 4, 5]).not_contains([6])
+## # will fail
+## assert_array([1, 2, 3, 4, 5]).not_contains([2, 6])
+## [/codeblock]
 @warning_ignore("unused_parameter")
 func not_contains(expected) -> GdUnitArrayAssert:
 	return self

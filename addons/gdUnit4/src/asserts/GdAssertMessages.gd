@@ -88,6 +88,8 @@ static func array_to_string(elements :Array, encode_value := true) -> String:
 
 
 static func _typed_value(value) -> String:
+	if value == null:
+		return "<null>"
 	return GdDefaultValueDecoder.decode(typeof(value), value)
 
 

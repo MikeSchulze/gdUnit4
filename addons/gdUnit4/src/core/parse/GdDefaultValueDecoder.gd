@@ -4,7 +4,7 @@ extends GdUnitSingleton
 
 
 var _decoders = {
-	TYPE_NIL: func(value): return "<null>",
+	TYPE_NIL: func(value): return "null",
 	TYPE_STRING: func(value): return '"%s"' % value,
 	TYPE_STRING_NAME: func(value): return '"%s"' % value,
 	TYPE_BOOL: func(value): return str(value).to_lower(),
