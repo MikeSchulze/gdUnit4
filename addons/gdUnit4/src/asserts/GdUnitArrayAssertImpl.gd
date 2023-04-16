@@ -221,7 +221,6 @@ func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
 	return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected_, not_expect, not_found))
 
 
-@warning_ignore("unused_parameter")
 func not_contains(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
 		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
