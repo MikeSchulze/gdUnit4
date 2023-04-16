@@ -6,13 +6,9 @@ const __source = 'res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd'
 
 # small value format helper
 func format_value(value) -> String:
-	if value is Color:
-		return "Color%s" % value
-	if value is float:
-		return "%f" % value
 	if GdObjects.is_array_type(value):
-		return ", ".join(Array(value))
-	return "%s" % value
+		return GdAssertMessages.array_to_string(value)
+	return GdAssertMessages._typed_value(value)
 
 
 @warning_ignore("unused_parameter")
@@ -231,6 +227,71 @@ func test_contains_exactly(_test :String, array, test_parameters = [
 			.replace("$B", format_value(array[3]))
 			.replace("$source", format_value(array))
 			.replace("$contains", format_value(shuffled))
+		)
+
+
+@warning_ignore("unused_parameter")
+func test_not_contains(_test :String, array, test_parameters = [
+	["Array", Array([1, 2, 3, 4, 5])],
+	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
+	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
+	["PackedInt64Array", PackedInt64Array([1, 2, 3, 4, 5])],
+	["PackedFloat32Array", PackedFloat32Array([1, 2, 3, 4, 5])],
+	["PackedFloat64Array", PackedFloat64Array([1, 2, 3, 4, 5])],
+	["PackedStringArray", PackedStringArray(["1", "2", "3", "4", "5"])],
+	["PackedVector2Array", PackedVector2Array([Vector2.ZERO, Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN])],
+	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
+	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
+	) -> void:
+	
+	assert_array(array).not_contains([0])
+	assert_array(array).not_contains([0])
+	assert_array(array).not_contains([0, 6])
+	
+	var should_not_contain = [array[4]]
+	assert_failure(func(): assert_array(array).not_contains(should_not_contain))\
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 $current
+			 do not contains
+			 $not_contain
+			 but found elements:
+			 $found"""
+			.dedent().trim_prefix("\n")
+			.replace("$current", format_value(array))
+			.replace("$not_contain",  format_value(should_not_contain))
+			.replace("$found", format_value(array[4]))
+		)
+	should_not_contain = [array[0], array[3], 6]
+	assert_failure(func(): assert_array(array).not_contains(should_not_contain)) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 $current
+			 do not contains
+			 $not_contain
+			 but found elements:
+			 $found"""
+			.dedent().trim_prefix("\n")
+			.replace("$current", format_value(array))
+			.replace("$not_contain",  format_value(should_not_contain))
+			.replace("$found", format_value([array[0], array[3]]))
+		)
+	should_not_contain = [6, array[3], array[0]]
+	assert_failure(func(): assert_array(array).not_contains(should_not_contain)) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 $current
+			 do not contains
+			 $not_contain
+			 but found elements:
+			 $found"""
+			.dedent().trim_prefix("\n")
+			.replace("$current", format_value(array))
+			.replace("$not_contain",  format_value(should_not_contain))
+			.replace("$found", format_value([array[3], array[0]]))
 		)
 
 

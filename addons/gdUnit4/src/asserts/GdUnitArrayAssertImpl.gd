@@ -110,11 +110,11 @@ func is_equal(expected) -> GdUnitArrayAssert:
 	var current_ = __current()
 	var expected_ = __expected(expected)
 	if current_ == null and expected_ != null:
-		return report_error(GdAssertMessages.error_equal(null, GdObjects.array_to_string(expected_, ", ", 32)))
+		return report_error(GdAssertMessages.error_equal(null, GdAssertMessages.array_to_string(expected_)))
 	if not GdObjects.equals(current_, expected_):
 		var diff := _array_equals_div(current_, expected_)
-		var expected_as_list := GdObjects.array_to_string(diff[0], ", ", 32)
-		var current_as_list := GdObjects.array_to_string(diff[1], ", ", 32)
+		var expected_as_list := GdAssertMessages.array_to_string(diff[0], false)
+		var current_as_list := GdAssertMessages.array_to_string(diff[1], false)
 		var index_report = diff[2]
 		return report_error(GdAssertMessages.error_equal(expected_as_list, current_as_list, index_report))
 	return report_success()
@@ -125,11 +125,11 @@ func is_equal_ignoring_case(expected) -> GdUnitArrayAssert:
 	var current_ = __current()
 	var expected_ = __expected(expected)
 	if current_ == null and expected_ != null:
-		return report_error(GdAssertMessages.error_equal(null, GdObjects.array_to_string(expected_, ", ", 32)))
+		return report_error(GdAssertMessages.error_equal(null, GdAssertMessages.array_to_string(expected_)))
 	if not GdObjects.equals(current_, expected_, true):
 		var diff := _array_equals_div(current_, expected_, true)
-		var expected_as_list := GdObjects.array_to_string(diff[0], ", ", 32)
-		var current_as_list := GdObjects.array_to_string(diff[1], ", ", 32)
+		var expected_as_list := GdAssertMessages.array_to_string(diff[0], false)
+		var current_as_list := GdAssertMessages.array_to_string(diff[1], false)
 		var index_report = diff[2]
 		return report_error(GdAssertMessages.error_equal(expected_as_list, current_as_list, index_report))
 	return report_success()
@@ -139,8 +139,8 @@ func is_not_equal(expected) -> GdUnitArrayAssert:
 	var current_ = __current()
 	var expected_ = __expected(expected)
 	if GdObjects.equals(current_, expected_):
-		var c := GdObjects.array_to_string(current_, ", ", 32)
-		var e := GdObjects.array_to_string(expected_, ", ", 32)
+		var c := GdAssertMessages.array_to_string(current_)
+		var e := GdAssertMessages.array_to_string(expected_)
 		return report_error(GdAssertMessages.error_not_equal(c, e))
 	return report_success()
 
@@ -149,8 +149,8 @@ func is_not_equal_ignoring_case(expected) -> GdUnitArrayAssert:
 	var current_ = __current()
 	var expected_ = __expected(expected)
 	if GdObjects.equals(current_, expected_, true):
-		var c := GdObjects.array_to_string(current_, ", ", 32)
-		var e := GdObjects.array_to_string(expected_, ", ", 32)
+		var c := GdAssertMessages.array_to_string(current_)
+		var e := GdAssertMessages.array_to_string(expected_)
 		return report_error(GdAssertMessages.error_not_equal_case_insensetiv(c, e))
 	return report_success()
 
@@ -219,6 +219,22 @@ func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
 	if not_expect.is_empty() and not_found.is_empty():
 		return report_success()
 	return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected_, not_expect, not_found))
+
+
+@warning_ignore("unused_parameter")
+func not_contains(expected) -> GdUnitArrayAssert:
+	if not __validate_value_type(expected):
+		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+	var current_ = __current()
+	var expected_ = __expected(expected)
+	if current_ == null:
+		return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected_, [], expected_))
+	var diffs := _array_div(current_, expected_)
+	var found := diffs[0] as Array
+	if found.size() == current_.size():
+		return report_success()
+	var diffs2 := _array_div(expected_, diffs[1])
+	return report_error(GdAssertMessages.error_arr_not_contains(current_, expected_, diffs2[0]))
 
 
 @warning_ignore("shadowed_global_identifier")

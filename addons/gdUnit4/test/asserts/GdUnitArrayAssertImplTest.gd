@@ -97,7 +97,7 @@ func test_is_equal_ignoring_case():
 		.is_failed() \
 		.has_message("""
 			Expecting:
-			 'This, is'
+			 '"This", "is"'
 			 but was
 			 '<null>'"""
 			.dedent().trim_prefix("\n"))
@@ -125,9 +125,9 @@ func test_is_not_equal_ignoring_case():
 		.is_failed() \
 		.has_message("""
 			Expecting:
-			 'This, is, a, Message'
+			 '"This", "is", "a", "Message"'
 			 not equal to (case insensitiv)
-			 'this, is, a, message'"""
+			 '"this", "is", "a", "message"'"""
 			.dedent().trim_prefix("\n"))
 
 
@@ -303,6 +303,46 @@ func test_contains_exactly_in_any_order():
 			.dedent().trim_prefix("\n"))
 
 
+func test_not_contains():
+	assert_array([]).not_contains([0])
+	assert_array([1, 2, 3, 4, 5]).not_contains([0])
+	assert_array([1, 2, 3, 4, 5]).not_contains([0, 6])
+	
+	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([5]))\
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 1, 2, 3, 4, 5
+			 do not contains
+			 5
+			 but found elements:
+			 5"""
+			.dedent().trim_prefix("\n")
+		)
+	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([1, 4, 6])) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 1, 2, 3, 4, 5
+			 do not contains
+			 1, 4, 6
+			 but found elements:
+			 1, 4"""
+			.dedent().trim_prefix("\n")
+		)
+	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([6, 4, 1])) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 1, 2, 3, 4, 5
+			 do not contains
+			 6, 4, 1
+			 but found elements:
+			 4, 1"""
+			.dedent().trim_prefix("\n")
+		)
+
+
 func test_fluent():
 	assert_array([])\
 		.has_size(0)\
@@ -351,11 +391,11 @@ func test_extract() -> void:
 			Expecting contains exactly elements:
 			 <null>
 			 do contains (in same order)
-			 AStar3D, Node
+			 "AStar3D", "Node"
 			but some elements where not expected:
 			 <null>
 			and could not find elements:
-			 AStar3D, Node"""
+			 "AStar3D", "Node\""""
 			.dedent().trim_prefix("\n"))
 
 

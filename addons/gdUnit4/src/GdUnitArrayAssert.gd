@@ -71,6 +71,12 @@ func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
 	return self
 
 
+## Verifies that the current Array do NOT contains the given values, in any order.
+@warning_ignore("unused_parameter")
+func not_contains(expected) -> GdUnitArrayAssert:
+	return self
+
+
 ## Extracts all values by given function name and optional arguments into a new ArrayAssert.
 ## If the elements not accessible by `func_name` the value is converted to `"n.a"`, expecting null values
 @warning_ignore("unused_parameter")
