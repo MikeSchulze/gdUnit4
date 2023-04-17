@@ -185,7 +185,12 @@ func spy(instance):
 	return GdUnitSpyBuilder.build(self, instance)
 
 
-## Configures a return value for the specified function and used arguments.
+## Configures a return value for the specified function and used arguments.[br]
+## [b]Example:
+## 	[codeblock]
+## 		# overrides the return value of myMock.is_selected() to false
+## 		do_return(false).on(myMock).is_selected()
+## 	[/codeblock]
 func do_return(value) -> GdUnitMock:
 	return GdUnitMock.new(value)
 
