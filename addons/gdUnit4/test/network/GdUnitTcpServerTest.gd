@@ -13,7 +13,7 @@ func test_read_next_data_packages() -> void:
 	var server = mock(TCPServer)
 	var stream = mock(StreamPeerTCP)
 	
-	do_return(stream).checked(server).take_connection()
+	do_return(stream).on(server).take_connection()
 	
 	var connection :GdUnitTcpServer.TcpConnection = auto_free(GdUnitTcpServer.TcpConnection.new(server))
 	
@@ -42,7 +42,7 @@ func test_receive_packages() -> void:
 	var server = mock(TCPServer)
 	var stream = mock(StreamPeerTCP)
 	
-	do_return(stream).checked(server).take_connection()
+	do_return(stream).on(server).take_connection()
 	
 	var connection :GdUnitTcpServer.TcpConnection = auto_free(GdUnitTcpServer.TcpConnection.new(server))
 	var test_server :GdUnitTcpServer = auto_free(GdUnitTcpServer.new())
@@ -53,8 +53,8 @@ func test_receive_packages() -> void:
 	# mock send RPCMessage
 	var data := DLM + RPCMessage.of("Test Message").serialize() + DLM
 	var package_data = [0, data.to_ascii_buffer()]
-	do_return(data.length()).checked(stream).get_available_bytes()
-	do_return(package_data).checked(stream).get_partial_data(data.length())
+	do_return(data.length()).on(stream).get_available_bytes()
+	do_return(package_data).on(stream).get_partial_data(data.length())
 	
 	# do receive next packages
 	connection.receive_packages()

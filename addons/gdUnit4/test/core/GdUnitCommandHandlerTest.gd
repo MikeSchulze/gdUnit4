@@ -11,11 +11,11 @@ func test__check_test_run_stopped_manually() -> void:
 	inspector._client_id = 1
 	
 	# simulate no test is running
-	do_return(false).checked(inspector).is_test_running_but_stop_pressed()
+	do_return(false).on(inspector).is_test_running_but_stop_pressed()
 	inspector.check_test_run_stopped_manually()
 	verify(inspector, 0).cmd_stop(any_int())
 	
 	# simulate the test runner was manually stopped by the editor
-	do_return(true).checked(inspector).is_test_running_but_stop_pressed()
+	do_return(true).on(inspector).is_test_running_but_stop_pressed()
 	inspector.check_test_run_stopped_manually()
 	verify(inspector, 1).cmd_stop(inspector._client_id)

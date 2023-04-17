@@ -119,7 +119,7 @@ func test_mock_Node():
 	# test mocked function returns default typed value
 	assert_that(mocked_node.get_child_count()).is_equal(0)
 	# now mock return value for function 'foo' to 'overwriten value'
-	do_return(24).checked(mocked_node).get_child_count()
+	do_return(24).on(mocked_node).get_child_count()
 	# verify the return value is overwritten
 	assert_that(mocked_node.get_child_count()).is_equal(24)
 
@@ -231,13 +231,13 @@ func test_mock_custom_class_by_class_name():
 	assert_that(m.foo()).is_equal("")
 	
 	# now mock return value for function 'foo' to 'overwriten value'
-	do_return("overriden value").checked(m).foo()
+	do_return("overriden value").on(m).foo()
 	# verify the return value is overwritten
 	assert_that(m.foo()).is_equal("overriden value")
 	
 	# now mock return values by custom arguments
-	do_return("arg_1").checked(m).bar(1)
-	do_return("arg_2").checked(m).bar(2)
+	do_return("arg_1").on(m).bar(1)
+	do_return("arg_2").on(m).bar(2)
 	
 	assert_that(m.bar(1)).is_equal("arg_1")
 	assert_that(m.bar(2)).is_equal("arg_2")
@@ -253,13 +253,13 @@ func test_mock_custom_class_by_resource_path():
 	assert_that(m.foo()).is_equal("")
 	
 	# now mock return value for function 'foo' to 'overwriten value'
-	do_return("overriden value").checked(m).foo()
+	do_return("overriden value").on(m).foo()
 	# verify the return value is overwritten
 	assert_that(m.foo()).is_equal("overriden value")
 	
 	# now mock return values by custom arguments
-	do_return("arg_1").checked(m).bar(1)
-	do_return("arg_2").checked(m).bar(2)
+	do_return("arg_1").on(m).bar(1)
+	do_return("arg_2").on(m).bar(2)
 	
 	assert_that(m.bar(1)).is_equal("arg_1")
 	assert_that(m.bar(2)).is_equal("arg_2")
@@ -271,7 +271,7 @@ func test_mock_custom_class_func_foo_use_real_func():
 	# test mocked function returns value from real function
 	assert_that(m.foo()).is_equal("foo")
 	# now mock return value for function 'foo' to 'overwriten value'
-	do_return("overridden value").checked(m).foo()
+	do_return("overridden value").on(m).foo()
 	# verify the return value is overwritten
 	assert_that(m.foo()).is_equal("overridden value")
 
@@ -282,7 +282,7 @@ func test_mock_custom_class_void_func():
 	# test mocked void function returns null by default
 	assert_that(m.foo_void()).is_null()
 	# try now mock return value for a void function. results into an error
-	do_return("overridden value").checked(m).foo_void()
+	do_return("overridden value").on(m).foo_void()
 	# verify it has no affect for void func
 	assert_that(m.foo_void()).is_null()
 
@@ -293,7 +293,7 @@ func test_mock_custom_class_void_func_real_func():
 	# test mocked void function returns null by default
 	assert_that(m.foo_void()).is_null()
 	# try now mock return value for a void function. results into an error
-	do_return("overridden value").checked(m).foo_void()
+	do_return("overridden value").on(m).foo_void()
 	# verify it has no affect for void func
 	assert_that(m.foo_void()).is_null()
 
@@ -330,7 +330,7 @@ func test_mock_custom_class_func_foo_full_test():
 	verify(m, 0).foo()
 	assert_that(m.foo()).is_equal("")
 	verify(m, 1).foo()
-	do_return("new value").checked(m).foo()
+	do_return("new value").on(m).foo()
 	verify(m, 1).foo()
 	assert_that(m.foo()).is_equal("new value")
 	verify(m, 2).foo()
@@ -342,7 +342,7 @@ func test_mock_custom_class_func_foo_full_test_real_func():
 	verify(m, 0).foo()
 	assert_that(m.foo()).is_equal("foo")
 	verify(m, 1).foo()
-	do_return("new value").checked(m).foo()
+	do_return("new value").on(m).foo()
 	verify(m, 1).foo()
 	assert_that(m.foo()).is_equal("new value")
 	verify(m, 2).foo()
@@ -360,7 +360,7 @@ func test_mock_custom_class_func_bar():
 	verify(m, 0).bar(23)
 	
 	# now mock return value for function 'bar' with args [10] to 'overwriten value'
-	do_return("overridden value").checked(m).bar(10)
+	do_return("overridden value").on(m).bar(10)
 	# verify the return value is overwritten
 	assert_that(m.bar(10)).is_equal("overridden value")
 	# finally verify function call times
@@ -381,7 +381,7 @@ func test_mock_custom_class_func_bar_real_func():
 	verify(m, 0).bar(23)
 	
 	# now mock return value for function 'bar' with args [10] to 'overwriten value'
-	do_return("overridden value").checked(m).bar(10)
+	do_return("overridden value").on(m).bar(10)
 	# verify the return value is overwritten
 	assert_that(m.bar(10)).is_equal("overridden value")
 	# verify the real implementation is used
@@ -452,9 +452,9 @@ func test_mock_custom_class_extends_other_custom_class():
 	verify(m, 1).bar2()
 	
 	# override returns
-	do_return("abc1").checked(m).foo()
-	do_return("abc2").checked(m).foo2()
-	do_return("abc3").checked(m).bar2()
+	do_return("abc1").on(m).foo()
+	do_return("abc2").on(m).foo2()
+	do_return("abc3").on(m).bar2()
 	
 	assert_that(m.foo()).is_equal("abc1")
 	assert_that(m.foo2()).is_equal("abc2")
@@ -481,9 +481,9 @@ func test_mock_custom_class_extends_other_custom_class_call_real_func():
 	verify(m, 1).bar2()
 	
 	# override returns
-	do_return("abc1").checked(m).foo()
-	do_return("abc2").checked(m).foo2()
-	do_return("abc3").checked(m).bar2()
+	do_return("abc1").on(m).foo()
+	do_return("abc2").on(m).foo2()
+	do_return("abc3").on(m).bar2()
 	
 	assert_that(m.foo()).is_equal("abc1")
 	assert_that(m.foo2()).is_equal("abc2")
@@ -584,7 +584,7 @@ func test_mock_advanced_func_path():
 	verify(m, 1).a()
 	
 	# call select again wiht overriden return value for func a()
-	do_return("overridden a func").checked(m).a()
+	do_return("overridden a func").on(m).a()
 	assert_that(m.select(AdvancedTestClass.A)).is_equal("overridden a func")
 	
 	# verify at this time select() and a() is called two times
@@ -633,7 +633,7 @@ func test_example_do_return():
 	# is return 0 by default
 	mocked_node.get_child_count()
 	# configure to return 10 when 'get_child_count()' is called
-	do_return(10).checked(mocked_node).get_child_count()
+	do_return(10).on(mocked_node).get_child_count()
 	# will now return 10
 	mocked_node.get_child_count()
 	
@@ -642,9 +642,9 @@ func test_example_do_return():
 	assert_object(node).is_null()
 	
 	# configure to return a mocked 'Camera3D' for child 0
-	do_return(mock(Camera3D)).checked(mocked_node).get_child(0)
+	do_return(mock(Camera3D)).on(mocked_node).get_child(0)
 	# configure to return a mocked 'Area3D' for child 1
-	do_return(mock(Area3D)).checked(mocked_node).get_child(1)
+	do_return(mock(Area3D)).on(mocked_node).get_child(1)
 	
 	# will now return the Camera3D node
 	var node0 = mocked_node.get_child(0)
