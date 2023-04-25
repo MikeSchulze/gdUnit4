@@ -215,6 +215,24 @@ func reset(obj) -> void:
 	GdUnitObjectInteractions.reset(obj)
 
 
+## Starts monitoring the specified source to collect all transmitted signals.[br]
+## The collected signals can then be checked with 'assert_signal'.[br]
+## By default, the specified source is automatically released when the test ends.
+## You can control this behavior by setting auto_free to false if you do not want the source to be automatically freed.[br]
+## Usage:
+##	[codeblock]
+##		var emitter := monitor_signals(MyEmitter.new())
+##		# call the function to send the signal
+##		emitter.do_it()
+##		# verify the signial is emitted
+##		await assert_signal(emitter).is_emitted('my_signal')
+##	[/codeblock]
+func monitor_signals(source :Object, auto_free := true) -> Object:
+	var signal_collector := GdUnitThreadManager.get_current_context().get_signal_collector()
+	signal_collector.register_emitter(source)
+	return auto_free(source) if auto_free else source
+
+
 # === Argument matchers ========================================================
 ## Argument matcher to match any argument
 func any() -> GdUnitArgumentMatcher:

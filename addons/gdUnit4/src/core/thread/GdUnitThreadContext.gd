@@ -4,10 +4,21 @@ extends RefCounted
 
 var _thread :Thread
 var _assert :GdUnitAssert
+var _signal_collector :GdUnitSignalAssertImpl.SignalCollector
 
 
 func _init(thread :Thread = null):
 	_thread = thread
+	_signal_collector = GdUnitSignalAssertImpl.SignalCollector.new()
+
+
+func init() -> void:
+	clear()
+
+func clear() -> void:
+	_assert = null
+	if is_instance_valid(_signal_collector):
+		_signal_collector.clear()
 
 
 func set_assert(value :GdUnitAssert) -> GdUnitThreadContext:
@@ -17,6 +28,10 @@ func set_assert(value :GdUnitAssert) -> GdUnitThreadContext:
 
 func get_assert() -> GdUnitAssert:
 	return _assert
+
+
+func get_signal_collector() -> GdUnitSignalAssertImpl.SignalCollector:
+	return _signal_collector
 
 
 func _to_string() -> String:
