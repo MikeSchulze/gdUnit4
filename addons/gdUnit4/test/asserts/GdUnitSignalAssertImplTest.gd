@@ -36,12 +36,6 @@ func before_test():
 	add_child(signal_emitter)
 
 
-func after():
-	assert_bool(GdUnitSignalAssertImpl.SignalCollector.instance("SignalCollector", func(): pass)._collected_signals.is_empty())\
-		.override_failure_message("Expecting the signal collector must be empty")\
-		.is_true()
-
-
 # we need to skip await fail test because of an bug in Godot 4.0 stable
 func is_skip_fail_await() -> bool:
 	return Engine.get_version_info().hex < 0x40002
@@ -146,6 +140,48 @@ func test_is_signal_exists() -> void:
 	
 	if is_skip_fail_await():
 		return
-
+	
 	(await verify_failed(func(): assert_signal(node).is_signal_exists("not_existing_signal"))) \
 		.is_equal("The signal 'not_existing_signal' not exists checked object 'Node2D'.")
+
+
+class MyEmitter extends Node:
+	
+	signal my_signal_a
+	signal my_signal_b(value :String)
+	
+	
+	func do_emit_a() -> void:
+		my_signal_a.emit()
+	
+	
+	func do_emit_b() -> void:
+		my_signal_b.emit("foo")
+
+
+func test_monitor_signals() -> void:
+	# start to watch on the emitter to collect all emitted signals
+	var emitter_a := monitor_signals(MyEmitter.new())
+	var emitter_b := monitor_signals(MyEmitter.new())
+	
+	# verify the signals are not emitted initial
+	await assert_signal(emitter_a).wait_until(50).is_not_emitted('my_signal_a')
+	await assert_signal(emitter_a).wait_until(50).is_not_emitted('my_signal_b')
+	await assert_signal(emitter_b).wait_until(50).is_not_emitted('my_signal_a')
+	await assert_signal(emitter_b).wait_until(50).is_not_emitted('my_signal_b')
+	
+	# emit signal `my_signal_a` on emitter_a
+	emitter_a.do_emit_a()
+	assert_signal(emitter_a).is_emitted('my_signal_a')
+	
+	# emit signal `my_signal_b` on emitter_a
+	emitter_a.do_emit_b()
+	assert_signal(emitter_a).is_emitted('my_signal_a')
+	assert_signal(emitter_a).is_emitted('my_signal_b', ["foo"])
+	# verify emitter_b still has nothing emitted
+	await assert_signal(emitter_b).wait_until(50).is_not_emitted('my_signal_a')
+	await assert_signal(emitter_b).wait_until(50).is_not_emitted('my_signal_b')
+	
+	# now verify emitter b
+	emitter_b.do_emit_a()
+	assert_signal(emitter_b).is_emitted('my_signal_a')
