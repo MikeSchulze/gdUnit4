@@ -205,5 +205,6 @@ func _wail_until_signal(signal_name :String, expected_args :Array, expect_not_em
 	if _interrupted and not expect_not_emitted:
 		report_error(GdAssertMessages.error_wait_signal(signal_name, expected_args, LocalTime.elapsed(_timeout)))
 	timer.free()
-	_signal_collector.reset_received_signals(_emitter)
+	if is_instance_valid(_emitter):
+		_signal_collector.reset_received_signals(_emitter)
 	return self

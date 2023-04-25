@@ -15,6 +15,7 @@ func _init(thread :Thread = null):
 func init() -> void:
 	clear()
 
+
 func clear() -> void:
 	_assert = null
 	if is_instance_valid(_signal_collector):
