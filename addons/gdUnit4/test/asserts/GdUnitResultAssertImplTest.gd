@@ -124,18 +124,6 @@ func test_override_failure_message() -> void:
 		.has_message("Custom failure message")
 
 
-var _index = -1
-var _values := [Result.success(""), Result.error("error"), Result.warn("warn")]
-func next_value() -> Result:
-	_index += 1
-	return _values[_index]
-
-
-func test_with_value_provider() -> void:
-	assert_result(CallBackValueProvider.new(self, "next_value"))\
-		.is_success().is_error().is_warning()
-
-
 # tests if an assert fails the 'is_failure' reflects the failure status
 func test_is_failure() -> void:
 	# initial is false

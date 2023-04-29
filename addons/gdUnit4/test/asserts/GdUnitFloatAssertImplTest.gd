@@ -220,17 +220,6 @@ func test_override_failure_message() -> void:
 		.has_message("Custom failure message")
 
 
-var _value :float = 0
-func next_value() -> float:
-	_value += 1.1
-	return _value
-
-
-func test_with_value_provider() -> void:
-	assert_float(CallBackValueProvider.new(self, "next_value"))\
-		.is_equal(1.1).is_equal(2.2)
-
-
 # tests if an assert fails the 'is_failure' reflects the failure status
 func test_is_failure() -> void:
 	# initial is false

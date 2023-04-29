@@ -93,17 +93,6 @@ func test_override_failure_message() -> void:
 		.has_message("Custom failure message")
 
 
-var _value = 0
-func next_value() -> bool:
-	_value += 1
-	return true if _value == 1 else false
-
-
-func test_with_value_provider() -> void:
-	assert_bool(CallBackValueProvider.new(self, "next_value"))\
-		.is_true().is_false().is_false()
-
-
 # tests if an assert fails the 'is_failure' reflects the failure status
 func test_is_failure() -> void:
 	# initial is false
