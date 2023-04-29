@@ -41,8 +41,8 @@ func test_assert_failure_on_assert(test_name :String, assert_type, value, test_p
 	["GdUnitIntAssert", GdUnitIntAssert, 42],
 	["GdUnitFloatAssert", GdUnitFloatAssert, 42.0],
 	["GdUnitObjectAssert", GdUnitObjectAssert, RefCounted.new()],
-	["GdUnitVector2Assert", GdUnitVector2Assert, Vector2.ZERO],
-	["GdUnitVector3Assert", GdUnitVector3Assert, Vector3.ZERO],
+	["GdUnitVectorAssert", GdUnitVectorAssert, Vector2.ZERO],
+	["GdUnitVectorAssert", GdUnitVectorAssert, Vector3.ZERO],
 	["GdUnitArrayAssert", GdUnitArrayAssert, Array()],
 	["GdUnitDictionaryAssert", GdUnitDictionaryAssert, {}],
 ]) -> void:

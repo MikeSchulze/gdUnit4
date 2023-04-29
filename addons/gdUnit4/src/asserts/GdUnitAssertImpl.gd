@@ -45,7 +45,7 @@ func __current() -> Variant:
 	return _current_value_provider.get_value()
 
 
-func __validate_value_type(value, type :int) -> bool:
+func __validate_value_type(value, type :Variant.Type) -> bool:
 	return value is ValueProvider or value == null or typeof(value) == type
 
 
