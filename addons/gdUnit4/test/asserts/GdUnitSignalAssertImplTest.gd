@@ -172,16 +172,15 @@ func test_monitor_signals() -> void:
 	
 	# emit signal `my_signal_a` on emitter_a
 	emitter_a.do_emit_a()
-	assert_signal(emitter_a).is_emitted('my_signal_a')
+	await assert_signal(emitter_a).is_emitted('my_signal_a')
 	
 	# emit signal `my_signal_b` on emitter_a
 	emitter_a.do_emit_b()
-	assert_signal(emitter_a).is_emitted('my_signal_a')
-	assert_signal(emitter_a).is_emitted('my_signal_b', ["foo"])
+	await assert_signal(emitter_a).is_emitted('my_signal_b', ["foo"])
 	# verify emitter_b still has nothing emitted
 	await assert_signal(emitter_b).wait_until(50).is_not_emitted('my_signal_a')
 	await assert_signal(emitter_b).wait_until(50).is_not_emitted('my_signal_b')
 	
 	# now verify emitter b
 	emitter_b.do_emit_a()
-	assert_signal(emitter_b).is_emitted('my_signal_a')
+	await assert_signal(emitter_b).wait_until(50).is_emitted('my_signal_a')
