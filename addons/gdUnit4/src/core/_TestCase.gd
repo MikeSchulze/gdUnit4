@@ -46,6 +46,7 @@ func configure(p_name: String, p_line_number: int, p_script_path: String, p_time
 
 
 func execute(p_test_parameter := Array(), p_iteration := 0):
+	_failure_received(false)
 	_current_iteration = p_iteration - 1
 	if p_iteration == 0:
 		_set_failure_handler()

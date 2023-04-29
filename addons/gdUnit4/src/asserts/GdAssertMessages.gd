@@ -273,6 +273,13 @@ static func error_is_not_zero() -> String:
 	return "%s\n not equal to 0" % [_error("Expecting:")]
 
 
+static func error_is_wrong_type(current_type :Variant.Type, expected_type :Variant.Type) -> String:
+	return "%s\n Expecting type %s but is %s" % [
+		_error("Unexpected type comparison:"),
+		_colored_value(GdObjects.type_as_string(current_type)),
+		_colored_value(GdObjects.type_as_string(expected_type))]
+
+
 static func error_is_value(operation, current, expected, expected2=null) -> String:
 	match operation:
 		Comparator.EQUAL:

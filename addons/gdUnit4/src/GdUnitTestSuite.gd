@@ -264,14 +264,46 @@ func any_color() -> GdUnitArgumentMatcher:
 	return GdUnitArgumentMatchers.by_type(TYPE_COLOR)
 
 
+## Argument matcher to match any Vector typed value
+func any_vector() -> GdUnitArgumentMatcher:
+	return GdUnitArgumentMatchers.by_types([
+		TYPE_VECTOR2,
+		TYPE_VECTOR2I,
+		TYPE_VECTOR3,
+		TYPE_VECTOR3I,
+		TYPE_VECTOR4,
+		TYPE_VECTOR4I,
+	])
+
+
 ## Argument matcher to match any Vector2 value
 func any_vector2() -> GdUnitArgumentMatcher:
 	return GdUnitArgumentMatchers.by_type(TYPE_VECTOR2)
 
 
+## Argument matcher to match any Vector2i value
+func any_vector2i() -> GdUnitArgumentMatcher:
+	return GdUnitArgumentMatchers.by_type(TYPE_VECTOR2I)
+
+
 ## Argument matcher to match any Vector3 value
 func any_vector3() -> GdUnitArgumentMatcher:
 	return GdUnitArgumentMatchers.by_type(TYPE_VECTOR3)
+
+
+## Argument matcher to match any Vector3i value
+func any_vector3i() -> GdUnitArgumentMatcher:
+	return GdUnitArgumentMatchers.by_type(TYPE_VECTOR3I)
+
+
+## Argument matcher to match any Vector4 value
+func any_vector4() -> GdUnitArgumentMatcher:
+	return GdUnitArgumentMatchers.by_type(TYPE_VECTOR4)
+
+
+## Argument matcher to match any Vector3i value
+func any_vector4i() -> GdUnitArgumentMatcher:
+	return GdUnitArgumentMatchers.by_type(TYPE_VECTOR4I)
 
 
 ## Argument matcher to match any Rect2 value
@@ -403,10 +435,8 @@ func assert_that(current) -> GdUnitAssert:
 			return assert_float(current)
 		TYPE_STRING:
 			return assert_str(current)
-		TYPE_VECTOR2:
-			return assert_vector2(current)
-		TYPE_VECTOR3:
-			return assert_vector3(current)
+		TYPE_VECTOR2, TYPE_VECTOR2I, TYPE_VECTOR3, TYPE_VECTOR3I, TYPE_VECTOR4, TYPE_VECTOR4I:
+			return assert_vector(current)
 		TYPE_DICTIONARY:
 			return assert_dict(current)
 		TYPE_ARRAY:
@@ -437,14 +467,28 @@ func assert_float(current) -> GdUnitFloatAssert:
 	return GdUnitFloatAssertImpl.new(current)
 
 
-## An assertion tool to verify Vector2 values.
-func assert_vector2(current) -> GdUnitVector2Assert:
-	return GdUnitVector2AssertImpl.new(current)
+## An assertion tool to verify Vector values.[br]
+## This assertion supports all vector types.[br]
+## Usage:
+##     [codeblock]
+##		assert_vector(Vector2(1.2, 1.000001)).is_equal(Vector2(1.2, 1.000001))
+##     [/codeblock]
+func assert_vector(current) -> GdUnitVectorAssert:
+	return GdUnitVectorAssertImpl.new(current)
 
 
-## An assertion tool to verify Vector3 values.
-func assert_vector3(current) -> GdUnitVector3Assert:
-	return GdUnitVector3AssertImpl.new(current)
+## An assertion tool to verify Vector2 values.[br]
+## This function is [b]deprecated[/b] you have to use [method assert_vector] instead
+func assert_vector2(current) -> GdUnitVectorAssert:
+	push_warning("assert_vector2 is deprecated, Use 'assert_vector' instead.")
+	return assert_vector(current)
+
+
+## An assertion tool to verify Vector3 values.[br]
+## This function is [b]deprecated[/b] you have to use [method assert_vector] instead
+func assert_vector3(current) -> GdUnitVectorAssert:
+	push_warning("assert_vector3 is deprecated, Use 'assert_vector' instead.")
+	return assert_vector(current)
 
 
 ## An assertion tool to verify arrays.

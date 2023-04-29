@@ -67,28 +67,128 @@ func test_is_match_color() -> void:
 	assert_bool(matcher.is_match(Color.ALICE_BLUE)).is_true()
 	assert_bool(matcher.is_match(Color.RED)).is_true()
 
-func test_is_match_vector2() -> void:
-	assert_object(any_vector2()).is_instanceof(AnyBuildInTypeArgumentMatcher)
+
+func test_is_match_vector() -> void:
+	assert_object(any_vector()).is_instanceof(AnyBuildInTypeArgumentMatcher)
 	
-	var matcher := any_vector2()
+	var matcher := any_vector()
+	assert_bool(matcher.is_match(Vector2.ONE)).is_true()
+	assert_bool(matcher.is_match(Vector2i.ONE)).is_true()
+	assert_bool(matcher.is_match(Vector3.ONE)).is_true()
+	assert_bool(matcher.is_match(Vector3i.ONE)).is_true()
+	assert_bool(matcher.is_match(Vector4.ONE)).is_true()
+	assert_bool(matcher.is_match(Vector4i.ONE)).is_true()
+	
 	assert_bool(matcher.is_match("")).is_false()
 	assert_bool(matcher.is_match("abc")).is_false()
 	assert_bool(matcher.is_match(0)).is_false()
 	assert_bool(matcher.is_match(1000)).is_false()
 	assert_bool(matcher.is_match(null)).is_false()
-	assert_bool(matcher.is_match(Vector2.DOWN)).is_true()
+
+
+func test_is_match_vector2() -> void:
+	assert_object(any_vector2()).is_instanceof(AnyBuildInTypeArgumentMatcher)
+	
+	var matcher := any_vector2()
 	assert_bool(matcher.is_match(Vector2.ONE)).is_true()
-	assert_bool(matcher.is_match(Vector3.DOWN)).is_false()
+	
+	assert_bool(matcher.is_match("")).is_false()
+	assert_bool(matcher.is_match("abc")).is_false()
+	assert_bool(matcher.is_match(0)).is_false()
+	assert_bool(matcher.is_match(1000)).is_false()
+	assert_bool(matcher.is_match(null)).is_false()
+	assert_bool(matcher.is_match(Vector2i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4i.ONE)).is_false()
+
+
+func test_is_match_vector2i() -> void:
+	assert_object(any_vector2i()).is_instanceof(AnyBuildInTypeArgumentMatcher)
+	
+	var matcher := any_vector2i()
+	assert_bool(matcher.is_match(Vector2i.ONE)).is_true()
+	
+	assert_bool(matcher.is_match("")).is_false()
+	assert_bool(matcher.is_match("abc")).is_false()
+	assert_bool(matcher.is_match(0)).is_false()
+	assert_bool(matcher.is_match(1000)).is_false()
+	assert_bool(matcher.is_match(null)).is_false()
+	assert_bool(matcher.is_match(Vector2.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4i.ONE)).is_false()
+
 
 func test_is_match_vector3() -> void:
 	assert_object(any_vector3()).is_instanceof(AnyBuildInTypeArgumentMatcher)
 	
 	var matcher := any_vector3()
+	assert_bool(matcher.is_match(Vector3.ONE)).is_true()
+
 	assert_bool(matcher.is_match("")).is_false()
 	assert_bool(matcher.is_match("abc")).is_false()
 	assert_bool(matcher.is_match(0)).is_false()
 	assert_bool(matcher.is_match(1000)).is_false()
 	assert_bool(matcher.is_match(null)).is_false()
-	assert_bool(matcher.is_match(Vector2.DOWN)).is_false()
-	assert_bool(matcher.is_match(Vector3.DOWN)).is_true()
-	assert_bool(matcher.is_match(Vector3.ONE)).is_true()
+	assert_bool(matcher.is_match(Vector2.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector2i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4i.ONE)).is_false()
+
+
+func test_is_match_vector3i() -> void:
+	assert_object(any_vector3i()).is_instanceof(AnyBuildInTypeArgumentMatcher)
+	
+	var matcher := any_vector3i()
+	assert_bool(matcher.is_match(Vector3i.ONE)).is_true()
+
+	assert_bool(matcher.is_match("")).is_false()
+	assert_bool(matcher.is_match("abc")).is_false()
+	assert_bool(matcher.is_match(0)).is_false()
+	assert_bool(matcher.is_match(1000)).is_false()
+	assert_bool(matcher.is_match(null)).is_false()
+	assert_bool(matcher.is_match(Vector2.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector2i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4i.ONE)).is_false()
+
+
+func test_is_match_vector4() -> void:
+	assert_object(any_vector4()).is_instanceof(AnyBuildInTypeArgumentMatcher)
+	
+	var matcher := any_vector4()
+	assert_bool(matcher.is_match(Vector4.ONE)).is_true()
+
+	assert_bool(matcher.is_match("")).is_false()
+	assert_bool(matcher.is_match("abc")).is_false()
+	assert_bool(matcher.is_match(0)).is_false()
+	assert_bool(matcher.is_match(1000)).is_false()
+	assert_bool(matcher.is_match(null)).is_false()
+	assert_bool(matcher.is_match(Vector2.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector2i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4i.ONE)).is_false()
+
+
+func test_is_match_vector4i() -> void:
+	assert_object(any_vector4i()).is_instanceof(AnyBuildInTypeArgumentMatcher)
+	
+	var matcher := any_vector4i()
+	assert_bool(matcher.is_match(Vector4i.ONE)).is_true()
+
+	assert_bool(matcher.is_match("")).is_false()
+	assert_bool(matcher.is_match("abc")).is_false()
+	assert_bool(matcher.is_match(0)).is_false()
+	assert_bool(matcher.is_match(1000)).is_false()
+	assert_bool(matcher.is_match(null)).is_false()
+	assert_bool(matcher.is_match(Vector2.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector2i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector3i.ONE)).is_false()
+	assert_bool(matcher.is_match(Vector4.ONE)).is_false()
