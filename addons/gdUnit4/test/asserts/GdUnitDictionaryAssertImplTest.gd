@@ -272,17 +272,6 @@ func test_override_failure_message() -> void:
 		.has_message("Custom failure message")
 
 
-var _value = 0
-func next_value() -> Dictionary:
-	_value += 1
-	return { "key_%d" % _value : _value}
-
-
-func test_with_value_provider() -> void:
-	assert_dict(CallBackValueProvider.new(self, "next_value"))\
-		.is_equal({"key_1" : 1}).is_equal({"key_2" : 2}).is_equal({"key_3" : 3})
-
-
 # tests if an assert fails the 'is_failure' reflects the failure status
 func test_is_failure() -> void:
 	# initial is false

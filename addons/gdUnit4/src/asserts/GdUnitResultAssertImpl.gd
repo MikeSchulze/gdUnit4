@@ -19,7 +19,7 @@ func _notification(event):
 
 
 func __validate_value_type(value) -> bool:
-	return value is ValueProvider or value == null or value is Result
+	return value == null or value is Result
 
 
 func __current() -> Result:

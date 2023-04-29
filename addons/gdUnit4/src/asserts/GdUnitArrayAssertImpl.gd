@@ -2,8 +2,10 @@ class_name GdUnitArrayAssertImpl
 extends GdUnitArrayAssert
 
 var _base :GdUnitAssert
+var _current_value_provider :ValueProvider
 
 func _init(current):
+	_current_value_provider = DefaultValueProvider.new(current)
 	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
@@ -38,14 +40,13 @@ func override_failure_message(message :String) -> GdUnitArrayAssert:
 
 func __validate_value_type(value) -> bool:
 	return (
-		value is ValueProvider
-		or value == null
+		value == null
 		or GdObjects.is_array_type(value)
 	)
 
 
 func __current() -> Variant:
-	var current = _base.__current()
+	var current = _current_value_provider.get_value()
 	if current == null or typeof(current) == TYPE_ARRAY:
 		return current
 	return Array(current)
@@ -261,7 +262,7 @@ func extract(func_name :String, args := Array()) -> GdUnitArrayAssert:
 	else:
 		for element in current:
 			extracted_elements.append(extractor.extract_value(element))
-	_base._current_value_provider = DefaultValueProvider.new(extracted_elements)
+	_current_value_provider = DefaultValueProvider.new(extracted_elements)
 	return self
 
 
@@ -292,5 +293,5 @@ func extractv(
 				extracted_elements.append(GdUnitTuple.new(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], ev[9]))
 			else:
 				extracted_elements.append(ev[0])
-	_base._current_value_provider = DefaultValueProvider.new(extracted_elements)
+	_current_value_provider = DefaultValueProvider.new(extracted_elements)
 	return self

@@ -2,7 +2,7 @@ class_name GdUnitAssertImpl
 extends GdUnitAssert
 
 
-var _current_value_provider :ValueProvider
+var _current :Variant
 var _current_error_message :String = ""
 var _custom_failure_message :String = ""
 
@@ -31,9 +31,9 @@ static func _get_line_number() -> int:
 
 
 func _init(current :Variant):
+	_current = current
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
-	_current_value_provider = current if current is ValueProvider else DefaultValueProvider.new(current)
 	GdAssertReports.reset_last_error_line_number()
 
 
@@ -42,11 +42,11 @@ func _failure_message() -> String:
 
 
 func __current() -> Variant:
-	return _current_value_provider.get_value()
+	return _current
 
 
 func __validate_value_type(value, type :Variant.Type) -> bool:
-	return value is ValueProvider or value == null or typeof(value) == type
+	return value == null or typeof(value) == type
 
 
 func report_success() -> GdUnitAssert:

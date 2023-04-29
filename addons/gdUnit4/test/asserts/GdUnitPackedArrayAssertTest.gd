@@ -314,14 +314,3 @@ func test_override_failure_message(_test :String, array, test_parameters = [
 			.is_null()) \
 		.is_failed() \
 		.has_message("Custom failure message")
-
-
-var _value = 0
-func next_value() -> PackedByteArray:
-	_value += 1
-	return PackedByteArray([_value])
-
-
-func test_with_value_provider() -> void:
-	assert_array(CallBackValueProvider.new(self, "next_value"))\
-		.is_equal([1]).is_equal([2]).is_equal([3])

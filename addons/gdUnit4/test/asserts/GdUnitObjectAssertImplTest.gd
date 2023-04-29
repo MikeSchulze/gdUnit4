@@ -138,18 +138,6 @@ func test_override_failure_message() -> void:
 		.has_message("Custom failure message")
 
 
-var _index = -1
-var _values := [RefCounted.new(), RefCounted.new(), RefCounted.new()]
-func next_value() -> Object:
-	_index += 1
-	return _values[_index]
-
-
-func test_with_value_provider() -> void:
-	assert_object(CallBackValueProvider.new(self, "next_value"))\
-		.is_equal(_values[0]).is_equal(_values[1]).is_equal(_values[2])
-
-
 # tests if an assert fails the 'is_failure' reflects the failure status
 func test_is_failure() -> void:
 	# initial is false
