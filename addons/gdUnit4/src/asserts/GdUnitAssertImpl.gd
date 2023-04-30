@@ -2,7 +2,6 @@ class_name GdUnitAssertImpl
 extends GdUnitAssert
 
 
-
 var _current :Variant
 var _current_error_message :String = ""
 var _custom_failure_message :String = ""
