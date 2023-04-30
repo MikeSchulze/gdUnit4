@@ -15,14 +15,11 @@ runs:
     - name: "Unit Test Linux"
       if: ${{ runner.OS == 'Linux' }}
       env:
-        DISPLAY: :1
         GODOT_BIN: "/home/runner/godot-linux/godot"
       shell: bash
       run: |
-        Xvfb :1 -screen 0 1600x1200x24 &
         chmod +x ./addons/gdUnit4/runtest.sh
-        ./addons/gdUnit4/runtest.sh --add ${{ inputs.test-includes }} --display-driver x11 --rendering-driver opengl3 --screen 0 --continue --verbose
-        killall Xvfb
+        xvfb-run --auto-servernum ./addons/gdUnit4/runtest.sh --add ${{ inputs.test-includes }} --display-driver x11 --rendering-driver opengl3 --screen 0 --continue --verbose
 
 
 # not tested yet
