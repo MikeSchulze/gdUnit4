@@ -20,8 +20,7 @@
 
 <p align="center">
   <img alt="GitHub branch checks state" src="https://img.shields.io/github/checks-status/MikeSchulze/gdunit4/master"></br>
-  <img src="https://github.com/MikeSchulze/gdUnit4/actions/workflows/ci-master.yml/badge.svg?branch=master"></br>
-  <img src="https://github.com/MikeSchulze/gdUnit4/actions/workflows/ci-mono-master.yml/badge.svg?branch=master"></br>
+  <img src="https://github.com/MikeSchulze/gdUnit4/actions/workflows/ci-dev.yml/badge.svg?branch=master"></br>
 </p>
 
 
