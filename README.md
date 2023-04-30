@@ -12,8 +12,8 @@
 ---
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Godot-v4.0.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=red">
-  <img src="https://img.shields.io/badge/Godot-v4.0.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=red">
+  <img src="https://img.shields.io/badge/Godot-v4.0.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
+  <img src="https://img.shields.io/badge/Godot-v4.0.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
 </p>
 
 <p align="center"><a href="https://github.com/MikeSchulze/gdUnit4"><img src="https://github.com/MikeSchulze/gdUnit4/blob/master/assets/gdUnit4-animated.gif" width="100%"/></p><br/>
