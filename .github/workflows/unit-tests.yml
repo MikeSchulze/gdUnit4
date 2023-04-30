@@ -55,7 +55,7 @@ jobs:
         continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
         shell: bash
         run: |
-          xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless
+          xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless --audio-driver Dummy
 
       - name: "Run Unit Tests"
         if: ${{ !cancelled() }}
@@ -93,6 +93,7 @@ jobs:
 
   unit-test-mono:
     name: "Unit Tests Mono"
+    if: ${{ false }}  # disable for now, C# support will be readded with v4.2.0
     runs-on: ${{ inputs.os }}
     timeout-minutes: 5
 
@@ -118,7 +119,7 @@ jobs:
 
       - name: "Compile C#"
         run: |
-          xvfb-run --auto-servernum ~/godot-linux/godot project.godot --build-solutions --quit --audio-driver Dummy --no-window
+          xvfb-run --auto-servernum ~/godot-linux/godot project.godot --build-solutions --quit --headless --audio-driver Dummy
 
       - name: "Update Project"
         if: ${{ !cancelled() }}
@@ -126,7 +127,7 @@ jobs:
         continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
         shell: bash
         run: |
-          xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless
+          xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless --audio-driver Dummy
 
       - name: "Run Unit Tests"
         if: ${{ !cancelled() }}

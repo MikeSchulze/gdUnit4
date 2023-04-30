@@ -19,7 +19,7 @@ runs:
       shell: bash
       run: |
         chmod +x ./addons/gdUnit4/runtest.sh
-        xvfb-run --auto-servernum ./addons/gdUnit4/runtest.sh --add ${{ inputs.test-includes }} --display-driver x11 --rendering-driver opengl3 --screen 0 --continue --verbose
+        xvfb-run --auto-servernum ./addons/gdUnit4/runtest.sh --add ${{ inputs.test-includes }} --audio-driver Dummy --display-driver x11 --rendering-driver opengl3 --screen 0 --continue --verbose
 
 
 # not tested yet
