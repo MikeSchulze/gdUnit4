@@ -46,7 +46,7 @@ jobs:
           godot-version: ${{ inputs.godot-version }}
           godot-mono: false
           godot-status-version: 'stable'
-          godot-bin-name: 'x11.64'
+          godot-bin-name: 'linux.x86_64'
           godot-cache-path: '~/godot-linux'
 
       - name: "Update Project"
@@ -108,7 +108,7 @@ jobs:
           godot-version: ${{ inputs.godot-version }}
           godot-mono: true
           godot-status-version: 'stable'
-          godot-bin-name: 'x11_64'
+          godot-bin-name: 'linux.x86_64'
           godot-cache-path: '~/godot-linux'
 
       - name: "Setup .NET"
