@@ -1,8 +1,9 @@
-name: ci-pr
-run-name: ${{ github.head_ref || github.ref_name }}-ci-pr
+name: ci-dev
 
 on:
-  pull_request:
+  push:
+    branches:
+      - master
     paths-ignore:
       - '**.yml'
       - '**.jpg'
@@ -10,11 +11,9 @@ on:
       - '**.md'
   workflow_dispatch:
 
-
 concurrency:
-  group: ci-pr-${{ github.event.number }}
+  group: ci-dev-${{ github.event.number }}
   cancel-in-progress: true
-
 
 jobs:
   unit-tests:
