@@ -115,4 +115,5 @@ func test_example():
 ### Thank you for supporting my project!
 ---
 ## Sponsors:
-* bitbrain - [<img src="https://github.com/bitbrain.png" alt="bitbrain" width="125"/>](https://github.com/bitbrain)
+[<img src="https://github.com/bitbrain.png" alt="bitbrain" width="125"/>](https://github.com/bitbrain) bitbrain
+[<img src="https://avatars.githubusercontent.com/u/2313134?v=4" alt="bitbrain" width="125"/> ](https://github.com/sebastianhutter) sebastianhutter
