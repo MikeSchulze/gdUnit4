@@ -46,6 +46,19 @@ func is_empty() -> GdUnitArrayAssert:
 func is_not_empty() -> GdUnitArrayAssert:
 	return self
 
+## Verifies that the current Array is the same. [br]
+## Compares the current by object reference equals
+@warning_ignore("unused_parameter", "shadowed_global_identifier")
+func is_same(expected) -> GdUnitArrayAssert:
+	return self
+
+
+## Verifies that the current Array is NOT the same. [br]
+## Compares the current by object reference equals
+@warning_ignore("unused_parameter", "shadowed_global_identifier")
+func is_not_same(expected) -> GdUnitArrayAssert:
+	return self
+
 
 ## Verifies that the current Array has a size of given value.
 @warning_ignore("unused_parameter")

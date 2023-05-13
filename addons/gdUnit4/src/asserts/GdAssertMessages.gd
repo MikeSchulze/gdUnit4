@@ -67,30 +67,9 @@ static func _colored_array_div(characters :PackedByteArray) -> String:
 	result.append_array(format_chars(additional_chars, ADD_COLOR))
 	return result.get_string_from_utf8()
 
-const max_elements := 32
-
-static func array_to_string(elements :Array, encode_value := true) -> String:
-	var delemiter = ", "
-	if elements == null:
-		return "<null>"
-	if elements.is_empty():
-		return "empty"
-	var formatted := ""
-	var index := 0
-	for element in elements:
-		if max_elements != -1 and index > max_elements:
-			return formatted + delemiter + "..."
-		if formatted.length() > 0 :
-			formatted += delemiter
-		formatted += _typed_value(element) if encode_value else str(element)
-		index += 1
-	return formatted
-
 
 static func _typed_value(value) -> String:
-	if value == null:
-		return "<null>"
-	return GdDefaultValueDecoder.decode(typeof(value), value)
+	return GdDefaultValueDecoder.decode(value)
 
 
 static func _warning(error :String) -> String:
@@ -133,7 +112,7 @@ static func _colored_value(value, _delimiter ="\n", detailed := false) -> String
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _format_dict(value)]
 		_:
 			if GdObjects.is_array_type(value):
-				return "[color=%s]%s[/color]" % [VALUE_COLOR, array_to_string(value)]
+				return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _typed_value(value)]
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, value]
 
 
@@ -363,7 +342,7 @@ static func error_arr_contains(current, expected :Array, not_expect :Array, not_
 	return error
 
 
-static func error_arr_contains_exactly(current, expected :Array, not_expect :Array, not_found :Array) -> String:
+static func error_arr_contains_exactly(current, expected, not_expect, not_found) -> String:
 	if not_expect.is_empty() and not_found.is_empty():
 		var diff := _find_first_diff(current, expected)
 		return "%s\n %s\n do contains (in same order)\n %s\n but has different order %s"  % [_error("Expecting contains exactly elements:"), _colored_value(current, ", "), _colored_value(expected, ", "), diff]
