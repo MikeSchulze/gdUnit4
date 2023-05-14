@@ -74,7 +74,7 @@ func test_is_equal(_test :String, array, test_parameters = [
 			Index	Current	Expected	5	<N/A>	$value	"""
 			.dedent()
 			.trim_prefix("\n")
-			.replace("$value", str(array[2]) ) % [GdDefaultValueDecoder.array_to_string(other, false), GdDefaultValueDecoder.array_to_string(array, false)])
+			.replace("$value", str(array[2]) ) % [GdArrayTools.as_string(other, false), GdArrayTools.as_string(array, false)])
 
 
 @warning_ignore("unused_parameter")

@@ -41,7 +41,7 @@ func override_failure_message(message :String) -> GdUnitArrayAssert:
 func __validate_value_type(value) -> bool:
 	return (
 		value == null
-		or GdObjects.is_array_type(value)
+		or GdArrayTools.is_array_type(value)
 	)
 
 
@@ -81,8 +81,8 @@ func _array_div(left :Array[Variant], right :Array[Variant], _same_order := fals
 		for index_e in right.size():
 			var e = right[index_e]
 			if GdObjects.equals(c, e):
-				GdObjects.array_erase_value(not_expect, e)
-				GdObjects.array_erase_value(not_found, c)
+				GdArrayTools.erase_value(not_expect, e)
+				GdArrayTools.erase_value(not_found, c)
 				break
 	return [not_expect, not_found]
 
@@ -100,14 +100,14 @@ func is_not_null() -> GdUnitArrayAssert:
 # Verifies that the current String is equal to the given one.
 func is_equal(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_ = __current()
 	if current_ == null and expected != null:
 		return report_error(GdAssertMessages.error_equal(null, expected))
 	if not GdObjects.equals(current_, expected):
 		var diff := _array_equals_div(current_, expected)
-		var expected_as_list = GdDefaultValueDecoder.array_to_string(diff[0], false)
-		var current_as_list = GdDefaultValueDecoder.array_to_string(diff[1], false)
+		var expected_as_list = GdArrayTools.as_string(diff[0], false)
+		var current_as_list = GdArrayTools.as_string(diff[1], false)
 		var index_report = diff[2]
 		return report_error(GdAssertMessages.error_equal(expected_as_list, current_as_list, index_report))
 	return report_success()
@@ -116,14 +116,14 @@ func is_equal(expected) -> GdUnitArrayAssert:
 # Verifies that the current Array is equal to the given one, ignoring case considerations.
 func is_equal_ignoring_case(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_ = __current()
 	if current_ == null and expected != null:
-		return report_error(GdAssertMessages.error_equal(null, GdDefaultValueDecoder.array_to_string(expected)))
+		return report_error(GdAssertMessages.error_equal(null, GdArrayTools.as_string(expected)))
 	if not GdObjects.equals(current_, expected, true):
 		var diff := _array_equals_div(current_, expected, true)
-		var expected_as_list := GdDefaultValueDecoder.array_to_string(diff[0])
-		var current_as_list := GdDefaultValueDecoder.array_to_string(diff[1])
+		var expected_as_list := GdArrayTools.as_string(diff[0])
+		var current_as_list := GdArrayTools.as_string(diff[1])
 		var index_report = diff[2]
 		return report_error(GdAssertMessages.error_equal(expected_as_list, current_as_list, index_report))
 	return report_success()
@@ -131,7 +131,7 @@ func is_equal_ignoring_case(expected) -> GdUnitArrayAssert:
 
 func is_not_equal(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_ = __current()
 	if GdObjects.equals(current_, expected):
 		return report_error(GdAssertMessages.error_not_equal(current_, expected))
@@ -140,11 +140,11 @@ func is_not_equal(expected) -> GdUnitArrayAssert:
 
 func is_not_equal_ignoring_case(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_ = __current()
 	if GdObjects.equals(current_, expected, true):
-		var c := GdDefaultValueDecoder.array_to_string(current_)
-		var e := GdDefaultValueDecoder.array_to_string(expected)
+		var c := GdArrayTools.as_string(current_)
+		var e := GdArrayTools.as_string(expected)
 		return report_error(GdAssertMessages.error_not_equal_case_insensetiv(c, e))
 	return report_success()
 
@@ -166,7 +166,7 @@ func is_not_empty() -> GdUnitArrayAssert:
 @warning_ignore("unused_parameter", "shadowed_global_identifier")
 func is_same(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current = __current()
 	if not is_same(current, expected):
 		report_error(GdAssertMessages.error_is_same(current, expected))
@@ -175,7 +175,7 @@ func is_same(expected) -> GdUnitArrayAssert:
 
 func is_not_same(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current = __current()
 	if is_same(current, expected):
 		report_error(GdAssertMessages.error_not_same(current, expected))
@@ -191,7 +191,7 @@ func has_size(expected: int) -> GdUnitArrayAssert:
 
 func contains(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_ = __current()
 	if current_ == null:
 		return report_error(GdAssertMessages.error_arr_contains(current_, expected, [], expected))
@@ -205,15 +205,15 @@ func contains(expected) -> GdUnitArrayAssert:
 
 func contains_exactly(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_ = __current()
 	if current_ == null:
 		return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected, [], expected))
 	# has same content in same order
-	if GdObjects.equals(current_, expected):
+	if GdObjects.equals(Array(current_), Array(expected)):
 		return report_success()
 	# check has same elements but in different order
-	if GdObjects.equals_sorted(current_, expected):
+	if GdObjects.equals_sorted(Array(current_), Array(expected)):
 		return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected, [], []))
 	# find the difference
 	var diffs := _array_div(current_, expected, true)
@@ -224,7 +224,7 @@ func contains_exactly(expected) -> GdUnitArrayAssert:
 
 func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_ = __current()
 	if current_ == null:
 		return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected, [], expected))
@@ -239,7 +239,7 @@ func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
 
 func not_contains(expected) -> GdUnitArrayAssert:
 	if not __validate_value_type(expected):
-		return report_error("Unexpected type: <%s>\n You only allowed to verify against Array Types!" % GdObjects.typeof_as_string(expected))
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_ = __current()
 	if current_ == null:
 		return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected, [], expected))
@@ -280,7 +280,7 @@ func extractv(
 	extr7 :GdUnitValueExtractor = null,
 	extr8 :GdUnitValueExtractor = null,
 	extr9 :GdUnitValueExtractor = null) -> GdUnitArrayAssert:
-	var extractors := GdObjects.array_filter_value([extr0, extr1, extr2, extr3, extr4, extr5, extr6, extr7, extr8, extr9], null)
+	var extractors :Variant = GdArrayTools.filter_value([extr0, extr1, extr2, extr3, extr4, extr5, extr6, extr7, extr8, extr9], null)
 	var extracted_elements := Array()
 	var current = __current()
 	if current == null:

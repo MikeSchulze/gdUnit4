@@ -68,7 +68,7 @@ class SignalCollector extends RefCounted:
 	
 	# receives the signal from the emitter with all emitted signal arguments and additional the emitter and signal_name as last two arguements
 	func _on_signal_emmited( arg0=NO_ARG, arg1=NO_ARG, arg2=NO_ARG, arg3=NO_ARG, arg4=NO_ARG, arg5=NO_ARG, arg6=NO_ARG, arg7=NO_ARG, arg8=NO_ARG, arg9=NO_ARG, arg10=NO_ARG, arg11=NO_ARG):
-		var signal_args = GdObjects.array_filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11], NO_ARG)
+		var signal_args = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11], NO_ARG)
 		# extract the emitter and signal_name from the last two arguments (see line 61 where is added)
 		var signal_name :String = signal_args.pop_back()
 		var emitter :Object = signal_args.pop_back()

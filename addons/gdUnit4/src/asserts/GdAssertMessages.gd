@@ -111,7 +111,7 @@ static func _colored_value(value, _delimiter ="\n", detailed := false) -> String
 		TYPE_DICTIONARY:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _format_dict(value)]
 		_:
-			if GdObjects.is_array_type(value):
+			if GdArrayTools.is_array_type(value):
 				return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _typed_value(value)]
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, value]
 

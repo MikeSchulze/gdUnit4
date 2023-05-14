@@ -273,7 +273,7 @@ static func _argument_default_value(arg :Dictionary, default_value) -> String:
 				return "null"
 	if GdObjects.is_primitive_type(default_value):
 		return str(default_value)
-	if GdObjects.is_type_array(type):
+	if GdArrayTools.is_type_array(type):
 		if default_value == null:
 			return "[]"
 		return str(default_value)
