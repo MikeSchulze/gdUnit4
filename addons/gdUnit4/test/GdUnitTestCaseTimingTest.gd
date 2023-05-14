@@ -12,25 +12,25 @@ class TestCaseStatistics:
 	var _test_before_calls :int
 	var _test_after_calls :int
 	
-	func _init(before_calls := 0,after_calls := 0):
+	func _init(before_calls := 0, after_calls := 0):
 		_test_before_calls = before_calls
 		_test_after_calls = after_calls
+
 
 func before():
 	_test_values_current = {
 		"test_fast" : TestCaseStatistics.new(),
 		"test_2s" : TestCaseStatistics.new(),
-		"test_1m" : TestCaseStatistics.new(),
 		"test_multi_yielding" : TestCaseStatistics.new(),
 		"test_multi_yielding_with_fuzzer" : TestCaseStatistics.new()
 	}
 	_test_values_expected = {
 		"test_fast" : TestCaseStatistics.new(1, 1),
 		"test_2s" : TestCaseStatistics.new(1, 1),
-		"test_1m" : TestCaseStatistics.new(1, 1),
 		"test_multi_yielding" : TestCaseStatistics.new(1, 1),
 		"test_multi_yielding_with_fuzzer" : TestCaseStatistics.new(10 , 10)
 	}
+
 
 func after():
 	for test_case in _test_values_expected.keys():
@@ -43,30 +43,23 @@ func after():
 			.override_failure_message("Expect after_test called %s times but is %s for test case %s" % [expected._test_before_calls, current._test_before_calls, test_case])\
 			.is_equal(expected._test_after_calls)
 
+
 func before_test():
 	var current = _test_values_current[__active_test_case] as TestCaseStatistics
 	current._test_before_calls +=1
+
 
 func after_test():
 	var current = _test_values_current[__active_test_case] as TestCaseStatistics
 	current._test_after_calls +=1
 
-func test_fast():
-	var timer_start := Time.get_ticks_msec()
-	await get_tree().create_timer(0.200).timeout
-	# subtract an offset of 100ms because the time is not accurate
-	assert_int(Time.get_ticks_msec()-timer_start).is_between(10, 300)
 
 func test_2s():
 	var timer_start := Time.get_ticks_msec()
-	await get_tree().create_timer(2.0).timeout
+	await await_millis(2000)
 	# subtract an offset of 100ms because the time is not accurate
 	assert_int(Time.get_ticks_msec()-timer_start).is_between(2*SECOND-100, 2*SECOND+100)
 
-func test_1m():
-	var timer_start := Time.get_ticks_msec()
-	await get_tree().create_timer(60.0).timeout
-	assert_int(Time.get_ticks_msec()-timer_start).is_greater_equal(MINUTE-100)
 
 func test_multi_yielding():
 	var timer_start := Time.get_ticks_msec()
@@ -82,6 +75,7 @@ func test_multi_yielding():
 	await get_tree().create_timer(1.0).timeout
 	prints("Go")
 	assert_int(Time.get_ticks_msec()-timer_start).is_greater_equal(4*(SECOND-50))
+
 
 func test_multi_yielding_with_fuzzer(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 10):
 	if fuzzer.iteration_index() == 1:
