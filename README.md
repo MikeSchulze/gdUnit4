@@ -25,7 +25,6 @@
 </p>
 
 
-
 ## What is GdUnit4?
 **Gd**(*Godot*)**Unit**(*Unit Testing*)**4**(*Godot 4.x*)
 
@@ -33,13 +32,12 @@ GdUnit4 is an embedded unit testing framework designed for testing Gd scripts, C
 GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://en.wikipedia.org/wiki/Test-driven_development)), a popular software development approach that emphasizes creating automated tests before writing any code. By using GdUnit4 for TDD, you can ensure that your code is thoroughly tested and free of bugs, which can save you time and effort in the long run.
 
 
+>
 > __Note__
->
->  ${\Large\color{red}CSharp\ support\ is\ currently\ disabled\ and\ will\ be\ reimplement\ with\ V4.2.0!}$
->
-
-
-
+> 
+```diff
+- CSharp support is currently disabled and will be reimplement with V4.2.0!
+```
 
 ## Main Features
 * Support for writing and executing tests in GdScript or C#
@@ -59,7 +57,10 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
 * Scene runner for simulating different kinds of inputs and actions, such as mouse clicks and keyboard inputs<br>
   For example, you can simulate mouse clicks and keyboard inputs by calling the appropriate methods on the runner instance. Additionally, you can wait for a specific signal to be emitted by the scene, or you can wait for a specific function to return a certain value.
 * Automatic update notifier to install the latest version of GdUnit from GitHub
-* Command line tool for running tests outside of Godot editor
+* CI - Continuous Integration support
+  * Command line tool for running tests outside of Godot editor
+  * Generates HTML report
+  * Generates JUnit XML report
 * Visual Studio Code extension for additional features and integrations in managing and running tests
 ---
 
@@ -86,8 +87,6 @@ func test_example():
   <a href="https://mikeschulze.github.io/gdUnit4/">API Documentation</a>
 </p>
 
-
-
 ---
 
 ### You are welcome to:
@@ -95,14 +94,14 @@ func test_example():
   * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=) by creating a new feature request issue on the gdUnit GitHub Issues page.
   * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug%2C+task&template=bug_report.md&title=)  by creating a new bug report issue on the gdUnit GitHub Issues page.
 
+---
 
-<h1 align="center"></h1>
-<p align="left">
+<p align="left" style="font-family: Bedrock; font-size:21pt; color:#7253ed; font-style:bold">
   <img alt="GitHub issues" src="https://img.shields.io/github/issues/MikeSchulze/gdunit4">
   <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/MikeSchulze/gdunit4"></br>
-  <!-- <img src="https://img.shields.io/packagecontrol/dm/SwitchDictionary.svg">
+  <img src="https://img.shields.io/packagecontrol/dm/SwitchDictionary.svg">
   <img src="https://img.shields.io/packagecontrol/dt/SwitchDictionary.svg">
-   -->
+
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/MikeSchulze/gdunit4">
   <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/MikeSchulze/gdunit4">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg">
@@ -116,4 +115,4 @@ func test_example():
 ---
 ## Sponsors:
 [<img src="https://github.com/bitbrain.png" alt="bitbrain" width="125"/>](https://github.com/bitbrain) bitbrain
-[<img src="https://avatars.githubusercontent.com/u/2313134?v=4" alt="bitbrain" width="125"/> ](https://github.com/sebastianhutter) sebastianhutter
+[<img src="https://avatars.githubusercontent.com/u/2313134?v=4" alt="bitbrain" width="125"/>](https://github.com/sebastianhutter) sebastianhutter
