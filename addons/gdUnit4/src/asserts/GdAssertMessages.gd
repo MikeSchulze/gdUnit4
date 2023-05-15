@@ -332,8 +332,10 @@ static func error_has_length(current, expected: int, compare_operator) -> String
 
 
 # - ArrayAssert specific messgaes ---------------------------------------------------
-static func error_arr_contains(current, expected :Array, not_expect :Array, not_found :Array) -> String:
-	var error := "%s\n %s\n do contains (in any order)\n %s" % [_error("Expecting contains elements:"), _colored_value(current, ", "), _colored_value(expected, ", ")]
+
+static func error_arr_contains(current, expected :Array, not_expect :Array, not_found :Array, by_reference :bool) -> String:
+	var failure_message = "Expecting contains SAME elements:" if by_reference else "Expecting contains elements:"
+	var error := "%s\n %s\n do contains (in any order)\n %s" % [_error(failure_message), _colored_value(current, ", "), _colored_value(expected, ", ")]
 	if not not_expect.is_empty():
 		error += "\nbut some elements where not expected:\n %s" % _colored_value(not_expect, ", ")
 	if not not_found.is_empty():
@@ -342,12 +344,13 @@ static func error_arr_contains(current, expected :Array, not_expect :Array, not_
 	return error
 
 
-static func error_arr_contains_exactly(current, expected, not_expect, not_found) -> String:
+static func error_arr_contains_exactly(current, expected, not_expect, not_found, by_reference :bool) -> String:
+	var failure_message = "Expecting contains SAME exactly elements:" if by_reference else "Expecting contains exactly elements:"
 	if not_expect.is_empty() and not_found.is_empty():
 		var diff := _find_first_diff(current, expected)
-		return "%s\n %s\n do contains (in same order)\n %s\n but has different order %s"  % [_error("Expecting contains exactly elements:"), _colored_value(current, ", "), _colored_value(expected, ", "), diff]
+		return "%s\n %s\n do contains (in same order)\n %s\n but has different order %s"  % [_error(failure_message), _colored_value(current, ", "), _colored_value(expected, ", "), diff]
 	
-	var error := "%s\n %s\n do contains (in same order)\n %s" % [_error("Expecting contains exactly elements:"), _colored_value(current, ", "), _colored_value(expected, ", ")]
+	var error := "%s\n %s\n do contains (in same order)\n %s" % [_error(failure_message), _colored_value(current, ", "), _colored_value(expected, ", ")]
 	if not not_expect.is_empty():
 		error += "\nbut some elements where not expected:\n %s" % _colored_value(not_expect, ", ")
 	if not not_found.is_empty():
@@ -356,8 +359,9 @@ static func error_arr_contains_exactly(current, expected, not_expect, not_found)
 	return error
 
 
-static func error_arr_contains_exactly_in_any_order(current, expected :Array, not_expect :Array, not_found :Array) -> String:
-	var error := "%s\n %s\n do contains exactly (in any order)\n %s" % [_error("Expecting contains exactly elements:"), _colored_value(current, ", "), _colored_value(expected, ", ")]
+static func error_arr_contains_exactly_in_any_order(current, expected :Array, not_expect :Array, not_found :Array, by_reference :bool) -> String:
+	var failure_message = "Expecting contains SAME exactly elements:" if by_reference else "Expecting contains exactly elements:"
+	var error := "%s\n %s\n do contains exactly (in any order)\n %s" % [_error(failure_message), _colored_value(current, ", "), _colored_value(expected, ", ")]
 	if not not_expect.is_empty():
 		error += "\nbut some elements where not expected:\n %s" % _colored_value(not_expect, ", ")
 	if not not_found.is_empty():
@@ -366,12 +370,12 @@ static func error_arr_contains_exactly_in_any_order(current, expected :Array, no
 	return error
 
 
-static func error_arr_not_contains(current :Array, expected :Array, found :Array) -> String:
-	var error := "%s\n %s\n do not contains\n %s" % [_error("Expecting:"), _colored_value(current, ", "), _colored_value(expected, ", ")]
+static func error_arr_not_contains(current :Array, expected :Array, found :Array, by_reference :bool) -> String:
+	var failure_message = "Expecting SAME:" if by_reference else "Expecting:"
+	var error := "%s\n %s\n do not contains\n %s" % [_error(failure_message), _colored_value(current, ", "), _colored_value(expected, ", ")]
 	if not found.is_empty():
 		error += "\n but found elements:\n %s" % _colored_value(found, ", ")
 	return error
-
 
 
 # - DictionaryAssert specific messages ----------------------------------------------

@@ -203,6 +203,10 @@ func test_contains():
 	assert_array([1, 2, 3, 4, 5]).contains([])
 	assert_array([1, 2, 3, 4, 5]).contains([5, 2])
 	assert_array([1, 2, 3, 4, 5]).contains([5, 4, 3, 2, 1])
+	var valueA := TestObj.new("A", 0)
+	var valueB := TestObj.new("B", 0)
+	assert_array([valueA, valueB]).contains([TestObj.new("A", 0)])
+	
 	# should fail because the array not contains 7 and 6
 	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).contains([2, 7, 6])) \
 		.is_failed() \
@@ -214,6 +218,7 @@ func test_contains():
 			but could not find elements:
 			 '[7, 6]'"""
 			.dedent().trim_prefix("\n"))
+	
 	assert_failure(func(): assert_array(null).contains([2, 7, 6])) \
 		.is_failed() \
 		.has_message("""
@@ -224,10 +229,25 @@ func test_contains():
 			but could not find elements:
 			 '[2, 7, 6]'"""
 			.dedent().trim_prefix("\n"))
+	
+	assert_failure(func(): assert_array([valueA, valueB]).contains([TestObj.new("C", 0)])) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains elements:
+			 '[class:A, class:B]'
+			 do contains (in any order)
+			 '[class:C]'
+			but could not find elements:
+			 '[class:C]'"""
+			.dedent().trim_prefix("\n"))
 
 
 func test_contains_exactly():
 	assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 2, 3, 4, 5])
+	var valueA := TestObj.new("A", 0)
+	var valueB := TestObj.new("B", 0)
+	assert_array([valueA, valueB]).contains_exactly([TestObj.new("A", 0), valueB])
+	
 	# should fail because the array contains the same elements but in a different order
 	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 4, 3, 2, 5])) \
 		.is_failed() \
@@ -274,12 +294,26 @@ func test_contains_exactly():
 			but could not find elements:
 			 '[1, 4, 3]'"""
 			.dedent().trim_prefix("\n"))
+	
+	assert_failure(func(): assert_array([valueA, valueB]).contains_exactly([valueB, TestObj.new("A", 0)])) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains exactly elements:
+			 '[class:A, class:B]'
+			 do contains (in same order)
+			 '[class:B, class:A]'
+			 but has different order at position '0'
+			 'class:A' vs 'class:B'"""
+		.dedent().trim_prefix("\n"))
 
 
 func test_contains_exactly_in_any_order():
 	assert_array([1, 2, 3, 4, 5]).contains_exactly_in_any_order([1, 2, 3, 4, 5])
 	assert_array([1, 2, 3, 4, 5]).contains_exactly_in_any_order([5, 3, 2, 4, 1])
 	assert_array([1, 2, 3, 4, 5]).contains_exactly_in_any_order([5, 1, 2, 4, 3])
+	var valueA := TestObj.new("A", 0)
+	var valueB := TestObj.new("B", 0)
+	assert_array([valueA, valueB]).contains_exactly_in_any_order([valueB, TestObj.new("A", 0)])
 	
 	# should fail because the array contains not exactly the same elements in any order
 	assert_failure(func(): assert_array([1, 2, 6, 4, 5]).contains_exactly_in_any_order([5, 3, 2, 4, 1, 9, 10])) \
@@ -319,12 +353,95 @@ func test_contains_exactly_in_any_order():
 			but could not find elements:
 			 '[1, 4, 3]'"""
 			.dedent().trim_prefix("\n"))
+	
+	assert_failure(func():  assert_array([valueA, valueB]).contains_exactly_in_any_order([valueB, TestObj.new("C", 0)])) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains exactly elements:
+			 '[class:A, class:B]'
+			 do contains exactly (in any order)
+			 '[class:B, class:C]'
+			but some elements where not expected:
+			 '[class:A]'
+			and could not find elements:
+			 '[class:C]'"""
+			.dedent().trim_prefix("\n"))
+
+
+func test_contains_same():
+	var valueA := TestObj.new("A", 0)
+	var valueB := TestObj.new("B", 0)
+	var valueC := TestObj.new("C", 0)
+	assert_array([valueA, valueB]).contains_same([valueA])
+	
+	assert_failure(func(): assert_array([valueA, valueB]).contains_same([TestObj.new("A", 0)])) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains SAME elements:
+			 '[class:A, class:B]'
+			 do contains (in any order)
+			 '[class:A]'
+			but could not find elements:
+			 '[class:A]'"""
+			.dedent().trim_prefix("\n"))
+
+
+func test_contains_same_exactly():
+	var valueA := TestObj.new("A", 0)
+	var valueB := TestObj.new("B", 0)
+	assert_array([valueA, valueB]).contains_same_exactly([valueA, valueB])
+	
+	assert_failure(func(): assert_array([valueA, valueB]).contains_same_exactly([valueB, valueA])) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains SAME exactly elements:
+			 '[class:A, class:B]'
+			 do contains (in same order)
+			 '[class:B, class:A]'
+			 but has different order at position '0'
+			 'class:A' vs 'class:B'"""
+		.dedent().trim_prefix("\n"))
+	
+	assert_failure(func(): assert_array([valueA, valueB]).contains_same_exactly([TestObj.new("A", 0), valueB])) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains SAME exactly elements:
+			 '[class:A, class:B]'
+			 do contains (in same order)
+			 '[class:A, class:B]'
+			but some elements where not expected:
+			 '[class:A]'
+			and could not find elements:
+			 '[class:A]'"""
+			.dedent().trim_prefix("\n"))
+
+
+func test_contains_same_exactly_in_any_order():
+	var valueA := TestObj.new("A", 0)
+	var valueB := TestObj.new("B", 0)
+	assert_array([valueA, valueB]).contains_same_exactly_in_any_order([valueB, valueA])
+	
+	assert_failure(func():  assert_array([valueA, valueB]).contains_same_exactly_in_any_order([valueB, TestObj.new("A", 0)])) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains SAME exactly elements:
+			 '[class:A, class:B]'
+			 do contains exactly (in any order)
+			 '[class:B, class:A]'
+			but some elements where not expected:
+			 '[class:A]'
+			and could not find elements:
+			 '[class:A]'"""
+			.dedent().trim_prefix("\n"))
 
 
 func test_not_contains():
 	assert_array([]).not_contains([0])
 	assert_array([1, 2, 3, 4, 5]).not_contains([0])
 	assert_array([1, 2, 3, 4, 5]).not_contains([0, 6])
+	var valueA := TestObj.new("A", 0)
+	var valueB := TestObj.new("B", 0)
+	assert_array([valueA, valueB]).not_contains([TestObj.new("C", 0)])
 	
 	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([5]))\
 		.is_failed() \
@@ -337,6 +454,7 @@ func test_not_contains():
 			 '[5]'"""
 			.dedent().trim_prefix("\n")
 		)
+	
 	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([1, 4, 6])) \
 		.is_failed() \
 		.has_message("""
@@ -348,6 +466,7 @@ func test_not_contains():
 			 '[1, 4]'"""
 			.dedent().trim_prefix("\n")
 		)
+	
 	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([6, 4, 1])) \
 		.is_failed() \
 		.has_message("""
@@ -357,6 +476,37 @@ func test_not_contains():
 			 '[6, 4, 1]'
 			 but found elements:
 			 '[4, 1]'"""
+			.dedent().trim_prefix("\n")
+		)
+	
+	assert_failure(func(): assert_array([valueA, valueB]).not_contains([TestObj.new("A", 0)])) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 '[class:A, class:B]'
+			 do not contains
+			 '[class:A]'
+			 but found elements:
+			 '[class:A]'"""
+			.dedent().trim_prefix("\n")
+		)
+
+
+func test_not_contains_same():
+	var valueA := TestObj.new("A", 0)
+	var valueB := TestObj.new("B", 0)
+	var valueC := TestObj.new("B", 0)
+	assert_array([valueA, valueB]).not_contains_same([valueC])
+	
+	assert_failure(func(): assert_array([valueA, valueB]).not_contains_same([valueB])) \
+		.is_failed() \
+		.has_message("""
+			Expecting SAME:
+			 '[class:A, class:B]'
+			 do not contains
+			 '[class:B]'
+			 but found elements:
+			 '[class:B]'"""
 			.dedent().trim_prefix("\n")
 		)
 
@@ -420,7 +570,7 @@ class TestObj:
 	var _value
 	var _x
 	
-	func _init(name :String,value,x = null):
+	func _init(name :String, value, x = null):
 		_name = name
 		_value = value
 		_x = x
@@ -460,7 +610,9 @@ class TestObj:
 	
 	func get_x9() -> String:
 		return "x9"
-
+	
+	func _to_string() -> String:
+		return "class:" + _name
 
 func test_extractv() -> void:
 	# single extract

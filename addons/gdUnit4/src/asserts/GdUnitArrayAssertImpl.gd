@@ -1,8 +1,15 @@
 class_name GdUnitArrayAssertImpl
 extends GdUnitArrayAssert
 
+enum COMPARE_MODE {
+	OBJECT_REFERENCE,
+	PARAMETER_DEEP_TEST
+}
+
+
 var _base :GdUnitAssert
 var _current_value_provider :ValueProvider
+
 
 func _init(current):
 	_current_value_provider = DefaultValueProvider.new(current)
@@ -73,18 +80,85 @@ func _array_equals_div(current, expected, case_sensitive :bool = false) -> Array
 	return [current_, expected_, index_report_]
 
 
-func _array_div(left :Array[Variant], right :Array[Variant], _same_order := false) -> Array[Variant]:
+func _array_div(deep_check :COMPARE_MODE, left :Array[Variant], right :Array[Variant], _same_order := false) -> Array[Variant]:
 	var not_expect := left.duplicate(true)
 	var not_found := right.duplicate(true)
 	for index_c in left.size():
 		var c = left[index_c]
 		for index_e in right.size():
 			var e = right[index_e]
-			if GdObjects.equals(c, e):
+			if GdObjects.equals(c, e, false, deep_check == COMPARE_MODE.PARAMETER_DEEP_TEST):
 				GdArrayTools.erase_value(not_expect, e)
 				GdArrayTools.erase_value(not_found, c)
 				break
 	return [not_expect, not_found]
+
+
+
+func _contains(expected, compare_mode :COMPARE_MODE) -> GdUnitArrayAssert:
+	if not __validate_value_type(expected):
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
+	var by_reference := compare_mode == COMPARE_MODE.OBJECT_REFERENCE
+	var current_ = __current()
+	if current_ == null:
+		return report_error(GdAssertMessages.error_arr_contains(current_, expected, [], expected, by_reference))
+	var diffs := _array_div(compare_mode, current_, expected)
+	#var not_expect := diffs[0] as Array
+	var not_found := diffs[1] as Array
+	if not not_found.is_empty():
+		return report_error(GdAssertMessages.error_arr_contains(current_, expected, [], not_found, by_reference))
+	return report_success()
+
+
+func _contains_exactly(expected, compare_mode :COMPARE_MODE) -> GdUnitArrayAssert:
+	if not __validate_value_type(expected):
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
+	var by_reference := compare_mode == COMPARE_MODE.OBJECT_REFERENCE
+	var current_ = __current()
+	if current_ == null:
+		return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected, [], expected, by_reference))
+	# has same content in same order
+	if GdObjects.equals(Array(current_), Array(expected), false, !by_reference ):
+		return report_success()
+	# check has same elements but in different order
+	if GdObjects.equals_sorted(Array(current_), Array(expected), false, !by_reference):
+		return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected, [], [], by_reference))
+	# find the difference
+	var diffs := _array_div(compare_mode, current_, expected, true)
+	var not_expect := diffs[0] as Array[Variant]
+	var not_found := diffs[1] as Array[Variant]
+	return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected, not_expect, not_found, by_reference))
+
+
+func _contains_exactly_in_any_order(expected, compare_mode :COMPARE_MODE) -> GdUnitArrayAssert:
+	if not __validate_value_type(expected):
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
+	var by_reference := compare_mode == COMPARE_MODE.OBJECT_REFERENCE
+	var current_ = __current()
+	if current_ == null:
+		return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected, [], expected, by_reference))
+	# find the difference
+	var diffs := _array_div(compare_mode, current_, expected, false)
+	var not_expect := diffs[0] as Array
+	var not_found := diffs[1] as Array
+	if not_expect.is_empty() and not_found.is_empty():
+		return report_success()
+	return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected, not_expect, not_found, by_reference))
+
+
+func _not_contains(expected, compare_mode :COMPARE_MODE) -> GdUnitArrayAssert:
+	if not __validate_value_type(expected):
+		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
+	var by_reference := compare_mode == COMPARE_MODE.OBJECT_REFERENCE
+	var current_ = __current()
+	if current_ == null:
+		return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected, [], expected, by_reference))
+	var diffs := _array_div(compare_mode, current_, expected)
+	var found := diffs[0] as Array
+	if found.size() == current_.size():
+		return report_success()
+	var diffs2 := _array_div(compare_mode, expected, diffs[1])
+	return report_error(GdAssertMessages.error_arr_not_contains(current_, expected, diffs2[0], by_reference))
 
 
 func is_null() -> GdUnitArrayAssert:
@@ -190,65 +264,35 @@ func has_size(expected: int) -> GdUnitArrayAssert:
 
 
 func contains(expected) -> GdUnitArrayAssert:
-	if not __validate_value_type(expected):
-		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
-	var current_ = __current()
-	if current_ == null:
-		return report_error(GdAssertMessages.error_arr_contains(current_, expected, [], expected))
-	var diffs := _array_div(current_, expected)
-	#var not_expect := diffs[0] as Array
-	var not_found := diffs[1] as Array
-	if not not_found.is_empty():
-		return report_error(GdAssertMessages.error_arr_contains(current_, expected, [], not_found))
-	return report_success()
+	return _contains(expected, COMPARE_MODE.PARAMETER_DEEP_TEST)
 
 
 func contains_exactly(expected) -> GdUnitArrayAssert:
-	if not __validate_value_type(expected):
-		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
-	var current_ = __current()
-	if current_ == null:
-		return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected, [], expected))
-	# has same content in same order
-	if GdObjects.equals(Array(current_), Array(expected)):
-		return report_success()
-	# check has same elements but in different order
-	if GdObjects.equals_sorted(Array(current_), Array(expected)):
-		return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected, [], []))
-	# find the difference
-	var diffs := _array_div(current_, expected, true)
-	var not_expect := diffs[0] as Array[Variant]
-	var not_found := diffs[1] as Array[Variant]
-	return report_error(GdAssertMessages.error_arr_contains_exactly(current_, expected, not_expect, not_found))
+	return _contains_exactly(expected, COMPARE_MODE.PARAMETER_DEEP_TEST)
 
 
 func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
-	if not __validate_value_type(expected):
-		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
-	var current_ = __current()
-	if current_ == null:
-		return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected, [], expected))
-	# find the difference
-	var diffs := _array_div(current_, expected, false)
-	var not_expect := diffs[0] as Array
-	var not_found := diffs[1] as Array
-	if not_expect.is_empty() and not_found.is_empty():
-		return report_success()
-	return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected, not_expect, not_found))
+	return _contains_exactly_in_any_order(expected, COMPARE_MODE.PARAMETER_DEEP_TEST)
+
+
+func contains_same(expected) -> GdUnitArrayAssert:
+	return _contains(expected, COMPARE_MODE.OBJECT_REFERENCE)
+
+
+func contains_same_exactly(expected) -> GdUnitArrayAssert:
+	return _contains_exactly(expected, COMPARE_MODE.OBJECT_REFERENCE)
+
+
+func contains_same_exactly_in_any_order(expected) -> GdUnitArrayAssert:
+	return _contains_exactly_in_any_order(expected, COMPARE_MODE.OBJECT_REFERENCE)
 
 
 func not_contains(expected) -> GdUnitArrayAssert:
-	if not __validate_value_type(expected):
-		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
-	var current_ = __current()
-	if current_ == null:
-		return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_, expected, [], expected))
-	var diffs := _array_div(current_, expected)
-	var found := diffs[0] as Array
-	if found.size() == current_.size():
-		return report_success()
-	var diffs2 := _array_div(expected, diffs[1])
-	return report_error(GdAssertMessages.error_arr_not_contains(current_, expected, diffs2[0]))
+	return _not_contains(expected, COMPARE_MODE.PARAMETER_DEEP_TEST)
+
+
+func not_contains_same(expected) -> GdUnitArrayAssert:
+	return _not_contains(expected, COMPARE_MODE.OBJECT_REFERENCE)
 
 
 func is_instanceof(expected) -> GdUnitAssert:

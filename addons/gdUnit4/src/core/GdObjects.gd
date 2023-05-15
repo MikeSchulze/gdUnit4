@@ -131,12 +131,12 @@ const NOTIFICATION_AS_STRING_MAPPINGS := {
 }
 
 
-static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false ) -> bool:
+static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false, deep_check :bool = true ) -> bool:
 	var a := obj_a.duplicate()
 	var b := obj_b.duplicate()
 	a.sort()
 	b.sort()
-	return equals(a, b, case_sensitive)
+	return equals(a, b, case_sensitive, deep_check)
 
 
 # prototype of better object to dictionary
