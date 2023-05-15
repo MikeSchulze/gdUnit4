@@ -40,7 +40,7 @@ static func get_class_info(clazz :Variant) -> Dictionary:
 
 
 static func spy_on_script(instance, function_excludes :PackedStringArray, debug_write) -> GDScript:
-	if GdObjects.is_array_type(instance):
+	if GdArrayTools.is_array_type(instance):
 		if GdUnitSettings.is_verbose_assert_errors():
 			push_error("Can't build spy checked type '%s'! Spy checked Container Built-In Type not supported!" % instance.get_class())
 		return null

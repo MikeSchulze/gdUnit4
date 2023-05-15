@@ -4,15 +4,9 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd'
 
-# small value format helper
-func format_value(value) -> String:
-	if GdObjects.is_array_type(value):
-		return GdAssertMessages.array_to_string(value)
-	return GdAssertMessages._typed_value(value)
-
 
 @warning_ignore("unused_parameter")
-func test_is_null(_test :String, array, test_parameters = [
+func test_is_null(_test :String, value, test_parameters = [
 	["Array", Array()],
 	["PackedByteArray", PackedByteArray()],
 	["PackedInt32Array", PackedInt32Array()],
@@ -25,9 +19,9 @@ func test_is_null(_test :String, array, test_parameters = [
 	["PackedColorArray", PackedColorArray()] ]
 	) -> void:
 	assert_array(null).is_null()
-	assert_failure(func(): assert_array(array).is_null()) \
+	assert_failure(func(): assert_array(value).is_null()) \
 		.is_failed() \
-		.has_message("Expecting: '<null>' but was empty")
+		.has_message("Expecting: '<null>' but was '%s'" % GdDefaultValueDecoder.decode(value))
 
 
 @warning_ignore("unused_parameter")
@@ -49,6 +43,7 @@ func test_is_not_null(_test :String, array, test_parameters = [
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
 
+
 @warning_ignore("unused_parameter")
 func test_is_equal(_test :String, array, test_parameters = [
 	["Array", Array([1, 2, 3, 4, 5])],
@@ -68,7 +63,18 @@ func test_is_equal(_test :String, array, test_parameters = [
 	# should fail because the array not contains same elements and has diff size
 	other.append(array[2])
 	assert_failure(func(): assert_array(array).is_equal(other)) \
-		.is_failed()
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 '%s'
+			 but was
+			 '%s'
+			
+			Differences found:
+			Index	Current	Expected	5	<N/A>	$value	"""
+			.dedent()
+			.trim_prefix("\n")
+			.replace("$value", str(array[2]) ) % [GdArrayTools.as_string(other, false), GdArrayTools.as_string(array, false)])
 
 
 @warning_ignore("unused_parameter")
@@ -90,7 +96,14 @@ func test_is_not_equal(_test :String, array, test_parameters = [
 	assert_array(array).is_not_equal(other)
 	# should fail because the array  contains same elements
 	assert_failure(func(): assert_array(array).is_not_equal(array.duplicate())) \
-		.is_failed()
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 '%s'
+			 not equal to
+			 '%s'"""
+			.dedent()
+			.trim_prefix("\n") % [GdDefaultValueDecoder.decode(array), GdDefaultValueDecoder.decode(array)])
 
 
 @warning_ignore("unused_parameter")
@@ -113,7 +126,12 @@ func test_is_empty(_test :String, array, test_parameters = [
 	# should fail because the array is not empty
 	assert_failure(func(): assert_array(array).is_empty()) \
 		.is_failed() \
-		.starts_with_message("Expecting:\n must be empty but was")
+		.has_message("""
+			Expecting:
+			 must be empty but was
+			 '%s'"""
+			.dedent()
+			.trim_prefix("\n") % GdDefaultValueDecoder.decode(array))
 
 
 @warning_ignore("unused_parameter")
@@ -139,6 +157,52 @@ func test_is_not_empty(_test :String, array, test_parameters = [
 		.has_message("Expecting:\n must not be empty")
 
 
+func test_is_same(value, test_parameters = [
+	[[0]],
+	[PackedByteArray([0])],
+	[PackedFloat32Array([0.0])],
+	[PackedFloat64Array([0.0])],
+	[PackedInt32Array([0])],
+	[PackedInt64Array([0])],
+	[PackedStringArray([""])],
+	[PackedColorArray([Color.RED])],
+	[PackedVector2Array([Vector2.ZERO])],
+	[PackedVector3Array([Vector3.ZERO])],
+]) -> void:
+	assert_array(value).is_same(value)
+	
+	var v := GdDefaultValueDecoder.decode(value)
+	assert_failure(func(): assert_array(value).is_same(value.duplicate()))\
+		.is_failed()\
+		.has_message("""
+			Expecting:
+			 '%s'
+			 to refer to the same object
+			 '%s'"""
+			.dedent()
+			.trim_prefix("\n") % [v, v])
+
+
+@warning_ignore("unused_parameter")
+func test_is_not_same(value, test_parameters = [
+	[[0]],
+	[PackedByteArray([0])],
+	[PackedFloat32Array([0.0])],
+	[PackedFloat64Array([0.0])],
+	[PackedInt32Array([0])],
+	[PackedInt64Array([0])],
+	[PackedStringArray([""])],
+	[PackedColorArray([Color.RED])],
+	[PackedVector2Array([Vector2.ZERO])],
+	[PackedVector3Array([Vector3.ZERO])],
+]) -> void:
+	assert_array(value).is_not_same(value.duplicate())
+	
+	assert_failure(func(): assert_array(value).is_not_same(value))\
+		.is_failed()\
+		.has_message("Expecting: not same '%s'" % GdDefaultValueDecoder.decode(value))
+
+
 @warning_ignore("unused_parameter")
 func test_has_size(_test :String, array, test_parameters = [
 	["Array", Array([1, 2, 3, 4, 5])],
@@ -157,7 +221,13 @@ func test_has_size(_test :String, array, test_parameters = [
 	# should fail because the array has a size of 5
 	assert_failure(func(): assert_array(array).has_size(4)) \
 		.is_failed() \
-		.has_message("Expecting size:\n '4'\n but was\n '5'")
+		.has_message("""
+			Expecting size:
+			 '4'
+			 but was
+			 '5'"""
+			.dedent()
+			.trim_prefix("\n"))
 
 
 @warning_ignore("unused_parameter")
@@ -181,15 +251,15 @@ func test_contains(_test :String, array, test_parameters = [
 		.is_failed() \
 		.has_message("""
 			Expecting contains elements:
-			 $source
+			 '$source'
 			 do contains (in any order)
-			 $contains
+			 '$contains'
 			but could not find elements:
-			 7, 6"""
+			 '[7, 6]'"""
 			.dedent()
 			.trim_prefix("\n")
-			.replace("$source", format_value(array))
-			.replace("$contains", format_value(do_contains))
+			.replace("$source", GdDefaultValueDecoder.decode(array))
+			.replace("$contains", GdDefaultValueDecoder.decode(do_contains))
 		)
 
 
@@ -216,84 +286,18 @@ func test_contains_exactly(_test :String, array, test_parameters = [
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
-			 $source
+			 '$source'
 			 do contains (in same order)
-			 $contains
+			 '$contains'
 			 but has different order at position '1'
 			 '$A' vs '$B'"""
 			.dedent()
 			.trim_prefix("\n")
-			.replace("$A", format_value(array[1]))
-			.replace("$B", format_value(array[3]))
-			.replace("$source", format_value(array))
-			.replace("$contains", format_value(shuffled))
+			.replace("$A", GdDefaultValueDecoder.decode(array[1]))
+			.replace("$B", GdDefaultValueDecoder.decode(array[3]))
+			.replace("$source", GdDefaultValueDecoder.decode(array))
+			.replace("$contains", GdDefaultValueDecoder.decode(shuffled))
 		)
-
-
-@warning_ignore("unused_parameter")
-func test_not_contains(_test :String, array, test_parameters = [
-	["Array", Array([1, 2, 3, 4, 5])],
-	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
-	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
-	["PackedInt64Array", PackedInt64Array([1, 2, 3, 4, 5])],
-	["PackedFloat32Array", PackedFloat32Array([1, 2, 3, 4, 5])],
-	["PackedFloat64Array", PackedFloat64Array([1, 2, 3, 4, 5])],
-	["PackedStringArray", PackedStringArray(["1", "2", "3", "4", "5"])],
-	["PackedVector2Array", PackedVector2Array([Vector2.ZERO, Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN])],
-	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
-	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
-	) -> void:
-	
-	assert_array(array).not_contains([0])
-	assert_array(array).not_contains([0])
-	assert_array(array).not_contains([0, 6])
-	
-	var should_not_contain = [array[4]]
-	assert_failure(func(): assert_array(array).not_contains(should_not_contain))\
-		.is_failed() \
-		.has_message("""
-			Expecting:
-			 $current
-			 do not contains
-			 $not_contain
-			 but found elements:
-			 $found"""
-			.dedent().trim_prefix("\n")
-			.replace("$current", format_value(array))
-			.replace("$not_contain",  format_value(should_not_contain))
-			.replace("$found", format_value(array[4]))
-		)
-	should_not_contain = [array[0], array[3], 6]
-	assert_failure(func(): assert_array(array).not_contains(should_not_contain)) \
-		.is_failed() \
-		.has_message("""
-			Expecting:
-			 $current
-			 do not contains
-			 $not_contain
-			 but found elements:
-			 $found"""
-			.dedent().trim_prefix("\n")
-			.replace("$current", format_value(array))
-			.replace("$not_contain",  format_value(should_not_contain))
-			.replace("$found", format_value([array[0], array[3]]))
-		)
-	should_not_contain = [6, array[3], array[0]]
-	assert_failure(func(): assert_array(array).not_contains(should_not_contain)) \
-		.is_failed() \
-		.has_message("""
-			Expecting:
-			 $current
-			 do not contains
-			 $not_contain
-			 but found elements:
-			 $found"""
-			.dedent().trim_prefix("\n")
-			.replace("$current", format_value(array))
-			.replace("$not_contain",  format_value(should_not_contain))
-			.replace("$found", format_value([array[3], array[0]]))
-		)
-
 
 @warning_ignore("unused_parameter")
 func test_override_failure_message(_test :String, array, test_parameters = [

@@ -186,11 +186,11 @@ func test_contains_keys() -> void:
 		.is_failed() \
 		.has_message("""
 			Expecting keys:
-			 1, 3
+			 '[1, 3]'
 			 to contains:
-			 2
+			 '[2]'
 			 but can't find key's:
-			 2"""
+			 '[2]'"""
 			.dedent()
 			.trim_prefix("\n")
 		)
@@ -198,11 +198,11 @@ func test_contains_keys() -> void:
 		.is_failed() \
 		.has_message("""
 			Expecting keys:
-			 1, 3
+			 '[1, 3]'
 			 to contains:
-			 1, 4
+			 '[1, 4]'
 			 but can't find key's:
-			 4"""
+			 '[4]'"""
 			.dedent()
 			.trim_prefix("\n")
 		)
@@ -220,11 +220,11 @@ func test_contains_not_keys() -> void:
 		.is_failed() \
 		.has_message("""
 			Expecting keys:
-			 1, 2, 3
+			 '[1, 2, 3]'
 			 do not contains:
-			 2, 4
+			 '[2, 4]'
 			 but contains key's:
-			 2"""
+			 '[2]'"""
 			.dedent()
 			.trim_prefix("\n")
 		)
@@ -232,11 +232,11 @@ func test_contains_not_keys() -> void:
 		.is_failed() \
 		.has_message("""
 			Expecting keys:
-			 1, 2, 3
+			 '[1, 2, 3]'
 			 do not contains:
-			 1, 2, 3, 4
+			 '[1, 2, 3, 4]'
 			 but contains key's:
-			 1, 2, 3"""
+			 '[1, 2, 3]'"""
 			.dedent()
 			.trim_prefix("\n")
 		)

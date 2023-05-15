@@ -131,12 +131,12 @@ const NOTIFICATION_AS_STRING_MAPPINGS := {
 }
 
 
-static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false ) -> bool:
+static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false, deep_check :bool = true ) -> bool:
 	var a := obj_a.duplicate()
 	var b := obj_b.duplicate()
 	a.sort()
 	b.sort()
-	return equals(a, b, case_sensitive)
+	return equals(a, b, case_sensitive, deep_check)
 
 
 # prototype of better object to dictionary
@@ -318,23 +318,6 @@ static func string_as_typeof(type_name :String) -> int:
 
 static func is_primitive_type(value) -> bool:
 	return typeof(value) in [TYPE_BOOL, TYPE_STRING, TYPE_INT, TYPE_FLOAT]
-
-
-static func is_array_type(value) -> bool:
-	return is_type_array(typeof(value))
-
-
-static func is_type_array(type :int) -> bool:
-	return  type in [TYPE_ARRAY,
-		TYPE_PACKED_BYTE_ARRAY,
-		TYPE_PACKED_INT32_ARRAY,
-		TYPE_PACKED_INT64_ARRAY,
-		TYPE_PACKED_FLOAT32_ARRAY,
-		TYPE_PACKED_FLOAT64_ARRAY,
-		TYPE_PACKED_STRING_ARRAY,
-		TYPE_PACKED_VECTOR2_ARRAY,
-		TYPE_PACKED_VECTOR3_ARRAY,
-		TYPE_PACKED_COLOR_ARRAY]
 
 
 static func _is_type_equivalent(type_a, type_b) -> bool:
@@ -663,22 +646,6 @@ static func default_value_by_type(type :int):
 	
 	push_error("Can't determine a default value for type: '%s', Please create a Bug issue and attach the stacktrace please." % type)
 	return null
-
-
-# Filters an array by given value
-static func array_filter_value(array :Array, filter_value) -> Array:
-	var filtered_array := Array()
-	for element in array:
-		if not equals(element, filter_value):
-			filtered_array.append(element)
-	return filtered_array
-
-
-# Erases a value from given array by using equals(l,r) to find the element to erase
-static func array_erase_value(array :Array, value) -> void:
-	for element in array:
-		if equals(element, value):
-			array.erase(element)
 
 
 static func find_nodes_by_class(root: Node, cls: String, recursive: bool = false) -> Array[Node]:

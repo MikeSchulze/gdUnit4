@@ -227,10 +227,10 @@ func reset(obj) -> void:
 ##		# verify the signial is emitted
 ##		await assert_signal(emitter).is_emitted('my_signal')
 ##	[/codeblock]
-func monitor_signals(source :Object, auto_free := true) -> Object:
+func monitor_signals(source :Object, _auto_free := true) -> Object:
 	var signal_collector := GdUnitThreadManager.get_current_context().get_signal_collector()
 	signal_collector.register_emitter(source)
-	return auto_free(source) if auto_free else source
+	return auto_free(source) if _auto_free else source
 
 
 # === Argument matchers ========================================================
@@ -423,7 +423,7 @@ func tuple(arg0, arg1=GdUnitTuple.NO_ARG, arg2=GdUnitTuple.NO_ARG, arg3=GdUnitTu
 ## It checks the given value by type to fit to the best assert
 func assert_that(current) -> GdUnitAssert:
 	
-	if GdObjects.is_array_type(current):
+	if GdArrayTools.is_array_type(current):
 		return assert_array(current)
 	
 	match typeof(current):

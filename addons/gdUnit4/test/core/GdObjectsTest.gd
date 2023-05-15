@@ -152,17 +152,6 @@ func test_is_primitive_type():
 	assert_bool(GdObjects.is_primitive_type("")).is_true()
 	assert_bool(GdObjects.is_primitive_type(Vector2.ONE)).is_false()
 
-func test_is_array_type():
-	assert_bool(GdObjects.is_array_type([])).is_true()
-	assert_bool(GdObjects.is_array_type(Array())).is_true()
-	assert_bool(GdObjects.is_array_type(PackedByteArray())).is_true()
-	assert_bool(GdObjects.is_array_type(PackedColorArray())).is_true()
-	assert_bool(GdObjects.is_array_type(PackedInt32Array())).is_true()
-	assert_bool(GdObjects.is_array_type(PackedFloat32Array())).is_true()
-	assert_bool(GdObjects.is_array_type(PackedStringArray())).is_true()
-	assert_bool(GdObjects.is_array_type(PackedVector2Array())).is_true()
-	assert_bool(GdObjects.is_array_type(PackedVector3Array())).is_true()
-	assert_bool(GdObjects.is_array_type(false)).is_false()
 
 class TestClassForIsType:
 	var x
@@ -410,35 +399,6 @@ func test_is_public_script_class() -> void:
 	# inner classes not listed as public classes
 	assert_bool(GdObjects.is_public_script_class("CustomClass.InnerClassA")).is_false()
 
-func test_array_filter_value() -> void:
-	assert_array(GdObjects.array_filter_value([], null)).is_empty()
-	assert_array(GdObjects.array_filter_value([], "")).is_empty()
-	
-	var current :Array = [null, "a", "b", null, "c", null]
-	var filtered := GdObjects.array_filter_value(current, null)
-	assert_array(filtered).contains_exactly(["a", "b", "c"])
-	# verify the source is not affected
-	assert_array(current).contains_exactly([null, "a", "b", null, "c", null])
-	
-	current = [null, "a", "xxx", null, "xx", null]
-	filtered = GdObjects.array_filter_value(current, "xxx")
-	assert_array(filtered).contains_exactly([null, "a", null, "xx", null])
-	# verify the source is not affected
-	assert_array(current).contains_exactly([null, "a", "xxx", null, "xx", null])
-
-func test_array_erase_value() -> void:
-	var current := []
-	GdObjects.array_erase_value(current, null)
-	assert_array(current).is_empty()
-	
-	current = [null]
-	GdObjects.array_erase_value(current, null)
-	assert_array(current).is_empty()
-	
-	current = [null, "a", "b", null, "c", null]
-	GdObjects.array_erase_value(current, null)
-	# verify the source is affected
-	assert_array(current).contains_exactly(["a", "b", "c"])
 
 func test_is_instance_scene() -> void:
 	# checked none scene objects
