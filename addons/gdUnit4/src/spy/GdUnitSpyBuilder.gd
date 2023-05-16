@@ -4,7 +4,9 @@ extends GdUnitClassDoubler
 
 static func build(caller :Object, to_spy, debug_write = false):
 	var memory_pool :GdUnitMemoryPool.POOL = caller.get_meta(GdUnitMemoryPool.META_PARAM)
-	
+	if GdObjects.is_singleton(to_spy):
+		push_error("Spy on a Singleton is not allowed! '%s'" % to_spy.get_class())
+		return null
 	# if resource path load it before
 	if GdObjects.is_scene_resource_path(to_spy):
 		if not FileAccess.file_exists(to_spy):

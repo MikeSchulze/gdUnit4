@@ -414,6 +414,15 @@ static func is_gd_testsuite(script :Script) -> bool:
 	return false
 
 
+static func is_singleton(value :Variant) -> bool:
+	if not is_instance_valid(value) or is_native_class(value):
+		return false
+	for name in Engine.get_singleton_list():
+		if value.is_class(name):
+			return true
+	return false
+
+
 static func is_instance(value :Variant) -> bool:
 	if not is_instance_valid(value) or is_native_class(value):
 		return false

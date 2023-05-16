@@ -187,8 +187,23 @@ func test_is_type():
 	assert_bool(GdObjects.is_type(TestClassForIsType.new())).is_false()
 	assert_bool(GdObjects.is_type(auto_free(CustomClass.InnerClassC.new()))).is_false()
 
+
+func test_is_singleton() -> void:
+	for singleton_name in Engine.get_singleton_list():
+		var singleton = Engine.get_singleton(singleton_name)
+		assert_bool(GdObjects.is_singleton(singleton)) \
+			.override_failure_message("Expect to a singleton: '%s' Instance: %s, Class: %s" % [singleton_name, singleton, singleton.get_class()]) \
+			.is_true()
+	# false tests
+	assert_bool(GdObjects.is_singleton(10)).is_false()
+	assert_bool(GdObjects.is_singleton(true)).is_false()
+	assert_bool(GdObjects.is_singleton(Node)).is_false()
+	assert_bool(GdObjects.is_singleton(auto_free(Node.new()))).is_false()
+
+
 func _is_instance(value) -> bool:
 	return GdObjects.is_instance(auto_free(value))
+
 
 func test_is_instance_true():
 	assert_bool(_is_instance(RefCounted.new())).is_true()
