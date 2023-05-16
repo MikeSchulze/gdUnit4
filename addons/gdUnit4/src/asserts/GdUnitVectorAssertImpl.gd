@@ -91,7 +91,28 @@ func is_not_equal(expected :Variant) -> GdUnitVectorAssert:
 func is_equal_approx(expected :Variant, approx :Variant) -> GdUnitVectorAssert:
 	if not _validate_is_vector_type(expected) or not _validate_is_vector_type(approx):
 		return self
-	return is_between(expected-approx, expected+approx)
+	var current = __current()
+	var from = expected - approx
+	var to = expected + approx
+	if current == null or (not _is_equal_approx(current, from, to)):
+		return report_error(GdAssertMessages.error_is_value(Comparator.BETWEEN_EQUAL, current, from, to))
+	return report_success()
+
+
+func _is_equal_approx(current, from, to) -> bool:
+	match typeof(current):
+		TYPE_VECTOR2, TYPE_VECTOR2I:
+			return ((current.x >= from.x and current.y >= from.y)
+				and (current.x <= to.x and current.y <= to.y))
+		TYPE_VECTOR3, TYPE_VECTOR3I:
+			return ((current.x >= from.x and current.y >= from.y and current.z >= from.z)
+				and (current.x <= to.x and current.y <= to.y and current.z <= to.z))
+		TYPE_VECTOR4, TYPE_VECTOR4I:
+			return ((current.x >= from.x and current.y >= from.y and current.z >= from.z and current.w >= from.w)
+				and (current.x <= to.x and current.y <= to.y and current.z <= to.z and current.w <= to.w))
+		_:
+			push_error("Missing implementation '_is_equal_approx' for vector type %s" % typeof(current))
+			return false
 
 
 func is_less(expected :Variant) -> GdUnitVectorAssert:

@@ -113,7 +113,24 @@ func test_is_equal_approx() -> void:
 	assert_failure(func(): assert_vector(Vector2(1.2, 1.000001)).is_equal_approx(Vector3.ONE, Vector3(1.2, 1.000001, 1.0))) \
 		.is_failed() \
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
-
+	assert_failure(func(): assert_vector(Vector2(0.878431, 0.505882)).is_equal_approx(Vector2(0.878431, 0.105882), Vector2(0.000001, 0.000001))) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 '(0.878431, 0.505882)'
+			 in range between
+			 '(0.87843, 0.105881)' <> '(0.878432, 0.105883)'"""
+			.dedent().trim_prefix("\n")
+		)
+	assert_failure(func(): assert_vector(Vector3(0.0, 0.878431, 0.505882)).is_equal_approx(Vector3(0.0, 0.878431, 0.105882), Vector3(0.000001, 0.000001, 0.000001))) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 '(0, 0.878431, 0.505882)'
+			 in range between
+			 '(-0.000001, 0.87843, 0.105881)' <> '(0.000001, 0.878432, 0.105883)'"""
+			.dedent().trim_prefix("\n")
+		)
 
 func test_is_equal_approx_over_all_types(value, expected, approx, test_parameters = [
 	[Vector2(0.996, 1.004), Vector2.ONE, Vector2(0.004, 0.004)],
