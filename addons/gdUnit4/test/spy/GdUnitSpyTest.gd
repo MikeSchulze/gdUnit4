@@ -166,6 +166,20 @@ func test_spy_on_inner_class():
 	verify(spy_instance, 1).set_data(AdvancedTestClass.AtmosphereData.SMOKY, 1.3)
 
 
+func test_spy_on_singleton():
+	# setup monitor to collect expected push_error notifications
+	var monitor := GodotGdErrorMonitor.new(true)
+	monitor.start()
+	# We not allow to spy on a singleton
+	var spy_node = spy(Input)
+	await await_idle_frame()
+	monitor.stop()
+	assert_object(spy_node).is_null()
+	assert_array(monitor.reports()).has_size(1)
+	if not is_failure():
+		assert_str(monitor.reports()[0].message()).contains("Spy on a Singleton is not allowed! 'Input'")
+
+
 func test_example_verify():
 	var instance :Node = auto_free(Node.new())
 	var spy_node = spy(instance)
