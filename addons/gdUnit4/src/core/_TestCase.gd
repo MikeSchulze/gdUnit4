@@ -22,13 +22,16 @@ var _timer : Timer
 var _interupted :bool = false
 var _failed := false
 var _timeout :int
-var _default_timeout :int
-var _monitor := GodotGdErrorMonitor.new()
 var _report :GdUnitReport = null
 
 
-func _init():
-	_default_timeout = GdUnitSettings.test_timeout()
+var monitor : GodotGdErrorMonitor = null:
+	set (value):
+		monitor = value
+	get:
+		if monitor == null:
+			monitor = GodotGdErrorMonitor.new()
+		return monitor
 
 
 @warning_ignore("shadowed_variable_base_class")
@@ -39,9 +42,7 @@ func configure(p_name: String, p_line_number: int, p_script_path: String, p_time
 	_iterations = p_iterations
 	_seed = p_seed
 	_script_path = p_script_path
-	_timeout = _default_timeout
-	if p_timeout != DEFAULT_TIMEOUT:
-		_timeout = p_timeout
+	_timeout = p_timeout if p_timeout != DEFAULT_TIMEOUT else GdUnitSettings.test_timeout()
 	return self
 
 
@@ -51,15 +52,15 @@ func execute(p_test_parameter := Array(), p_iteration := 0):
 	if p_iteration == 0:
 		_set_failure_handler()
 		set_timeout()
-	_monitor.start()
+	monitor.start()
 	if not p_test_parameter.is_empty():
 		update_fuzzers(p_test_parameter, p_iteration)
 		_execute_test_case(name, p_test_parameter) 
 	else:
 		_execute_test_case(name, [])
 	await completed
-	_monitor.stop()
-	for report_ in _monitor.reports():
+	monitor.stop()
+	for report_ in monitor.reports():
 		if report_.is_error():
 			_report = report_
 			_interupted = true
@@ -70,6 +71,7 @@ func dispose():
 	GdUnitThreadManager.get_current_context().set_assert(null)
 	stop_timer()
 	_remove_failure_handler()
+	_fuzzers.clear()
 
 
 @warning_ignore("shadowed_variable_base_class", "redundant_await")

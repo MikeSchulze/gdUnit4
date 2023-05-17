@@ -14,7 +14,7 @@ var _report_force : bool
 func _init(force := false):
 	super("GodotGdErrorMonitor")
 	_report_force = force
-	_godot_log_file = GdUnitSettings.get_log_path().get_base_dir() + "/godot.log"
+	_godot_log_file = GdUnitSettings.get_log_path()
 
 
 func start():
