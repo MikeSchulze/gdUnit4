@@ -205,7 +205,7 @@ static func error_is_same(current, expected) -> String:
 
 @warning_ignore("unused_parameter")
 static func error_not_same(current, expected) -> String:
-	return "%s %s" % [_error("Expecting: not same"), _colored_value(expected)]
+	return "%s\n %s" % [_error("Expecting not same:"), _colored_value(expected)]
 
 
 static func error_not_same_error(current, expected) -> String:

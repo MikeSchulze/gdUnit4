@@ -108,11 +108,26 @@ func test_is_not_same():
 	assert_object(obj3).is_not_same(obj2)
 
 	assert_failure(func(): assert_object(obj1).is_not_same(obj1)) \
-		.is_failed()
+		.is_failed() \
+		.has_message("""
+			Expecting not same:
+			 <Node>"""
+			.dedent()
+			.trim_prefix("\n"))
 	assert_failure(func(): assert_object(obj1).is_not_same(obj2)) \
-		.is_failed()
+		.is_failed() \
+		.has_message("""
+			Expecting not same:
+			 <Node>"""
+			.dedent()
+			.trim_prefix("\n"))
 	assert_failure(func(): assert_object(obj2).is_not_same(obj1)) \
-		.is_failed()
+		.is_failed() \
+		.has_message("""
+			Expecting not same:
+			 <Node>"""
+			.dedent()
+			.trim_prefix("\n"))
 
 
 func test_must_fail_has_invlalid_type():

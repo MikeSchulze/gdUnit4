@@ -122,6 +122,75 @@ func test_is_not_equal() -> void:
 		)
 
 
+func test_is_same() -> void:
+	var dict_a := {}
+	var dict_b := {"key"="value", "key2"="value"}
+	var dict_c := {1:1, "key_a": "value_a"}
+	var dict_d := {"key_a": "value_a", 1:1}
+	assert_dict(dict_a).is_same(dict_a)
+	assert_dict(dict_b).is_same(dict_b)
+	assert_dict(dict_c).is_same(dict_c)
+	assert_dict(dict_d).is_same(dict_d)
+	
+	assert_failure( func(): assert_dict({}).is_same({})) \
+		.is_failed()\
+		.has_message("""
+			Expecting:
+			 '{ }'
+			 to refer to the same object
+			 '{ }'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure( func(): assert_dict({1:1, "key_a": "value_a"}).is_same({1:1, "key_a": "value_a" })) \
+		.is_failed()\
+		.has_message("""
+			Expecting:
+			 '{
+				1: 1,
+				"key_a": "value_a"
+			  }'
+			 to refer to the same object
+			 '{
+				1: 1,
+				"key_a": "value_a"
+			  }'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+
+
+func test_is_not_same() -> void:
+	var dict_a := {}
+	var dict_b := {}
+	var dict_c := {1:1, "key_a": "value_a"}
+	var dict_d := {1:1, "key_a": "value_a"}
+	assert_dict(dict_a).is_not_same(dict_b).is_not_same(dict_c).is_not_same(dict_d)
+	assert_dict(dict_b).is_not_same(dict_a).is_not_same(dict_c).is_not_same(dict_d)
+	assert_dict(dict_c).is_not_same(dict_a).is_not_same(dict_b).is_not_same(dict_d)
+	assert_dict(dict_d).is_not_same(dict_a).is_not_same(dict_b).is_not_same(dict_c)
+	
+	assert_failure( func(): assert_dict(dict_a).is_not_same(dict_a)) \
+		.is_failed()\
+		.has_message("""
+			Expecting not same:
+			 '{ }'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure( func(): assert_dict(dict_c).is_not_same(dict_c)) \
+		.is_failed()\
+		.has_message("""
+			Expecting not same:
+			 '{
+				1: 1,
+				"key_a": "value_a"
+			  }'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+
+
 func test_is_empty() -> void:
 	assert_dict({}).is_empty()
 	
@@ -211,40 +280,6 @@ func test_contains_keys() -> void:
 		.has_message("Expecting: not to be '<null>'")
 
 
-func test_contains_not_keys() -> void:
-	assert_dict({}).contains_not_keys([2])
-	assert_dict({1:1, 3:3}).contains_not_keys([2])
-	assert_dict({1:1, 3:3}).contains_not_keys([2, 4])
-	
-	assert_failure(func(): assert_dict({1:1, 2:2, 3:3}).contains_not_keys([2, 4])) \
-		.is_failed() \
-		.has_message("""
-			Expecting keys:
-			 '[1, 2, 3]'
-			 do not contains:
-			 '[2, 4]'
-			 but contains key's:
-			 '[2]'"""
-			.dedent()
-			.trim_prefix("\n")
-		)
-	assert_failure(func(): assert_dict({1:1, 2:2, 3:3}).contains_not_keys([1, 2, 3, 4])) \
-		.is_failed() \
-		.has_message("""
-			Expecting keys:
-			 '[1, 2, 3]'
-			 do not contains:
-			 '[1, 2, 3, 4]'
-			 but contains key's:
-			 '[1, 2, 3]'"""
-			.dedent()
-			.trim_prefix("\n")
-		)
-	assert_failure(func(): assert_dict(null).contains_not_keys([1, 4])) \
-		.is_failed() \
-		.has_message("Expecting: not to be '<null>'")
-
-
 func test_contains_key_value() -> void:
 	assert_dict({1:1}).contains_key_value(1, 1)
 	assert_dict({1:1, 2:2, 3:3}).contains_key_value(3, 3).contains_key_value(1, 1)
@@ -262,6 +297,56 @@ func test_contains_key_value() -> void:
 	assert_failure(func(): assert_dict(null).contains_key_value(1, 2)) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
+
+
+func test_not_contains_keys() -> void:
+	assert_dict({}).not_contains_keys([2])
+	assert_dict({1:1, 3:3}).not_contains_keys([2])
+	assert_dict({1:1, 3:3}).not_contains_keys([2, 4])
+	
+	assert_failure(func(): assert_dict({1:1, 2:2, 3:3}).not_contains_keys([2, 4])) \
+		.is_failed() \
+		.has_message("""
+			Expecting keys:
+			 '[1, 2, 3]'
+			 do not contains:
+			 '[2, 4]'
+			 but contains key's:
+			 '[2]'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure(func(): assert_dict({1:1, 2:2, 3:3}).not_contains_keys([1, 2, 3, 4])) \
+		.is_failed() \
+		.has_message("""
+			Expecting keys:
+			 '[1, 2, 3]'
+			 do not contains:
+			 '[1, 2, 3, 4]'
+			 but contains key's:
+			 '[1, 2, 3]'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure(func(): assert_dict(null).not_contains_keys([1, 4])) \
+		.is_failed() \
+		.has_message("Expecting: not to be '<null>'")
+
+
+func test_contains_same_keys() -> void:
+	assert_dict({1:1, 2:2, 3:3}).contains_same_keys([2])
+	assert_dict({1:1, 2:2, "key_a": "value_a"}).contains_same_keys([2, "key_a"])
+
+
+func test_contains_same_key_value() -> void:
+	assert_dict({1:1}).contains_same_key_value(1, 1)
+	assert_dict({1:1, 2:2, 3:3}).contains_same_key_value(3, 3).contains_key_value(1, 1)
+
+
+func test_not_contains_same_keys() -> void:
+	assert_dict({}).not_contains_same_keys([2])
+	assert_dict({1:1, 3:3}).not_contains_same_keys([2])
+	assert_dict({1:1, 3:3}).not_contains_same_keys([2, 4])
 
 
 func test_override_failure_message() -> void:
