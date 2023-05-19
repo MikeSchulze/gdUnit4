@@ -5,7 +5,7 @@
 
 ---
 <h1 align="center">GdUnit4</h1>
-<p align="center">This version of GdUnit4 is based on Godot <strong>v4.0.2.stable.official [7a0977ce2]</strong> (master branch)</p>
+<p align="center">This version of GdUnit4 is based on Godot <strong>v4.0.3.stable.official [5222a99f5]/strong> (master branch)</p>
 </h2>
 
 
@@ -14,6 +14,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Godot-v4.0.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.0.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
+  <img src="https://img.shields.io/badge/Godot-v4.0.3-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
 </p>
 
 <p align="center"><a href="https://github.com/MikeSchulze/gdUnit4"><img src="https://github.com/MikeSchulze/gdUnit4/blob/master/assets/gdUnit4-animated.gif" width="100%"/></p><br/>
