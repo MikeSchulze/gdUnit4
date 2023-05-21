@@ -12,7 +12,7 @@ func test_is_null():
 	
 	assert_failure(func(): assert_result(Result.success("")).is_null()) \
 		.is_failed() \
-		.has_message("Expecting: '<null>' but was <RefCounted>")
+		.has_message('Expecting: \'<null>\' but was <{ "state": 0, "value": "\\"\\"", "warn_msg": "", "err_msg": "" }>')
 
 
 func test_is_not_null():
