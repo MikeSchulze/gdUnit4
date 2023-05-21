@@ -200,7 +200,7 @@ func test_is_not_same(value, test_parameters = [
 	
 	assert_failure(func(): assert_array(value).is_not_same(value))\
 		.is_failed()\
-		.has_message("Expecting: not same '%s'" % GdDefaultValueDecoder.decode(value))
+		.has_message("Expecting not same:\n '%s'" % GdDefaultValueDecoder.decode(value))
 
 
 @warning_ignore("unused_parameter")

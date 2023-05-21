@@ -90,7 +90,7 @@ static func _nerror(number) -> String:
 			return "[color=%s]%s[/color]" % [ERROR_COLOR, str(number)]
 
 
-static func _colored_value(value, _delimiter ="\n", detailed := false) -> String:
+static func _colored_value(value, _delimiter ="\n") -> String:
 	match typeof(value):
 		TYPE_STRING, TYPE_STRING_NAME:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _colored_string_div(value)]
@@ -105,7 +105,7 @@ static func _colored_value(value, _delimiter ="\n", detailed := false) -> String
 				return "'[color=%s]<null>[/color]'" % [VALUE_COLOR]
 			if value is InputEvent:
 				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, input_event_as_text(value)]
-			if detailed and value.has_method("_to_string"):
+			if value.has_method("_to_string"):
 				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value._to_string()]
 			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
 		TYPE_DICTIONARY:
@@ -205,7 +205,7 @@ static func error_is_same(current, expected) -> String:
 
 @warning_ignore("unused_parameter")
 static func error_not_same(current, expected) -> String:
-	return "%s %s" % [_error("Expecting: not same"), _colored_value(expected)]
+	return "%s\n %s" % [_error("Expecting not same:"), _colored_value(expected)]
 
 
 static func error_not_same_error(current, expected) -> String:
@@ -344,8 +344,8 @@ static func error_arr_contains(current, expected :Array, not_expect :Array, not_
 	return error
 
 
-static func error_arr_contains_exactly(current, expected, not_expect, not_found, by_reference :bool) -> String:
-	var failure_message = "Expecting contains SAME exactly elements:" if by_reference else "Expecting contains exactly elements:"
+static func error_arr_contains_exactly(current, expected, not_expect, not_found, compare_mode :GdObjects.COMPARE_MODE) -> String:
+	var failure_message = "Expecting contains exactly elements:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST else "Expecting contains SAME exactly elements:"
 	if not_expect.is_empty() and not_found.is_empty():
 		var diff := _find_first_diff(current, expected)
 		return "%s\n %s\n do contains (in same order)\n %s\n but has different order %s"  % [_error(failure_message), _colored_value(current, ", "), _colored_value(expected, ", "), diff]
@@ -359,8 +359,8 @@ static func error_arr_contains_exactly(current, expected, not_expect, not_found,
 	return error
 
 
-static func error_arr_contains_exactly_in_any_order(current, expected :Array, not_expect :Array, not_found :Array, by_reference :bool) -> String:
-	var failure_message = "Expecting contains SAME exactly elements:" if by_reference else "Expecting contains exactly elements:"
+static func error_arr_contains_exactly_in_any_order(current, expected :Array, not_expect :Array, not_found :Array, compare_mode :GdObjects.COMPARE_MODE) -> String:
+	var failure_message = "Expecting contains exactly elements:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST else "Expecting contains SAME exactly elements:"
 	var error := "%s\n %s\n do contains exactly (in any order)\n %s" % [_error(failure_message), _colored_value(current, ", "), _colored_value(expected, ", ")]
 	if not not_expect.is_empty():
 		error += "\nbut some elements where not expected:\n %s" % _colored_value(not_expect, ", ")
@@ -370,8 +370,8 @@ static func error_arr_contains_exactly_in_any_order(current, expected :Array, no
 	return error
 
 
-static func error_arr_not_contains(current :Array, expected :Array, found :Array, by_reference :bool) -> String:
-	var failure_message = "Expecting SAME:" if by_reference else "Expecting:"
+static func error_arr_not_contains(current :Array, expected :Array, found :Array, compare_mode :GdObjects.COMPARE_MODE) -> String:
+	var failure_message = "Expecting:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST else "Expecting SAME:"
 	var error := "%s\n %s\n do not contains\n %s" % [_error(failure_message), _colored_value(current, ", "), _colored_value(expected, ", ")]
 	if not found.is_empty():
 		error += "\n but found elements:\n %s" % _colored_value(found, ", ")
@@ -379,16 +379,19 @@ static func error_arr_not_contains(current :Array, expected :Array, found :Array
 
 
 # - DictionaryAssert specific messages ----------------------------------------------
-static func error_contains_keys(current :Array, expected :Array, keys_not_found :Array) -> String:
-	return "%s\n %s\n to contains:\n %s\n but can't find key's:\n %s" % [_error("Expecting keys:"), _colored_value(current, ", "), _colored_value(expected, ", "), _colored_value(keys_not_found, ", ")]
+static func error_contains_keys(current :Array, expected :Array, keys_not_found :Array, compare_mode :GdObjects.COMPARE_MODE) -> String:
+	var failure := "Expecting contains keys:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST else "Expecting contains SAME keys:"
+	return "%s\n %s\n to contains:\n %s\n but can't find key's:\n %s" % [_error(failure), _colored_value(current, ", "), _colored_value(expected, ", "), _colored_value(keys_not_found, ", ")]
 
 
-static func error_not_contains_keys(current :Array, expected :Array, keys_not_found :Array) -> String:
-	return "%s\n %s\n do not contains:\n %s\n but contains key's:\n %s" % [_error("Expecting keys:"), _colored_value(current, ", "), _colored_value(expected, ", "), _colored_value(keys_not_found, ", ")]
+static func error_not_contains_keys(current :Array, expected :Array, keys_not_found :Array, compare_mode :GdObjects.COMPARE_MODE) -> String:
+	var failure := "Expecting NOT contains keys:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST else "Expecting NOT contains SAME keys"
+	return "%s\n %s\n do not contains:\n %s\n but contains key's:\n %s" % [_error(failure), _colored_value(current, ", "), _colored_value(expected, ", "), _colored_value(keys_not_found, ", ")]
 
 
-static func error_contains_key_value(key, value, current_value) -> String:
-	return "%s\n %s : %s\n but contains\n %s : %s" % [_error("Expecting key and value:"), _colored_value(key), _colored_value(value), _colored_value(key), _colored_value(current_value)]
+static func error_contains_key_value(key, value, current_value, compare_mode :GdObjects.COMPARE_MODE) -> String:
+	var failure := "Expecting contains key and value:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST else "Expecting contains SAME key and value:"
+	return "%s\n %s : %s\n but contains\n %s : %s" % [_error(failure), _colored_value(key), _colored_value(value), _colored_value(key), _colored_value(current_value)]
 
 
 # - ResultAssert specific errors ----------------------------------------------------

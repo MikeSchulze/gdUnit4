@@ -122,6 +122,75 @@ func test_is_not_equal() -> void:
 		)
 
 
+func test_is_same() -> void:
+	var dict_a := {}
+	var dict_b := {"key"="value", "key2"="value"}
+	var dict_c := {1:1, "key_a": "value_a"}
+	var dict_d := {"key_a": "value_a", 1:1}
+	assert_dict(dict_a).is_same(dict_a)
+	assert_dict(dict_b).is_same(dict_b)
+	assert_dict(dict_c).is_same(dict_c)
+	assert_dict(dict_d).is_same(dict_d)
+	
+	assert_failure( func(): assert_dict({}).is_same({})) \
+		.is_failed()\
+		.has_message("""
+			Expecting:
+			 '{ }'
+			 to refer to the same object
+			 '{ }'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure( func(): assert_dict({1:1, "key_a": "value_a"}).is_same({1:1, "key_a": "value_a" })) \
+		.is_failed()\
+		.has_message("""
+			Expecting:
+			 '{
+				1: 1,
+				"key_a": "value_a"
+			  }'
+			 to refer to the same object
+			 '{
+				1: 1,
+				"key_a": "value_a"
+			  }'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+
+
+func test_is_not_same() -> void:
+	var dict_a := {}
+	var dict_b := {}
+	var dict_c := {1:1, "key_a": "value_a"}
+	var dict_d := {1:1, "key_a": "value_a"}
+	assert_dict(dict_a).is_not_same(dict_b).is_not_same(dict_c).is_not_same(dict_d)
+	assert_dict(dict_b).is_not_same(dict_a).is_not_same(dict_c).is_not_same(dict_d)
+	assert_dict(dict_c).is_not_same(dict_a).is_not_same(dict_b).is_not_same(dict_d)
+	assert_dict(dict_d).is_not_same(dict_a).is_not_same(dict_b).is_not_same(dict_c)
+	
+	assert_failure( func(): assert_dict(dict_a).is_not_same(dict_a)) \
+		.is_failed()\
+		.has_message("""
+			Expecting not same:
+			 '{ }'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure( func(): assert_dict(dict_c).is_not_same(dict_c)) \
+		.is_failed()\
+		.has_message("""
+			Expecting not same:
+			 '{
+				1: 1,
+				"key_a": "value_a"
+			  }'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+
+
 func test_is_empty() -> void:
 	assert_dict({}).is_empty()
 	
@@ -177,15 +246,35 @@ func test_has_size() -> void:
 			.trim_prefix("\n")
 		)
 
+class TestObj:
+	var _name :String
+	var _value :int
+	
+	func _init(name :String = "Foo", value :int = 0):
+		_name = name
+		_value = value
+	
+	func _to_string() -> String:
+		return "class:%s:%d" % [_name, _value]
+
 
 func test_contains_keys() -> void:
+	var key_a := TestObj.new()
+	var key_b := TestObj.new()
+	var key_c := TestObj.new()
+	var key_d := TestObj.new("D")
+	
 	assert_dict({1:1, 2:2, 3:3}).contains_keys([2])
 	assert_dict({1:1, 2:2, "key_a": "value_a"}).contains_keys([2, "key_a"])
+	assert_dict({key_a:1, key_b:2, key_c:3}).contains_keys([key_a, key_b])
+	assert_dict({key_a:1, key_c:3 }).contains_keys([key_b])
+	assert_dict({key_a:1, 3:3}).contains_keys([key_a, key_b])
+
 	
 	assert_failure(func(): assert_dict({1:1, 3:3}).contains_keys([2])) \
 		.is_failed() \
 		.has_message("""
-			Expecting keys:
+			Expecting contains keys:
 			 '[1, 3]'
 			 to contains:
 			 '[2]'
@@ -197,7 +286,7 @@ func test_contains_keys() -> void:
 	assert_failure(func(): assert_dict({1:1, 3:3}).contains_keys([1, 4])) \
 		.is_failed() \
 		.has_message("""
-			Expecting keys:
+			Expecting contains keys:
 			 '[1, 3]'
 			 to contains:
 			 '[1, 4]'
@@ -209,40 +298,16 @@ func test_contains_keys() -> void:
 	assert_failure(func(): assert_dict(null).contains_keys([1, 4])) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
-
-
-func test_contains_not_keys() -> void:
-	assert_dict({}).contains_not_keys([2])
-	assert_dict({1:1, 3:3}).contains_not_keys([2])
-	assert_dict({1:1, 3:3}).contains_not_keys([2, 4])
-	
-	assert_failure(func(): assert_dict({1:1, 2:2, 3:3}).contains_not_keys([2, 4])) \
+	assert_failure(func(): assert_dict({key_a:1, 3:3}).contains_keys([key_a, key_d])) \
 		.is_failed() \
 		.has_message("""
-			Expecting keys:
-			 '[1, 2, 3]'
-			 do not contains:
-			 '[2, 4]'
-			 but contains key's:
-			 '[2]'"""
-			.dedent()
-			.trim_prefix("\n")
-		)
-	assert_failure(func(): assert_dict({1:1, 2:2, 3:3}).contains_not_keys([1, 2, 3, 4])) \
-		.is_failed() \
-		.has_message("""
-			Expecting keys:
-			 '[1, 2, 3]'
-			 do not contains:
-			 '[1, 2, 3, 4]'
-			 but contains key's:
-			 '[1, 2, 3]'"""
-			.dedent()
-			.trim_prefix("\n")
-		)
-	assert_failure(func(): assert_dict(null).contains_not_keys([1, 4])) \
-		.is_failed() \
-		.has_message("Expecting: not to be '<null>'")
+			 Expecting contains keys:
+			  '[class:Foo:0, 3]'
+			  to contains:
+			  '[class:Foo:0, class:D:0]'
+			  but can't find key's:
+			  '[class:D:0]'"""
+			.dedent().trim_prefix("\n"))
 
 
 func test_contains_key_value() -> void:
@@ -252,7 +317,7 @@ func test_contains_key_value() -> void:
 	assert_failure(func(): assert_dict({1:1}).contains_key_value(1, 2)) \
 		.is_failed() \
 		.has_message("""
-			Expecting key and value:
+			Expecting contains key and value:
 			 '1' : '2'
 			 but contains
 			 '1' : '1'"""
@@ -262,6 +327,115 @@ func test_contains_key_value() -> void:
 	assert_failure(func(): assert_dict(null).contains_key_value(1, 2)) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
+
+
+func test_not_contains_keys() -> void:
+	assert_dict({}).not_contains_keys([2])
+	assert_dict({1:1, 3:3}).not_contains_keys([2])
+	assert_dict({1:1, 3:3}).not_contains_keys([2, 4])
+	
+	assert_failure(func(): assert_dict({1:1, 2:2, 3:3}).not_contains_keys([2, 4])) \
+		.is_failed() \
+		.has_message("""
+			Expecting NOT contains keys:
+			 '[1, 2, 3]'
+			 do not contains:
+			 '[2, 4]'
+			 but contains key's:
+			 '[2]'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure(func(): assert_dict({1:1, 2:2, 3:3}).not_contains_keys([1, 2, 3, 4])) \
+		.is_failed() \
+		.has_message("""
+			Expecting NOT contains keys:
+			 '[1, 2, 3]'
+			 do not contains:
+			 '[1, 2, 3, 4]'
+			 but contains key's:
+			 '[1, 2, 3]'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure(func(): assert_dict(null).not_contains_keys([1, 4])) \
+		.is_failed() \
+		.has_message("Expecting: not to be '<null>'")
+
+
+func test_contains_same_keys() -> void:
+	var key_a := TestObj.new()
+	var key_b := TestObj.new()
+	var key_c := TestObj.new()
+	
+	assert_dict({1:1, 2:2, 3:3}).contains_same_keys([2])
+	assert_dict({1:1, 2:2, "key_a": "value_a"}).contains_same_keys([2, "key_a"])
+	assert_dict({key_a:1, key_b:2, 3:3}).contains_same_keys([key_b])
+	assert_dict({key_a:1, key_b:2, 3:3}).contains_same_keys([key_a, key_b])
+
+	assert_failure(func(): assert_dict({key_a:1, key_c:3 }).contains_same_keys([key_a, key_b])) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains SAME keys:
+			 '[class:Foo:0, class:Foo:0]'
+			 to contains:
+			 '[class:Foo:0, class:Foo:0]'
+			 but can't find key's:
+			 '[class:Foo:0]'"""
+			.dedent().trim_prefix("\n")
+		)
+
+
+func test_contains_same_key_value() -> void:
+	var key_a := TestObj.new("A")
+	var key_b := TestObj.new("B")
+	var key_c := TestObj.new("C")
+	var key_d := TestObj.new("A")
+	
+	assert_dict({key_a:1, key_b:2, key_c:3})\
+		.contains_same_key_value(key_a, 1)\
+		.contains_same_key_value(key_b, 2)
+	
+	assert_failure(func(): assert_dict({key_a:1, key_b:2, key_c:3}).contains_same_key_value(key_a, 2)) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains SAME key and value:
+			 <class:A:0> : '2'
+			 but contains
+			 <class:A:0> : '1'"""
+			.dedent().trim_prefix("\n")
+		)
+	assert_failure(func(): assert_dict({key_a:1, key_b:2, key_c:3}).contains_same_key_value(key_d, 1)) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains SAME key and value:
+			 <class:A:0> : '1'
+			 but contains
+			 <class:A:0> : '[class:A:0, class:B:0, class:C:0]'"""
+			.dedent().trim_prefix("\n")
+		)
+
+
+func test_not_contains_same_keys() -> void:
+	var key_a := TestObj.new("A")
+	var key_b := TestObj.new("B")
+	var key_c := TestObj.new("C")
+	var key_d := TestObj.new("A")
+	
+	assert_dict({}).not_contains_same_keys([key_a])
+	assert_dict({key_a:1, key_b:2}).not_contains_same_keys([key_c, key_d])
+	
+	assert_failure(func(): assert_dict({key_a:1, key_b:2}).not_contains_same_keys([key_c, key_b])) \
+		.is_failed() \
+		.has_message("""
+			Expecting NOT contains SAME keys
+			 '[class:A:0, class:B:0]'
+			 do not contains:
+			 '[class:C:0, class:B:0]'
+			 but contains key's:
+			 '[class:B:0]'"""
+			.dedent().trim_prefix("\n")
+		)
 
 
 func test_override_failure_message() -> void:

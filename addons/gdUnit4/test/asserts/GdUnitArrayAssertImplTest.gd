@@ -174,7 +174,7 @@ func test_is_not_same() -> void:
 	var value := [0]
 	assert_failure(func(): assert_array(value).is_not_same(value))\
 		.is_failed()\
-		.has_message("Expecting: not same '[0]'")
+		.has_message("Expecting not same:\n '[0]'")
 
 
 func test_has_size():

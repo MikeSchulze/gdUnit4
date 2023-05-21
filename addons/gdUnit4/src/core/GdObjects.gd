@@ -131,12 +131,10 @@ const NOTIFICATION_AS_STRING_MAPPINGS := {
 }
 
 
-static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false, deep_check :bool = true ) -> bool:
-	var a := obj_a.duplicate()
-	var b := obj_b.duplicate()
-	a.sort()
-	b.sort()
-	return equals(a, b, case_sensitive, deep_check)
+enum COMPARE_MODE {
+	OBJECT_REFERENCE,
+	PARAMETER_DEEP_TEST
+}
 
 
 # prototype of better object to dictionary
@@ -178,11 +176,19 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 	return {"%s" % clazz_name : dict}
 
 
-static func equals(obj_a, obj_b, case_sensitive :bool = false, deep_check :bool = true ) -> bool:
-	return _equals(obj_a, obj_b, case_sensitive, deep_check, [], 0)
+static func equals(obj_a, obj_b, case_sensitive :bool = false, compare_mode :COMPARE_MODE = COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
+	return _equals(obj_a, obj_b, case_sensitive, compare_mode, [], 0)
 
 
-static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_stack, stack_depth :int ) -> bool:
+static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false, compare_mode :COMPARE_MODE = COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
+	var a := obj_a.duplicate()
+	var b := obj_b.duplicate()
+	a.sort()
+	b.sort()
+	return equals(a, b, case_sensitive, compare_mode)
+
+
+static func _equals(obj_a, obj_b, case_sensitive :bool, compare_mode :COMPARE_MODE, deep_stack, stack_depth :int ) -> bool:
 	var type_a := typeof(obj_a)
 	var type_b := typeof(obj_b)
 	if stack_depth > 32:
@@ -209,9 +215,7 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 				return true
 			deep_stack.append(obj_a)
 			deep_stack.append(obj_b)
-			if deep_check:
-				# prototype of better deep check
-				#return equals(obj2dict(obj_a), obj2dict(obj_b))
+			if compare_mode == COMPARE_MODE.PARAMETER_DEEP_TEST:
 				# fail fast
 				if not is_instance_valid(obj_a) or not is_instance_valid(obj_b):
 					return false
@@ -219,28 +223,24 @@ static func _equals(obj_a, obj_b, case_sensitive :bool, deep_check :bool, deep_s
 					return false
 				var a = obj2dict(obj_a)
 				var b = obj2dict(obj_b)
-				return _equals(a, b, case_sensitive, deep_check, deep_stack, stack_depth)
+				return _equals(a, b, case_sensitive, compare_mode, deep_stack, stack_depth)
 			return obj_a == obj_b
 		
 		TYPE_ARRAY:
-			var arr_a:= obj_a as Array
-			var arr_b:= obj_b as Array
-			if arr_a.size() != arr_b.size():
+			if obj_a.size() != obj_b.size():
 				return false
-			for index in arr_a.size():
-				if not _equals(arr_a[index], arr_b[index], case_sensitive, deep_check, deep_stack, stack_depth):
+			for index in obj_a.size():
+				if not _equals(obj_a[index], obj_b[index], case_sensitive, compare_mode, deep_stack, stack_depth):
 					return false
 			return true
 		
 		TYPE_DICTIONARY:
-			var dic_a:= obj_a as Dictionary
-			var dic_b:= obj_b as Dictionary
-			if dic_a.size() != dic_b.size():
+			if obj_a.size() != obj_b.size():
 				return false
-			for key in dic_a.keys():
-				var value_a = dic_a[key] if dic_a.has(key) else null
-				var value_b = dic_b[key] if dic_b.has(key) else null
-				if not _equals(value_a, value_b, case_sensitive, deep_check, deep_stack, stack_depth):
+			for key in obj_a.keys():
+				var value_a = obj_a[key] if obj_a.has(key) else null
+				var value_b = obj_b[key] if obj_b.has(key) else null
+				if not _equals(value_a, value_b, case_sensitive, compare_mode, deep_stack, stack_depth):
 					return false
 			return true
 		
@@ -317,7 +317,7 @@ static func string_as_typeof(type_name :String) -> int:
 
 
 static func is_primitive_type(value) -> bool:
-	return typeof(value) in [TYPE_BOOL, TYPE_STRING, TYPE_INT, TYPE_FLOAT]
+	return typeof(value) in [TYPE_BOOL, TYPE_STRING, TYPE_STRING_NAME, TYPE_INT, TYPE_FLOAT]
 
 
 static func _is_type_equivalent(type_a, type_b) -> bool:
