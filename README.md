@@ -5,7 +5,7 @@
 
 ---
 <h1 align="center">GdUnit4</h1>
-<p align="center">This version of GdUnit4 is based on Godot <strong>v4.0.3.stable.official [5222a99f5]/strong> (master branch)</p>
+<p align="center">This version of GdUnit4 is based on Godot <strong>v4.0.3.stable.official [5222a99f5]</strong> (master branch)</p>
 </h2>
 
 
