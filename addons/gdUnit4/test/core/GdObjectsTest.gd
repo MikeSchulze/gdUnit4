@@ -133,16 +133,16 @@ func test_equals_Node_with_deep_check():
 	var nodeA = auto_free(Node.new())
 	var nodeB = auto_free(Node.new())
 	
-	# compares by default with deep ckeck checked
+	# compares by default with deep parameter ckeck
 	assert_bool(GdObjects.equals(nodeA, nodeA)).is_true()
 	assert_bool(GdObjects.equals(nodeB, nodeB)).is_true()
 	assert_bool(GdObjects.equals(nodeA, nodeB)).is_true()
 	assert_bool(GdObjects.equals(nodeB, nodeA)).is_true()
-	# compares by default with deep ckeck unchecked
-	assert_bool(GdObjects.equals(nodeA, nodeA, false, false)).is_true()
-	assert_bool(GdObjects.equals(nodeB, nodeB, false, false)).is_true()
-	assert_bool(GdObjects.equals(nodeA, nodeB, false, false)).is_false()
-	assert_bool(GdObjects.equals(nodeB, nodeA, false, false)).is_false()
+	# compares by object reference
+	assert_bool(GdObjects.equals(nodeA, nodeA, false, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)).is_true()
+	assert_bool(GdObjects.equals(nodeB, nodeB, false, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)).is_true()
+	assert_bool(GdObjects.equals(nodeA, nodeB, false, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)).is_false()
+	assert_bool(GdObjects.equals(nodeB, nodeA, false, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)).is_false()
 
 func test_is_primitive_type():
 	assert_bool(GdObjects.is_primitive_type(false)).is_true()

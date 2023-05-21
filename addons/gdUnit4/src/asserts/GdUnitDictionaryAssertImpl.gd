@@ -119,54 +119,74 @@ func has_size(expected: int) -> GdUnitDictionaryAssert:
 	return report_success()
 
 
-func contains_keys(expected :Array) -> GdUnitDictionaryAssert:
+func _contains_keys(expected :Array, compare_mode :GdObjects.COMPARE_MODE) -> GdUnitDictionaryAssert:
 	var current = __current()
 	if current == null:
 		return report_error(GdAssertMessages.error_is_not_null())
 	# find expected keys
-	var keys_not_found := expected.duplicate()
-	for key in current.keys():
-		keys_not_found.erase(key)
+	var keys_not_found :Array = expected.filter(func(expected_key):
+		for current_key in current.keys():
+			if GdObjects.equals(current_key, expected_key, false, compare_mode):
+				return false
+		return true
+	)
 	if not keys_not_found.is_empty():
-		return report_error(GdAssertMessages.error_contains_keys(current.keys(), expected, keys_not_found))
+		return report_error(GdAssertMessages.error_contains_keys(current.keys(), expected, keys_not_found, compare_mode))
 	return report_success()
+
+
+func _contains_key_value(key, value, compare_mode :GdObjects.COMPARE_MODE) -> GdUnitDictionaryAssert:
+	var current = __current()
+	var expected := [key]
+	if current == null:
+		return report_error(GdAssertMessages.error_is_not_null())
+	var keys_not_found :Array = expected.filter(func(expected_key):
+		for current_key in current.keys():
+			if GdObjects.equals(current_key, expected_key, false, compare_mode):
+				return false
+		return true
+	)
+	if not keys_not_found.is_empty():
+		return report_error(GdAssertMessages.error_contains_key_value(key, value, current.keys(), compare_mode))
+	if not GdObjects.equals(current[key], value, false, compare_mode):
+		return report_error(GdAssertMessages.error_contains_key_value(key, value, current[key], compare_mode))
+	return report_success()
+
+
+func _not_contains_keys(expected :Array, compare_mode :GdObjects.COMPARE_MODE) -> GdUnitDictionaryAssert:
+	var current = __current()
+	if current == null:
+		return report_error(GdAssertMessages.error_is_not_null())
+	var keys_found :Array = current.keys().filter(func(current_key):
+		for expected_key in expected:
+			if GdObjects.equals(current_key, expected_key, false, compare_mode):
+				return true
+		return false
+	)
+	if not keys_found.is_empty():
+		return report_error(GdAssertMessages.error_not_contains_keys(current.keys(), expected, keys_found, compare_mode))
+	return report_success()
+
+
+func contains_keys(expected :Array) -> GdUnitDictionaryAssert:
+	return _contains_keys(expected, GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST)
 
 
 func contains_key_value(key, value) -> GdUnitDictionaryAssert:
-	var current = __current()
-	if current == null:
-		return report_error(GdAssertMessages.error_is_not_null())
-	if not current.has(key):
-		return report_error(GdAssertMessages.error_contains_keys(current.keys(), [key], [key]))
-	if not GdObjects.equals(current[key], value):
-		return report_error(GdAssertMessages.error_contains_key_value(key, value, current[key]))
-	return report_success()
+	return _contains_key_value(key, value, GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST)
 
 
 func not_contains_keys(expected :Array) -> GdUnitDictionaryAssert:
-	var current = __current()
-	if current == null:
-		return report_error(GdAssertMessages.error_is_not_null())
-	# find not expected keys
-	var keys_found := Array()
-	var current_keys = current.keys()
-	for do_not_contain_key in expected:
-		if current_keys.has(do_not_contain_key):
-			keys_found.append(do_not_contain_key)
-	if not keys_found.is_empty():
-		return report_error(GdAssertMessages.error_not_contains_keys(current.keys(), expected, keys_found))
-	return report_success()
-
+	return _not_contains_keys(expected, GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST)
 
 
 func contains_same_keys(expected :Array) -> GdUnitDictionaryAssert:
-	return report_error("Not yet implemented")
+	return _contains_keys(expected, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)
 
 
 func contains_same_key_value(key, value) -> GdUnitDictionaryAssert:
-	return report_error("Not yet implemented")
+	return _contains_key_value(key, value, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)
 
 
 func not_contains_same_keys(expected :Array) -> GdUnitDictionaryAssert:
-	return report_error("Not yet implemented")
-
+	return _not_contains_keys(expected, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)
