@@ -7,7 +7,7 @@ nav_order: 5
 
 # Array Assertions
 
-An assertion tool to verify arrays.
+An assertion tool to verify arrays, supports all Godot array types
 
 {% tabs assert-array-overview %}
 {% tab assert-array-overview GdScript %}
