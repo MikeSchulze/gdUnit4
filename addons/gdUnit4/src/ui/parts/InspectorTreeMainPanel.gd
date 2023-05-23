@@ -14,7 +14,7 @@ signal run_testsuite
 @onready var _context_menu_debug := $contextMenu/items/debug
 
 # tree icons
-@onready var ICON_SPINNER = load("res://addons/gdUnit4/src/ui/assets/spinner.tres")
+@onready var ICON_SPINNER = preload("res://addons/gdUnit4/src/ui/assets/spinner.tres")
 @onready var ICON_TEST_DEFAULT = load_resized_texture("res://addons/gdUnit4/src/ui/assets/TestCase.svg")
 @onready var ICON_TEST_SUCCESS = load_resized_texture("res://addons/gdUnit4/src/ui/assets/TestCaseSuccess.svg")
 @onready var ICON_TEST_FAILED = load_resized_texture("res://addons/gdUnit4/src/ui/assets/TestCaseFailed.svg")

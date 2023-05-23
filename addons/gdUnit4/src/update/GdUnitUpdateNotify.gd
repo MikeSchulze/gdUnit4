@@ -5,7 +5,7 @@ signal request_completed(response)
 
 const GdMarkDownReader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
 const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
-const spinner_icon := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
+const spinner_icon := preload("res://addons/gdUnit4/src/ui/assets/spinner.tres")
 
 @onready var _md_reader :GdMarkDownReader = GdMarkDownReader.new()
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
