@@ -27,7 +27,8 @@ Provided by abarichello [Docker image](https://github.com/abarichello/godot-ci){
 You have to create a new workflow file on GitLab and named it *\.gitlab-ci\.yml*. Please visit [GitLab CI Documentation](https://docs.gitlab.com/ee/ci/yaml/gitlab_ci_yaml.html){:target="_blank"} for more detaild instructions
 
 Thanks to [mzoeller](https://github.com/mzoeller){:target="_blank"} to providing this example workflow.
-```
+{% raw %}
+```yaml
 image: barichello/godot-ci:4.0.0
 
 cache:
@@ -66,107 +67,48 @@ gdunit4:
     reports:
       junit: ./reports/report_1/results.xml
 ```
+{% endraw %}
 
 ## Howto deploy with GitHub Action
 To deploy with GitHub Actions, you need to create a new workflow file in the *\.github/workflows/* directory and name it *ci\.yml*. Please visit [GitHub Workflows Page](https://docs.github.com/en/actions/using-workflows)
 
 Example workflow: (Please note that this is just an example and needs to be adapted to your project environment.)
-```
+{% raw %}
+```yaml
 name: ci-pr
+run-name: ${{ github.head_ref || github.ref_name }}-ci-pr
 
 on:
   pull_request:
     paths-ignore:
+      - '**.yml'
       - '**.jpg'
       - '**.png'
       - '**.md'
   workflow_dispatch:
 
+
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ci-pr-${{ github.event.number }}
   cancel-in-progress: true
 
-jobs:
 
-  unit-test:
-    name: "Unit tests on Godot v${{ matrix.godot-version }}-${{ matrix.godot-status-version }} (${{ matrix.name }})"
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
-    continue-on-error: false
+jobs:
+  unit-tests:
     strategy:
       fail-fast: false
+      max-parallel: 10
       matrix:
-        os: [ubuntu-22.04]
-        godot-version: ['4.0']
-        godot-status-version: ['stable']
-        include:
-          - os: ubuntu-22.04
-            name: Godot 🐧 Linux Build
-            godot-bin-name: 'linux.x86_64'
-            godot-executable_path: '~/godot-linux/godot'
-            godot-cache-path: '~/godot-linux'
-            godot-mono: false
-            install-opengl: true
+        godot-version: ['4.0.1', '4.0.2', '4.0.3']
 
-    steps:
-      - name: "Checkout GdUnit Repository"
-        uses: actions/checkout@v3
-        with:
-          lfs: true
-          submodules: 'recursive'
-
-      - name: "Install Godot ${{ matrix.godot-version }}"
-        uses: ./.github/actions/godot-install
-        with:
-          godot-version: ${{ matrix.godot-version }}
-          godot-status-version: ${{ matrix.godot-status-version }}
-          godot-bin-name: ${{ matrix.godot-bin-name }}
-          godot-cache-path: ${{ matrix.godot-cache-path }}
-
-      - name: "Install OpenGl Drivers"
-        if: ${{ matrix.install-opengl && !cancelled() }}
-        shell: bash
-        run: |
-          sudo apt-get -y update
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          export DISPLAY=:99
-          sudo apt-get install cmake pkg-config
-          sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
-          sudo apt-get install libglew-dev libglfw3-dev libglm-dev
-          sudo apt-get install libao-dev libmpg123-dev
-          glxinfo | grep OpenGL
-
-      - name: "Update Godot project cache"
-        if: ${{ !cancelled() }}
-        timeout-minutes: 1
-        continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
-        shell: bash
-        run: |
-          ${{ matrix.godot-executable_path }} --version
-          ${{ matrix.godot-executable_path }} -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless
-
-      - name: "Run Unit Tests"
-        if: ${{ !cancelled() }}
-        timeout-minutes: 10
-        uses: ./.github/actions/unit-test
-        with:
-          godot-bin: ${{ matrix.godot-executable_path }}
-          test-includes: "res://addons/gdUnit4/test/"
-
-      - name: "Publish Unit Test Reports"
-        if: ${{ !cancelled() }}
-        uses: ./.github/actions/publish-test-report
-        with:
-          report-name: ${{ matrix.godot-build }}${{ matrix.godot-version }}
-
-      - name: "Upload Unit Test Reports"
-        if: ${{ !cancelled() }}
-        uses: ./.github/actions/upload-test-report
-        with:
-          report-name: ${{ matrix.godot-build }}${{ matrix.godot-version }}
+    name: "CI on Godot 🐧 v${{ matrix.godot-version }}"
+    uses: ./.github/workflows/unit-tests.yml
+    with:
+      godot-version: ${{ matrix.godot-version }}
 ```
+{% endraw %}
 The full set of used GitHub actions used can be found [here](https://github.com/MikeSchulze/gdUnit4/tree/master/.github)
 
 
 ---
-<h4> document version v4.1.0 </h4>
+<h4> document version v4.1.1 </h4>
