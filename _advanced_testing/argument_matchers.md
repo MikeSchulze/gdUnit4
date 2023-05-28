@@ -44,8 +44,13 @@ The following matchers are available:<br>
 |any_string | Argument matcher to match any string value|
 |any_class | Argument matcher to match any instance of given class|
 |any_color | Argument matcher to match any Color value|
+|any_vector | Argument matcher to match any Vector value|
 |any_vector2 | Argument matcher to match any Vector2 value|
+|any_vector2i | Argument matcher to match any Vector2i value|
 |any_vector3 | Argument matcher to match any Vector3 value|
+|any_vector3i | Argument matcher to match any Vector3i value|
+|any_vector4 | Argument matcher to match any Vector4 value|
+|any_vector4i | Argument matcher to match any Vector4i value|
 |any_rect2 | Argument matcher to match any Rect2 value|
 |any_plane | Argument matcher to match any Plane value|
 |any_quat | Argument matcher to match any Quat value|
@@ -129,4 +134,4 @@ The test:
 Then in the test, we create a mocked_test_class object and call its **set_value** method with different arguments. Finally, we use verify to check if the method was called with arguments that meet the condition of the PeekMatcher.
 
 ---
-<h4> document version v4.1.0 </h4>
+<h4> document version v4.1.1 </h4>

@@ -7,7 +7,7 @@ nav_order: 5
 
 # Array Assertions
 
-An assertion tool to verify arrays.
+An assertion tool to verify arrays, supports all Godot array types
 
 {% tabs assert-array-overview %}
 {% tab assert-array-overview GdScript %}
@@ -21,12 +21,19 @@ An assertion tool to verify arrays.
 |[is_equal_ignoring_case](/gdUnit4/asserts/assert-array/#is_equal_ignoring_case) | Verifies that the current Array is equal to the given one, ignoring case considerations.|
 |[is_not_equal](/gdUnit4/asserts/assert-array/#is_not_equal) | Verifies that the current Array is not equal to the given one.|
 |[is_not_equal_ignoring_case](/gdUnit4/asserts/assert-array/#is_not_equal_ignoring_case) | Verifies that the current Array is not equal to the given one, ignoring case considerations.|
+|[is_same](/gdUnit4/asserts/assert-array/#is_same) | Verifies that the current Array is the same.|
+|[is_not_same](/gdUnit4/asserts/assert-array/#is_not_same) | Verifies that the current Array is NOT the same.|
 |[is_empty](/gdUnit4/asserts/assert-array/#is_empty) | Verifies that the current Array is empty, it has a size of 0.|
 |[is_not_empty](/gdUnit4/asserts/assert-array/#is_not_empty) | Verifies that the current Array is not empty, it has a size of minimum 1.|
 |[has_size](/gdUnit4/asserts/assert-array/#has_size) | Verifies that the current Array has a size of given value.|
 |[contains](/gdUnit4/asserts/assert-array/#contains) | Verifies that the current Array contains the given values, in any order.|
 |[contains_exactly](/gdUnit4/asserts/assert-array/#contains_exactly) | Verifies that the current Array contains exactly only the given values and nothing else, in same order.|
 |[contains_exactly_in_any_order](/gdUnit4/asserts/assert-array/#contains_exactly_in_any_order) | Verifies that the current Array contains exactly only the given values and nothing else, in any order.|
+|[not_contains](/gdUnit4/asserts/assert-array/#not_contains) | Verifies that the current Array do NOT contains the given values, in any order.|
+|[contains_same](/gdUnit4/asserts/assert-array/#contains_same) | Verifies that the current Array contains the given values, in any order.|
+|[contains_same_exactly](/gdUnit4/asserts/assert-array/#contains_same_exactly) | Verifies that the current Array contains exactly only the given values and nothing else, in same order.|
+|[contains_same_exactly_in_any_order](/gdUnit4/asserts/assert-array/#contains_same_exactly_in_any_order) | Verifies that the current Array contains exactly only the given values and nothing else, in any order.|
+|[not_contains_same](/gdUnit4/asserts/assert-array/#not_contains_same) | Verifies that the current Array do NOT contains the given values, in any order.|
 |[extract](/gdUnit4/asserts/assert-array/#extract) | Extracts all values by given function name and optional arguments.|
 |[extractv](/gdUnit4/asserts/assert-array/#extractv) | Extracts all values by given extractor's.|
 {% endtab %}
@@ -41,12 +48,19 @@ An assertion tool to verify arrays.
 |[IsEqualIgnoringCase](/gdUnit4/asserts/assert-array/#is_equal_ignoring_case) | Verifies that the current Array is equal to the given one, ignoring case considerations.|
 |[IsNotEqual](/gdUnit4/asserts/assert-array/#is_not_equal) | Verifies that the current Array is not equal to the given one.|
 |[IsNotEqualIgnoringNase](/gdUnit4/asserts/assert-array/#is_not_equal_ignoring_case) | Verifies that the current Array is not equal to the given one, ignoring case considerations.|
+|[IsSame](/gdUnit4/asserts/assert-array/#is_same) | Verifies that the current Array is the same.|
+|[IsNotSame](/gdUnit4/asserts/assert-array/#is_not_same) | Verifies that the current Array is NOT the same.|
 |[IsEmpty](/gdUnit4/asserts/assert-array/#is_empty) | Verifies that the current Array is empty, it has a size of 0.|
 |[IsNotEmpty](/gdUnit4/asserts/assert-array/#is_not_empty) | Verifies that the current Array is not empty, it has a size of minimum 1.|
 |[HasNize](/gdUnit4/asserts/assert-array/#has_size) | Verifies that the current Array has a size of given value.|
 |[Contains](/gdUnit4/asserts/assert-array/#contains) | Verifies that the current Array contains the given values, in any order.|
 |[ContainsExactly](/gdUnit4/asserts/assert-array/#contains_exactly) | Verifies that the current Array contains exactly only the given values and nothing else, in same order.|
 |[ContainsExactlyInAnyOrder](/gdUnit4/asserts/assert-array/#contains_exactly_in_any_order) | Verifies that the current Array contains exactly only the given values and nothing else, in any order.|
+|[NotContains](/gdUnit4/asserts/assert-array/#not_contains) | Verifies that the current Array do NOT contains the given values, in any order.|
+|[ContainsSame](/gdUnit4/asserts/assert-array/#contains_same) | Verifies that the current Array contains the given values, in any order.|
+|[ContainsSameExactly](/gdUnit4/asserts/assert-array/#contains_same_exactly) | Verifies that the current Array contains exactly only the given values and nothing else, in same order.|
+|[ContainsSameExactlyInAnyOrder](/gdUnit4/asserts/assert-array/#contains_same_exactly_in_any_order) | Verifies that the current Array contains exactly only the given values and nothing else, in any order.|
+|[NotContainsSame](/gdUnit4/asserts/assert-array/#not_contains_same) | Verifies that the current Array do NOT contains the given values, in any order.|
 |[Extract](/gdUnit4/asserts/assert-array/#extract) | Extracts all values by given function name and optional arguments.|
 |[ExtractV](/gdUnit4/asserts/assert-array/#extractv) | Extracts all values by given extractor's.|
 {% endtab %}
@@ -116,18 +130,21 @@ Verifies that the current value is not null.
 
 
 ### is_equal
-Verifies that the current Array is equal to the given one.
+Verifies that the current Array is equal to the given one.<br>
+The values are compared by deep parameter comparision, for object reference compare you have to use [is_same](/gdUnit4/asserts/assert-array/#is_same).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-is_not_null %}
 {% tab assert-array-is_not_null GdScript %}
 ```ruby
     func assert_array(<current>).is_equal(<expected>) -> GdUnitArrayAssert
 ```
 ```ruby
-    # this assertion succeeds
-    assert_array([1, 2, 3, 4, 2, 5]).is_equal([1, 2, 3, 4, 2, 5])
+    var a := [1, 2, 3, 4, 2, 5]
+    # this assertion succeeds, all values are equal
+    assert_array(a).is_equal([1, 2, 3, 4, 2, 5])
 
-    # should fail because the array not contains same elements and has diff size
-    assert_array([1, 2, 4, 5]).is_equal([1, 2, 3, 4, 2, 5])
+    # should fail because the array not contains the expected elements and has diff size
+    assert_array(a).is_equal([1, 2, 3, 4, 2, 5, 7])
 ```
 {% endtab %}
 {% tab assert-array-is_not_null C# %}
@@ -176,7 +193,9 @@ Verifies that the current Array is equal to the given one, ignoring case conside
 
 
 ### is_not_equal
-Verifies that the current Array is not equal to the given one.
+Verifies that the current Array is not equal to the given one.<br>
+The values are compared by deep parameter comparision, for object reference compare you have to use [is_not_same](/gdUnit4/asserts/assert-array/#is_not_same).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-is_equal_ignoring_case %}
 {% tab assert-array-is_equal_ignoring_case GdScript %}
 ```ruby
@@ -234,6 +253,80 @@ Verifies that the current Array is not equal to the given one, ignoring case con
 ```
 {% endtab %}
 {% endtabs %}
+
+
+### is_same
+Verifies that the current Array is the same.<br>
+The array are compared by object reference, for deep parameter comparision use [is_equal](/gdUnit4/asserts/assert-array/#is_equal).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+{% tabs assert-array-is_same %}
+{% tab assert-array-is_same GdScript %}
+```ruby
+    func assert_array(<current>).is_same(<expected>) -> GdUnitArrayAssert
+```
+```ruby
+    var a := [1, 2, 3, 4, 2, 5]
+    var b := [1, 2, 3, 4, 2, 5]
+    # this assertion succeeds
+    assert_array(a).is_same(a)
+
+    # should fail because the arrays are not the same
+    assert_array(a).is_same(b)
+```
+{% endtab %}
+{% tab assert-array-is_same C# %}
+```cs
+    public static IEnumerableAssert AssertThat(<current>).IsSame(<expected>)
+```
+```cs
+    int[] a = { 1, 2, 3, 4, 2, 5 };
+    int[] b = { 1, 2, 3, 4, 2, 5 };
+    // this assertion succeeds
+    AssertThat(a).IsSame(a);
+
+    // should fail because the arrays are not the same
+    AssertThat(a).IsSame(b);
+```
+{% endtab %}
+{% endtabs %}
+
+
+
+### is_not_same
+Verifies that the current Array is the NOT same.<br>
+The array are compared by object reference, for deep parameter comparision use [is_not_equal](/gdUnit4/asserts/assert-array/#is_not_equal).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+{% tabs assert-array-is_not_same %}
+{% tab assert-array-is_not_same GdScript %}
+```ruby
+    func assert_array(<current>).is_not_same(<expected>) -> GdUnitArrayAssert
+```
+```ruby
+    var a := [1, 2, 3, 4, 2, 5]
+    var b := [1, 2, 3, 4, 2, 5]
+    # this assertion succeeds
+    assert_array(a).is_not_same(b)
+
+    # should fail because the arrays are the same
+    assert_array(a).is_not_same(a)
+```
+{% endtab %}
+{% tab assert-array-is_not_same C# %}
+```cs
+    public static IEnumerableAssert AssertThat(<current>).IsNotSame(<expected>)
+```
+```cs
+    int[] a = { 1, 2, 3, 4, 2, 5 };
+    int[] b = { 1, 2, 3, 4, 2, 5 };
+    // this assertion succeeds
+    AssertThat(a).IsNotSame(b);
+
+    // should fail because the arrays are the same
+    AssertThat(a).IsNotSame(a);
+```
+{% endtab %}
+{% endtabs %}
+
 
 
 ### is_empty
@@ -330,7 +423,9 @@ Verifies that the current Array has a size of given value.
 
 
 ### contains
-Verifies that the current Array contains the given values, in any order.
+Verifies that the current Array contains the given values, in any order.<br>
+The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same](/gdUnit4/asserts/assert-array/#contains_same).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains %}
 {% tab assert-array-contains GdScript %}
 ```ruby
@@ -360,7 +455,9 @@ Verifies that the current Array contains the given values, in any order.
 
 
 ### contains_exactly
-Verifies that the current Array contains exactly only the given values and nothing else, in same order.
+Verifies that the current Array contains exactly only the given values and nothing else, in same order.<br>
+The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_exactly](/gdUnit4/asserts/assert-array/#contains_same_exactly).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains_exactly %}
 {% tab assert-array-contains_exactly GdScript %}
 ```ruby
@@ -390,7 +487,9 @@ Verifies that the current Array contains exactly only the given values and nothi
 
 
 ### contains_exactly_in_any_order
-Verifies that the current Array contains exactly only the given values and nothing else, in any order.
+Verifies that the current Array contains exactly only the given values and nothing else, in any order.<br>
+The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_exactly_in_any_order](/gdUnit4/asserts/assert-array/#contains_same_exactly_in_any_order).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains_exactly_in_any_order %}
 {% tab assert-array-contains_exactly_in_any_order GdScript %}
 ```ruby
@@ -418,6 +517,189 @@ Verifies that the current Array contains exactly only the given values and nothi
 {% endtab %}
 {% endtabs %}
 
+
+### not_contains
+Verifies that the current Array do NOT contains the given values, in any order.<br>
+The values are compared by deep parameter comparision, for object reference compare you have to use [not_contains_same](/gdUnit4/asserts/assert-array/#not_contains_same).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+{% tabs assert-array-not_contains %}
+{% tab assert-array-not_contains GdScript %}
+```ruby
+    func not_contains(expected) -> GdUnitArrayAssert:
+```
+```ruby
+    # this assertion succeeds
+    assert_array([1, 2, 3, 4, 5]).not_contains([6, 0])
+
+    # should fail because the array contains the value 2
+    assert_array([1, 2, 3, 4]).contains_exactly([[6, 0, 2])
+```
+{% endtab %}
+{% tab assert-array-not_contains C# %}
+```cs
+    public static IEnumerableAssert AssertThat(<current>).NotContains(<expected>)
+```
+```cs
+    // this assertion succeeds
+    AssertThat(new int[]{1, 2, 3, 4, 5}).NotContains(6, 0);
+
+    // should fail because the array contains the value 2
+    AssertThat(new int[]{1, 2, 3, 4}).NotContains(6, 0, 2);
+```
+{% endtab %}
+{% endtabs %}
+
+
+
+### contains_same
+Verifies that the current Array contains the same values, in any order.<br>
+The values are compared by object reference, for deep parameter comparision use [contains](/gdUnit4/asserts/assert-array/#contains).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+{% tabs assert-array-contains_same %}
+{% tab assert-array-contains_same GdScript %}
+```ruby
+    func assert_array(<current>).contains_same(<expected>) -> GdUnitArrayAssert
+```
+```ruby
+    var value_a := Node.new()
+    var value_b := Node.new()
+    var value_c := Node.new()
+    var a := [value_a, value_b]
+
+    # this assertion succeeds
+    assert_array(a).contains_same([value_a])
+
+    # should fail because the array not contains value_c
+    assert_array(a).contains_same([value_c])
+```
+{% endtab %}
+{% tab assert-array-contains_same C# %}
+```cs
+    public static IEnumerableAssert AssertThat(<current>).ContainsSame(<expected>)
+```
+```cs
+    Node value_a = new Node();
+    Node value_b = new Node();
+    Node value_c = new Node();
+    Node[] a = {value_a, value_b}
+    // this assertion succeeds
+    AssertThat(a).ContainsSame(value_a);
+
+    // should fail because the array not contains value_c
+    AssertThat(a).ContainsSame(value_c);
+```
+{% endtab %}
+{% endtabs %}
+
+
+### contains_same_exactly
+Verifies that the current Array contains exactly only the given values and nothing else, in same order.<br>
+The values are compared by object reference, for deep parameter comparision use [contains_exactly](/gdUnit4/asserts/assert-array/#contains_exactly).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+{% tabs assert-array-contains_same_exactly %}
+{% tab assert-array-contains_same_exactly GdScript %}
+```ruby
+    func assert_array(<current>).contains_same_exactly(<expected>) -> GdUnitArrayAssert
+```
+```ruby
+    var value_a := Node.new()
+    var value_b := Node.new()
+    var a := [value_a, value_b]
+
+    # this assertion succeeds
+    assert_array(a).contains_same_exactly([value_a, value_b])
+
+    # should fail because the array not contains more than value_a
+    assert_array(a).contains_same_exactly([value_a])
+```
+{% endtab %}
+{% tab assert-array-contains_same_exactly C# %}
+```cs
+    public static IEnumerableAssert AssertThat(<current>).ContainsSameExactly(<expected>)
+```
+```cs
+    Node value_a = new Node();
+    Node value_b = new Node();
+    Node[] a = {value_a, value_b}
+    // this assertion succeeds
+    AssertThat(a).ContainsSameExactly(value_a, value_b);
+
+    // should fail because the array not contains more than value_a
+    AssertThat(a).ContainsSameExactly(value_a);
+```
+{% endtab %}
+{% endtabs %}
+
+
+### contains_same_exactly_in_any_order
+Verifies that the current Array contains exactly only the given values and nothing else, in any order.<br>
+The values are compared by object reference, for deep parameter comparision use [contains_exactly_in_any_order](/gdUnit4/asserts/assert-array/#contains_exactly_in_any_order).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+{% tabs assert-array-contains_same_exactly_in_any_order %}
+{% tab assert-array-contains_same_exactly_in_any_order GdScript %}
+```ruby
+    func assert_array(<current>).contains_same_exactly_in_any_order(<expected>) -> GdUnitArrayAssert
+```
+```ruby
+    var value_a := Node.new()
+    var value_b := Node.new()
+    var a := [value_a, value_b]
+
+    # this assertion succeeds
+    assert_array(a).contains_same_exactly_in_any_order([value_b, value_a])
+
+    # should fail because the array not contains more than value_a
+    assert_array(a).contains_same_exactly_in_any_order([value_a])
+```
+{% endtab %}
+{% tab assert-array-contains_same_exactly_in_any_order C# %}
+```cs
+    public static IEnumerableAssert AssertThat(<current>).ContainsSameExactlyInAnyOrder(<expected>)
+```
+```cs
+    Node value_a = new Node();
+    Node value_b = new Node();
+    Node[] a = {value_a, value_b}
+    // this assertion succeeds
+    AssertThat(a).ContainsSameExactlyInAnyOrder(value_b, value_a);
+
+    // should fail because the array not contains more than value_a
+    AssertThat(a).ContainsSameExactlyInAnyOrder(value_a);
+```
+{% endtab %}
+{% endtabs %}
+
+
+### not_contains_same
+Verifies that the current Array do NOT contains the same values, in any order.<br>
+The values are compared by object reference, for deep parameter comparision use [not_contains](/gdUnit4/asserts/assert-array/#not_contains).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+{% tabs assert-array-not_contains_same %}
+{% tab assert-array-not_contains_same GdScript %}
+```ruby
+    func not_contains_same(expected) -> GdUnitArrayAssert:
+```
+```ruby
+    # this assertion succeeds
+    assert_array([1, 2, 3, 4, 5]).not_contains_same([6, 0])
+
+    # should fail because the array contains the value 2
+    assert_array([1, 2, 3, 4]).not_contains_same([[6, 0, 2])
+```
+{% endtab %}
+{% tab assert-array-not_contains_same C# %}
+```cs
+    public static IEnumerableAssert AssertThat(<current>).NotContainsSame(<expected>)
+```
+```cs
+    // this assertion succeeds
+    AssertThat(new int[]{1, 2, 3, 4, 5}).NotContainsSame(6, 0);
+
+    // should fail because the array contains the value 2
+    AssertThat(new int[]{1, 2, 3, 4}).NotContainsSame(6, 0, 2);
+```
+{% endtab %}
+{% endtabs %}
 
 
 ### extract
@@ -577,3 +859,6 @@ You can use also function name chaining e.g. `get_parent.get_name`
 ```
 {% endtab %}
 {% endtabs %}
+
+---
+<h4> document version v4.1.1 </h4>

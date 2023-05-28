@@ -18,6 +18,7 @@ Here's a list of advanced techniques we currently have available:<br>
 * [Tools and Helpers](/gdUnit4/advanced_testing/tools/#tools-and-helpers)<br>
 * [Testing with Fuzzers](/gdUnit4/advanced_testing/fuzzing/#testing-with-fuzzers)<br>
 * [Testing with Parameterized TestCases](/gdUnit4/advanced_testing/paramerized_tests/#testing-with-parameterized-testcases)<br>
+* [Testing Signals](/gdUnit4/advanced_testing/signals/#signal-monitor)<br>
 * [Using Mocks](/gdUnit4/advanced_testing/mock/#mocking--mocks)<br>
 * [Using Spys](/gdUnit4/advanced_testing/spy/#spy)<br>
 * [Using Argument Matchers](/gdUnit4/advanced_testing/argument_matchers/#argument-matchers)<br>
@@ -26,4 +27,4 @@ Here's a list of advanced techniques we currently have available:<br>
 * [Command Line Tool](/gdUnit4/advanced_testing/cmd/#command-line-tool)<br>
 
 ---
-<h4> document version v4.1.0 </h4>
+<h4> document version v4.1.1 </h4>

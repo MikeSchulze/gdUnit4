@@ -8,7 +8,8 @@ nav_order: 12
 # Signal Assertions
 
 An Assertion Tool to verify for emitted signals until a certain time. When the timeout is reached, the assertion fails with a timeout error.
-The default timeout of 2s can be overridden by wait_until(<time in ms>)
+The default timeout of 2s can be overridden by wait_until(\<time in ms\>)<br>
+To watch for signals emitted during the test execution you have to use in addition the [monitor_signal](/gdUnit4/advanced_testing/signals/#monitor-signals) tool.
 
 {% tabs assert-signal-overview %}
 {% tab assert-signal-overview GdScript %}
@@ -133,3 +134,10 @@ Sets the timeout in ms to wait.
 ```
 {% endtab %}
 {% endtabs %}
+
+---
+
+For more advanced examples show [Testing Signals](/gdUnit4/advanced_testing/signals/#testing-for-signals).
+
+---
+<h4> document version v4.1.1 </h4>
