@@ -247,6 +247,15 @@ func get_property(name :String):
 		return property
 	return  "The property '%s' not exist checked loaded scene." % name
 
+var __properties:Dictionary
+
+func set_property(name :String, value) -> void:
+	if __properties.size() == 0:
+		_current_scene.get_property_list().map(func(i:Dictionary) : __properties[i.name] = i)
+
+	if __properties.has(name):
+		_current_scene.set(name, value)
+
 
 func invoke(name :String, arg0=NO_ARG, arg1=NO_ARG, arg2=NO_ARG, arg3=NO_ARG, arg4=NO_ARG, arg5=NO_ARG, arg6=NO_ARG, arg7=NO_ARG, arg8=NO_ARG, arg9=NO_ARG):
 	var args = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], NO_ARG)
