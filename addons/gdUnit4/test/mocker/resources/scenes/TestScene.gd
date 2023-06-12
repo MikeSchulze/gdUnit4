@@ -11,6 +11,7 @@ const COLOR_CYCLE := [Color.ROYAL_BLUE, Color.CHARTREUSE, Color.YELLOW_GREEN]
 @warning_ignore("unused_private_class_variable")
 @export var _initial_color := Color.RED
 
+var _nullable:Object
 
 func _ready():
 	connect("panel_color_change", _on_panel_color_changed)

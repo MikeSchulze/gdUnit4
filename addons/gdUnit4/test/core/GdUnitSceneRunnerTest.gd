@@ -22,10 +22,19 @@ func after():
 
 func test_get_property() -> void:
 	var runner := scene_runner(load_test_scene())
-	
+
 	assert_that(runner.get_property("_box1")).is_instanceof(ColorRect)
 	assert_that(runner.get_property("_invalid")).is_equal("The property '_invalid' not exist checked loaded scene.")
+	assert_that(runner.get_property("_nullable")).is_null()
 
+
+func test_set_property() -> void:
+	var runner := scene_runner(load_test_scene())
+
+	assert_that(runner.set_property("_invalid", 42)).is_equal(false)
+
+	assert_that(runner.set_property("_nullable", RefCounted.new())).is_equal(true)
+	assert_that(runner.get_property("_nullable")).is_instanceof(RefCounted)
 
 func test_invoke_method() -> void:
 	var runner := scene_runner(load_test_scene())
