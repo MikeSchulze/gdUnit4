@@ -240,11 +240,21 @@ func maximize_view() -> GdUnitSceneRunner:
 	DisplayServer.window_move_to_foreground()
 	return self
 
+# Property cache
+var __properties:Dictionary
+
+# Helper function to fill __properties
+func __build_properties():
+	if __properties.size() == 0:
+		_current_scene.get_property_list().map(func(p:Dictionary) : __properties[p.name] = p)
 
 func get_property(name :String):
-	var property = _current_scene.get(name)
-	if property != null:
-		return property
+	if __properties.size() == 0:
+		__build_properties()
+
+	if __properties.has(name):
+		return _current_scene.get(name)
+
 	return  "The property '%s' not exist checked loaded scene." % name
 
 
