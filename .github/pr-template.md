@@ -3,4 +3,4 @@
 
 
 # What
-<!-- Eneter a clean description what you have changed and what the affects are -->
+<!-- Describe exactly what you have changed and what the effects are -->
