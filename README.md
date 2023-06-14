@@ -90,10 +90,23 @@ func test_example():
 
 ---
 
-### You are welcome to:
+### You Are Welcome To:
   * [Give Feedback](https://github.com/MikeSchulze/gdUnit4/discussions/228) on the gdUnit GitHub Discussions page.
   * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=) by creating a new feature request issue on the gdUnit GitHub Issues page.
   * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug%2C+task&template=bug_report.md&title=)  by creating a new bug report issue on the gdUnit GitHub Issues page.
+
+---
+
+
+### Contribution Guidelines
+
+Thank you for your interest in contributing to GdUnit4! To ensure a smooth and collaborative contribution process, please review our [contribution guidelines](https://github.com/MikeSchulze/gdUnit4/blob/master/CONTRIBUTING.md) before getting started. These guidelines outline the standards and expectations we uphold in this project.
+
+Code of Conduct: We strictly adhere to the Godot code of conduct in this project. As a contributor, it is important to respect and follow this code to maintain a positive and inclusive community.
+
+Using GitHub Issues: We utilize GitHub issues for tracking feature requests and bug reports. If you have a general question or wish to engage in discussions, we recommend joining the [GdUnit Discord Server](https://discord.gg/rdq36JwuaJ) for specific inquiries.
+
+We value your input and appreciate your contributions to make GdUnit4 even better!
 
 ---
 
