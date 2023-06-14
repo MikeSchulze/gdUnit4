@@ -28,3 +28,16 @@ jobs:
     uses: ./.github/workflows/unit-tests.yml
     with:
       godot-version: ${{ matrix.godot-version }}
+
+  finalize:
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    name: Final Results
+    needs: [unit-tests]
+    steps:
+      - run: exit 1
+        if: >-
+          ${{
+               contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+          }}
