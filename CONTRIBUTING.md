@@ -1,39 +1,37 @@
-# Contributing to GdUnit3
-We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
+# Contributing to GdUnit4
 
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
-- Becoming a maintainer
+Thank you for considering contributing to GdUnit4! We appreciate your input and want to make the contribution process as easy and transparent as possible. Whether you want to report a bug, discuss code improvements, submit a fix, propose new features, or become a maintainer, we welcome your involvement.
 
-## We Develop with Github
-We use github to host code, to track issues and feature requests, as well as accept pull requests.
+## Development on GitHub
+We use GitHub to host our code, track issues and feature requests, and accept pull requests. It's recommended to familiarize yourself with GitHub's features and workflow to participate effectively.
 
-## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html), So All Code Changes Happen Through Pull Requests
-Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
+## GitHub Flow
+We follow the GitHub Flow for making code changes. This means that all code modifications should be proposed through pull requests. Pull requests provide a structured and collaborative way to review and discuss code changes.
 
-1. Fork the repo and create your branch from `master`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the CI passes.
-5. Issue that pull request!
+If you'd like to contribute, please follow these steps:
 
-## Any contributions you make will be under the MIT Software License
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+1. Select an open issue to work on or create a new issue if none exists.
+2. Fork the repository and create a branch from the `master` branch.
+   - Use the issue number as the branch name, e.g., GD-111.
+   - Assign the issue to yourself and set its status to "In Progress."
+3. If you have made changes to the code that should be tested, please include appropriate tests.
+4. If you have modified any APIs, ensure that the documentation is updated accordingly.
+5. Create a pull request and provide information in the "Why" and "What" sections:
+   - Link the pull request to the corresponding issue.
+   - Assign the pull request to yourself.
+   - Make sure each pull request is associated with only one issue.
+   - If the pull request is still in progress, mark it as a draft.
+   - Ensure that the continuous integration (CI) process passes successfully.
+6. Submit the pull request!
 
-## Report bugs using Github's
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug%2C+task&template=bug_report.md&title=); it's that easy!
+## License
+By contributing to this project, you agree that your contributions will be licensed under the same [MIT License](https://github.com/MikeSchulze/gdUnit4/blob/master/LICENSE) that covers the project. If you have any concerns, please reach out to the maintainers.
 
-Write bug reports with detail, background, and sample code
+## Reporting Bugs
+If you encounter any bugs or issues, please use GitHub's issue tracking system. You can report a bug by [opening a new issue](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug%2C+task&template=bug_report.md&title=). When submitting a bug report, please provide detailed information, including the steps to reproduce the issue, relevant background information, and sample code if possible.
 
-## Use a Consistent Coding Style
-I'm again borrowing these from 
+## Coding Style
+To maintain code consistency, please adhere to the following coding style guides:
 - [Godot's GDScript Conventions](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html)
 - [C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
 
-## License
-By contributing, you agree that your contributions will be licensed under its [MIT License](https://github.com/MikeSchulze/gdUnit4/blob/master/LICENSE).
-
-## References
-This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js/blob/a9316a723f9e918afde44dea68b5f9f39b7d9b00/CONTRIBUTING.md)
