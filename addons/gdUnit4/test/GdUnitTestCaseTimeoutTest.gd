@@ -23,7 +23,6 @@ func test_timeout_after_test_completes():
 	await await_millis(1000)
 	
 	prints("A","1s")
-	
 	counter += 1
 	await await_millis(1000)
 	prints("A","2s")
