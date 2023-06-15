@@ -21,7 +21,9 @@ func test_timeout_after_test_completes():
 	assert_str(_before_arg).is_equal("---before---")
 	var counter := 0
 	await await_millis(1000)
+	
 	prints("A","1s")
+	
 	counter += 1
 	await await_millis(1000)
 	prints("A","2s")
