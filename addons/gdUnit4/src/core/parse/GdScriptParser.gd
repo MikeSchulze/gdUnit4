@@ -6,6 +6,8 @@ const ALLOWED_CHARACTERS := "0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN
 
 var TOKEN_NOT_MATCH := Token.new("")
 var TOKEN_SPACE := Token.new(" ")
+var TOKEN_TABULATOR := Token.new("\t")
+var TOKEN_NEW_LINE := Token.new("\n")
 var TOKEN_COMMENT := Token.new("#")
 var TOKEN_CLASS_NAME := Token.new("class_name")
 var TOKEN_INNER_CLASS := Token.new("class")
@@ -25,7 +27,7 @@ var TOKEN_BRACKET_OPEN := Token.new("(")
 var TOKEN_BRACKET_CLOSE := Token.new(")")
 var TOKEN_ARRAY_OPEN := Token.new("[")
 var TOKEN_ARRAY_CLOSE := Token.new("]")
-var TOKEN_NEW_LINE := Token.new("\n")
+
 var OPERATOR_ADD := Operator.new("+")
 var OPERATOR_SUB := Operator.new("-")
 var OPERATOR_MUL := Operator.new("*")
@@ -34,6 +36,8 @@ var OPERATOR_REMAINDER := Operator.new("%")
 
 var TOKENS := [
 	TOKEN_SPACE,
+	TOKEN_TABULATOR,
+	TOKEN_NEW_LINE,
 	TOKEN_COMMENT,
 	TOKEN_BRACKET_OPEN,
 	TOKEN_BRACKET_CLOSE,
@@ -52,7 +56,6 @@ var TOKENS := [
 	TOKEN_FUNCTION,
 	TOKEN_ARGUMENT_SEPARATOR,
 	TOKEN_FUNCTION_RETURN_TYPE,
-	TOKEN_NEW_LINE,
 	OPERATOR_ADD,
 	OPERATOR_SUB,
 	OPERATOR_MUL,
@@ -363,14 +366,15 @@ func parse_func_return_type(row: String) -> int:
 		return TYPE_NIL
 	return token.type()
 
+
 func parse_return_token(input: String) -> Token:
 	var index := input.rfind(TOKEN_FUNCTION_RETURN_TYPE._token)
 	if index == -1:
 		return TOKEN_NOT_MATCH
 	index += TOKEN_FUNCTION_RETURN_TYPE._consumed
 	var token := next_token(input, index)
-	if token == TOKEN_SPACE:
-		index += TOKEN_SPACE._consumed
+	while !token.is_variable() and token != TOKEN_NOT_MATCH:
+		index += token._consumed
 		token = next_token(input, index)
 	return token
 
@@ -385,8 +389,21 @@ func parse_arguments(input: String) -> Array[GdFunctionArgument]:
 	var in_function := false
 	while current_index < len(input):
 		token = next_token(input, current_index)
+		# fallback to not end in a endless loop
+		if token == TOKEN_NOT_MATCH:
+			var error : = """
+				Parsing Error: Invalid token at pos %d found.
+				Please report this error!
+				source_code:
+				--------------------------------------------------------------
+				%s
+				--------------------------------------------------------------
+			""".dedent() % [current_index, input]
+			push_error(error)
+			current_index += 1
+			continue
 		current_index += token._consumed
-		if token == TOKEN_SPACE:
+		if token == TOKEN_SPACE or token == TOKEN_TABULATOR or token == TOKEN_NEW_LINE:
 			continue
 		if token == TOKEN_BRACKET_OPEN:
 			in_function = true
@@ -509,6 +526,24 @@ func _parse_end_function(input: String, remove_trailing_char := false) -> String
 	
 	while current_index < len(input) and not end_of_func:
 		var character = input[current_index]
+		# step over strings
+		if character == "'" :
+			current_index = input.find("'", current_index+1) + 1
+			if current_index == 0:
+				push_error("Parsing error on '%s', can't evaluate end of string." % input)
+				return ""
+			continue
+		if character == '"' :
+			# test for string blocks
+			if input.find('"""', current_index) == current_index:
+				current_index = input.find('"""', current_index+3) + 3
+			else:
+				current_index = input.find('"', current_index+1) + 1
+			if current_index == 0:
+				push_error("Parsing error on '%s', can't evaluate end of string." % input)
+				return ""
+			continue
+		
 		match character:
 			# count if inside an array
 			"[": in_array += 1
@@ -559,11 +594,13 @@ func extract_source_code(script_path :PackedStringArray) -> PackedStringArray:
 
 
 func extract_func_signature(rows :PackedStringArray, index :int) -> String:
-	var signature = ""
+	var signature := ""
+	
 	for rowIndex in range(index, rows.size()):
-		signature += rows[rowIndex].strip_edges().replace("\t", "")
-		if is_func_end(signature):
-			return signature
+		var row := rows[rowIndex]
+		signature += row + "\n"
+		if is_func_end(row):
+			return signature.strip_edges()
 	push_error("Can't fully extract function signature of '%s'" % rows[index])
 	return ""
 
