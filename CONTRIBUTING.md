@@ -14,15 +14,15 @@ We follow the <a href='https://docs.github.com/en/get-started/quickstart/github-
 **If you'd like to contribute, please follow these steps:**
 
 1. Select an open issue to work on or create a new issue if none exists.
-   - Assign the issue to yourself and set its status to "In Progress."
-      ![Alt text](./assets/work-on-issue.png)
+   - Assign the issue to yourself and set its status to "In Progress."<br>
+   ![Alt text](./assets/work-on-issue.png)
 2. Fork the repository and create a branch from the `master` branch.
    - Use the issue number as the branch name, e.g., GD-111.
 3. If you have made changes to the code that should be tested, please include appropriate tests.
 4. If you have modified any APIs, ensure that the documentation is updated accordingly.
 5. Create a pull request and provide information in the "Why" and "What" sections:
-   - Link the pull request to the corresponding issue.
-      ![Alt text](./assets/link-issue.png)
+   - Link the pull request to the corresponding issue.<br>
+   ![Alt text](./assets/link-issue.png)
    - Assign the pull request to yourself.
    - Make sure each pull request is associated with only one issue.
    - If the pull request is still in progress, mark it as a draft.
