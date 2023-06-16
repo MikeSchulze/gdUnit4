@@ -337,15 +337,38 @@ func test_extract_function_signature() -> void:
 	var rows = _parser.extract_source_code(path)
 	
 	assert_that(_parser.extract_func_signature(rows, 12))\
-		.is_equal('func a1(set_name:String, path:String="", load_on_init:bool=false,set_auto_save:bool=false, set_network_sync:bool=false) -> void:')
+		.is_equal("""
+			func a1(set_name:String, path:String="", load_on_init:bool=false, 
+				set_auto_save:bool=false, set_network_sync:bool=false
+			) -> void:""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 19))\
-		.is_equal('func a2(set_name:String, path:String="", load_on_init:bool=false,set_auto_save:bool=false, set_network_sync:bool=false) -> void:')
+		.is_equal("""
+			func a2(set_name:String, path:String="", load_on_init:bool=false, 
+				set_auto_save:bool=false, set_network_sync:bool=false
+			) -> 	void:""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 26))\
-		.is_equal('func a3(set_name:String, path:String="", load_on_init:bool=false,set_auto_save:bool=false, set_network_sync:bool=false) :')
+		.is_equal("""
+			func a3(set_name:String, path:String="", load_on_init:bool=false, 
+				set_auto_save:bool=false, set_network_sync:bool=false
+			) :""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 33))\
-		.is_equal('func a4(set_name:String,path:String="",load_on_init:bool=false,set_auto_save:bool=false,set_network_sync:bool=false):')
+		.is_equal("""
+			func a4(set_name:String,
+				path:String="",
+				load_on_init:bool=false,
+				set_auto_save:bool=false,
+				set_network_sync:bool=false
+			):""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 43))\
-		.is_equal('func a5(value : Array,expected : String,test_parameters : Array = [[ ["a"], "a" ],[ ["a", "very", "long", "argument"], "a very long argument" ],]):')
+		.is_equal("""
+			func a5(
+				value : Array,
+				expected : String,
+				test_parameters : Array = [
+					[ ["a"], "a" ],
+					[ ["a", "very", "long", "argument"], "a very long argument" ],
+				]
+			):""".dedent().trim_prefix("\n"))
 
 
 func test_strip_leading_spaces():
@@ -480,17 +503,26 @@ func test_is_func_end() -> void:
 
 
 func test_extract_func_signature_multiline() -> void:
-	var source_code = [
-	"func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [\n",
-	"	[1, 2, 3, 6],\n",
-	"	[3, 4, 5, 11],\n",
-	"	[6, 7, 8, 21] ]):\n",
-	"	\n",
-	"	assert_that(a+b+c).is_equal(expected)\n"
-	]
+	var source_code = """
+		
+		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
+			[1, 2, 3, 6],
+			[3, 4, 5, 11],
+			[6, 7, 8, 21] ]):
+			
+			assert_that(a+b+c).is_equal(expected)
+		""".dedent().split("\n")
+	
 	var fs = _parser.extract_func_signature(source_code, 0)
 	
-	assert_that(fs).is_equal("func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [[1, 2, 3, 6],[3, 4, 5, 11],[6, 7, 8, 21] ]):")
+	assert_that(fs).is_equal("""
+		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
+			[1, 2, 3, 6],
+			[3, 4, 5, 11],
+			[6, 7, 8, 21] ]):"""
+			.dedent()
+			.trim_prefix("\n")
+		)
 
 
 func test_parse_func_description_paramized_test():
