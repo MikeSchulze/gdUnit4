@@ -1,6 +1,6 @@
 # Contributing to GdUnit4
 
-**Thank you for considering contributing to GdUnit4!**
+**Thank you for considering contributing to GdUnit4!**<br>
 We appreciate your input and want to make the contribution process as easy and transparent as possible. Whether you want to report a bug, discuss code improvements, submit a fix, propose new features, or become a maintainer, we welcome your involvement.
 
 
