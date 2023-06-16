@@ -5,10 +5,10 @@ extends RefCounted
 const ALLOWED_CHARACTERS := "0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\""
 
 var TOKEN_NOT_MATCH := Token.new("")
-var TOKEN_SPACE := Token.new(" ")
-var TOKEN_TABULATOR := Token.new("\t")
-var TOKEN_NEW_LINE := Token.new("\n")
-var TOKEN_COMMENT := Token.new("#")
+var TOKEN_SPACE := SkippableToken.new(" ")
+var TOKEN_TABULATOR := SkippableToken.new("\t")
+var TOKEN_NEW_LINE := SkippableToken.new("\n")
+var TOKEN_COMMENT := SkippableToken.new("#")
 var TOKEN_CLASS_NAME := Token.new("class_name")
 var TOKEN_INNER_CLASS := Token.new("class")
 var TOKEN_EXTENDS := Token.new("extends")
@@ -110,6 +110,9 @@ class Token extends RefCounted:
 	func is_token(token_name :String) -> bool:
 		return _token == token_name
 	
+	func is_skippable() -> bool:
+		return false
+	
 	func _to_string():
 		return "Token{" + _token + "}"
 
@@ -120,6 +123,16 @@ class Operator extends Token:
 	
 	func _to_string():
 		return "OperatorToken{%s}" % [_token]
+
+
+# A skippable token, is just a placeholder like space or tabs
+class SkippableToken extends Token:
+	
+	func _init(p_token: String):
+		super(p_token)
+	
+	func is_skippable() -> bool:
+		return true
 
 
 # Token to parse Fuzzers
@@ -403,7 +416,7 @@ func parse_arguments(input: String) -> Array[GdFunctionArgument]:
 			current_index += 1
 			continue
 		current_index += token._consumed
-		if token == TOKEN_SPACE or token == TOKEN_TABULATOR or token == TOKEN_NEW_LINE:
+		if token.is_skippable():
 			continue
 		if token == TOKEN_BRACKET_OPEN:
 			in_function = true
@@ -435,39 +448,39 @@ func parse_arguments(input: String) -> Array[GdFunctionArgument]:
 				token = next_token(input, current_index)
 				current_index += token._consumed
 				#match token:
-				if token == TOKEN_SPACE:
-						continue
+				if token.is_skippable():
+					continue
 				elif token == TOKEN_ARGUMENT_TYPE:
+					token = next_token(input, current_index)
+					if token == TOKEN_SPACE:
+						current_index += token._consumed
 						token = next_token(input, current_index)
-						if token == TOKEN_SPACE:
-							current_index += token._consumed
-							token = next_token(input, current_index)
-						arg_type = GdObjects.string_as_typeof(token._token)
+					arg_type = GdObjects.string_as_typeof(token._token)
 				elif token == TOKEN_ARGUMENT_TYPE_ASIGNMENT:
-						arg_value = _parse_end_function(input.substr(current_index), true)
-						current_index += arg_value.length()
+					arg_value = _parse_end_function(input.substr(current_index), true)
+					current_index += arg_value.length()
 				elif token == TOKEN_ARGUMENT_ASIGNMENT:
-						token = next_token(input, current_index)
-						arg_value = _parse_end_function(input.substr(current_index), true)
-						current_index += arg_value.length()
+					token = next_token(input, current_index)
+					arg_value = _parse_end_function(input.substr(current_index), true)
+					current_index += arg_value.length()
 				elif token == TOKEN_BRACKET_OPEN:
-						bracket += 1
-						# if value a function?
-						if bracket > 1:
-							# complete the argument value
-							var func_begin = input.substr(current_index-TOKEN_BRACKET_OPEN._consumed)
-							var func_body = _parse_end_function(func_begin)
-							arg_value += func_body
-							# fix parse index to end of value
-							current_index += func_body.length() - TOKEN_BRACKET_OPEN._consumed - TOKEN_BRACKET_CLOSE._consumed
+					bracket += 1
+					# if value a function?
+					if bracket > 1:
+						# complete the argument value
+						var func_begin = input.substr(current_index-TOKEN_BRACKET_OPEN._consumed)
+						var func_body = _parse_end_function(func_begin)
+						arg_value += func_body
+						# fix parse index to end of value
+						current_index += func_body.length() - TOKEN_BRACKET_OPEN._consumed - TOKEN_BRACKET_CLOSE._consumed
 				elif token == TOKEN_BRACKET_CLOSE:
-						bracket -= 1
-						# end of function
-						if bracket == 0:
-							break
+					bracket -= 1
+					# end of function
+					if bracket == 0:
+						break
 				elif token == TOKEN_ARGUMENT_SEPARATOR:
-						if bracket <= 1:
-							break
+					if bracket <= 1:
+						break
 			arg_value = arg_value.lstrip(" ")
 			if arg_type == TYPE_NIL and arg_value != GdFunctionArgument.UNDEFINED:
 				if arg_value.begins_with("Color."):
