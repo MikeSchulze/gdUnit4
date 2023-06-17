@@ -47,7 +47,7 @@ See [Testing with Parameterized TestCases](/gdUnit4/advanced_testing/paramerized
 See [Testing with Fuzzers](/gdUnit4/advanced_testing/fuzzing/#testing-with-fuzzers)<br>
 
 
-## TestCase paramaters
+## TestCase parameters
 GdUnit allows you to define additional test parameters to have more control over the test execution.
 {% tabs faq-test-case-attr %}
 {% tab faq-test-case-attr GdScript %}
