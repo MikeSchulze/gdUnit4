@@ -12,7 +12,7 @@ The GdUnit inspector provides an overview of the currently executed tests and al
 ![]({{ site.baseimg }}/gdUnit4/assets/images/inspector/inspector.png){:.centered}
 - [(1) Button Bar](#button-bar)
 - [(2) Status Bar](#status-bar)
-- [(3) Test Run Overview](#test-run-overview)
+- [(3) Test Run Overview](#test-run-overview-tree)
 - [(4) Failure Report](#failure-report)
 - [(5) Info Bar](#info-bar)
 
@@ -37,6 +37,13 @@ Note that the keyboard shortcuts for these buttons may vary depending on your sp
 content="When running tests in GdUnit, it is recommended to first run them in debug mode (4) in order to get the line number where the failure occurred in the test report. This is because Godot does not provide stack trace information when running in runtime mode (3), which can result in the failure line not being displayed in the report."
 %}
 
+
+### The Run Overall Button
+The **Run Overall** button provides a convenient way to execute all the tests in your project at once, instead of running them one by one or selecting a custom set of tests. By clicking the "Run Overall" button, you can initiate the execution of all the tests in your project, saving you time and effort.
+![](/gdUnit4/assets/images/inspector/overall-button.png){:.centered}
+To enable the **Run Overall** button in GdUnit4, you need to adjust the [UI settings](/gdUnit4/first_steps/settings/#ui-settings).<br>
+Once you have enabled the **Run Overall** button, it should be visible in the inspector.
+
 ---
 
 ## Status Bar
@@ -59,7 +66,7 @@ GdUnit distinguishes between errors and failures. An error is a hard failure suc
 
 ---
 
-## Test Run Overview
+## Test Run Overview Tree
 This area provides an overview of all executed/executing tests and their execution status in real-time. Here, you can navigate through the tests and view the report for each individual test by selecting it. You can also run the currently selected test or test suite again by right-clicking to open a context menu.
 ![](/gdUnit4/assets/images/inspector/test-overview.png){:.centered}
 

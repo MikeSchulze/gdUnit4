@@ -7,7 +7,7 @@ nav_order: 3
 # Create Your First Test
 
 ## Before You Start
-Create a new folder called **first_steps** in your project's root directory and copy the following class into it. It should be located at `res://first-steps/test_person.gd`.
+Create a new folder called **first_steps** in your project's root directory and copy the following class into it. It should be located at `res://first_steps/test_person.gd`.
 {% tabs first-step-test_class %}
 {% tab first-step-test_class test_person.gd %}
 ```ruby
