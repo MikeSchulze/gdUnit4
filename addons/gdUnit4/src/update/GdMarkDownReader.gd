@@ -1,5 +1,7 @@
 extends RefCounted
 
+const image_download_folder := "res://addons/gdUnit4/tmp-update/"
+
 const exclude_font_size := "\b(?!(?:(font_size))\b)"
 
 var md_replace_patterns := [
@@ -74,7 +76,7 @@ var md_replace_patterns := [
 ]
 
 var _img_replace_regex := RegEx.new()
-var _image_urls := Array()
+var _image_urls := PackedStringArray()
 var _on_table_tag := false
 var _client
 
@@ -132,7 +134,7 @@ func to_bbcode(input :String) -> String:
 			input = await bb_replace.call(regex_, input)
 		else:
 			input = regex_.sub(input, bb_replace, true)
-	return input
+	return input + "\n"
 
 
 func process_tables(input :String) -> String:
@@ -292,23 +294,26 @@ func process_image(p_regex :RegEx, p_input :String) -> String:
 
 
 func _process_external_image_resources(input :String) -> String:
+	DirAccess.make_dir_recursive_absolute(image_download_folder)
 	# scan all img for external resources and download it
 	for value in _img_replace_regex.search_all(input):
 		if value.get_group_count() >= 1:
 			var image_url :String = value.get_string(1)
 			# if not a local resource we need to download it
 			if image_url.begins_with("http"):
-				prints("download immage:", image_url)
+				if OS.is_stdout_verbose():
+					prints("download image:", image_url)
 				var response = await _client.request_image(image_url)
 				if response.code() == 200:
 					var image = Image.new()
 					var error = image.load_png_from_buffer(response.body())
 					if error != OK:
 						prints("Error creating image from response", error)
-					var new_url := "res://addons/gdUnit4/src/update/%s" % image_url.get_file()
 					# replace characters where format characters
-					new_url = new_url.replace("_", "-")
-					image.save_png(new_url)
+					var new_url := image_download_folder + image_url.get_file().replace("_", "-")
+					var err := image.save_png(new_url)
+					if err:
+						push_error("Can't save image to '%s'. Error: %s" % [new_url, error_string(err)])
 					_image_urls.append(new_url)
 					input = input.replace(image_url, new_url)
 	return input
