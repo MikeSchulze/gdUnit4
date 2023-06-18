@@ -10,6 +10,7 @@ const spinner_icon := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
 
 
 var _debug_mode := false
+var _editor_interface :EditorInterface
 var _update_client :GdUnitUpdateClient
 var _download_url :String
 
@@ -29,7 +30,8 @@ func init_progress(max_value : int) -> void:
 	_progress_bar.value = 0
 
 
-func setup(update_client :GdUnitUpdateClient, download_url :String) -> void:
+func setup(editor_interface :EditorInterface, update_client :GdUnitUpdateClient, download_url :String) -> void:
+	_editor_interface = editor_interface
 	_update_client = update_client
 	_download_url = download_url
 
@@ -90,10 +92,8 @@ func run_update() -> void:
 
 func restart_godot() -> void:
 	prints("Force restart Godot")
-	if Engine.is_editor_hint():
-		var ep :EditorPlugin = EditorPlugin.new()
-		ep.get_editor_interface().restart_editor(true)
-		ep.queue_free()
+	if _editor_interface:
+		_editor_interface.restart_editor(true)
 
 
 func enable_gdUnit() -> void:
@@ -107,10 +107,8 @@ func enable_gdUnit() -> void:
 
 
 func disable_gdUnit() -> void:
-	if Engine.is_editor_hint():
-		var ep :EditorPlugin = EditorPlugin.new()
-		ep.get_editor_interface().set_plugin_enabled("gdUnit4", false)
-		ep.queue_free()
+	if _editor_interface:
+		_editor_interface.set_plugin_enabled("gdUnit4", false)
 
 
 const GDUNIT_TEMP := "user://tmp"
