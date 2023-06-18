@@ -6,7 +6,7 @@ const exclude_font_size := "\b(?!(?:(font_size))\b)"
 
 var md_replace_patterns := [
 	# horizontal rules
-	[regex("(?m)^ {0,3}---$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
+	[regex("(?m)^[ ]{0,3}---$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
 	[regex("(?m)^[ ]{0,3}___$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
 	[regex("(?m)^[ ]{0,3}\\*\\*\\*$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
 	

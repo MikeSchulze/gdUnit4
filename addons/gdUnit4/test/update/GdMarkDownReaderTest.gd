@@ -39,14 +39,14 @@ func test_tobbcode_headers() -> void:
 
 
 func test_tobbcode_list() -> void:
-	assert_str(await _reader.to_bbcode("- item")).is_equal("[img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] item")
-	assert_str(await _reader.to_bbcode("  - item")).is_equal("   [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] item")
-	assert_str(await _reader.to_bbcode("    - item")).is_equal("      [img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] item")
-	assert_str(await _reader.to_bbcode("      - item")).is_equal("         [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] item")
+	assert_str(await _reader.to_bbcode("- item")).is_equal("[img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] item\n")
+	assert_str(await _reader.to_bbcode("  - item")).is_equal("   [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] item\n")
+	assert_str(await _reader.to_bbcode("    - item")).is_equal("      [img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] item\n")
+	assert_str(await _reader.to_bbcode("      - item")).is_equal("         [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] item\n")
 
 
 func test_to_bbcode_embeded_text() -> void:
-	assert_str(await _reader.to_bbcode("> some text")).is_equal("[img=50x14]res://addons/gdUnit4/src/update/assets/embedded.png[/img][i] some text[/i]")
+	assert_str(await _reader.to_bbcode("> some text")).is_equal("[img=50x14]res://addons/gdUnit4/src/update/assets/embedded.png[/img][i] some text[/i]\n")
 
 
 func test_process_image() -> void:
