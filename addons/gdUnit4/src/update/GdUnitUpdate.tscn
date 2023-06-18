@@ -6,10 +6,10 @@
 [node name="GdUnitUpdate" type="ConfirmationDialog"]
 disable_3d = true
 title = "Update GdUnit4 to new version"
-size = Vector2i(1024, 141)
+size = Vector2i(1000, 141)
 visible = true
 extend_to_title = true
-min_size = Vector2i(200, 140)
+min_size = Vector2i(1000, 140)
 ok_button_text = "Update"
 dialog_hide_on_ok = false
 script = ExtResource("1")
@@ -56,14 +56,18 @@ layout_mode = 2
 [node name="progress" type="TextureProgressBar" parent="UpdateProgress/VBoxContainer/Panel2"]
 unique_name_in_owner = true
 clip_contents = true
-custom_minimum_size = Vector2(0, 30)
-layout_direction = 2
+custom_minimum_size = Vector2(980, 30)
 layout_mode = 0
-offset_right = 1000.0
-offset_bottom = 40.0
+offset_left = 2.0
+offset_right = 982.0
+offset_bottom = 36.0
 auto_translate = false
 localize_numeral_system = false
+min_value = 1.0
+max_value = 5.0
+value = 1.0
 rounded = true
+nine_patch_stretch = true
 texture_progress = ExtResource("2_q6rkd")
 texture_progress_offset = Vector2(0, 2)
 

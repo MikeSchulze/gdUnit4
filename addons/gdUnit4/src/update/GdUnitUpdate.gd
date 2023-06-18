@@ -27,7 +27,7 @@ func _process(_delta):
 
 func init_progress(max_value : int) -> void:
 	_progress_bar.max_value = max_value
-	_progress_bar.value = 0
+	_progress_bar.value = 1
 
 
 func setup(editor_interface :EditorInterface, update_client :GdUnitUpdateClient, download_url :String) -> void:
