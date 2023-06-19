@@ -174,3 +174,37 @@ func test_with_string_paramset(
 ):
 	var current := " ".join(values)
 	assert_that(current.strip_edges()).is_equal(expected)
+
+
+# https://github.com/MikeSchulze/gdUnit4/issues/213
+func test_with_string_contains_brackets(
+	test_index :int,
+	value :String,
+	test_parameters := [
+		[1, "flowchart TD\nid>This is a flag shaped node]"],
+		[2, "flowchart TD\nid(((This is a double circle node)))"],
+		[3, "flowchart TD\nid((This is a circular node))"],
+		[4, "flowchart TD\nid>This is a flag shaped node]"],
+		[5, "flowchart TD\nid{'This is a rhombus node'}"],
+		[6, 'flowchart TD\nid((This is a circular node))'],
+		[7, 'flowchart TD\nid>This is a flag shaped node]'],
+		[8, 'flowchart TD\nid{"This is a rhombus node"}'],
+		[9, """
+			flowchart TD
+			id{"This is a rhombus node"}
+			"""],
+	]
+):
+	match test_index:
+		1: assert_str(value).is_equal("flowchart TD\nid>This is a flag shaped node]")
+		2: assert_str(value).is_equal("flowchart TD\nid(((This is a double circle node)))")
+		3: assert_str(value).is_equal("flowchart TD\nid((This is a circular node))")
+		4: assert_str(value).is_equal("flowchart TD\nid>" + "This is a flag shaped node]")
+		5: assert_str(value).is_equal("flowchart TD\nid{'This is a rhombus node'}")
+		6: assert_str(value).is_equal('flowchart TD\nid((This is a circular node))')
+		7: assert_str(value).is_equal('flowchart TD\nid>This is a flag shaped node]')
+		8: assert_str(value).is_equal('flowchart TD\nid{"This is a rhombus node"}')
+		9: assert_str(value).is_equal("""
+			flowchart TD
+			id{"This is a rhombus node"}
+			""")
