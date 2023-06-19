@@ -8,6 +8,8 @@
  - <b>Test Timeout Seconds</b> to set the default test case timeout in seconds
 ![image](https://user-images.githubusercontent.com/347037/119266875-d1b66680-bbec-11eb-856f-8fac9b0ed31c.png)
 
+test seperator
+---
 
 ### Bugfixes
 - GdUnit inspecor:

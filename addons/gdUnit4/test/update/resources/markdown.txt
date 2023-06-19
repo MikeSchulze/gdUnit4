@@ -47,9 +47,9 @@ To start an ordered list, write this:
 *  this will show as number "2"
 *  this will show as number "3."
 9. any number, +, -, or * will keep the list going.
-	* just indent by 4 spaces (or tab) to make a sub-list
-		1. keep indenting for more sub lists
-	* here i'm back to the second level
+  * just indent by 4 spaces (or tab) to make a sub-list
+	1. keep indenting for more sub lists
+  * here i'm back to the second level
 
 
 

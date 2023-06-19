@@ -19,18 +19,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+split_offset = 600
 
 [node name="TextEdit" type="TextEdit" parent="HSplitContainer"]
 layout_mode = 2
-offset_right = 8.0
-offset_bottom = 648.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="HSplitContainer"]
 use_parent_material = true
 layout_mode = 2
-offset_left = 20.0
-offset_right = 1152.0
-offset_bottom = 648.0
 tooltip_text = "test"
 bbcode_enabled = true
 
