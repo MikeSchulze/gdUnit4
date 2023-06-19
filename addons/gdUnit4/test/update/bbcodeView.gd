@@ -13,19 +13,20 @@ var _md_reader := GdMarkDownReader.new()
 
 func _ready():
 	_md_reader.set_http_client(_update_client)
-	
-	var source := GdUnitTools.resource_as_string("res://addons/gdUnit4/test/update/resources/markdown.txt")
-	_text.text = await _md_reader.to_bbcode(source)
-	#prints("_ready", _text.text )
+	var source := GdUnitTools.resource_as_string("res://addons/gdUnit4/test/update/resources/markdown_example.txt")
+	_input.text = source
+	await set_bbcode(source)
 
 
-func set_text(text :String) :
-	_text.text = text
+func set_bbcode(text :String) :
+	var bbcode = await _md_reader.to_bbcode(text)
+	_text.clear()
+	_text.append_text(bbcode)
+	_text.queue_redraw()
 
 
 func _on_TextEdit_text_changed():
-	_text.text = await _md_reader.to_bbcode(_input.get_text())
-	#prints("_on_TextEdit_text_changed",_text.text)
+	await set_bbcode(_input.get_text())
 
 
 func _on_RichTextLabel_meta_clicked(meta :String):

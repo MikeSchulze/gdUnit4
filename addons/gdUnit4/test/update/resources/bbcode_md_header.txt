@@ -1,0 +1,20 @@
+[font_size=32]Header 1 Text[/font_size]
+[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]
+
+
+[font_size=28]Header 2 Text[/font_size]
+[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]
+
+
+[font_size=24]Header 3 Text[/font_size]
+
+
+[font_size=20]Header 4 Text[/font_size]
+
+
+[font_size=16]Header 5 Text[/font_size]
+
+
+[font_size=12]Header 6 Text[/font_size]
+
+

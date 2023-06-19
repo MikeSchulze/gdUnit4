@@ -1,32 +1,48 @@
 extends RefCounted
 
+const FONT_H1 := 32
+const FONT_H2 := 28
+const FONT_H3 := 24
+const FONT_H4 := 20
+const FONT_H5 := 16
+const FONT_H6 := 12
+
+const HORIZONTAL_RULE := "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]\n"
+const HEADER_RULE := "[font_size=%d]$1[/font_size]\n"
+const HEADER_CENTERED_RULE := "[font_size=%d][center]$1[/center][/font_size]\n"
+
 const image_download_folder := "res://addons/gdUnit4/tmp-update/"
 
 const exclude_font_size := "\b(?!(?:(font_size))\b)"
 
 var md_replace_patterns := [
 	# horizontal rules
-	[regex("(?m)^[ ]{0,3}---$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
-	[regex("(?m)^[ ]{0,3}___$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
-	[regex("(?m)^[ ]{0,3}\\*\\*\\*$"), "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"],
+	[regex("(?m)^[ ]{0,3}---$"), HORIZONTAL_RULE],
+	[regex("(?m)^[ ]{0,3}___$"), HORIZONTAL_RULE],
+	[regex("(?m)^[ ]{0,3}\\*\\*\\*$"), HORIZONTAL_RULE],
 	
 	# headers
-	[regex("(?m)^##### (.*)"), "[font_size=8]$1[/font_size]"],
-	[regex("(?m)^#### (.*)"), "[font_size=12]$1[/font_size]"],
-	[regex("(?m)^### (.*)"), "[font_size=16]$1[/font_size]"],
-	[regex("(?m)^## (.*)"), "[font_size=20]$1[/font_size]"],
-	[regex("(?m)^# (.*)"), "[font_size=24]$1[/font_size]"],
-	[regex("(?m)^(.+)=={2,}$"), "[font_size=20]$1[/font_size]"],
-	[regex("(?m)^(.+)--{2,}$"), "[font_size=24]$1[/font_size]"],
+	[regex("(?m)^###### (.*)"), HEADER_RULE % FONT_H6],
+	[regex("(?m)^##### (.*)"), HEADER_RULE % FONT_H5],
+	[regex("(?m)^#### (.*)"), HEADER_RULE % FONT_H4],
+	[regex("(?m)^### (.*)"), HEADER_RULE % FONT_H3],
+	[regex("(?m)^## (.*)"), (HEADER_RULE + HORIZONTAL_RULE) % FONT_H2],
+	[regex("(?m)^# (.*)"), (HEADER_RULE + HORIZONTAL_RULE) % FONT_H1],
+	[regex("(?m)^(.+)=={2,}$"), HEADER_RULE % FONT_H1],
+	[regex("(?m)^(.+)--{2,}$"), HEADER_RULE % FONT_H2],
 	# html headers
-	[regex("<h1>((.*?\\R?)+)<\\/h1>"), "[font_size=24]$1[/font_size]"],
-	[regex("<h1[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h1>"), "[font_size=24][center]$1[/center][/font_size]"],
-	[regex("<h2>((.*?\\R?)+)<\\/h2>"), "[font_size=20]$1[/font_size]"],
-	[regex("<h2[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h2>"), "[font_size=20][center]$1[/center][/font_size]"],
-	[regex("<h3>((.*?\\R?)+)<\\/h3>"), "[font_size=16]$1[/font_size]"],
-	[regex("<h3[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h3>"), "[font_size=16][center]$1[/center][/font_size]"],
-	[regex("<h4>((.*?\\R?)+)<\\/h4>"), "[font_size=12]$1[/font_size]"],
-	[regex("<h4[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h4>"), "[font_size=12][center]$1[/center][/font_size]"],
+	[regex("<h1>((.*?\\R?)+)<\\/h1>"), (HEADER_RULE + HORIZONTAL_RULE) % FONT_H1],
+	[regex("<h1[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h1>"), (HEADER_CENTERED_RULE + HORIZONTAL_RULE) % FONT_H1],
+	[regex("<h2>((.*?\\R?)+)<\\/h2>"), (HEADER_RULE + HORIZONTAL_RULE) % FONT_H2],
+	[regex("<h2[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h2>"), (HEADER_CENTERED_RULE + HORIZONTAL_RULE) % FONT_H1],
+	[regex("<h3>((.*?\\R?)+)<\\/h3>"), HEADER_RULE % FONT_H3],
+	[regex("<h3[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h3>"), HEADER_CENTERED_RULE % FONT_H3],
+	[regex("<h4>((.*?\\R?)+)<\\/h4>"), HEADER_RULE % FONT_H4],
+	[regex("<h4[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h4>"), HEADER_CENTERED_RULE % FONT_H4],
+	[regex("<h5>((.*?\\R?)+)<\\/h5>"), HEADER_RULE % FONT_H5],
+	[regex("<h5[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h5>"), HEADER_CENTERED_RULE % FONT_H5],
+	[regex("<h6>((.*?\\R?)+)<\\/h6>"), HEADER_RULE % FONT_H6],
+	[regex("<h6[ ]*align[ ]*=[ ]*\"center\">((.*?\\R?)+)<\\/h6>"), HEADER_CENTERED_RULE % FONT_H6],
 	
 	# asterics
 	#[regex("(\\*)"), "xxx$1xxx"],
@@ -70,7 +86,7 @@ var md_replace_patterns := [
 	[regex("(?m)^[ ]{8,9}[*\\-+] (.*)$"), list_replace(4)],
 	
 	# code blocks, code blocks looks not like code blocks in richtext
-	[regex("```(javascript|python|)([\\s\\S]*?\n)```"), code_block("$2", true)],
+	[regex("```(javascript|python|shell|gdscript)([\\s\\S]*?\n)```"), code_block("$2", true)],
 	[regex("``([\\s\\S]*?)``"), code_block("$1")],
 	[regex("`([\\s\\S]*?)`{1,2}"), code_block("$1")],
 ]
@@ -311,6 +327,8 @@ func _process_external_image_resources(input :String) -> String:
 						prints("Error creating image from response", error)
 					# replace characters where format characters
 					var new_url := image_download_folder + image_url.get_file().replace("_", "-")
+					if new_url.get_extension() != 'png':
+						new_url = new_url + '.png'
 					var err := image.save_png(new_url)
 					if err:
 						push_error("Can't save image to '%s'. Error: %s" % [new_url, error_string(err)])
