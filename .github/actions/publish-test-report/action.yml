@@ -22,9 +22,3 @@ runs:
         path: 'reports/**/results.xml'
         reporter: java-junit
         fail-on-error: 'false'
-
-    - name: 'Upload Test Artifacts'
-      uses: actions/upload-artifact@v3
-      with:
-        name: test_artifact_${{ inputs.report-name }}
-        path: 'reports/**'
