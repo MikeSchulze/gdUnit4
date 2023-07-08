@@ -20,6 +20,7 @@ default_bus_layout=""
 
 [debug]
 
+file_logging/enable_file_logging=true
 gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
 
