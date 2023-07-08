@@ -13,4 +13,7 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: test_report_${{ inputs.report-name }}
-        path: reports/**
+        path: |
+          reports/**
+          /var/lib/systemd/coredump/**
+          /var/log/syslog
