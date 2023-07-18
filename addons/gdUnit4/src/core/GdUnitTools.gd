@@ -248,24 +248,9 @@ static func release_timers():
 				node.free()
 
 
-
-static func register_assert(value):
-	var asserts :Array = GdUnitSingleton.instance("GdUnitAsserts", func(): return [])
-	asserts.push_back(value)
-
-
-static func release_asserts():
-	var asserts :Array = GdUnitSingleton.instance("GdUnitAsserts", func(): return [])
-	for index in range(asserts.size()-1, -1, -1):
-		var assert_ = asserts[index]
-		assert_.notification(Object.NOTIFICATION_PREDELETE)
-		asserts.remove_at(index)
-
-
 # the finally cleaup unfreed resources and singletons
 static func dispose_all():
 	release_timers()
-	release_asserts()
 	GdUnitSignals.dispose()
 	GdUnitSingleton.dispose()
 
