@@ -20,6 +20,7 @@ class Monster extends Node:
 		emit_signal("move", _pos)
 		emit_signal("slide", _pos, 1 , 2)
 
+
 func test_on_signal_with_single_arg() -> void:
 	var monster = auto_free(Monster.new())
 	add_child(monster)
@@ -27,12 +28,14 @@ func test_on_signal_with_single_arg() -> void:
 	assert_float(signal_arg).is_equal(1.0)
 	remove_child(monster)
 
+
 func test_on_signal_with_many_args() -> void:
 	var monster = auto_free(Monster.new())
 	add_child(monster)
 	var signal_args = await await_signal_on(monster, "slide", [1.0, 1, 2])
 	assert_array(signal_args).is_equal([1.0, 1, 2])
 	remove_child(monster)
+
 
 func test_on_signal_fail() -> void:
 	GdAssertReports.expect_fail()

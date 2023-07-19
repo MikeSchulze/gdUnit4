@@ -184,3 +184,25 @@ func test_monitor_signals() -> void:
 	# now verify emitter b
 	emitter_b.do_emit_a()
 	await assert_signal(emitter_b).wait_until(50).is_emitted('my_signal_a')
+
+
+class ExampleResource extends Resource:
+	@export var title := "Title":
+		set(new_value):
+			title = new_value
+			changed.emit()
+	
+	
+	func change_title(p_title: String) -> void:
+		title = p_title
+
+
+func test_monitor_signals_on_resource_set() -> void:
+	var sut = ExampleResource.new()
+	var emitter := monitor_signals(sut)
+	
+	sut.change_title("Some title")
+	
+	# title change should emit "changed" signal
+	await assert_signal(emitter).is_emitted("changed")
+	assert_str(sut.title).is_equal("Some title")
