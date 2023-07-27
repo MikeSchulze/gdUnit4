@@ -5,6 +5,7 @@ extends Resource
 class SoundData:
 	@warning_ignore("unused_private_class_variable")
 	var _sample :String
+	@warning_ignore("unused_private_class_variable")
 	var _randomnes :float
 	
 class AtmosphereData:
