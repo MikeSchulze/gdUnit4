@@ -19,7 +19,6 @@ static func create_test_suite(source_path :String, line_number :int, test_suite_
 
 
 static func is_test_suite(resource_path :String) -> bool:
-	prints("is_test_suite", resource_path)
 	if not is_csharp_file(resource_path) or not GdUnitTools.is_mono_supported():
 		return false
 	if resource_path.is_empty():
