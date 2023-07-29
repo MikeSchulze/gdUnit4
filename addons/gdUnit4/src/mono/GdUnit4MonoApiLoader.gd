@@ -2,11 +2,15 @@ extends RefCounted
 class_name GdUnit4MonoApiLoader
 
 
-const GdUnit4MonoApi = preload("res://addons/gdUnit4/src/mono/GdUnit4MonoApi.cs")
+#const GdUnit4MonoApi = preload("res://addons/gdUnit4/src/mono/GdUnit4MonoApi.cs")
 
-
-static func instance() -> GdUnit4MonoApi:
-	return GdUnitSingleton.instance("GdUnit4MonoAPI", func(): return GdUnit4MonoApi.new())
+static func instance() -> Object:
+	return GdUnitSingleton.instance("GdUnit4MonoAPI", func():
+		if not GdUnitTools.is_mono_supported():
+			return null
+		var GdUnit4MonoApi = load("res://addons/gdUnit4/src/mono/GdUnit4MonoApi.cs")
+		return GdUnit4MonoApi.new()
+	)
 
 
 static func create_test_suite(source_path :String, line_number :int, test_suite_path :String) -> Result:
