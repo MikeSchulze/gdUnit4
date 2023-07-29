@@ -31,7 +31,7 @@ func _init():
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	# store current runner instance to engine meta data to can be access in as a singleton
 	Engine.set_meta(GDUNIT_RUNNER, self)
-	_cs_executor = GdUnit3MonoAPI.create_executor(self)
+	_cs_executor = GdUnit4MonoApiLoader.create_executor(self)
 
 
 func _ready():
@@ -162,6 +162,7 @@ func _on_gdunit_event(event :GdUnitEvent):
 	_client.rpc_send(RPCGdUnitEvent.of(event))
 
 
+# Event bridge from C# GdUnit4.ITestEventListener.cs
 func PublishEvent(data) -> void:
 	var event := GdUnitEvent.new().deserialize(data.AsDictionary())
 	_client.rpc_send(RPCGdUnitEvent.of(event))

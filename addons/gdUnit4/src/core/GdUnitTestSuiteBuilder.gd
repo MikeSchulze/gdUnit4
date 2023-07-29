@@ -9,7 +9,7 @@ static func create(source :Script, line_number :int) -> Result:
 	ScriptEditorControls.save_an_open_script(test_suite_path, true)
 	
 	if GdObjects.is_cs_script(source):
-		return GdUnit3MonoAPI.create_test_suite(source.resource_path, line_number+1, test_suite_path)
+		return GdUnit4MonoApiLoader.create_test_suite(source.resource_path, line_number+1, test_suite_path)
 	
 	var parser := GdScriptParser.new()
 	var lines := source.source_code.split("\n")

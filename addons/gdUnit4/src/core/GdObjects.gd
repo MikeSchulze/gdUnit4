@@ -373,7 +373,7 @@ static func is_script(value) -> bool:
 
 
 static func is_test_suite(script :Script) -> bool:
-	return is_gd_testsuite(script) or GdUnit3MonoAPI.is_test_suite(script.resource_path)
+	return is_gd_testsuite(script) or GdUnit4MonoApiLoader.is_test_suite(script.resource_path)
 
 
 static func is_native_class(value) -> bool:

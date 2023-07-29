@@ -1,8 +1,13 @@
 extends RefCounted
-class_name GdUnit3MonoAPI
+class_name GdUnit4MonoApiLoader
 
-static func instance() :
-	return null#GdUnitSingleton.get_or_create_singleton("GdUnit3MonoAPI", "res://addons/gdUnit4/src/mono/GdUnit3MonoAPI.cs")
+
+const GdUnit4MonoApi = preload("res://addons/gdUnit4/src/mono/GdUnit4MonoApi.cs")
+
+
+static func instance() -> GdUnit4MonoApi:
+	return GdUnitSingleton.instance("GdUnit4MonoAPI", func(): return GdUnit4MonoApi.new())
+
 
 static func create_test_suite(source_path :String, line_number :int, test_suite_path :String) -> Result:
 	if not GdUnitTools.is_mono_supported():
@@ -12,7 +17,9 @@ static func create_test_suite(source_path :String, line_number :int, test_suite_
 		return Result.error(result.get("error"))
 	return  Result.success(result)
 
+
 static func is_test_suite(resource_path :String) -> bool:
+	prints("is_test_suite", resource_path)
 	if not is_csharp_file(resource_path) or not GdUnitTools.is_mono_supported():
 		return false
 	if resource_path.is_empty():
@@ -21,6 +28,7 @@ static func is_test_suite(resource_path :String) -> bool:
 		return  false
 	return instance().IsTestSuite(resource_path)
 
+
 static func parse_test_suite(source_path :String) -> Node:
 	if not GdUnitTools.is_mono_supported():
 		if GdUnitSettings.is_report_push_errors():
@@ -28,10 +36,12 @@ static func parse_test_suite(source_path :String) -> Node:
 		return null
 	return instance().ParseTestSuite(source_path)
 
-static func create_executor(listener :Node) -> Node:
+
+static func create_executor(listener :Node) -> RefCounted:
 	if not GdUnitTools.is_mono_supported():
 		return null
 	return instance().Executor(listener)
+
 
 static func is_csharp_file(resource_path :String) -> bool:
 	var ext := resource_path.get_extension()

@@ -1,6 +1,7 @@
-namespace GdUnit3.Tests.Resource
+namespace GdUnit4.Tests.Resource
 {
 	using static Assertions;
+	
 	[TestSuite]
 	public partial class ExampleTestSuiteA
 	{
