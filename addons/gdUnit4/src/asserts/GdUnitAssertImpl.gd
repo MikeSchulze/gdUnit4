@@ -67,12 +67,7 @@ func test_fail():
 
 
 static func _normalize_bbcode(message :String) -> String:
-	var rtl := RichTextLabel.new()
-	rtl.bbcode_enabled = true
-	rtl.append_text(message if message else "")
-	var normalized = rtl.get_parsed_text()
-	rtl.free()
-	return normalized.replace("\r", "")
+	return GdUnitTools.richtext_normalize(message).replace("\r", "")
 
 
 func override_failure_message(message :String):

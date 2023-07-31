@@ -11,7 +11,8 @@ func _init():
 
 
 func _notification(what):
-	prints("_notification", what)
+	# prints("_notification", what)
+	pass
 
 
 static func instance() -> GdUnitThreadManager:
