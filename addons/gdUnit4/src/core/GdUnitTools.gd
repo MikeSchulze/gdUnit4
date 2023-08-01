@@ -3,6 +3,7 @@ extends RefCounted
 
 const GDUNIT_TEMP := "user://tmp"
 
+
 static func temp_dir() -> String:
 	if not DirAccess.dir_exists_absolute(GDUNIT_TEMP):
 		DirAccess.make_dir_recursive_absolute(GDUNIT_TEMP)
@@ -170,8 +171,14 @@ static func resource_as_string(resource_path :String) -> String:
 		return ""
 	return file.get_as_text(true)
 
+
 static func normalize_text(text :String) -> String:
 	return text.replace("\r", "");
+
+
+static func richtext_normalize(input :String) -> String:
+	return GdUnitSingleton.instance("regex_richtext", func _regex_richtext() -> RegEx:
+		return GdUnitTools.to_regex("\\[/?(b|color|bgcolor|right|table|cell).*?\\]") ).sub(input, "", true)
 
 
 static func max_length(left, right) -> int:

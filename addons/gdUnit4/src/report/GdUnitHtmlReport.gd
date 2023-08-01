@@ -22,10 +22,23 @@ func add_testcase_report(resource_path :String, suite_report :GdUnitTestCaseRepo
 			report.add_report(suite_report)
 
 
-func update_test_suite_report(resource_path :String, duration :int) -> void:
+func update_test_suite_report(
+	resource_path :String,
+	duration :int,
+	is_error :bool,
+	is_failed: bool,
+	is_warning :bool,
+	is_skipped :bool,
+	failed_count :int,
+	orphan_count :int,
+	reports :Array = []) -> void:
+	
 	for report in _reports:
 		if report.resource_path() == resource_path:
 			report.set_duration(duration)
+			report.set_failed(is_failed, failed_count)
+			report.set_orphans(orphan_count)
+			report.set_reports(reports)
 
 
 func update_testcase_report(resource_path :String, test_report :GdUnitTestCaseReport):
