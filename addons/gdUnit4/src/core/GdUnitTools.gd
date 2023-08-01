@@ -3,7 +3,6 @@ extends RefCounted
 
 const GDUNIT_TEMP := "user://tmp"
 
-static var regex_richtext = GdUnitTools.to_regex("\\[/?(b|color|bgcolor|right|table|cell).*?\\]")
 
 static func temp_dir() -> String:
 	if not DirAccess.dir_exists_absolute(GDUNIT_TEMP):
@@ -178,7 +177,8 @@ static func normalize_text(text :String) -> String:
 
 
 static func richtext_normalize(input :String) -> String:
-	return regex_richtext.sub(input, "", true)
+	return GdUnitSingleton.instance("regex_richtext", func _regex_richtext() -> RegEx:
+		return GdUnitTools.to_regex("\\[/?(b|color|bgcolor|right|table|cell).*?\\]") ).sub(input, "", true)
 
 
 static func max_length(left, right) -> int:
