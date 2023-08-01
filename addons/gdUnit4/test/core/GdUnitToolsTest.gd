@@ -247,3 +247,19 @@ func test_free_instance() -> void:
 	var node := Node.new()
 	node.free()
 	assert_that(GdUnitTools.free_instance(node)).is_false()
+
+
+func test_richtext_normalize() -> void:
+	assert_that(GdUnitTools.richtext_normalize("")).is_equal("")
+	assert_that(GdUnitTools.richtext_normalize("This is a Color Message")).is_equal("This is a Color Message")
+	
+	var message = """
+		[color=green]line [/color][color=aqua]11:[/color] [color=#CD5C5C]Expecting:[/color]
+			must be empty but was
+		'[color=#1E90FF]after[/color]'
+		"""
+	assert_that(GdUnitTools.richtext_normalize(message)).is_equal("""
+		line 11: Expecting:
+			must be empty but was
+		'after'
+		""")

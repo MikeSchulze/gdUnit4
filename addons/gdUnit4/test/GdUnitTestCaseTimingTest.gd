@@ -19,13 +19,11 @@ class TestCaseStatistics:
 
 func before():
 	_test_values_current = {
-		"test_fast" : TestCaseStatistics.new(),
 		"test_2s" : TestCaseStatistics.new(),
 		"test_multi_yielding" : TestCaseStatistics.new(),
 		"test_multi_yielding_with_fuzzer" : TestCaseStatistics.new()
 	}
 	_test_values_expected = {
-		"test_fast" : TestCaseStatistics.new(1, 1),
 		"test_2s" : TestCaseStatistics.new(1, 1),
 		"test_multi_yielding" : TestCaseStatistics.new(1, 1),
 		"test_multi_yielding_with_fuzzer" : TestCaseStatistics.new(10 , 10)
