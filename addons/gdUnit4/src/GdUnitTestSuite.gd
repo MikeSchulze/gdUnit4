@@ -536,6 +536,23 @@ func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
 	return GdUnitFailureAssertImpl.new(assertion)
 
 
+## An assertion tool to verify for Godot errors.[br]
+## You can use to verify for certain Godot erros like failing assertions, push_error, push_warn.[br]
+## Usage:
+##     [codeblock]
+##		# tests no error was occured during execution the code
+##		assert_error(func (): MyClass.new().foo())\
+##		    .is_success()
+##		
+##		# tests an push_error('test error') was occured during execution the code
+##		assert_error(func (): MyClass.new().foo())\
+##		    .is_push_error()\
+##		    .has_message('test error')
+##     [/codeblock]
+func assert_error(current) -> GdUnitGodotErrorAssert:
+	return GdUnitGodotErrorAssertImpl.new(current)
+
+
 ## Utility to check if a test has failed in a particular line and if there is an error message
 func assert_failed_at(line_number :int, expected_failure :String) -> bool:
 	var is_failed = is_failure()
