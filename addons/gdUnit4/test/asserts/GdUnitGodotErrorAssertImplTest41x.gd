@@ -13,6 +13,7 @@ class GodotErrorTestClass:
 	func test(value :int) -> void:
 		match value:
 			0:
+				@warning_ignore("assert_always_true")
 				assert(true, "no error" )
 			1: # failing assert
 				if OS.is_debug_build():
@@ -37,6 +38,8 @@ class GodotErrorTestClass:
 					""".dedent())
 				else:
 					var a = 0
+					@warning_ignore("integer_division")
+					@warning_ignore("unused_variable")
 					var x = 1/a
 
 
@@ -45,6 +48,10 @@ var _save_is_report_script_errors :bool
 
 
 func before():
+	# we need to exclude this test suite for Godot versions >= 4.1.x
+	# see https://github.com/godotengine/godot/issues/80292
+	# we cover test for older versions by `res://addons/gdUnit4/test/asserts/GdUnitGodotErrorAssertImplTest40x.gd`
+	skip(Engine.get_version_info().hex < 0x40100)
 	_save_is_report_push_errors = GdUnitSettings.is_report_push_errors()
 	_save_is_report_script_errors = GdUnitSettings.is_report_script_errors()
 	# disable default error reporting for testing
@@ -58,13 +65,13 @@ func after():
 
 
 func test_is_success() -> void:
-	await assert_error(func (): GodotErrorTestClass.new().test(0))\
-		.is_success()
+	await assert_error(func (): GodotErrorTestClass.new().test(0)).is_success()
 
 
 func test_is_assert_failed() -> void:
 	await assert_error(func (): GodotErrorTestClass.new().test(1))\
 		.is_runtime_error('Assertion failed: this is an assert error')
+
 
 
 func test_is_push_warning() -> void:

@@ -27,10 +27,10 @@ func stop():
 
 
 func reports() -> Array[GdUnitReport]:
-	var reports :Array[GdUnitReport] = []
+	var reports_ :Array[GdUnitReport] = []
 	if _report_enabled:
-		reports.assign(_collect_log_entries().map(_to_report))
-	return reports
+		reports_.assign(_collect_log_entries().map(_to_report))
+	return reports_
 
 
 static func _to_report(errorLog :ErrorLogEntry) -> GdUnitReport:

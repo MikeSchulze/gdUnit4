@@ -526,7 +526,7 @@ func assert_signal(instance :Object) -> GdUnitSignalAssert:
 
 
 ## Verifiys an assertion is failing as expected
-## This assert is only designed for internal use to verify failing asserts working as expected
+## This assert is only designed for internal use to verify failing asserts working as expected.[br]
 ## Usage:
 ##     [codeblock]
 ##		assert_failure(func(): assert_bool(true).is_not_equal(true)) \
@@ -541,13 +541,12 @@ func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
 ## Usage:
 ##     [codeblock]
 ##		# tests no error was occured during execution the code
-##		assert_error(func (): MyClass.new().foo())\
+##		await assert_error(func (): return 0 )\
 ##		    .is_success()
 ##		
 ##		# tests an push_error('test error') was occured during execution the code
-##		assert_error(func (): MyClass.new().foo())\
-##		    .is_push_error()\
-##		    .has_message('test error')
+##		await assert_error(func (): push_error('test error') )\
+##		    .is_push_error('test error')
 ##     [/codeblock]
 func assert_error(current) -> GdUnitGodotErrorAssert:
 	return GdUnitGodotErrorAssertImpl.new(current)
