@@ -288,9 +288,6 @@ func Execute(test_suite :GdUnitTestSuite) -> void:
 	var context := GdUnitThreadManager.get_current_context()
 	context.init()
 	
-	# needs at least one yielding otherwise the waiting function is blocked
-	await get_tree().process_frame
-	
 	# stop checked first error if fail fast enabled
 	if _fail_fast and _total_test_failed > 0:
 		test_suite.free()
@@ -300,7 +297,7 @@ func Execute(test_suite :GdUnitTestSuite) -> void:
 	var ts := test_suite
 	await suite_before(ts, ts.get_child_count())
 	
-	if not ts.is_skipped():
+	if not ts.is_skipped() and ts.get_child_count() != 0:
 		for test_case_index in ts.get_child_count():
 			var test_case := ts.get_child(test_case_index) as _TestCase
 			# only iterate over test case, we need to filter because of possible adding other child types checked before() or before_test()
@@ -325,7 +322,9 @@ func Execute(test_suite :GdUnitTestSuite) -> void:
 				# we delete the current test suite where is execute the current test case to kill the function state
 				# and replace it by a clone without function state
 				ts = await clone_test_suite(ts)
-	
+	else:
+		# needs at least one yielding otherwise the waiting function is blocked
+		await get_tree().process_frame
 	await suite_after(ts)
 	ts.free()
 	context.clear()

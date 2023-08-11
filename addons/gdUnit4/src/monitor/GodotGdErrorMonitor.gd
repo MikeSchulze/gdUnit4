@@ -50,7 +50,7 @@ func scan() -> Array[ErrorLogEntry]:
 func _collect_log_entries() -> Array[ErrorLogEntry]:
 	var file = FileAccess.open(_godot_log_file, FileAccess.READ)
 	file.seek(_eof)
-	var records :PackedStringArray = []
+	var records := PackedStringArray()
 	while not file.eof_reached():
 		records.append(file.get_line())
 	var log_entries :Array[ErrorLogEntry]= []

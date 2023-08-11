@@ -2,32 +2,44 @@ class_name GdUnitGodotErrorAssertImpl
 extends GdUnitGodotErrorAssert
 
 
-var _monitor :GodotGdErrorMonitor
+var _current_error_message :String
+var _callable :Callable
 
 
-func _init(assertion :Callable):
-	_monitor = GodotGdErrorMonitor.new(true)
+func _init(callable :Callable):
+	# we only support Godot 4.1.x+ because of await issue https://github.com/godotengine/godot/issues/80292
+	assert(Engine.get_version_info().hex >= 0x40100, "This assertion is not supported for Godot 4.0.x. Please upgrade to the minimum version Godot 4.1.0!")
+	# save the actual assert instance on the current thread context
+	GdUnitThreadManager.get_current_context().set_assert(self)
+	GdAssertReports.reset_last_error_line_number()
+	_callable = callable
+
+
+func _execute() -> Array[ErrorLogEntry]:
 	# execute the given code and monitor for runtime errors
-	_monitor.start()
-	assertion.call()
-	_monitor.stop()
+	var monitor := GodotGdErrorMonitor.new(true)
+	monitor.start()
+	if _callable == null or not _callable.is_valid():
+		_report_error("Invalid Callable '%s'" % _callable)
+	else:
+		await _callable.call()
+	monitor.stop()
+	return await monitor.scan()
 
 
-func _send_report(report :GdUnitReport)-> void:
-	GdUnitSignals.instance().gdunit_report.emit(report)
+func _failure_message() -> String:
+	return _current_error_message
 
 
 func _report_success() -> GdUnitAssert:
-	GdAssertReports.set_last_error_line_number(-1)
-	GdUnitSignals.instance().gdunit_set_test_failed.emit(false)
+	GdAssertReports.report_success()
 	return self
 
 
 func _report_error(error_message :String, failure_line_number: int = -1) -> GdUnitAssert:
 	var line_number := failure_line_number if failure_line_number != -1 else GdUnitAssertImpl._get_line_number()
-	GdAssertReports.set_last_error_line_number(line_number)
-	GdUnitSignals.instance().gdunit_set_test_failed.emit(true)
-	_send_report(GdUnitReport.new().create(GdUnitReport.FAILURE, line_number, error_message))
+	_current_error_message = error_message
+	GdAssertReports.report_error(error_message, line_number)
 	return self
 
 
@@ -41,6 +53,8 @@ func _has_log_entry(log_entries :Array[ErrorLogEntry], type :ErrorLogEntry.TYPE,
 func _to_list(log_entries :Array[ErrorLogEntry]) -> String:
 	if log_entries.is_empty():
 		return "no errors"
+	if log_entries.size() == 1:
+		return log_entries[0]._message
 	var value := ""
 	for entry in log_entries:
 		value += "'%s'\n" % entry._message
@@ -48,7 +62,7 @@ func _to_list(log_entries :Array[ErrorLogEntry]) -> String:
 
 
 func is_success() -> GdUnitGodotErrorAssert:
-	var log_entries := await _monitor.scan()
+	var log_entries := await _execute()
 	if log_entries.is_empty():
 		return _report_success()
 	return _report_error("""
@@ -58,7 +72,7 @@ func is_success() -> GdUnitGodotErrorAssert:
 
 
 func is_runtime_error(expected_error :String) -> GdUnitGodotErrorAssert:
-	var log_entries := await _monitor.scan()
+	var log_entries := await _execute()
 	if _has_log_entry(log_entries, ErrorLogEntry.TYPE.SCRIPT_ERROR, expected_error):
 		return _report_success()
 	return _report_error("""
@@ -69,7 +83,7 @@ func is_runtime_error(expected_error :String) -> GdUnitGodotErrorAssert:
 
 
 func is_push_warning(expected_warning :String) -> GdUnitGodotErrorAssert:
-	var log_entries := await _monitor.scan()
+	var log_entries := await _execute()
 	if _has_log_entry(log_entries, ErrorLogEntry.TYPE.PUSH_WARNING, expected_warning):
 		return _report_success()
 	return _report_error("""
@@ -80,7 +94,7 @@ func is_push_warning(expected_warning :String) -> GdUnitGodotErrorAssert:
 
 
 func is_push_error(expected_error :String) -> GdUnitGodotErrorAssert:
-	var log_entries := await _monitor.scan()
+	var log_entries := await _execute()
 	if _has_log_entry(log_entries, ErrorLogEntry.TYPE.PUSH_ERROR, expected_error):
 		return _report_success()
 	return _report_error("""

@@ -125,7 +125,7 @@ func _init(emitter :Object):
 
 
 func report_success() -> GdUnitAssert:
-	GdAssertReports.report_success(_line_number)
+	GdAssertReports.report_success()
 	return self
 
 
