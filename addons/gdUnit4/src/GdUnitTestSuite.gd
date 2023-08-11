@@ -525,15 +525,42 @@ func assert_signal(instance :Object) -> GdUnitSignalAssert:
 	return GdUnitSignalAssertImpl.new(instance)
 
 
-## Verifiys an assertion is failing as expected
-## This assert is only designed for internal use to verify failing asserts working as expected
+## An assertion tool to test for failing assertions.[br]
+## This assert is only designed for internal use to verify failing asserts working as expected.[br]
 ## Usage:
 ##     [codeblock]
 ##		assert_failure(func(): assert_bool(true).is_not_equal(true)) \
-##			.has_message("Expecting:\n 'true'\n not equal to\n 'true'")
+##		    .has_message("Expecting:\n 'true'\n not equal to\n 'true'")
 ##     [/codeblock]
 func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
-	return GdUnitFailureAssertImpl.new(assertion)
+	return GdUnitFailureAssertImpl.new().execute(assertion)
+
+
+## An assertion tool to test for failing assertions.[br]
+## This assert is only designed for internal use to verify failing asserts working as expected.[br]
+## Usage:
+##     [codeblock]
+##		await assert_failure_await(func(): assert_bool(true).is_not_equal(true)) \
+##		    .has_message("Expecting:\n 'true'\n not equal to\n 'true'")
+##     [/codeblock]
+func assert_failure_await(assertion :Callable) -> GdUnitFailureAssert:
+	return await GdUnitFailureAssertImpl.new().execute_and_await(assertion)
+
+
+## An assertion tool to verify for Godot errors.[br]
+## You can use to verify for certain Godot erros like failing assertions, push_error, push_warn.[br]
+## Usage:
+##     [codeblock]
+##		# tests no error was occured during execution the code
+##		await assert_error(func (): return 0 )\
+##		    .is_success()
+##		
+##		# tests an push_error('test error') was occured during execution the code
+##		await assert_error(func (): push_error('test error') )\
+##		    .is_push_error('test error')
+##     [/codeblock]
+func assert_error(current :Callable) -> GdUnitGodotErrorAssert:
+	return GdUnitGodotErrorAssertImpl.new(current)
 
 
 ## Utility to check if a test has failed in a particular line and if there is an error message
