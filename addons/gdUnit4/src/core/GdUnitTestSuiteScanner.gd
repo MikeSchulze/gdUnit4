@@ -139,7 +139,6 @@ func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDes
 	var fuzzers :Array[GdFunctionArgument] = []
 	var test := _TestCase.new()
 	
-	_validate_argument(fd, test)
 	for arg in fd.args():
 		# verify argument is allowed
 		# is test using fuzzers?
@@ -164,6 +163,7 @@ func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDes
 	# create new test
 	test.configure(fd.name(), fd.line_number(), script.resource_path, timeout, fuzzers, iterations, seed_value)
 	test.skip(is_skipped, skip_reason)
+	_validate_argument(fd, test)
 	test_suite.add_child(test)
 	# is parameterized test?
 	if fd.is_parameterized():
