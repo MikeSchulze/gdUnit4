@@ -101,6 +101,7 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit4/tutorials/tu
 |[await_func](/gdUnit4/advanced_testing/sceneRunner/#await_func) |Waits for the function return value until specified timeout or fails. |
 |[await_func_on](/gdUnit4/advanced_testing/sceneRunner/#await_func_on) |Waits for the function return value of specified source until specified timeout or fails. |
 |[get_property](/gdUnit4/advanced_testing/sceneRunner/#get_property) | Return the current value of a property. |
+|[set_property](/gdUnit4/advanced_testing/sceneRunner/#set_property) | Sets the value of the property with the specified name. |
 |[find_child](/gdUnit4/advanced_testing/sceneRunner/#find_child) | Searches for the specified node with the name in the current scene. |
 |[invoke](/gdUnit4/advanced_testing/sceneRunner/#invoke) | Executes the function specified by name in the scene and returns the result. |
 |[set_time_factor](/gdUnit4/advanced_testing/sceneRunner/#set_time_factor) | Sets how fast or slow the scene simulation is processed (clock ticks versus the real).|
@@ -123,6 +124,7 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit4/tutorials/tu
 |[AwaitMethod](/gdUnit4/advanced_testing/sceneRunner/#await_func) |Waits for the function return value until specified timeout or fails. |
 |[AwaitMethodOn](/gdUnit4/advanced_testing/sceneRunner/#await_func_on) |Waits for the function return value of specified source until specified timeout or fails. |
 |[GetProperty](/gdUnit4/advanced_testing/sceneRunner/#get_property) | Return the current value of a property. |
+|[SetProperty](/gdUnit4/advanced_testing/sceneRunner/#set_property) | Sets the value of the property with the specified name. |
 |[FindChild](/gdUnit4/advanced_testing/sceneRunner/#find_child) | Searches for the specified node with the name in the current scene. |
 |[Invoke](/gdUnit4/advanced_testing/sceneRunner/#invoke) | Executes the function specified by name in the scene and returns the result. |
 |[SetTimeFactor](/gdUnit4/advanced_testing/sceneRunner/#set_time_factor) | Sets how fast or slow the scene simulation is processed (clock ticks versus the real).|
@@ -826,7 +828,7 @@ The **get_property** function returns the current value of the property from the
 {% tab scene-runner-get_property GdScript %}
 It takes the following arguments:
 ```ruby
-    # name: name of property
+    # name: the name of the property
     # returns the actual value of the property
     func get_property(<name> :String) -> Variant:
 ```
@@ -860,6 +862,47 @@ Here is an example of how to use GetProperty:
 {% endtab %}
 {% endtabs %}
 
+
+### set_property
+The **set_property** function sets the value of a property with the specified name.
+
+{% tabs scene-runner-set_property %}
+{% tab scene-runner-set_property GdScript %}
+It takes the following arguments:
+```ruby
+    # name: the name of the property.
+    # value: the value to be assigned to the property.
+    # returns true|false depending on valid property name.
+    func set_property(<name> :String, <value> :Variant) -> bool:
+```
+Here is an example of how to use set_property:
+```ruby
+    var runner := scene_runner("res://test_scene.tscn")
+    
+    # Sets the property `_door_color` to Red
+    runner.set_property("_door_color", Color.RED)
+```
+{% endtab %}
+{% tab scene-runner-set_property C# %}
+It takes the following arguments:
+```cs
+    /// <summary>
+    /// Sets the value of the property with the specified name.
+    /// </summary>
+    /// <param name="name">The name of the property.</param>
+    /// <param name="value">The value to set for the property.</param>
+    /// <exception cref="MissingFieldException"/>
+    public T SetProperty<T>(string name, Variant value);
+```
+Here is an example of how to use SetProperty:
+```cs
+    ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
+
+    // Sets the property `_door_color` to Red
+    runner.SetProperty("_door_color", Colors.Red);
+```
+{% endtab %}
+{% endtabs %}
 
 
 ### find_child

@@ -260,3 +260,22 @@ For more details about Build-In types click here
 {% endtabs %}
 
 ---
+
+## Engine Tool Asserts
+
+{% tabs assert-tool-types %}
+{% tab assert-tool-types GdScript %}
+|Type|Assert|
+|--|--|
+|[assert_signal](/gdUnit4/asserts/assert-signal/) | Signals |
+|[assert_error](/gdUnit4/asserts/assert-error/) | Godot Errors |
+{% endtab %}
+{% tab assert-tool-types C# %}
+|Type|Assert|
+|--|--|
+|[ISignalAssert](/gdUnit4/asserts/assert-signal/) | Signals |
+|[IErrorAssert](/gdUnit4/asserts/assert-error/) | Godot Errors |
+{% endtab %}
+{% endtabs %}
+
+---

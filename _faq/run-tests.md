@@ -1,7 +1,7 @@
 ---
 layout: default
 title: How To Run Tests
-nav_order: 1
+nav_order: 2
 ---
 
 # How to Run Test
