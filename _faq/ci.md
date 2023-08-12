@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Continuous Integration Testing
-nav_order: 5
+nav_order: 10
 ---
 
 # Continuous Integration Testing (CI)
