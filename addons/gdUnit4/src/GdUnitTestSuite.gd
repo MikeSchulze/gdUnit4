@@ -17,6 +17,11 @@ extends Node
 
 const NO_ARG = GdUnitConstants.NO_ARG
 
+### internal runtime variables that must not be overwritten!!!
+var __is_skipped := false
+var __skip_reason :String = "Unknow."
+
+
 ## This function is called before a test suite starts[br]
 ## You can overwrite to prepare test data or initalizize necessary variables
 func before() -> void:
@@ -41,17 +46,8 @@ func after_test() -> void:
 	pass
 
 
-## Skip the test-suite from execution, it will be ignored
-func skip(skipped :bool) -> void:
-	set_meta("gd_skipped", skipped)
-
-
 func is_failure(_expected_failure :String = NO_ARG) -> bool:
 	return Engine.get_meta("GD_TEST_FAILURE") if Engine.has_meta("GD_TEST_FAILURE") else false
-
-
-func is_skipped() -> bool:
-	return get_meta("gd_skipped") if has_meta("gd_skipped") else false
 
 
 var __active_test_case :String

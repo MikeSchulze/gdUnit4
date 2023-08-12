@@ -48,10 +48,9 @@ var _save_is_report_push_errors :bool
 var _save_is_report_script_errors :bool
 
 
-func before():
-	# we need to exclude this test suite for Godot versions <= 4.1.x
-	# see https://github.com/godotengine/godot/issues/80292
-	skip(Engine.get_version_info().hex < 0x40100)
+# skip see https://github.com/godotengine/godot/issues/80292
+@warning_ignore('unused_parameter')
+func before(do_skip=Engine.get_version_info().hex < 0x40100, skip_reason="Exclude this test suite for Godot versions <= 4.1.x"):
 	_save_is_report_push_errors = GdUnitSettings.is_report_push_errors()
 	_save_is_report_script_errors = GdUnitSettings.is_report_script_errors()
 	# disable default error reporting for testing
