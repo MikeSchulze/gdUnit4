@@ -351,30 +351,3 @@ func test_load_parameterized_test_suite():
 			tuple("test_parameterized_to_less_args_at_index_1", true),
 			tuple("test_parameterized_invalid_struct", true),
 			tuple("test_parameterized_invalid_args", true)])
-
-
-func test__remove_class_name() -> void:
-	var source_code := """
-		# GdUnit generated TestSuite
-		class_name GdUnitGodotErrorAssertImplTest
-		extends GdUnitTestSuite
-		@warning_ignore('unused_parameter')
-		@warning_ignore('return_value_discarded')
-		
-		# TestSuite generated from
-		const __source = 'res://addons/gdUnit4/src/asserts/GdUnitGodotErrorAssertImpl.gd'
-		
-		""".dedent()
-	var expected := """
-		# GdUnit generated TestSuite
-		
-		extends GdUnitTestSuite
-		@warning_ignore('unused_parameter')
-		@warning_ignore('return_value_discarded')
-		
-		# TestSuite generated from
-		const __source = 'res://addons/gdUnit4/src/asserts/GdUnitGodotErrorAssertImpl.gd'
-		
-		""".dedent()
-	var content = GdUnitTestSuiteScanner.new()._remove_class_name(source_code)
-	assert_that(content).is_equal(expected)

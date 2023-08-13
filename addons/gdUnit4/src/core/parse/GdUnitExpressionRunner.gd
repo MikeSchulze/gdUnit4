@@ -9,13 +9,6 @@ func __run_expression() -> Variant:
 
 """
 
-var regex_replace_class_name := GdUnitTools.to_regex("(?m)^class_name .*$")
-
-
-func _remove_class_name(source_code :String) -> String:
-	return regex_replace_class_name.sub(source_code, "")
-
-
 func execute(src_script :GDScript, expression :String) -> Variant:
 	var script := GDScript.new()
 	var resource_path := "res://addons/gdUnit4/src/Fuzzers.gd" if src_script.resource_path.is_empty() else src_script.resource_path
