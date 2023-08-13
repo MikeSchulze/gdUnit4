@@ -13,9 +13,10 @@ const STAGE_TEST_CASE_AFTER = GdUnitReportCollector.STAGE_TEST_CASE_AFTER
 var _testsuite_timer :LocalTime
 var _testcase_timer :LocalTime
 
-var _memory_pool :GdUnitMemoryPool = GdUnitMemoryPool.new()
+var _memory_pool := GdUnitMemoryPool.new()
 var _report_errors_enabled :bool
-var _report_collector : = GdUnitReportCollector.new()
+var _report_collector := GdUnitReportCollector.new()
+var _expression_runner := GdUnitExpressionRunner.new()
 
 
 var _total_test_execution_orphans :int
@@ -393,7 +394,7 @@ func create_fuzzers(test_suite :GdUnitTestSuite, test_case :_TestCase) -> Array[
 		return Array()
 	var fuzzers :Array[Fuzzer] = []
 	for fuzzer_arg in test_case.fuzzer_arguments():
-		var fuzzer := FuzzerTool.create_fuzzer(test_suite.get_script(), fuzzer_arg)
+		var fuzzer := _expression_runner.to_fuzzer(test_suite.get_script(), fuzzer_arg.value_as_string())
 		fuzzer._iteration_index = 0
 		fuzzer._iteration_limit = test_case.iterations()
 		fuzzers.append(fuzzer)

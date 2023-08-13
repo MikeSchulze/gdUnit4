@@ -10,7 +10,7 @@ func test_${func_name}() -> void:
 
 var _script_parser := GdScriptParser.new()
 var _extends_test_suite_classes := Array()
-var regex_replace_class_name := GdUnitTools.to_regex("(?m)^class_name .*$")
+var _expression_runner := GdUnitExpressionRunner.new()
 
 
 func scan_testsuite_classes() -> void:
@@ -119,7 +119,7 @@ func _handle_test_suite_arguments(test_suite, script :GDScript, fd :GdFunctionDe
 	for arg in fd.args():
 		match arg.name():
 			_TestCase.ARGUMENT_SKIP:
-				var result = _run_expression(script, arg.value_as_string())
+				var result = _expression_runner.execute(script, arg.value_as_string())
 				if result is bool:
 					test_suite.__is_skipped = result
 				else:
@@ -149,7 +149,7 @@ func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDes
 				_TestCase.ARGUMENT_TIMEOUT:
 					timeout = arg.default()
 				_TestCase.ARGUMENT_SKIP:
-					var result = _run_expression(script, arg.value_as_string())
+					var result = _expression_runner.execute(script, arg.value_as_string())
 					if result is bool:
 						is_skipped = result
 					else:
@@ -185,23 +185,6 @@ func _parse_and_add_test_cases(test_suite, script :GDScript, test_case_names :Pa
 			_handle_test_suite_arguments(test_suite, script, fd)
 		if test_cases_to_find.has(fd.name()):
 			_handle_test_case_arguments(test_suite, script, fd)
-
-
-func _run_expression(src_script :GDScript, expression :String) -> Variant:
-	var script := GDScript.new()
-	script.source_code = _remove_class_name(src_script.source_code)
-	script.source_code += """
-		func __run_expression() -> Variant:
-			return $expression
-		""".dedent().replace("$expression", expression)
-	script.reload(false)
-	var runner := script.new()
-	runner.queue_free()
-	return runner.__run_expression()
-
-
-func _remove_class_name(source_code :String) -> String:
-	return regex_replace_class_name.sub(source_code, "")
 
 
 const TEST_CASE_ARGUMENTS = [_TestCase.ARGUMENT_TIMEOUT, _TestCase.ARGUMENT_SKIP, _TestCase.ARGUMENT_SKIP_REASON, Fuzzer.ARGUMENT_ITERATIONS, Fuzzer.ARGUMENT_SEED]
