@@ -10,7 +10,7 @@ func _init():
 	_threads_by_id[OS.get_main_thread_id()] = GdUnitThreadContext.new()
 
 
-func _notification(what):
+func _notification(_what):
 	# prints("_notification", what)
 	pass
 

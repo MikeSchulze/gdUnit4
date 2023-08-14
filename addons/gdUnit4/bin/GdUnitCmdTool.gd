@@ -314,6 +314,7 @@ class CLIRunner extends Node:
 					event.is_failed(),
 					event.is_warning(),
 					event.is_skipped(),
+					event.skipped_count(),
 					event.failed_count(),
 					event.orphan_nodes(),
 					event.reports())

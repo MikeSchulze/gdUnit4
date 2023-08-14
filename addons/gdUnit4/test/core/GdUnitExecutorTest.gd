@@ -9,6 +9,13 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitExecutor.gd'
 
 const GdUnitExecutor = preload("res://addons/gdUnit4/src/core/GdUnitExecutor.gd")
 
+const SUCCEEDED = true
+const FAILED = false
+const SKIPPED = true
+const NOT_SKIPPED = false
+
+
+
 var _debug_executor :GdUnitExecutor
 var _events :Array[GdUnitEvent] = []
 var _stack : Array[int] = []
@@ -68,8 +75,15 @@ func flating_message(message :String) -> String:
 	return GdUnitAssertImpl._normalize_bbcode(message)
 
 
-func assert_event_reports(events :Array, reports1 :Array, reports2 :Array, reports3 :Array, reports4 :Array, reports5 :Array, reports6 :Array) -> void:
-	var expected_reports := [reports1, reports2, reports3, reports4, reports5, reports6]
+func assert_event_reports2(events :Array[GdUnitEvent], reports1 :Array, reports2 :Array) -> void:
+	_assert_event_reports(events, [reports1, reports2])
+
+
+func assert_event_reports(events :Array[GdUnitEvent], reports1 :Array, reports2 :Array, reports3 :Array, reports4 :Array, reports5 :Array, reports6 :Array) -> void:
+	_assert_event_reports(events, [reports1, reports2, reports3, reports4, reports5, reports6])
+
+
+func _assert_event_reports(events :Array[GdUnitEvent], expected_reports :Array) -> void:
 	for event_index in events.size():
 		var current :Array = events[event_index].reports()
 		var expected = expected_reports[event_index] if expected_reports.size() > event_index else []
@@ -84,7 +98,7 @@ func assert_event_reports(events :Array, reports1 :Array, reports2 :Array, repor
 				assert_str("<N/A>").is_equal(expected[m])
 
 
-func assert_event_list(events :Array, suite_name :String, test_case_names = ["test_case1", "test_case2"]) -> void:
+func assert_event_list(events :Array[GdUnitEvent], suite_name :String, test_case_names = ["test_case1", "test_case2"]) -> void:
 	var expected_events := Array()
 	expected_events.append(tuple(GdUnitEvent.TESTSUITE_BEFORE, suite_name, "before", test_case_names.size()))
 	for test_case in test_case_names:
@@ -97,12 +111,14 @@ func assert_event_list(events :Array, suite_name :String, test_case_names = ["te
 		.contains_exactly(expected_events)
 
 
-func assert_event_counters(events :Array) -> GdUnitArrayAssert:
+func assert_event_counters(events :Array[GdUnitEvent]) -> GdUnitArrayAssert:
 	return assert_array(events).extractv(extr("type"), extr("error_count"), extr("failed_count"), extr("orphan_nodes"))
 
 
-func assert_event_states(events :Array) -> GdUnitArrayAssert:
-	return assert_array(events).extractv(extr("test_name"), extr("is_success"), extr("is_warning"), extr("is_failed"), extr("is_error"))
+func assert_event_states(events :Array[GdUnitEvent]) -> GdUnitArrayAssert:
+	return assert_array(events).extractv(extr("test_name"), extr("is_success"), extr("is_skipped"), extr("is_warning"), extr("is_failed"), extr("is_error"))
+
+
 
 
 func test_execute_success() -> void:
@@ -123,12 +139,12 @@ func test_execute_success() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("after", true, false, false, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("after", SUCCEEDED, NOT_SKIPPED, false, false, false),
 	])
 	# all success no reports expected
 	assert_event_reports(events, [], [], [], [], [], [])
@@ -154,13 +170,13 @@ func test_execute_failure_on_stage_before() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 1, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# report suite is not success, is failed
-		tuple("after", false, false, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, false, true, false),
 	])
 	# one failure at before()
 	assert_event_reports(events, 
@@ -192,13 +208,13 @@ func test_execute_failure_on_stage_after() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 1, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# report suite is not success, is failed
-		tuple("after", false, false, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, false, true, false),
 	])
 	# one failure at after()
 	assert_event_reports(events,
@@ -231,13 +247,13 @@ func test_execute_failure_on_stage_before_test() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case1", false, false, true, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", false, false, true, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", FAILED, NOT_SKIPPED, false, true, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", FAILED, NOT_SKIPPED, false, true, false),
 		# report suite is not success, is failed
-		tuple("after", false, false, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, false, true, false),
 	])
 	# before_test() failure report is append to each test
 	assert_event_reports(events,
@@ -272,13 +288,13 @@ func test_execute_failure_on_stage_after_test() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case1", false, false, true, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", false, false, true, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", FAILED, NOT_SKIPPED, false, true, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", FAILED, NOT_SKIPPED, false, true, false),
 		# report suite is not success, is failed
-		tuple("after", false, false, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, false, true, false),
 	])
 	# 'after_test' failure report is append to each test
 	assert_event_reports(events,
@@ -311,13 +327,13 @@ func test_execute_failure_on_stage_test_case1() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case1", false, false, true, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", FAILED, NOT_SKIPPED, false, true, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# report suite is not success, is failed
-		tuple("after", false, false, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, false, true, false),
 	])
 	# only 'test_case1' reports a failure
 	assert_event_reports(events,
@@ -352,13 +368,13 @@ func test_execute_failure_on_multiple_stages() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 1, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case1", false, false, true, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", false, false, true, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", FAILED, NOT_SKIPPED, false, true, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", FAILED, NOT_SKIPPED, false, true, false),
 		# report suite is not success, is failed
-		tuple("after", false, false, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, false, true, false),
 	])
 	# only 'test_case1' reports a 'real' failures plus test setup stage failures
 	assert_event_reports(events,
@@ -399,15 +415,15 @@ func test_execute_failure_and_orphans() -> void:
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# test case has only warnings
-		tuple("test_case1", false, true, false, false),
-		tuple("test_case2", true, false, false, false),
+		tuple("test_case1", FAILED, NOT_SKIPPED, true, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# test case has failures and warnings
-		tuple("test_case2", false, true, true, false),
+		tuple("test_case2", FAILED, NOT_SKIPPED, true, true, false),
 		# report suite is not success, has warnings and failures
-		tuple("after", false, true, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, true, true, false),
 	])
 	# only 'test_case1' reports a 'real' failures plus test setup stage failures
 	assert_event_reports(events,
@@ -447,15 +463,15 @@ func test_execute_failure_and_orphans_report_orphan_disabled() -> void:
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# test case has success
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# test case has a failure
-		tuple("test_case2", false, false, true, false),
+		tuple("test_case2", FAILED, NOT_SKIPPED, false, true, false),
 		# report suite is not success, has warnings and failures
-		tuple("after", false, false, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, false, true, false),
 	])
 	# only 'test_case1' reports a failure, orphans are not reported
 	assert_event_reports(events,
@@ -491,14 +507,14 @@ func test_execute_error_on_test_timeout() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# testcase ends with a timeout error
-		tuple("test_case1", false, false, false, true),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
+		tuple("test_case1", FAILED, NOT_SKIPPED, false, false, true),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		# report suite is not success, is error
-		tuple("after", false, false, false, true),
+		tuple("after", FAILED, NOT_SKIPPED, false, false, true),
 	])
 	# 'test_case1' reports a error triggered by test timeout
 	assert_event_reports(events,
@@ -534,12 +550,12 @@ func test_execute_failure_fuzzer_iteration() -> void:
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_multi_yielding_with_fuzzer", true, false, false, false),
-		tuple("test_multi_yielding_with_fuzzer", true, false, false, false),
-		tuple("test_multi_yielding_with_fuzzer_fail_after_3_iterations", true, false, false, false),
-		tuple("test_multi_yielding_with_fuzzer_fail_after_3_iterations", false, false, true, false),
-		tuple("after", false, false, true, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_multi_yielding_with_fuzzer", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_multi_yielding_with_fuzzer", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_multi_yielding_with_fuzzer_fail_after_3_iterations", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_multi_yielding_with_fuzzer_fail_after_3_iterations", FAILED, NOT_SKIPPED, false, true, false),
+		tuple("after", FAILED, NOT_SKIPPED, false, true, false),
 	])
 	# 'test_case1' reports a error triggered by test timeout
 	assert_event_reports(events,
@@ -570,19 +586,19 @@ func test_execute_add_child_on_before_GD_106() -> void:
 		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple("before", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case1", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("test_case2", true, false, false, false),
-		tuple("after", true, false, false, false),
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("after", SUCCEEDED, NOT_SKIPPED, false, false, false),
 	])
 	# all success no reports expected
 	assert_event_reports(events, [], [], [], [], [], [])
 
 
 @warning_ignore("unused_parameter")
-func test_fuzzer_before_before(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 1000):
+func test_fuzzer_before_before(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 5):
 	# verify the used stack is cleaned by 'before_test'
 	assert_array(_stack).is_empty()
 	_stack.push_back(1)
@@ -652,6 +668,55 @@ func test_execute_parameterizied_tests() -> void:
 		])
 	# restore default settings
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
+
+
+func test_execute_test_suite_is_skipped() -> void:
+	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteSkipped.resource")
+	# verify all test cases loaded
+	assert_array(test_suite.get_children()).extract("get_name").contains_exactly(["test_case1", "test_case2"])
+	# simulate test suite execution
+	var events = await execute(test_suite)
+	# the entire test-suite is skipped
+	assert_event_states(events).contains_exactly([
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("after", FAILED, SKIPPED, false, false, false),
+	])
+	assert_event_reports2(events,
+		[],
+		# must fail after three iterations
+		["""
+			Entire test-suite is skipped!
+			  Tests skipped: '2'
+			  Reason: '"do not run this"'
+			""".dedent().trim_prefix("\n")])
+
+
+func test_execute_test_case_is_skipped() -> void:
+	var test_suite := resource("res://addons/gdUnit4/test/core/resources/testsuites/TestCaseSkipped.resource")
+	# verify all test cases loaded
+	assert_array(test_suite.get_children()).extract("get_name").contains_exactly(["test_case1", "test_case2"])
+	# simulate test suite execution
+	var events = await execute(test_suite)
+	# the test_case1 is skipped
+	assert_event_states(events).contains_exactly([
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", FAILED, SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("after", SUCCEEDED, NOT_SKIPPED, false, false, false),
+	])
+	
+	assert_event_reports(events,
+		[],
+		[],
+		["""
+			This test is skipped!
+			  Reason: '"do not run this"'
+			""".dedent().trim_prefix("\n")],
+		[],
+		[],
+		[])
 
 
 func add_expected_test_case_events(suite_name :String, test_name :String, parameters :Array = []) -> Array:

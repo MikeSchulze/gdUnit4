@@ -50,7 +50,7 @@ func __validate_value_type(value, type :Variant.Type) -> bool:
 
 
 func report_success() -> GdUnitAssert:
-	GdAssertReports.report_success(GdUnitAssertImpl._get_line_number())
+	GdAssertReports.report_success()
 	return self
 
 
