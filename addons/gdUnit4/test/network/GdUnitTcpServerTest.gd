@@ -64,14 +64,14 @@ func test_receive_packages() -> void:
 
 
 # TODO refactor out and provide as public interface to can be reuse on other tests
-class GdUnitSignalCollector:
-	var _signalCollector :GdUnitSignalAssertImpl.SignalCollector
+class TestGdUnitSignalCollector:
+	var _signalCollector :GdUnitSignalCollector
 	var _emitter :Variant
 	
 	
 	func _init(emitter :Variant):
 		_emitter = emitter
-		_signalCollector = GdUnitSignalAssertImpl.SignalCollector.new()
+		_signalCollector = GdUnitSignalCollector.new()
 		_signalCollector.register_emitter(emitter)
 	
 	
@@ -84,5 +84,5 @@ class GdUnitSignalCollector:
 			_signalCollector.unregister_emitter(_emitter)
 
 
-func signal_collector(instance :Variant) -> GdUnitSignalCollector:
-	return GdUnitSignalCollector.new(instance)
+func signal_collector(instance :Variant) -> TestGdUnitSignalCollector:
+	return TestGdUnitSignalCollector.new(instance)
