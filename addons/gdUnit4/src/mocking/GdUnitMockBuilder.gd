@@ -1,9 +1,13 @@
 class_name GdUnitMockBuilder
 extends GdUnitClassDoubler
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+const GdUnitMemoryPool = preload("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
+
 
 # holds mocker runtime configuration
 const KEY_REPORT_PUSH_ERRORS = "report_push_errors"
+
 
 # only for testing
 static func do_push_errors(enabled :bool) -> void:

@@ -2,6 +2,8 @@
 class_name GdObjects
 extends Resource
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
 const TYPE_VOID 	= TYPE_MAX + 1000
 const TYPE_VARARG 	= TYPE_MAX + 1001
 const TYPE_VARIANT	= TYPE_MAX + 1002

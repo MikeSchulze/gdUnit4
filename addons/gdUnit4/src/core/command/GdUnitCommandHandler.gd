@@ -5,6 +5,8 @@ signal gdunit_runner_start()
 signal gdunit_runner_stop(client_id :int)
 
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
 const CMD_RUN_OVERALL = "Debug Overall TestSuites"
 const CMD_RUN_TESTCASE = "Run TestCases"
 const CMD_RUN_TESTCASE_DEBUG = "Run TestCases (Debug)"

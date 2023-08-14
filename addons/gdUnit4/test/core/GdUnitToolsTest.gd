@@ -2,6 +2,8 @@
 class_name GdUnitToolsTest
 extends GdUnitTestSuite
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitTools.gd'
 var file_to_save :String

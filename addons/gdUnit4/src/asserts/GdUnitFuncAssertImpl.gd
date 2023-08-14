@@ -1,7 +1,8 @@
-class_name GdUnitFuncAssertImpl
 extends GdUnitFuncAssert
 
 signal value_provided(value)
+
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 const DEFAULT_TIMEOUT := 2000
 
@@ -16,7 +17,7 @@ var _sleep_timer :Timer = null
 
 
 func _init(instance :Object, func_name :String, args := Array()):
-	_line_number = GdUnitAssertImpl._get_line_number()
+	_line_number = GdUnitAssert._get_line_number()
 	GdAssertReports.reset_last_error_line_number()
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)

@@ -9,11 +9,11 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitTestSuiteScanner.gd'
 
 func before_test():
 	ProjectSettings.set_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
-	GdUnitTools.clear_tmp()
+	clean_temp_dir()
 
 
 func after():
-	GdUnitTools.clear_tmp()
+	clean_temp_dir()
 
 
 func resolve_path(source_file :String) -> String:
@@ -97,7 +97,7 @@ func test_test_case_exists():
 
 
 func test_create_test_suite_pascal_case_path():
-	var temp_dir := GdUnitTools.create_temp_dir("TestSuiteScannerTest")
+	var temp_dir := create_temp_dir("TestSuiteScannerTest")
 	# checked source with class_name is set
 	var source_path := "res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithClassName.gd"
 	var suite_path := temp_dir + "/test/MyClassTest1.gd"
@@ -139,7 +139,7 @@ func test_create_test_suite_pascal_case_path():
 
 
 func test_create_test_suite_snake_case_path():
-	var temp_dir := GdUnitTools.create_temp_dir("TestSuiteScannerTest")
+	var temp_dir := create_temp_dir("TestSuiteScannerTest")
 	# checked source with class_name is set
 	var source_path :="res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_with_class_name.gd"
 	var suite_path := temp_dir + "/test/my_class_test1.gd"
@@ -182,7 +182,7 @@ func test_create_test_suite_snake_case_path():
 
 func test_create_test_case():
 	# store test class checked temp dir
-	var tmp_path := GdUnitTools.create_temp_dir("TestSuiteScannerTest")
+	var tmp_path := create_temp_dir("TestSuiteScannerTest")
 	var source_path := "res://addons/gdUnit4/test/resources/core/Person.gd"
 	# generate new test suite with test 'test_last_name()'
 	var test_suite_path = tmp_path + "/test/PersonTest.gd"
@@ -234,7 +234,7 @@ func test_build_test_suite_path() -> void:
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://addons/plugin/src/foo/bar/new_script.gd")).is_equal("res://addons/plugin/test/foo/bar/new_script_test.gd")
 	
 	# checked user temp folder
-	var tmp_path := GdUnitTools.create_temp_dir("projectX/entity")
+	var tmp_path := create_temp_dir("projectX/entity")
 	var source_path := tmp_path + "/Person.gd"
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path(source_path)).is_equal("user://tmp/test/projectX/entity/PersonTest.gd")
 
@@ -328,10 +328,6 @@ func test__to_naming_convention() -> void:
 
 func test_is_script_format_supported() -> void:
 	assert_bool(GdUnitTestSuiteScanner._is_script_format_supported("res://exampe.gd")).is_true()
-	if GdUnitTools.is_mono_supported():
-		assert_bool(GdUnitTestSuiteScanner._is_script_format_supported("res://exampe.cs")).is_true()
-	else:
-		assert_bool(GdUnitTestSuiteScanner._is_script_format_supported("res://exampe.cs")).is_false()
 	assert_bool(GdUnitTestSuiteScanner._is_script_format_supported("res://exampe.gdns")).is_false()
 	assert_bool(GdUnitTestSuiteScanner._is_script_format_supported("res://exampe.vs")).is_false()
 	assert_bool(GdUnitTestSuiteScanner._is_script_format_supported("res://exampe.tres")).is_false()

@@ -5,7 +5,6 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd'
 
 
-
 func test_is_null() -> void:
 	assert_array(null).is_null()
 	
@@ -371,7 +370,7 @@ func test_contains_exactly_in_any_order():
 func test_contains_same():
 	var valueA := TestObj.new("A", 0)
 	var valueB := TestObj.new("B", 0)
-	var valueC := TestObj.new("C", 0)
+	
 	assert_array([valueA, valueB]).contains_same([valueA])
 	
 	assert_failure(func(): assert_array([valueA, valueB]).contains_same([TestObj.new("A", 0)])) \

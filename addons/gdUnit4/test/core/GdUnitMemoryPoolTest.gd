@@ -4,6 +4,8 @@ extends GdUnitTestSuite
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd'
+const GdUnitMemoryPool = preload("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
+
 
 var _pool :GdUnitMemoryPool
 var _source :Object

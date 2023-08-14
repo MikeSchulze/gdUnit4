@@ -157,6 +157,7 @@ func test_is_not_empty(_test :String, array, test_parameters = [
 		.has_message("Expecting:\n must not be empty")
 
 
+@warning_ignore("unused_parameter")
 func test_is_same(value, test_parameters = [
 	[[0]],
 	[PackedByteArray([0])],

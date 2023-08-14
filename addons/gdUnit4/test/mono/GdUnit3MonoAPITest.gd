@@ -4,6 +4,9 @@
 class_name GdUnit3MonoAPITest
 extends GdUnitTestSuite
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
+
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/mono/GdUnit3MonoAPI.gd'
 var _example_source_cs :String

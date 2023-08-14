@@ -52,28 +52,28 @@ func test_assert_failure_on_assert(test_name :String, assert_type, value, test_p
 ]) -> void:
 	var  instance := assert_failure(func(): assert_that(value))
 	assert_object(last_assert()).is_instanceof(assert_type)
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+	assert_object(instance).is_instanceof(GdUnitFailureAssert)
 
 
 func test_assert_failure_on_assert_file() -> void:
 	var  instance := assert_failure(func(): assert_file("res://foo.gd"))
 	assert_object(last_assert()).is_instanceof(GdUnitFileAssert)
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+	assert_object(instance).is_instanceof(GdUnitFailureAssert)
 
 
 func test_assert_failure_on_assert_func() -> void:
 	var  instance := assert_failure(func(): assert_func(RefCounted.new(), "_to_string"))
 	assert_object(last_assert()).is_instanceof(GdUnitFuncAssert)
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+	assert_object(instance).is_instanceof(GdUnitFailureAssert)
 
 
 func test_assert_failure_on_assert_signal() -> void:
 	var  instance := assert_failure(func(): assert_signal(null))
 	assert_object(last_assert()).is_instanceof(GdUnitSignalAssert)
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+	assert_object(instance).is_instanceof(GdUnitFailureAssert)
 
 
 func test_assert_failure_on_assert_result() -> void:
 	var  instance := assert_failure(func(): assert_result(null))
 	assert_object(last_assert()).is_instanceof(GdUnitResultAssert)
-	assert_object(instance).is_instanceof(GdUnitFailureAssertImpl)
+	assert_object(instance).is_instanceof(GdUnitFailureAssert)

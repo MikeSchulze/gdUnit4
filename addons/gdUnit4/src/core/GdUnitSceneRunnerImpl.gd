@@ -2,6 +2,11 @@
 class_name GdUnitSceneRunnerImpl
 extends GdUnitSceneRunner
 
+
+var GdUnitMemoryPool := ResourceLoader.load("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd", "GDScript", ResourceLoader.CACHE_MODE_REUSE)
+var GdUnitFuncAssertImpl := ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitFuncAssertImpl.gd", "GDScript", ResourceLoader.CACHE_MODE_REUSE)
+
+
 # mapping of mouse buttons and his masks
 const MAP_MOUSE_BUTTON_MASKS := {
 	MOUSE_BUTTON_LEFT : MOUSE_BUTTON_MASK_LEFT,
