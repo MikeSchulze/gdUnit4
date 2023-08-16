@@ -8,6 +8,7 @@ class_name GdUnitSingleton
 extends RefCounted
 
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const MEATA_KEY := "GdUnitSingletons"
 
 

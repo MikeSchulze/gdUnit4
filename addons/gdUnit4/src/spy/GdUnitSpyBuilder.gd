@@ -1,8 +1,11 @@
 class_name GdUnitSpyBuilder
 extends GdUnitClassDoubler
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+const GdUnitMemoryPool = preload("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
 
-static func build(caller :Object, to_spy, debug_write = false):
+
+static func build(caller :Object, to_spy, debug_write = false) -> Object:
 	var memory_pool :GdUnitMemoryPool.POOL = caller.get_meta(GdUnitMemoryPool.META_PARAM)
 	if GdObjects.is_singleton(to_spy):
 		push_error("Spy on a Singleton is not allowed! '%s'" % to_spy.get_class())

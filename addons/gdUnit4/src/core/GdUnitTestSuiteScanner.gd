@@ -49,9 +49,12 @@ func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[N
 			if sub_dir != null:
 				_scan_test_suites(sub_dir, collected_suites)
 		else:
+			var time = LocalTime.now()
 			var test_suite := _parse_is_test_suite(resource_path)
 			if test_suite:
 				collected_suites.append(test_suite)
+			if time.elapsed_since_ms() > 300:
+				push_warning("Scanning of test-suite '%s' took more than 300ms: " % resource_path, time.elapsed_since())
 		file_name = dir.get_next()
 	return collected_suites
 

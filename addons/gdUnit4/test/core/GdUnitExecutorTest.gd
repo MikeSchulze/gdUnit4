@@ -8,6 +8,7 @@ signal test_execution_completed()
 const __source = 'res://addons/gdUnit4/src/core/GdUnitExecutor.gd'
 
 const GdUnitExecutor = preload("res://addons/gdUnit4/src/core/GdUnitExecutor.gd")
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 const SUCCEEDED = true
 const FAILED = false
@@ -72,7 +73,7 @@ func filter_failures(events :Array) -> Array:
 
 
 func flating_message(message :String) -> String:
-	return GdUnitAssertImpl._normalize_bbcode(message)
+	return GdUnitTools.richtext_normalize(message)
 
 
 func assert_event_reports2(events :Array[GdUnitEvent], reports1 :Array, reports2 :Array) -> void:

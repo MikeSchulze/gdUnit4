@@ -1,7 +1,12 @@
 class_name GdUnitMockerTest
 extends GdUnitTestSuite
 
+
+const GdUnitMemoryPool = preload("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
+
+
 var resource_path := "res://addons/gdUnit4/test/mocker/resources/"
+
 
 func before():
 	# disable error pushing for testing

@@ -48,6 +48,7 @@ func test_as_string_simple_format():
 	assert_that(GdArrayTools.as_string(value, false)).is_equal('[a, b]')
 
 
+@warning_ignore("unused_parameter")
 func test_is_array_type(_test :String, value, expected :bool, test_parameters = [
 	['bool', true, false],
 	['int', 42, false],
@@ -95,6 +96,7 @@ func test_is_type_array() -> void:
 			assert_that(GdArrayTools.is_type_array(type)).is_false()
 
 
+@warning_ignore("unused_parameter")
 func test_filter_value(value, expected_type :int, test_parameters = [
 	[[1, 2, 3, 1], TYPE_ARRAY],
 	[Array([1, 2, 3, 1]) as Array[int], TYPE_ARRAY],

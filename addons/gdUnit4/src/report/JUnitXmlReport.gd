@@ -3,6 +3,8 @@
 class_name JUnitXmlReport
 extends RefCounted
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
 const ATTR_CLASSNAME := "classname"
 const ATTR_ERRORS := "errors"
 const ATTR_FAILURES := "failures"

@@ -6,6 +6,7 @@ extends GdUnitTestSuite
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitFuncAssertImpl.gd'
+const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
 # we need to skip await fail test because of an bug in Godot 4.0 stable
@@ -19,8 +20,8 @@ func verify_failed(cb :Callable) -> GdUnitStringAssert:
 	await cb.call()
 	GdAssertReports.expect_fail(false)
 	
-	var a :GdUnitFuncAssertImpl = GdUnitThreadManager.get_current_context().get_assert()
-	return assert_str( GdUnitAssertImpl._normalize_bbcode(a._failure_message()))
+	var a :GdUnitFuncAssert = GdUnitThreadManager.get_current_context().get_assert()
+	return assert_str(GdUnitTools.richtext_normalize(a._failure_message()))
 
 
 class TestValueProvider:

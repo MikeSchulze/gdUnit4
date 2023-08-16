@@ -1,5 +1,4 @@
 # This class defines a value extractor by given function name and args
-class_name GdUnitFuncValueExtractor
 extends GdUnitValueExtractor
 
 var _func_names :Array

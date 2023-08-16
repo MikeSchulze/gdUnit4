@@ -6,6 +6,7 @@ extends GdUnitTestSuite
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitSignalAssertImpl.gd'
+const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
 class TestEmitter extends Node:
@@ -47,8 +48,8 @@ func verify_failed(cb :Callable) -> GdUnitStringAssert:
 	await cb.call()
 	GdAssertReports.expect_fail(false)
 	
-	var a :GdUnitSignalAssertImpl = GdUnitThreadManager.get_current_context().get_assert()
-	return assert_str( GdUnitAssertImpl._normalize_bbcode(a._failure_message()))
+	var a :GdUnitSignalAssert = GdUnitThreadManager.get_current_context().get_assert()
+	return assert_str(GdUnitTools.richtext_normalize(a._failure_message()))
 
 
 func test_invalid_arg() -> void:

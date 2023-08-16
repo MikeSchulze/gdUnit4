@@ -5,7 +5,6 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitSceneRunnerImpl.gd'
 
-
 # loads the test runner and register for auto freeing after test 
 func load_test_scene() -> Node:
 	return auto_free(load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn").instantiate())
@@ -18,6 +17,17 @@ func before():
 
 func after():
 	Engine.set_max_fps(0)
+
+
+## Utility to check if a test has failed in a particular line and if there is an error message
+func assert_failed_at(line_number :int, expected_failure :String) -> bool:
+	var is_failed = is_failure()
+	var last_failure = GdAssertReports.current_failure()
+	var last_failure_line = GdAssertReports.get_last_error_line_number()
+	assert_str(last_failure).is_equal(expected_failure)
+	assert_int(last_failure_line).is_equal(line_number)
+	GdAssertReports.expect_fail(true)
+	return is_failed
 
 
 func test_get_property() -> void:

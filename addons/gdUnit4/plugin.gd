@@ -1,22 +1,11 @@
 @tool
 extends EditorPlugin
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
 var _gd_inspector :Node
 var _server_node
 var _gd_console :Node
-
-
-# removes GdUnit classes inherits from Godot.Node from the node inspecor, ohterwise it takes very long to popup the dialog
-func _fixup_node_inspector() -> void:
-	var classes := PackedStringArray([
-		"GdUnitTestSuite",
-		"_TestCase",
-		"GdUnitInspecor",
-		"GdUnitExecutor",
-		"GdUnitTcpClient",
-		"GdUnitTcpServer"])
-	for clazz in classes:
-		remove_custom_type(clazz)
 
 
 func _enter_tree():
@@ -30,7 +19,6 @@ func _enter_tree():
 	add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
 	_server_node = load("res://addons/gdUnit4/src/network/GdUnitServer.tscn").instantiate()
 	add_child(_server_node)
-	_fixup_node_inspector()
 	prints("Loading GdUnit4 Plugin success")
 	if GdUnitSettings.is_update_notification_enabled():
 		var update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()

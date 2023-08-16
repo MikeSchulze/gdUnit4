@@ -1,4 +1,3 @@
-class_name GdUnitMemoryPool 
 extends GdUnitSingleton
 
 const META_PARAM := "MEMORY_POOL"
@@ -85,7 +84,8 @@ func monitor_stop() -> void:
 
 
 func free_pool() -> void:
-	GdUnitMemoryPool.run_auto_free(_current)
+	@warning_ignore("static_called_on_instance")
+	run_auto_free(_current)
 
 
 func get_monitor(pool_id :POOL) -> GdUnitMemMonitor:

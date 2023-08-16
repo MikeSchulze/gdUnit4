@@ -19,12 +19,14 @@ var _test_seta =[
 ]
 
 
+@warning_ignore("unused_parameter")
 func test_supported_types(value, test_parameters = _test_seta):
 	assert_object(assert_vector(value))\
 		.is_not_null()\
 		.is_instanceof(GdUnitVectorAssert)
 
 
+@warning_ignore("unused_parameter")
 func test_unsupported_types(value, details :String, test_parameters =[
 	[true, 'bool'],
 	[42, 'int'],
@@ -36,6 +38,7 @@ func test_unsupported_types(value, details :String, test_parameters =[
 		.has_message("GdUnitVectorAssert error, the type <%s> is not supported." % details)
 
 
+@warning_ignore("unused_parameter")
 func test_is_null(value, test_parameters = _test_seta):
 	if value == null:
 		assert_vector(null).is_null()
@@ -45,6 +48,7 @@ func test_is_null(value, test_parameters = _test_seta):
 			.starts_with_message("Expecting: '<null>' but was '%s'" % value)
 
 
+@warning_ignore("unused_parameter")
 func test_is_not_null(value, test_parameters = _test_seta):
 	if value == null:
 		assert_failure(func(): assert_vector(null).is_not_null()) \
@@ -54,6 +58,7 @@ func test_is_not_null(value, test_parameters = _test_seta):
 		assert_vector(value).is_not_null()
 
 
+@warning_ignore("unused_parameter")
 func test_is_equal() -> void:
 	assert_vector(Vector2.ONE).is_equal(Vector2.ONE)
 	assert_vector(Vector2.LEFT).is_equal(Vector2.LEFT)
@@ -73,6 +78,7 @@ func test_is_equal() -> void:
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
 
+@warning_ignore("unused_parameter")
 func test_is_equal_over_all_types(value, test_parameters = _test_seta) -> void:
 	assert_vector(value).is_equal(value)
 
@@ -91,6 +97,7 @@ func test_is_not_equal() -> void:
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
 
+@warning_ignore("unused_parameter")
 func test_is_not_equal_over_all_types(value, test_parameters = _test_seta) -> void:
 	var expected = Vector2.LEFT if value == null else value * 2
 	assert_vector(value).is_not_equal(expected)
@@ -132,6 +139,8 @@ func test_is_equal_approx() -> void:
 			.dedent().trim_prefix("\n")
 		)
 
+
+@warning_ignore("unused_parameter")
 func test_is_equal_approx_over_all_types(value, expected, approx, test_parameters = [
 	[Vector2(0.996, 1.004), Vector2.ONE, Vector2(0.004, 0.004)],
 	[Vector2i(9, 11), Vector2i(10, 10), Vector2i(1, 1)],
@@ -161,6 +170,7 @@ func test_is_less() -> void:
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
 
+@warning_ignore("unused_parameter")
 func test_is_less_over_all_types(value, expected, test_parameters = [
 	[Vector2(1.0, 1.0), Vector2(1.0001, 1.0001)],
 	[Vector2i(1, 1), Vector2i(2, 1)],
@@ -191,6 +201,7 @@ func test_is_less_equal() -> void:
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
 
+@warning_ignore("unused_parameter")
 func test_is_less_equal_over_all_types(value, expected, test_parameters = [
 	[Vector2(1.0, 1.0), Vector2(1.0001, 1.0001)],
 	[Vector2(1.0, 1.0), Vector2(1.0, 1.0)],
@@ -226,6 +237,7 @@ func test_is_greater() -> void:
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
 
+@warning_ignore("unused_parameter")
 func test_is_greater_over_all_types(value, expected, test_parameters = [
 	[Vector2(1.0001, 1.0001), Vector2(1.0, 1.0)],
 	[Vector2i(2, 1), Vector2i(1, 1)],
@@ -257,6 +269,7 @@ func test_is_greater_equal() -> void:
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
 
+@warning_ignore("unused_parameter")
 func test_is_greater_equal_over_all_types(value, expected, test_parameters = [
 	[Vector2(1.0001, 1.0001), Vector2(1.0, 1.0)],
 	[Vector2(1.0, 1.0), Vector2(1.0, 1.0)],
@@ -289,6 +302,7 @@ func test_is_between(fuzzer = Fuzzers.rangev2(Vector2.ZERO, Vector2.ONE)):
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
 
+@warning_ignore("unused_parameter")
 func test_is_between_over_all_types(value, from, to, test_parameters = [
 	[Vector2(1.2, 1.2), Vector2(1.0, 1.0), Vector2(1.2, 1.2)],
 	[Vector2i(1, 1), Vector2i(1, 1), Vector2i(2, 2)],
@@ -313,6 +327,7 @@ func test_is_not_between(fuzzer = Fuzzers.rangev2(Vector2.ONE, Vector2.ONE*2)):
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
 
+@warning_ignore("unused_parameter")
 func test_is_not_between_over_all_types(value, from, to, test_parameters = [
 	[Vector2(3.2, 1.2), Vector2(1.0, 1.0), Vector2(1.2, 1.2)],
 	[Vector2i(3, 1), Vector2i(1, 1), Vector2i(2, 2)],

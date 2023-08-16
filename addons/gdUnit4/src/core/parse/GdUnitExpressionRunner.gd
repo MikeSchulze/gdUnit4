@@ -16,7 +16,7 @@ func execute(src_script :GDScript, expression :String) -> Variant:
 		.replace("${clazz_path}", resource_path)\
 		.replace("$expression", expression)
 	script.reload(false)
-	var runner := script.new()
+	var runner :Variant = script.new()
 	if runner.has_method("queue_free"):
 		runner.queue_free()
 	return runner.__run_expression()

@@ -254,7 +254,7 @@ static func save_property(name :String, value) -> void:
 static func save() -> void:
 	var err := ProjectSettings.save()
 	if err != OK:
-		push_error("Save GdUnit3 settings failed : %s" % GdUnitTools.error_as_string(err))
+		push_error("Save GdUnit3 settings failed : %s" % error_string(err))
 		return
 
 

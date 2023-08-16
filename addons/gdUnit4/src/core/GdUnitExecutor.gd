@@ -2,6 +2,8 @@ extends Node
 
 signal ExecutionCompleted()
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+const GdUnitMemoryPool = preload("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
 
 const INIT = 0
 const STAGE_TEST_SUITE_BEFORE = GdUnitReportCollector.STAGE_TEST_SUITE_BEFORE
@@ -126,7 +128,7 @@ func suite_after(test_suite :GdUnitTestSuite):
 		skip_count = 0
 		@warning_ignore("redundant_await")
 		await test_suite.after()
-		GdUnitTools.append_array(reports, _report_collector.get_reports(STAGE_TEST_SUITE_AFTER))
+		reports.append_array(_report_collector.get_reports(STAGE_TEST_SUITE_AFTER))
 		_memory_pool.free_pool()
 		_memory_pool.monitor_stop()
 		orphan_nodes = _memory_pool.orphan_nodes()

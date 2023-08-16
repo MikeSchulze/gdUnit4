@@ -2,6 +2,8 @@
 extends Window
 
 const EAXAMPLE_URL := "https://github.com/MikeSchulze/gdUnit4-examples/archive/refs/heads/master.zip"
+
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
 
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient

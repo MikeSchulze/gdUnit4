@@ -1,6 +1,9 @@
 extends RefCounted
 class_name GdUnit3MonoAPI
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
+
 static func instance() :
 	return null#GdUnitSingleton.get_or_create_singleton("GdUnit3MonoAPI", "res://addons/gdUnit4/src/mono/GdUnit3MonoAPI.cs")
 

@@ -52,7 +52,7 @@ func get_reports(execution_states :int) -> Array[GdUnitReport]:
 	var reports :Array[GdUnitReport] = []
 	for state in ALL_REPORT_STATES:
 		if execution_states&state == state:
-			GdUnitTools.append_array(reports, get_reports_by_state(state))
+			reports.append_array(get_reports_by_state(state))
 	return reports
 
 
