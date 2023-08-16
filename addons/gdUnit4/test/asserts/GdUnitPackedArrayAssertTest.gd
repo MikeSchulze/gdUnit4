@@ -6,6 +6,23 @@ const __source = 'res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd'
 
 
 @warning_ignore("unused_parameter")
+func test_is_array_assert(_test :String, array, test_parameters = [
+	["Array", Array()],
+	["PackedByteArray", PackedByteArray()],
+	["PackedInt32Array", PackedInt32Array()],
+	["PackedInt64Array", PackedInt64Array()],
+	["PackedFloat32Array", PackedFloat32Array()],
+	["PackedFloat64Array", PackedFloat64Array()],
+	["PackedStringArray", PackedStringArray()],
+	["PackedVector2Array", PackedVector2Array()],
+	["PackedVector3Array", PackedVector3Array()],
+	["PackedColorArray", PackedColorArray()] ]
+	) -> void:
+	var assert_ = assert_that(array)
+	assert_object(assert_).is_instanceof(GdUnitArrayAssert)
+
+
+@warning_ignore("unused_parameter")
 func test_is_null(_test :String, value, test_parameters = [
 	["Array", Array()],
 	["PackedByteArray", PackedByteArray()],
@@ -37,7 +54,7 @@ func test_is_not_null(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array()],
 	["PackedColorArray", PackedColorArray()] ]
 	) -> void:
-	assert_array(PackedByteArray()).is_not_null()
+	assert_array(array).is_not_null()
 	
 	assert_failure(func(): assert_array(null).is_not_null()) \
 		.is_failed() \
