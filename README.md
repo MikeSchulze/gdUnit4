@@ -8,7 +8,6 @@
 <p align="center">This version of GdUnit4 is based on Godot <strong>v4.1.1.stable.official [bd6af8e0e]</strong> (master branch)</p>
 </h2>
 
-
 ---
 
 <p align="center">
