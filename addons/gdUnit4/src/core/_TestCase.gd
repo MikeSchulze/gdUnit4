@@ -74,13 +74,14 @@ func dispose():
 	stop_timer()
 	_remove_failure_handler()
 	_fuzzers.clear()
+	#queue_free()
 
 
 @warning_ignore("shadowed_variable_base_class", "redundant_await")
 func _execute_test_case(name :String, test_parameter :Array):
 	# needs at least on await otherwise it braks the awaiting chain
 	await get_parent().callv(name, test_parameter)
-	await get_tree().create_timer(0.0001).timeout
+	await Engine.get_main_loop().create_timer(0.0001).timeout
 	completed.emit()
 
 

@@ -22,12 +22,15 @@ var __is_skipped := false
 @warning_ignore("unused_private_class_variable")
 var __skip_reason :String = "Unknow."
 
+# holds the actual execution context
+var _execution_context
+
 
 ### We now load all used asserts and tool scripts into the cache according to the principle of "lazy loading"
 ### in order to noticeably reduce the loading time of the test suite.
 # We go this hard way to increase the loading performance to avoid reparsing all the used scripts
 # for more detailed info -> https://github.com/godotengine/godot/issues/67400
-func __lazy_load(script_path :String) -> GDScript:
+static func __lazy_load(script_path :String) -> GDScript:
 	return ResourceLoader.load(script_path, "GDScript", ResourceLoader.CACHE_MODE_REUSE)
 
 
@@ -93,8 +96,11 @@ func error_as_string(error_number :int) -> String:
 
 ## A litle helper to auto freeing your created objects after test execution
 func auto_free(obj) -> Variant:
-	var GdUnitMemoryPool = __lazy_load("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
-	return GdUnitMemoryPool.register_auto_free(obj, get_meta(GdUnitMemoryPool.META_PARAM))
+	# TODO cleanup to use finally the _execution_context
+	if _execution_context == null:
+		var GdUnitMemoryPool = __lazy_load("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
+		return GdUnitMemoryPool.register_auto_free(obj, get_meta(GdUnitMemoryPool.META_PARAM))
+	return _execution_context.register_auto_free(obj)
 
 
 ## Discard the error message triggered by a timeout (interruption).[br]

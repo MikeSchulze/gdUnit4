@@ -11,13 +11,22 @@ const ERROR_COUNT = "error_count"
 const FAILED_COUNT = "failed_count"
 const SKIPPED_COUNT = "skipped_count"
 
-enum  {
+enum {
 	INIT,
 	STOP,
 	TESTSUITE_BEFORE,
 	TESTSUITE_AFTER,
 	TESTCASE_BEFORE,
 	TESTCASE_AFTER,
+}
+
+const TYPED_NAMES = {
+	INIT:"INIT",
+	STOP:"STOP",
+	TESTSUITE_BEFORE:"TESTSUITE_BEFORE",
+	TESTSUITE_AFTER:"TESTSUITE_AFTER",
+	TESTCASE_BEFORE:"TESTCASE_BEFORE",
+	TESTCASE_AFTER:"TESTCASE_AFTER",
 }
 
 var _event_type :int
@@ -139,7 +148,7 @@ func reports() -> Array:
 
 
 func _to_string():
-	return "Event: %d %s:%s, %s, %s" % [_event_type, _suite_name, _test_name, _statistics, _reports]
+	return "Event: %s %s:%s, %s, %s" % [TYPED_NAMES[_event_type], _suite_name, _test_name, _statistics, _reports]
 
 
 func serialize() -> Dictionary:

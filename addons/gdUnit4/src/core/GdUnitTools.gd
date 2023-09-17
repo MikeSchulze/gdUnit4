@@ -229,6 +229,11 @@ static func free_instance(instance :Variant) -> bool:
 			#instance.queue_free()
 			instance.call_deferred("free")
 			return true
+		if instance is Node and instance.get_parent() != null:
+			print_verbose("auto remove node from parent",  instance.get_parent(), instance)
+			instance.get_parent().remove_child(instance)
+			instance.set_owner(null)
+		print_verbose("freeing instance", instance)
 		instance.free()
 		return !is_instance_valid(instance)
 
