@@ -20,7 +20,7 @@ func execute(context :GdUnitExecutionContext) -> void:
 
 ## Emit the event to registered listeners
 func fire_event(event :GdUnitEvent) -> void:
-	print_verbose("GdUnitEvent", event)
+	#print_verbose("GdUnitEvent", event)
 	if _debug:
 		GdUnitSignals.instance().gdunit_event_debug.emit(event)
 	else:

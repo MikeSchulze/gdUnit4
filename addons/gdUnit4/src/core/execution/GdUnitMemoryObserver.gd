@@ -34,7 +34,7 @@ func register_auto_free(obj) -> Variant:
 	if obj is MainLoop:
 		push_error("avoid to add mainloop to auto_free queue  %s" % obj)
 		return
-	print_verbose("register auto_free()", obj)
+	print_verbose("register auto_free(%s)" % obj, self)
 	# only register pure objects
 	if obj is GdUnitSceneRunner:
 		_store.push_front(obj)

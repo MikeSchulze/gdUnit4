@@ -9,3 +9,8 @@ func execute(context :GdUnitExecutionContext) -> void:
 	
 	fire_event(GdUnitEvent.new()\
 		.suite_before(test_suite.get_script().resource_path, test_suite.get_name(), test_suite.get_child_count()))
+		
+	context.orphan_monitor_start(true)
+	print_verbose("-> before")
+	await test_suite.before()
+	context.orphan_monitor_stop()

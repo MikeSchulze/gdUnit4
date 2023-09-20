@@ -7,7 +7,13 @@ extends IGdUnitExecutionStage
 func execute(context :GdUnitExecutionContext) -> void:
 	var test_suite := context.test_suite()
 	
-	await context.dispose()
+	print_verbose("-> after")
+	context.orphan_monitor_start()
+	await test_suite.after()
+	await context.gc()
+	context.orphan_monitor_stop()
+	print_verbose("orphans detected: ", context.orphan_nodes())
+	
 	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path, test_suite.get_name(), context.build_report_statistics(), context.reports()))
 	
 	if is_instance_valid(test_suite):

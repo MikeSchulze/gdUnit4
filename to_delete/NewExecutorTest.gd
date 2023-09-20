@@ -1,11 +1,23 @@
 extends Control
 
+const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 var _stage := 0
 
 
+func __ready():
+	OrphanCount("0")
+	
+	var n := Node.new()
+	OrphanCount("1")
+	add_child(n)
+	OrphanCount("2")
+	GdUnitTools.free_instance(n)
+	OrphanCount("3")
+	
+
 func _ready():
-	var test_suite :GdUnitTestSuite = GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/asserts/GdUnitBoolAssertImplTest.gd")
+	var test_suite :GdUnitTestSuite = GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/GdUnitTestSuiteOrpanNodesTest.gd")
 	await GdUnitTestSuiteExecutor.new().execute(test_suite)
 	# exit
 	_stage = 100
@@ -21,3 +33,6 @@ func _process(_delta):
 		await get_tree().process_frame
 		get_tree().quit()
 
+
+func OrphanCount(stage :String ) -> void:
+	prints( "%s orphans" % stage, Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
