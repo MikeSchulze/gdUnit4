@@ -8,6 +8,14 @@ func test_${func_name}() -> void:
 	assert_not_yet_implemented()
 """
 
+
+# we exclude the gdunit source directorys by default
+const exclude_scan_directories = [
+	"res://addons/gdUnit4/bin",
+	"res://addons/gdUnit4/src",
+	"res://reports"]
+
+
 var _script_parser := GdScriptParser.new()
 var _extends_test_suite_classes := Array()
 var _expression_runner := GdUnitExpressionRunner.new()
@@ -39,6 +47,8 @@ func scan(resource_path :String) -> Array[Node]:
 
 
 func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[Node]:
+	if exclude_scan_directories.has(dir.get_current_dir()):
+		return collected_suites
 	prints("Scanning for test suites in:", dir.get_current_dir())
 	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	var file_name := dir.get_next()

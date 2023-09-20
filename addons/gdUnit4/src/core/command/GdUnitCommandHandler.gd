@@ -188,7 +188,7 @@ func cmd_run_test_case(test_suite_resource_path :String, test_case :String, test
 
 
 func cmd_run_overall(debug :bool) -> void:
-	var test_suite_paths :PackedStringArray = GdUnitCommandHandler.scan_test_directorys("res://", [])
+	var test_suite_paths :PackedStringArray = GdUnitCommandHandler.scan_test_directorys("res://" , GdUnitSettings.test_root_folder(), [])
 	var result := _runner_config.clear()\
 		.add_test_suites(test_suite_paths)\
 		.save_config()
@@ -261,18 +261,28 @@ func cmd_create_test() -> void:
 	ScriptEditorControls.edit_script(info.get("path"), info.get("line"))
 
 
-static func scan_test_directorys(base_directory :String, test_suite_paths :PackedStringArray) -> PackedStringArray:
-	prints("Scannning for test directories", base_directory)
+static func scan_test_directorys(base_directory :String, test_directory: String, test_suite_paths :PackedStringArray) -> PackedStringArray:
+	print_verbose("Scannning for test directory '%s' at %s" % [test_directory, base_directory])
 	for directory in DirAccess.get_directories_at(base_directory):
 		if directory.begins_with("."):
 			continue
-		var current_directory := base_directory + "/" + directory
-		if directory == "test":
-			prints(".. ", current_directory)
+		var current_directory := normalize_path(base_directory + "/" + directory)
+		if GdUnitTestSuiteScanner.exclude_scan_directories.has(current_directory):
+			continue
+		if match_test_directory(directory, test_directory):
+			prints("Collect tests at:", current_directory)
 			test_suite_paths.append(current_directory)
 		else:
-			scan_test_directorys(current_directory, test_suite_paths)
+			scan_test_directorys(current_directory, test_directory, test_suite_paths)
 	return test_suite_paths
+
+
+static func normalize_path(path :String) -> String:
+	return path.replace("///", "//")
+
+
+static func match_test_directory(directory :String, test_directory: String) -> bool:
+	return directory == test_directory or test_directory.is_empty() or test_directory == "/" or test_directory == "res://"
 
 
 func run_debug_mode():
