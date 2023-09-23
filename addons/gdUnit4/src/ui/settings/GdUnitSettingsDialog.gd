@@ -249,7 +249,10 @@ func _on_property_text_changed(new_value :Variant, property: GdUnitProperty, res
 	if error:
 		var label :Label = _property_error.get_child(0) as Label
 		label.set_text(error)
+		var control := gui_get_focus_owner()
 		_property_error.show()
+		if control != null:
+			_property_error.position = control.global_position + Vector2(self.position) + Vector2(40, 40)
 
 
 func _on_option_selected(index :int, property: GdUnitProperty, reset_btn :Button):
