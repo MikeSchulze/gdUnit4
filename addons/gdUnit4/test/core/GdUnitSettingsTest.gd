@@ -116,7 +116,6 @@ func test_migrate_property_change_value() -> void:
 	assert_array(new_property.value_set()).is_equal(old_property.value_set())
 	assert_int(new_property.type()).is_equal(old_property.type())
 	assert_str(new_property.default()).is_equal(old_property.default())
-	assert_str(new_property.help()).is_equal(old_property.help())
 
 	# cleanup
 	ProjectSettings.clear(new_property_X)

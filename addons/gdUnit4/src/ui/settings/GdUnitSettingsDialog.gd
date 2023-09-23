@@ -17,26 +17,34 @@ const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdate
 @onready var _properties_shortcuts :Node = %"shortcut-content"
 @onready var _properties_report :Node = %"report-content"
 @onready var _input_capture :GdUnitInputCapture = %GdUnitInputCapture
+@onready var _property_error :Window = %"propertyError"
 var _font_size :float
 
 
 func _ready():
+	# initialize for testing
+	if not Engine.is_editor_hint():
+		GdUnitSettings.setup()
 	GdUnit4Version.init_version_label(_version_label)
 	_font_size = GdUnitFonts.init_fonts(_version_label)
-	self.title = "GdUnitSettings"
-	setup_common_properties(_properties_common, GdUnitSettings.COMMON_SETTINGS)
-	setup_common_properties(_properties_ui, GdUnitSettings.UI_SETTINGS)
-	setup_common_properties(_properties_report, GdUnitSettings.REPORT_SETTINGS)
-	setup_common_properties(_properties_shortcuts, GdUnitSettings.SHORTCUT_SETTINGS)
+	setup_properties(_properties_common, GdUnitSettings.COMMON_SETTINGS)
+	setup_properties(_properties_ui, GdUnitSettings.UI_SETTINGS)
+	setup_properties(_properties_report, GdUnitSettings.REPORT_SETTINGS)
+	setup_properties(_properties_shortcuts, GdUnitSettings.SHORTCUT_SETTINGS)
 	await get_tree().process_frame
-	popup_centered_ratio(.75)
+	if not Engine.is_editor_hint():
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_size(Vector2i(1600, 800))
+		popup_centered_ratio(1)
+	else:
+		popup_centered_ratio(.75)
 
 
 func _sort_by_key(left :GdUnitProperty, right :GdUnitProperty) -> bool:
 	return left.name() < right.name()
 
 
-func setup_common_properties(properties_parent :Node, property_category) -> void:
+func setup_properties(properties_parent :Node, property_category) -> void:
 	var category_properties := GdUnitSettings.list_settings(property_category)
 	# sort by key
 	category_properties.sort_custom(_sort_by_key)
@@ -151,6 +159,10 @@ func _to_human_readable(value :String) -> String:
 
 
 func _get_btn_icon(p_name :String) -> Texture2D:
+	if not Engine.is_editor_hint():
+		var placeholder := PlaceholderTexture2D.new()
+		placeholder.size = Vector2(8,8)
+		return placeholder
 	var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 	if editor:
 		var editiorTheme := editor.get_editor_interface().get_base_control().theme
@@ -233,7 +245,11 @@ func _on_btn_property_reset_pressed(property: GdUnitProperty, input :Node, reset
 func _on_property_text_changed(new_value :Variant, property: GdUnitProperty, reset_btn :Button):
 	property.set_value(new_value)
 	reset_btn.disabled = property.value() == property.default()
-	GdUnitSettings.update_property(property)
+	var error := GdUnitSettings.update_property(property)
+	if error:
+		var label :Label = _property_error.get_child(0) as Label
+		label.set_text(error)
+		_property_error.show()
 
 
 func _on_option_selected(index :int, property: GdUnitProperty, reset_btn :Button):
@@ -271,4 +287,3 @@ func stop_progress() -> void:
 func update_progress(message :String) -> void:
 	_progress_text.text = message
 	_progress_bar.value += 1
-	prints(message)
