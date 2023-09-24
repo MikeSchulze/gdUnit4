@@ -347,3 +347,25 @@ func test_load_parameterized_test_suite():
 			tuple("test_parameterized_to_less_args_at_index_1", true),
 			tuple("test_parameterized_invalid_struct", true),
 			tuple("test_parameterized_invalid_args", true)])
+
+
+func test_resolve_test_suite_path() -> void:
+	# forcing the use of a test folder next to the source folder
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/folder/myclass.gd", "test")).is_equal("res://project/test/folder/myclass_test.gd")
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/folder/MyClass.gd", "test")).is_equal("res://project/test/folder/MyClassTest.gd")
+	# forcing to use source directory to create the test
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/folder/myclass.gd", "")).is_equal("res://project/src/folder/myclass_test.gd")
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/folder/MyClass.gd", "")).is_equal("res://project/src/folder/MyClassTest.gd")
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/folder/myclass.gd", "/")).is_equal("res://project/src/folder/myclass_test.gd")
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/folder/MyClass.gd", "/")).is_equal("res://project/src/folder/MyClassTest.gd")
+
+
+func test_resolve_test_suite_path_with_src_folders() -> void:
+	# forcing the use of a test folder next
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/myclass.gd", "test")).is_equal("res://test/project/folder/myclass_test.gd")
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/MyClass.gd", "test")).is_equal("res://test/project/folder/MyClassTest.gd")
+	# forcing to use source directory to create the test
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/myclass.gd", "")).is_equal("res://project/folder/myclass_test.gd")
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/MyClass.gd", "")).is_equal("res://project/folder/MyClassTest.gd")
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/myclass.gd", "/")).is_equal("res://project/folder/myclass_test.gd")
+	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/MyClass.gd", "/")).is_equal("res://project/folder/MyClassTest.gd")
