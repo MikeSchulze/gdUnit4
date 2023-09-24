@@ -76,6 +76,9 @@ const DEFAULT_TEST_TIMEOUT :int = 60*5
 # the folder to create new test-suites
 const DEFAULT_TEST_LOOKUP_FOLDER := "test"
 
+# help texts
+const HELP_TEST_LOOKUP_FOLDER := "Sets the subfolder for the search/creation of test suites. (leave empty to use source folder)"
+
 enum NAMING_CONVENTIONS {
 	AUTO_DETECT,
 	SNAKE_CASE,
@@ -87,7 +90,7 @@ static func setup():
 	create_property_if_need(UPDATE_NOTIFICATION_ENABLED, true, "Enables/Disables the update notification checked startup.")
 	create_property_if_need(SERVER_TIMEOUT, DEFAULT_SERVER_TIMEOUT, "Sets the server connection timeout in minutes.")
 	create_property_if_need(TEST_TIMEOUT, DEFAULT_TEST_TIMEOUT, "Sets the test case runtime timeout in seconds.")
-	create_property_if_need(TEST_LOOKUP_FOLDER, DEFAULT_TEST_LOOKUP_FOLDER, "Sets the subfolder for the search/creation of test suites. (leave empty to use source folder)")
+	create_property_if_need(TEST_LOOKUP_FOLDER, DEFAULT_TEST_LOOKUP_FOLDER, HELP_TEST_LOOKUP_FOLDER)
 	create_property_if_need(TEST_SITE_NAMING_CONVENTION, NAMING_CONVENTIONS.AUTO_DETECT, "Sets test-suite genrate script name convention.", NAMING_CONVENTIONS.keys())
 	create_property_if_need(REPORT_PUSH_ERRORS, false, "Enables/Disables report of push_error() as failure!")
 	create_property_if_need(REPORT_SCRIPT_ERRORS, true, "Enables/Disables report of script errors as failure!")
@@ -103,9 +106,13 @@ static func setup():
 
 
 static func migrate_properties() -> void:
-	var old_test_root_folder_property := "gdunit4/settings/test/test_root_folder"
-	if get_property(old_test_root_folder_property) != null:
-		migrate_property(old_test_root_folder_property, TEST_LOOKUP_FOLDER, func(value): return value)
+	var TEST_ROOT_FOLDER := "gdunit4/settings/test/test_root_folder"
+	if get_property(TEST_ROOT_FOLDER) != null:
+		migrate_property(TEST_ROOT_FOLDER,\
+			TEST_LOOKUP_FOLDER,\
+			DEFAULT_TEST_LOOKUP_FOLDER,\
+			HELP_TEST_LOOKUP_FOLDER,\
+			func(value): return DEFAULT_TEST_LOOKUP_FOLDER if value == null else value)
 
 
 static func create_shortcut_properties_if_need() -> void:
@@ -129,14 +136,17 @@ static func create_property_if_need(name :String, default :Variant, help :="", v
 		ProjectSettings.set_setting(name, default)
 
 	ProjectSettings.set_initial_value(name, default)
-	var hint_string := help + ("" if value_set.is_empty() else " %s" % value_set)
-	var info = {
-			"name": name,
-			"type": typeof(default),
-			"hint": PROPERTY_HINT_TYPE_STRING,
-			"hint_string": hint_string
-		}
-	ProjectSettings.add_property_info(info)
+	help += "" if value_set.is_empty() else " %s" % value_set
+	set_help(name, default, help)
+
+
+static func set_help(property_name :String, value :Variant, help :String) -> void:
+	ProjectSettings.add_property_info({
+		"name": property_name,
+		"type": typeof(value),
+		"hint": PROPERTY_HINT_TYPE_STRING,
+		"hint_string": help
+	})
 
 
 static func get_setting(name :String, default :Variant) -> Variant:
@@ -303,14 +313,15 @@ static func get_property(name :String) -> GdUnitProperty:
 	return null
 
 
-static func migrate_property(old_property :String, new_property :String, converter := Callable()) -> void:
+static func migrate_property(old_property :String, new_property :String, default_value :Variant, help :String, converter := Callable()) -> void:
 	var property := get_property(old_property)
 	if property == null:
 		prints("Migration not possible, property '%s' not found" % old_property)
 		return
 	var value = converter.call(property.value()) if converter.is_valid() else property.value()
 	ProjectSettings.set_setting(new_property, value)
-	ProjectSettings.set_initial_value(new_property, property.default())
+	ProjectSettings.set_initial_value(new_property, default_value)
+	set_help(new_property, value, help)
 	ProjectSettings.clear(old_property)
 	prints("Succesfull migrated property '%s' -> '%s' value: %s" % [old_property, new_property, value])
 
