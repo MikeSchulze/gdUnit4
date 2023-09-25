@@ -8,31 +8,36 @@ var before_test_node
 
 func before():
 	before_node = auto_free(Node.new())
+	add_child(before_node)
+	Node.new()
 
 
 func before_test():
 	#before_test_node = auto_free(Node.new())
-	auto_free(Node.new())
-	auto_free(Node.new())
+	Node.new()
+	Node.new()
 
 
 func test_auto_free_before() -> void:
 	# test suite orphan warning
-	#add_child(before_node)
 	pass
 
 
-func test_auto_free() -> void:
+func test_3auto_free() -> void:
 	Node.new()
 	Node.new()
 	Node.new()
-	Node.new()
-	# test suite orphan warning
-	#add_child(before_node)
-	pass
+	add_child(Node.new())
 
 
-func _test_auto_free_local() -> void:
+func test_4() -> void:
+	Node.new()
+	Node.new()
+	Node.new()
+	Node.new()
+
+
+func test_auto_free_local() -> void:
 	# works fine
 	var local_test_node = auto_free(Node.new())
 	add_child(local_test_node)

@@ -1,6 +1,7 @@
 class_name GdUnitExecutionContext
 
-var _orphan_node_monitor :GdUnitOrphanNodesMonitor
+var _sub_context :Array[GdUnitExecutionContext] = []
+var _orphan_monitor :GdUnitOrphanNodesMonitor
 var _memory_observer := GdUnitMemoryObserver.new()
 var _report_collector := GdUnitTestReportCollector.new()
 var _thead_context :GdUnitThreadContext = null
@@ -9,29 +10,30 @@ var _test_suite :GdUnitTestSuite = null
 var _test_case: _TestCase = null
 
 
-func _init(name :String, test_suite :GdUnitTestSuite, thead_context :GdUnitThreadContext) -> void:
+func _init(name :String, test_suite :GdUnitTestSuite, pe :GdUnitExecutionContext = null) -> void:
 	assert(test_suite, "test_suite is null")
-	assert(thead_context, "thead_context is null")
-	_orphan_node_monitor = GdUnitOrphanNodesMonitor.new(name)
-	_thead_context = thead_context
+	_orphan_monitor = GdUnitOrphanNodesMonitor.new(name)
+	_orphan_monitor.start()
+	_thead_context = GdUnitThreadManager.get_current_context()
 	_test_suite = test_suite
 	set_active_execution_context(self)
+	if pe != null:
+		pe._sub_context.append(self)
 
 
-static func of_test_suite(test_suite :GdUnitTestSuite, thead_context :GdUnitThreadContext) -> GdUnitExecutionContext:
-	var context := GdUnitExecutionContext.new("(+) test-suite", test_suite, thead_context)
-	return context
+static func of_test_suite(test_suite :GdUnitTestSuite) -> GdUnitExecutionContext:
+	return GdUnitExecutionContext.new("(+) test-suite", test_suite)
 
 
-static func of_test_case(parent_context :GdUnitExecutionContext, test_case :_TestCase) -> GdUnitExecutionContext:
-	var context := GdUnitExecutionContext.new(" |--> test-case", parent_context.test_suite(), parent_context._thead_context)
+static func of_test_case(pe :GdUnitExecutionContext, test_case :_TestCase) -> GdUnitExecutionContext:
+	var context := GdUnitExecutionContext.new(" |--> test-case", pe.test_suite(), pe)
 	context._test_case = test_case
 	return context
 
 
-static func of_test(parent_context :GdUnitExecutionContext) -> GdUnitExecutionContext:
-	var context :=  GdUnitExecutionContext.new("   |--> %s()" % parent_context.test_case().get_name(), parent_context.test_suite(), parent_context._thead_context)
-	context._test_case = parent_context.test_case()
+static func of_test(pe :GdUnitExecutionContext) -> GdUnitExecutionContext:
+	var context :=  GdUnitExecutionContext.new("   |--> %s()" % pe.test_case().get_name(), pe.test_suite(), pe)
+	context._test_case = pe.test_case()
 	return context
 
 
@@ -59,16 +61,29 @@ func test_failed() -> bool:
 	return false
 
 
-func orphan_monitor_start(reset := false) -> void:
-	_orphan_node_monitor.start(reset)
+func orphan_monitor_start() -> void:
+	_orphan_monitor.start()
 
 
 func orphan_monitor_stop() -> void:
-	_orphan_node_monitor.stop()
+	_orphan_monitor.stop()
+
+
+func calculate_orphan_nodes() -> int:
+	var child_orphans := _calculate_orpans_from_sub_contexts()
+	return _orphan_monitor.orphan_nodes() - child_orphans
+
+
+func _calculate_orpans_from_sub_contexts() -> int:
+	var orphans := 0
+	for c in _sub_context:
+		orphans += c.orphan_nodes()
+	prints("_calculate_orpans_from_sub_contexts", orphans)
+	return orphans
 
 
 func orphan_nodes() -> int:
-	return _orphan_node_monitor.orphan_nodes()
+	return _orphan_monitor.orphan_nodes()
 
 
 func reports() -> Array[GdUnitReport]:

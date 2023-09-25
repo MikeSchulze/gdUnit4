@@ -30,7 +30,7 @@ var _execution_context
 ### in order to noticeably reduce the loading time of the test suite.
 # We go this hard way to increase the loading performance to avoid reparsing all the used scripts
 # for more detailed info -> https://github.com/godotengine/godot/issues/67400
-static func __lazy_load(script_path :String) -> GDScript:
+func __lazy_load(script_path :String) -> GDScript:
 	return ResourceLoader.load(script_path, "GDScript", ResourceLoader.CACHE_MODE_REUSE)
 
 
@@ -101,6 +101,13 @@ func auto_free(obj) -> Variant:
 		var GdUnitMemoryPool = __lazy_load("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
 		return GdUnitMemoryPool.register_auto_free(obj, get_meta(GdUnitMemoryPool.META_PARAM))
 	return _execution_context.register_auto_free(obj)
+
+
+@warning_ignore("native_method_override")
+func add_child(node :Node, force_readable_name := false, internal := Node.INTERNAL_MODE_DISABLED) -> void:
+	super.add_child(node)
+	if _execution_context != null:
+		_execution_context.orphan_monitor_start()
 
 
 ## Discard the error message triggered by a timeout (interruption).[br]

@@ -8,11 +8,10 @@ func execute(context :GdUnitExecutionContext) -> void:
 	var test_suite := context.test_suite()
 	
 	print_verbose("-> after_test")
-	context.orphan_monitor_start()
 	await test_suite.after_test()
 	await context.gc()
 	context.orphan_monitor_stop()
-	print_verbose("orphans detected: ", context.orphan_nodes())
+	print_verbose("orphans detected: ", context.calculate_orphan_nodes())
 	
 	if context.test_case().is_skipped():
 		fire_test_skipped(context)

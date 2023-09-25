@@ -34,7 +34,7 @@ func register_auto_free(obj) -> Variant:
 	if obj is MainLoop:
 		push_error("avoid to add mainloop to auto_free queue  %s" % obj)
 		return
-	print_verbose("register auto_free(%s)" % obj, self)
+	print_verbose("register auto_free(%s)" % obj)
 	# only register pure objects
 	if obj is GdUnitSceneRunner:
 		_store.push_front(obj)
@@ -45,7 +45,7 @@ func register_auto_free(obj) -> Variant:
 
 # runs over all registered objects and frees it
 func gc() -> void:
-	print_verbose("runing:gc()", self, "freeing %d objects" % _store.size())
+	print_verbose("runing:gc()", "freeing %d objects" % _store.size())
 	while not _store.is_empty():
 		var value :Variant = _store.pop_front()
 		GdUnitTools.free_instance(value)

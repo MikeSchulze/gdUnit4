@@ -11,8 +11,6 @@ func execute(context :GdUnitExecutionContext) -> void:
 	fire_event(GdUnitEvent.new()\
 		.test_before(test_suite.get_script().resource_path, test_suite.get_name(), test_case.get_name()))
 	
-	@warning_ignore("redundant_await")
-	context.orphan_monitor_start(true)
 	print_verbose("-> before_test")
+	@warning_ignore("redundant_await")
 	await test_suite.before_test()
-	context.orphan_monitor_stop()

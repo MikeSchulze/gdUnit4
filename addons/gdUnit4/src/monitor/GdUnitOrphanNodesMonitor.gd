@@ -1,40 +1,27 @@
 class_name GdUnitOrphanNodesMonitor
 extends GdUnitMonitor
 
-
-var OrphanNodesStart :float
-var OrphanCount :float
-var _current_count :float
+var _initial_count := 0
+var _orphan_count := 0
 
 
 func _init(name :String = ""):
 	super("OrphanNodesMonitor:" + name)
-	OrphanNodesStart = 0
-	OrphanCount = 0
 
 
-func reset():
-	OrphanCount = 0
-
-
-func start(reset := false):
-	if reset:
-		reset()
-	OrphanNodesStart = GetMonitoredOrphanCount()
-	print_verbose(id(), "	start  : %s (initial: %d, orphans: %d)" % [self, OrphanNodesStart, OrphanCount])
+func start():
+	_initial_count = _orphans()
+	print_verbose(id(), "	start  : %s (initial: %d, orphans: %d)" % [self, _initial_count, _orphan_count])
 
 
 func stop():
-	OrphanCount = max(0, GetMonitoredOrphanCount() - OrphanNodesStart)
-	print_verbose(id(), "	stop  : %s (initial: %d, orphans: %d)" % [self, OrphanNodesStart, OrphanCount])
+	_orphan_count = max(0, _orphans() - _initial_count)
+	print_verbose(id(), "	stop  : %s (initial: %d, orphans: %d)" % [self, _initial_count, _orphan_count])
 
 
-
-func GetMonitoredOrphanCount() -> int:
-	var n = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
-	prints("OBJECT_ORPHAN_NODE_COUNT", n)
-	return n
+func _orphans() -> int:
+	return Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT) as int
 
 
 func orphan_nodes() -> int:
-	return OrphanCount as int
+	return _orphan_count

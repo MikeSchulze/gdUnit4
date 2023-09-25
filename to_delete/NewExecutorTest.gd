@@ -5,17 +5,6 @@ const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 var _stage := 0
 
 
-func __ready():
-	OrphanCount("0")
-	
-	var n := Node.new()
-	OrphanCount("1")
-	add_child(n)
-	OrphanCount("2")
-	GdUnitTools.free_instance(n)
-	OrphanCount("3")
-	
-
 func _ready():
 	var test_suite :GdUnitTestSuite = GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/GdUnitTestSuiteOrpanNodesTest.gd")
 	await GdUnitTestSuiteExecutor.new().execute(test_suite)
