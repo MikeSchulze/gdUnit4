@@ -251,9 +251,9 @@ static func extract_value_set_from_help(value :String) -> PackedStringArray:
 
 
 static func update_property(property :GdUnitProperty) -> Variant:
-	var current_value := ProjectSettings.get_setting(property.name())
+	var current_value :Variant = ProjectSettings.get_setting(property.name())
 	if current_value != property.value():
-		var error := validate_property_value(property)
+		var error :Variant = validate_property_value(property)
 		if error != null:
 			return error
 		ProjectSettings.set_setting(property.name(), property.value())
