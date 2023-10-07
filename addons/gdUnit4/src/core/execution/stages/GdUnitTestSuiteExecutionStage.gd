@@ -4,10 +4,10 @@ extends IGdUnitExecutionStage
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
-static var _stage_before :IGdUnitExecutionStage = GdUnitTestSuiteBeforeStage.new()
-static var _stage_after :IGdUnitExecutionStage = GdUnitTestSuiteAfterStage.new()
-static var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseExecutionStage.new()
-static var _fail_fast := false
+var _stage_before :IGdUnitExecutionStage = GdUnitTestSuiteBeforeStage.new()
+var _stage_after :IGdUnitExecutionStage = GdUnitTestSuiteAfterStage.new()
+var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseExecutionStage.new()
+var _fail_fast := false
 
 
 ## Executes all tests of test suite.[br]
