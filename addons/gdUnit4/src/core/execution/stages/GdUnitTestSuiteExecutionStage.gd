@@ -6,7 +6,7 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 static var _stage_before :IGdUnitExecutionStage = GdUnitTestSuiteBeforeStage.new()
 static var _stage_after :IGdUnitExecutionStage = GdUnitTestSuiteAfterStage.new()
-static var _stage_test_case :IGdUnitExecutionStage = GdUnitTestCaseExecutionStage.new()
+static var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseExecutionStage.new()
 static var _fail_fast := false
 
 
@@ -15,11 +15,20 @@ static var _fail_fast := false
 ##  -> before() [br]
 ##  -> run overall test cases [br]
 ##  -> after() [br]
-func execute(context :GdUnitExecutionContext) -> void:
+func _execute(context :GdUnitExecutionContext) -> void:
+	if context.test_suite().__is_skipped:
+		await fire_test_suite_skipped(context)
+		context.test_suite().free()
+		return
+	
 	await _stage_before.execute(context)
-	for test_case in context.test_cases():
-		print_verbose()
-		await _stage_test_case.execute(GdUnitExecutionContext.of_test_case(context, test_case))
+	for test_case_index in context.test_suite().get_child_count():
+		# only iterate over test cases
+		var test_case := context.test_suite().get_child(test_case_index) as _TestCase
+		if not is_instance_valid(test_case):
+			continue
+		
+		await _stage_test.execute(GdUnitExecutionContext.of_test_case(context, test_case))
 		# stop checked first error if fail fast enabled
 		if _fail_fast and context.test_failed():
 			break
@@ -27,8 +36,8 @@ func execute(context :GdUnitExecutionContext) -> void:
 			# it needs to go this hard way to kill the outstanding yields of a test case when the test timed out
 			# we delete the current test suite where is execute the current test case to kill the function state
 			# and replace it by a clone without function state
+			await Engine.get_main_loop().physics_frame
 			context._test_suite = await clone_test_suite(context.test_suite())
-	print_verbose()
 	await _stage_after.execute(context)
 
 
@@ -64,3 +73,23 @@ func copy_properties(source :Object, target :Object):
 		var property_name = property["name"]
 		target.set(property_name, source.get(property_name))
 
+
+func fire_test_suite_skipped(context :GdUnitExecutionContext) -> void:
+	var test_suite := context.test_suite()
+	var skip_count := test_suite.get_child_count()
+	fire_event(GdUnitEvent.new()\
+		.suite_before(test_suite.get_script().resource_path, test_suite.get_name(), skip_count))
+	var statistics = {
+		GdUnitEvent.ORPHAN_NODES: 0,
+		GdUnitEvent.ELAPSED_TIME: 0,
+		GdUnitEvent.WARNINGS: false,
+		GdUnitEvent.ERRORS: false,
+		GdUnitEvent.ERROR_COUNT: 0,
+		GdUnitEvent.FAILED: false,
+		GdUnitEvent.FAILED_COUNT: 0,
+		GdUnitEvent.SKIPPED_COUNT: skip_count,
+		GdUnitEvent.SKIPPED: true
+	}
+	var report := GdUnitReport.new().create(GdUnitReport.SKIPPED, -1, GdAssertMessages.test_suite_skipped(test_suite.__skip_reason, skip_count))
+	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path, test_suite.get_name(), statistics, [report]))
+	await Engine.get_main_loop().process_frame

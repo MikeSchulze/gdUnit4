@@ -21,9 +21,8 @@ const NO_ARG :Variant = GdUnitConstants.NO_ARG
 var __is_skipped := false
 @warning_ignore("unused_private_class_variable")
 var __skip_reason :String = "Unknow."
-
 # holds the actual execution context
-var _execution_context
+var __execution_context
 
 
 ### We now load all used asserts and tool scripts into the cache according to the principle of "lazy loading"
@@ -96,18 +95,18 @@ func error_as_string(error_number :int) -> String:
 
 ## A litle helper to auto freeing your created objects after test execution
 func auto_free(obj) -> Variant:
-	# TODO cleanup to use finally the _execution_context
-	if _execution_context == null:
+	# TODO cleanup to use finally the __execution_context
+	if __execution_context == null:
 		var GdUnitMemoryPool = __lazy_load("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
 		return GdUnitMemoryPool.register_auto_free(obj, get_meta(GdUnitMemoryPool.META_PARAM))
-	return _execution_context.register_auto_free(obj)
+	return __execution_context.register_auto_free(obj)
 
 
 @warning_ignore("native_method_override")
 func add_child(node :Node, force_readable_name := false, internal := Node.INTERNAL_MODE_DISABLED) -> void:
-	super.add_child(node)
-	if _execution_context != null:
-		_execution_context.orphan_monitor_start()
+	super.add_child(node, force_readable_name, internal)
+	if __execution_context != null:
+		__execution_context.orphan_monitor_start()
 
 
 ## Discard the error message triggered by a timeout (interruption).[br]

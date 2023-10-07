@@ -8,20 +8,7 @@ var _orphan_detection_enabled :bool = true
 
 
 func _init():
-	configure(GdUnitSettings.is_verbose_orphans())
-
-
-func _notification(what):
-	if what == NOTIFICATION_PREDELETE:
-		while not _store.is_empty():
-			var value :Variant = _store.pop_front()
-			GdUnitTools.free_instance(value)
-
-
-func configure(orphan_detection :bool) -> void:
-	_orphan_detection_enabled = orphan_detection
-	if not _orphan_detection_enabled:
-		prints("!!! Reporting orphan nodes is disabled. Please check GdUnit settings.")
+	_orphan_detection_enabled = GdUnitSettings.is_verbose_orphans()
 
 
 # register an instance to be freed when a test suite is finished
@@ -32,9 +19,10 @@ func register_auto_free(obj) -> Variant:
 	if obj is GDScript or obj is ScriptExtension:
 		return obj
 	if obj is MainLoop:
-		push_error("avoid to add mainloop to auto_free queue  %s" % obj)
+		push_error("GdUnit4: Avoid to add mainloop to auto_free queue  %s" % obj)
 		return
-	print_verbose("register auto_free(%s)" % obj)
+	if OS.is_stdout_verbose():
+		print_verbose("GdUnit4:gc():register auto_free(%s)" % obj)
 	# only register pure objects
 	if obj is GdUnitSceneRunner:
 		_store.push_front(obj)
@@ -43,9 +31,14 @@ func register_auto_free(obj) -> Variant:
 	return obj
 
 
-# runs over all registered objects and frees it
+# runs over all registered objects and releases them
 func gc() -> void:
-	print_verbose("runing:gc()", "freeing %d objects" % _store.size())
+	if _store.is_empty():
+		return
+	# give engine time to free objects as set by queue_free()
+	await Engine.get_main_loop().process_frame
+	if OS.is_stdout_verbose():
+		print_verbose("GdUnit4:gc():running", " freeing %d objects .." % _store.size())
 	while not _store.is_empty():
 		var value :Variant = _store.pop_front()
 		GdUnitTools.free_instance(value)

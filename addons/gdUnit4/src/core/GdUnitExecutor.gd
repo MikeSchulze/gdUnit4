@@ -48,6 +48,7 @@ func set_stage(stage :int) -> void:
 
 func set_consume_reports(enabled :bool) -> void:
 	_report_collector.set_consume_reports(enabled)
+	_debug = !enabled
 
 
 func fire_event(event :GdUnitEvent) -> void:
@@ -284,7 +285,7 @@ func execute_test_case_parameterized(test_suite :GdUnitTestSuite, test_case :_Te
 		await test_before(test_suite, test_case_names[test_case_index])
 		set_stage(STAGE_TEST_CASE_EXECUTE)
 		_memory_pool.set_pool(test_suite, GdUnitMemoryPool.POOL.EXECUTE, true)
-		await test_case.execute(test_case_parameters[test_case_index])
+		await test_case.execute_paramaterized(test_case_parameters[test_case_index])
 		await test_after(test_suite, test_case, test_case_names[test_case_index])
 		if test_case.is_interupted():
 			break
@@ -338,7 +339,7 @@ func Execute(test_suite :GdUnitTestSuite) -> void:
 			else:
 				if test_case.is_parameterized():
 					await execute_test_case_parameterized(ts, test_case)
-				elif test_case.has_fuzzer():
+				elif test_case.is_fuzzed():
 					await execute_test_case_iterative(ts, test_case)
 				else:
 					await execute_test_case_single(ts, test_case)
@@ -392,7 +393,7 @@ func dispose_timers(test_suite :GdUnitTestSuite):
 
 
 func create_fuzzers(test_suite :GdUnitTestSuite, test_case :_TestCase) -> Array[Fuzzer]:
-	if not test_case.has_fuzzer():
+	if not test_case.is_fuzzed():
 		return Array()
 	var fuzzers :Array[Fuzzer] = []
 	for fuzzer_arg in test_case.fuzzer_arguments():

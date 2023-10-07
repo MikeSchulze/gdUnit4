@@ -4,6 +4,7 @@ extends RefCounted
 var _thread :Thread
 var _assert :GdUnitAssert
 var _signal_collector :GdUnitSignalCollector
+var _execution_context_id :int = -1
 
 
 func _init(thread :Thread = null):
@@ -28,6 +29,14 @@ func set_assert(value :GdUnitAssert) -> GdUnitThreadContext:
 
 func get_assert() -> GdUnitAssert:
 	return _assert
+
+
+func set_excution_context_id(id :int) -> void:
+	_execution_context_id = id
+
+
+func get_excution_context_id() -> int:
+	return _execution_context_id
 
 
 func get_signal_collector() -> GdUnitSignalCollector:

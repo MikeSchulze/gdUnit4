@@ -113,6 +113,6 @@ func set_consume_reports(enabled :bool) -> void:
 	_consume_reports = enabled
 
 
-func consume(report :GdUnitReport) -> void:
+func consume(_execution_context_id :int, report :GdUnitReport) -> void:
 	if _consume_reports:
 		add_report(_current_stage, report)

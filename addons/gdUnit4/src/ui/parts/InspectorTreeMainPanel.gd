@@ -151,7 +151,7 @@ func init_tree() -> void:
 	_tree.allow_rmb_select = true
 	_tree_root = _tree.create_item()
 	# fix tree icon scaling
-	var scale_factor := _editor.get_editor_interface().get_editor_scale() if Engine.is_editor_hint() else 1
+	var scale_factor := _editor.get_editor_interface().get_editor_scale() if Engine.is_editor_hint() else 1.0
 	_tree.set("theme_override_constants/icon_max_width", 16*scale_factor)
 
 

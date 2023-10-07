@@ -51,7 +51,7 @@ func configure(p_name: String, p_line_number: int, p_script_path: String, p_time
 func execute(p_test_parameter := Array(), p_iteration := 0):
 	_failure_received(false)
 	_current_iteration = p_iteration - 1
-	if p_iteration == 0:
+	if _current_iteration == -1:
 		_set_failure_handler()
 		set_timeout()
 	monitor.start()
@@ -68,9 +68,23 @@ func execute(p_test_parameter := Array(), p_iteration := 0):
 			_interupted = true
 
 
+func execute_paramaterized(p_test_parameter :Array):
+	_failure_received(false)
+	set_timeout()
+	monitor.start()
+	_execute_test_case(name, p_test_parameter)
+	await completed
+	monitor.stop()
+	for report_ in monitor.reports():
+		if report_.is_error():
+			_report = report_
+			_interupted = true
+
+
 func dispose():
 	# unreference last used assert form the test to prevent memory leaks
 	GdUnitThreadManager.get_current_context().set_assert(null)
+	Engine.remove_meta("GD_TEST_FAILURE")
 	stop_timer()
 	_remove_failure_handler()
 	_fuzzers.clear()
@@ -79,7 +93,7 @@ func dispose():
 
 @warning_ignore("shadowed_variable_base_class", "redundant_await")
 func _execute_test_case(name :String, test_parameter :Array):
-	# needs at least on await otherwise it braks the awaiting chain
+	# needs at least on await otherwise it breaks the awaiting chain
 	await get_parent().callv(name, test_parameter)
 	await Engine.get_main_loop().create_timer(0.0001).timeout
 	completed.emit()
@@ -92,12 +106,14 @@ func update_fuzzers(input_values :Array, iteration :int):
 
 
 func set_timeout():
+	if is_instance_valid(_timer):
+		return
 	var time :float = _timeout * 0.001
 	_timer = Timer.new()
 	add_child(_timer)
 	_timer.set_name("gdunit_test_case_timer_%d" % _timer.get_instance_id())
 	_timer.timeout.connect(func do_interrupt():
-		if has_fuzzer():
+		if is_fuzzed():
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
 		else:
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout()))
@@ -133,6 +149,7 @@ func stop_timer() :
 	if is_instance_valid(_timer):
 		_timer.stop()
 		_timer.call_deferred("free")
+		_timer = null
 
 
 func expect_to_interupt() -> void:
@@ -179,7 +196,7 @@ func seed_value() -> int:
 	return _seed
 
 
-func has_fuzzer() -> bool:
+func is_fuzzed() -> bool:
 	return not _fuzzers.is_empty()
 
 
