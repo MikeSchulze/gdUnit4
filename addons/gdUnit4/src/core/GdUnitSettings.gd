@@ -237,24 +237,24 @@ static func update_property(property :GdUnitProperty) -> void:
 	if get_property(property.name()).value() != property.value():
 		ProjectSettings.set_setting(property.name(), property.value())
 		GdUnitSignals.instance().gdunit_settings_changed.emit(property)
-		save()
+		_save_settings()
 
 
 static func reset_property(property :GdUnitProperty) -> void:
 	ProjectSettings.set_setting(property.name(), property.default())
 	GdUnitSignals.instance().gdunit_settings_changed.emit(property)
-	save()
+	_save_settings()
 
 
 static func save_property(name :String, value) -> void:
 	ProjectSettings.set_setting(name, value)
-	save()
+	_save_settings()
 
 
-static func save() -> void:
-	var err := ProjectSettings.save()
+static func _save_settings() -> void:
+	var err = ProjectSettings.save()
 	if err != OK:
-		push_error("Save GdUnit3 settings failed : %s" % error_string(err))
+		push_error("Save GdUnit4 settings failed : %s" % error_string(err))
 		return
 
 
