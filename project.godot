@@ -30,8 +30,6 @@ gdscript/warnings/return_value_discarded=false
 [gdunit4]
 
 settings/common/update_notification_enabled=false
-report/assert/verbose_errors=false
-report/assert/verbose_warnings=false
 
 [importer_defaults]
 
