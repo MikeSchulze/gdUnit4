@@ -22,3 +22,10 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		await _stage_fuzzer_test.execute(context)
 	else:
 		await _stage_single_test.execute(context)
+
+
+func set_debug_mode(debug_mode :bool = false):
+	super.set_debug_mode(debug_mode)
+	_stage_single_test.set_debug_mode(debug_mode)
+	_stage_fuzzer_test.set_debug_mode(debug_mode)
+	_stage_parameterized_test.set_debug_mode(debug_mode)

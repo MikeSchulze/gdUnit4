@@ -29,6 +29,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 			reports.append(GdUnitReport.new() \
 				.create(GdUnitReport.FAILURE, report.line_number(), GdAssertMessages.fuzzer_interuped(iteration, report.message())))
 			break
+	await context.gc()
 
 
 func create_fuzzers(test_suite :GdUnitTestSuite, test_case :_TestCase) -> Array[Fuzzer]:

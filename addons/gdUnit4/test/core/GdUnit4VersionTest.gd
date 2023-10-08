@@ -1,5 +1,5 @@
 # GdUnit generated TestSuite
-class_name GdUnit3VersionTest
+class_name GdUnit4VersionTest
 extends GdUnitTestSuite
 
 # TestSuite generated from

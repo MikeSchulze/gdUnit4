@@ -21,6 +21,7 @@ const NO_ARG :Variant = GdUnitConstants.NO_ARG
 var __is_skipped := false
 @warning_ignore("unused_private_class_variable")
 var __skip_reason :String = "Unknow."
+var __active_test_case :String
 # holds the actual execution context
 var __execution_context
 
@@ -81,7 +82,6 @@ func is_failure(_expected_failure :String = NO_ARG) -> bool:
 	return Engine.get_meta("GD_TEST_FAILURE") if Engine.has_meta("GD_TEST_FAILURE") else false
 
 
-var __active_test_case :String
 func set_active_test_case(test_case :String) -> void:
 	__active_test_case = test_case
 
@@ -95,10 +95,6 @@ func error_as_string(error_number :int) -> String:
 
 ## A litle helper to auto freeing your created objects after test execution
 func auto_free(obj) -> Variant:
-	# TODO cleanup to use finally the __execution_context
-	if __execution_context == null:
-		var GdUnitMemoryPool = __lazy_load("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
-		return GdUnitMemoryPool.register_auto_free(obj, get_meta(GdUnitMemoryPool.META_PARAM))
 	return __execution_context.register_auto_free(obj)
 
 
@@ -210,12 +206,12 @@ const RETURN_DEEP_STUB = GdUnitMock.RETURN_DEEP_STUB
 
 ## Creates a mock for given class name
 func mock(clazz, mock_mode := RETURN_DEFAULTS) -> Object:
-	return __lazy_load("res://addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd").build(self, clazz, mock_mode)
+	return __lazy_load("res://addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd").build(clazz, mock_mode)
 
 
 ## Creates a spy checked given object instance
 func spy(instance) -> Object:
-	return __lazy_load("res://addons/gdUnit4/src/spy/GdUnitSpyBuilder.gd").build(self, instance)
+	return __lazy_load("res://addons/gdUnit4/src/spy/GdUnitSpyBuilder.gd").build(instance)
 
 
 ## Configures a return value for the specified function and used arguments.[br]

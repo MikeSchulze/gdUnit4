@@ -6,7 +6,6 @@ extends GdUnitTestSuite
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/execution/GdUnitTestSuiteExecutor.gd'
-const GdUnitExecutor = preload("res://addons/gdUnit4/src/core/GdUnitExecutor.gd")
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
@@ -15,15 +14,11 @@ const FAILED = false
 const SKIPPED = true
 const NOT_SKIPPED = false
 
-
-var _executor :GdUnitTestSuiteExecutor
 var _collected_events :Array[GdUnitEvent] = []
 
 
 func before() -> void:
 	GdUnitSignals.instance().gdunit_event_debug.connect(_on_gdunit_event_debug)
-	_executor = GdUnitTestSuiteExecutor.new()
-	IGdUnitExecutionStage.set_debug_mode(true)
 
 
 func after() -> void:
@@ -38,11 +33,6 @@ func _on_gdunit_event_debug(event :GdUnitEvent) -> void:
 	_collected_events.append(event)
 
 
-func gdunit_executor_receive_reports(enabled :bool) -> void:
-	var executor :GdUnitExecutor = get_tree().root.find_child("GdUnitExecutor", true, false)
-	executor.set_consume_reports(enabled)
-
-
 func _load(resource_path :String) -> GdUnitTestSuite:
 	return GdUnitTestResourceLoader.load_test_suite(resource_path) as GdUnitTestSuite
 
@@ -52,10 +42,7 @@ func flating_message(message :String) -> String:
 
 
 func execute(test_suite :GdUnitTestSuite) -> Array[GdUnitEvent]:
-	# temporary exclude receive reports to the original test executor
-	gdunit_executor_receive_reports(false)
-	await _executor.execute(test_suite)
-	gdunit_executor_receive_reports(true)
+	await GdUnitThreadManager.run("test_executor", func(): await GdUnitTestSuiteExecutor.new(true).execute(test_suite))
 	return _collected_events
 
 

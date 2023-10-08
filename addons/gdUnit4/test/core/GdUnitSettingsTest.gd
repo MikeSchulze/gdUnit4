@@ -118,7 +118,7 @@ func test_migrate_property_change_value() -> void:
 		new_property_X,\
 		old_property.default(),\
 		old_property.help(),\
-		func(value): return "bar")
+		func(_value): return "bar")
 	
 	var new_property := GdUnitSettings.get_property(new_property_X)
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_null()

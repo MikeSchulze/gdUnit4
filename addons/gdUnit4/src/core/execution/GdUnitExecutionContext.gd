@@ -4,7 +4,6 @@ var _sub_context :Array[GdUnitExecutionContext] = []
 var _orphan_monitor :GdUnitOrphanNodesMonitor
 var _memory_observer := GdUnitMemoryObserver.new()
 var _report_collector :GdUnitTestReportCollector
-var _thread_context := GdUnitThreadManager.get_current_context()
 var _timer := LocalTime.now()
 var _test_suite :GdUnitTestSuite = null
 var _test_case: _TestCase = null
@@ -23,7 +22,7 @@ func _init(name :String, test_suite_ :GdUnitTestSuite, pe :GdUnitExecutionContex
 
 func set_active() -> void:
 	_test_suite.__execution_context = self
-	_thread_context.set_excution_context_id(get_instance_id())
+	GdUnitThreadManager.get_current_context().set_execution_context(self)
 
 
 static func of_test_suite(test_suite_ :GdUnitTestSuite) -> GdUnitExecutionContext:

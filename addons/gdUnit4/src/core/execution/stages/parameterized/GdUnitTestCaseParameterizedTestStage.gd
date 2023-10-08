@@ -30,3 +30,10 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		context.reports().clear()
 		if test_case.is_interupted():
 			break
+	await context.gc()
+
+
+func set_debug_mode(debug_mode :bool = false):
+	super.set_debug_mode(debug_mode)
+	_stage_before.set_debug_mode(debug_mode)
+	_stage_after.set_debug_mode(debug_mode)

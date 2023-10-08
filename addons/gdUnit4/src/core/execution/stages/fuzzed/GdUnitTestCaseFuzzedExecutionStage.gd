@@ -11,3 +11,10 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	await _stage_before.execute(context)
 	await _stage_test.execute(GdUnitExecutionContext.of_test(context))
 	await _stage_after.execute(context)
+
+
+func set_debug_mode(debug_mode :bool = false):
+	super.set_debug_mode(debug_mode)
+	_stage_before.set_debug_mode(debug_mode)
+	_stage_after.set_debug_mode(debug_mode)
+	_stage_test.set_debug_mode(debug_mode)

@@ -3,7 +3,6 @@ class_name GdUnitSceneRunnerImpl
 extends GdUnitSceneRunner
 
 
-var GdUnitMemoryPool := ResourceLoader.load("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd", "GDScript", ResourceLoader.CACHE_MODE_REUSE)
 var GdUnitFuncAssertImpl := ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitFuncAssertImpl.gd", "GDScript", ResourceLoader.CACHE_MODE_REUSE)
 
 
@@ -78,7 +77,7 @@ func _notification(what):
 		if is_instance_valid(_current_scene):
 			_scene_tree.root.remove_child(_current_scene)
 			# don't free already memory managed instances
-			if not GdUnitMemoryPool.is_auto_free_registered(_current_scene):
+			if not GdUnitMemoryObserver.is_marked_auto_free(_current_scene):
 				_current_scene.free()
 		_scene_tree = null
 		_current_scene = null

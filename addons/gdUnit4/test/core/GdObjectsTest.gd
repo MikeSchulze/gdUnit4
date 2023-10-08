@@ -322,7 +322,8 @@ func test_extract_class_name_from_class_path(fuzzer=GodotClassNameFuzzer.new(tru
 	var clazz_name :String = fuzzer.next_value()
 	assert_str(GdObjects.extract_class_name_from_class_path(PackedStringArray([clazz_name]))).is_equal(clazz_name)
 
-func test_extract_class_name_godot_classes(fuzzer=GodotClassNameFuzzer.new(true, true)):
+@warning_ignore("unused_parameter")
+func test_extract_class_name_godot_classes(fuzzer=GodotClassNameFuzzer.new(true, true), fuzzer_iterations = 100):
 	var extract_class_name_ := fuzzer.next_value() as String
 	var instance :Variant = ClassDB.instantiate(extract_class_name_)
 	assert_result(extract_class_name(instance)).is_equal(extract_class_name_)

@@ -4,6 +4,8 @@
 class_name IGdUnitExecutionStage
 extends RefCounted
 
+var _debug_mode := false
+
 
 ## Executes synchronized the implemented stage in its own execution context.[br]
 ## example:[br]
@@ -18,7 +20,7 @@ func execute(context :GdUnitExecutionContext) -> void:
 
 ## Emit the event to registered listeners
 func fire_event(event :GdUnitEvent) -> void:
-	if Engine.has_meta("IGdUnitExecutionStage_DEBUG"):
+	if _debug_mode:
 		GdUnitSignals.instance().gdunit_event_debug.emit(event)
 	else:
 		GdUnitSignals.instance().gdunit_event.emit(event)
@@ -26,11 +28,8 @@ func fire_event(event :GdUnitEvent) -> void:
 
 ## Internal testing stuff
 ## Sets the executor into debug mode to emit `GdUnitEvent` via signal `gdunit_event_debug`
-static func set_debug_mode(debug :bool) -> void:
-	if debug:
-		Engine.set_meta("IGdUnitExecutionStage_DEBUG", true)
-	else:
-		Engine.remove_meta("IGdUnitExecutionStage_DEBUG")
+func set_debug_mode(debug_mode :bool) -> void:
+	_debug_mode = debug_mode
 
 
 ## The execution phase to be implemented

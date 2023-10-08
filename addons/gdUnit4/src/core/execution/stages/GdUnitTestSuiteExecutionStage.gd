@@ -28,6 +28,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		if not is_instance_valid(test_case):
 			continue
 		
+		context.test_suite().set_active_test_case(test_case.get_name())
 		await _stage_test.execute(GdUnitExecutionContext.of_test_case(context, test_case))
 		# stop checked first error if fail fast enabled
 		if _fail_fast and context.test_failed():
@@ -93,3 +94,14 @@ func fire_test_suite_skipped(context :GdUnitExecutionContext) -> void:
 	var report := GdUnitReport.new().create(GdUnitReport.SKIPPED, -1, GdAssertMessages.test_suite_skipped(test_suite.__skip_reason, skip_count))
 	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path, test_suite.get_name(), statistics, [report]))
 	await Engine.get_main_loop().process_frame
+
+
+func set_debug_mode(debug_mode :bool = false):
+	super.set_debug_mode(debug_mode)
+	_stage_before.set_debug_mode(debug_mode)
+	_stage_after.set_debug_mode(debug_mode)
+	_stage_test.set_debug_mode(debug_mode)
+
+
+func fail_fast(enabled :bool) -> void:
+	_fail_fast = enabled

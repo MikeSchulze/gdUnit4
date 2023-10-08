@@ -55,5 +55,5 @@ static func current_failure() -> String:
 
 
 static func send_report(report :GdUnitReport) -> void:
-	var execution_context_id := GdUnitThreadManager.get_current_context().get_excution_context_id()
+	var execution_context_id := GdUnitThreadManager.get_current_context().get_execution_context_id()
 	GdUnitSignals.instance().gdunit_report.emit(execution_context_id, report)

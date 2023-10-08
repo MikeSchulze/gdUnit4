@@ -2,13 +2,21 @@ class_name GdUnitThreadContext
 extends RefCounted
 
 var _thread :Thread
+var _thread_name :String
+var _task_id :int
 var _assert :GdUnitAssert
 var _signal_collector :GdUnitSignalCollector
-var _execution_context_id :int = -1
+var _execution_context :GdUnitExecutionContext
 
 
 func _init(thread :Thread = null):
-	_thread = thread
+	if thread != null:
+		_thread = thread
+		_thread_name = thread.get_meta("name")
+		_task_id = thread.get_id() as int
+	else:
+		_thread_name = "main"
+		_task_id = OS.get_main_thread_id()
 	_signal_collector = GdUnitSignalCollector.new()
 
 
@@ -31,20 +39,25 @@ func get_assert() -> GdUnitAssert:
 	return _assert
 
 
-func set_excution_context_id(id :int) -> void:
-	_execution_context_id = id
+func set_execution_context(context :GdUnitExecutionContext) -> void:
+	_execution_context = context
 
 
-func get_excution_context_id() -> int:
-	return _execution_context_id
+func get_execution_context() -> GdUnitExecutionContext:
+	return _execution_context
+
+
+func get_execution_context_id() -> int:
+	return _execution_context.get_instance_id()
 
 
 func get_signal_collector() -> GdUnitSignalCollector:
 	return _signal_collector
 
 
+func thread_id() -> int:
+	return _task_id
+
+
 func _to_string() -> String:
-	var id := OS.get_main_thread_id() if _thread == null else int(_thread.get_id())
-	var name := "main" if _thread == null else _thread.get_meta("name") as String
-	#var assert_ = _assert if is_instance_valid(_assert) else null
-	return "Thread <%s>: %s " % [name, id]
+	return "ThreadContext <%s>: %s " % [_thread_name, _task_id]
