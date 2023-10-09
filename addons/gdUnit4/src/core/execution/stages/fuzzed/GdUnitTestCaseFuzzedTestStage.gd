@@ -2,7 +2,6 @@
 class_name GdUnitTestCaseFuzzedTestStage
 extends IGdUnitExecutionStage
 
-
 var _expression_runner := GdUnitExpressionRunner.new()
 
 

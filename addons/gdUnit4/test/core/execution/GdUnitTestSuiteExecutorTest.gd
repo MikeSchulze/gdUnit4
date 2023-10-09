@@ -503,6 +503,44 @@ func test_execute_error_on_test_timeout() -> void:
 		])
 
 
+# This test checks if all test stages are called at each test iteration.
+func test_execute_fuzzed_metrics() -> void:
+	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFuzzedMetricsTest.resource")
+	
+	var events = await execute(test_suite)
+	assert_event_states(events).contains([
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("after", SUCCEEDED, NOT_SKIPPED, false, false, false),
+	])
+	assert_event_reports(events, [
+			[],
+			[],
+			[],
+			[],
+			[],
+			[]
+		])
+
+
+# This test checks if all test stages are called at each test iteration.
+func test_execute_parameterized_metrics() -> void:
+	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteParameterizedMetricsTest.resource")
+	
+	var events = await execute(test_suite)
+	assert_event_states(events).contains([
+		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("after", SUCCEEDED, NOT_SKIPPED, false, false, false),
+	])
+	assert_event_reports(events, [
+			[],
+			[],
+			[],
+			[],
+			[],
+			[]
+		])
+
+
 func test_execute_failure_fuzzer_iteration() -> void:
 	# this tests a timeout on a test case reported as error
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/GdUnitFuzzerTest.resource")

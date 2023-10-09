@@ -5,6 +5,11 @@ extends IGdUnitExecutionStage
 
 
 var _test_name :StringName = ""
+var _call_stage :bool
+
+
+func _init(call_stage := true):
+	_call_stage = call_stage
 
 
 func _execute(context :GdUnitExecutionContext) -> void:
@@ -14,8 +19,9 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	fire_event(GdUnitEvent.new()\
 		.test_before(test_suite.get_script().resource_path, test_suite.get_name(), test_case_name))
 	
-	@warning_ignore("redundant_await")
-	await test_suite.before_test()
+	if _call_stage:
+		@warning_ignore("redundant_await")
+		await test_suite.before_test()
 
 
 func set_test_name(test_name :StringName):

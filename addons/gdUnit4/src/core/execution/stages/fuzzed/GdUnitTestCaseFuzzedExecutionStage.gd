@@ -2,8 +2,8 @@
 class_name GdUnitTestCaseFuzzedExecutionStage
 extends IGdUnitExecutionStage
 
-var _stage_before :IGdUnitExecutionStage = GdUnitTestCaseBeforeStage.new()
-var _stage_after :IGdUnitExecutionStage = GdUnitTestCaseAfterStage.new()
+var _stage_before :IGdUnitExecutionStage = GdUnitTestCaseBeforeStage.new(false)
+var _stage_after :IGdUnitExecutionStage = GdUnitTestCaseAfterStage.new(false)
 var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseFuzzedTestStage.new()
 
 

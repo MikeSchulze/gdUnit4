@@ -5,12 +5,19 @@ extends IGdUnitExecutionStage
 
 
 var _test_name :StringName = ""
+var _call_stage :bool
+
+
+func _init(call_stage := true):
+	_call_stage = call_stage
+
 
 func _execute(context :GdUnitExecutionContext) -> void:
 	var test_suite := context.test_suite()
 	
-	@warning_ignore("redundant_await")
-	await test_suite.after_test()
+	if _call_stage:
+		@warning_ignore("redundant_await")
+		await test_suite.after_test()
 	await context.gc()
 	
 	if context.test_case().is_skipped():

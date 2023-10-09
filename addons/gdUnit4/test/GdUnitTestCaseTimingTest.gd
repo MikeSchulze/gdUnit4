@@ -26,7 +26,7 @@ func before():
 	_test_values_expected = {
 		"test_2s" : TestCaseStatistics.new(1, 1),
 		"test_multi_yielding" : TestCaseStatistics.new(1, 1),
-		"test_multi_yielding_with_fuzzer" : TestCaseStatistics.new(10 , 10)
+		"test_multi_yielding_with_fuzzer" : TestCaseStatistics.new(5 , 5)
 	}
 
 
@@ -75,7 +75,9 @@ func test_multi_yielding():
 	assert_int(Time.get_ticks_msec()-timer_start).is_greater_equal(4*(SECOND-50))
 
 
-func test_multi_yielding_with_fuzzer(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 10):
+func test_multi_yielding_with_fuzzer(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 5):
+	if fuzzer.iteration_index() > 5:
+		fail("Should only called 5 times")
 	if fuzzer.iteration_index() == 1:
 		_iteration_timer_start = Time.get_ticks_msec()
 	prints("test iteration %d" % fuzzer.iteration_index())
@@ -88,6 +90,6 @@ func test_multi_yielding_with_fuzzer(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_i
 	prints("1")
 	await get_tree().create_timer(1.0).timeout
 	prints("Go")
-	if fuzzer.iteration_index() == 10:
+	if fuzzer.iteration_index() == 5:
 		# elapsed time must be fuzzer_iterations times * 4s = 40s (using 3,9s because of inaccurate timings)
 		assert_int(Time.get_ticks_msec()-_iteration_timer_start).is_greater_equal(3900*fuzzer_iterations)

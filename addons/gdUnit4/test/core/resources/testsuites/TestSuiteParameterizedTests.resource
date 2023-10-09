@@ -3,6 +3,66 @@ extends GdUnitTestSuite
 @warning_ignore('unused_parameter')
 @warning_ignore('return_value_discarded')
 
+
+class TestCaseStatistics:
+	var _testcase_before_called := 0
+	var _testcase_after_called := 0
+	var _expected_testcase_before :int
+	var _expected_testcase_after :int
+	
+	func _init(testcase_before_calls := 0, testcase_after_calls := 0):
+		_expected_testcase_before = testcase_before_calls
+		_expected_testcase_after = testcase_after_calls
+	
+	func count_test_before_test():
+		_testcase_before_called +=1
+	
+	func count_test_after_test():
+		_testcase_after_called +=1
+
+
+var _metrics = {
+	"test_parameterized_bool_value" : TestCaseStatistics.new(2, 2),
+	"test_parameterized_int_values" : TestCaseStatistics.new(3, 3)
+}
+
+var _before_called := 0
+var _after_called := 0
+
+
+func before():
+	_before_called += 1
+
+
+func after():
+	_after_called += 1
+	assert_that(_before_called)\
+		.override_failure_message("Expecting 'before' is called only one times")\
+		.is_equal(1)
+	assert_that(_after_called)\
+		.override_failure_message("Expecting 'after' is called only one times")\
+		.is_equal(1)
+	
+	for test_case in _metrics.keys():
+		var statistics := _metrics[test_case] as TestCaseStatistics
+		assert_int(statistics._testcase_before_called)\
+			.override_failure_message("Expect before_test called %s times but is %s for test case %s" % [statistics._expected_testcase_before, statistics._testcase_before_called, test_case])\
+			.is_equal(statistics._expected_testcase_before)
+		assert_int(statistics._testcase_after_called)\
+			.override_failure_message("Expect after_test called %s times but is %s for test case %s" % [statistics._expected_testcase_after, statistics._testcase_after_called, test_case])\
+			.is_equal(statistics._expected_testcase_after)
+
+
+func before_test():
+	if _metrics.has(__active_test_case):
+		_metrics[__active_test_case].count_test_before_test()
+
+
+func after_test():
+	if _metrics.has(__active_test_case):
+		_metrics[__active_test_case].count_test_after_test()
+
+
 @warning_ignore('unused_parameter')
 func test_parameterized_bool_value(a: int, expected :bool, test_parameters := [
 	[0, false],
