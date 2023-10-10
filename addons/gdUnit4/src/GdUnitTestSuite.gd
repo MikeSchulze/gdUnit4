@@ -31,7 +31,7 @@ var __execution_context
 # We go this hard way to increase the loading performance to avoid reparsing all the used scripts
 # for more detailed info -> https://github.com/godotengine/godot/issues/67400
 func __lazy_load(script_path :String) -> GDScript:
-	return ResourceLoader.load(script_path, "GDScript", ResourceLoader.CACHE_MODE_REUSE)
+	return GdUnitAssertions.__lazy_load(script_path)
 
 
 func __gdunit_assert() -> GDScript:
