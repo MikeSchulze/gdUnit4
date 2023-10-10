@@ -15,6 +15,9 @@ const STAGE_TEST_CASE_AFTER = GdUnitReportCollector.STAGE_TEST_CASE_AFTER
 var _testsuite_timer :LocalTime
 var _testcase_timer :LocalTime
 
+# preload all asserts here
+@warning_ignore("unused_private_class_variable")
+var _assertions := GdUnitAssertions.new()
 var _memory_pool := GdUnitMemoryPool.new()
 var _report_errors_enabled :bool
 var _report_collector := GdUnitReportCollector.new()
