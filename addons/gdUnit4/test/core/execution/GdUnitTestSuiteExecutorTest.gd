@@ -42,7 +42,9 @@ func flating_message(message :String) -> String:
 
 
 func execute(test_suite :GdUnitTestSuite) -> Array[GdUnitEvent]:
-	await GdUnitThreadManager.run("test_executor", func(): await GdUnitTestSuiteExecutor.new(true).execute(test_suite))
+	await GdUnitThreadManager.run("test_executor", func():
+		var executor := GdUnitTestSuiteExecutor.new(true)
+		await executor.execute(test_suite))
 	return _collected_events
 
 
