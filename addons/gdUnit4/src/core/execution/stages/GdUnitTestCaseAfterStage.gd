@@ -64,7 +64,7 @@ func collect_reports(context :GdUnitExecutionContext) -> Array[GdUnitReport]:
 
 
 func add_orphan_report_test(context :GdUnitExecutionContext, reports :Array[GdUnitReport]) -> int:
-	var orphans := context.calculate_orphan_nodes()
+	var orphans := context.count_orphans()
 	if orphans > 0:
 		reports.push_front(GdUnitReport.new()\
 			.create(GdUnitReport.WARN, context.test_case().line_number(), GdAssertMessages.orphan_detected_on_test(orphans)))
@@ -72,7 +72,7 @@ func add_orphan_report_test(context :GdUnitExecutionContext, reports :Array[GdUn
 
 
 func add_orphan_report_teststage(context :GdUnitExecutionContext, reports :Array[GdUnitReport]) -> int:
-	var orphans := context.calculate_orphan_nodes()
+	var orphans := context.count_orphans()
 	if orphans > 0:
 		reports.push_front(GdUnitReport.new()\
 			.create(GdUnitReport.WARN, context.test_case().line_number(), GdAssertMessages.orphan_detected_on_test_setup(orphans)))

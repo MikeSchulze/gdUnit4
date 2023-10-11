@@ -213,7 +213,7 @@ func test_execute_failure_on_stage_before_test() -> void:
 		tuple(GdUnitEvent.TESTCASE_BEFORE, 0, 0, 0),
 		# failure is count to the test
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 1, 0),
-		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 2, 0),
+		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -255,7 +255,7 @@ func test_execute_failure_on_stage_after_test() -> void:
 		tuple(GdUnitEvent.TESTCASE_BEFORE, 0, 0, 0),
 		# failure is count to the test
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 1, 0),
-		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 2, 0),
+		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -295,7 +295,7 @@ func test_execute_failure_on_stage_test_case1() -> void:
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 1, 0),
 		tuple(GdUnitEvent.TESTCASE_BEFORE, 0, 0, 0),
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 0, 0),
-		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 1, 0),
+		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -337,7 +337,7 @@ func test_execute_failure_on_multiple_stages() -> void:
 		# the second test has no failures but one from 'before_test'
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 1, 0),
 		# and one failure is on stage 'after' found
-		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 5, 0),
+		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 1, 0),
 	])
 	assert_event_states(events).contains_exactly([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -384,7 +384,7 @@ func test_execute_failure_and_orphans() -> void:
 		# 2 from stage 'before_test' + 4 from test itself
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 1, 6),
 		# and one orphan detected from stage 'before'
-		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 1, 1),
+		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 1),
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([
@@ -436,7 +436,7 @@ func test_execute_failure_and_orphans_report_orphan_disabled() -> void:
 		tuple(GdUnitEvent.TESTCASE_BEFORE, 0, 0, 0),
 		# one failure
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 1, 0),
-		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 1, 0),
+		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([
@@ -479,7 +479,7 @@ func test_execute_error_on_test_timeout() -> void:
 		tuple(GdUnitEvent.TESTCASE_AFTER, 1, 0, 0),
 		tuple(GdUnitEvent.TESTCASE_BEFORE, 0, 0, 0),
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 0, 0),
-		tuple(GdUnitEvent.TESTSUITE_AFTER, 1, 0, 0),
+		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -560,7 +560,7 @@ func test_execute_failure_fuzzer_iteration() -> void:
 		tuple(GdUnitEvent.TESTCASE_BEFORE, 0, 0, 0),
 		# test failed after 3 iterations
 		tuple(GdUnitEvent.TESTCASE_AFTER, 0, 1, 0),
-		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 1, 0),
+		tuple(GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([

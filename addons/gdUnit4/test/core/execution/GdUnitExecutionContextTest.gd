@@ -17,10 +17,10 @@ func assert_statistics(ec :GdUnitExecutionContext):
 	assert_that(ec.has_errors()).is_false()
 	assert_that(ec.has_warnings()).is_false()
 	assert_that(ec.has_skipped()).is_false()
-	assert_that(ec.count_failures()).is_equal(0)
-	assert_that(ec.count_errors()).is_equal(0)
-	assert_that(ec.count_skipped()).is_equal(0)
-	assert_that(ec.calculate_orphan_nodes()).is_equal(0)
+	assert_that(ec.count_failures(true)).is_equal(0)
+	assert_that(ec.count_errors(true)).is_equal(0)
+	assert_that(ec.count_skipped(true)).is_equal(0)
+	assert_that(ec.count_orphans()).is_equal(0)
 	assert_dict(ec.build_report_statistics(0))\
 		.contains_key_value(GdUnitEvent.FAILED, false)\
 		.contains_key_value(GdUnitEvent.ERRORS, false)\
@@ -172,11 +172,11 @@ func test_has_and_count_failures() -> void:
 	
 	# precheck
 	assert_that(ec1.has_failures()).is_false()
-	assert_that(ec1.count_failures()).is_equal(0)
+	assert_that(ec1.count_failures(true)).is_equal(0)
 	assert_that(ec2.has_failures()).is_false()
-	assert_that(ec2.count_failures()).is_equal(0)
+	assert_that(ec2.count_failures(true)).is_equal(0)
 	assert_that(ec3.has_failures()).is_false()
-	assert_that(ec3.count_failures()).is_equal(0)
+	assert_that(ec3.count_failures(true)).is_equal(0)
 	
 	# add four failure report to test
 	add_report(ec3, GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec31"))
@@ -185,29 +185,29 @@ func test_has_and_count_failures() -> void:
 	add_report(ec3, GdUnitReport.new().create(GdUnitReport.FAILURE, 45, "error_ec34"))
 	# verify
 	assert_that(ec1.has_failures()).is_true()
-	assert_that(ec1.count_failures()).is_equal(4)
+	assert_that(ec1.count_failures(true)).is_equal(4)
 	assert_that(ec2.has_failures()).is_true()
-	assert_that(ec2.count_failures()).is_equal(4)
+	assert_that(ec2.count_failures(true)).is_equal(4)
 	assert_that(ec3.has_failures()).is_true()
-	assert_that(ec3.count_failures()).is_equal(4)
+	assert_that(ec3.count_failures(true)).is_equal(4)
 	
 	# add two failure report to test_case_stage
 	add_report(ec2, GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec21"))
 	add_report(ec2, GdUnitReport.new().create(GdUnitReport.FAILURE, 43, "error_ec22"))
 	# verify
 	assert_that(ec1.has_failures()).is_true()
-	assert_that(ec1.count_failures()).is_equal(6)
+	assert_that(ec1.count_failures(true)).is_equal(6)
 	assert_that(ec2.has_failures()).is_true()
-	assert_that(ec2.count_failures()).is_equal(6)
+	assert_that(ec2.count_failures(true)).is_equal(6)
 	assert_that(ec3.has_failures()).is_true()
-	assert_that(ec3.count_failures()).is_equal(4)
+	assert_that(ec3.count_failures(true)).is_equal(4)
 	
 	# add one failure report to test_suite_stage
 	add_report(ec1, GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec1"))
 	# verify
 	assert_that(ec1.has_failures()).is_true()
-	assert_that(ec1.count_failures()).is_equal(7)
+	assert_that(ec1.count_failures(true)).is_equal(7)
 	assert_that(ec2.has_failures()).is_true()
-	assert_that(ec2.count_failures()).is_equal(6)
+	assert_that(ec2.count_failures(true)).is_equal(6)
 	assert_that(ec3.has_failures()).is_true()
-	assert_that(ec3.count_failures()).is_equal(4)
+	assert_that(ec3.count_failures(true)).is_equal(4)

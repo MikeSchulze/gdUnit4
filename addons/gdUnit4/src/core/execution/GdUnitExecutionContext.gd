@@ -69,18 +69,11 @@ func orphan_monitor_stop() -> void:
 	_orphan_monitor.stop()
 
 
-func calculate_orphan_nodes() -> int:
-	var orphans := 0
-	for c in _sub_context:
-		orphans += c._orphan_monitor.orphan_nodes()
-	return _orphan_monitor.orphan_nodes() - orphans
-
-
 func reports() -> Array[GdUnitReport]:
 	return _report_collector.reports()
 
 
-func build_report_statistics(orphans :int) -> Dictionary:
+func build_report_statistics(orphans :int, recursive := true) -> Dictionary:
 	return {
 		GdUnitEvent.ORPHAN_NODES: orphans,
 		GdUnitEvent.ELAPSED_TIME: _timer.elapsed_since_ms(),
@@ -88,9 +81,9 @@ func build_report_statistics(orphans :int) -> Dictionary:
 		GdUnitEvent.ERRORS: has_errors(),
 		GdUnitEvent.WARNINGS: has_warnings(),
 		GdUnitEvent.SKIPPED: has_skipped(),
-		GdUnitEvent.FAILED_COUNT: count_failures(),
-		GdUnitEvent.ERROR_COUNT: count_errors(),
-		GdUnitEvent.SKIPPED_COUNT: count_skipped()
+		GdUnitEvent.FAILED_COUNT: count_failures(recursive),
+		GdUnitEvent.ERROR_COUNT: count_errors(recursive),
+		GdUnitEvent.SKIPPED_COUNT: count_skipped(recursive)
 	}
 
 
@@ -110,22 +103,35 @@ func has_skipped() -> bool:
 	return _sub_context.any(func(c): return c.has_skipped()) or _report_collector.has_skipped()
 
 
-func count_failures() -> int:
+func count_failures(recursive :bool) -> int:
+	if not recursive:
+		return _report_collector.count_failures()
 	return _sub_context\
-		.map(func(c): return c.count_failures())\
+		.map(func(c): return c.count_failures(recursive))\
 		.reduce(sum, _report_collector.count_failures()) 
 
 
-func count_errors() -> int:
+func count_errors(recursive :bool) -> int:
+	if not recursive:
+		return _report_collector.count_errors()
 	return _sub_context\
-		.map(func(c): return c.count_errors())\
+		.map(func(c): return c.count_errors(recursive))\
 		.reduce(sum, _report_collector.count_errors()) 
 
 
-func count_skipped() -> int:
+func count_skipped(recursive :bool) -> int:
+	if not recursive:
+		return _report_collector.count_skipped()
 	return _sub_context\
-		.map(func(c): return c.count_skipped())\
+		.map(func(c): return c.count_skipped(recursive))\
 		.reduce(sum, _report_collector.count_skipped()) 
+
+
+func count_orphans() -> int:
+	var orphans := 0
+	for c in _sub_context:
+		orphans += c._orphan_monitor.orphan_nodes()
+	return _orphan_monitor.orphan_nodes() - orphans
 
 
 func sum(accum :int, number :int) -> int:
