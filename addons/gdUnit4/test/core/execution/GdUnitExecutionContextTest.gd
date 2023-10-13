@@ -89,7 +89,7 @@ func test_create_context_of_test() -> void:
 	var tc :_TestCase = auto_free(_TestCase.new())
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
 	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
-	var ec3 := GdUnitExecutionContext.of_test(ec2)
+	var ec3 := GdUnitExecutionContext.of(ec2)
 	# verify the current context is not affected by this test itself
 	assert_object(__execution_context).is_not_same(ec1)
 	assert_object(__execution_context).is_not_same(ec2)
@@ -141,7 +141,7 @@ func test_report_collectors() -> void:
 	var tc :_TestCase = auto_free(_TestCase.new())
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
 	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
-	var ec3 := GdUnitExecutionContext.of_test(ec2)
+	var ec3 := GdUnitExecutionContext.of(ec2)
 	
 	# add reports
 	var failure11 := GdUnitReport.new().create(GdUnitReport.FAILURE, 1, "error_ec11")
@@ -168,7 +168,7 @@ func test_has_and_count_failures() -> void:
 	var tc :_TestCase = auto_free(_TestCase.new())
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
 	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
-	var ec3 := GdUnitExecutionContext.of_test(ec2)
+	var ec3 := GdUnitExecutionContext.of(ec2)
 	
 	# precheck
 	assert_that(ec1.has_failures()).is_false()

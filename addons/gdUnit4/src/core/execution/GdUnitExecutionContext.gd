@@ -1,3 +1,5 @@
+## The execution context
+## It contains all the necessary information about the executed stage, such as memory observers, reports, orphan monitor
 class_name GdUnitExecutionContext
 
 var _sub_context :Array[GdUnitExecutionContext] = []
@@ -10,14 +12,31 @@ var _test_case: _TestCase = null
 
 
 func _init(name :String, test_suite_ :GdUnitTestSuite, pe :GdUnitExecutionContext = null) -> void:
-	assert(test_suite, "test_suite is null")
+	assert(test_suite_, "test_suite is null")
 	_orphan_monitor = GdUnitOrphanNodesMonitor.new(name)
 	_orphan_monitor.start()
 	_report_collector = GdUnitTestReportCollector.new(get_instance_id())
 	_test_suite = test_suite_
+	if pe != null:
+		_test_case = pe.test_case()
 	set_active()
 	if pe != null:
 		pe._sub_context.append(self)
+
+
+func dispose() -> void:
+	_sub_context.clear()
+	_orphan_monitor = null
+	_memory_observer = null
+	_report_collector = null
+	if is_instance_valid(_test_suite):
+		await Engine.get_main_loop().process_frame
+		_test_suite.free()
+		_test_suite = null
+	_test_case = null
+	for context in _sub_context:
+		context.dispose()
+	_sub_context.clear()
 
 
 func set_active() -> void:
@@ -35,10 +54,8 @@ static func of_test_case(pe :GdUnitExecutionContext, test_case_ :_TestCase) -> G
 	return context
 
 
-static func of_test(pe :GdUnitExecutionContext) -> GdUnitExecutionContext:
-	var context :=  GdUnitExecutionContext.new(pe.test_case().get_name(), pe.test_suite(), pe)
-	context._test_case = pe.test_case()
-	return context
+static func of(pe :GdUnitExecutionContext) -> GdUnitExecutionContext:
+	return GdUnitExecutionContext.new(pe.test_case().get_name(), pe.test_suite(), pe)
 
 
 func test_suite() -> GdUnitTestSuite:
@@ -49,16 +66,8 @@ func test_case() -> _TestCase:
 	return _test_case
 
 
-func test_cases() -> Array[_TestCase]:
-	# needs assing to typed array as workaround see https://github.com/godotengine/godot/issues/72566
-	var tests : Array[_TestCase] = []
-	tests.assign(_test_suite.get_children().filter(func(e): return e is _TestCase))
-	return tests
-
-
 func test_failed() -> bool:
-	# TODO handle failure detection
-	return false
+	return has_failures() or has_errors()
 
 
 func orphan_monitor_start() -> void:

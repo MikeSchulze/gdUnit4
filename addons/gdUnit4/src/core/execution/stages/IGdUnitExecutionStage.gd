@@ -1,5 +1,5 @@
-## The interface for defining an execution stage.[br]
-## An execution stage is defined as an encapsulated task that can execute 1-n substages covered by its own execution context.
+## The interface of execution stage.[br]
+## An execution stage is defined as an encapsulated task that can execute 1-n substages covered by its own execution context.[br]
 ## Execution stage are always called synchronously.
 class_name IGdUnitExecutionStage
 extends RefCounted
@@ -15,10 +15,11 @@ var _debug_mode := false
 ## [/codeblock][br]
 func execute(context :GdUnitExecutionContext) -> void:
 	context.set_active()
+	@warning_ignore("redundant_await")
 	await _execute(context)
 
 
-## Emit the event to registered listeners
+## Sends the event to registered listeners
 func fire_event(event :GdUnitEvent) -> void:
 	if _debug_mode:
 		GdUnitSignals.instance().gdunit_event_debug.emit(event)
@@ -26,14 +27,13 @@ func fire_event(event :GdUnitEvent) -> void:
 		GdUnitSignals.instance().gdunit_event.emit(event)
 
 
-## Internal testing stuff
+## Internal testing stuff.[br]
 ## Sets the executor into debug mode to emit `GdUnitEvent` via signal `gdunit_event_debug`
 func set_debug_mode(debug_mode :bool) -> void:
 	_debug_mode = debug_mode
 
 
-## The execution phase to be implemented
+## The execution phase to be carried out.
 func _execute(_context :GdUnitExecutionContext) -> void:
 	@warning_ignore("assert_always_false")
 	assert(false, "The execution stage is not implemented")
-	await Engine.get_main_loop().process_frame

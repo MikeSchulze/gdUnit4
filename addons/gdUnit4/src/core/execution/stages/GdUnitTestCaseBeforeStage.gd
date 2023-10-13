@@ -13,7 +13,6 @@ func _init(call_stage := true):
 
 
 func _execute(context :GdUnitExecutionContext) -> void:
-	context._timer = LocalTime.now()
 	var test_suite := context.test_suite()
 	var test_case_name := context.test_case().get_name() if _test_name.is_empty() else _test_name
 	

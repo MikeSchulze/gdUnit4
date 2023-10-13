@@ -3,7 +3,7 @@ extends RefCounted
 
 var _thread :Thread
 var _thread_name :String
-var _task_id :int
+var _thread_id :int
 var _assert :GdUnitAssert
 var _signal_collector :GdUnitSignalCollector
 var _execution_context :GdUnitExecutionContext
@@ -13,21 +13,20 @@ func _init(thread :Thread = null):
 	if thread != null:
 		_thread = thread
 		_thread_name = thread.get_meta("name")
-		_task_id = thread.get_id() as int
+		_thread_id = thread.get_id() as int
 	else:
 		_thread_name = "main"
-		_task_id = OS.get_main_thread_id()
+		_thread_id = OS.get_main_thread_id()
 	_signal_collector = GdUnitSignalCollector.new()
 
 
-func init() -> void:
-	clear()
-
-
-func clear() -> void:
+func dispose() -> void:
 	_assert = null
 	if is_instance_valid(_signal_collector):
 		_signal_collector.clear()
+	_signal_collector = null
+	_execution_context = null
+	_thread = null
 
 
 func set_assert(value :GdUnitAssert) -> GdUnitThreadContext:
@@ -56,8 +55,8 @@ func get_signal_collector() -> GdUnitSignalCollector:
 
 
 func thread_id() -> int:
-	return _task_id
+	return _thread_id
 
 
 func _to_string() -> String:
-	return "ThreadContext <%s>: %s " % [_thread_name, _task_id]
+	return "ThreadContext <%s>: %s " % [_thread_name, _thread_id]

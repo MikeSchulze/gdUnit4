@@ -24,10 +24,12 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		_stage_before.set_test_name(test_case_names[test_case_index])
 		_stage_after.set_test_name(test_case_names[test_case_index])
 		
-		await _stage_before.execute(context)
+		var test_context := GdUnitExecutionContext.of(context)
+		await _stage_before.execute(test_context)
 		await test_case.execute_paramaterized(test_case_parameters[test_case_index])
-		await _stage_after.execute(context)
-		context.reports().clear()
+		await _stage_after.execute(test_context)
+		# we need to clean up the reports here so they are not reported twice
+		test_context.reports().clear()
 		if test_case.is_interupted():
 			break
 	await context.gc()

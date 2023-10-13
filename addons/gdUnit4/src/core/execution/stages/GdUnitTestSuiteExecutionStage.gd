@@ -10,15 +10,15 @@ var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseExecutionStage.new()
 var _fail_fast := false
 
 
-## Executes all tests of test suite.[br]
+## Executes all tests of an test suite.[br]
 ## It executes synchronized following stages[br]
 ##  -> before() [br]
-##  -> run overall test cases [br]
+##  -> run all test cases [br]
 ##  -> after() [br]
 func _execute(context :GdUnitExecutionContext) -> void:
 	if context.test_suite().__is_skipped:
 		await fire_test_suite_skipped(context)
-		context.test_suite().free()
+		await context.dispose()
 		return
 	
 	await _stage_before.execute(context)
@@ -40,6 +40,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 			await Engine.get_main_loop().physics_frame
 			context._test_suite = await clone_test_suite(context.test_suite())
 	await _stage_after.execute(context)
+	await context.dispose()
 
 
 # clones a test suite and moves the test cases to new instance

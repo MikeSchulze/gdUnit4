@@ -1,3 +1,4 @@
+## The memory watcher for objects that have been registered and are released when 'gc' is called.
 class_name GdUnitMemoryObserver
 extends RefCounted
 
@@ -7,7 +8,7 @@ const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 var _store :Array[Variant] = []
 var _orphan_detection_enabled :bool = true
-# enable it for debugging purposes
+# enable for debugging purposes
 var _is_stdout_verbose := false
 
 
@@ -15,7 +16,7 @@ func _init():
 	_orphan_detection_enabled = GdUnitSettings.is_verbose_orphans()
 
 
-# register an instance to be freed when a test suite is finished
+## Registration of an instance to be released when an execution phase is completed
 func register_auto_free(obj) -> Variant:
 	if not is_instance_valid(obj):
 		return obj
@@ -38,14 +39,14 @@ func register_auto_free(obj) -> Variant:
 	return obj
 
 
-# we store the object into global store aswell to be verified by 'is_marked_auto_free'
+# store the object into global store aswell to be verified by 'is_marked_auto_free'
 func _tag_object(obj :Variant) -> void:
 	var tagged_object := Engine.get_meta(TAG_AUTO_FREE, []) as Array
 	tagged_object.append(obj)
 	Engine.set_meta(TAG_AUTO_FREE, tagged_object)
 
 
-# runs over all registered objects and releases them
+## Runs over all registered objects and releases them
 func gc() -> void:
 	if _store.is_empty():
 		return
@@ -60,6 +61,6 @@ func gc() -> void:
 		await GdUnitTools.free_instance(value, _is_stdout_verbose)
 
 
-# tests if given object is registered for auto freeing
+## Checks whether the specified object is registered for automatic release
 static func is_marked_auto_free(obj) -> bool:
 	return Engine.get_meta(TAG_AUTO_FREE, []).has(obj)

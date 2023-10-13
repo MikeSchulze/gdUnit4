@@ -23,7 +23,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 			break
 		# interrupt at first failure
 		var reports := context.reports()
-		if not context.reports().is_empty():
+		if not reports.is_empty():
 			var report :GdUnitReport = reports.pop_front()
 			reports.append(GdUnitReport.new() \
 				.create(GdUnitReport.FAILURE, report.line_number(), GdAssertMessages.fuzzer_interuped(iteration, report.message())))

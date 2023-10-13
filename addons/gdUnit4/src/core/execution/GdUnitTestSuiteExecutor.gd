@@ -19,10 +19,7 @@ func execute(test_suite :GdUnitTestSuite) -> void:
 	
 	Engine.get_main_loop().root.call_deferred("add_child", test_suite)
 	await Engine.get_main_loop().process_frame
-	var thread_context := GdUnitThreadManager.get_current_context()
-	thread_context.init()
 	await _executeStage.execute(GdUnitExecutionContext.of_test_suite(test_suite))
-	thread_context.clear()
 
 
 func fail_fast(enabled :bool) -> void:

@@ -22,7 +22,3 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path, test_suite.get_name(), context.build_report_statistics(orphans, false), reports))
 	
 	GdUnitTools.clear_tmp()
-	if is_instance_valid(test_suite):
-		await Engine.get_main_loop().process_frame
-		test_suite.free()
-

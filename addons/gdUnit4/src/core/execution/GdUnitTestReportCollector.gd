@@ -1,4 +1,4 @@
-# collects all reports seperated as warnings, failures and errors
+# Collects all reports seperated as warnings, failures and errors
 class_name GdUnitTestReportCollector
 extends RefCounted
 
@@ -64,7 +64,7 @@ func reports() -> Array[GdUnitReport]:
 	return _reports
 
 
-# consumes reports emitted by tests
+# Consumes reports emitted by tests
 func on_reports(execution_context_id :int, report :GdUnitReport) -> void:
 	if execution_context_id == _execution_context_id:
 		_reports.append(report)

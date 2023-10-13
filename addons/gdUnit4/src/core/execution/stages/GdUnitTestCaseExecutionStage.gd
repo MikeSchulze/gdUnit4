@@ -8,7 +8,7 @@ var _stage_fuzzer_test :IGdUnitExecutionStage = GdUnitTestCaseFuzzedExecutionSta
 var _stage_parameterized_test :IGdUnitExecutionStage= GdUnitTestCaseParameterizedExecutionStage.new()
 
 
-## Executes a single test case 'test_<name>()'.[br]
+## Executes the test case 'test_<name>()'.[br]
 ## It executes synchronized following stages[br]
 ##  -> test_before() [br]
 ##  -> test_case() [br]
