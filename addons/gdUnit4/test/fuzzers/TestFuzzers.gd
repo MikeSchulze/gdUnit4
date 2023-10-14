@@ -8,7 +8,7 @@ class NestedFuzzer extends Fuzzer:
 	func _init():
 		pass
 	
-	func next_value() -> Dictionary:
+	func next_value() -> Variant:
 		return {}
 	
 	static func _s_max_value() -> int:

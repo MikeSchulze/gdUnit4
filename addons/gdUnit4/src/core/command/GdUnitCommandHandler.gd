@@ -1,3 +1,4 @@
+@tool
 class_name GdUnitCommandHandler
 extends RefCounted
 
@@ -56,7 +57,8 @@ func _init():
 	assert_shortcut_mappings(SETTINGS_SHORTCUT_MAPPING)
 	
 	if Engine.is_editor_hint():
-		_editor_interface = Engine.get_meta("GdUnitEditorPlugin").get_editor_interface()
+		var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
+		_editor_interface = editor.get_editor_interface()
 	GdUnitSignals.instance().gdunit_event.connect(_on_event)
 	GdUnitSignals.instance().gdunit_client_connected.connect(_on_client_connected)
 	GdUnitSignals.instance().gdunit_client_disconnected.connect(_on_client_disconnected)

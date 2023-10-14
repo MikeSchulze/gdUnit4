@@ -224,7 +224,7 @@ func test_case_names() -> PackedStringArray:
 	var test_cases :=  PackedStringArray()
 	var test_name = get_name()
 	for index in _test_parameters.size():
-		test_cases.append("%s:%d %s" % [test_name, index, str(_test_parameters[index]).replace('"', "'")])
+		test_cases.append("%s:%d %s" % [test_name, index, str(_test_parameters[index]).replace('"', "'").replace("&'", "'")])
 	return test_cases
 
 
