@@ -22,7 +22,6 @@ default_bus_layout=""
 [debug]
 
 file_logging/enable_file_logging=true
-settings/stdout/verbose_stdout=true
 gdscript/warnings/exclude_addons=false
 gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false

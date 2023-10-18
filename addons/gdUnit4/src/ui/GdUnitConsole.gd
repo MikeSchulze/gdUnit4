@@ -58,7 +58,7 @@ func init_statistics(event :GdUnitEvent) :
 	_summary["total_count"] += event.total_count()
 
 
-func reset_statisitic() -> void:
+func reset_statistics() -> void:
 	for k in _statistics.keys():
 		_statistics[k] = 0
 	for k in _summary.keys():
@@ -94,7 +94,7 @@ func println_message(message :String, color :Color = _text_color, indent :int = 
 func _on_gdunit_event(event :GdUnitEvent):
 	match event.type():
 		GdUnitEvent.INIT:
-			reset_statisitic()
+			reset_statistics()
 		
 		GdUnitEvent.STOP:
 			print_message("Summary:", Color.DODGER_BLUE)

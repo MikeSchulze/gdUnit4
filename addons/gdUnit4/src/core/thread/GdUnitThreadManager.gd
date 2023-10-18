@@ -1,14 +1,14 @@
-## A manager to run new thread and crate a ThreadContext shared over the acutal test run
+## A manager to run new thread and crate a ThreadContext shared over the actual test run
 class_name GdUnitThreadManager
 extends RefCounted
 
 ## { <thread_id> = <GdUnitThreadContext> }
 var _thread_context_by_id := {}
-## hold the current thread id
+## holds the current thread id
 var _current_thread_id :int = -1
 
 func _init():
-	# add main thread
+	# add initail the main thread
 	_current_thread_id = OS.get_thread_caller_id()
 	_thread_context_by_id[OS.get_main_thread_id()] = GdUnitThreadContext.new()
 

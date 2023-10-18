@@ -39,7 +39,7 @@ func test_create_context_of_test_suite() -> void:
 	# verify the current context is not affected by this test itself
 	assert_object(__execution_context).is_not_same(ec)
 	
-	# verify thw execution context is assigned to the test suite
+	# verify the execution context is assigned to the test suite
 	assert_object(ts.__execution_context).is_same(ec)
 	
 	# verify execution context is fully initialized
