@@ -4,5 +4,5 @@ extends Fuzzer
 func _init():
 	pass
 
-func next_value()->Dictionary: 
+func next_value() -> Variant:
 	return {}

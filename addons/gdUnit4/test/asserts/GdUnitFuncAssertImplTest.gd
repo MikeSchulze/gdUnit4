@@ -315,7 +315,7 @@ func test_timer_yielded_function_timeout() -> void:
 	if is_skip_fail_await():
 		return
 	(await verify_failed(func(): await assert_func(self, "timed_function", []).wait_until(40).is_equal(Color.BLACK)))\
-		.is_equal("Expected: is equal 'Color(0, 0, 0, 1)' but timed out after 40ms")
+		.is_equal("Expected: is equal 'Color()' but timed out after 40ms")
 
 
 func yielded_function() -> Color:

@@ -165,8 +165,8 @@ func _get_btn_icon(p_name :String) -> Texture2D:
 		return placeholder
 	var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 	if editor:
-		var editiorTheme := editor.get_editor_interface().get_base_control().theme
-		return editiorTheme.get_icon(p_name, "EditorIcons")
+		var editior_control := editor.get_editor_interface().get_base_control()
+		return GodotVersionFixures.get_icon(editior_control, p_name)
 	return null
 
 

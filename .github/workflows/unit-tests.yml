@@ -11,6 +11,9 @@ on:
       godot-version:
         required: true
         type: string
+      godot-status:
+        required: true
+        type: string
 
   workflow_dispatch:
     inputs:
@@ -19,6 +22,9 @@ on:
         type: string
         default: 'ubuntu-22.04'
       godot-version:
+        required: true
+        type: string
+      godot-status:
         required: true
         type: string
 
@@ -45,7 +51,7 @@ jobs:
         with:
           godot-version: ${{ inputs.godot-version }}
           godot-mono: false
-          godot-status-version: 'stable'
+          godot-status-version: ${{ inputs.godot-status }}
           godot-bin-name: 'linux.x86_64'
           godot-cache-path: '~/godot-linux'
 
@@ -108,7 +114,7 @@ jobs:
         with:
           godot-version: ${{ inputs.godot-version }}
           godot-mono: true
-          godot-status-version: 'stable'
+          godot-status-version: ${{ inputs.godot-status }}
           godot-bin-name: 'linux_x86_64'
           godot-cache-path: '~/godot-linux'
 

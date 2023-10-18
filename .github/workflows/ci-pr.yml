@@ -22,12 +22,18 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        godot-version: ['4.0.1', '4.0.2', '4.0.3', '4.1', '4.1.1']
+        godot-version: ['4.0.1', '4.0.2', '4.0.3', '4.1', '4.1.1', '4.1.2']
+        godot-status: ['stable']
+        include:
+          - godot-version: '4.2'
+            godot-status: 'beta1'
 
-    name: "CI on Godot 🐧 v${{ matrix.godot-version }}"
+
+    name: "CI on Godot 🐧 v${{ matrix.godot-version }}-${{ matrix.godot-status }}"
     uses: ./.github/workflows/unit-tests.yml
     with:
       godot-version: ${{ matrix.godot-version }}
+      godot-status: ${{ matrix.godot-status }}
 
   finalize:
     if: ${{ !cancelled() }}
