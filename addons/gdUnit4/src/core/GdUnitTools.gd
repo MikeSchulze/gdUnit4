@@ -203,7 +203,7 @@ static func prints_verbose(message :String) -> void:
 		prints(message)
 
 
-static func free_instance(instance :Variant) -> bool:
+static func free_instance(instance :Variant, is_stdout_verbose :=false) -> bool:
 	if instance is Array:
 		for element in instance:
 			free_instance(element)
@@ -217,18 +217,26 @@ static func free_instance(instance :Variant) -> bool:
 		return false
 	if is_instance_valid(instance) and instance is RefCounted:
 		instance.notification(Object.NOTIFICATION_PREDELETE)
+		await Engine.get_main_loop().process_frame
 		return true
 	else:
 			# is instance already freed?
 		if not is_instance_valid(instance) or ClassDB.class_get_property(instance, "new"):
 			return false
+		if is_stdout_verbose:
+			print_verbose("GdUnit4:gc():free instance ", instance)
 		release_double(instance)
 		#release_connections(instance)
 		if instance is Timer:
 			instance.stop()
-			#instance.queue_free()
 			instance.call_deferred("free")
+			await Engine.get_main_loop().process_frame
 			return true
+		if instance is Node and instance.get_parent() != null:
+			if is_stdout_verbose:
+				print_verbose("GdUnit4:gc():remove node from parent ",  instance.get_parent(), instance)
+			instance.get_parent().remove_child(instance)
+			instance.set_owner(null)
 		instance.free()
 		return !is_instance_valid(instance)
 
@@ -252,8 +260,8 @@ static func release_timers():
 	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
 	for node in Engine.get_main_loop().root.get_children():
 		if node.is_in_group("GdUnitTimers"):
-			#prints("found gdunit timer artifact", node, is_instance_valid(node))
 			if is_instance_valid(node):
+				Engine.get_main_loop().root.remove_child(node)
 				node.stop()
 				node.free()
 

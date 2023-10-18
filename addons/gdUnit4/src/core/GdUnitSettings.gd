@@ -251,21 +251,21 @@ static func extract_value_set_from_help(value :String) -> PackedStringArray:
 
 
 static func update_property(property :GdUnitProperty) -> Variant:
-	var current_value := ProjectSettings.get_setting(property.name())
+	var current_value :Variant = ProjectSettings.get_setting(property.name())
 	if current_value != property.value():
-		var error := validate_property_value(property)
+		var error :Variant = validate_property_value(property)
 		if error != null:
 			return error
 		ProjectSettings.set_setting(property.name(), property.value())
 		GdUnitSignals.instance().gdunit_settings_changed.emit(property)
-		save()
+		_save_settings()
 	return null
 
 
 static func reset_property(property :GdUnitProperty) -> void:
 	ProjectSettings.set_setting(property.name(), property.default())
 	GdUnitSignals.instance().gdunit_settings_changed.emit(property)
-	save()
+	_save_settings()
 
 
 static func validate_property_value(property :GdUnitProperty) -> Variant:
@@ -287,13 +287,13 @@ static func validate_lookup_folder(value :String) -> Variant:
 
 static func save_property(name :String, value) -> void:
 	ProjectSettings.set_setting(name, value)
-	save()
+	_save_settings()
 
 
-static func save() -> void:
-	var err := ProjectSettings.save()
+static func _save_settings() -> void:
+	var err = ProjectSettings.save()
 	if err != OK:
-		push_error("Save GdUnit3 settings failed : %s" % error_string(err))
+		push_error("Save GdUnit4 settings failed : %s" % error_string(err))
 		return
 
 

@@ -2,11 +2,9 @@ class_name GdUnitSpyBuilder
 extends GdUnitClassDoubler
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-const GdUnitMemoryPool = preload("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
 
 
-static func build(caller :Object, to_spy, debug_write = false) -> Object:
-	var memory_pool :GdUnitMemoryPool.POOL = caller.get_meta(GdUnitMemoryPool.META_PARAM)
+static func build(to_spy, debug_write = false) -> Object:
 	if GdObjects.is_singleton(to_spy):
 		push_error("Spy on a Singleton is not allowed! '%s'" % to_spy.get_class())
 		return null
@@ -18,10 +16,10 @@ static func build(caller :Object, to_spy, debug_write = false) -> Object:
 		to_spy = load(to_spy)
 	# spy checked PackedScene
 	if GdObjects.is_scene(to_spy):
-		return spy_on_scene(to_spy.instantiate(), memory_pool, debug_write)
+		return spy_on_scene(to_spy.instantiate(), debug_write)
 	# spy checked a scene instance
 	if GdObjects.is_instance_scene(to_spy):
-		return spy_on_scene(to_spy, memory_pool, debug_write)
+		return spy_on_scene(to_spy, debug_write)
 	
 	var spy := spy_on_script(to_spy, [], debug_write)
 	if spy == null:
@@ -32,7 +30,7 @@ static func build(caller :Object, to_spy, debug_write = false) -> Object:
 	spy_instance.__set_singleton(to_spy)
 	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
 	spy_instance.__exclude_method_call([ "_input", "_gui_input", "_input_event", "_unhandled_input"])
-	return GdUnitMemoryPool.register_auto_free(spy_instance, memory_pool)
+	return register_auto_free(spy_instance)
 
 
 static func get_class_info(clazz :Variant) -> Dictionary:
@@ -74,7 +72,7 @@ static func spy_on_script(instance, function_excludes :PackedStringArray, debug_
 	return spy
 
 
-static func spy_on_scene(scene :Node, memory_pool :GdUnitMemoryPool.POOL, debug_write) -> Object:
+static func spy_on_scene(scene :Node, debug_write) -> Object:
 	if scene.get_script() == null:
 		if GdUnitSettings.is_verbose_assert_errors():
 			push_error("Can't create a spy checked a scene without script '%s'" % scene.get_scene_file_path())
@@ -87,7 +85,7 @@ static func spy_on_scene(scene :Node, memory_pool :GdUnitMemoryPool.POOL, debug_
 		return null
 	# replace original script whit spy 
 	scene.set_script(spy)
-	return GdUnitMemoryPool.register_auto_free(scene, memory_pool)
+	return register_auto_free(scene)
 
 
 const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
@@ -107,3 +105,7 @@ static func copy_properties(source :Object, dest :Object) -> void:
 			dest.set(property_name, "<empty>");
 			continue
 		dest.set(property_name, property_value)
+
+
+static func register_auto_free(obj :Variant) -> Variant:
+	return GdUnitThreadManager.get_current_context().get_execution_context().register_auto_free(obj)

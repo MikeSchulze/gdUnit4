@@ -245,7 +245,7 @@ func _on_btn_property_reset_pressed(property: GdUnitProperty, input :Node, reset
 func _on_property_text_changed(new_value :Variant, property: GdUnitProperty, reset_btn :Button):
 	property.set_value(new_value)
 	reset_btn.disabled = property.value() == property.default()
-	var error := GdUnitSettings.update_property(property)
+	var error :Variant = GdUnitSettings.update_property(property)
 	if error:
 		var label :Label = _property_error.get_child(0) as Label
 		label.set_text(error)

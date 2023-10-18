@@ -22,12 +22,9 @@ default_bus_layout=""
 [debug]
 
 file_logging/enable_file_logging=true
+gdscript/warnings/exclude_addons=false
 gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
 [gdunit4]
 

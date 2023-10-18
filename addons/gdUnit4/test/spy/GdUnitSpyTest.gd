@@ -2,9 +2,6 @@ class_name GdUnitSpyTest
 extends GdUnitTestSuite
 
 
-const GdUnitMemoryPool = preload("res://addons/gdUnit4/src/core/GdUnitMemoryPool.gd")
-
-
 func test_spy_instance_id_is_unique():
 	var m1  = spy(RefCounted.new())
 	var m2  = spy(RefCounted.new())
@@ -114,7 +111,7 @@ func test_spy_class_with_custom_formattings() -> void:
 	verify_no_more_interactions(do_spy)
 	assert_failure(func(): verify_no_interactions(do_spy))\
 		.is_failed() \
-		.has_line(115)
+		.has_line(112)
 
 
 func test_spy_copied_class_members():
@@ -223,7 +220,7 @@ func test_verify_fail():
 			.dedent().trim_prefix("\n")
 	assert_failure(func(): verify(spy_node, 1).set_process(true)) \
 		.is_failed() \
-		.has_line(224) \
+		.has_line(221) \
 		.has_message(expected_error)
 
 
@@ -250,7 +247,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 			.dedent().trim_prefix("\n")
 	assert_failure(func(): verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(251) \
+		.has_line(248) \
 		.has_message(expected_error)
 	
 	reset(spy_instance)
@@ -268,7 +265,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 			.dedent().trim_prefix("\n")
 	assert_failure(func(): verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(269) \
+		.has_line(266) \
 		.has_message(expected_error)
 
 
@@ -316,7 +313,7 @@ func test_verify_no_interactions_fails():
 	# it should fail because we have interactions
 	assert_failure(func(): verify_no_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(317) \
+		.has_line(314) \
 		.has_message(expected_error)
 
 
@@ -371,7 +368,7 @@ func test_verify_no_more_interactions_but_has():
 			.dedent().trim_prefix("\n")
 	assert_failure(func(): verify_no_more_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(372) \
+		.has_line(369) \
 		.has_message(expected_error)
 
 
@@ -538,7 +535,7 @@ func test_spy_scene_by_resource_path():
 		.is_instanceof(Control)
 	assert_str(spy_scene.get_script().resource_name).is_equal("SpyTestScene.gd")
 	# check is spyed scene registered for auto freeing
-	assert_bool(GdUnitMemoryPool.is_auto_free_registered(spy_scene, get_meta("MEMORY_POOL"))).is_true()
+	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
 func test_spy_on_PackedScene():
@@ -558,7 +555,7 @@ func test_spy_on_PackedScene():
 		.is_not_same(original_script)
 	assert_str(spy_scene.get_script().resource_name).is_equal("SpyTestScene.gd")
 	# check is spyed scene registered for auto freeing
-	assert_bool(GdUnitMemoryPool.is_auto_free_registered(spy_scene, get_meta("MEMORY_POOL"))).is_true()
+	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
 func test_spy_scene_by_instance():
@@ -577,7 +574,7 @@ func test_spy_scene_by_instance():
 		.is_not_same(original_script)
 	assert_str(spy_scene.get_script().resource_name).is_equal("SpyTestScene.gd")
 	# check is mocked scene registered for auto freeing
-	assert_bool(GdUnitMemoryPool.is_auto_free_registered(spy_scene, get_meta("MEMORY_POOL"))).is_true()
+	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
 func test_spy_scene_by_path_fail_has_no_script_attached():
