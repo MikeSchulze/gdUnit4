@@ -23,7 +23,6 @@ var _expect_to_interupt := false
 var _timer : Timer
 var _interupted :bool = false
 var _failed := false
-var _timeout :int
 var _report :GdUnitReport = null
 
 
@@ -36,6 +35,15 @@ var monitor : GodotGdErrorMonitor = null:
 		return monitor
 
 
+var timeout : int = DEFAULT_TIMEOUT:
+	set (value):
+		timeout = value
+	get:
+		if timeout == DEFAULT_TIMEOUT:
+			timeout = GdUnitSettings.test_timeout()
+		return timeout
+
+
 @warning_ignore("shadowed_variable_base_class")
 func configure(p_name: String, p_line_number: int, p_script_path: String, p_timeout :int = DEFAULT_TIMEOUT, p_fuzzers :Array = [], p_iterations: int = 1, p_seed :int = -1) -> _TestCase:
 	set_name(p_name)
@@ -44,7 +52,7 @@ func configure(p_name: String, p_line_number: int, p_script_path: String, p_time
 	_iterations = p_iterations
 	_seed = p_seed
 	_script_path = p_script_path
-	_timeout = p_timeout if p_timeout != DEFAULT_TIMEOUT else GdUnitSettings.test_timeout()
+	timeout = p_timeout
 	return self
 
 
@@ -81,13 +89,20 @@ func execute_paramaterized(p_test_parameter :Array):
 			_interupted = true
 
 
+var _is_disposed := false
+
 func dispose():
+	if _is_disposed:
+		return
+	_is_disposed = true
 	# unreference last used assert form the test to prevent memory leaks
 	GdUnitThreadManager.get_current_context().set_assert(null)
 	Engine.remove_meta("GD_TEST_FAILURE")
 	stop_timer()
 	_remove_failure_handler()
 	_fuzzers.clear()
+	monitor = null
+	_report = null
 
 
 @warning_ignore("shadowed_variable_base_class", "redundant_await")
@@ -107,7 +122,7 @@ func update_fuzzers(input_values :Array, iteration :int):
 func set_timeout():
 	if is_instance_valid(_timer):
 		return
-	var time :float = _timeout * 0.001
+	var time :float = timeout * 0.001
 	_timer = Timer.new()
 	add_child(_timer)
 	_timer.set_name("gdunit_test_case_timer_%d" % _timer.get_instance_id())
@@ -115,7 +130,7 @@ func set_timeout():
 		if is_fuzzed():
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
 		else:
-			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout()))
+			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout))
 		_interupted = true
 		completed.emit()
 		, CONNECT_REFERENCE_COUNTED)
@@ -187,10 +202,6 @@ func iterations() -> int:
 	return _iterations
 
 
-func timeout() -> int:
-	return _timeout
-
-
 func seed_value() -> int:
 	return _seed
 
@@ -246,4 +257,4 @@ func test_case_names() -> PackedStringArray:
 
 
 func _to_string():
-	return "%s :%d (%dms)" % [get_name(), _line_number, _timeout]
+	return "%s :%d (%dms)" % [get_name(), _line_number, timeout]

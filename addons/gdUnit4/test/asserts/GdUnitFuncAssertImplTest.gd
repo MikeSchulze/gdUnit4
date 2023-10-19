@@ -356,10 +356,11 @@ func test_override_failure_message() -> void:
 		.is_equal("Custom failure message")
 
 
-func _test_invalid_function():
+@warning_ignore("unused_parameter")
+func test_invalid_function(timeout = 100):
 	if is_skip_fail_await():
 		return
 	(await verify_failed(func(): await assert_func(self, "invalid_func_name", [])\
-		.wait_until(10000)\
+		.wait_until(1000)\
 		.is_equal(42)))\
 		.starts_with("The function 'invalid_func_name' do not exists checked instance")
