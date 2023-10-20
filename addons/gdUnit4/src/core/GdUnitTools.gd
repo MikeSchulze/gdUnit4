@@ -259,7 +259,7 @@ static func _release_connections(instance :Object):
 static func release_timers():
 	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
 	for node in Engine.get_main_loop().root.get_children():
-		if node.is_in_group("GdUnitTimers"):
+		if is_instance_valid(node) and node.is_in_group("GdUnitTimers"):
 			if is_instance_valid(node):
 				Engine.get_main_loop().root.remove_child(node)
 				node.stop()

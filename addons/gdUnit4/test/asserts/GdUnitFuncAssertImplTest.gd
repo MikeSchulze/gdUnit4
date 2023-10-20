@@ -20,8 +20,8 @@ func verify_failed(cb :Callable) -> GdUnitStringAssert:
 	await cb.call()
 	GdAssertReports.expect_fail(false)
 	
-	var a :GdUnitFuncAssert = GdUnitThreadManager.get_current_context().get_assert()
-	return assert_str(GdUnitTools.richtext_normalize(a._failure_message()))
+	var error = GdAssertReports.current_failure()
+	return assert_str(GdUnitTools.richtext_normalize(error))
 
 
 class TestValueProvider:

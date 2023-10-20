@@ -16,6 +16,7 @@ var _sleep_timer :Timer = null
 
 
 func _init(instance :Object, func_name :String, args := Array()):
+	prints("GdUnitFuncAssert", self)
 	_line_number = GdUnitAssert._get_line_number()
 	GdAssertReports.reset_last_error_line_number()
 	# save the actual assert instance on the current thread context
@@ -29,8 +30,17 @@ func _init(instance :Object, func_name :String, args := Array()):
 
 
 func _notification(_what):
-	if is_instance_valid(self):
-		dispose()
+	prints("GdUnitFuncAssert:_notification", self, GdObjects.notification_as_string(self, _what))
+	#if is_instance_valid(self):
+	#	dispose()
+	if is_instance_valid(_current_value_provider):
+		_current_value_provider.dispose()
+		_current_value_provider = null
+	if is_instance_valid(_sleep_timer):
+		Engine.get_main_loop().root.remove_child(_sleep_timer)
+		_sleep_timer.stop()
+		_sleep_timer.free()
+		_sleep_timer = null
 
 
 func report_success() -> GdUnitFuncAssert:
@@ -67,27 +77,34 @@ func wait_until(timeout := 2000) -> GdUnitFuncAssert:
 
 
 func is_null() -> GdUnitFuncAssert:
-	return await _validate_callback(__is_null)
+	await _validate_callback(__is_null)
+	return self
 
 
 func is_not_null() -> GdUnitFuncAssert:
-	return await _validate_callback(__is_not_null)
+	await _validate_callback(__is_not_null)
+	return self
 
 
 func is_false() -> GdUnitFuncAssert:
-	return await _validate_callback(__is_false)
+	await _validate_callback(__is_false)
+	return self
 
 
 func is_true() -> GdUnitFuncAssert:
-	return await _validate_callback(__is_true)
+	await _validate_callback(__is_true)
+	return self
 
 
 func is_equal(expected) -> GdUnitFuncAssert:
-	return await _validate_callback(__is_equal, expected)
+	await _validate_callback(__is_equal, expected)
+	return self
 
 
 func is_not_equal(expected) -> GdUnitFuncAssert:
-	return await _validate_callback(__is_not_equal, expected)
+	await _validate_callback(__is_not_equal, expected)
+	return self
+
 
 # we need actually to define this Callable as functions otherwise we results into leaked scripts here
 # this is actually a Godot bug and needs this kind of workaround
@@ -105,7 +122,7 @@ func ___validate_callback(predicate :Callable, expected = null):
 	var timer := Timer.new()
 	timer.set_name("gdunit_funcassert_interrupt_timer_%d" % timer.get_instance_id())
 	Engine.get_main_loop().root.add_child(timer)
-	timer.add_to_group("GdUnitTimers")
+	#timer.add_to_group("GdUnitTimers")
 	timer.timeout.connect(func do_interrupt():
 		_interrupted = true
 		timer.free()
@@ -120,17 +137,17 @@ func ___validate_callback(predicate :Callable, expected = null):
 			break
 	
 
-func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAssert:
+func _validate_callback(predicate :Callable, expected = null):
 	if _interrupted:
-		return self
+		return
 	var time_scale = Engine.get_time_scale()
 	var timer := Timer.new()
 	timer.set_name("gdunit_funcassert_interrupt_timer_%d" % timer.get_instance_id())
 	Engine.get_main_loop().root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
 	timer.timeout.connect(func do_interrupt():
+		prints("GdUnitFuncAssert: interupted")
 		_interrupted = true
-		timer.free()
 		, CONNECT_DEFERRED)
 	timer.set_one_shot(true)
 	timer.start((_timeout/1000.0)*time_scale)
@@ -149,7 +166,6 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 	
 	_sleep_timer.stop()
 	await Engine.get_main_loop().process_frame
-	dispose()
 	if _interrupted:
 		# https://github.com/godotengine/godot/issues/73052
 		#var predicate_name = predicate.get_method()
@@ -157,7 +173,8 @@ func _validate_callback(predicate :Callable, expected = null) -> GdUnitFuncAsser
 		report_error(GdAssertMessages.error_interrupted(predicate_name.strip_edges().trim_prefix("__"), expected, LocalTime.elapsed(_timeout)))
 	else:
 		report_success()
-	return self
+	_sleep_timer.free()
+	timer.free()
 
 
 func next_current_value() -> Variant:
@@ -165,25 +182,3 @@ func next_current_value() -> Variant:
 	if is_instance_valid(_current_value_provider):
 		return await _current_value_provider.get_value()
 	return "invalid value"
-
-
-var _is_disposed := false
-
-# it is important to free all references/connections to prevent orphan nodes
-func dispose():
-	if _is_disposed:
-		return
-	_is_disposed = true
-	GdUnitTools._release_connections(self)
-	if is_instance_valid(_current_value_provider):
-		_current_value_provider.dispose()
-		_current_value_provider = null
-	if is_instance_valid(_sleep_timer):
-		_sleep_timer.stop()
-		_sleep_timer.free()
-		_sleep_timer = null
-	
-	# finally do this very hacky stuff
-	# we need to manually unreferece to avoid leaked scripts
-	# but still leaked GDScriptFunctionState exists
-	unreference()

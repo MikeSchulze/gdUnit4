@@ -95,8 +95,6 @@ func dispose():
 	if _is_disposed:
 		return
 	_is_disposed = true
-	# unreference last used assert form the test to prevent memory leaks
-	GdUnitThreadManager.get_current_context().set_assert(null)
 	Engine.remove_meta("GD_TEST_FAILURE")
 	stop_timer()
 	_remove_failure_handler()
@@ -127,11 +125,24 @@ func set_timeout():
 	add_child(_timer)
 	_timer.set_name("gdunit_test_case_timer_%d" % _timer.get_instance_id())
 	_timer.timeout.connect(func do_interrupt():
+		prints("testcase: interupted")
 		if is_fuzzed():
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
 		else:
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout))
 		_interupted = true
+		# unreference last used assert form the test to prevent memory leaks
+		var assert_ := GdUnitThreadManager.get_current_context().get_assert()
+		if assert_:
+			GdUnitThreadManager.get_current_context().set_assert(null)
+			# finally do this very hacky stuff
+			# we need to manually unreferece to avoid leaked scripts
+			# but still leaked GDScriptFunctionState exists
+			while is_instance_valid(assert_) and assert_.get_reference_count() > 1:
+				prints("manuall unreference():1", assert_.get_reference_count())
+				assert_.unreference()
+				await Engine.get_main_loop().process_frame
+			prints("testcase: assert unreference done", assert_)
 		completed.emit()
 		, CONNECT_REFERENCE_COUNTED)
 	_timer.set_one_shot(true)

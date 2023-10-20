@@ -30,8 +30,6 @@ func dispose() -> void:
 
 
 func set_assert(value :GdUnitAssert) -> GdUnitThreadContext:
-	if _assert != null and _assert.has_method("dispose"):
-		_assert.dispose()
 	_assert = value
 	return self
 

@@ -59,8 +59,3 @@ func test_fail():
 @warning_ignore("unused_parameter")
 func override_failure_message(message :String):
 	return self
-
-
-## cleanup references
-func dispose() -> void:
-	pass
