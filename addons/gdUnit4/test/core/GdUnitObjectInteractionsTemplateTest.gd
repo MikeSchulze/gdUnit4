@@ -1,12 +1,11 @@
 # GdUnit generated TestSuite
-class_name GdUnitObjectInteractionsTemplateTest
 extends GdUnitTestSuite
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitObjectInteractionsTemplate.gd'
 
 func test___filter_vargs():
-	var template := GdUnitObjectInteractionsTemplate.new()
+	var template = load(__source).new()
 	
 	var varags :Array = [
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,

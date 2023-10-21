@@ -4,14 +4,16 @@ extends GdUnitTestSuite
 
 var resource_path := "res://addons/gdUnit4/test/mocker/resources/"
 
+var _saved_report_error_settings
 
 func before():
 	# disable error pushing for testing
-	GdUnitMockBuilder.do_push_errors(false)
+	_saved_report_error_settings = ProjectSettings.get_setting(GdUnitSettings.REPORT_PUSH_ERRORS)
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, false)
 
 
 func after():
-	GdUnitMockBuilder.do_push_errors(true)
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, _saved_report_error_settings)
 
 
 func test_mock_instance_id_is_unique():

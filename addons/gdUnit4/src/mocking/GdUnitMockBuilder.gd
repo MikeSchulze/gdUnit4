@@ -2,23 +2,11 @@ class_name GdUnitMockBuilder
 extends GdUnitClassDoubler
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-
-
-# holds mocker runtime configuration
-const KEY_REPORT_PUSH_ERRORS = "report_push_errors"
-
-
-# only for testing
-static func do_push_errors(enabled :bool) -> void:
-	GdUnitStaticDictionary.add_value(KEY_REPORT_PUSH_ERRORS, enabled)
-
-
-static func is_push_errors_enabled() -> bool:
-	return GdUnitStaticDictionary.get_value(KEY_REPORT_PUSH_ERRORS, false)
+const MOCK_TEMPLATE :GDScript = preload("res://addons/gdUnit4/src/mocking/GdUnitMockImpl.gd")
 
 
 static func is_push_errors() -> bool:
-	return is_push_errors_enabled() or GdUnitSettings.is_report_push_errors()
+	return GdUnitSettings.is_report_push_errors()
 
 
 static func build(clazz, mock_mode :String, debug_write := false) -> Object:
@@ -99,7 +87,7 @@ static func mock_on_script(instance :Object, clazz :Variant, function_excludes :
 	var push_errors := is_push_errors()
 	var function_doubler := GdUnitMockFunctionDoubler.new(push_errors)
 	var class_info := get_class_info(clazz)
-	var lines := load_template(GdUnitMockImpl, class_info, instance)
+	var lines := load_template(MOCK_TEMPLATE.source_code, class_info, instance)
 	
 	var clazz_name :String = class_info.get("class_name")
 	var clazz_path :PackedStringArray = class_info.get("class_path", [clazz_name])

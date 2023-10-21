@@ -23,8 +23,8 @@ func register_auto_free(obj) -> Variant:
 	# do not register on GDScriptNativeClass
 	if typeof(obj) == TYPE_OBJECT and (obj as Object).is_class("GDScriptNativeClass") :
 		return obj
-	if obj is GDScript or obj is ScriptExtension:
-		return obj
+	#if obj is GDScript or obj is ScriptExtension:
+	#	return obj
 	if obj is MainLoop:
 		push_error("GdUnit4: Avoid to add mainloop to auto_free queue  %s" % obj)
 		return

@@ -37,7 +37,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 			# it needs to go this hard way to kill the outstanding yields of a test case when the test timed out
 			# we delete the current test suite where is execute the current test case to kill the function state
 			# and replace it by a clone without function state
-			await Engine.get_main_loop().physics_frame
+			await Engine.get_main_loop().process_frame
 			context._test_suite = await clone_test_suite(context.test_suite())
 	await _stage_after.execute(context)
 	await context.dispose()
@@ -48,11 +48,11 @@ func clone_test_suite(test_suite :GdUnitTestSuite) -> GdUnitTestSuite:
 	dispose_timers(test_suite)
 	var parent := test_suite.get_parent()
 	var _test_suite = test_suite.duplicate()
+	parent.remove_child(test_suite)
 	copy_properties(test_suite, _test_suite)
 	for child in test_suite.get_children():
 		copy_properties(child, _test_suite.find_child(child.get_name(), true, false))
 	# finally free current test suite instance
-	parent.remove_child(test_suite)
 	test_suite.free()
 	await Engine.get_main_loop().process_frame
 	parent.add_child(_test_suite)
