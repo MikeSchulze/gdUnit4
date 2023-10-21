@@ -215,17 +215,17 @@ static func free_instance(instance :Variant, is_stdout_verbose :=false) -> bool:
 	# do not free a class refernece
 	if typeof(instance) == TYPE_OBJECT and (instance as Object).is_class("GDScriptNativeClass"):
 		return false
-	if is_instance_valid(instance) and instance is RefCounted:
+	if is_stdout_verbose:
+		print_verbose("GdUnit4:gc():free instance ", instance)
+	release_double(instance)
+	if instance is RefCounted:
 		instance.notification(Object.NOTIFICATION_PREDELETE)
 		await Engine.get_main_loop().process_frame
 		return true
 	else:
-			# is instance already freed?
-		if not is_instance_valid(instance) or ClassDB.class_get_property(instance, "new"):
-			return false
-		if is_stdout_verbose:
-			print_verbose("GdUnit4:gc():free instance ", instance)
-		release_double(instance)
+		# is instance already freed?
+		#if not is_instance_valid(instance) or ClassDB.class_get_property(instance, "new"):
+		#	return false
 		#release_connections(instance)
 		if instance is Timer:
 			instance.stop()

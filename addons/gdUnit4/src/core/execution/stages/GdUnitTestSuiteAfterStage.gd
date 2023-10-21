@@ -24,3 +24,5 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path, test_suite.get_name(), context.build_report_statistics(orphans, false), reports))
 	
 	GdUnitTools.clear_tmp()
+	# Guard that checks if all duplicated objects are released
+	GdUnitClassDoubler.check_leaked_instances()

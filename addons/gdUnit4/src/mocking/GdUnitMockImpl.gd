@@ -1,6 +1,3 @@
-# warnings-disable
-# warning-ignore:unused_argument
-class_name GdUnitMockImpl
 
 ################################################################################
 # internal mocking stuff
@@ -14,7 +11,13 @@ var __saved_return_values := Dictionary()
 
 
 static func __instance():
-	return GdUnitStaticDictionary.get_value(__INSTANCE_ID)
+	return Engine.get_meta(__INSTANCE_ID)
+
+
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		if Engine.has_meta(__INSTANCE_ID):
+			Engine.remove_meta(__INSTANCE_ID)
 
 
 func __instance_id() -> String:
@@ -23,12 +26,12 @@ func __instance_id() -> String:
 
 func __set_singleton():
 	# store self need to mock static functions
-	GdUnitStaticDictionary.add_value(__INSTANCE_ID, self)
+	Engine.set_meta(__INSTANCE_ID, self)
 
 
 func __release_double():
 	# we need to release the self reference manually to prevent orphan nodes
-	GdUnitStaticDictionary.erase(__INSTANCE_ID)
+	Engine.remove_meta(__INSTANCE_ID)
 
 
 func __is_prepare_return_value() -> bool:
