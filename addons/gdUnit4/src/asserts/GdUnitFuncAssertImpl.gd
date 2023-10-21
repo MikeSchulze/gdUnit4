@@ -1,10 +1,9 @@
 extends GdUnitFuncAssert
 
-signal value_provided(value)
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-
 const DEFAULT_TIMEOUT := 2000
+
 
 var _current_value_provider :ValueProvider
 var _current_error_message :String = ""
@@ -115,27 +114,6 @@ func __is_true(c, _e): return c == true
 func __is_equal(c, e): return GdObjects.equals(c,e)
 func __is_not_equal(c, e): return not GdObjects.equals(c, e)
 
-
-func ___validate_callback(predicate :Callable, expected = null):
-	prints("##############################")
-	var time_scale = Engine.get_time_scale()
-	var timer := Timer.new()
-	timer.set_name("gdunit_funcassert_interrupt_timer_%d" % timer.get_instance_id())
-	Engine.get_main_loop().root.add_child(timer)
-	#timer.add_to_group("GdUnitTimers")
-	timer.timeout.connect(func do_interrupt():
-		_interrupted = true
-		timer.free()
-		, CONNECT_DEFERRED)
-	timer.set_one_shot(true)
-	timer.start((_timeout/1000.0)*time_scale)
-	
-	while true:
-		await Engine.get_main_loop().process_frame
-		var current = await next_current_value()
-		if _interrupted or predicate.call(current, expected):
-			break
-	
 
 func _validate_callback(predicate :Callable, expected = null):
 	if _interrupted:
