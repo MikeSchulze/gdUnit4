@@ -22,6 +22,7 @@ var __is_skipped := false
 @warning_ignore("unused_private_class_variable")
 var __skip_reason :String = "Unknow."
 var __active_test_case :String
+var __awaiter := __gdunit_awaiter()
 # holds the actual execution context
 var __execution_context
 
@@ -42,8 +43,8 @@ func __gdunit_tools() -> GDScript:
 	return __lazy_load("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
-func __gdunit_awaiter() -> GDScript:
-	return __lazy_load("res://addons/gdUnit4/src/GdUnitAwaiter.gd")
+func __gdunit_awaiter() -> Object:
+	return __lazy_load("res://addons/gdUnit4/src/GdUnitAwaiter.gd").new()
 
 
 func __gdunit_argument_matchers():
@@ -159,12 +160,12 @@ func clear_push_errors() -> void:
 ## args: the expected signal arguments as an array[br]
 ## timeout: the timeout in ms, default is set to 2000ms
 func await_signal_on(source :Object, signal_name :String, args :Array = [], timeout :int = 2000) -> Variant:
-	return await __gdunit_awaiter().await_signal_on(source, signal_name, args, timeout)
+	return await __awaiter.await_signal_on(source, signal_name, args, timeout)
 
 
 ## Waits until the next idle frame
 func await_idle_frame():
-	await __gdunit_awaiter().await_idle_frame()
+	await __awaiter.await_idle_frame()
 
 
 ## Waits for for a given amount of milliseconds[br]
@@ -175,7 +176,7 @@ func await_idle_frame():
 ## [/codeblock][br]
 ## use this waiter and not `await get_tree().create_timer().timeout to prevent errors when a test case is timed out
 func await_millis(timeout :int):
-	await __gdunit_awaiter().await_millis(timeout)
+	await __awaiter.await_millis(timeout)
 
 
 ## Creates a new scene runner to allow simulate interactions checked a scene.[br]

@@ -7,14 +7,17 @@ const MINUTE :int = SECOND*60
 var _before_arg
 var _test_arg
 
+
 func before():
 	# use some variables to test clone test suite works as expected
 	_before_arg = "---before---"
+
 
 func before_test():
 	# set failing test to success if failed by timeout
 	discard_error_interupted_by_timeout()
 	_test_arg = "abc"
+
 
 # without custom timeout should execute the complete test
 func test_timeout_after_test_completes():
@@ -35,6 +38,7 @@ func test_timeout_after_test_completes():
 	prints("A","end test test_timeout_after_test_completes")
 	assert_int(counter).is_equal(5)
 
+
 # set test timeout to 2s
 @warning_ignore("unused_parameter")
 func test_timeout_2s(timeout=2000):
@@ -46,9 +50,10 @@ func test_timeout_2s(timeout=2000):
 	prints("B", "2s")
 	await await_millis(1000)
 	# this line should not reach if timeout aborts the test case after 2s
-	assert_bool(true).override_failure_message("The test case must be interupted by a timeout after 2s").is_false()
+	fail("The test case must be interupted by a timeout after 2s")
 	prints("B", "3s")
 	prints("B", "end")
+
 
 # set test timeout to 4s
 @warning_ignore("unused_parameter")
@@ -63,9 +68,10 @@ func test_timeout_4s(timeout=4000):
 	prints("C", "3s")
 	await await_millis(4000)
 	# this line should not reach if timeout aborts the test case after 4s
-	assert_bool(true).override_failure_message("The test case must be interupted by a timeout after 4s").is_false()
+	fail("The test case must be interupted by a timeout after 4s")
 	prints("C", "7s")
 	prints("C", "end")
+
 
 @warning_ignore("unused_parameter")
 func test_timeout_single_yield_wait(timeout=3000):
@@ -74,8 +80,9 @@ func test_timeout_single_yield_wait(timeout=3000):
 	await await_millis(6000)
 	prints("D", "6s")
 	# this line should not reach if timeout aborts the test case after 3s
-	assert_bool(true).override_failure_message("The test case must be interupted by a timeout after 3s").is_false()
+	fail("The test case must be interupted by a timeout after 3s")
 	prints("D", "end test test_timeout")
+
 
 @warning_ignore("unused_parameter")
 func test_timeout_long_running_test_abort(timeout=4000):
@@ -83,27 +90,27 @@ func test_timeout_long_running_test_abort(timeout=4000):
 	prints("E", "0s")
 	var start_time := Time.get_ticks_msec()
 	var sec_start_time := Time.get_ticks_msec()
-	var start := LocalTime.now()
 	
 	# simulate long running function
 	while true:
 		var elapsed_time := Time.get_ticks_msec() - start_time
-		
 		var sec_time = Time.get_ticks_msec() - sec_start_time
 		
-		# give system time to check for timeout
-		await await_millis(10)
 		if sec_time > 1000:
 			sec_start_time = Time.get_ticks_msec()
-			prints("E", start.elapsed_since())
+			prints("E", LocalTime.elapsed(elapsed_time))
 		
-		# exit while after 10s
-		if elapsed_time > 1000 * 10:
+		# give system time to check for timeout
+		await await_millis(200)
+		
+		# exit while after 4500ms inclusive 500ms offset
+		if elapsed_time > 4500:
 			break
 	
 	# this line should not reach if timeout aborts the test case after 4s
-	assert_bool(true).override_failure_message("The test case must be abort interupted by a timeout 4s").is_false()
+	fail("The test case must be abort interupted by a timeout 4s")
 	prints("F", "end test test_timeout")
+
 
 @warning_ignore("unused_parameter", "unused_variable")
 func test_timeout_fuzzer(fuzzer := Fuzzers.rangei(-23, 22), timeout=2000):

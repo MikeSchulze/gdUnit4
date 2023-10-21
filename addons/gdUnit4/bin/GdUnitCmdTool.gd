@@ -83,6 +83,7 @@ class CLIRunner extends Node:
 	
 	func quit(code :int) -> void:
 		GdUnitTools.dispose_all()
+		await GdUnitMemoryObserver.gc_on_guarded_instances()
 		await get_tree().physics_frame
 		get_tree().quit(code)
 	

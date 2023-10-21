@@ -13,8 +13,8 @@ func _init(call_stage := true):
 
 
 func _execute(context :GdUnitExecutionContext) -> void:
-	var test_suite := context.test_suite()
-	var test_case_name := context.test_case().get_name() if _test_name.is_empty() else _test_name
+	var test_suite := context.test_suite
+	var test_case_name := context._test_case_name if _test_name.is_empty() else _test_name
 	
 	fire_event(GdUnitEvent.new()\
 		.test_before(test_suite.get_script().resource_path, test_suite.get_name(), test_case_name))
