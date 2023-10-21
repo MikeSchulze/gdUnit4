@@ -29,14 +29,17 @@ static func check_leaked_instances() -> void:
 	## we check that all registered spy/mock instances are removed from the engine meta data
 	for key in Engine.get_meta_list():
 		if key.begins_with(DOUBLER_INSTANCE_ID_PREFIX):
-			push_error("GdUnit internal error: an spy/mock instance '%s' is not removed from the engine and will lead in a leaked instance!" % Engine.get_meta(key))
+			var instance =  Engine.get_meta(key)
+			push_error("GdUnit internal error: an spy/mock instance '%s', class:'%s' is not removed from the engine and will lead in a leaked instance!" % [instance, instance.__SOURCE_CLASS])
 
 
 # loads the doubler template
 # class_info = { "class_name": <>, "class_path" : <>}
 static func load_template(template :String, class_info :Dictionary, instance :Object) -> PackedStringArray:
 	# store instance id
-	var source_code = template.replace("${instance_id}", "%s%d" % [DOUBLER_INSTANCE_ID_PREFIX, abs(instance.get_instance_id())])
+	var source_code = template\
+		.replace("${instance_id}", "%s%d" % [DOUBLER_INSTANCE_ID_PREFIX, abs(instance.get_instance_id())])\
+		.replace("${source_class}", class_info.get("class_name"))
 	var lines := GdScriptParser.to_unix_format(source_code).split("\n")
 	# replace template class_name with Doubled<class> name and extends form source class
 	lines.insert(0, "class_name Doubled%s" % class_info.get("class_name").replace(".", "_"))

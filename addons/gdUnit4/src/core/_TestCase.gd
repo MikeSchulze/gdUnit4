@@ -125,7 +125,6 @@ func set_timeout():
 	add_child(_timer)
 	_timer.set_name("gdunit_test_case_timer_%d" % _timer.get_instance_id())
 	_timer.timeout.connect(func do_interrupt():
-		prints("testcase: interupted")
 		if is_fuzzed():
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
 		else:
@@ -139,10 +138,8 @@ func set_timeout():
 			# we need to manually unreferece to avoid leaked scripts
 			# but still leaked GDScriptFunctionState exists
 			while is_instance_valid(assert_) and assert_.get_reference_count() > 1:
-				prints("manuall unreference():1", assert_.get_reference_count())
 				assert_.unreference()
 				await Engine.get_main_loop().process_frame
-			prints("testcase: assert unreference done", assert_)
 		completed.emit()
 		, CONNECT_REFERENCE_COUNTED)
 	_timer.set_one_shot(true)

@@ -15,7 +15,6 @@ var _sleep_timer :Timer = null
 
 
 func _init(instance :Object, func_name :String, args := Array()):
-	prints("GdUnitFuncAssert", self)
 	_line_number = GdUnitAssert._get_line_number()
 	GdAssertReports.reset_last_error_line_number()
 	# save the actual assert instance on the current thread context
@@ -29,9 +28,6 @@ func _init(instance :Object, func_name :String, args := Array()):
 
 
 func _notification(_what):
-	prints("GdUnitFuncAssert:_notification", self, GdObjects.notification_as_string(self, _what))
-	#if is_instance_valid(self):
-	#	dispose()
 	if is_instance_valid(_current_value_provider):
 		_current_value_provider.dispose()
 		_current_value_provider = null
@@ -124,7 +120,6 @@ func _validate_callback(predicate :Callable, expected = null):
 	Engine.get_main_loop().root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
 	timer.timeout.connect(func do_interrupt():
-		prints("GdUnitFuncAssert: interupted")
 		_interrupted = true
 		, CONNECT_DEFERRED)
 	timer.set_one_shot(true)

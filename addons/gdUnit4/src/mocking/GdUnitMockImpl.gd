@@ -3,6 +3,7 @@
 # internal mocking stuff
 ################################################################################
 const __INSTANCE_ID = "${instance_id}"
+const __SOURCE_CLASS = "${source_class}"
 
 var __working_mode :String
 var __excluded_methods :PackedStringArray = []

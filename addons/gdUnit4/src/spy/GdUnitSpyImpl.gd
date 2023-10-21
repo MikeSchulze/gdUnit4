@@ -1,5 +1,6 @@
 
 const __INSTANCE_ID = "${instance_id}"
+const __SOURCE_CLASS = "${source_class}"
 
 var __instance_delegator
 var __excluded_methods :PackedStringArray = []
