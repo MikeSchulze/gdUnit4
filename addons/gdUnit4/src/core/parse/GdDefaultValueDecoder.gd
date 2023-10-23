@@ -243,6 +243,8 @@ static func decode(value :Variant) -> String:
 
 
 static func decode_typed(type :int, value :Variant) -> String:
+	if value == null:
+		return "null"
 	var decoder :Callable = instance("GdUnitDefaultValueDecoders", func(): return GdDefaultValueDecoder.new()).get_decoder(type)
 	if decoder == null:
 		push_error("No value decoder registered for type '%d'! Please open a Bug issue at 'https://github.com/MikeSchulze/gdUnit4/issues/new/choose'." % type)

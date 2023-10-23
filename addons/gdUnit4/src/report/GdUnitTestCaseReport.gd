@@ -9,7 +9,7 @@ func _init(
 		p_suite_name :String,
 		test_name :String,
 		is_error := false,
-		is_failed := false,
+		_is_failed := false,
 		failed_count :int = 0,
 		orphan_count_ :int = 0,
 		is_skipped := false,

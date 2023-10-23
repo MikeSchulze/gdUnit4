@@ -204,9 +204,10 @@ static func _extract_args(descriptor :Dictionary) -> Array[GdFunctionArgument]:
 		var arg :Dictionary = arguments.pop_back()
 		var arg_name := _argument_name(arg)
 		var arg_type := _argument_type(arg)
-		var arg_default := GdFunctionArgument.UNDEFINED
+		var arg_default :Variant = GdFunctionArgument.UNDEFINED
 		if not defaults.is_empty():
-			arg_default = _argument_default_value(arg, arg_type, defaults.pop_back())
+			var default_value = defaults.pop_back()
+			arg_default = GdDefaultValueDecoder.decode_typed(arg_type, default_value)
 		args_.push_front(GdFunctionArgument.new(arg_name, arg_type, arg_default))
 	return args_
 
@@ -247,9 +248,3 @@ static func _argument_type_as_string(arg :Dictionary) -> String:
 			return ""
 		_:
 			return GdObjects.type_as_string(type)
-
-
-static func _argument_default_value(arg :Dictionary, arg_type :int, default_value) -> String:
-	if default_value == null:
-		return "null"
-	return GdDefaultValueDecoder.decode_typed(arg_type, default_value)
