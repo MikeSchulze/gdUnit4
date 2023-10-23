@@ -7,5 +7,5 @@ extends IGdUnitExecutionStage
 ## It executes synchronized following stages[br]
 ##  -> test_case() [br]
 func _execute(context :GdUnitExecutionContext) -> void:
-	await context.test_case().execute()
+	await context.test_case.execute()
 	await context.gc()

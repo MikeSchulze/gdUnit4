@@ -8,7 +8,7 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
 func _execute(context :GdUnitExecutionContext) -> void:
-	var test_suite := context.test_suite()
+	var test_suite := context.test_suite
 	
 	@warning_ignore("redundant_await")
 	await test_suite.after()

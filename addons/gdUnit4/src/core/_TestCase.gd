@@ -45,7 +45,7 @@ var timeout : int = DEFAULT_TIMEOUT:
 
 
 @warning_ignore("shadowed_variable_base_class")
-func configure(p_name: String, p_line_number: int, p_script_path: String, p_timeout :int = DEFAULT_TIMEOUT, p_fuzzers :Array = [], p_iterations: int = 1, p_seed :int = -1) -> _TestCase:
+func configure(p_name: String, p_line_number: int, p_script_path: String, p_timeout :int = DEFAULT_TIMEOUT, p_fuzzers :Array[GdFunctionArgument] = [], p_iterations: int = 1, p_seed :int = -1) -> _TestCase:
 	set_name(p_name)
 	_line_number = p_line_number
 	_fuzzers = p_fuzzers
@@ -99,7 +99,6 @@ func dispose():
 	stop_timer()
 	_remove_failure_handler()
 	_fuzzers.clear()
-	monitor = null
 	_report = null
 
 
@@ -120,7 +119,7 @@ func update_fuzzers(input_values :Array, iteration :int):
 func set_timeout():
 	if is_instance_valid(_timer):
 		return
-	var time :float = timeout * 0.001
+	var time :float = timeout / 1000.0
 	_timer = Timer.new()
 	add_child(_timer)
 	_timer.set_name("gdunit_test_case_timer_%d" % _timer.get_instance_id())
@@ -130,18 +129,8 @@ func set_timeout():
 		else:
 			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout))
 		_interupted = true
-		# unreference last used assert form the test to prevent memory leaks
-		var assert_ := GdUnitThreadManager.get_current_context().get_assert()
-		if assert_:
-			GdUnitThreadManager.get_current_context().set_assert(null)
-			# finally do this very hacky stuff
-			# we need to manually unreferece to avoid leaked scripts
-			# but still leaked GDScriptFunctionState exists
-			while is_instance_valid(assert_) and assert_.get_reference_count() > 1:
-				assert_.unreference()
-				await Engine.get_main_loop().process_frame
 		completed.emit()
-		, CONNECT_REFERENCE_COUNTED)
+		, CONNECT_DEFERRED)
 	_timer.set_one_shot(true)
 	_timer.set_wait_time(time)
 	_timer.set_autostart(false)

@@ -13,7 +13,7 @@ func _init(call_stage := true):
 
 
 func _execute(context :GdUnitExecutionContext) -> void:
-	var test_suite := context.test_suite()
+	var test_suite := context.test_suite
 	
 	if _call_stage:
 		@warning_ignore("redundant_await")
@@ -22,12 +22,12 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	GdUnitThreadManager.get_current_context().set_assert(null)
 	await context.gc()
 	
-	if context.test_case().is_skipped():
+	if context.test_case.is_skipped():
 		fire_test_skipped(context)
 	else:
 		fire_test_ended(context)
-	if is_instance_valid(context.test_case()):
-		context.test_case().dispose()
+	if is_instance_valid(context.test_case):
+		context.test_case.dispose()
 
 
 func set_test_name(test_name :StringName):
@@ -35,8 +35,8 @@ func set_test_name(test_name :StringName):
 
 
 func fire_test_ended(context :GdUnitExecutionContext) -> void:
-	var test_suite := context.test_suite()
-	var test_name := context.test_case().get_name() if _test_name.is_empty() else _test_name
+	var test_suite := context.test_suite
+	var test_name := context._test_case_name if _test_name.is_empty() else _test_name
 	var reports := collect_reports(context)
 	var orphans := collect_orphans(context, reports)
 	
@@ -54,7 +54,7 @@ func collect_orphans(context :GdUnitExecutionContext, reports :Array[GdUnitRepor
 
 func collect_reports(context :GdUnitExecutionContext) -> Array[GdUnitReport]:
 	var reports := context.reports()
-	var test_case := context.test_case()
+	var test_case := context.test_case
 	if test_case.is_interupted() and not test_case.is_expect_interupted():
 		reports.push_back(test_case.report())
 	# we combine the reports of test_before(), test_after() and test() to be reported by `fire_test_ended`
@@ -69,7 +69,7 @@ func add_orphan_report_test(context :GdUnitExecutionContext, reports :Array[GdUn
 	var orphans := context.count_orphans()
 	if orphans > 0:
 		reports.push_front(GdUnitReport.new()\
-			.create(GdUnitReport.WARN, context.test_case().line_number(), GdAssertMessages.orphan_detected_on_test(orphans)))
+			.create(GdUnitReport.WARN, context.test_case.line_number(), GdAssertMessages.orphan_detected_on_test(orphans)))
 	return orphans
 
 
@@ -77,14 +77,14 @@ func add_orphan_report_teststage(context :GdUnitExecutionContext, reports :Array
 	var orphans := context.count_orphans()
 	if orphans > 0:
 		reports.push_front(GdUnitReport.new()\
-			.create(GdUnitReport.WARN, context.test_case().line_number(), GdAssertMessages.orphan_detected_on_test_setup(orphans)))
+			.create(GdUnitReport.WARN, context.test_case.line_number(), GdAssertMessages.orphan_detected_on_test_setup(orphans)))
 	return orphans
 
 
 func fire_test_skipped(context :GdUnitExecutionContext):
-	var test_suite := context.test_suite()
-	var test_case := context.test_case()
-	var test_case_name :=  context.test_case().get_name() if _test_name.is_empty() else _test_name
+	var test_suite := context.test_suite
+	var test_case := context.test_case
+	var test_case_name :=  context._test_case_name if _test_name.is_empty() else _test_name
 	var statistics = {
 		GdUnitEvent.ORPHAN_NODES: 0,
 		GdUnitEvent.ELAPSED_TIME: 0,

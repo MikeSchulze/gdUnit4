@@ -11,7 +11,7 @@ var _stage_after :IGdUnitExecutionStage = GdUnitTestCaseAfterStage.new()
 ## It executes synchronized following stages[br]
 ##  -> test_case( <test_parameters> ) [br]
 func _execute(context :GdUnitExecutionContext) -> void:
-	var test_case := context.test_case()
+	var test_case := context.test_case
 	var test_case_parameters := test_case.test_parameters()
 	var test_parameter_index := test_case.test_parameter_index()
 	var test_case_names := test_case.test_case_names()

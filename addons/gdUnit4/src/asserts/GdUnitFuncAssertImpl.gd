@@ -114,6 +114,7 @@ func __is_not_equal(c, e): return not GdObjects.equals(c, e)
 func _validate_callback(predicate :Callable, expected = null):
 	if _interrupted:
 		return
+	GdUnitMemoryObserver.guard_instance(self)
 	var time_scale = Engine.get_time_scale()
 	var timer := Timer.new()
 	timer.set_name("gdunit_funcassert_interrupt_timer_%d" % timer.get_instance_id())
@@ -148,6 +149,7 @@ func _validate_callback(predicate :Callable, expected = null):
 		report_success()
 	_sleep_timer.free()
 	timer.free()
+	GdUnitMemoryObserver.unguard_instance(self)
 
 
 func next_current_value() -> Variant:

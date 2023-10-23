@@ -2,68 +2,82 @@
 ## It contains all the necessary information about the executed stage, such as memory observers, reports, orphan monitor
 class_name GdUnitExecutionContext
 
+var _parent_context :GdUnitExecutionContext
 var _sub_context :Array[GdUnitExecutionContext] = []
 var _orphan_monitor :GdUnitOrphanNodesMonitor
-var _memory_observer := GdUnitMemoryObserver.new()
+var _memory_observer :GdUnitMemoryObserver
 var _report_collector :GdUnitTestReportCollector
-var _timer := LocalTime.now()
-var _test_suite :GdUnitTestSuite = null
-var _test_case: _TestCase = null
+var _timer :LocalTime
+var _test_case_name: StringName
+var _name :String
 
 
-func _init(name :String, test_suite_ :GdUnitTestSuite, pe :GdUnitExecutionContext = null) -> void:
-	assert(test_suite_, "test_suite is null")
+var test_suite : GdUnitTestSuite = null:
+	set (value):
+		test_suite = value
+	get:
+		if _parent_context != null:
+			return _parent_context.test_suite
+		return test_suite
+
+
+var test_case : _TestCase = null:
+	get:
+		if _test_case_name.is_empty():
+			return null
+		return test_suite.find_child(_test_case_name, false, false)
+
+
+func _init(name :String, parent_context :GdUnitExecutionContext = null) -> void:
+	_name = name
+	_parent_context = parent_context
+	_timer = LocalTime.now()
 	_orphan_monitor = GdUnitOrphanNodesMonitor.new(name)
 	_orphan_monitor.start()
+	_memory_observer = GdUnitMemoryObserver.new()
 	_report_collector = GdUnitTestReportCollector.new(get_instance_id())
-	_test_suite = test_suite_
-	if pe != null:
-		_test_case = pe.test_case()
-	set_active()
-	if pe != null:
-		pe._sub_context.append(self)
+	if parent_context != null:
+		parent_context._sub_context.append(self)
 
 
 func dispose() -> void:
-	_sub_context.clear()
+	_timer = null
 	_orphan_monitor = null
-	_memory_observer = null
 	_report_collector = null
-	if is_instance_valid(_test_suite):
-		await Engine.get_main_loop().process_frame
-		_test_suite.free()
-		_test_suite = null
-	_test_case = null
+	_memory_observer = null
+	_parent_context = null
+	test_suite = null
+	test_case = null
 	for context in _sub_context:
 		context.dispose()
 	_sub_context.clear()
 
 
 func set_active() -> void:
-	_test_suite.__execution_context = self
+	test_suite.__execution_context = self
 	GdUnitThreadManager.get_current_context().set_execution_context(self)
 
 
 static func of_test_suite(test_suite_ :GdUnitTestSuite) -> GdUnitExecutionContext:
-	return GdUnitExecutionContext.new(test_suite_.get_name(), test_suite_)
+	assert(test_suite_, "test_suite is null")
+	var context := GdUnitExecutionContext.new(test_suite_.get_name())
+	context.test_suite = test_suite_
+	context.set_active()
+	return context
 
 
-static func of_test_case(pe :GdUnitExecutionContext, test_case_ :_TestCase) -> GdUnitExecutionContext:
-	var context := GdUnitExecutionContext.new(test_case_.get_name(), pe.test_suite(), pe)
-	context._test_case = test_case_
+static func of_test_case(pe :GdUnitExecutionContext, test_case_name :StringName) -> GdUnitExecutionContext:
+	var context := GdUnitExecutionContext.new(test_case_name, pe)
+	context._test_case_name = test_case_name
+	context.set_active()
 	return context
 
 
 static func of(pe :GdUnitExecutionContext) -> GdUnitExecutionContext:
-	return GdUnitExecutionContext.new(pe.test_case().get_name(), pe.test_suite(), pe)
-
-
-func test_suite() -> GdUnitTestSuite:
-	return _test_suite
-
-
-func test_case() -> _TestCase:
-	return _test_case
+	var context := GdUnitExecutionContext.new(pe._test_case_name, pe)
+	context._test_case_name = pe._test_case_name
+	context.set_active()
+	return context
 
 
 func test_failed() -> bool:

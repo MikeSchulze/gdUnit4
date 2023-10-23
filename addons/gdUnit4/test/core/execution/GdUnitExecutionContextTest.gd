@@ -44,20 +44,22 @@ func test_create_context_of_test_suite() -> void:
 	
 	# verify execution context is fully initialized
 	assert_that(ec).is_not_null()
-	assert_object(ec.test_suite()).is_same(ts)
-	assert_object(ec.test_case()).is_null()
+	assert_object(ec.test_suite).is_same(ts)
+	assert_object(ec.test_case).is_null()
 	assert_array(ec._sub_context).is_empty()
 	assert_object(ec._orphan_monitor).is_not_null()
 	assert_object(ec._memory_observer).is_not_null()
 	assert_object(ec._report_collector).is_not_null()
 	assert_statistics(ec)
+	ec.dispose()
 
 
 func test_create_context_of_test_case() -> void:
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
-	var tc :_TestCase = auto_free(_TestCase.new())
+	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
+	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
-	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
+	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
 	# verify the current context is not affected by this test itself
 	assert_object(__execution_context).is_not_same(ec1)
 	assert_object(__execution_context).is_not_same(ec2)
@@ -66,8 +68,8 @@ func test_create_context_of_test_case() -> void:
 	assert_object(ts.__execution_context).is_same(ec2)
 	# verify execution context is fully initialized
 	assert_that(ec2).is_not_null()
-	assert_object(ec2.test_suite()).is_same(ts)
-	assert_object(ec2.test_case()).is_same(tc)
+	assert_object(ec2.test_suite).is_same(ts)
+	assert_object(ec2.test_case).is_same(tc)
 	assert_array(ec2._sub_context).is_empty()
 	assert_object(ec2._orphan_monitor).is_not_null().is_not_same(ec1._orphan_monitor)
 	assert_object(ec2._memory_observer).is_not_null().is_not_same(ec1._memory_observer)
@@ -75,20 +77,22 @@ func test_create_context_of_test_case() -> void:
 	assert_statistics(ec2)
 	# check parent context ec1 is still valid
 	assert_that(ec1).is_not_null()
-	assert_object(ec1.test_suite()).is_same(ts)
-	assert_object(ec1.test_case()).is_null()
+	assert_object(ec1.test_suite).is_same(ts)
+	assert_object(ec1.test_case).is_null()
 	assert_array(ec1._sub_context).contains_exactly([ec2])
 	assert_object(ec1._orphan_monitor).is_not_null()
 	assert_object(ec1._memory_observer).is_not_null()
 	assert_object(ec1._report_collector).is_not_null()
 	assert_statistics(ec1)
+	ec1.dispose()
 
 
 func test_create_context_of_test() -> void:
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
-	var tc :_TestCase = auto_free(_TestCase.new())
+	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
+	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
-	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
+	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
 	var ec3 := GdUnitExecutionContext.of(ec2)
 	# verify the current context is not affected by this test itself
 	assert_object(__execution_context).is_not_same(ec1)
@@ -99,8 +103,8 @@ func test_create_context_of_test() -> void:
 	assert_object(ts.__execution_context).is_same(ec3)
 	# verify execution context is fully initialized
 	assert_that(ec3).is_not_null()
-	assert_object(ec3.test_suite()).is_same(ts)
-	assert_object(ec3.test_case()).is_same(tc)
+	assert_object(ec3.test_suite).is_same(ts)
+	assert_object(ec3.test_case).is_same(tc)
 	assert_array(ec3._sub_context).is_empty()
 	assert_object(ec3._orphan_monitor).is_not_null()\
 		.is_not_same(ec1._orphan_monitor)\
@@ -114,8 +118,8 @@ func test_create_context_of_test() -> void:
 	assert_statistics(ec3)
 	# check parent context ec2 is still valid
 	assert_that(ec2).is_not_null()
-	assert_object(ec2.test_suite()).is_same(ts)
-	assert_object(ec2.test_case()).is_same(tc)
+	assert_object(ec2.test_suite).is_same(ts)
+	assert_object(ec2.test_case).is_same(tc)
 	assert_array(ec2._sub_context).contains_exactly([ec3])
 	assert_object(ec2._orphan_monitor).is_not_null()\
 		.is_not_same(ec1._orphan_monitor)
@@ -126,21 +130,23 @@ func test_create_context_of_test() -> void:
 	assert_statistics(ec2)
 	# check parent context ec1 is still valid
 	assert_that(ec1).is_not_null()
-	assert_object(ec1.test_suite()).is_same(ts)
-	assert_object(ec1.test_case()).is_null()
+	assert_object(ec1.test_suite).is_same(ts)
+	assert_object(ec1.test_case).is_null()
 	assert_array(ec1._sub_context).contains_exactly([ec2])
 	assert_object(ec1._orphan_monitor).is_not_null()
 	assert_object(ec1._memory_observer).is_not_null()
 	assert_object(ec1._report_collector).is_not_null()
 	assert_statistics(ec1)
+	ec1.dispose()
 
 
 func test_report_collectors() -> void:
 	# setup
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
-	var tc :_TestCase = auto_free(_TestCase.new())
+	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
+	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
-	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
+	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
 	var ec3 := GdUnitExecutionContext.of(ec2)
 	
 	# add reports
@@ -160,14 +166,16 @@ func test_report_collectors() -> void:
 	assert_array(ec1.reports()).contains_exactly([failure11])
 	assert_array(ec2.reports()).contains_exactly([failure21, failure22])
 	assert_array(ec3.reports()).contains_exactly([failure31, failure32, failure33])
+	ec1.dispose()
 
 
 func test_has_and_count_failures() -> void:
 	# setup
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
-	var tc :_TestCase = auto_free(_TestCase.new())
+	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
+	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
-	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
+	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
 	var ec3 := GdUnitExecutionContext.of(ec2)
 	
 	# precheck
@@ -211,3 +219,4 @@ func test_has_and_count_failures() -> void:
 	assert_that(ec2.count_failures(true)).is_equal(6)
 	assert_that(ec3.has_failures()).is_true()
 	assert_that(ec3.count_failures(true)).is_equal(4)
+	ec1.dispose()
