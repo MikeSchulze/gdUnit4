@@ -4,6 +4,17 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd'
 
+var _saved_report_assert_warnings
+
+
+func before():
+	_saved_report_assert_warnings = ProjectSettings.get_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS)
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS, false)
+
+
+func after():
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS, _saved_report_assert_warnings)
+
 
 func test_is_null() -> void:
 	assert_array(null).is_null()

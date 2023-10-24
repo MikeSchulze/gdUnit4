@@ -20,7 +20,7 @@ func name() -> String:
 
 
 func default() -> Variant:
-	return _default_value
+	return convert(_default_value, _type)
 
 
 func value_as_string() -> String:
