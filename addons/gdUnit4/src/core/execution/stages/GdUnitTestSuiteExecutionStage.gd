@@ -56,7 +56,7 @@ func clone_test_suite(test_suite :GdUnitTestSuite) -> GdUnitTestSuite:
 		test_suite.remove_child(child)
 		_test_suite.add_child(child)
 	parent.add_child(_test_suite)
-	await GdUnitMemoryObserver.guard_instance(_test_suite.__awaiter)
+	GdUnitMemoryObserver.guard_instance(_test_suite.__awaiter)
 	# finally free current test suite instance
 	test_suite.free()
 	await Engine.get_main_loop().process_frame

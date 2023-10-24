@@ -43,7 +43,7 @@ func register_auto_free(obj) -> Variant:
 
 # to disable instance guard when run into issues.
 static func _is_instance_guard_enabled() -> bool:
-	return true
+	return false
 
 
 static func debug_observe(name :String, obj :Object, indent :int = 0) -> void:

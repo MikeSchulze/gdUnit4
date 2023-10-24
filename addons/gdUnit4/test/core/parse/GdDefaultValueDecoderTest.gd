@@ -21,6 +21,7 @@ func after():
 			.is_not_null()
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Primitives(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_NIL, null, "null"],
 	[TYPE_BOOL, true, "true"],
@@ -42,6 +43,7 @@ func test_decode_Primitives(variant_type :int, value, expected :String, test_par
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Vectors(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_VECTOR2, Vector2(), "Vector2()"],
 	[TYPE_VECTOR2, Vector2(1,2), "Vector2(1, 2)"],
@@ -61,6 +63,7 @@ func test_decode_Vectors(variant_type :int, value, expected :String, test_parame
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Rect2(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_RECT2, Rect2(), "Rect2()"],
 	[TYPE_RECT2, Rect2(1,2, 10,20), "Rect2(Vector2(1, 2), Vector2(10, 20))"],
@@ -72,6 +75,7 @@ func test_decode_Rect2(variant_type :int, value, expected :String, test_paramete
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Transforms(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_TRANSFORM2D, Transform2D(),
 		"Transform2D()"],
@@ -96,6 +100,7 @@ func test_decode_Transforms(variant_type :int, value, expected :String, test_par
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Plane(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_PLANE, Plane(), "Plane()"],
 	[TYPE_PLANE, Plane(1,2,3,4), "Plane(1, 2, 3, 4)"],
@@ -105,6 +110,7 @@ func test_decode_Plane(variant_type :int, value, expected :String, test_paramete
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Quaternion(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_QUATERNION, Quaternion(), "Quaternion()"],
 	[TYPE_QUATERNION, Quaternion(1,2,3,4), "Quaternion(1, 2, 3, 4)"],
@@ -113,6 +119,7 @@ func test_decode_Quaternion(variant_type :int, value, expected :String, test_par
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_AABB(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_AABB, AABB(), "AABB()"],
 	[TYPE_AABB, AABB(Vector3.ONE, Vector3(10,20,30)), "AABB(Vector3(1, 1, 1), Vector3(10, 20, 30))"],
@@ -121,6 +128,7 @@ func test_decode_AABB(variant_type :int, value, expected :String, test_parameter
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Basis(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_BASIS, Basis(), "Basis()"],
 	[TYPE_BASIS, Basis(Vector3(0.1,0.2,0.3).normalized(), .1),
@@ -132,6 +140,7 @@ func test_decode_Basis(variant_type :int, value, expected :String, test_paramete
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Color(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_COLOR, Color(), "Color()"],
 	[TYPE_COLOR, Color.RED, "Color(1, 0, 0, 1)"],
@@ -141,6 +150,7 @@ func test_decode_Color(variant_type :int, value, expected :String, test_paramete
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_NodePath(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_NODE_PATH, NodePath(), 'NodePath()'],
 	[TYPE_NODE_PATH, NodePath("/foo/bar"), 'NodePath("/foo/bar")'],
@@ -149,6 +159,7 @@ func test_decode_NodePath(variant_type :int, value, expected :String, test_param
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_RID(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_RID, RID(), 'RID()'],
 	]) -> void:
@@ -156,6 +167,7 @@ func test_decode_RID(variant_type :int, value, expected :String, test_parameters
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func _test_decode_Object(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_OBJECT, Node.new(), 'Node.new()'],
 	]) -> void:
@@ -163,6 +175,7 @@ func _test_decode_Object(variant_type :int, value, expected :String, test_parame
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Callable(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_CALLABLE, Callable(), 'Callable()'],
 	]) -> void:
@@ -170,6 +183,7 @@ func test_decode_Callable(variant_type :int, value, expected :String, test_param
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Signal(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_SIGNAL, Signal(), 'Signal()'],
 	]) -> void:
@@ -177,6 +191,7 @@ func test_decode_Signal(variant_type :int, value, expected :String, test_paramet
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Dictionary(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_DICTIONARY, {}, '{}'],
 	[TYPE_DICTIONARY, Dictionary(), '{}'],
@@ -187,6 +202,7 @@ func test_decode_Dictionary(variant_type :int, value, expected :String, test_par
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_Array(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_ARRAY, [], '[]'],
 	[TYPE_ARRAY, Array(), '[]'],
@@ -196,6 +212,7 @@ func test_decode_Array(variant_type :int, value, expected :String, test_paramete
 	_tested_types[variant_type] = 1
 
 
+@warning_ignore("unused_parameter")
 func test_decode_typedArrays(variant_type :int, value, expected :String, test_parameters := [
 	[TYPE_PACKED_BYTE_ARRAY, PackedByteArray(),
 		'PackedByteArray()'],

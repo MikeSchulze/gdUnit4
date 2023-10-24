@@ -9,7 +9,8 @@ var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseFuzzedTestStage.new()
 
 func _execute(context :GdUnitExecutionContext) -> void:
 	await _stage_before.execute(context)
-	await _stage_test.execute(GdUnitExecutionContext.of(context))
+	if not context.test_case.is_skipped():
+		await _stage_test.execute(GdUnitExecutionContext.of(context))
 	await _stage_after.execute(context)
 
 
