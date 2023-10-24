@@ -2,10 +2,9 @@ extends Node
 
 signal sync_rpc_id_result_received
 
-const GdUnitExecutor = preload("res://addons/gdUnit4/src/core/GdUnitExecutor.gd")
 
 @onready var _client :GdUnitTcpClient = $GdUnitTcpClient
-@onready var _executor :GdUnitExecutor = $GdUnitExecutor
+@onready var _executor :GdUnitTestSuiteExecutor = GdUnitTestSuiteExecutor.new()
 
 enum {
 	INIT,
@@ -19,15 +18,14 @@ const GDUNIT_RUNNER = "GdUnitRunner"
 var _config := GdUnitRunnerConfig.new()
 var _test_suites_to_process :Array
 var _state = INIT
-var _cs_executor
 
 
 func _init():
 	# minimize scene window checked debug mode
 	if OS.get_cmdline_args().size() == 1:
-		DisplayServer.window_set_title("GdUnit3 Runner (Debug Mode)")
+		DisplayServer.window_set_title("GdUnit4 Runner (Debug Mode)")
 	else:
-		DisplayServer.window_set_title("GdUnit3 Runner (Release Mode)")
+		DisplayServer.window_set_title("GdUnit4 Runner (Release Mode)")
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	# store current runner instance to engine meta data to can be access in as a singleton
 	Engine.set_meta(GDUNIT_RUNNER, self)
@@ -79,10 +77,8 @@ func _process(_delta):
 				# process next test suite
 				set_process(false)
 				var test_suite :Node = _test_suites_to_process.pop_front()
-				add_child(test_suite)
-				var executor = _cs_executor if GdObjects.is_cs_test_suite(test_suite) else _executor
-				executor.Execute(test_suite)
-				await executor.ExecutionCompleted
+				var executor := _executor
+				await executor.execute(test_suite)
 				set_process(true)
 		STOP:
 			_state = EXIT

@@ -4,6 +4,7 @@ extends GdUnitTestSuite
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/GdUnitTestSuite.gd'
+const GdUnitAssertImpl = preload("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd")
 
 var _events :Array[GdUnitEvent] = []
 

@@ -19,6 +19,17 @@ func after_test():
 			node.stop()
 			node.free()
 
+
+## Utility to check if a test has failed in a particular line and if there is an error message
+func assert_failed_at(line_number :int, expected_failure :String) -> bool:
+	var is_failed = is_failure()
+	var last_failure = GdAssertReports.current_failure()
+	var last_failure_line = GdAssertReports.get_last_error_line_number()
+	assert_str(last_failure).is_equal(expected_failure)
+	assert_int(last_failure_line).is_equal(line_number)
+	return is_failed
+
+
 func install_signal_emitter(signal_name :String, signal_args: Array = [], time_out : float = 0.020):
 	var timer := Timer.new()
 	add_child(timer)

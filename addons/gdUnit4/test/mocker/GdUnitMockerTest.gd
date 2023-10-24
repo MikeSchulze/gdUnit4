@@ -1,15 +1,19 @@
 class_name GdUnitMockerTest
 extends GdUnitTestSuite
 
+
 var resource_path := "res://addons/gdUnit4/test/mocker/resources/"
+
+var _saved_report_error_settings
 
 func before():
 	# disable error pushing for testing
-	GdUnitMockBuilder.do_push_errors(false)
+	_saved_report_error_settings = ProjectSettings.get_setting(GdUnitSettings.REPORT_PUSH_ERRORS)
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, false)
 
 
 func after():
-	GdUnitMockBuilder.do_push_errors(true)
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, _saved_report_error_settings)
 
 
 func test_mock_instance_id_is_unique():
@@ -937,7 +941,7 @@ func test_mock_scene_by_path():
 	assert_object(mocked_scene.get_script()).is_not_null()
 	assert_str(mocked_scene.get_script().resource_name).is_equal("MockTestScene.gd")
 	# check is mocked scene registered for auto freeing
-	assert_bool(GdUnitMemoryPool.is_auto_free_registered(mocked_scene, get_meta("MEMORY_POOL"))).is_true()
+	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(mocked_scene)).is_true()
 
 
 func test_mock_scene_by_resource():
@@ -947,7 +951,7 @@ func test_mock_scene_by_resource():
 	assert_object(mocked_scene.get_script()).is_not_null()
 	assert_str(mocked_scene.get_script().resource_name).is_equal("MockTestScene.gd")
 	# check is mocked scene registered for auto freeing
-	assert_bool(GdUnitMemoryPool.is_auto_free_registered(mocked_scene, get_meta("MEMORY_POOL"))).is_true()
+	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(mocked_scene)).is_true()
 
 
 func test_mock_scene_by_instance():

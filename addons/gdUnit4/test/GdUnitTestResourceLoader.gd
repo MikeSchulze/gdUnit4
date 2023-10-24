@@ -1,6 +1,8 @@
 class_name GdUnitTestResourceLoader
 extends RefCounted
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
 enum {
 	GD_SUITE,
 	CS_SUITE

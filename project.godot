@@ -12,6 +12,7 @@ config_version=5
 
 config/name="gdUnit4"
 config/features=PackedStringArray("4.1", "C#")
+config/tags=PackedStringArray("addon", "godot4", "testing")
 config/icon="res://icon.png"
 
 [audio]
@@ -21,6 +22,7 @@ default_bus_layout=""
 [debug]
 
 file_logging/enable_file_logging=true
+gdscript/warnings/exclude_addons=false
 gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
 
@@ -31,8 +33,31 @@ project/assembly_name="gdUnit4"
 [gdunit4]
 
 settings/common/update_notification_enabled=false
-report/assert/verbose_errors=false
-report/assert/verbose_warnings=false
+
+[importer_defaults]
+
+texture={
+"compress/channel_pack": 0,
+"compress/hdr_compression": 1,
+"compress/high_quality": false,
+"compress/lossy_quality": 0.7,
+"compress/mode": 0,
+"compress/normal_map": 0,
+"detect_3d/compress_to": 1,
+"editor/convert_colors_with_editor_theme": true,
+"editor/scale_with_editor_scale": true,
+"mipmaps/generate": false,
+"mipmaps/limit": -1,
+"process/fix_alpha_border": true,
+"process/hdr_as_srgb": false,
+"process/hdr_clamp_exposure": false,
+"process/normal_map_invert_y": false,
+"process/premult_alpha": false,
+"process/size_limit": 0,
+"roughness/mode": 0,
+"roughness/src_normal": "",
+"svg/scale": 1.0
+}
 
 [network]
 

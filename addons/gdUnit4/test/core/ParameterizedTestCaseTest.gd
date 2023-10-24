@@ -177,6 +177,7 @@ func test_with_string_paramset(
 
 
 # https://github.com/MikeSchulze/gdUnit4/issues/213
+@warning_ignore("unused_parameter")
 func test_with_string_contains_brackets(
 	test_index :int,
 	value :String,

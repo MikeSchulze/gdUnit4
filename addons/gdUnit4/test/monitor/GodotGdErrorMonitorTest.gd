@@ -58,7 +58,7 @@ func test_scan_for_push_errors() -> void:
 	var entry := ErrorLogEntry.new(ErrorLogEntry.TYPE.PUSH_ERROR, -1,
 		"this is an error",
 		"at: push_error (core/variant/variant_utility.cpp:880)")
-	var expected_report := monitor._to_report(entry)
+	var expected_report := GodotGdErrorMonitor._to_report(entry)
 	assert_array(monitor.reports()).contains_exactly([expected_report])
 
 
@@ -78,7 +78,7 @@ func test_scan_for_script_errors() -> void:
 	var entry := ErrorLogEntry.new(ErrorLogEntry.TYPE.PUSH_ERROR, 22,
 		"Trying to call a function on a previously freed instance.",
 		"at: GdUnitScriptTypeTest.test_xx (res://addons/gdUnit4/test/GdUnitScriptTypeTest.gd:22)")
-	var expected_report := monitor._to_report(entry)
+	var expected_report := GodotGdErrorMonitor._to_report(entry)
 	assert_array(monitor.reports()).contains_exactly([expected_report])
 
 

@@ -4,6 +4,16 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd'
 
+var _saved_report_assert_warnings
+
+
+func before():
+	_saved_report_assert_warnings = ProjectSettings.get_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS)
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS, false)
+
+
+func after():
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS, _saved_report_assert_warnings)
 
 
 func test_is_null() -> void:
@@ -371,7 +381,7 @@ func test_contains_exactly_in_any_order():
 func test_contains_same():
 	var valueA := TestObj.new("A", 0)
 	var valueB := TestObj.new("B", 0)
-	var valueC := TestObj.new("C", 0)
+	
 	assert_array([valueA, valueB]).contains_same([valueA])
 	
 	assert_failure(func(): assert_array([valueA, valueB]).contains_same([TestObj.new("A", 0)])) \

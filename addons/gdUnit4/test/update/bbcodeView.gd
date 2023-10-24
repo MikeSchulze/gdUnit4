@@ -1,7 +1,8 @@
 extends Control
 
-const GdMarkDownReader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
-const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+const GdMarkDownReader := preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
+const GdUnitUpdateClient := preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
 
 @onready var _input :TextEdit = $HSplitContainer/TextEdit
 @onready var _text :RichTextLabel = $HSplitContainer/RichTextLabel

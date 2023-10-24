@@ -16,11 +16,14 @@ const TEST_PROPERTY_E = CATEGORY_B + "/c/prop_e"
 const TEST_PROPERTY_F = CATEGORY_B + "/c/prop_f"
 const TEST_PROPERTY_G = CATEGORY_B + "/a/prop_g"
 
+
 func before() -> void:
 	GdUnitSettings.dump_to_tmp()
 
+
 func after() -> void:
 	GdUnitSettings.restore_dump_from_tmp()
+
 
 func before_test() -> void:
 	GdUnitSettings.create_property_if_need(TEST_PROPERTY_A, true, "helptext TEST_PROPERTY_A.")
@@ -31,6 +34,7 @@ func before_test() -> void:
 	GdUnitSettings.create_property_if_need(TEST_PROPERTY_F, "abc", "helptext TEST_PROPERTY_F.")
 	GdUnitSettings.create_property_if_need(TEST_PROPERTY_G, 200, "helptext TEST_PROPERTY_G.")
 
+
 func after_test() -> void:
 	ProjectSettings.clear(TEST_PROPERTY_A)
 	ProjectSettings.clear(TEST_PROPERTY_B)
@@ -39,6 +43,7 @@ func after_test() -> void:
 	ProjectSettings.clear(TEST_PROPERTY_E)
 	ProjectSettings.clear(TEST_PROPERTY_F)
 	ProjectSettings.clear(TEST_PROPERTY_G)
+
 
 func test_list_settings() -> void:
 	var settingsA := GdUnitSettings.list_settings(CATEGORY_A)
@@ -57,6 +62,7 @@ func test_list_settings() -> void:
 		tuple(TEST_PROPERTY_G, TYPE_INT, 200, 200, "helptext TEST_PROPERTY_G.")
 	])
 
+
 func test_enum_property() -> void:
 	var value_set :PackedStringArray = GdUnitSettings.NAMING_CONVENTIONS.keys()
 	GdUnitSettings.create_property_if_need("test/enum", GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT, "help", value_set)
@@ -68,6 +74,7 @@ func test_enum_property() -> void:
 	assert_that(property.help()).is_equal('help ["AUTO_DETECT", "SNAKE_CASE", "PASCAL_CASE"]')
 	assert_that(property.value_set()).is_equal(value_set)
 
+
 func test_migrate_property_change_key() -> void:
 	# setup old property
 	var old_property_X = "/category_patch/group_old/name"
@@ -78,7 +85,10 @@ func test_migrate_property_change_key() -> void:
 	var old_property := GdUnitSettings.get_property(old_property_X)
 	
 	# migrate
-	GdUnitSettings.migrate_property(old_property_X, new_property_X)
+	GdUnitSettings.migrate_property(old_property.name(),\
+		new_property_X,\
+		old_property.default(),\
+		old_property.help())
 	
 	var new_property := GdUnitSettings.get_property(new_property_X)
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_null()
@@ -93,8 +103,6 @@ func test_migrate_property_change_key() -> void:
 	# cleanup
 	ProjectSettings.clear(new_property_X)
 
-func convert_value(_value :String) -> String:
-	return "bar"
 
 func test_migrate_property_change_value() -> void:
 	# setup old property
@@ -106,7 +114,11 @@ func test_migrate_property_change_value() -> void:
 	var old_property := GdUnitSettings.get_property(old_property_X)
 	
 	# migrate property
-	GdUnitSettings.migrate_property(old_property_X, new_property_X, Callable(self, "convert_value"))
+	GdUnitSettings.migrate_property(old_property.name(),\
+		new_property_X,\
+		old_property.default(),\
+		old_property.help(),\
+		func(_value): return "bar")
 	
 	var new_property := GdUnitSettings.get_property(new_property_X)
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_null()
@@ -117,6 +129,27 @@ func test_migrate_property_change_value() -> void:
 	assert_int(new_property.type()).is_equal(old_property.type())
 	assert_str(new_property.default()).is_equal(old_property.default())
 	assert_str(new_property.help()).is_equal(old_property.help())
-
 	# cleanup
 	ProjectSettings.clear(new_property_X)
+
+
+const TEST_ROOT_FOLDER := "gdunit4/settings/test/test_root_folder"
+const HELP_TEST_ROOT_FOLDER := "Sets the root folder where test-suites located/generated."
+
+func test_migrate_properties_v215() -> void:
+	# rebuild original settings
+	GdUnitSettings.create_property_if_need(TEST_ROOT_FOLDER, "test", HELP_TEST_ROOT_FOLDER)
+	ProjectSettings.set_setting(TEST_ROOT_FOLDER, "xxx")
+	
+	# migrate
+	GdUnitSettings.migrate_properties()
+	
+	# verify
+	var property := GdUnitSettings.get_property(GdUnitSettings.TEST_LOOKUP_FOLDER)
+	assert_str(property.value()).is_equal("xxx")
+	assert_array(property.value_set()).is_empty()
+	assert_int(property.type()).is_equal(TYPE_STRING)
+	assert_str(property.default()).is_equal(GdUnitSettings.DEFAULT_TEST_LOOKUP_FOLDER)
+	assert_str(property.help()).is_equal(GdUnitSettings.HELP_TEST_LOOKUP_FOLDER)
+	assert_that(GdUnitSettings.get_property(TEST_ROOT_FOLDER)).is_null()
+	ProjectSettings.clear(GdUnitSettings.TEST_LOOKUP_FOLDER)

@@ -4,6 +4,9 @@
 class_name GdUnitTestSuiteBuilderTest
 extends GdUnitTestSuite
 
+const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+
+
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitTestSuiteBuilder.gd'
 

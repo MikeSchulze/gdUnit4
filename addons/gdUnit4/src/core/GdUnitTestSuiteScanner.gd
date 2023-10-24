@@ -8,6 +8,14 @@ func test_${func_name}() -> void:
 	assert_not_yet_implemented()
 """
 
+
+# we exclude the gdunit source directorys by default
+const exclude_scan_directories = [
+	"res://addons/gdUnit4/bin",
+	"res://addons/gdUnit4/src",
+	"res://reports"]
+
+
 var _script_parser := GdScriptParser.new()
 var _extends_test_suite_classes := Array()
 var _expression_runner := GdUnitExpressionRunner.new()
@@ -39,6 +47,8 @@ func scan(resource_path :String) -> Array[Node]:
 
 
 func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[Node]:
+	if exclude_scan_directories.has(dir.get_current_dir()):
+		return collected_suites
 	prints("Scanning for test suites in:", dir.get_current_dir())
 	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	var file_name := dir.get_next()
@@ -49,9 +59,12 @@ func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[N
 			if sub_dir != null:
 				_scan_test_suites(sub_dir, collected_suites)
 		else:
+			var time = LocalTime.now()
 			var test_suite := _parse_is_test_suite(resource_path)
 			if test_suite:
 				collected_suites.append(test_suite)
+			if OS.is_stdout_verbose() and time.elapsed_since_ms() > 300:
+				push_warning("Scanning of test-suite '%s' took more than 300ms: " % resource_path, time.elapsed_since())
 		file_name = dir.get_next()
 	return collected_suites
 
@@ -217,12 +230,12 @@ static func _to_naming_convention(file_name :String) -> String:
 static func resolve_test_suite_path(source_script_path :String, test_root_folder :String = "test") -> String:
 	var file_name = source_script_path.get_basename().get_file()
 	var suite_name := _to_naming_convention(file_name)
-	if test_root_folder.is_empty():
+	if test_root_folder.is_empty() or test_root_folder == "/":
 		return source_script_path.replace(file_name, suite_name)
 	
 	# is user tmp
 	if source_script_path.begins_with("user://tmp"):
-		return source_script_path.replace("user://tmp", "user://tmp/" + test_root_folder).replace(file_name, suite_name)
+		return normalize_path(source_script_path.replace("user://tmp", "user://tmp/" + test_root_folder)).replace(file_name, suite_name)
 	
 	# at first look up is the script under a "src" folder located
 	var test_suite_path :String
@@ -241,7 +254,11 @@ static func resolve_test_suite_path(source_script_path :String, test_root_folder
 			test_suite_path = paths[0] + "//" + test_root_folder
 			for index in range(1, paths.size()):
 				test_suite_path += "/" + paths[index]
-	return test_suite_path.replace(file_name, suite_name)
+	return normalize_path(test_suite_path).replace(file_name, suite_name)
+
+
+static func normalize_path(path :String) -> String:
+	return path.replace("///", "/")
 
 
 static func create_test_suite(test_suite_path :String, source_path :String) -> Result:

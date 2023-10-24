@@ -535,7 +535,7 @@ func test_spy_scene_by_resource_path():
 		.is_instanceof(Control)
 	assert_str(spy_scene.get_script().resource_name).is_equal("SpyTestScene.gd")
 	# check is spyed scene registered for auto freeing
-	assert_bool(GdUnitMemoryPool.is_auto_free_registered(spy_scene, get_meta("MEMORY_POOL"))).is_true()
+	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
 func test_spy_on_PackedScene():
@@ -555,7 +555,7 @@ func test_spy_on_PackedScene():
 		.is_not_same(original_script)
 	assert_str(spy_scene.get_script().resource_name).is_equal("SpyTestScene.gd")
 	# check is spyed scene registered for auto freeing
-	assert_bool(GdUnitMemoryPool.is_auto_free_registered(spy_scene, get_meta("MEMORY_POOL"))).is_true()
+	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
 func test_spy_scene_by_instance():
@@ -574,7 +574,7 @@ func test_spy_scene_by_instance():
 		.is_not_same(original_script)
 	assert_str(spy_scene.get_script().resource_name).is_equal("SpyTestScene.gd")
 	# check is mocked scene registered for auto freeing
-	assert_bool(GdUnitMemoryPool.is_auto_free_registered(spy_scene, get_meta("MEMORY_POOL"))).is_true()
+	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
 func test_spy_scene_by_path_fail_has_no_script_attached():

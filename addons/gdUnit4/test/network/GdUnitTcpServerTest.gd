@@ -48,7 +48,7 @@ func test_receive_packages() -> void:
 	var test_server :GdUnitTcpServer = auto_free(GdUnitTcpServer.new())
 	test_server.add_child(connection)
 	# create a signal collector to catch all signals emitted on the test server during `receive_packages()`
-	var signal_collector := signal_collector(test_server)
+	var signal_collector_ := signal_collector(test_server)
 	
 	# mock send RPCMessage
 	var data := DLM + RPCMessage.of("Test Message").serialize() + DLM
@@ -60,18 +60,18 @@ func test_receive_packages() -> void:
 	connection.receive_packages()
 	
 	# expect the RPCMessage is received and emitted
-	assert_that(signal_collector.is_emitted("rpc_data", [RPCMessage.of("Test Message")])).is_true()
+	assert_that(signal_collector_.is_emitted("rpc_data", [RPCMessage.of("Test Message")])).is_true()
 
 
 # TODO refactor out and provide as public interface to can be reuse on other tests
-class GdUnitSignalCollector:
-	var _signalCollector :GdUnitSignalAssertImpl.SignalCollector
+class TestGdUnitSignalCollector:
+	var _signalCollector :GdUnitSignalCollector
 	var _emitter :Variant
 	
 	
 	func _init(emitter :Variant):
 		_emitter = emitter
-		_signalCollector = GdUnitSignalAssertImpl.SignalCollector.new()
+		_signalCollector = GdUnitSignalCollector.new()
 		_signalCollector.register_emitter(emitter)
 	
 	
@@ -84,5 +84,5 @@ class GdUnitSignalCollector:
 			_signalCollector.unregister_emitter(_emitter)
 
 
-func signal_collector(instance :Variant) -> GdUnitSignalCollector:
-	return GdUnitSignalCollector.new(instance)
+func signal_collector(instance :Variant) -> TestGdUnitSignalCollector:
+	return TestGdUnitSignalCollector.new(instance)
