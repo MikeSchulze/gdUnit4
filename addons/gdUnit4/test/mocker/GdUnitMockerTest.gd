@@ -159,7 +159,24 @@ func _emit_ready(a, b, c = null):
 	_test_signal_args = [a, b, c]
 
 
-func test_mock_Node_use_real_func_vararg():
+func test_mock_Node_func_vararg():
+	# setup
+	var mocked_node = mock(Node)
+	
+	# mock return value
+	do_return(ERR_CANT_CONNECT).on(mocked_node).rpc("test", "arg1", "arg2", "invalid")
+	do_return(ERR_CANT_OPEN).on(mocked_node).rpc("test", "arg1", "argX", any_string())
+	do_return(ERR_CANT_CREATE).on(mocked_node).rpc("test", "arg1", "argX", any_int())
+	do_return(OK).on(mocked_node).rpc("test", "arg1", "argX", "arg3")
+	# verify
+	assert_that(mocked_node.rpc("test", "arg1", "arg2", "arg3")).is_equal(OK)
+	assert_that(mocked_node.rpc("test", "arg1", "arg2", "invalid")).is_equal(ERR_CANT_CONNECT)
+	assert_that(mocked_node.rpc("test", "arg1", "argX", "arg3")).is_equal(OK)
+	assert_that(mocked_node.rpc("test", "arg1", "argX", "other")).is_equal(ERR_CANT_OPEN)
+	assert_that(mocked_node.rpc("test", "arg1", "argX", 42)).is_equal(ERR_CANT_CREATE)
+
+
+func test_mock_Node_func_vararg_call_real_func():
 	# setup
 	var mocked_node = mock(Node, CALL_REAL_FUNC)
 	assert_that(mocked_node).is_not_null()
@@ -631,7 +648,7 @@ func test_mock_class_with_inner_classs():
 	assert_object(mock_c).is_not_null()
 
 
-func test_example_do_return():
+func test_do_return():
 	var mocked_node = mock(Node)
 	
 	# is return 0 by default
@@ -639,7 +656,7 @@ func test_example_do_return():
 	# configure to return 10 when 'get_child_count()' is called
 	do_return(10).on(mocked_node).get_child_count()
 	# will now return 10
-	mocked_node.get_child_count()
+	assert_int(mocked_node.get_child_count()).is_equal(10)
 	
 	# is return 'null' by default
 	var node = mocked_node.get_child(0)
@@ -656,6 +673,58 @@ func test_example_do_return():
 	# will now return the Area3D node
 	var node1 = mocked_node.get_child(1)
 	assert_object(node1).is_instanceof(Area3D)
+
+
+func test_matching_is_sorted():
+	var mocked_node = mock(Node)
+	do_return(null).on(mocked_node).get_child(any(), false)
+	do_return(null).on(mocked_node).get_child(1, false)
+	do_return(null).on(mocked_node).get_child(10, false)
+	do_return(null).on(mocked_node).get_child(any(), true)
+	do_return(null).on(mocked_node).get_child(3, true)
+	
+	# get the sorted mocked args as array
+	var mocked_args :Array = mocked_node.__mocked_return_values.get("get_child").keys()
+	assert_array(mocked_args).has_size(5)
+	
+	# we expect all argument matchers are sorted to the end
+	var first_arguments = mocked_args.map(func (v): return v[0])
+	assert_int(first_arguments[0]).is_equal(3)
+	assert_int(first_arguments[1]).is_equal(10)
+	assert_int(first_arguments[2]).is_equal(1)
+	assert_object(first_arguments[3]).is_instanceof(GdUnitArgumentMatcher)
+	assert_object(first_arguments[4]).is_instanceof(GdUnitArgumentMatcher)
+
+
+func test_do_return_with_matchers():
+	var mocked_node = mock(Node)
+	var childN :Node = auto_free(Node2D.new())
+	var child1 :Node = auto_free(Node2D.new())
+	var child10 :Node = auto_free(Node2D.new())
+	
+	# for any index return childN by using any() matcher
+	do_return(childN).on(mocked_node).get_child(any(), false)
+	# for index 1 and 10 do return 'child1' and 'child10'
+	do_return(child1).on(mocked_node).get_child(1, false)
+	do_return(child10).on(mocked_node).get_child(10, false)
+	# for any index and flag true, we return null by using the 'any_int' matcher
+	do_return(null).on(mocked_node).get_child(any_int(), true)
+	
+	assert_that(mocked_node.get_child(0, true)).is_null()
+	assert_that(mocked_node.get_child(1, true)).is_null()
+	assert_that(mocked_node.get_child(2, true)).is_null()
+	assert_that(mocked_node.get_child(10, true)).is_null()
+	assert_that(mocked_node.get_child(0)).is_same(childN)
+	assert_that(mocked_node.get_child(1)).is_same(child1)
+	assert_that(mocked_node.get_child(2)).is_same(childN)
+	assert_that(mocked_node.get_child(3)).is_same(childN)
+	assert_that(mocked_node.get_child(4)).is_same(childN)
+	assert_that(mocked_node.get_child(5)).is_same(childN)
+	assert_that(mocked_node.get_child(6)).is_same(childN)
+	assert_that(mocked_node.get_child(7)).is_same(childN)
+	assert_that(mocked_node.get_child(8)).is_same(childN)
+	assert_that(mocked_node.get_child(9)).is_same(childN)
+	assert_that(mocked_node.get_child(10)).is_same(child10)
 
 
 func test_example_verify():
