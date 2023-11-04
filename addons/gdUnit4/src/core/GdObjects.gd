@@ -399,10 +399,6 @@ static func is_cs_script(script :Script) -> bool:
 	return str(script).find("CSharpScript") != -1
 
 
-static func is_cs_test_suite(instance :Node) -> bool:
-	return instance.get("IsCsTestSuite") == true
-
-
 static func is_gd_testsuite(script :Script) -> bool:
 	if is_gd_script(script):
 		var stack := [script]

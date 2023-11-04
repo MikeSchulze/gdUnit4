@@ -23,6 +23,7 @@ class CLIRunner extends Node:
 	var _state = READY
 	var _test_suites_to_process :Array
 	var _executor
+	var _cs_executor
 	var _report :GdUnitHtmlReport
 	var _report_dir: String
 	var _report_max: int = DEFAULT_REPORT_COUNT
@@ -53,7 +54,8 @@ class CLIRunner extends Node:
 		# stop checked first test failure to fail fast
 		_executor.fail_fast(true)
 		
-		if GdUnitTools.is_mono_supported():
+		if GdUnit4MonoApiLoader.is_mono_supported():
+			prints("GdUnit4Mono Version %s loaded." % GdUnit4MonoApiLoader.version())
 			_cs_executor = GdUnit4MonoApiLoader.create_executor(self)
 		var err = GdUnitSignals.instance().gdunit_event.connect(Callable(self, "_on_gdunit_event"))
 		if err != OK:
@@ -75,7 +77,11 @@ class CLIRunner extends Node:
 					set_process(false)
 					# process next test suite
 					var test_suite := _test_suites_to_process.pop_front() as Node
-					await _executor.execute(test_suite)
+					if _cs_executor.IsExecutable(test_suite):
+						_cs_executor.Execute(test_suite)
+						await _cs_executor.ExecutionCompleted
+					else:
+						await _executor.execute(test_suite)
 					set_process(true)
 			STOP:
 				_state = EXIT

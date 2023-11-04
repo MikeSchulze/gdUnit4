@@ -279,11 +279,6 @@ static func release_double(instance :Object) -> void:
 		instance.call("__release_double")
 
 
-# test is Godot mono running
-static func is_mono_supported() -> bool:
-	return ClassDB.class_exists("CSharpScript")
-
-
 static func make_qualified_path(path :String) -> String:
 	if not path.begins_with("res://"):
 		if path.begins_with("//"):

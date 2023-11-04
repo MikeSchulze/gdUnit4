@@ -18,6 +18,7 @@ const GDUNIT_RUNNER = "GdUnitRunner"
 var _config := GdUnitRunnerConfig.new()
 var _test_suites_to_process :Array
 var _state = INIT
+var _cs_executor
 
 
 func _init():
@@ -77,8 +78,11 @@ func _process(_delta):
 				# process next test suite
 				set_process(false)
 				var test_suite :Node = _test_suites_to_process.pop_front()
-				var executor := _executor
-				await executor.execute(test_suite)
+				if _cs_executor.IsExecutable(test_suite):
+					_cs_executor.Execute(test_suite)
+					await _cs_executor.ExecutionCompleted
+				else:
+					await _executor.execute(test_suite)
 				set_process(true)
 		STOP:
 			_state = EXIT

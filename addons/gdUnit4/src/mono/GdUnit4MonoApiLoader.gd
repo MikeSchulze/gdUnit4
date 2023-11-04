@@ -2,19 +2,28 @@ extends RefCounted
 class_name GdUnit4MonoApiLoader
 
 
-#const GdUnit4MonoApi = preload("res://addons/gdUnit4/src/mono/GdUnit4MonoApi.cs")
-
 static func instance() -> Object:
 	return GdUnitSingleton.instance("GdUnit4MonoAPI", func():
-		if not GdUnitTools.is_mono_supported():
+		if not GdUnit4MonoApiLoader.is_mono_supported():
 			return null
 		var GdUnit4MonoApi = load("res://addons/gdUnit4/src/mono/GdUnit4MonoApi.cs")
 		return GdUnit4MonoApi.new()
 	)
 
 
+# test is Godot mono running
+static func is_mono_supported() -> bool:
+	return ClassDB.class_exists("CSharpScript")
+
+
+static func version() -> String:
+	if not GdUnit4MonoApiLoader.is_mono_supported():
+		return "unknown"
+	return instance().Version()
+
+
 static func create_test_suite(source_path :String, line_number :int, test_suite_path :String) -> Result:
-	if not GdUnitTools.is_mono_supported():
+	if not GdUnit4MonoApiLoader.is_mono_supported():
 		return  Result.error("Can't create test suite. No c# support found.")
 	var result := instance().CreateTestSuite(source_path, line_number, test_suite_path) as Dictionary
 	if result.has("error"):
@@ -23,7 +32,7 @@ static func create_test_suite(source_path :String, line_number :int, test_suite_
 
 
 static func is_test_suite(resource_path :String) -> bool:
-	if not is_csharp_file(resource_path) or not GdUnitTools.is_mono_supported():
+	if not is_csharp_file(resource_path) or not GdUnit4MonoApiLoader.is_mono_supported():
 		return false
 	if resource_path.is_empty():
 		if GdUnitSettings.is_report_push_errors():
@@ -33,7 +42,7 @@ static func is_test_suite(resource_path :String) -> bool:
 
 
 static func parse_test_suite(source_path :String) -> Node:
-	if not GdUnitTools.is_mono_supported():
+	if not GdUnit4MonoApiLoader.is_mono_supported():
 		if GdUnitSettings.is_report_push_errors():
 			push_error("Can't create test suite. No c# support found.")
 		return null
@@ -41,11 +50,11 @@ static func parse_test_suite(source_path :String) -> Node:
 
 
 static func create_executor(listener :Node) -> RefCounted:
-	if not GdUnitTools.is_mono_supported():
+	if not GdUnit4MonoApiLoader.is_mono_supported():
 		return null
 	return instance().Executor(listener)
 
 
 static func is_csharp_file(resource_path :String) -> bool:
 	var ext := resource_path.get_extension()
-	return ext == "cs" and GdUnitTools.is_mono_supported()
+	return ext == "cs" and GdUnit4MonoApiLoader.is_mono_supported()
