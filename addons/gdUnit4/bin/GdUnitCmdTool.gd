@@ -77,7 +77,7 @@ class CLIRunner extends Node:
 					set_process(false)
 					# process next test suite
 					var test_suite := _test_suites_to_process.pop_front() as Node
-					if _cs_executor.IsExecutable(test_suite):
+					if _cs_executor != null and _cs_executor.IsExecutable(test_suite):
 						_cs_executor.Execute(test_suite)
 						await _cs_executor.ExecutionCompleted
 					else:

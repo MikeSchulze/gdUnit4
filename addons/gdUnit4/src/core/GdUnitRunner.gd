@@ -78,7 +78,7 @@ func _process(_delta):
 				# process next test suite
 				set_process(false)
 				var test_suite :Node = _test_suites_to_process.pop_front()
-				if _cs_executor.IsExecutable(test_suite):
+				if _cs_executor != null and _cs_executor.IsExecutable(test_suite):
 					_cs_executor.Execute(test_suite)
 					await _cs_executor.ExecutionCompleted
 				else:
