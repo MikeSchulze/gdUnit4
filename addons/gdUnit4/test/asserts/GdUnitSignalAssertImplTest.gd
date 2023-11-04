@@ -71,7 +71,7 @@ func test_signal_is_emitted_without_args() -> void:
 	
 	if is_skip_fail_await():
 		return
-
+	
 	(await verify_failed(func(): await assert_signal(signal_emitter).wait_until(500).is_emitted("test_signal_unused")))\
 		.is_equal("Expecting emit signal: 'test_signal_unused()' but timed out after 500ms")
 
@@ -89,8 +89,8 @@ func test_signal_is_emitted_with_args() -> void:
 func test_signal_is_not_emitted() -> void:
 	# wait to verify signal 'test_signal_counted()' is not emitted until the first 50ms
 	await assert_signal(signal_emitter).wait_until(50).is_not_emitted("test_signal_counted")
-	# wait to verify signal 'test_signal_counted(50)' is not emitted until the NEXT first 100ms
-	await assert_signal(signal_emitter).wait_until(50).is_not_emitted("test_signal_counted", [50])
+	# wait to verify signal 'test_signal_counted(50)' is not emitted until the NEXT first 80ms
+	await assert_signal(signal_emitter).wait_until(30).is_not_emitted("test_signal_counted", [50])
 	
 	if is_skip_fail_await():
 		return

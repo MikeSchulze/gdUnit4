@@ -14,6 +14,20 @@ func before(do_skip = not GdUnit4MonoApiLoader.is_mono_supported(), skip_reason 
 	pass
 
 
+@warning_ignore("unused_parameter")
+func test_is_engine_version_supported(version :int, expected :bool, test_parameters := [
+	[0x40000, false],
+	[0x40001, false],
+	[0x40002, false],
+	[0x40100, true],
+	[0x40101, true],
+	[0x40102, true],
+	[0x40100, true],
+	[0x40200, true]]) -> void:
+	
+	assert_that(GdUnit4MonoApiLoader.is_engine_version_supported(version)).is_equal(expected)
+
+
 func test_api_version() -> void:
 	assert_str(GdUnit4MonoApiLoader.version()).starts_with("4.2")
 

@@ -99,7 +99,7 @@ jobs:
 
   unit-test-mono:
     name: "Unit Tests Mono"
-    if: ${{ false }}  # disable for now, C# support will be readded with v4.2.0
+    if: ${{ startsWith(inputs.godot-version, '4.1') || startsWith(inputs.godot-version, '4.2') }}
     runs-on: ${{ inputs.os }}
     timeout-minutes: 5
 
@@ -121,15 +121,17 @@ jobs:
       - name: "Setup .NET"
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 7.0.x
 
       - name: "Compile C#"
+        if: ${{ !cancelled() }}
         run: |
-          xvfb-run --auto-servernum ~/godot-linux/godot project.godot --build-solutions --quit --headless --audio-driver Dummy
+          dotnet restore
+          dotnet build
 
       - name: "Update Project"
         if: ${{ !cancelled() }}
-        timeout-minutes: 1
+        timeout-minutes: 2
         continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
         shell: bash
         run: |

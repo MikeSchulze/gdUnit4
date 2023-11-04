@@ -398,9 +398,8 @@ func _initialize():
 
 func _finalize():
 	prints("Finallize ..")
-	_cli_runner.free()
+	if is_instance_valid(_cli_runner):
+		_cli_runner.free()
 	prints("-Orphan nodes report-----------------------")
 	Window.print_orphan_nodes()
-	prints("-SceneTree report-----------------------")
-	root.print_tree_pretty()
 	prints("Finallize .. done")

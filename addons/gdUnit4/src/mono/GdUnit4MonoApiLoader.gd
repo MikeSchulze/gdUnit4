@@ -11,9 +11,13 @@ static func instance() -> Object:
 	)
 
 
+static func is_engine_version_supported(engine_version :int = Engine.get_version_info().hex) -> bool:
+	return engine_version >= 0x40100
+
+
 # test is Godot mono running
 static func is_mono_supported() -> bool:
-	return ClassDB.class_exists("CSharpScript")
+	return ClassDB.class_exists("CSharpScript") and is_engine_version_supported()
 
 
 static func version() -> String:
