@@ -18,6 +18,7 @@ const GDUNIT_RUNNER = "GdUnitRunner"
 var _config := GdUnitRunnerConfig.new()
 var _test_suites_to_process :Array
 var _state = INIT
+var _cs_executor
 
 
 func _init():
@@ -29,6 +30,7 @@ func _init():
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	# store current runner instance to engine meta data to can be access in as a singleton
 	Engine.set_meta(GDUNIT_RUNNER, self)
+	_cs_executor = GdUnit4MonoApiLoader.create_executor(self)
 
 
 func _ready():
@@ -76,8 +78,11 @@ func _process(_delta):
 				# process next test suite
 				set_process(false)
 				var test_suite :Node = _test_suites_to_process.pop_front()
-				var executor := _executor
-				await executor.execute(test_suite)
+				if _cs_executor != null and _cs_executor.IsExecutable(test_suite):
+					_cs_executor.Execute(test_suite)
+					await _cs_executor.ExecutionCompleted
+				else:
+					await _executor.execute(test_suite)
 				set_process(true)
 		STOP:
 			_state = EXIT
@@ -157,6 +162,7 @@ func _on_gdunit_event(event :GdUnitEvent):
 	_client.rpc_send(RPCGdUnitEvent.of(event))
 
 
+# Event bridge from C# GdUnit4.ITestEventListener.cs
 func PublishEvent(data) -> void:
 	var event := GdUnitEvent.new().deserialize(data.AsDictionary())
 	_client.rpc_send(RPCGdUnitEvent.of(event))

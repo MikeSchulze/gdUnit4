@@ -66,8 +66,8 @@ func _init():
 	_runner_config.load_config()
 
 	init_shortcuts()
-	var is_running = func(_script :GDScript) : return _is_running
-	var is_not_running = func(_script :GDScript) : return !_is_running
+	var is_running = func(_script :Script) : return _is_running
+	var is_not_running = func(_script :Script) : return !_is_running
 	register_command(GdUnitCommand.new(CMD_RUN_OVERALL, is_not_running, cmd_run_overall.bind(true), GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL))
 	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE, is_not_running, cmd_editor_run_test.bind(false), GdUnitShortcut.ShortCut.RUN_TESTCASE))
 	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE_DEBUG, is_not_running, cmd_editor_run_test.bind(true), GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG))

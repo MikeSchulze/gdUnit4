@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="gdUnit4"
+config/features=PackedStringArray("4.1", "C#")
 config/tags=PackedStringArray("addon", "godot4", "testing")
-config/features=PackedStringArray("4.1")
 config/icon="res://icon.png"
 
 [audio]
@@ -25,6 +25,10 @@ file_logging/enable_file_logging=true
 gdscript/warnings/exclude_addons=false
 gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
+
+[dotnet]
+
+project/assembly_name="gdUnit4"
 
 [gdunit4]
 

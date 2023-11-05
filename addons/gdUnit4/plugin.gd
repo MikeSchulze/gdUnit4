@@ -23,6 +23,8 @@ func _enter_tree():
 	if GdUnitSettings.is_update_notification_enabled():
 		var update_tool = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
 		Engine.get_main_loop().root.call_deferred("add_child", update_tool)
+	if GdUnit4MonoApiLoader.is_mono_supported():
+		prints("GdUnit4Mono Version %s loaded." % GdUnit4MonoApiLoader.version())
 
 
 func _exit_tree():

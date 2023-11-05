@@ -10,7 +10,7 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitScriptType.gd'
 func test_type_of() -> void:
 	assert_str(GdUnitScriptType.type_of(null)).is_equal(GdUnitScriptType.UNKNOWN)
 	assert_str(GdUnitScriptType.type_of(ClassDB.instantiate("GDScript"))).is_equal(GdUnitScriptType.GD)
-	#if GdUnitTools.is_mono_supported():
+	#if GdUnit4MonoApiLoader.is_mono_supported():
 	#	assert_str(GdUnitScriptType.type_of(ClassDB.instantiate("CSharpScript"))).is_equal(GdUnitScriptType.CS)
 	#assert_str(GdUnitScriptType.type_of(ClassDB.instantiate("VisualScript"))).is_equal(GdUnitScriptType.VS)
 	#assert_str(GdUnitScriptType.type_of(ClassDB.instantiate("NativeScript"))).is_equal(GdUnitScriptType.NATIVE)

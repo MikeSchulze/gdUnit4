@@ -1,15 +1,15 @@
-<Project Sdk="Godot.NET.Sdk/3.3.0">
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.1</TargetFrameworks>
-		<LangVersion>10.0</LangVersion>
-		<!--Force nullable warnings, you can disable if you want-->
-		<Nullable>enable</Nullable>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<!--Disable warning of invalid/incompatible GodotSharp version-->
-		<NoWarn>NU1701</NoWarn>
-	</PropertyGroup>
-	<ItemGroup>
-		<!--Required for GdUnit4-->
-		<PackageReference Include="gdUnit4Mono" Version="2.3.1-release*"/>
-	</ItemGroup>
+<Project Sdk="Godot.NET.Sdk/4.1.2">
+  <PropertyGroup>
+    <TargetFrameworks>net7.0</TargetFrameworks>
+    <LangVersion>11.0</LangVersion>
+    <!--Force nullable warnings, you can disable if you want-->
+    <Nullable>enable</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!--Disable warning of invalid/incompatible GodotSharp version-->
+    <NoWarn>NU1701</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--Required for GdUnit4-->
+    <PackageReference Include="GdUnit4MonoApi" Version="4.2.0-rc*" />
+  </ItemGroup>
 </Project>
