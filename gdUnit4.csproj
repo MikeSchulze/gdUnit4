@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <!--Disable warning of invalid/incompatible GodotSharp version-->
-    <NoWarn>NU1701</NoWarn>
+    <NoWarn>NU1605</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <!--Required for GdUnit4-->
