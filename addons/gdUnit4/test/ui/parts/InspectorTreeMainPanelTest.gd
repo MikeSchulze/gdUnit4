@@ -260,3 +260,43 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	assert_str(suite_aa.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
 	assert_int(get_item_state(suite_aa, "test_aa")).is_equal(_inspector.STATE.INITIAL)
 	assert_int(get_item_state(suite_aa, "test_ab")).is_equal(_inspector.STATE.INITIAL)
+
+
+# Test coverage for issue GD-278: GdUnit Inspector: Test marks as passed if both warning and error
+func test_update_icon_state() -> void:
+	var TEST_SUITE_PATH = "res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource"
+	var TEST_SUITE_NAME = "TestSuiteFailAndOrpahnsDetected"
+	var test_suite = auto_free(GdUnitTestResourceLoader.load_test_suite(TEST_SUITE_PATH))
+	_inspector.add_test_suite(toDto(test_suite))
+	
+	var suite: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_PATH)
+	
+	# Verify the inital state
+	assert_str(suite.get_text(0)).is_equal("(0/2) "+ TEST_SUITE_NAME)
+	assert_str(suite.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(TEST_SUITE_PATH)
+	assert_int(get_item_state(_inspector._tree_root, TEST_SUITE_NAME)).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite, "test_case1")).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite, "test_case2")).is_equal(_inspector.STATE.INITIAL)
+	
+	# Set tests to running
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case1"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case2"))
+	# Verify all items on state running.
+	assert_str(suite.get_text(0)).is_equal("(0/2) " + TEST_SUITE_NAME)
+	assert_int(get_item_state(suite, "test_case1")).is_equal(_inspector.STATE.RUNNING)
+	assert_int(get_item_state(suite, "test_case2")).is_equal(_inspector.STATE.RUNNING)
+	
+	# Simulate test processed.
+	# test_case1 succeeded
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case1"))
+	# test_case2 is failing by an orphan warning and an failure
+	_inspector._on_gdunit_event(GdUnitEvent.new()\
+		.test_after(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case2", {GdUnitEvent.FAILED: true}))
+	# We check whether a test event with a warning does not overwrite a higher object status, e.g. an error.
+	_inspector._on_gdunit_event(GdUnitEvent.new()\
+		.test_after(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case2", {GdUnitEvent.WARNINGS: true}))
+	
+	# Verify the final state
+	assert_str(suite.get_text(0)).is_equal("(1/2) " + TEST_SUITE_NAME)
+	assert_int(get_item_state(suite, "test_case1")).is_equal(_inspector.STATE.SUCCESS)
+	assert_int(get_item_state(suite, "test_case2")).is_equal(_inspector.STATE.FAILED)
