@@ -10,6 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!--Required for GdUnit4-->
-    <PackageReference Include="GdUnit4MonoApi" Version="4.2.0-rc*" />
+    <PackageReference Include="gdUnit4.api" Version="4.2.0-rc*" />
   </ItemGroup>
 </Project>
