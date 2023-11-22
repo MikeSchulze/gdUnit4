@@ -233,7 +233,7 @@ func test_is_instance_false():
 
 
 # shorter helper func to extract class name and using auto_free
-func extract_class_name(value) -> Result:
+func extract_class_name(value) -> GdUnitResult:
 	return GdObjects.extract_class_name(auto_free(value))
 
 func test_get_class_name_from_class_path():
