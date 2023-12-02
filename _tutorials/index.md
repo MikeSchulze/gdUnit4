@@ -24,7 +24,7 @@ Here's a list of tutorials we currently have available:<br>
 * [~~Running Tests from the Command Line~~]()<br>
 * [~~Testing Signals and Events~~]()<br>
 * [Test Driven Development (TDD) with GdUnit4](/gdUnit4/tutorials/tdd/#test-driven-development-tdd-with-gdunit4)<br>
-* [~~Testing Scene Changes and Scene Interactions~~]()<br>
+* [Testing Scene Interactions](/gdUnit4/tutorials/scenerunner_examples/#testing-scene-interactions)<br>
 
 
 ## Basics
