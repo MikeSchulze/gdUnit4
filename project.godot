@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="gdUnit4"
-config/features=PackedStringArray("4.1", "C#")
 config/tags=PackedStringArray("addon", "godot4", "testing")
+config/features=PackedStringArray("4.2", "C#")
 config/icon="res://icon.png"
 
 [audio]
