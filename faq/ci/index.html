@@ -1,0 +1,143 @@
+<!DOCTYPE html> <html lang="en-US"> <head> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="IE=Edge"> <link rel="stylesheet" href="/gdUnit4/assets/css/just-the-docs-default.css"> <script src="/gdUnit4/assets/js/vendor/lunr.min.js"></script> <script src="/gdUnit4/assets/js/just-the-docs.js"></script> <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Begin Jekyll SEO tag v2.8.0 --> <title>Continuous Integration Testing | GdUnit4</title> <meta name="generator" content="Jekyll v3.9.3" /> <meta property="og:title" content="Continuous Integration Testing" /> <meta property="og:locale" content="en_US" /> <meta name="description" content="Continuous Integration Testing (CI)" /> <meta property="og:description" content="Continuous Integration Testing (CI)" /> <meta property="og:site_name" content="GdUnit4" /> <meta property="og:type" content="website" /> <meta name="twitter:card" content="summary" /> <meta property="twitter:title" content="Continuous Integration Testing" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"WebPage","description":"Continuous Integration Testing (CI)","headline":"Continuous Integration Testing","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/gdUnit4/assets/images/logo.png"}},"url":"/gdUnit4/faq/ci/"}</script> <!-- End Jekyll SEO tag --> </head> <body> <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"> <symbol id="svg-link" viewBox="0 0 24 24"> <title>Link</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path> <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path> </svg> </symbol> <symbol id="svg-search" viewBox="0 0 24 24"> <title>Search</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg> </symbol> <symbol id="svg-menu" viewBox="0 0 24 24"> <title>Menu</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"> <line x1="3" y1="12" x2="21" y2="12"></line> <line x1="3" y1="6" x2="21" y2="6"></line> <line x1="3" y1="18" x2="21" y2="18"></line> </svg> </symbol> <symbol id="svg-arrow-right" viewBox="0 0 24 24"> <title>Expand</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"> <polyline points="9 18 15 12 9 6"></polyline> </svg> </symbol> <symbol id="svg-doc" viewBox="0 0 24 24"> <title>Document</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"> <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path> <polyline points="13 2 13 9 20 9"></polyline> </svg> </symbol> </svg> <div class="side-bar"> <div class="site-header"> <a href="/gdUnit4/" class="site-title lh-tight"><div class="site-logo"></div> GdUnit4</a> <a href="#" id="menu-button" class="site-button"> <svg viewBox="0 0 24 24" class="icon"> <use xlink:href="#svg-menu"></use> </svg> </a> </div> <nav role="navigation" aria-label="Main" id="site-nav" class="site-nav"> <div class="nav-category">First Steps</div> <ul class="nav-list"><li class="nav-list-item"><a href="/gdUnit4/first_steps/install/" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/gdUnit4/first_steps/settings/" class="nav-list-link">Settings</a></li><li class="nav-list-item"><a href="/gdUnit4/first_steps/firstTest/" class="nav-list-link">Create Your First Test</a></li></ul> <div class="nav-category"></div> <ul class="nav-list"><li class="nav-list-item"><a href="#" class="nav-list-expander" aria-label="toggle links in Asserts category"> <svg viewBox="0 0 24 24"><use xlink:href="#svg-arrow-right"></use></svg> </a><a href="/gdUnit4/asserts/index/" class="nav-list-link">Asserts</a><ul class="nav-list"><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-string/" class="nav-list-link">String Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-bool/" class="nav-list-link">Boolean Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-integer/" class="nav-list-link">Integer Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-number/" class="nav-list-link">Number Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-float/" class="nav-list-link">Float/Double Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-array/" class="nav-list-link">Array Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-dictionary/" class="nav-list-link">Dictionary Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-object/" class="nav-list-link">Object Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-vector/" class="nav-list-link">Vector Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-file/" class="nav-list-link">File Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-function/" class="nav-list-link">Function/Method Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-signal/" class="nav-list-link">Signal Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-error/" class="nav-list-link">Error Assert</a></li><li class="nav-list-item "><a href="/gdUnit4/asserts/assert-that/" class="nav-list-link">AssertThat</a></li></ul></li></ul> <div class="nav-category"></div> <ul class="nav-list"><li class="nav-list-item"><a href="#" class="nav-list-expander" aria-label="toggle links in Advanced Testing category"> <svg viewBox="0 0 24 24"><use xlink:href="#svg-arrow-right"></use></svg> </a><a href="/gdUnit4/advanced_testing/index/" class="nav-list-link">Advanced Testing</a><ul class="nav-list"><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/tools/" class="nav-list-link">Tools and Helpers</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/fuzzing/" class="nav-list-link">Fuzzing</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/paramerized_tests/" class="nav-list-link">Parameterized Tests</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/mock/" class="nav-list-link">Mocking</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/signals/" class="nav-list-link">Signals</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/spy/" class="nav-list-link">Spying</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/argument_matchers/" class="nav-list-link">Argument Matchers</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/sceneRunner/" class="nav-list-link">Scene Runner</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/orphan/" class="nav-list-link">Orphan Nodes</a></li><li class="nav-list-item "><a href="/gdUnit4/advanced_testing/cmd/" class="nav-list-link">Command Line Tool</a></li></ul></li></ul> <div class="nav-category"></div> <ul class="nav-list"><li class="nav-list-item"><a href="#" class="nav-list-expander" aria-label="toggle links in Tutorials category"> <svg viewBox="0 0 24 24"><use xlink:href="#svg-arrow-right"></use></svg> </a><a href="/gdUnit4/tutorials/index/" class="nav-list-link">Tutorials</a><ul class="nav-list"><li class="nav-list-item "><a href="/gdUnit4/tutorials/tdd/" class="nav-list-link">Test Driven Development</a></li><li class="nav-list-item "><a href="/gdUnit4/tutorials/scenerunner_examples/" class="nav-list-link">Testing Scene Interactions</a></li><li class="nav-list-item "><a href="/gdUnit4/tutorials/tutorial_basics/" class="nav-list-link">Basics</a></li></ul></li></ul> <div class="nav-category">FAQ</div> <ul class="nav-list"><li class="nav-list-item"><a href="/gdUnit4/faq/inspector/" class="nav-list-link">Inspector</a></li><li class="nav-list-item"><a href="/gdUnit4/faq/run-tests/" class="nav-list-link">How To Run Tests</a></li><li class="nav-list-item"><a href="/gdUnit4/faq/skip-tests/" class="nav-list-link">How To Skip Tests</a></li><li class="nav-list-item"><a href="/gdUnit4/faq/test-case/" class="nav-list-link">TestCase</a></li><li class="nav-list-item"><a href="/gdUnit4/faq/test-suite/" class="nav-list-link">TestSuite</a></li><li class="nav-list-item"><a href="/gdUnit4/faq/C%23/" class="nav-list-link">C# Support</a></li><li class="nav-list-item"><a href="/gdUnit4/faq/ci/" class="nav-list-link active">Continuous Integration Testing</a></li></ul> </nav> <footer class="site-footer"> This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll. </footer> </div> <div class="main" id="top"> <div id="main-header" class="main-header"> <div class="search"> <div class="search-input-wrap"> <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search GdUnit4" aria-label="Search GdUnit4" autocomplete="off"> <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"> <use xlink:href="#svg-search"></use> </svg></label> </div> <div id="search-results" class="search-results"></div> </div> <nav aria-label="Auxiliary" class="aux-nav"> <ul class="aux-nav-list"> <li class="aux-nav-list-item"> <a href="//github.com/MikeSchulze/gdUnit4" class="site-button" target="_blank" rel="noopener noreferrer" > GdUnit4 on GitHub </a> </li> </ul> </nav> </div> <div id="main-content-wrap" class="main-content-wrap"> <div id="main-content" class="main-content" role="main"> <h1 id="continuous-integration-testing-ci"> <a href="#continuous-integration-testing-ci" class="anchor-heading" aria-labelledby="continuous-integration-testing-ci"><svg viewBox="0 0 16 16" aria-hidden="true"> <use xlink:href="#svg-link"></use> </svg></a> Continuous Integration Testing (CI) </h1> <h2 id="definition"> <a href="#definition" class="anchor-heading" aria-labelledby="definition"><svg viewBox="0 0 16 16" aria-hidden="true"> <use xlink:href="#svg-link"></use> </svg></a> Definition </h2> <p>Continuous Integration (CI) is a method for automating the integration of code changes made by multiple contributors to a single software project. It is a primary DevOps best practice that allows developers to frequently merge code changes into a central repository where builds and tests are executed. Automated tools are used to confirm the new code is bug-free before integration.</p> <p><a href="https://en.wikipedia.org/wiki/Continuous_integration" target="_blank">Wiki - Continuous Integration</a></p> <h2 id="command-line-tool"> <a href="#command-line-tool" class="anchor-heading" aria-labelledby="command-line-tool"><svg viewBox="0 0 16 16" aria-hidden="true"> <use xlink:href="#svg-link"></use> </svg></a> Command Line Tool </h2> <p>GdUnit4 provides a command line tool that allows you to automate your testing workflow, including CI.</p> <p>For more details please show at <a href="/gdUnit4/advanced_testing/cmd">Command Line Tool</a></p> <h2 id="deploying-for-a-specific-godot-version"> <a href="#deploying-for-a-specific-godot-version" class="anchor-heading" aria-labelledby="deploying-for-a-specific-godot-version"><svg viewBox="0 0 16 16" aria-hidden="true"> <use xlink:href="#svg-link"></use> </svg></a> Deploying for a Specific Godot Version </h2> <p>You can use a Docker image to export Godot Engine games and deploy them to GitLab/GitHub Pages and Itch.io using GitLab CI and GitHub Actions.</p> <p>Provided by abarichello <a href="https://github.com/abarichello/godot-ci" target="_blank">Docker image</a></p> <h2 id="howto-deploy-with-gitlab-ci"> <a href="#howto-deploy-with-gitlab-ci" class="anchor-heading" aria-labelledby="howto-deploy-with-gitlab-ci"><svg viewBox="0 0 16 16" aria-hidden="true"> <use xlink:href="#svg-link"></use> </svg></a> Howto deploy with GitLab CI </h2> <p>You have to create a new workflow file on GitLab and named it <em>.gitlab-ci.yml</em>. Please visit <a href="https://docs.gitlab.com/ee/ci/yaml/gitlab_ci_yaml.html" target="_blank">GitLab CI Documentation</a> for more detaild instructions</p> <p>Thanks to <a href="https://github.com/mzoeller" target="_blank">mzoeller</a> to providing this example workflow.</p> <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">image</span><span class="pi">:</span> <span class="s">barichello/godot-ci:4.0.0</span>
+
+<span class="na">cache</span><span class="pi">:</span>
+  <span class="na">key</span><span class="pi">:</span> <span class="s">import-assets</span>
+  <span class="na">paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">.import/</span>
+
+<span class="na">stages</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">export</span>
+  <span class="pi">-</span> <span class="s">tests</span>
+  <span class="pi">-</span> <span class="s">deploy</span>
+
+<span class="na">variables</span><span class="pi">:</span>
+  <span class="na">EXPORT_NAME</span><span class="pi">:</span> <span class="s">$CI_PROJECT_NAME</span>
+  <span class="na">GIT_SUBMODULE_STRATEGY</span><span class="pi">:</span> <span class="s">recursive</span>
+
+<span class="na">linux</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">export</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">mkdir -v -p build/linux</span>
+    <span class="pi">-</span> <span class="s">godot -v --export "Linux/X11" build/linux/$EXPORT_NAME.x86_64</span>
+  <span class="na">artifacts</span><span class="pi">:</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">$EXPORT_NAME-$CI_JOB_NAME</span>
+    <span class="na">paths</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">build/linux</span>
+
+<span class="na">gdunit4</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">tests</span>
+  <span class="na">dependencies</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">linux</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">export GODOT_BIN=/usr/local/bin/godot</span>
+    <span class="pi">-</span> <span class="s">./runtest.sh -a ./test || if [ $? -eq 101 ]; then echo "warnings"; elif [ $? -eq 0 ]; then echo "success"; else exit 1; fi</span>
+  <span class="na">artifacts</span><span class="pi">:</span>
+    <span class="na">when</span><span class="pi">:</span> <span class="s">always</span>
+    <span class="na">reports</span><span class="pi">:</span>
+      <span class="na">junit</span><span class="pi">:</span> <span class="s">./reports/report_1/results.xml</span>
+</code></pre></div></div> <h2 id="howto-deploy-with-github-action"> <a href="#howto-deploy-with-github-action" class="anchor-heading" aria-labelledby="howto-deploy-with-github-action"><svg viewBox="0 0 16 16" aria-hidden="true"> <use xlink:href="#svg-link"></use> </svg></a> Howto deploy with GitHub Action </h2> <p>To deploy with GitHub Actions, you need to create a new workflow file in the <em>.github/workflows/</em> directory and name it <em>ci.yml</em>. Please visit <a href="https://docs.github.com/en/actions/using-workflows">GitHub Workflows Page</a></p> <p>Example workflow: (Please note that this is just an example and needs to be adapted to your project environment.)</p> <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">name</span><span class="pi">:</span> <span class="s">ci-pr-example</span>
+<span class="na">run-name</span><span class="pi">:</span> <span class="s">${{ github.head_ref || github.ref_name }}-ci-pr-example</span>
+
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">pull_request</span><span class="pi">:</span>
+    <span class="na">paths-ignore</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s1">'</span><span class="s">**.yml'</span>
+      <span class="pi">-</span> <span class="s1">'</span><span class="s">**.md'</span>
+  <span class="na">workflow_dispatch</span><span class="pi">:</span>
+
+
+<span class="na">concurrency</span><span class="pi">:</span>
+  <span class="na">group</span><span class="pi">:</span> <span class="s">ci-pr-example${{ github.event.number }}</span>
+  <span class="na">cancel-in-progress</span><span class="pi">:</span> <span class="no">true</span>
+
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">unit-test</span><span class="pi">:</span>
+    <span class="na">strategy</span><span class="pi">:</span>
+      <span class="na">fail-fast</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">matrix</span><span class="pi">:</span>
+        <span class="na">godot-version</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">4.1.1'</span><span class="pi">]</span> <span class="c1"># Insert here the Godot version you want to run your tests with</span>
+
+    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">CI</span><span class="nv"> </span><span class="s">Unit</span><span class="nv"> </span><span class="s">Test</span><span class="nv"> </span><span class="s">🐧</span><span class="nv"> </span><span class="s">v${{</span><span class="nv"> </span><span class="s">matrix.godot-version</span><span class="nv"> </span><span class="s">}}"</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s1">'</span><span class="s">ubuntu-22.04'</span>
+    <span class="na">timeout-minutes</span><span class="pi">:</span> <span class="m">10</span> <span class="c1"># The overall timeout</span>
+
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Checkout</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">Repository"</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v3</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">lfs</span><span class="pi">:</span> <span class="no">true</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">🐧Download</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">Install</span><span class="nv"> </span><span class="s">Godot</span><span class="nv"> </span><span class="s">${{</span><span class="nv"> </span><span class="s">matrix.godot-version</span><span class="nv"> </span><span class="s">}}"</span>
+        <span class="na">continue-on-error</span><span class="pi">:</span> <span class="no">false</span>
+        <span class="na">shell</span><span class="pi">:</span> <span class="s">bash</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+          <span class="s">GODOT_HOME=$HOME/bin</span>
+          <span class="s">GODOT_BIN=$GODOT_HOME/godot</span>
+          <span class="s">mkdir -p $GODOT_HOME</span>
+          <span class="s">chmod 770 $GODOT_HOME</span>
+          <span class="s">GODOT_CONF_PATH=$HOME/.config/godot</span>
+          <span class="s">if [ ! -d $GODOT_CONF_PATH ]; then</span>
+            <span class="s">mkdir -p $GODOT_CONF_PATH</span>
+            <span class="s">chmod 770 $GODOT_CONF_PATH</span>
+          <span class="s">fi</span>
+
+          <span class="s">GODOT_PACKAGE=Godot_v${{ matrix.godot-version }}-stable_linux.x86_64</span>
+          <span class="s">wget https://github.com/godotengine/godot/releases/download/${{ matrix.godot-version }}-stable/$GODOT_PACKAGE.zip -P ${{ runner.temp }}</span>
+          <span class="s">unzip ${{ runner.temp }}/$GODOT_PACKAGE.zip -d $GODOT_HOME</span>
+          <span class="s">mv $GODOT_HOME/$GODOT_PACKAGE $GODOT_BIN</span>
+          <span class="s">chmod u+x $GODOT_BIN</span>
+          <span class="s">echo "GODOT_HOME=$GODOT_HOME" &gt;&gt; "$GITHUB_ENV"</span>
+          <span class="s">echo "GODOT_BIN=$GODOT_BIN" &gt;&gt; "$GITHUB_ENV"</span>
+
+      <span class="c1"># We need to update the project before running tests, Godot has actually issues with loading the plugin</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Update</span><span class="nv"> </span><span class="s">Project"</span>
+        <span class="na">if</span><span class="pi">:</span> <span class="s">${{ !cancelled() }}</span>
+        <span class="na">timeout-minutes</span><span class="pi">:</span> <span class="m">1</span>
+        <span class="na">continue-on-error</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># we still ignore the timeout, the script is not quit and we run into a timeout</span>
+        <span class="na">shell</span><span class="pi">:</span> <span class="s">bash</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+          <span class="s">${{ env.GODOT_BIN }} -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless --audio-driver Dummy</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Run</span><span class="nv"> </span><span class="s">Unit</span><span class="nv"> </span><span class="s">Tests"</span>
+        <span class="na">if</span><span class="pi">:</span> <span class="s">${{ !cancelled() }}</span>
+        <span class="na">timeout-minutes</span><span class="pi">:</span> <span class="m">8</span> <span class="c1"># set your expected test timeout</span>
+        <span class="na">env</span><span class="pi">:</span>
+          <span class="na">GODOT_BIN</span><span class="pi">:</span> <span class="s">${{ env.GODOT_BIN }}</span>
+        <span class="na">shell</span><span class="pi">:</span> <span class="s">bash</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+          <span class="s">chmod +x ./addons/gdUnit4/runtest.sh</span>
+          <span class="s">xvfb-run --auto-servernum ./addons/gdUnit4/runtest.sh --add "res://test" --audio-driver Dummy --display-driver x11 --rendering-driver opengl3 --screen 0 --continue</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Publish</span><span class="nv"> </span><span class="s">Test</span><span class="nv"> </span><span class="s">Report"</span>
+        <span class="na">if</span><span class="pi">:</span> <span class="s">${{ always() }}</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">dorny/test-reporter@v1.6.0</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">test_report_${{</span><span class="nv"> </span><span class="s">matrix.godot-version</span><span class="nv"> </span><span class="s">}}"</span>
+          <span class="na">path</span><span class="pi">:</span> <span class="s2">"</span><span class="s">reports/**/results.xml"</span>
+          <span class="na">reporter</span><span class="pi">:</span> <span class="s">java-junit</span>
+          <span class="na">fail-on-error</span><span class="pi">:</span> <span class="s1">'</span><span class="s">false'</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Upload</span><span class="nv"> </span><span class="s">Unit</span><span class="nv"> </span><span class="s">Test</span><span class="nv"> </span><span class="s">Reports"</span>
+        <span class="na">if</span><span class="pi">:</span> <span class="s">${{ always() }}</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/upload-artifact@v3</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">test_report_${{</span><span class="nv"> </span><span class="s">matrix.godot-version</span><span class="nv"> </span><span class="s">}}"</span>
+          <span class="na">path</span><span class="pi">:</span> <span class="pi">|</span>
+            <span class="s">reports/**</span>
+            <span class="s">/var/lib/systemd/coredump/**</span>
+            <span class="s">/var/log/syslog</span>
+
+  <span class="na">finalize</span><span class="pi">:</span>
+    <span class="na">if</span><span class="pi">:</span> <span class="s">${{ !cancelled() }}</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">Final Results</span>
+    <span class="na">needs</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">unit-test</span><span class="pi">]</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">exit </span><span class="m">1</span>
+        <span class="na">if</span><span class="pi">:</span> <span class="pi">&gt;-</span>
+          <span class="s">${{</span>
+              <span class="s">contains(needs.*.result, 'failure')</span>
+            <span class="s">|| contains(needs.*.result, 'cancelled')</span>
+          <span class="s">}}</span>
+</code></pre></div></div> <p>The full set of used GitHub actions used can be found <a href="https://github.com/MikeSchulze/gdUnit4/blob/master/.github/workflows/ci-pr-example.yml">here</a></p><hr /> <h4> <a href="#howto-deploy-with-github-action" class="anchor-heading" aria-labelledby="howto-deploy-with-github-action"><svg viewBox="0 0 16 16" aria-hidden="true"> <use xlink:href="#svg-link"></use> </svg></a> document version v4.1.1 </h4> <hr> <footer> <p class="text-small text-grey-dk-100 mb-0">Copyright &copy; 2021-2023 Mike Schulze. Distributed by an <a href="https://github.com/MikeSchulze/gdUnit4/blob/master/LICENSE">MIT license.</a></p> </footer> </div> </div> <div class="search-overlay"></div> </div> <script src="/gdUnit4/assets/js/tabs.js"></script> <link rel="stylesheet" href="/gdUnit4/assets/css/tab.css" /> <link rel="stylesheet" href="/gdUnit4/assets/css/site-header.css" /> </body> </html>
