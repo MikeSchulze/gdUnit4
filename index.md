@@ -3,14 +3,11 @@ layout: default
 title: Home
 ---
 
----
-![](\gdUnit4\assets\images\attention.png){:.centered}
-## C# support is currently disabled and will be added in version 4.2.0.
----
 
-# GdUnit4 V4.1.4
+
+# GdUnit4 V4.2.0
 ![GdUnit4](\gdUnit4\assets\images\background.png)
-build on (v4.1.1.stable.official [bd6af8e0e])
+build on (v4.2.stable.mono.official [46dc27791])
 
 
 
@@ -91,4 +88,4 @@ namespace examples
 {% endtabs %}
 
 ---
-<h4> document version v4.1.4 </h4>
+<h4> document version v4.2.0 </h4>
