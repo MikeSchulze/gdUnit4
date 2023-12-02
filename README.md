@@ -5,7 +5,7 @@
 
 ---
 <h1 align="center">GdUnit4</h1>
-<p align="center">This version of GdUnit4 is based on Godot <strong>v4.1.1.stable.official [bd6af8e0e]</strong> (master branch)</p>
+<p align="center">This version of GdUnit4 is based on Godot <strong>v4.2.stable.mono.official [46dc27791]</strong> (master branch)</p>
 </h2>
 
 
@@ -17,6 +17,9 @@
   <img src="https://img.shields.io/badge/Godot-v4.0.3-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.1.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
+  <img src="https://img.shields.io/badge/Godot-v4.1.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
+  <img src="https://img.shields.io/badge/Godot-v4.1.3-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
+  <img src="https://img.shields.io/badge/Godot-v4.2.0-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
 </p>
 
 <p align="center"><a href="https://github.com/MikeSchulze/gdUnit4"><img src="https://github.com/MikeSchulze/gdUnit4/blob/master/assets/gdUnit4-animated.gif" width="100%"/></p><br/>
@@ -34,13 +37,6 @@
 GdUnit4 is an embedded unit testing framework designed for testing Gd scripts, C# scripts, and scenes in the Godot editor. With GdUnit4, you can easily create and run unit tests to verify the functionality and performance of your code, ensuring that it meets your requirements and specifications.<br>
 GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://en.wikipedia.org/wiki/Test-driven_development)), a popular software development approach that emphasizes creating automated tests before writing any code. By using GdUnit4 for TDD, you can ensure that your code is thoroughly tested and free of bugs, which can save you time and effort in the long run.
 
-
->
-> __Note__
-> 
-```diff
-- CSharp support is currently disabled and will be reimplement with V4.2.0!
-```
 
 ## Main Features
 * Support for writing and executing tests in GdScript or C#

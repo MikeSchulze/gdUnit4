@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.1.2">
+<Project Sdk="Godot.NET.Sdk/4.2.0">
   <PropertyGroup>
     <TargetFrameworks>net7.0</TargetFrameworks>
     <LangVersion>11.0</LangVersion>
