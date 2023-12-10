@@ -312,8 +312,10 @@ func test_runner_by_scene_instance() -> void:
 	runner._notification(NOTIFICATION_PREDELETE)
 	# give engine time to free the resources
 	await await_idle_frame()
-	# verify runner and scene is freed
-	assert_bool(is_instance_valid(scene)).is_false()
+	# scene runner using external scene do not free the scene at exit
+	assert_bool(is_instance_valid(scene)).is_true()
+	# needs to be manually freed
+	scene.free()
 
 
 func test_mouse_drag_and_drop() -> void:

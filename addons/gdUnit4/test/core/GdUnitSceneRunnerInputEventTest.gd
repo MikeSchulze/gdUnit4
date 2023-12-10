@@ -8,12 +8,9 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitSceneRunner.gd'
 var _runner :GdUnitSceneRunner
 var _scene_spy :Node
 
-func before():
-	_scene_spy = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
-
 
 func before_test():
-	reset(_scene_spy)
+	_scene_spy = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	_runner = scene_runner(_scene_spy)
 	assert_inital_mouse_state()
 	assert_inital_key_state()
@@ -140,6 +137,45 @@ func test_simulate_many_keys_press() -> void:
 	assert_that(Input.is_physical_key_pressed(KEY_W)).is_false()
 	assert_that(Input.is_key_pressed(KEY_Z)).is_true()
 	assert_that(Input.is_physical_key_pressed(KEY_Z)).is_true()
+
+
+func test_simulate_keypressed_as_action() -> void:
+	# add custom action `player_jump` for key 'Space' is pressed
+	var event := InputEventKey.new()
+	event.keycode = KEY_SPACE
+	InputMap.add_action("player_jump")
+	InputMap.action_add_event("player_jump", event)
+	var runner := scene_runner("res://addons/gdUnit4/test/core/resources/scenes/input_actions/InputEventTestScene.tscn")
+	
+	# precondition checks
+	var action_event = InputMap.action_get_events("player_jump")
+	assert_array(action_event).contains_exactly([event])
+	assert_bool(Input.is_action_just_released("player_jump", true)).is_false()
+	assert_bool(Input.is_action_just_released("ui_accept", true)).is_false()
+	assert_bool(Input.is_action_just_released("ui_select", true)).is_false()
+	assert_bool(runner.scene()._player_jump_action_released).is_false()
+	
+	# test a key event is trigger action event
+	# simulate press space
+	runner.simulate_key_pressed(KEY_SPACE)
+	# it is important do not wait for next frame here, otherwise the input action cache is cleared and can't be use to verify
+	assert_bool(Input.is_action_just_released("player_jump", true)).is_true()
+	assert_bool(Input.is_action_just_released("ui_accept", true)).is_true()
+	assert_bool(Input.is_action_just_released("ui_select", true)).is_true()
+	assert_bool(runner.scene()._player_jump_action_released).is_true()
+
+	# test a key event is not trigger the custom action event
+	# simulate press only space+ctrl
+	runner._reset_input_to_default()
+	runner.simulate_key_pressed(KEY_SPACE, false, true)
+	# it is important do not wait for next frame here, otherwise the input action cache is cleared and can't be use to verify
+	assert_bool(Input.is_action_just_released("player_jump", true)).is_false()
+	assert_bool(Input.is_action_just_released("ui_accept", true)).is_false()
+	assert_bool(Input.is_action_just_released("ui_select", true)).is_false()
+	assert_bool(runner.scene()._player_jump_action_released).is_false()
+	
+	# cleanup custom action
+	InputMap.erase_action("player_jump")
 
 
 func test_simulate_set_mouse_pos():
