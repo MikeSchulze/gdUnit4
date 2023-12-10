@@ -30,6 +30,7 @@ var _key_on_press := []
 # time factor settings
 var _time_factor := 1.0
 var _saved_iterations_per_second :float
+var _scene_auto_free := false
 
 
 func _init(p_scene, p_verbose :bool, p_hide_push_errors = false):
@@ -46,7 +47,8 @@ func _init(p_scene, p_verbose :bool, p_hide_push_errors = false):
 			if not p_hide_push_errors:
 				push_error("GdUnitSceneRunner: The given resource: '%s'. is not a scene." % p_scene)
 			return
-		_current_scene =  load(p_scene).instantiate()
+		_current_scene = load(p_scene).instantiate()
+		_scene_auto_free = true
 	else:
 		# verify we have a node instance
 		if not p_scene is Node:
@@ -77,8 +79,8 @@ func _notification(what):
 		_reset_input_to_default()
 		if is_instance_valid(_current_scene):
 			_scene_tree.root.remove_child(_current_scene)
-			# don't free already memory managed instances
-			if not GdUnitMemoryObserver.is_marked_auto_free(_current_scene):
+			# do only free scenes instanciated by this runner
+			if _scene_auto_free:
 				_current_scene.free()
 		_scene_tree = null
 		_current_scene = null
@@ -325,6 +327,20 @@ func _apply_input_mouse_position(event :InputEvent) -> void:
 		event.position = _last_input_event.position
 
 
+## just for testing maunally event to action handling
+func _handle_actions(event :InputEvent) -> bool:
+	var is_action_match := false
+	for action in InputMap.get_actions():
+		if InputMap.event_is_action(event, action, true):
+			is_action_match = true
+			prints(action, event, event.is_ctrl_pressed())
+			if event.is_pressed():
+				Input.action_press(action, InputMap.action_get_deadzone(action))
+			else:
+				Input.action_release(action)
+	return is_action_match
+
+
 # for handling read https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html?highlight=inputevent#how-does-it-work
 func _handle_input_event(event :InputEvent):
 	if event is InputEventMouse:
@@ -356,6 +372,7 @@ func _reset_input_to_default() -> void:
 			simulate_key_release(key_scancode)
 	_key_on_press.clear()
 	Input.flush_buffered_events()
+	_last_input_event = null
 
 
 func __print(message :String) -> void:
