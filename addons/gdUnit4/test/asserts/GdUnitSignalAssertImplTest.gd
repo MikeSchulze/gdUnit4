@@ -11,7 +11,7 @@ const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 class TestEmitter extends Node:
 	signal test_signal_counted(value)
-	signal test_signal()
+	signal test_signal(value :int)
 	signal test_signal_unused()
 	
 	var _trigger_count :int
@@ -25,7 +25,8 @@ class TestEmitter extends Node:
 			test_signal_counted.emit(_count)
 		
 		if _count == 20:
-			test_signal.emit()
+			test_signal.emit(10)
+			test_signal.emit(20)
 		_count += 1
 
 
@@ -66,7 +67,8 @@ func test_unknown_signal() -> void:
 
 func test_signal_is_emitted_without_args() -> void:
 	# wait until signal 'test_signal_counted' without args
-	await assert_signal(signal_emitter).is_emitted("test_signal")
+	await assert_signal(signal_emitter).is_emitted("test_signal", [10])
+	await assert_signal(signal_emitter).is_emitted("test_signal", [20])
 	# wait until signal 'test_signal_unused' where is never emitted
 	
 	if is_skip_fail_await():
@@ -207,3 +209,4 @@ func test_monitor_signals_on_resource_set() -> void:
 	# title change should emit "changed" signal
 	await assert_signal(emitter).is_emitted("changed")
 	assert_str(sut.title).is_equal("Some title")
+
