@@ -99,7 +99,8 @@ jobs:
 
   unit-test-mono:
     name: "Unit Tests Mono"
-    if: ${{ startsWith(inputs.godot-version, '4.1') || startsWith(inputs.godot-version, '4.2') }}
+    # We exclude Godot 4.0.x
+    if: ${{ !startsWith(inputs.godot-version, '4.0') }}
     runs-on: ${{ inputs.os }}
     timeout-minutes: 5
 
