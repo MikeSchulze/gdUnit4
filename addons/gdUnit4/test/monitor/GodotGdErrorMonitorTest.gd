@@ -43,14 +43,14 @@ func write_log(content :String) -> String:
 
 
 func test_scan_for_push_errors() -> void:
-	var log_file := write_log(error_report)
 	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
-	monitor._godot_log_file = log_file
+	monitor._godot_log_file = write_log(error_report)
 	monitor._report_enabled = true
 	
 	# with disabled push_error reporting
 	do_return(false).on(monitor)._is_report_push_errors()
-	assert_array(monitor.reports()).is_empty()
+	await monitor.scan()
+	assert_array(monitor.to_reports()).is_empty()
 	
 	# with enabled push_error reporting
 	do_return(true).on(monitor)._is_report_push_errors()
@@ -59,7 +59,9 @@ func test_scan_for_push_errors() -> void:
 		"this is an error",
 		"at: push_error (core/variant/variant_utility.cpp:880)")
 	var expected_report := GodotGdErrorMonitor._to_report(entry)
-	assert_array(monitor.reports()).contains_exactly([expected_report])
+	monitor._eof = 0
+	await monitor.scan()
+	assert_array(monitor.to_reports()).contains_exactly([expected_report])
 
 
 func test_scan_for_script_errors() -> void:
@@ -70,7 +72,8 @@ func test_scan_for_script_errors() -> void:
 	
 	# with disabled push_error reporting
 	do_return(false).on(monitor)._is_report_script_errors()
-	assert_array(monitor.reports()).is_empty()
+	await monitor.scan()
+	assert_array(monitor.to_reports()).is_empty()
 	
 	# with enabled push_error reporting
 	do_return(true).on(monitor)._is_report_script_errors()
@@ -79,7 +82,9 @@ func test_scan_for_script_errors() -> void:
 		"Trying to call a function on a previously freed instance.",
 		"at: GdUnitScriptTypeTest.test_xx (res://addons/gdUnit4/test/GdUnitScriptTypeTest.gd:22)")
 	var expected_report := GodotGdErrorMonitor._to_report(entry)
-	assert_array(monitor.reports()).contains_exactly([expected_report])
+	monitor._eof = 0
+	await monitor.scan()
+	assert_array(monitor.to_reports()).contains_exactly([expected_report])
 
 
 func test_custom_log_path() -> void:
@@ -97,18 +102,21 @@ func test_custom_log_path() -> void:
 
 
 func test_integration_test() -> void:
-	var monitor := GodotGdErrorMonitor.new(true)
+	var monitor := GodotGdErrorMonitor.new()
+	monitor._report_enabled = true
 	# no errors reported
 	monitor.start()
 	monitor.stop()
-	assert_array(monitor.reports()).is_empty()
+	await monitor.scan(true)
+	assert_array(monitor.to_reports()).is_empty()
 	
 	# push error
 	monitor.start()
 	push_error("Test GodotGdErrorMonitor 'push_error' reporting")
 	push_warning("Test GodotGdErrorMonitor 'push_warning' reporting")
 	monitor.stop()
-	var reports := monitor.reports()
+	await monitor.scan(true)
+	var reports := monitor.to_reports()
 	assert_array(reports).has_size(2)
 	if not reports.is_empty():
 		assert_str(reports[0].message()).contains("Test GodotGdErrorMonitor 'push_error' reporting")

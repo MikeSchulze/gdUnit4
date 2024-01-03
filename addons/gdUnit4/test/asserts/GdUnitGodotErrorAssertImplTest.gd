@@ -63,6 +63,11 @@ func after():
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_SCRIPT_ERRORS, _save_is_report_script_errors)
 
 
+func after_test():
+	# Cleanup report artifacts
+	GdUnitThreadManager.get_current_context().get_execution_context().error_monitor._entries.clear()
+
+
 func test_invalid_callable() -> void:
 	assert_failure(func(): assert_error(Callable()).is_success())\
 		.is_failed()\
