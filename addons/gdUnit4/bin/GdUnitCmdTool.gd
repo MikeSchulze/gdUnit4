@@ -18,6 +18,7 @@ class CLIRunner extends Node:
 	const RETURN_SUCCESS  =   0
 	const RETURN_ERROR    = 100
 	const RETURN_ERROR_HEADLESS_NOT_SUPPORTED  = 103
+	const RETURN_ERROR_GODOT_VERSION_NOT_SUPPORTED  = 104
 	const RETURN_WARNING  = 101
 
 	var _state = READY
@@ -391,6 +392,10 @@ var _cli_runner :CLIRunner
 
 
 func _initialize():
+	if Engine.get_version_info().hex < 0x40100:
+		prints("GdUnit4 requires a minimum of Godot 4.1.x Version!")
+		quit(CLIRunner.RETURN_ERROR_GODOT_VERSION_NOT_SUPPORTED)
+		return
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	_cli_runner = CLIRunner.new()
 	root.add_child(_cli_runner)

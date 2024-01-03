@@ -9,6 +9,9 @@ var _gd_console :Node
 
 
 func _enter_tree():
+	if Engine.get_version_info().hex < 0x40100:
+		prints("GdUnit4 plugin requires a minimum of Godot 4.1.x Version!")
+		return
 	Engine.set_meta("GdUnitEditorPlugin", self)
 	GdUnitSettings.setup()
 	# install the GdUnit inspector
