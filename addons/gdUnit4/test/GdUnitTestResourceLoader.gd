@@ -35,7 +35,7 @@ static func load_test_suite_cs(resource_path :String) -> Node:
 	if not GdUnit4MonoApiLoader.is_mono_supported():
 		return null
 	var script = ClassDB.instantiate("CSharpScript")
-	script.source_code = GdUnitTools.resource_as_string(resource_path)
+	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
 	script.resource_path = resource_path
 	script.reload()
 	return null
@@ -45,8 +45,8 @@ static func load_cs_script(resource_path :String, debug_write := false) -> Scrip
 	if not GdUnit4MonoApiLoader.is_mono_supported():
 		return null
 	var script = ClassDB.instantiate("CSharpScript")
-	script.source_code = GdUnitTools.resource_as_string(resource_path)
-	script.resource_path = GdUnitTools.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".cs")
+	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
+	script.resource_path = GdUnitFileAccess.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".cs")
 	if debug_write:
 		print_debug("save resource:", script.resource_path)
 		DirAccess.remove_absolute(script.resource_path)
@@ -62,8 +62,8 @@ static func load_cs_script(resource_path :String, debug_write := false) -> Scrip
 
 static func load_gd_script(resource_path :String, debug_write := false) -> GDScript:
 	var script := GDScript.new()
-	script.source_code = GdUnitTools.resource_as_string(resource_path)
-	script.resource_path = GdUnitTools.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".gd")
+	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
+	script.resource_path = GdUnitFileAccess.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".gd")
 	if debug_write:
 		print_debug("save resource:", script.resource_path)
 		DirAccess.remove_absolute(script.resource_path)

@@ -61,7 +61,7 @@ static func spy_on_script(instance, function_excludes :PackedStringArray, debug_
 	var spy := GDScript.new()
 	spy.source_code = "\n".join(lines)
 	spy.resource_name = "Spy%s.gd" % clazz_name
-	spy.resource_path = GdUnitTools.create_temp_dir("spy") + "/Spy%s_%d.gd" % [clazz_name, Time.get_ticks_msec()]
+	spy.resource_path = GdUnitFileAccess.create_temp_dir("spy") + "/Spy%s_%d.gd" % [clazz_name, Time.get_ticks_msec()]
 	
 	if debug_write:
 		DirAccess.remove_absolute(spy.resource_path)

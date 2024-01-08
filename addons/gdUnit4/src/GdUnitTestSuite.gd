@@ -43,6 +43,10 @@ func __gdunit_tools() -> GDScript:
 	return __lazy_load("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
+func __gdunit_file_access() -> GDScript:
+	return __lazy_load("res://addons/gdUnit4/src/core/GdUnitFileAccess.gd")
+
+
 func __gdunit_awaiter() -> Object:
 	return __lazy_load("res://addons/gdUnit4/src/GdUnitAwaiter.gd").new()
 
@@ -91,7 +95,7 @@ func set_active_test_case(test_case :String) -> void:
 # Mapps Godot error number to a readable error message. See at ERROR
 # https://docs.godotengine.org/de/stable/classes/class_@globalscope.html#enum-globalscope-error
 func error_as_string(error_number :int) -> String:
-	return __gdunit_tools().error_as_string(error_number)
+	return error_string(error_number)
 
 
 ## A litle helper to auto freeing your created objects after test execution
@@ -117,35 +121,35 @@ func discard_error_interupted_by_timeout() -> void:
 ## Useful for storing data during test execution. [br]
 ## The directory is automatically deleted after test suite execution
 func create_temp_dir(relative_path :String) -> String:
-	return __gdunit_tools().create_temp_dir(relative_path)
+	return __gdunit_file_access().create_temp_dir(relative_path)
 
 
 ## Deletes the temporary base directory[br]
 ## Is called automatically after each execution of the test suite
 func clean_temp_dir():
-	__gdunit_tools().clear_tmp()
+	__gdunit_file_access().clear_tmp()
 
 
 ## Creates a new file under the temporary directory *user://tmp* + <relative_path>[br]
 ## with given name <file_name> and given file <mode> (default = File.WRITE)[br]
 ## If success the returned File is automatically closed after the execution of the test suite
 func create_temp_file(relative_path :String, file_name :String, mode := FileAccess.WRITE) -> FileAccess:
-	return __gdunit_tools().create_temp_file(relative_path, file_name, mode)
+	return __gdunit_file_access().create_temp_file(relative_path, file_name, mode)
 
 
 ## Reads a resource by given path <resource_path> into a PackedStringArray.
 func resource_as_array(resource_path :String) -> PackedStringArray:
-	return __gdunit_tools().resource_as_array(resource_path)
+	return __gdunit_file_access().resource_as_array(resource_path)
 
 
 ## Reads a resource by given path <resource_path> and returned the content as String.
 func resource_as_string(resource_path :String) -> String:
-	return __gdunit_tools().resource_as_string(resource_path)
+	return __gdunit_file_access().resource_as_string(resource_path)
 
 
 ## Reads a resource by given path <resource_path> and return Variand translated by str_to_var
 func resource_as_var(resource_path :String):
-	return str_to_var(__gdunit_tools().resource_as_string(resource_path))
+	return str_to_var(__gdunit_file_access().resource_as_string(resource_path))
 
 
 ## clears the debuger error list[br]
