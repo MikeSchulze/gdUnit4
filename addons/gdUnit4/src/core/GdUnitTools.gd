@@ -10,20 +10,20 @@ static func temp_dir() -> String:
 
 
 static func create_temp_dir(folder_name :String) -> String:
-	var new_folder = temp_dir() + "/" + folder_name
+	var new_folder := temp_dir() + "/" + folder_name
 	if not DirAccess.dir_exists_absolute(new_folder):
 		DirAccess.make_dir_recursive_absolute(new_folder)
 	return new_folder
 
 
-static func clear_tmp():
+static func clear_tmp() -> void:
 	delete_directory(GDUNIT_TEMP)
 
 
 # Creates a new file under 
 static func create_temp_file(relative_path :String, file_name :String, mode := FileAccess.WRITE) -> FileAccess:
 	var file_path := create_temp_dir(relative_path) + "/" + file_name
-	var file = FileAccess.open(file_path, mode)
+	var file := FileAccess.open(file_path, mode)
 	if file == null:
 		push_error("Error creating temporary file at: %s, %s" % [file_path, error_as_string(FileAccess.get_open_error())])
 	return file
@@ -47,7 +47,7 @@ static func delete_directory(path :String, only_content := false) -> void:
 				delete_directory(next)
 			else:
 				# delete file
-				var err = dir.remove(next)
+				var err := dir.remove(next)
 				if err:
 					push_error("Delete %s failed: %s" % [next, error_as_string(err)])
 		if not only_content:
@@ -61,7 +61,7 @@ static func copy_file(from_file :String, to_dir :String) -> GdUnitResult:
 	if dir != null:
 		var to_file := to_dir + "/" + from_file.get_file()
 		prints("Copy %s to %s" % [from_file, to_file])
-		var error = dir.copy(from_file, to_file)
+		var error := dir.copy(from_file, to_file)
 		if error != OK:
 			return GdUnitResult.error("Can't copy file form '%s' to '%s'. Error: '%s'" % [from_file, to_file, error_as_string(error)])
 		return GdUnitResult.success(to_file)
@@ -96,7 +96,7 @@ static func copy_directory(from_dir :String, to_dir :String, recursive :bool = f
 				if recursive:
 					copy_directory(source + "/", dest, recursive)
 				continue
-			var err = source_dir.copy(source, dest)
+			var err := source_dir.copy(source, dest)
 			if err != OK:
 				push_error("Error checked copy file '%s' to '%s'" % [source, dest])
 				return false
@@ -241,7 +241,7 @@ static func free_instance(instance :Variant, is_stdout_verbose :=false) -> bool:
 		return !is_instance_valid(instance)
 
 
-static func _release_connections(instance :Object):
+static func _release_connections(instance :Object) -> void:
 	if is_instance_valid(instance):
 		# disconnect from all connected signals to force freeing, otherwise it ends up in orphans
 		for connection in instance.get_incoming_connections():
@@ -256,7 +256,7 @@ static func _release_connections(instance :Object):
 	release_timers()
 
 
-static func release_timers():
+static func release_timers() -> void:
 	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
 	for node in Engine.get_main_loop().root.get_children():
 		if is_instance_valid(node) and node.is_in_group("GdUnitTimers"):
@@ -267,7 +267,7 @@ static func release_timers():
 
 
 # the finally cleaup unfreed resources and singletons
-static func dispose_all():
+static func dispose_all() -> void:
 	release_timers()
 	GdUnitSignals.dispose()
 	GdUnitSingleton.dispose()
@@ -293,13 +293,13 @@ static func error_as_string(error_number :int) -> String:
 
 
 static func clear_push_errors() -> void:
-	var runner = Engine.get_meta("GdUnitRunner")
+	var runner :Node = Engine.get_meta("GdUnitRunner")
 	if runner != null:
 		runner.clear_push_errors()
 
 
 static func register_expect_interupted_by_timeout(test_suite :Node, test_case_name :String) -> void:
-	var test_case = test_suite.find_child(test_case_name, false, false)
+	var test_case :Node = test_suite.find_child(test_case_name, false, false)
 	test_case.expect_to_interupt()
 
 
@@ -310,7 +310,7 @@ static func extract_zip(zip_package :String, dest_path :String) -> GdUnitResult:
 		return GdUnitResult.error("Extracting `%s` failed! Please collect the error log and report this. Error Code: %s" % [zip_package, err])
 	var zip_entries: PackedStringArray = zip.get_files()
 	# Get base path and step over archive folder
-	var archive_path = zip_entries[0]
+	var archive_path := zip_entries[0]
 	zip_entries.remove_at(0)
 	
 	for zip_entry in zip_entries:

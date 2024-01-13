@@ -3,10 +3,10 @@ class_name GdUnit4MonoApiLoader
 
 
 static func instance() -> Object:
-	return GdUnitSingleton.instance("GdUnit4MonoAPI", func():
+	return GdUnitSingleton.instance("GdUnit4MonoAPI", func() -> Object:
 		if not GdUnit4MonoApiLoader.is_mono_supported():
 			return null
-		var GdUnit4MonoApi = load("res://addons/gdUnit4/src/mono/GdUnit4MonoApi.cs")
+		var GdUnit4MonoApi := load("res://addons/gdUnit4/src/mono/GdUnit4MonoApi.cs")
 		return GdUnit4MonoApi.new()
 	)
 
