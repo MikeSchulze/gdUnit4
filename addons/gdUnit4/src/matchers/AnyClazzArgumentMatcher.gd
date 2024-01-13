@@ -3,7 +3,7 @@ extends GdUnitArgumentMatcher
 	
 var _clazz :Object
 
-func _init(clazz :Object):
+func _init(clazz :Object) -> void:
 	_clazz = clazz
 
 func is_match(value :Variant) -> bool:
