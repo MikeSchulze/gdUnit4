@@ -5,7 +5,7 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const SPY_TEMPLATE :GDScript = preload("res://addons/gdUnit4/src/spy/GdUnitSpyImpl.gd")
 
 
-static func build(to_spy, debug_write = false) -> Object:
+static func build(to_spy, debug_write := false) -> Object:
 	if GdObjects.is_singleton(to_spy):
 		push_error("Spy on a Singleton is not allowed! '%s'" % to_spy.get_class())
 		return null
