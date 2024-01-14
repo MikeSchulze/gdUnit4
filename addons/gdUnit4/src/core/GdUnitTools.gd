@@ -61,7 +61,7 @@ static func free_instance(instance :Variant, is_stdout_verbose :=false) -> bool:
 		return !is_instance_valid(instance)
 
 
-static func _release_connections(instance :Object):
+static func _release_connections(instance :Object) -> void:
 	if is_instance_valid(instance):
 		# disconnect from all connected signals to force freeing, otherwise it ends up in orphans
 		for connection in instance.get_incoming_connections():
@@ -76,7 +76,7 @@ static func _release_connections(instance :Object):
 	release_timers()
 
 
-static func release_timers():
+static func release_timers() -> void:
 	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
 	for node in Engine.get_main_loop().root.get_children():
 		if is_instance_valid(node) and node.is_in_group("GdUnitTimers"):
@@ -87,7 +87,7 @@ static func release_timers():
 
 
 # the finally cleaup unfreed resources and singletons
-static func dispose_all():
+static func dispose_all() -> void:
 	release_timers()
 	GdUnitSignals.dispose()
 	GdUnitSingleton.dispose()
@@ -100,11 +100,11 @@ static func release_double(instance :Object) -> void:
 
 
 static func clear_push_errors() -> void:
-	var runner = Engine.get_meta("GdUnitRunner")
+	var runner :Node = Engine.get_meta("GdUnitRunner")
 	if runner != null:
 		runner.clear_push_errors()
 
 
 static func register_expect_interupted_by_timeout(test_suite :Node, test_case_name :String) -> void:
-	var test_case = test_suite.find_child(test_case_name, false, false)
+	var test_case :Node = test_suite.find_child(test_case_name, false, false)
 	test_case.expect_to_interupt()

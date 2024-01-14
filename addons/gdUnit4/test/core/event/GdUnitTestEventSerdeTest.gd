@@ -28,9 +28,9 @@ func test_serde_test_after_no_report():
 	assert_that(deserialized).is_equal(event)
 	
 func test_serde_test_after_with_report():
-	var reports := [\
-	GdUnitReport.new().create(GdUnitReport.FAILURE, 24, "this is a error a"), \
-	GdUnitReport.new().create(GdUnitReport.FAILURE, 26, "this is a error b")]
+	var reports :Array[GdUnitReport] = [\
+		GdUnitReport.new().create(GdUnitReport.FAILURE, 24, "this is a error a"), \
+		GdUnitReport.new().create(GdUnitReport.FAILURE, 26, "this is a error b")]
 	var event := GdUnitEvent.new().test_after("path", "test_suite_a", "test_foo", {}, reports)
 
 	var serialized := event.serialize()

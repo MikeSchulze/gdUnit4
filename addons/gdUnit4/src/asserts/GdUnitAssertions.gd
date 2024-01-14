@@ -3,7 +3,7 @@ class_name GdUnitAssertions
 extends RefCounted
 
 
-func _init():
+func _init() -> void:
 	# preload all gdunit assertions to speedup testsuite loading time
 	GdUnitAssertions.__lazy_load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd")
 	GdUnitAssertions.__lazy_load("res://addons/gdUnit4/src/asserts/GdUnitBoolAssertImpl.gd")

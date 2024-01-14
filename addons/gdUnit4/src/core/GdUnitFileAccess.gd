@@ -8,14 +8,14 @@ static func current_dir() -> String:
 	return ProjectSettings.globalize_path("res://")
 
 
-static func clear_tmp():
+static func clear_tmp() -> void:
 	delete_directory(GDUNIT_TEMP)
 
 
 # Creates a new file under 
 static func create_temp_file(relative_path :String, file_name :String, mode := FileAccess.WRITE) -> FileAccess:
 	var file_path := create_temp_dir(relative_path) + "/" + file_name
-	var file = FileAccess.open(file_path, mode)
+	var file := FileAccess.open(file_path, mode)
 	if file == null:
 		push_error("Error creating temporary file at: %s, %s" % [file_path, error_string(FileAccess.get_open_error())])
 	return file
@@ -28,7 +28,7 @@ static func temp_dir() -> String:
 
 
 static func create_temp_dir(folder_name :String) -> String:
-	var new_folder = temp_dir() + "/" + folder_name
+	var new_folder := temp_dir() + "/" + folder_name
 	if not DirAccess.dir_exists_absolute(new_folder):
 		DirAccess.make_dir_recursive_absolute(new_folder)
 	return new_folder
@@ -39,7 +39,7 @@ static func copy_file(from_file :String, to_dir :String) -> GdUnitResult:
 	if dir != null:
 		var to_file := to_dir + "/" + from_file.get_file()
 		prints("Copy %s to %s" % [from_file, to_file])
-		var error = dir.copy(from_file, to_file)
+		var error := dir.copy(from_file, to_file)
 		if error != OK:
 			return GdUnitResult.error("Can't copy file form '%s' to '%s'. Error: '%s'" % [from_file, to_file, error_string(error)])
 		return GdUnitResult.success(to_file)
@@ -74,7 +74,7 @@ static func copy_directory(from_dir :String, to_dir :String, recursive :bool = f
 				if recursive:
 					copy_directory(source + "/", dest, recursive)
 				continue
-			var err = source_dir.copy(source, dest)
+			var err := source_dir.copy(source, dest)
 			if err != OK:
 				push_error("Error checked copy file '%s' to '%s'" % [source, dest])
 				return false
@@ -99,7 +99,7 @@ static func delete_directory(path :String, only_content := false) -> void:
 				delete_directory(next)
 			else:
 				# delete file
-				var err = dir.remove(next)
+				var err := dir.remove(next)
 				if err:
 					push_error("Delete %s failed: %s" % [next, error_string(err)])
 		if not only_content:
@@ -197,7 +197,7 @@ static func extract_zip(zip_package :String, dest_path :String) -> GdUnitResult:
 		return GdUnitResult.error("Extracting `%s` failed! Please collect the error log and report this. Error Code: %s" % [zip_package, err])
 	var zip_entries: PackedStringArray = zip.get_files()
 	# Get base path and step over archive folder
-	var archive_path = zip_entries[0]
+	var archive_path := zip_entries[0]
 	zip_entries.remove_at(0)
 	
 	for zip_entry in zip_entries:

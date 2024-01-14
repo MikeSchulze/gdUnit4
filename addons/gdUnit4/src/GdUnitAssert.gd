@@ -8,7 +8,8 @@ static func _get_line_number() -> int:
 	var stack_trace := get_stack()
 	if stack_trace == null or stack_trace.is_empty():
 		return -1
-	for stack_info in stack_trace:
+	for index in stack_trace.size():
+		var stack_info :Dictionary = stack_trace[index]
 		var function :String = stack_info.get("function")
 		# we catch helper asserts to skip over to return the correct line number
 		if function.begins_with("assert_"):
