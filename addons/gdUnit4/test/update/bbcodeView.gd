@@ -14,7 +14,7 @@ var _md_reader := GdMarkDownReader.new()
 
 func _ready():
 	_md_reader.set_http_client(_update_client)
-	var source := GdUnitTools.resource_as_string("res://addons/gdUnit4/test/update/resources/markdown_example.txt")
+	var source := GdUnitFileAccess.resource_as_string("res://addons/gdUnit4/test/update/resources/markdown_example.txt")
 	_input.text = source
 	await set_bbcode(source)
 
