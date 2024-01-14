@@ -5,6 +5,7 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/matchers/AnyClazzArgumentMatcher.gd'
 
+
 func test_is_match_reference():
 	var matcher := AnyClazzArgumentMatcher.new(RefCounted)
 	
@@ -15,6 +16,7 @@ func test_is_match_reference():
 	assert_bool(matcher.is_match(0)).is_false()
 	assert_bool(matcher.is_match(false)).is_false()
 	assert_bool(matcher.is_match(true)).is_false()
+
 
 func test_is_match_node():
 	var matcher := AnyClazzArgumentMatcher.new(Node)
@@ -29,5 +31,13 @@ func test_is_match_node():
 	assert_bool(matcher.is_match(false)).is_false()
 	assert_bool(matcher.is_match(true)).is_false()
 
+
 func test_any_class():
 	assert_object(any_class(Node)).is_instanceof(AnyClazzArgumentMatcher)
+
+
+func test_to_string() -> void:
+	assert_str(str(any_class(Node))).is_equal("any_class(<Node>)")
+	assert_str(str(any_class(Object))).is_equal("any_class(<Object>)")
+	assert_str(str(any_class(RefCounted))).is_equal("any_class(<RefCounted>)")
+	assert_str(str(any_class(GdObjects))).is_equal("any_class(<GdObjects>)")

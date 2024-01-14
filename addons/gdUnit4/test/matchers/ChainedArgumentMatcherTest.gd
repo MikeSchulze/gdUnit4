@@ -14,6 +14,7 @@ func test_is_match_one_arg():
 	assert_bool(matcher.is_match(["foo"])).is_true()
 	assert_bool(matcher.is_match(["bar"])).is_false()
 
+
 func test_is_match_two_arg():
 	var matchers = [
 		EqualsArgumentMatcher.new("foo"),
@@ -24,6 +25,7 @@ func test_is_match_two_arg():
 	assert_bool(matcher.is_match(["foo", "value1"])).is_true()
 	assert_bool(matcher.is_match(["foo", "value2"])).is_false()
 	assert_bool(matcher.is_match(["bar", "value1"])).is_false()
+
 
 func test_is_match_different_arg_and_matcher():
 	var matchers = [

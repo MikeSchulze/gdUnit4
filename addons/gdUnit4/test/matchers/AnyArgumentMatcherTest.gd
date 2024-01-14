@@ -5,6 +5,7 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/matchers/AnyArgumentMatcher.gd'
 
+
 func test_is_match():
 	var matcher := AnyArgumentMatcher.new()
 	
@@ -19,5 +20,10 @@ func test_is_match():
 	assert_bool(matcher.is_match(RefCounted.new())).is_true()
 	assert_bool(matcher.is_match(auto_free(Node.new()))).is_true()
 
+
 func test_any():
 	assert_object(any()).is_instanceof(AnyArgumentMatcher)
+
+
+func test_to_string() -> void:
+	assert_str(str(any())).is_equal("any()")

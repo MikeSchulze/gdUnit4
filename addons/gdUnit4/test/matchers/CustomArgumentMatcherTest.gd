@@ -1,5 +1,6 @@
 extends GdUnitTestSuite
 
+
 class CustomArgumentMatcher extends GdUnitArgumentMatcher:
 	var _peek :int
 	
@@ -8,6 +9,7 @@ class CustomArgumentMatcher extends GdUnitArgumentMatcher:
 
 	func is_match(value) -> bool:
 		return value > _peek
+
 
 func test_custom_matcher():
 	var mocked_test_class : CustomArgumentMatcherTestClass = mock(CustomArgumentMatcherTestClass)
