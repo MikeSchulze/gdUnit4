@@ -12,7 +12,7 @@ config_version=5
 
 config/name="gdUnit4"
 config/tags=PackedStringArray("addon", "godot4", "testing")
-config/features=PackedStringArray("4.1")
+config/features=PackedStringArray("4.2")
 config/icon="res://icon.png"
 
 [audio]
@@ -24,15 +24,10 @@ default_bus_layout=""
 file_logging/enable_file_logging=true
 gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
-gdscript/warnings/untyped_declaration=2
 
 [dotnet]
 
 project/assembly_name="gdUnit4"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
 [gdunit4]
 

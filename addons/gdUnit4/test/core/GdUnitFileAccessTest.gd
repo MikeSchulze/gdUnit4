@@ -10,7 +10,7 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitFileAccess.gd'
 var file_to_save :String
 
 
-func after():
+func after() -> void:
 	# verify tmp files are deleted automatically
 	assert_bool(FileAccess.file_exists(file_to_save)).is_false()
 
@@ -38,11 +38,11 @@ func test_copy_directory_recursive() -> void:
 	assert_file("%s/folder_c/file_z.txt" % temp_dir).exists()
 
 
-func test_create_temp_dir():
+func test_create_temp_dir() -> void:
 	var temp_dir := create_temp_dir("examples/game/save")
 	file_to_save = temp_dir + "/save_game.dat"
 	
-	var data = {
+	var data := {
 		'user': "Hoschi",
 		'level': 42
 	}
@@ -51,7 +51,7 @@ func test_create_temp_dir():
 	assert_bool(FileAccess.file_exists(file_to_save)).is_true()
 
 
-func test_create_temp_file():
+func test_create_temp_file() -> void:
 	# setup - stores a tmp file with "user://tmp/examples/game/game.sav" (auto closed)
 	var file := create_temp_file("examples/game", "game.sav")
 	assert_object(file).is_not_null()

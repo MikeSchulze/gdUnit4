@@ -24,7 +24,7 @@ var __skip_reason :String = "Unknow."
 var __active_test_case :String
 var __awaiter := __gdunit_awaiter()
 # holds the actual execution context
-var __execution_context
+var __execution_context :RefCounted
 
 
 ### We now load all used asserts and tool scripts into the cache according to the principle of "lazy loading"
@@ -51,11 +51,11 @@ func __gdunit_awaiter() -> Object:
 	return __lazy_load("res://addons/gdUnit4/src/GdUnitAwaiter.gd").new()
 
 
-func __gdunit_argument_matchers():
+func __gdunit_argument_matchers() -> GDScript:
 	return __lazy_load("res://addons/gdUnit4/src/matchers/GdUnitArgumentMatchers.gd")
 
 
-func __gdunit_object_interactions():
+func __gdunit_object_interactions() -> GDScript:
 	return __lazy_load("res://addons/gdUnit4/src/core/GdUnitObjectInteractions.gd")
 
 
@@ -99,7 +99,7 @@ func error_as_string(error_number :int) -> String:
 
 
 ## A litle helper to auto freeing your created objects after test execution
-func auto_free(obj) -> Variant:
+func auto_free(obj :Variant) -> Variant:
 	return __execution_context.register_auto_free(obj)
 
 
@@ -126,7 +126,7 @@ func create_temp_dir(relative_path :String) -> String:
 
 ## Deletes the temporary base directory[br]
 ## Is called automatically after each execution of the test suite
-func clean_temp_dir():
+func clean_temp_dir() -> void:
 	__gdunit_file_access().clear_tmp()
 
 
@@ -148,7 +148,7 @@ func resource_as_string(resource_path :String) -> String:
 
 
 ## Reads a resource by given path <resource_path> and return Variand translated by str_to_var
-func resource_as_var(resource_path :String):
+func resource_as_var(resource_path :String) -> Variant:
 	return str_to_var(__gdunit_file_access().resource_as_string(resource_path))
 
 
@@ -168,7 +168,7 @@ func await_signal_on(source :Object, signal_name :String, args :Array = [], time
 
 
 ## Waits until the next idle frame
-func await_idle_frame():
+func await_idle_frame() -> void:
 	await __awaiter.await_idle_frame()
 
 
@@ -179,7 +179,7 @@ func await_idle_frame():
 ##    await await_millis(myNode, 100).completed
 ## [/codeblock][br]
 ## use this waiter and not `await get_tree().create_timer().timeout to prevent errors when a test case is timed out
-func await_millis(timeout :int):
+func await_millis(timeout :int) -> void:
 	await __awaiter.await_millis(timeout)
 
 
@@ -194,7 +194,7 @@ func await_millis(timeout :int):
 ##    # or simply creates a runner by using the scene resource path
 ##    var runner := scene_runner("res://foo/my_scne.tscn")
 ## [/codeblock]
-func scene_runner(scene, verbose := false) -> GdUnitSceneRunner:
+func scene_runner(scene :Variant, verbose := false) -> GdUnitSceneRunner:
 	return auto_free(__lazy_load("res://addons/gdUnit4/src/core/GdUnitSceneRunnerImpl.gd").new(scene, verbose))
 
 
@@ -210,12 +210,12 @@ const RETURN_DEEP_STUB = GdUnitMock.RETURN_DEEP_STUB
 
 
 ## Creates a mock for given class name
-func mock(clazz, mock_mode := RETURN_DEFAULTS) -> Object:
+func mock(clazz :Variant, mock_mode := RETURN_DEFAULTS) -> Object:
 	return __lazy_load("res://addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd").build(clazz, mock_mode)
 
 
 ## Creates a spy checked given object instance
-func spy(instance) -> Object:
+func spy(instance :Variant) -> Object:
 	return __lazy_load("res://addons/gdUnit4/src/spy/GdUnitSpyBuilder.gd").build(instance)
 
 
@@ -225,27 +225,27 @@ func spy(instance) -> Object:
 ## 		# overrides the return value of myMock.is_selected() to false
 ## 		do_return(false).on(myMock).is_selected()
 ## 	[/codeblock]
-func do_return(value) -> GdUnitMock:
+func do_return(value :Variant) -> GdUnitMock:
 	return GdUnitMock.new(value)
 
 
 ## Verifies certain behavior happened at least once or exact number of times
-func verify(obj, times := 1):
+func verify(obj :Variant, times := 1) -> Variant:
 	return __gdunit_object_interactions().verify(obj, times)
 
 
 ## Verifies no interactions is happen checked this mock or spy
-func verify_no_interactions(obj) -> GdUnitAssert:
+func verify_no_interactions(obj :Variant) -> GdUnitAssert:
 	return __gdunit_object_interactions().verify_no_interactions(obj)
 
 
 ## Verifies the given mock or spy has any unverified interaction.
-func verify_no_more_interactions(obj) -> GdUnitAssert:
+func verify_no_more_interactions(obj :Variant) -> GdUnitAssert:
 	return __gdunit_object_interactions().verify_no_more_interactions(obj)
 
 
 ## Resets the saved function call counters checked a mock or spy
-func reset(obj) -> void:
+func reset(obj :Variant) -> void:
 	__gdunit_object_interactions().reset(obj)
 
 
@@ -466,7 +466,7 @@ func tuple(arg0 :Variant,
 
 ## The common assertion tool to verify values.
 ## It checks the given value by type to fit to the best assert
-func assert_that(current) -> GdUnitAssert:
+func assert_that(current :Variant) -> GdUnitAssert:
 	match typeof(current):
 		TYPE_BOOL:
 			return assert_bool(current)
@@ -491,22 +491,22 @@ func assert_that(current) -> GdUnitAssert:
 
 
 ## An assertion tool to verify boolean values.
-func assert_bool(current) -> GdUnitBoolAssert:
+func assert_bool(current :Variant) -> GdUnitBoolAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitBoolAssertImpl.gd").new(current)
 
 
 ## An assertion tool to verify String values.
-func assert_str(current) -> GdUnitStringAssert:
+func assert_str(current :Variant) -> GdUnitStringAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitStringAssertImpl.gd").new(current)
 
 
 ## An assertion tool to verify integer values.
-func assert_int(current) -> GdUnitIntAssert:
+func assert_int(current :Variant) -> GdUnitIntAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitIntAssertImpl.gd").new(current)
 
 
 ## An assertion tool to verify float values.
-func assert_float(current) -> GdUnitFloatAssert:
+func assert_float(current :Variant) -> GdUnitFloatAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitFloatAssertImpl.gd").new(current)
 
 
@@ -516,31 +516,31 @@ func assert_float(current) -> GdUnitFloatAssert:
 ##     [codeblock]
 ##		assert_vector(Vector2(1.2, 1.000001)).is_equal(Vector2(1.2, 1.000001))
 ##     [/codeblock]
-func assert_vector(current) -> GdUnitVectorAssert:
+func assert_vector(current :Variant) -> GdUnitVectorAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitVectorAssertImpl.gd").new(current)
 
 
 ## An assertion tool to verify arrays.
-func assert_array(current) -> GdUnitArrayAssert:
+func assert_array(current :Variant) -> GdUnitArrayAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd").new(current)
 
 
 ## An assertion tool to verify dictionaries.
-func assert_dict(current) -> GdUnitDictionaryAssert:
+func assert_dict(current :Variant) -> GdUnitDictionaryAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitDictionaryAssertImpl.gd").new(current)
 
 
 ## An assertion tool to verify FileAccess.
-func assert_file(current) -> GdUnitFileAssert:
+func assert_file(current :Variant) -> GdUnitFileAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitFileAssertImpl.gd").new(current)
 
 
 ## An assertion tool to verify Objects.
-func assert_object(current) -> GdUnitObjectAssert:
+func assert_object(current :Variant) -> GdUnitObjectAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitObjectAssertImpl.gd").new(current)
 
 
-func assert_result(current) -> GdUnitResultAssert:
+func assert_result(current :Variant) -> GdUnitResultAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitResultAssertImpl.gd").new(current)
 
 
@@ -592,11 +592,11 @@ func assert_error(current :Callable) -> GdUnitGodotErrorAssert:
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitGodotErrorAssertImpl.gd").new(current)
 
 
-func assert_not_yet_implemented():
+func assert_not_yet_implemented() -> void:
 	__gdunit_assert().new(null).test_fail()
 
 
-func fail(message :String):
+func fail(message :String) -> void:
 	__gdunit_assert().new(null).report_error(message)
 
 
