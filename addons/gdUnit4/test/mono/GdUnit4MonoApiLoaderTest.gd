@@ -34,7 +34,7 @@ func test_api_version() -> void:
 
 func test_create_test_suite() -> void:
 	var temp := create_temp_dir("examples")
-	var result := GdUnitTools.copy_file("res://addons/gdUnit4/test/resources/core/sources/TestPerson.cs", temp)
+	var result := GdUnitFileAccess.copy_file("res://addons/gdUnit4/test/resources/core/sources/TestPerson.cs", temp)
 	assert_result(result).is_success()
 
 	var example_source_cs = result.value() as String

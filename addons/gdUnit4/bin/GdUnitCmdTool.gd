@@ -50,7 +50,7 @@ class CLIRunner extends Node:
 	
 	func _ready():
 		_state = INIT
-		_report_dir = GdUnitTools.current_dir() + "reports"
+		_report_dir = GdUnitFileAccess.current_dir() + "reports"
 		_executor = load("res://addons/gdUnit4/src/core/execution/GdUnitTestSuiteExecutor.gd").new()
 		# stop checked first test failure to fail fast
 		_executor.fail_fast(true)
@@ -98,7 +98,7 @@ class CLIRunner extends Node:
 	
 	
 	func set_report_dir(path :String) -> void:
-		_report_dir = ProjectSettings.globalize_path(GdUnitTools.make_qualified_path(path))
+		_report_dir = ProjectSettings.globalize_path(GdUnitFileAccess.make_qualified_path(path))
 		_console.prints_color("Set write reports to %s" % _report_dir, Color.DEEP_SKY_BLUE)
 	
 	

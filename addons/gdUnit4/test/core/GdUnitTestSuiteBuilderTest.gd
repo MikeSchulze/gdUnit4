@@ -15,7 +15,7 @@ var _example_source_gd :String
 
 func before_test():
 	var temp := create_temp_dir("examples")
-	var result := GdUnitTools.copy_file("res://addons/gdUnit4/test/core/resources/sources/test_person.gd", temp)
+	var result := GdUnitFileAccess.copy_file("res://addons/gdUnit4/test/core/resources/sources/test_person.gd", temp)
 	assert_result(result).is_success()
 	_example_source_gd = result.value() as String
 
