@@ -367,14 +367,14 @@ func any_basis() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_BASIS)
 
 
-## Argument matcher to match any Transform3D value
-func any_transform() -> GdUnitArgumentMatcher:
-	return __gdunit_argument_matchers().by_type(TYPE_TRANSFORM3D)
-
-
 ## Argument matcher to match any Transform2D value
 func any_transform_2d() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_TRANSFORM2D)
+
+
+## Argument matcher to match any Transform3D value
+func any_transform_3d() -> GdUnitArgumentMatcher:
+	return __gdunit_argument_matchers().by_type(TYPE_TRANSFORM3D)
 
 
 ## Argument matcher to match any NodePath value
@@ -403,37 +403,47 @@ func any_array() -> GdUnitArgumentMatcher:
 
 
 ## Argument matcher to match any PackedByteArray value
-func any_pool_byte_array() -> GdUnitArgumentMatcher:
+func any_packed_byte_array() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_BYTE_ARRAY)
 
 
 ## Argument matcher to match any PackedInt32Array value
-func any_pool_int_array() -> GdUnitArgumentMatcher:
+func any_packed_int32_array() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_INT32_ARRAY)
 
 
+## Argument matcher to match any PackedInt64Array value
+func any_packed_int64_array() -> GdUnitArgumentMatcher:
+	return __gdunit_argument_matchers().by_type(TYPE_PACKED_INT64_ARRAY)
+
+
 ## Argument matcher to match any PackedFloat32Array value
-func any_pool_float_array() -> GdUnitArgumentMatcher:
+func any_packed_float32_array() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_FLOAT32_ARRAY)
 
 
+## Argument matcher to match any PackedFloat64Array value
+func any_packed_float64_array() -> GdUnitArgumentMatcher:
+	return __gdunit_argument_matchers().by_type(TYPE_PACKED_FLOAT64_ARRAY)
+
+
 ## Argument matcher to match any PackedStringArray value
-func any_pool_string_array() -> GdUnitArgumentMatcher:
+func any_packed_string_array() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_STRING_ARRAY)
 
 
 ## Argument matcher to match any PackedVector2Array value
-func any_pool_vector2_array() -> GdUnitArgumentMatcher:
+func any_packed_vector2_array() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_VECTOR2_ARRAY)
 
 
 ## Argument matcher to match any PackedVector3Array value
-func any_pool_vector3_array() -> GdUnitArgumentMatcher:
+func any_packed_vector3_array() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_VECTOR3_ARRAY)
 
 
 ## Argument matcher to match any PackedColorArray value
-func any_pool_color_array() -> GdUnitArgumentMatcher:
+func any_packed_color_array() -> GdUnitArgumentMatcher:
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_COLOR_ARRAY)
 
 

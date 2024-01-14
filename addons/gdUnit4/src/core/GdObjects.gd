@@ -198,6 +198,12 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 		push_error("GdUnit equals has max stack deep reached!")
 		return false
 	
+	# use argument matcher if requested
+	if is_instance_valid(obj_a) and obj_a is GdUnitArgumentMatcher:
+		return (obj_a as GdUnitArgumentMatcher).is_match(obj_b)
+	if is_instance_valid(obj_b) and obj_b is GdUnitArgumentMatcher:
+		return (obj_b as GdUnitArgumentMatcher).is_match(obj_a)
+	
 	stack_depth += 1
 	# fast fail is different types
 	if not _is_type_equivalent(type_a, type_b):
