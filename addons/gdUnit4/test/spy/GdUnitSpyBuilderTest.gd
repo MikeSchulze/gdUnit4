@@ -19,7 +19,7 @@ func test_double__init() -> void:
 	# void _init() virtual
 	var fd := get_function_description("Object", "_init")
 	var expected := [
-		'func _init():',
+		'func _init() -> void:',
 		'	super()',
 		'	pass',
 		'']
@@ -31,6 +31,7 @@ func test_double_return_typed_function_without_arg() -> void:
 	# String get_class() const
 	var fd := get_function_description("Object", "get_class")
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("shadowed_variable")',
 		'func get_class() -> String:',
@@ -55,6 +56,7 @@ func test_double_return_typed_function_with_args() -> void:
 	# bool is_connected(signal: String,Callable(target: Object,method: String)) const
 	var fd := get_function_description("Object", "is_connected")
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("shadowed_variable")',
 		'func is_connected(signal_, callable_) -> bool:',
@@ -79,6 +81,7 @@ func test_double_return_void_function_with_args() -> void:
 	# void disconnect(signal: StringName, callable: Callable)
 	var fd := get_function_description("Object", "disconnect")
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("shadowed_variable")',
 		'func disconnect(signal_, callable_) -> void:',
@@ -102,6 +105,7 @@ func test_double_return_void_function_without_args() -> void:
 	# void free()
 	var fd := get_function_description("Object", "free")
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("shadowed_variable")',
 		'func free() -> void:',
@@ -125,6 +129,7 @@ func test_double_return_typed_function_with_args_and_varargs() -> void:
 	# Error emit_signal(signal: StringName, ...) vararg
 	var fd := get_function_description("Object", "emit_signal")
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("shadowed_variable")',
 		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:',
@@ -148,6 +153,7 @@ func test_double_return_void_function_only_varargs() -> void:
 	# void bar(s...) vararg
 	var fd := GdFunctionDescriptor.new( "bar", 23, false, false, false, TYPE_NIL, "void", [], GdFunctionDescriptor._build_varargs(true))
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("shadowed_variable")',
 		'func bar(vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
@@ -170,6 +176,7 @@ func test_double_return_typed_function_only_varargs() -> void:
 	# String bar(s...) vararg
 	var fd := GdFunctionDescriptor.new( "bar", 23, false, false, false, TYPE_STRING, "String", [], GdFunctionDescriptor._build_varargs(true))
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("shadowed_variable")',
 		'func bar(vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> String:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
@@ -192,6 +199,7 @@ func test_double_static_return_void_function_without_args() -> void:
 	# void foo()
 	var fd := GdFunctionDescriptor.new( "foo", 23, false, true, false, TYPE_NIL, "", [])
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("shadowed_variable")',
 		'static func foo() -> void:',
 		'	var args :Array = ["foo", ]',
@@ -216,6 +224,7 @@ func test_double_static_return_void_function_with_args() -> void:
 		GdFunctionArgument.new("arg2", TYPE_STRING, '"default"')
 	])
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("shadowed_variable")',
 		'static func foo(arg1, arg2="default") -> void:',
 		'	var args :Array = ["foo", arg1, arg2]',
@@ -241,6 +250,7 @@ func test_double_static_script_function_with_args_return_bool() -> void:
 		GdFunctionArgument.new("arg2", TYPE_STRING, '"default"')
 	])
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("shadowed_variable")',
 		'static func foo(arg1, arg2="default") -> bool:',
 		'	var args :Array = ["foo", arg1, arg2]',
@@ -264,6 +274,7 @@ func test_double_virtual_return_void_function_with_arg() -> void:
 	# void _input(event: InputEvent) virtual
 	var fd := get_function_description("Node", "_input")
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("shadowed_variable")',
 		'func _input(event_) -> void:',
@@ -287,6 +298,7 @@ func test_double_virtual_return_void_function_without_arg() -> void:
 	# void _ready() virtual
 	var fd := get_function_description("Node", "_ready")
 	var expected := [
+		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("shadowed_variable")',
 		'func _ready() -> void:',

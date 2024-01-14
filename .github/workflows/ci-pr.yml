@@ -25,7 +25,7 @@ jobs:
         godot-status: ['stable']
         include:
           - godot-version: '4.3'
-            godot-status: 'dev1'
+            godot-status: 'dev2'
 
 
     name: "CI on Godot 🐧 v${{ matrix.godot-version }}-${{ matrix.godot-status }}"

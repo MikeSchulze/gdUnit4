@@ -102,7 +102,7 @@ func load_test_suits() -> Array:
 	# scan for the requested test suites
 	var test_suites := Array()
 	var _scanner := GdUnitTestSuiteScanner.new()
-	for resource_path:String in to_execute.keys():
+	for resource_path in to_execute.keys():
 		var selected_tests :PackedStringArray = to_execute.get(resource_path)
 		var scaned_suites := _scanner.scan(resource_path)
 		_filter_test_case(scaned_suites, selected_tests)
@@ -115,14 +115,14 @@ func gdUnitInit() -> void:
 	send_message("Scaned %d test suites" % _test_suites_to_process.size())
 	var total_count := _collect_test_case_count(_test_suites_to_process)
 	_on_gdunit_event(GdUnitInit.new(_test_suites_to_process.size(), total_count))
-	for test_suite:Node in _test_suites_to_process:
+	for test_suite in _test_suites_to_process:
 		send_test_suite(test_suite)
 
 
 func _filter_test_case(test_suites :Array, included_tests :PackedStringArray) -> void:
 	if included_tests.is_empty():
 		return
-	for test_suite:Node in test_suites:
+	for test_suite in test_suites:
 		for test_case in test_suite.get_children():
 			_do_filter_test_case(test_suite, test_case, included_tests)
 
@@ -144,7 +144,7 @@ func _do_filter_test_case(test_suite :Node, test_case :Node, included_tests :Pac
 
 func _collect_test_case_count(testSuites :Array) -> int:
 	var total :int = 0
-	for test_suite:Node in testSuites:
+	for test_suite in testSuites:
 		total += test_suite.get_child_count()
 	return total
 

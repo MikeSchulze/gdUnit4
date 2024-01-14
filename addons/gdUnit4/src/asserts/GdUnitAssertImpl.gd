@@ -6,7 +6,7 @@ var _current_error_message :String = ""
 var _custom_failure_message :String = ""
 
 
-func _init(current :Variant):
+func _init(current :Variant) -> void:
 	_current = current
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
