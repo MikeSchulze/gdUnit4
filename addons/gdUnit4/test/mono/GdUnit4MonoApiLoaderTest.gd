@@ -49,7 +49,7 @@ func test_create_test_suite() -> void:
 
 
 func test_parse_test_suite() -> void:
-	var test_suite := GdUnit4MonoApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4MonoAPITest.cs")
+	var test_suite := GdUnit4MonoApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4MonoApiTest.cs")
 	assert_that(test_suite).is_not_null()
 	assert_that(test_suite.get("IsCsTestSuite")).is_true()
 	test_suite.free()
@@ -64,7 +64,7 @@ func test_executor() -> void:
 	var executor = GdUnit4MonoApiLoader.create_executor(listener)
 	assert_that(executor).is_not_null()
 	
-	var test_suite := GdUnit4MonoApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4MonoAPITest.cs")
+	var test_suite := GdUnit4MonoApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4MonoApiTest.cs")
 	assert_that(executor.IsExecutable(test_suite)).is_true()
 	
 	test_suite.free()
