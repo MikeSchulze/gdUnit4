@@ -16,7 +16,7 @@ To get an overview of the available commands, execute it with the command `-help
 
 ```
 ----------------------------------------------------------------------------------------------
- GdUnit4 Comandline Tool
+ GdUnit4 Commandline Tool
 
  Usage:
         runtest -a <directory|path of testsiute>
@@ -43,7 +43,7 @@ To get an overview of the available commands, execute it with the command `-help
 ## Preconditions to run on Windows 10
 - Setup test environment as follow
 
-  Add the environment variable `GODOT_BIN` by open a termial and enter the command.
+  Add the environment variable `GODOT_BIN` by opening a termial and entering the command below.
   Replace the path `D:\develop\Godot.exe` with your own location where you have Godot installed.
 ```
     setx GODOT_BIN D:\develop\Godot.exe
@@ -64,10 +64,10 @@ To get an overview of the available commands, execute it with the command `-help
 Now you can run your tests by `runtest [cmd]`
 
 
-## Preconditions to run on MacOS
-- setup test environment as follow
+## Preconditions to run on MacOS and Linux
+- Setup test environment as follow
   
-  Add the environment variable `GODOT_BIN` by open a termial and enter the command.
+  Add the environment variable `GODOT_BIN` by opening a termial and entering the command below.
   Replace the path `/Applications/Godot.app/Contents/MacOS/Godot` with your own location where you have Godot installed.
 ```
  export GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot
@@ -75,44 +75,45 @@ Now you can run your tests by `runtest [cmd]`
 
 Now you can run your tests by `./runtest.sh [cmd]`
 
+
 ### How to use
 **Please note the requirements described above!**
 
 You can use the tool to run a complete test package or only a specific set of execution definitions or tests.
 
 ```
-    # runs all testsiutes located under the directory '/myProject/test'
-    testrun -a /myProject/test
+    # runs all testsuites located under the directory '/myProject/test'
+    runtest -a /myProject/test
 ```
 
 You can specify one ore more directories for execution
 ```
-    # runs all testsiutes located under the directory /myProject/test/foo/bar1' and '/myProject/test/foo/bar3'
-    testrun -a /myProject/test/foo/bar1 -a /myProject/test/foo/bar3
+    # runs all testsuites located under the directory /myProject/test/foo/bar1' and '/myProject/test/foo/bar3'
+    runtest -a /myProject/test/foo/bar1 -a /myProject/test/foo/bar3
 ```
 
 Sometimes it may be necessary to skip (ignore) some test suites or tests from test execution.
 
 You can do this easily with the command '-i'.
 ```
-    # runs all testsiutes located under the directory /myProject/test' exclusive all tests located under '/myProject/test/foo/bar3'
-    testrun -a /myProject/test -i /myProject/test/foo/bar3
+    # runs all testsuites located under the directory /myProject/test' exclusive all tests located under '/myProject/test/foo/bar3'
+    runtest -a /myProject/test -i /myProject/test/foo/bar3
 ```
 You can also specify skipping by testsuite name and/or testcase name.
 ```
-    # runs all testsiutes located under the directory /myProject/test' exclusive testsuite 'ClassATest' and 'ClassBTest:test_abc'
-    testrun -a /myProject/test -i ClassATest -i ClassBTest:test_abc
+    # runs all testsuites located under the directory /myProject/test' exclusive testsuite 'ClassATest' and 'ClassBTest:test_abc'
+    runtest -a /myProject/test -i ClassATest -i ClassBTest:test_abc
 ```
 
 You can also rerun the latest test execution (executed over the UI GdUnit-inspector)
 ```
     # loads latest GdUnitRunner.cfg and runs the configured tests
-    testrun -conf
+    runtest -conf
 ```
 
 ```
     # loads a specific test configuration and runs the configured tests (since v1.0.6)
-    testrun -conf <test_config.cfg>
+    runtest -conf <test_config.cfg>
 ```
 
 
