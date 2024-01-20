@@ -1,0 +1,89 @@
+name: Bug Report
+description: Report a GdUnit4 bug
+title: "GD-XXX: Describe the issue briefly"
+labels: ["bug"]
+projects: ["projects/5"]
+assignees:
+  - MikeSchulze
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thanks for taking the time to fill out this bug report!
+        - Please search [open](https://github.com/MikeSchulze/gdUnit4/issues?q=is%3Aissue) for existing issues for potential duplicates before filing yours.
+        - Verify that you are using a [supported Godot version](https://docs.godotengine.org/en/stable/about/release_policy.html). Please always check if your issue is reproducible in the latest version – it may already have been fixed!
+
+
+  - type: dropdown
+    id: gdunit-version
+    attributes:
+      label: The used GdUnit4 version
+      description: Which GdUnit4 version are you using?
+      options:
+        - 4.2.1 (Pre Release/Master branch)
+        - 4.2.0 (Latest Release)
+        - 4.1.4
+        - 4.1.3
+        - 4.1.2
+        - 4.1.1
+        - 4.1.0
+      default: 1
+    validations:
+      required: true
+
+  - type: input
+    id: godot-version
+    attributes:
+      label: The used Godot version
+      description: Which Godot version are you using?
+      placeholder: v4.2.1.stable.official [b09f793f5]
+    validations:
+      required: true
+
+  - type: textarea
+    id: system
+    attributes:
+      label: Operating System
+      description: |
+        What operating system are you using?
+        - Specify the OS version, and when relevant hardware information.
+      placeholder: "Example: macOS Big Sur"
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: |
+        Describe what you expected to happen and what actually happened.
+        Include any specific details, configuration, or environment necessary to reproduce the problem.
+        You can include images or videos with drag and drop, and format code blocks or logs with <code>```</code> tags.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: A clear description how to reproduce the problem.
+      placeholder: Describe the steps to reproduce the issue.
+      value: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error 
+      render: shell
+
+  - type: input
+    id: example-project
+    attributes:
+      label: Minimal reproduction project
+      description: |
+        A small Godot project which reproduces the issue, with no unnecessary files included. Be sure to not include the `.godot` folder in the archive (but keep `project.godot`).
+      placeholder: Drag and drop a ZIP archive to upload it (max 10 MB). **Do not select another field until the project is done uploading.**
+    validations:
+      required: false
