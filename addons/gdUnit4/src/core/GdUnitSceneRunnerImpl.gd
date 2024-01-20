@@ -26,6 +26,7 @@ var _simulate_start_time :LocalTime
 var _last_input_event :InputEvent = null
 var _mouse_button_on_press := []
 var _key_on_press := []
+var _curent_mouse_position :Vector2
 
 # time factor settings
 var _time_factor := 1.0
@@ -150,18 +151,27 @@ func simulate_mouse_move(pos :Vector2) -> GdUnitSceneRunner:
 	return _handle_input_event(event)
 
 
-func simulate_mouse_move_relative(relative :Vector2, speed :Vector2 = Vector2.ONE) -> GdUnitSceneRunner:
-	if _last_input_event is InputEventMouse:
-		var current_pos :Vector2 = _last_input_event.position
-		var final_pos := current_pos + relative
-		var delta_milli := speed.x * 0.1
-		var t := 0.0
-		while not current_pos.is_equal_approx(final_pos):
-			t += delta_milli * speed.x
-			simulate_mouse_move(current_pos)
-			await _scene_tree.create_timer(delta_milli).timeout
-			current_pos = current_pos.lerp(final_pos, t)
-		simulate_mouse_move(final_pos)
+func simulate_mouse_move_relative(relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+	var tween := _scene_tree.create_tween()
+	_curent_mouse_position = get_mouse_position()
+	var final_position := _curent_mouse_position + relative
+	tween.tween_property(self, "_curent_mouse_position", final_position, time).set_trans(trans_type)
+	tween.play()
+	
+	while not get_mouse_position().is_equal_approx(final_position):
+		simulate_mouse_move(_curent_mouse_position)
+		await _scene_tree.process_frame
+	return self
+
+
+func simulate_mouse_move_absolute(position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+	var tween := _scene_tree.create_tween()
+	_curent_mouse_position = get_mouse_position()
+	tween.tween_property(self, "_curent_mouse_position", position, time).set_trans(trans_type)
+	tween.play()
+	
+	while not get_mouse_position().is_equal_approx(position):
+		simulate_mouse_move(_curent_mouse_position)
 		await _scene_tree.process_frame
 	return self
 
