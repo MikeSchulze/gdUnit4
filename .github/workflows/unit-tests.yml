@@ -35,6 +35,8 @@ concurrency:
 jobs:
 
   unit-test:
+    # for temporary skip this testing and only execute the c# tests
+    # if: true == false
     name: "Unit Tests"
     runs-on: ${{ inputs.os }}
     timeout-minutes: 15
@@ -57,11 +59,10 @@ jobs:
 
       - name: "Update Project"
         if: ${{ !cancelled() }}
-        timeout-minutes: 1
-        continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
+        timeout-minutes: 2
         shell: bash
         run: |
-          xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless --audio-driver Dummy
+          xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless --audio-driver Dummy 2> /dev/null
 
       - name: "Run Unit Tests"
         if: ${{ !cancelled() }}
@@ -99,8 +100,6 @@ jobs:
 
   unit-test-mono:
     name: "Unit Tests Mono"
-    # We exclude Godot 4.0.x
-    if: ${{ !startsWith(inputs.godot-version, '4.0') }}
     runs-on: ${{ inputs.os }}
     timeout-minutes: 5
 
@@ -119,6 +118,16 @@ jobs:
           godot-bin-name: 'linux_x86_64'
           godot-cache-path: '~/godot-linux'
 
+
+      - name: "Update Ubuntu"
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install systemd-coredump
+          sudo apt update
+          sudo apt -y install systemd-coredump
+
       - name: "Setup .NET"
         uses: actions/setup-dotnet@v3
         with:
@@ -131,12 +140,12 @@ jobs:
           dotnet build
 
       - name: "Update Project"
+        id: update_project
         if: ${{ !cancelled() }}
         timeout-minutes: 2
-        continue-on-error: true # we still ignore the timeout, the script is not quit and we run into a timeout
         shell: bash
         run: |
-          xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless --audio-driver Dummy
+          xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless --audio-driver Dummy 2> /dev/null
 
       - name: "Run Unit Tests"
         if: ${{ !cancelled() }}
@@ -144,7 +153,13 @@ jobs:
         uses: ./.github/actions/unit-test
         with:
           godot-bin: '~/godot-linux/godot'
-          test-includes: "res://addons/gdUnit4/test/mono"
+          test-includes: "res://addons/gdUnit4/test/mono/"
+
+      - name: "Coredump Check"
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/check-coredump
+        with:
+          artifact-name: "TestRunner-${{ inputs.os }}-${{ inputs.godot-version }}-mono"
 
       - name: "Set Report Name"
         if: ${{ always() }}

@@ -65,6 +65,10 @@ class CLIRunner extends Node:
 			quit(RETURN_ERROR)
 	
 	
+	func _notification(what :int) -> void:
+		if what == NOTIFICATION_PREDELETE:
+			prints("Finallize .. done")
+
 	func _process(_delta):
 		match _state:
 			INIT:
@@ -401,7 +405,8 @@ func _initialize():
 	root.add_child(_cli_runner)
 
 
-func _finalize():
+# do not use print statements on _finalize it results in random crashes
+func __finalize():
 	prints("Finallize ..")
 	prints("-Orphan nodes report-----------------------")
 	Window.print_orphan_nodes()
