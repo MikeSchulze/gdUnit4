@@ -56,7 +56,6 @@ body:
     id: bug-description
     attributes:
       label: Describe the bug
-      render: markdown
       description: A clear and concise description of what the bug is.
       placeholder: |
         Describe what you expected to happen and what actually happened.
@@ -69,7 +68,6 @@ body:
     id: steps-to-reproduce
     attributes:
       label: Steps to Reproduce
-      render: markdown
       description: |
         Provide a detailed list of steps or sample code that reproduces the issue.
         Having reproducible issues is crucial for contributors to be able to solve them. 
@@ -87,9 +85,10 @@ body:
 
         ```gdscript
         # Sample code demonstrating the issue
-        func reproduce_issue():
+        func test_reproduce_issue():
             # Your code here
             pass
+        ```
 
   - type: textarea
     id: example-project
