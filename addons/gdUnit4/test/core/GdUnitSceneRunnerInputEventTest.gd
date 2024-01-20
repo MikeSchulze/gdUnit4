@@ -270,11 +270,33 @@ func test_simulate_mouse_move_relative():
 	#OS.window_minimized = false
 	_runner.set_mouse_pos(Vector2(10, 10))
 	await await_idle_frame()
-	#assert_that(_runner.get_mouse_position()).is_equal(Vector2(10, 10))
+	assert_that(_runner.get_mouse_position()).is_equal(Vector2(10, 10))
 	
-	await _runner.simulate_mouse_move_relative(Vector2(900, 400), Vector2(.2, 1))
+	# move the mouse in time of 1 second
+	# the final position is current + relative = Vector2(10, 10) + (Vector2(900, 400)
+	await _runner.simulate_mouse_move_relative(Vector2(900, 400), 1)
+	assert_vector(_runner.get_mouse_position()).is_equal_approx(Vector2(910, 410), Vector2.ONE)
+	
+	# move the mouse back in time of 0.1 second
+	# Use the negative value of the previously moved action to move it back to the starting position
+	await _runner.simulate_mouse_move_relative(Vector2(-900, -400), 0.1)
+	assert_vector(_runner.get_mouse_position()).is_equal_approx(Vector2(10, 10), Vector2.ONE)
+
+
+func test_simulate_mouse_move_absolute():
+	#OS.window_minimized = false
+	_runner.set_mouse_pos(Vector2(10, 10))
 	await await_idle_frame()
-	assert_that(_runner.get_mouse_position()).is_equal(Vector2(910, 410))
+	assert_that(_runner.get_mouse_position()).is_equal(Vector2(10, 10))
+	
+	# move the mouse in time of 1 second
+	await _runner.simulate_mouse_move_absolute(Vector2(900, 400), 1)
+	assert_vector(_runner.get_mouse_position()).is_equal_approx(Vector2(900, 400), Vector2.ONE)
+	
+	# move the mouse back in time of 0.1 second
+	await _runner.simulate_mouse_move_absolute(Vector2(10, 10), 0.1)
+	assert_vector(_runner.get_mouse_position()).is_equal_approx(Vector2(10, 10), Vector2.ONE)
+
 
 func test_simulate_mouse_button_press_left():
 	# simulate mouse button press and hold

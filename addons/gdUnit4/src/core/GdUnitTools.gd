@@ -41,6 +41,7 @@ static func free_instance(instance :Variant, is_stdout_verbose :=false) -> bool:
 	if instance is RefCounted:
 		instance.notification(Object.NOTIFICATION_PREDELETE)
 		await Engine.get_main_loop().process_frame
+		await Engine.get_main_loop().physics_frame
 		return true
 	else:
 		# is instance already freed?
