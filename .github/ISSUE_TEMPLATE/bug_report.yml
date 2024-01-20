@@ -56,12 +56,12 @@ body:
     id: bug-description
     attributes:
       label: Describe the bug
+      render: markdown
       description: A clear and concise description of what the bug is.
       placeholder: |
         Describe what you expected to happen and what actually happened.
         Include any specific details, configuration, or environment necessary to reproduce the problem.
         You can include images or videos with drag and drop, and format code blocks or logs with <code>```</code> tags.
-      render: shell
     validations:
       required: true
 
@@ -69,21 +69,36 @@ body:
     id: steps-to-reproduce
     attributes:
       label: Steps to Reproduce
-      description: A clear description how to reproduce the problem.
+      render: markdown
+      description: |
+        Provide a detailed list of steps or sample code that reproduces the issue.
+        Having reproducible issues is crucial for contributors to be able to solve them. 
+        If applicable, include information such as input data, specific configurations, or environmental details.
       placeholder: Describe the steps to reproduce the issue.
       value: |
-        1. Go to '...'
-        2. Click on '....'
-        3. Scroll down to '....'
-        4. See error 
-      render: shell
+        Example:
+        1. Open the application.
+        2. Click on '...' button.
+        3. Enter '...' in the input field.
+        4. Click on 'Submit'.
+        5. Observe the error in the console.
 
-  - type: input
+        If the issue involves code, please include relevant snippets below:
+
+        ```gdscript
+        # Sample code demonstrating the issue
+        func reproduce_issue():
+            # Your code here
+            pass
+
+  - type: textarea
     id: example-project
     attributes:
       label: Minimal reproduction project
       description: |
         A small Godot project which reproduces the issue, with no unnecessary files included. Be sure to not include the `.godot` folder in the archive (but keep `project.godot`).
-      placeholder: Drag and drop a ZIP archive to upload it (max 10 MB). **Do not select another field until the project is done uploading.**
+      placeholder: |
+        Drag and drop a ZIP archive to upload it (max 10 MB).
+        **Do not select another field until the project is done uploading.**
     validations:
       required: false
