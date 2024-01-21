@@ -1,10 +1,6 @@
 
 <h1 align="center">GdUnit4 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MikeSchulze/gdunit4" width="18%"> </h1>
 <h2 align="center">A Godot Embedded Unit Testing Framework</h2>
-
-
----
-<h1 align="center">GdUnit4</h1>
 <p align="center">This version of GdUnit4 is based on Godot <strong>v4.2.1.stable.official [b09f793f5]</strong> (master branch)</p>
 </h2>
 
@@ -93,7 +89,16 @@ func test_example():
 
 ---
 
+## GdUnit Test Coverage and Code Quality
+### Test Coverage:
+GdUnit is comprehensively tested to ensure robust functionality.<br>
+Continuous Integration (CI) is in place for every pull request to prevent any potential functionality issues.
 
+### Code Formatting:
+🙏 Special Thanks to @Scony for creating [gdlint](https://github.com/Scony/godot-gdscript-toolkit), a valuable tool contributing to code quality.
+
+
+---
 ### Contribution Guidelines
 
 **Thank you for your interest in contributing to GdUnit4!**<br>

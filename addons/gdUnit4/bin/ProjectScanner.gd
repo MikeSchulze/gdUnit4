@@ -11,6 +11,7 @@ func _initialize():
 	root.add_child(scanner)
 
 
+# gdlint: disable=trailing-whitespace
 class SourceScanner extends Node:
 	
 	enum {
@@ -21,31 +22,25 @@ class SourceScanner extends Node:
 		DONE
 	}
 	
-	
 	var _state = INIT
 	var _console := CmdConsole.new()
 	var _elapsed_time := 0.0
-	var plugin :EditorPlugin
-	var fs :EditorFileSystem
-	var _scene :SceneTree
+	var _plugin: EditorPlugin
+	var _fs: EditorFileSystem
+	var _scene: SceneTree
 	
 	
-	func _init(scene :SceneTree):
+	func _init(scene :SceneTree) -> void:
 		_scene = scene
-		_console.prints_color("========================================================================", Color.CORNFLOWER_BLUE)
-		_console.prints_color("Running project scan:", Color.CORNFLOWER_BLUE)
+		_console.prints_color("""
+			========================================================================
+			Running project scan:""".dedent(),
+			Color.CORNFLOWER_BLUE
+		)
 		_state = INIT
 	
 	
-	func _notification(what):
-		if what == NOTIFICATION_PREDELETE:
-			_console.prints_color("Scan project done.", Color.CORNFLOWER_BLUE)
-			_console.prints_color("========================================================================", Color.CORNFLOWER_BLUE)
-			_console.new_line()
-			_scene.remove_child(self)
-
-	
-	func _process(delta):
+	func _process(delta :float) -> void:
 		_elapsed_time += delta
 		set_process(false)
 		await_inital_scan()
@@ -57,14 +52,14 @@ class SourceScanner extends Node:
 	func await_inital_scan() -> void:
 		if _state == INIT:
 			_console.prints_color("Wait initial scanning ...", Color.DARK_GREEN)
-			plugin = EditorPlugin.new()
-			fs = plugin.get_editor_interface().get_resource_filesystem()
-			plugin.get_editor_interface().set_plugin_enabled("gdUnit4", false)
+			_plugin = EditorPlugin.new()
+			_fs = _plugin.get_editor_interface().get_resource_filesystem()
+			_plugin.get_editor_interface().set_plugin_enabled("gdUnit4", false)
 			_state = STARTUP
 		
 		if _state == STARTUP:
-			if fs.is_scanning():
-				_console.progressBar(fs.get_scanning_progress() * 100 as int)
+			if _fs.is_scanning():
+				_console.progressBar(_fs.get_scanning_progress() * 100 as int)
 			# we wait 10s in addition to be on the save site the scanning is done
 			if _elapsed_time > 10.0:
 				_console.progressBar(100)
@@ -78,24 +73,27 @@ class SourceScanner extends Node:
 			return
 		_console.prints_color("Scan project: ", Color.SANDY_BROWN)
 		await get_tree().process_frame
-		fs.scan_sources()
+		_fs.scan_sources()
 		await get_tree().create_timer(5).timeout
-	
 		_console.prints_color("Scan: ", Color.SANDY_BROWN)
 		_console.progressBar(0)
 		await get_tree().process_frame
-		fs.scan()
-		while fs.is_scanning():
+		_fs.scan()
+		while _fs.is_scanning():
 			await get_tree().process_frame
-			_console.progressBar(fs.get_scanning_progress() * 100 as int)
+			_console.progressBar(_fs.get_scanning_progress() * 100 as int)
 		await get_tree().create_timer(10).timeout
 		_console.progressBar(100)
 		_console.new_line()
-		plugin.free()
+		_plugin.free()
+		_console.prints_color("""
+			Scan project done.
+			========================================================================""".dedent(),
+			Color.CORNFLOWER_BLUE
+		)
 		await get_tree().process_frame
-		
+		await get_tree().physics_frame
+		queue_free()
 		# force quit editor
 		_state = DONE
-		_scene.root.remove_child(self)
 		_scene.quit(0)
-
