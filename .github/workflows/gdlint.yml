@@ -1,0 +1,48 @@
+name: gdlint
+run-name: ${{ github.head_ref || github.ref_name }}-gdlint
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: false
+        type: string
+        default: 'ubuntu-22.04'
+  workflow_dispatch:
+    inputs:
+      os:
+        required: false
+        type: string
+        default: 'ubuntu-22.04'
+
+
+jobs:
+  gdlint:
+    name: GdUnit
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout GdUnit Repository
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Setup GDLint
+        uses: Scony/godot-gdscript-toolkit@master
+
+      - name: Run GDLint
+        id: run-gdlint
+        shell: bash
+        run: |
+          mkdir -p reports/gdlint/
+          gdlint addons/gdUnit4/bin/ | tee reports/gdlint/gdlint.txt
+
+      - name: Upload GDLint Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdlint.txt
+          path: reports/gdlint/**
+          if-no-files-found: error
+          compression-level: 0 # no compression

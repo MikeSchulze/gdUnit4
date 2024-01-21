@@ -16,6 +16,13 @@ concurrency:
 
 
 jobs:
+
+  gdlint:
+    if: ${{ !cancelled() }}
+    name: "🔧 GDLint"
+    uses: ./.github/workflows/gdlint.yml
+
+
   unit-tests:
     strategy:
       fail-fast: false
@@ -29,6 +36,7 @@ jobs:
 
 
     name: "CI on Godot 🐧 v${{ matrix.godot-version }}-${{ matrix.godot-status }}"
+    needs: [gdlint]
     uses: ./.github/workflows/unit-tests.yml
     with:
       godot-version: ${{ matrix.godot-version }}
@@ -38,7 +46,7 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     name: Final Results
-    needs: [unit-tests]
+    needs: [gdlint, unit-tests]
     steps:
       - run: exit 1
         if: >-
