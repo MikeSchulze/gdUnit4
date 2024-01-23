@@ -53,7 +53,7 @@ func verify_failed(cb :Callable) -> GdUnitStringAssert:
 	GdAssertReports.expect_fail(false)
 	
 	var a :GdUnitSignalAssert = GdUnitThreadManager.get_current_context().get_assert()
-	return assert_str(GdUnitTools.richtext_normalize(a._failure_message()))
+	return assert_str(GdUnitTools.richtext_normalize(a.failure_message()))
 
 
 func test_invalid_arg() -> void:

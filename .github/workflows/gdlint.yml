@@ -7,14 +7,13 @@ on:
       os:
         required: false
         type: string
-        default: 'ubuntu-22.04'
+        default: "ubuntu-22.04"
   workflow_dispatch:
     inputs:
       os:
         required: false
         type: string
-        default: 'ubuntu-22.04'
-
+        default: "ubuntu-22.04"
 
 jobs:
   gdlint:
@@ -37,6 +36,7 @@ jobs:
         run: |
           mkdir -p reports/gdlint/
           gdlint addons/gdUnit4/bin/ | tee reports/gdlint/gdlint.txt
+          gdlint addons/gdUnit4/src/asserts | tee reports/gdlint/gdlint_asserts.txt
 
       - name: Upload GDLint Report
         if: failure()

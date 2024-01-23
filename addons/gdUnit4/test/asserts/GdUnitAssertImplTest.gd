@@ -6,7 +6,7 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd'
 
 func before():
-	assert_int(GdUnitAssert._get_line_number()).is_equal(9)
+	assert_int(GdUnitAssertions.get_line_number()).is_equal(9)
 	assert_failure(func(): assert_int(10).is_equal(42)) \
 		.is_failed() \
 		.has_line(10) \

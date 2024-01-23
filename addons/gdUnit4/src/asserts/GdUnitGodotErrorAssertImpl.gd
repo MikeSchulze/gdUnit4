@@ -6,7 +6,8 @@ var _callable :Callable
 
 func _init(callable :Callable):
 	# we only support Godot 4.1.x+ because of await issue https://github.com/godotengine/godot/issues/80292
-	assert(Engine.get_version_info().hex >= 0x40100, "This assertion is not supported for Godot 4.0.x. Please upgrade to the minimum version Godot 4.1.0!")
+	assert(Engine.get_version_info().hex >= 0x40100,
+			"This assertion is not supported for Godot 4.0.x. Please upgrade to the minimum version Godot 4.1.0!")
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	GdAssertReports.reset_last_error_line_number()
@@ -26,7 +27,7 @@ func _error_monitor() -> GodotGdErrorMonitor:
 	return GdUnitThreadManager.get_current_context().get_execution_context().error_monitor
 
 
-func _failure_message() -> String:
+func failure_message() -> String:
 	return _current_error_message
 
 
@@ -36,7 +37,7 @@ func _report_success() -> GdUnitAssert:
 
 
 func _report_error(error_message :String, failure_line_number: int = -1) -> GdUnitAssert:
-	var line_number := failure_line_number if failure_line_number != -1 else GdUnitAssert._get_line_number()
+	var line_number := failure_line_number if failure_line_number != -1 else GdUnitAssertions.get_line_number()
 	_current_error_message = error_message
 	GdAssertReports.report_error(error_message, line_number)
 	return self
