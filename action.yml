@@ -1,5 +1,6 @@
-name: 'GdUnit4 CI'
+name: 'GdUnit4 - Test Runner'
 description: 'This GitHub action provides the GdUnit4 test runner'
+author: Mike Schulze <mikeschulze.lpz@kabelmail.de>
 
 inputs:
   godot-version:
@@ -12,19 +13,30 @@ inputs:
     required: false
     type: bool
     default: false
-  paths:
+  gdunit-version:
+    required: false
+    type: string
+    default: latest
+  gdunit-tests:
     required: true
-    type: list
+    type: string
   report-name:
     required: false
     type: string
     default: 'test-report.xml'
 
-runs:
-  using: "composite"
+outputs:
+  artifactsPath:
+    description: 'Path where the test artifacts are stored.'
 
+branding:
+  icon: 'refresh-cw'
+  color: 'purple'
+
+runs:
+  using: 'composite'
   steps:
-    - name: "Update Ubuntu"
+    - name: 'Update Ubuntu'
       if: ${{ !cancelled() }}
       shell: bash
       run: |
@@ -33,7 +45,7 @@ runs:
         sudo apt update
         sudo apt -y install systemd-coredump
 
-    - name: "Install Godot ${{ inputs.godot-version }}"
+    - name: 'Install Godot ${{ inputs.godot-version }}'
       uses: ./.github/actions/godot-install
       with:
         godot-version: ${{ inputs.godot-version }}
@@ -42,13 +54,13 @@ runs:
         godot-bin-name: 'linux.x86_64'
         godot-cache-path: '~/godot-linux'
 
-    - name: "Setup .NET"
+    - name: 'Setup .NET'
       if:  ${{ inputs.godot-net }}
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 7.0.x
 
-    - name: "Update Project"
+    - name: 'Update Project'
       if: ${{ !cancelled() }}
       shell: bash
       run: |
@@ -58,22 +70,28 @@ runs:
         fi
         xvfb-run --auto-servernum ~/godot-linux/godot -e --path . -s res://addons/gdUnit4/bin/ProjectScanner.gd --headless --audio-driver Dummy 2> /dev/null
 
-    - name: "Run Unit Tests"
+    - name: 'Run Unit Tests'
       if: ${{ !cancelled() }}
       uses: ./.github/actions/unit-test
       with:
         godot-bin: '~/godot-linux/godot'
-        test-includes: ${{ inputs.paths }}
+        version: ${{ inputs.gdunit-version }}
+        test-includes: ${{ inputs.gdunit-tests }}
 
-
-    - name: "Coredump Check"
+    - name: 'Coredump Check'
       if: ${{ !cancelled() && inputs.godot-net }}
       uses: ./.github/actions/check-coredump
       with:
-        artifact-name: "TestRunner-${{ inputs.os }}-${{ inputs.godot-version }}-mono"
+        artifact-name: 'TestRunner-${{ inputs.os }}-${{ inputs.godot-version }}-mono'
 
-    - name: "Publish Unit Test Reports"
+    - name: 'Publish Unit Test Reports'
       if: ${{ !cancelled() }}
       uses: ./.github/actions/publish-test-report
+      with:
+        report-name: ${{ inputs.report-name }}
+
+    - name: 'Upload Unit Test Reports'
+      if: ${{ !cancelled() }}
+      uses: ./.github/actions/upload-test-report
       with:
         report-name: ${{ inputs.report-name }}

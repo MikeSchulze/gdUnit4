@@ -1,9 +1,9 @@
 name: publish-test-report
-description: "Publishes the GdUnit test results"
+description: 'Publishes the GdUnit test results'
 
 inputs:
   report-name:
-    description: "Name of the check run which will be created."
+    description: 'Name of the check run which will be created.'
     required: true
 
 runs:

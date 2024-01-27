@@ -19,7 +19,7 @@ jobs:
 
   gdlint:
     if: ${{ !cancelled() }}
-    name: "🔧 GDLint"
+    name: '🔧 GDLint'
     uses: ./.github/workflows/gdlint.yml
 
 
@@ -37,36 +37,38 @@ jobs:
             godot-status: 'dev2'
 
     steps:
-      - name: "Checkout GdUnit4"
+      - name: 'Checkout GdUnit4'
         uses: actions/checkout@v4
         with:
           lfs: true
-          
-      - name: CI on 🐧 Godot_v${{ matrix.godot-version }}-${{ matrix.godot-status }}
+
+      - name: 'CI on 🐧 Godot_v${{ matrix.godot-version }}-${{ matrix.godot-status }}'
         if: ${{ matrix.godot-net == '' }}
         uses: ./
         with:
           godot-version: ${{ matrix.godot-version }}
           godot-status: ${{ matrix.godot-status }}
           godot-net: false
-          paths: "res://addons/gdUnit4/test/"
+          gdunit-version: latest
+          gdunit-tests: 'res://addons/gdUnit4/test/'
           report-name: test-report_${{ matrix.godot-version }}-${{ matrix.godot-status }}
 
-      - name: CI on 🐧 Godot_v${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
+      - name: 'CI on 🐧 Godot_v${{ matrix.godot-version }}-${{ matrix.godot-status }}-net'
         if: ${{ matrix.godot-net == '.Net' }}
         uses: ./
         with:
           godot-version: ${{ matrix.godot-version }}
           godot-status: ${{ matrix.godot-status }}
           godot-net: true
-          paths: "res://addons/gdUnit4/test/mono"
+          gdunit-version: latest
+          gdunit-tests: 'res://addons/gdUnit4/test/mono'
           report-name: test-report_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
 
 
   finalize:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    name: Final Results
+    name: 'Final Results'
     needs: [gdlint, unit-tests]
     steps:
       - run: exit 1
