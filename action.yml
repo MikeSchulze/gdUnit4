@@ -1,0 +1,33 @@
+name: 'GdUnit4 CI test action'
+description: 'This GitHub action provides the GdUnit4 test runner'
+
+inputs:
+  godot-version:
+    required: true
+    type: string
+  godot-status:
+    required: true
+    type: string
+  godot-mono:
+    required: false
+    type: bool
+    default: false
+  paths:
+    required: true
+    type: list
+  report-name:
+    required: false
+    type: string
+    default: 'test-report.xml'
+
+runs:
+  using: "composite"
+
+  steps:
+    - uses: ./.github/workflows/unit-tests.yml
+      with:
+        godot-version: ${{ inputs.godot-version }}
+        godot-status: ${{ inputs.godot-status }}
+        godot-mono: ${{ inputs.godot-mono }}
+        paths: ${{ inputs.paths }}
+        report-name: ${{ inputs.report-name }}
