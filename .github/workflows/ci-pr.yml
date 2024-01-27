@@ -24,23 +24,44 @@ jobs:
 
 
   unit-tests:
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       max-parallel: 10
       matrix:
         godot-version: ['4.1', '4.1.1', '4.1.2', '4.1.3', '4.2', '4.2.1']
         godot-status: ['stable']
+        godot-net: ['.Net', '']
         include:
           - godot-version: '4.3'
             godot-status: 'dev2'
 
+    steps:
+      - name: "Checkout GdUnit4"
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          
+      - name: CI on 🐧 Godot_v${{ matrix.godot-version }}-${{ matrix.godot-status }}
+        if: ${{ matrix.godot-net == '' }}
+        uses: ./
+        with:
+          godot-version: ${{ matrix.godot-version }}
+          godot-status: ${{ matrix.godot-status }}
+          godot-net: false
+          paths: "res://addons/gdUnit4/test/"
+          report-name: test-report_${{ matrix.godot-version }}-${{ matrix.godot-status }}
 
-    name: "CI on Godot 🐧 v${{ matrix.godot-version }}-${{ matrix.godot-status }}"
-    needs: [gdlint]
-    uses: ./.github/workflows/unit-tests.yml
-    with:
-      godot-version: ${{ matrix.godot-version }}
-      godot-status: ${{ matrix.godot-status }}
+      - name: CI on 🐧 Godot_v${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
+        if: ${{ matrix.godot-net == '.Net' }}
+        uses: ./
+        with:
+          godot-version: ${{ matrix.godot-version }}
+          godot-status: ${{ matrix.godot-status }}
+          godot-net: true
+          paths: "res://addons/gdUnit4/test/mono"
+          report-name: test-report_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
+
 
   finalize:
     if: ${{ !cancelled() }}

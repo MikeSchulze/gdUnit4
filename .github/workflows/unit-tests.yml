@@ -14,6 +14,17 @@ on:
       godot-status:
         required: true
         type: string
+      godot-mono:
+          required: false
+          type: bool
+          default: false
+      paths:
+        required: true
+        type: list
+      report-name:
+        required: false
+        type: string
+        default: 'test-report.xml'
 
   workflow_dispatch:
     inputs:
@@ -27,6 +38,18 @@ on:
       godot-status:
         required: true
         type: string
+      godot-mono:
+          required: false
+          type: bool
+          default: false
+      paths:
+        required: true
+        type: list
+      report-name:
+        required: false
+        type: string
+        default: 'test-report.xml'
+
 
 concurrency:
   group: unit-tests-${{ github.head_ref || github.ref_name }}-${{ inputs.godot-version }}
@@ -70,7 +93,7 @@ jobs:
         uses: ./.github/actions/unit-test
         with:
           godot-bin: '~/godot-linux/godot'
-          test-includes: "res://addons/gdUnit4/test/"
+          test-includes: ${{ inputs.paths }}
 
       - name: "Run Unit Test Examples"
         if: ${{ !cancelled() }}
