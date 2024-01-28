@@ -167,18 +167,10 @@ func test_spy_on_inner_class():
 
 
 func test_spy_on_singleton():
-	# setup monitor to collect expected push_error notifications
-	var monitor := GodotGdErrorMonitor.new()
-	monitor.start()
-	# We not allow to spy on a singleton
-	var spy_node = spy(Input)
-	await await_idle_frame()
-	monitor.stop()
-	assert_object(spy_node).is_null()
-	await monitor.scan(true)
-	assert_array(monitor.to_reports()).has_size(1)
-	if not is_failure():
-		assert_str(monitor.to_reports()[0].message()).contains("Spy on a Singleton is not allowed! 'Input'")
+	await assert_error(func () -> void: 
+							var spy_node_ = spy(Input)
+							assert_object(spy_node_).is_null()
+							await await_idle_frame()).is_push_error("Spy on a Singleton is not allowed! 'Input'")
 
 
 func test_example_verify():
@@ -221,7 +213,7 @@ func test_verify_fail():
 			.dedent().trim_prefix("\n")
 	assert_failure(func(): verify(spy_node, 1).set_process(true)) \
 		.is_failed() \
-		.has_line(222) \
+		.has_line(214) \
 		.has_message(expected_error)
 
 
@@ -248,7 +240,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 			.dedent().trim_prefix("\n")
 	assert_failure(func(): verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(249) \
+		.has_line(241) \
 		.has_message(expected_error)
 	
 	reset(spy_instance)
@@ -266,7 +258,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 			.dedent().trim_prefix("\n")
 	assert_failure(func(): verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(267) \
+		.has_line(259) \
 		.has_message(expected_error)
 
 
@@ -314,7 +306,7 @@ func test_verify_no_interactions_fails():
 	# it should fail because we have interactions
 	assert_failure(func(): verify_no_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(315) \
+		.has_line(307) \
 		.has_message(expected_error)
 
 
@@ -369,7 +361,7 @@ func test_verify_no_more_interactions_but_has():
 			.dedent().trim_prefix("\n")
 	assert_failure(func(): verify_no_more_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(370) \
+		.has_line(362) \
 		.has_message(expected_error)
 
 

@@ -42,6 +42,7 @@ static func _to_report(errorLog :ErrorLogEntry) -> GdUnitReport:
 
 func scan(force_collect_reports := false) -> Array[ErrorLogEntry]:
 	await Engine.get_main_loop().process_frame
+	await Engine.get_main_loop().physics_frame
 	_entries.append_array(_collect_log_entries(force_collect_reports))
 	return _entries
 
