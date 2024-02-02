@@ -44,11 +44,11 @@ func test_parse_success():
 func test_parse_success_required_arg():
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
 	
-	var result := parser.parse(["-d", "dir/dir/CmdTool.gd", "-a", "-b", "value"])
+	var result := parser.parse(["-d", "dir/dir/CmdTool.gd", "-a", "-b", "valueA", "-b", "valueB"])
 	assert_result(result).is_success()
 	assert_array(result.value()).contains_exactly([
 		CmdCommand.new("-a"),
-		CmdCommand.new("-b", ["value"])
+		CmdCommand.new("-b", ["valueA", "valueB"]),
 	])
 	
 	# useing command long term
