@@ -36,33 +36,28 @@ jobs:
           - godot-version: '4.3'
             godot-status: 'dev2'
 
-    steps:
-      - name: 'Checkout GdUnit4'
-        uses: actions/checkout@v4
-        with:
-          lfs: true
+    name: 'CI GdUnit4 ${{ matrix.version }} - 🐧Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}'
+    uses: MikeSchulze/gdUnit4-action@v1
+    with:
+      godot-version: ${{ matrix.godot-version }}
+      godot-status: ${{ matrix.godot-status }}
+      version: master
+      paths: |
+        res://addons/gdUnit4/test/
+      timeout: 10
+      report-name: report_gdUnit4-${{ matrix.version }}_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}.xml
 
-      - name: 'CI on 🐧 Godot_v${{ matrix.godot-version }}-${{ matrix.godot-status }}'
-        if: ${{ matrix.godot-net == '' }}
-        uses: ./
-        with:
-          godot-version: ${{ matrix.godot-version }}
-          godot-status: ${{ matrix.godot-status }}
-          godot-net: false
-          gdunit-version: latest
-          gdunit-tests: 'res://addons/gdUnit4/test/'
-          report-name: test-report_${{ matrix.godot-version }}-${{ matrix.godot-status }}
-
-      - name: 'CI on 🐧 Godot_v${{ matrix.godot-version }}-${{ matrix.godot-status }}-net'
-        if: ${{ matrix.godot-net == '.Net' }}
-        uses: ./
-        with:
-          godot-version: ${{ matrix.godot-version }}
-          godot-status: ${{ matrix.godot-status }}
-          godot-net: true
-          gdunit-version: latest
-          gdunit-tests: 'res://addons/gdUnit4/test/mono'
-          report-name: test-report_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
+    name: 'CI GdUnit4 ${{ matrix.version }} - 🐧Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}-DotNet'
+    uses: MikeSchulze/gdUnit4-action@v1
+    with:
+      godot-version: ${{ matrix.godot-version }}
+      godot-status: ${{ matrix.godot-status }}
+      version: master
+      paths: |
+        res://addons/gdUnit4/test/mono/
+      timeout: 5
+      retries: 3 # We have set the number of repetitions to 3 because Godot mono randomly crashes during C# tests
+      report-name: report_gdUnit4-${{ matrix.version }}_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-DotNet.xml
 
 
   finalize:
