@@ -54,6 +54,7 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
   * Command line tool for running tests outside of Godot editor
   * Generates HTML report
   * Generates JUnit XML report
+* Public marketplace GitHub action to use in your own CI workflow [gdunit4-action](https://github.com/marketplace/actions/gdunit4-test-runner-action)
 * Visual Studio Code extension for additional features and integrations in managing and running tests
 ---
 
