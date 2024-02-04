@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
 
       - name: Cleanup of obsolete workflow runs
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         with:
           script: |
             const script = require('./.github/actions/workflow-cleanup/index.js')
