@@ -5,7 +5,7 @@ We appreciate your input and want to make the contribution process as easy and t
 
 
 ## Reporting Bugs
-If you encounter any bugs or issues, please use GitHub's issue tracking system. You can report a bug by [opening a new issue](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug%2C+task&template=bug_report.md&title=). When submitting a bug report, please provide detailed information, including the steps to reproduce the issue, relevant background information, and sample code if possible.
+If you encounter any bugs or issues, please use GitHub's issue tracking system. You can report a bug by [opening a new issue](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&projects=projects%2F5&template=bug_report.yml&title=GD-XXX%3A+Describe+the+issue+briefly). When submitting a bug report, please provide detailed information, including the steps to reproduce the issue, relevant background information, and sample code if possible.
 
 ## Development on GitHub
 We use GitHub to host our code, track issues and feature requests, and accept pull requests.
