@@ -86,7 +86,7 @@ func test_example():
 ### You Are Welcome To:
   * [Give Feedback](https://github.com/MikeSchulze/gdUnit4/discussions) on the gdUnit GitHub Discussions page.
   * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=) by creating a new feature request issue on the gdUnit GitHub Issues page.
-  * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug%2C+task&template=bug_report.md&title=)  by creating a new bug report issue on the gdUnit GitHub Issues page.
+  * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&projects=projects%2F5&template=bug_report.yml&title=GD-XXX%3A+Describe+the+issue+briefly)  by creating a new bug report issue on the gdUnit GitHub Issues page.
 
 ---
 
