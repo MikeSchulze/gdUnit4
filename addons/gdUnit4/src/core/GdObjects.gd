@@ -380,7 +380,7 @@ static func is_script(value :Variant) -> bool:
 
 
 static func is_test_suite(script :Script) -> bool:
-	return is_gd_testsuite(script) or GdUnit4MonoApiLoader.is_test_suite(script.resource_path)
+	return is_gd_testsuite(script) or GdUnit4CSharpApiLoader.is_test_suite(script.resource_path)
 
 
 static func is_native_class(value :Variant) -> bool:

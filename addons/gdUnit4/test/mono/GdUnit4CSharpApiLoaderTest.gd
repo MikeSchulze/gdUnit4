@@ -1,16 +1,16 @@
 # GdUnit generated TestSuite
 #warning-ignore-all:unused_argument
 #warning-ignore-all:return_value_discarded
-class_name GdUnit4MonoApiLoaderTest
+class_name GdUnit4CSharpApiLoaderTest
 extends GdUnitTestSuite
 
 # TestSuite generated from
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-const __source = 'res://addons/gdUnit4/src/mono/GdUnit4MonoApiLoader.gd'
+const __source = 'res://addons/gdUnit4/src/mono/GdUnit4CSharpApiLoader.gd'
 
 
 @warning_ignore("unused_parameter")
-func before(do_skip = not GdUnit4MonoApiLoader.is_mono_supported(), skip_reason = "Do run only for Godot Mono version"):
+func before(do_skip = not GdUnit4CSharpApiLoader.is_mono_supported(), skip_reason = "Do run only for Godot Mono version"):
 	pass
 
 
@@ -25,11 +25,11 @@ func test_is_engine_version_supported(version :int, expected :bool, test_paramet
 	[0x40100, true],
 	[0x40200, true]]) -> void:
 	
-	assert_that(GdUnit4MonoApiLoader.is_engine_version_supported(version)).is_equal(expected)
+	assert_that(GdUnit4CSharpApiLoader.is_engine_version_supported(version)).is_equal(expected)
 
 
 func test_api_version() -> void:
-	assert_str(GdUnit4MonoApiLoader.version()).starts_with("4.2")
+	assert_str(GdUnit4CSharpApiLoader.version()).starts_with("4.2")
 
 
 func test_create_test_suite() -> void:
@@ -40,7 +40,7 @@ func test_create_test_suite() -> void:
 	var example_source_cs = result.value() as String
 	var source := load(example_source_cs)
 	var test_suite_path := GdUnitTestSuiteScanner.resolve_test_suite_path(source.resource_path, "test")
-	result = GdUnit4MonoApiLoader.create_test_suite(source.resource_path, 18, test_suite_path)
+	result = GdUnit4CSharpApiLoader.create_test_suite(source.resource_path, 18, test_suite_path)
 
 	assert_result(result).is_success()
 	var info := result.value() as Dictionary
@@ -49,7 +49,7 @@ func test_create_test_suite() -> void:
 
 
 func test_parse_test_suite() -> void:
-	var test_suite := GdUnit4MonoApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4MonoApiTest.cs")
+	var test_suite := GdUnit4CSharpApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4CSharpApiTest.cs")
 	assert_that(test_suite).is_not_null()
 	assert_that(test_suite.get("IsCsTestSuite")).is_true()
 	test_suite.free()
@@ -61,10 +61,10 @@ class TestRunListener extends Node:
 
 func test_executor() -> void:
 	var listener :TestRunListener = auto_free(TestRunListener.new())
-	var executor = GdUnit4MonoApiLoader.create_executor(listener)
+	var executor = GdUnit4CSharpApiLoader.create_executor(listener)
 	assert_that(executor).is_not_null()
 	
-	var test_suite := GdUnit4MonoApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4MonoApiTest.cs")
+	var test_suite := GdUnit4CSharpApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4CSharpApiTest.cs")
 	assert_that(executor.IsExecutable(test_suite)).is_true()
 	
 	test_suite.free()
