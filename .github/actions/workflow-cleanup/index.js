@@ -61,7 +61,7 @@ module.exports = async ({ github, context, core, exec }) => {
     const deleteWorkflowRun = (run_id) => {
         core.info(`Attempt to delete workflow run with id: ${run_id}`);
 
-        return github.actions.deleteWorkflowRun({
+        return github.rest.actions.deleteWorkflowRun({
             owner,
             repo,
             run_id
@@ -69,7 +69,7 @@ module.exports = async ({ github, context, core, exec }) => {
     };
 
     const pruneWorkflowRuns = async () => {
-        const workflowRuns = await github.paginate(github.actions.listWorkflowRunsForRepo, {
+        const workflowRuns = await github.paginate(github.rest.actions.listWorkflowRunsForRepo, {
             owner,
             repo,
             per_page: 100
