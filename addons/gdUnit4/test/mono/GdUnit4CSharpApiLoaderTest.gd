@@ -19,11 +19,12 @@ func test_is_engine_version_supported(version :int, expected :bool, test_paramet
 	[0x40000, false],
 	[0x40001, false],
 	[0x40002, false],
-	[0x40100, true],
-	[0x40101, true],
-	[0x40102, true],
-	[0x40100, true],
-	[0x40200, true]]) -> void:
+	[0x40100, false],
+	[0x40101, false],
+	[0x40102, false],
+	[0x40100, false],
+	[0x40200, true],
+	[0x40201, true]]) -> void:
 	
 	assert_that(GdUnit4CSharpApiLoader.is_engine_version_supported(version)).is_equal(expected)
 
