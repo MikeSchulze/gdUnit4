@@ -30,7 +30,7 @@ func _init() -> void:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	# store current runner instance to engine meta data to can be access in as a singleton
 	Engine.set_meta(GDUNIT_RUNNER, self)
-	_cs_executor = GdUnit4MonoApiLoader.create_executor(self)
+	_cs_executor = GdUnit4CSharpApiLoader.create_executor(self)
 
 
 func _ready() -> void:

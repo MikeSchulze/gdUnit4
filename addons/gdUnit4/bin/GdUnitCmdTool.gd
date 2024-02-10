@@ -101,9 +101,9 @@ class CLIRunner:
 		_executor = load("res://addons/gdUnit4/src/core/execution/GdUnitTestSuiteExecutor.gd").new()
 		# stop checked first test failure to fail fast
 		_executor.fail_fast(true)
-		if GdUnit4MonoApiLoader.is_mono_supported():
-			prints("GdUnit4Mono Version %s loaded." % GdUnit4MonoApiLoader.version())
-			_cs_executor = GdUnit4MonoApiLoader.create_executor(self)
+		if GdUnit4CSharpApiLoader.is_mono_supported():
+			prints("GdUnit4Mono Version %s loaded." % GdUnit4CSharpApiLoader.version())
+			_cs_executor = GdUnit4CSharpApiLoader.create_executor(self)
 		var err := GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 		if err != OK:
 			prints("gdUnitSignals failed")

@@ -32,7 +32,7 @@ static func load_test_suite_gd(resource_path :String) -> GdUnitTestSuite:
 
 
 static func load_test_suite_cs(resource_path :String) -> Node:
-	if not GdUnit4MonoApiLoader.is_mono_supported():
+	if not GdUnit4CSharpApiLoader.is_mono_supported():
 		return null
 	var script = ClassDB.instantiate("CSharpScript")
 	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
@@ -42,7 +42,7 @@ static func load_test_suite_cs(resource_path :String) -> Node:
 
 
 static func load_cs_script(resource_path :String, debug_write := false) -> Script:
-	if not GdUnit4MonoApiLoader.is_mono_supported():
+	if not GdUnit4CSharpApiLoader.is_mono_supported():
 		return null
 	var script = ClassDB.instantiate("CSharpScript")
 	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
