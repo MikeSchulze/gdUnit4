@@ -7,7 +7,7 @@ nav_order: 1
 
 # String Assertions
 
-An assertion tool to verify String values.
+An assertion tool to verify **String** and **StringName** values.
 
 {% tabs assert-str-overview %}
 {% tab assert-str-overview GdScript %}
@@ -58,7 +58,7 @@ An assertion tool to verify String values.
 ## String Assert Examples
 
 ### is_equal
-Verifies that the current String is equal to the given one.
+Verifies that the current **String** or **StringName** is equal to the given one.
 {% tabs assert-str-is_equal %}
 {% tab assert-str-is_equal GdScript %}
 ```ruby
@@ -88,7 +88,7 @@ Verifies that the current String is equal to the given one.
 
 
 ### is_equal_ignoring_case
-Verifies that the current String is equal to the given one, ignoring case considerations.
+Verifies that the current **String** or **StringName** is equal to the given one, ignoring case considerations.
 {% tabs assert-str-is_equal_ignoring_case %}
 {% tab assert-str-is_equal_ignoring_case GdScript %}
 ```ruby
@@ -117,7 +117,7 @@ Verifies that the current String is equal to the given one, ignoring case consid
 {% endtabs %}
 
 ### is_not_equal
-Verifies that the current String is not equal to the given one.
+Verifies that the current **String** or **StringName** is not equal to the given one.
 {% tabs assert-str-is_not_equal %}
 {% tab assert-str-is_not_equal GdScript %}
 ```ruby
@@ -146,7 +146,7 @@ Verifies that the current String is not equal to the given one.
 {% endtabs %}
 
 ### is_not_equal_ignoring_case
-Verifies that the current String is not equal to the given one, ignoring case considerations.
+Verifies that the current **String** or **StringName** is not equal to the given one, ignoring case considerations.
 {% tabs assert-str-is_not_equal_ignoring_case %}
 {% tab assert-str-is_not_equal_ignoring_case GdScript %}
 ```ruby
@@ -176,7 +176,7 @@ Verifies that the current String is not equal to the given one, ignoring case co
 
 
 ### is_empty
-Verifies that the current String is empty, it has a length of 0.
+Verifies that the current **String** or **StringName** is empty, it has a length of 0.
 {% tabs assert-str-is_empty %}
 {% tab assert-str-is_empty GdScript %}
 ```ruby
@@ -207,7 +207,7 @@ Verifies that the current String is empty, it has a length of 0.
 
 
 ### is_not_empty
-Verifies that the current String is not empty, it has a length of minimum 1.
+Verifies that the current **String** or **StringName** is not empty, it has a length of minimum 1.
 {% tabs assert-str-is_not_empty %}
 {% tab assert-str-is_not_empty GdScript %}
 ```ruby
@@ -237,7 +237,7 @@ Verifies that the current String is not empty, it has a length of minimum 1.
 
 
 ### contains
-Verifies that the current String contains the given String.
+Verifies that the current **String** or **StringName** contains the given String.
 {% tabs assert-str-contains %}
 {% tab assert-str-contains GdScript %}
 ```ruby
@@ -267,7 +267,7 @@ Verifies that the current String contains the given String.
 
 
 ### contains_ignoring_case
-Verifies that the current String does not contain the given String, ignoring case considerations.
+Verifies that the current **String** or **StringName** does not contain the given String, ignoring case considerations.
 {% tabs assert-str-contains_ignoring_case %}
 {% tab assert-str-contains_ignoring_case GdScript %}
 ```ruby
@@ -297,7 +297,7 @@ Verifies that the current String does not contain the given String, ignoring cas
 
 
 ### not_contains
-Verifies that the current String does not contain the given String.
+Verifies that the current **String** or **StringName** does not contain the given String.
 {% tabs assert-str-not_contains %}
 {% tab assert-str-not_contains GdScript %}
 ```ruby
@@ -328,7 +328,7 @@ Verifies that the current String does not contain the given String.
 
 
 ### not_contains_ignoring_case
-Verifies that the current String does not contain the given String, ignoring case considerations.
+Verifies that the current **String** or **StringName** does not contain the given String, ignoring case considerations.
 {% tabs assert-str-not_contains_ignoring_case %}
 {% tab assert-str-not_contains_ignoring_case GdScript %}
 ```ruby
@@ -358,7 +358,7 @@ Verifies that the current String does not contain the given String, ignoring cas
 
 
 ### starts_with
-Verifies that the current String starts with the given prefix.
+Verifies that the current **String** or **StringName** starts with the given prefix.
 {% tabs assert-str-starts_with %}
 {% tab assert-str-starts_with GdScript %}
 ```ruby
@@ -389,7 +389,7 @@ Verifies that the current String starts with the given prefix.
 
 
 ### ends_with
-Verifies that the current String ends with the given suffix.
+Verifies that the current **String** or **StringName** ends with the given suffix.
 {% tabs assert-str-ends_with %}
 {% tab assert-str-ends_with GdScript %}
 ```ruby
@@ -419,7 +419,7 @@ Verifies that the current String ends with the given suffix.
 
 
 ### has_length
-Verifies that the current String has the expected length by used [[comparator|Asserts#GdUnit Comparator]].
+Verifies that the current **String** or **StringName** has the expected length by used [[comparator|Asserts#GdUnit Comparator]].
 {% tabs assert-str-has_length %}
 {% tab assert-str-has_length GdScript %}
 ```ruby
@@ -463,3 +463,5 @@ Verifies that the current String has the expected length by used [[comparator|As
 {% endtab %}
 {% endtabs %}
 
+---
+<h4> document version v4.2.1 </h4>

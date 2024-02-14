@@ -7,9 +7,6 @@ nav_order: 4
 
 # Spy
 
-
-## ***Note: Spy is current only supported for GdScripts.***
-
 ## Definition
 A Spy is used to verify a certain behavior during a test and tracks all function calls and their parameters of an instance.
 
@@ -19,6 +16,9 @@ A Spy is used to verify a certain behavior during a test and tracks all function
 
 In contrast to a mock, a spy calls the real implementation. It behaves in the same way as the normal instance.
 
+{% include advice.html
+content="Spy is current only supported for GdScripts."
+%}
 ---
 
 ## How to use a Spy

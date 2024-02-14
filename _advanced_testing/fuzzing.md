@@ -7,8 +7,6 @@ nav_order: 2
 
 # Testing with Fuzzers
 
-## ***Note: Fuzzing is current only supported for GdScripts.***
-
 ## Definition
 Fuzz Testing or Fuzzing is a software testing technique of putting invalid or random data called FUZZ into software system to discover coding errors and security loopholes. The purpose of fuzz testing is inserting data using automated or semi-automated techniques and testing the system for various exceptions like system crashing or failure of built-in code, etc.
 
@@ -23,6 +21,11 @@ Fuzz Testing or Fuzzing is a software testing technique of putting invalid or ra
 ```
 {% endtab %}
 {% endtabs %}
+
+
+{% include advice.html
+content="Fuzzing is current only supported for GdScripts."
+%}
 
 ---
 

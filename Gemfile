@@ -8,11 +8,11 @@ source "https://rubygems.org"
 #
 # This will help ensure the proper Jekyll version is running.
 # Happy Jekylling!
-gem "jekyll", "~> 3.9.2"
+gem "jekyll", "~> 3.9.5"
 
 # This is the  theme for new Jekyll sites.
 #gem "jekyll-theme-slate"
-gem "just-the-docs"
+gem "just-the-docs", "~> 0.5.4"
 
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and
 # uncomment the line below. To upgrade, run `bundle update github-pages`.
@@ -20,7 +20,7 @@ gem "just-the-docs"
 
 # If you have any plugins, put them here!
 group :jekyll_plugins do
-  gem "jekyll-tabs"
+  gem "jekyll-tabs", "~> 1.2.1"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
