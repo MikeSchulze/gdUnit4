@@ -7,8 +7,6 @@ nav_order: 3
 
 # Mocking / Mocks
 
-## ***Note: Mocking is current only supported for GdScripts.***
-
 ## Definition
 A mocked object is a dummy implementation of a class, in which you define the expected output of certain function calls. Mocked objects are configured to perform a specific behavior during testing, and they track all function calls and their parameters to the mocked object.
 
@@ -16,6 +14,10 @@ This type of testing is sometimes referred to as behavior testing. Behavior test
 
 For more detailed information about mocks, [read this](https://en.wikipedia.org/wiki/Mock_object)
 
+
+{% include advice.html
+content="Mocking is current only supported for GdScripts."
+%}
 ---
 
 Here an small example to mock the class `TestClass`:

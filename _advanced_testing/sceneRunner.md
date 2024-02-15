@@ -90,7 +90,8 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit4/tutorials/tu
 |[simulate_key_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed. |
 |[simulate_key_release](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released. |
 |[simulate_mouse_move](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to final position. |
-|[simulate_mouse_move_relative](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move_relative) | Simulates a mouse move by an offset and speed. |
+|[simulate_mouse_move_relative](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move_relative) | Simulates a mouse move to the relative coordinates (offset). |
+|[simulate_mouse_move_absolute](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move_absolute) | Simulates a mouse move to the absolute coordinates. |
 |[simulate_mouse_button_pressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_pressed) | Simulates a mouse button pressed. |
 |[simulate_mouse_button_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_press) | Simulates a mouse button press (holding). |
 |[simulate_mouse_button_release](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_release) | Simulates a mouse button released. |
@@ -114,6 +115,8 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit4/tutorials/tu
 |[SimulateKeyPress](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed. |
 |[SimulateKeyRelease](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released. |
 |[SimulateMouseMove](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move) | Simulates a mouse moved to final position. |
+|[SimulateMouseMoveRelative](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move_relative) | Simulates a mouse move to the relative coordinates (offset). |
+|[SimulateMouseMoveAbsolute](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move_absolute) | Simulates a mouse move to the absolute coordinates. |
 |[SimulateMouseButtonPressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_pressed) | Simulates a mouse button pressed. |
 |[SimulateMouseButtonPress](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_press) | Simulates a mouse button press (holding). |
 |[SimulateMouseButtonRelease](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_release) | Simulates a mouse button released. |
@@ -144,6 +147,7 @@ We distinguish between *finalized* and *unfinished* functions.
     * [set_mouse_pos](/gdUnit4/advanced_testing/sceneRunner/#set_mouse_pos)
     * [simulate_mouse_move](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move)
     * [simulate_mouse_move_relative](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move_relative)
+    * [simulate_mouse_move_absolute](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_move_absolute)
 
 
 * Unfinished Functions<br>
@@ -442,28 +446,59 @@ Here is an example of how to use SimulateMouseMove:
 
 
 ### simulate_mouse_move_relative
-The **simulate_mouse_move_relative** function is used to simulate a mouse move by given offset and speed to the final position.
+The **simulate_mouse_move_relative** function simulates a mouse move to a relative position within a specified time.
 
 {% tabs scene-runner-simulate_mouse_move_relative %}
 {% tab scene-runner-simulate_mouse_move_relative GdScript %}
 It takes the following arguments:
 ```ruby
-    # relative: The relative position, e.g. the mouse position offset
-    # speed : The mouse speed in pixels per second, the default is Vector2.ONE.
-    func simulate_mouse_move_relative(<relative> :Vector2, [speed] :Vector2) -> GdUnitSceneRunner:
+    ## Simulates a mouse move to the relative coordinates (offset).
+    ## [member relative] : The relative position, indicating the mouse position offset.
+    ## [member time] : The time to move the mouse by the relative position in seconds (default is 1 second).
+    ## [member trans_type] : Sets the type of transition used (default is TRANS_LINEAR).
+    func simulate_mouse_move_relative(<relative> :Vector2, time: float = 1.0, trans_type :Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
 ```
 Here is an example of how to use simulate_mouse_move_relative:
 ```ruby
     var runner := scene_runner("res://test_scene.tscn")
     
-    # Set mouse position to a inital position
+    # Set mouse position to an initial position
     runner.set_mouse_pos(Vector2(10, 20))
     await await_idle_frame()
 
-    # Simulates a full mouse move from current position + the given offset (400, 200) with a speed of (.2, 1)
+    # Simulate a mouse move from the current position to the relative position within 1 second
     # the final position will be (410, 220) when is completed
-    awati runner.simulate_mouse_move_relative(Vector2(400, 200), Vector2(.2, 1))
+    await runner.simulate_mouse_move_relative(Vector2(400, 200), 1)
+```
+{% endtab %}
+{% endtabs %}
+
+
+
+### simulate_mouse_move_absolute
+The **simulate_mouse_move_absolute** function simulates a mouse move to an absolute position within a specified time.
+
+{% tabs scene-runner-simulate_mouse_move_absolute %}
+{% tab scene-runner-simulate_mouse_move_absolute GdScript %}
+It takes the following arguments:
+```ruby
+    ## Simulates a mouse move to the absolute coordinates.
+    ## [member position] : The final position of the mouse.
+    ## [member time] : The time to move the mouse to the final position in seconds (default is 1 second).
+    ## [member trans_type] : Sets the type of transition used (default is TRANS_LINEAR).
+    func simulate_mouse_move_absolute(<position>: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+```
+Here is an example of how to use simulate_mouse_move_absolute:
+```ruby
+    var runner := scene_runner("res://test_scene.tscn")
+    
+    # Set mouse position to an initial position
+    runner.set_mouse_pos(Vector2(10, 20))
     await await_idle_frame()
+
+    # Simulate a mouse move from the current position to the absolute position within 1 second
+    # the final position will be (400, 200) when is completed
+    await runner.simulate_mouse_move_absolute(Vector2(400, 200), 1)
 ```
 {% endtab %}
 {% endtabs %}
@@ -1057,4 +1092,4 @@ Here is an example of how to use SetTimeFactor:
 {% endtabs %}
 
 ---
-<h4> document version v4.1.0 </h4>
+<h4> document version v4.2.1 </h4>

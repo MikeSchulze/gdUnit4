@@ -7,28 +7,44 @@ nav_order: 5
 
 # Argument Matchers
 
-## ***Note: Argument Matchers are currently only supported for GdScripts.***
-
----
-
 ## Definition
-GdUnit provides a set of argument matchers that allow you to check the behavior of function calls with an argument of a certain type.<br>
-An argument matcher is a tool that helps verify the behavior of a function call by a specified argument type on a **mock** or **spy** object. This means that you can test the call of a function without having to specify the exact argument value(s).
+GdUnit4 provides a set of argument matchers designed to facilitate testing of function calls with specific argument types. Argument matchers allow you to verify the behavior of a function call without needing to specify the exact argument value(s). This is particularly useful when you're interested in verifying the type of argument passed to a function rather than its exact value.
 
+Using argument matchers enhances the flexibility and expressiveness of your tests by allowing you to focus on the relevant aspects of function behavior.
+{% include advice.html
+content="Argument Matchers are currently only supported for GdScripts."
+%}
 
-```ruby
-    verify(<mock>, <times>).function(<arg_matcher>)
-    verify(<spy>, <times>).function(<arg_matcher>)
-```
+### Usage
+Argument matchers can be employed in various scenarios, such as:
 
-For example, instead of verifying that a function was called with the exact string "This is a test" two times, you can use the argument matcher **any_string()** to verify that the function was called two times with any string argument.<br>
-Here is an example:
-```ruby
-    # Verifying that the function `set_message` is called two times with the argument "This is a test"
-    verify(mock, 2).set_message("This is a test")
-    # Using the argument matcher `any_string()` to verify that the function is called two times with any string argument
-    verify(mock, 2).set_message(any_string())
-```
+1. **Assert Functions:** When verifying assertions and not interested in the exact value:
+   ```gdscript
+   # Verifies that the value is a variant integer
+   assert_that(100).is_equal(any_int())
+   # This check will fail as the value is not a boolean
+   assert_that(100).is_equal(any_bool())
+   ```
+
+2. **Assert Signal:** When you're only interested in whether a signal is emitted, regardless of its arguments:
+   ```gdscript
+   # Waits until signal 'test_signal_counted' is emitted with signal arguments as an integer
+   await assert_signal(signal_emitter).is_emitted("test_signal_counted", [any_int()])
+   ```
+
+3. **Mock Verification:** When verifying function calls with specific argument types:
+   ```gdscript
+   # Verifies that the function `set_message` is called twice with any string argument
+   verify(mock, 2).set_message(any_string())
+   ```
+
+4. **Any Matcher:**
+    In this example using the `any()` matcher allows you to focus on the number of function calls without concerning yourself with the specific value of the argument is passed.
+    ```gdscript
+    # Verifies that the function `set_message` is called twice with any argument
+    verify(mock, 2).set_message(any())
+    ```
+
 
 ---
 
@@ -38,40 +54,40 @@ The following matchers are available:<br>
 |Argument Matcher|Description|
 |---|---|
 |any | Argument matcher to match any argument|
-|any_bool | Argument matcher to match any boolean value|
-|any_int | Argument matcher to match any integer value|
-|any_float | Argument matcher to match any float value|
-|any_string | Argument matcher to match any string value|
-|any_class | Argument matcher to match any instance of given class|
-|any_color | Argument matcher to match any Color value|
-|any_vector | Argument matcher to match any Vector value|
-|any_vector2 | Argument matcher to match any Vector2 value|
-|any_vector2i | Argument matcher to match any Vector2i value|
-|any_vector3 | Argument matcher to match any Vector3 value|
-|any_vector3i | Argument matcher to match any Vector3i value|
-|any_vector4 | Argument matcher to match any Vector4 value|
-|any_vector4i | Argument matcher to match any Vector4i value|
-|any_rect2 | Argument matcher to match any Rect2 value|
-|any_plane | Argument matcher to match any Plane value|
-|any_quat | Argument matcher to match any Quat value|
-|any_aabb | Argument matcher to match any AABB value|
-|any_basis | Argument matcher to match any Basis value|
-|any_transform | Argument matcher to match any Transform value|
-|any_transform_2d | Argument matcher to match any Transform2D value|
-|any_node_path | Argument matcher to match any NodePath value|
-|any_rid | Argument matcher to match any RID value|
-|any_object | Argument matcher to match any Object value|
-|any_dictionary | Argument matcher to match any Dictionary value|
-|any_array | Argument matcher to match any Array value|
-|any_pool_byte_array | Argument matcher to match any PackedByteArray value|
-|any_pool_int_array | Argument matcher to match any PackedIntArray value|
-|any_pool_float_array | Argument matcher to match any PackedFloatArray value|
-|any_pool_string_array | Argument matcher to match any PackedStringArray value|
-|any_pool_vector2_array | Argument matcher to match any PackedVector2Array value|
-|any_pool_vector3_array | Argument matcher to match any PackedVector3Array value|
-|any_pool_color_array | Argument matcher to match any PackedColorArray value|
-
-The any matcher matches any argument passed to the function. This is useful if you only want to check that the function was called with a certain number of arguments but don't care about their specific values. For example, `verify(mock, 2).function(any())` will check that the mock object's function was called exactly two times with any arguments.
+|any_aabb | Argument matcher to match any AABB value |
+|any_array | Argument matcher to match any Array value |
+|any_basis | Argument matcher to match any Basis value |
+|any_bool | Argument matcher to match any boolean value |
+|any_class | Argument matcher to match any instance of given class |
+|any_color | Argument matcher to match any Color value |
+|any_dictionary | Argument matcher to match any Dictionary value |
+|any_float | Argument matcher to match any float value |
+|any_int | Argument matcher to match any integer value |
+|any_node_path | Argument matcher to match any NodePath value |
+|any_object | Argument matcher to match any Object value |
+|any_packed_byte_array | Argument matcher to match any PackedByteArray value |
+|any_packed_color_array | Argument matcher to match any PackedColorArray value |
+|any_packed_float32_array | Argument matcher to match any PackedFloat32Array value |
+|any_packed_float64_array | Argument matcher to match any PackedFloat64Array value |
+|any_packed_int32_array | Argument matcher to match any PackedInt32Array value |
+|any_packed_int64_array | Argument matcher to match any PackedInt64Array value |
+|any_packed_string_array | Argument matcher to match any PackedStringArray value |
+|any_packed_vector2_array | Argument matcher to match any PackedVector2Array value |
+|any_packed_vector3_array | Argument matcher to match any PackedVector3Array value |
+|any_plane | Argument matcher to match any Plane value |
+|any_quat | Argument matcher to match any Quaternion value |
+|any_rect2 | Argument matcher to match any Rect2 value |
+|any_rid | Argument matcher to match any RID value |
+|any_string | Argument matcher to match any string value |
+|any_transform_2d | Argument matcher to match any Transform2D value |
+|any_transform_3d | Argument matcher to match any Transform3D value |
+|any_vector | Argument matcher to match any Vector typed value |
+|any_vector2 | Argument matcher to match any Vector2 value |
+|any_vector2i | Argument matcher to match any Vector2i value |
+|any_vector3 | Argument matcher to match any Vector3 value |
+|any_vector3i | Argument matcher to match any Vector3i value |
+|any_vector4 | Argument matcher to match any Vector4 value |
+|any_vector4i | Argument matcher to match any Vector3i valu |
 
 ---
 
@@ -134,4 +150,4 @@ The test:
 Then in the test, we create a mocked_test_class object and call its **set_value** method with different arguments. Finally, we use verify to check if the method was called with arguments that meet the condition of the PeekMatcher.
 
 ---
-<h4> document version v4.1.1 </h4>
+<h4> document version v4.2.1 </h4>

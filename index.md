@@ -5,9 +5,9 @@ title: Home
 
 
 
-# GdUnit4 V4.2.0
+# GdUnit4 V4.2.1
 ![GdUnit4](\gdUnit4\assets\images\background.png)
-build on (v4.2.stable.mono.official [46dc27791])
+build on (v4.2.1.stable.official [b09f793f5])
 
 
 
@@ -22,7 +22,7 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
 ## You are welcome to:
   * [Give Feedback](https://github.com/MikeSchulze/gdUnit4/discussions/157){:target="_blank"} on the gdUnit GitHub Discussions page.
   * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=){:target="_blank"} by creating a new feature request issue on the gdUnit GitHub Issues page.
-  * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&template=bug_report.md&title=){:target="_blank"} by creating a new bug report issue on the gdUnit GitHub Issues page.
+  * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&projects=projects%2F5&template=bug_report.yml&title=GD-XXX%3A+Describe+the+issue+briefly){:target="_blank"} by creating a new bug report issue on the gdUnit GitHub Issues page.
 
 
 ## Main Features
@@ -44,6 +44,11 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
   For example, you can simulate mouse clicks and keyboard inputs by calling the appropriate methods on the runner instance. Additionally, you can wait for a specific signal to be emitted by the scene, or you can wait for a specific function to return a certain value.
 * Automatic update notifier to install the latest version of GdUnit from GitHub
 * Command line tool for running tests outside of Godot editor
+* CI - Continuous Integration support
+  * Command line tool for running tests outside of Godot editor
+  * Generates HTML report
+  * Generates JUnit XML report
+  * Public marketplace GitHub action to use in your own CI workflow [gdunit4-action](https://github.com/marketplace/actions/gdunit4-test-runner-action)
 * Visual Studio Code extension for additional features and integrations in managing and running tests
 
 
@@ -88,4 +93,4 @@ namespace examples
 {% endtabs %}
 
 ---
-<h4> document version v4.2.0 </h4>
+<h4> document version v4.2.1 </h4>
