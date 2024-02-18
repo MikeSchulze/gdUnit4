@@ -140,7 +140,7 @@ func disconnect_client(client_id :int) -> void:
 func _process(_delta):
 	if not _server.is_listening():
 		return
-	# check is new connection incomming
+	# check if connection is ready to be used
 	if _server.is_connection_available():
 		add_child(TcpConnection.new(_server))
 
