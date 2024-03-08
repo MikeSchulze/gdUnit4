@@ -61,13 +61,14 @@ func test_extract_parameters() -> void:
 	var functions := parser.parse_functions(source, "", [script.resource_path], ["test_example_a", "test_example_b", "test_example_c", "test_example_d", "test_example_e"])
 	assert_array(functions).extract("name").contains_exactly(["test_example_a", "test_example_b", "test_example_c", "test_example_d", "test_example_e"])
 	
-	assert_array(GdTestParameterSet.extract_test_parameters(script, functions[0]))\
+	var instance = auto_free(script.new())
+	assert_array(GdTestParameterSet.extract_test_parameters(instance, functions[0]))\
 		.is_equal([[1,2], [3,4]])
-	assert_array(GdTestParameterSet.extract_test_parameters(script, functions[1]))\
+	assert_array(GdTestParameterSet.extract_test_parameters(instance, functions[1]))\
 		.is_equal([[Vector2.ZERO, Vector2.ONE], [Vector2(1.1, 3.2), Vector2.DOWN]])
-	assert_array(GdTestParameterSet.extract_test_parameters(script, functions[2]))\
+	assert_array(GdTestParameterSet.extract_test_parameters(instance, functions[2]))\
 		.is_equal([[Resource.new(), Resource.new()], [Resource.new(), null]])
-	assert_array(GdTestParameterSet.extract_test_parameters(script, functions[3]))\
+	assert_array(GdTestParameterSet.extract_test_parameters(instance, functions[3]))\
 		.is_equal([[Vector3(1,1,1), Vector3(3,3,3)], [Vector3.BACK, Vector3.UP]])
-	assert_array(GdTestParameterSet.extract_test_parameters(script, functions[4]))\
+	assert_array(GdTestParameterSet.extract_test_parameters(instance, functions[4]))\
 		.is_equal([[TestObj.new("abc"), TestObj.new("def"), "abcdef"]])
