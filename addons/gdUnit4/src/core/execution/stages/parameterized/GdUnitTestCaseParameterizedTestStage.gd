@@ -20,14 +20,22 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	var error := GdTestParameterSet.validate(test_case._fd.args(), parameters)
 	if not error.is_empty():
 		test_case.skip(true, error)
-	if test_case.is_skipped():
 		return
 	var test_names := test_case.test_case_names();
-	
 	for test_case_index in parameters.size():
 		# is test_parameter_index is set, we run this parameterized test only
 		if test_parameter_index != -1 and test_parameter_index != test_case_index:
 			continue
+		if test_case_index >= test_names.size():
+			push_error("Internal Error: The resolved test_case names has invalid size!")
+			context.reports().append(GdUnitReport.new().create(GdUnitReport.FAILURE, test_case.line_number(),
+			"""
+			%s:
+				The resolved test_case names has invalid size!
+				%s
+			""".dedent().trim_prefix("\n")
+			% [GdAssertMessages._error("Internal Error"), GdAssertMessages._error("Please report this issue as a bug!")]))
+			return
 		var test_case_name = test_names[test_case_index]
 		_stage_before.set_test_name(test_case_name)
 		_stage_after.set_test_name(test_case_name)
