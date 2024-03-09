@@ -21,7 +21,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	if not error.is_empty():
 		test_case.skip(true, error)
 		return
-	var test_names := test_case.test_case_names();
+	var test_names := test_case.test_case_names()
 	for test_case_index in parameters.size():
 		# is test_parameter_index is set, we run this parameterized test only
 		if test_parameter_index != -1 and test_parameter_index != test_case_index:
