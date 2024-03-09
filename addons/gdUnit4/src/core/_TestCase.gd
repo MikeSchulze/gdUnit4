@@ -243,6 +243,7 @@ func test_case_names() -> PackedStringArray:
 		push_error("Internal Error: Can't parse the parameterized test arguments!")
 	for index in matches.size():
 		var parameter = matches[index].get_string(0)
+		# cleanup parameter by remove newlines and tabs
 		parameter = parameter.replace("[\n", "").replace("\n", "").replace("\t", "")
 		_test_case_names.append(_build_test_case_name(parameter, index))
 	return _test_case_names
@@ -256,7 +257,6 @@ func _extract_test_names_from_expression() -> PackedStringArray:
 
 
 func _build_test_case_name(test_parameter :String, parameter_index :int) -> String:
-	prints("'%s'" % test_parameter)
 	if not test_parameter.begins_with("["):
 		test_parameter = "[" + test_parameter
 	var test_name = "%s:%d %s" % [get_name(), parameter_index, test_parameter.replace('"', "'").replace("&'", "'")]
