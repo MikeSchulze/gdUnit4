@@ -9,6 +9,9 @@ func __extract_test_parameters() -> Array:
 	
 """
 
+const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
+
+
 # validates the given arguments are complete and matches to required input fields of the test function
 static func validate(input_arguments :Array, input_value_set :Array) -> String:
 	# check given parameter set with test case arguments
@@ -25,6 +28,7 @@ static func validate(input_arguments :Array, input_value_set :Array) -> String:
 		else:
 			return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	Expecting an array of input values." % parameter_set_index
 	return ""
+
 
 static func validate_parameter_types(input_arguments :Array, input_values :Array, parameter_set_index :int) -> String:
 	for i in input_arguments.size():
@@ -48,9 +52,11 @@ static func validate_parameter_types(input_arguments :Array, input_values :Array
 			return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	The value '%s' does not match the required input parameter <%s>." % [parameter_set_index, input_value, input_param]
 	return ""
 
+
 # extracts the arguments from the given test case, using kind of reflection solution
 # to restore the parameters from a string representation to real instance type
-static func extract_test_parameters(source :GDScript, fd :GdFunctionDescriptor) -> Array:
+static func extract_test_parameters(ts_instance :Object, fd :GdFunctionDescriptor) -> Array:
+	var source = ts_instance.get_script()
 	var parameter_arg := GdFunctionArgument.get_parameter_set(fd.args())
 	var source_code = CLASS_TEMPLATE\
 		.replace("${clazz_path}", source.resource_path)\
@@ -66,5 +72,22 @@ static func extract_test_parameters(source :GDScript, fd :GdFunctionDescriptor) 
 		push_error("Extracting test parameters failed! Script loading error: %s" % result)
 		return []
 	var instance = script.new()
+	copy_properties(ts_instance, instance)
 	instance.queue_free()
 	return instance.call("__extract_test_parameters")
+
+
+static func copy_properties(source :Object, dest :Object) -> void:
+	for property in source.get_property_list():
+		var property_name = property["name"]
+		var property_value = source.get(property_name)
+		if EXCLUDE_PROPERTIES_TO_COPY.has(property_name):
+			continue
+		#if dest.get(property_name) == null:
+		#	prints("|%s|" % property_name, source.get(property_name))
+		
+		# check for invalid name property
+		if property_name == "name" and property_value == "":
+			dest.set(property_name, "<empty>");
+			continue
+		dest.set(property_name, property_value)

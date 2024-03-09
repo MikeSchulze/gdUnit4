@@ -5,7 +5,7 @@ namespace GdUnit4
 	[TestSuite]
 	public partial class GdUnit4CSharpApiTest
 	{
-	
+
 		[TestCase]
 		public void IsTestSuite()
 		{
@@ -16,7 +16,7 @@ namespace GdUnit4
 		[TestCase]
 		public void GetVersion()
 		{
-			AssertThat(GdUnit4CSharpApi.Version()).IsEqual("4.2.0.0");
+			AssertThat(GdUnit4CSharpApi.Version()).IsEqual("4.2.1.0");
 		}
 	}
 }

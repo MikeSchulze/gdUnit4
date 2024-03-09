@@ -39,8 +39,19 @@ var _expected_tests = {
 	"test_parameterized_dict_values" : [
 		[{"key_a":"value_a"}, '{"key_a":"value_a"}'],
 		[{"key_b":"value_b"}, '{"key_b":"value_b"}']
+	],
+	"test_with_dynamic_paramater_resolving" : [
+		["test_a"],
+		["test_b"],
+		["test_c"]
 	]
 }
+
+
+var _test_node :Node
+
+func before() -> void:
+	_test_node = auto_free(SubViewport.new())
 
 
 func after():
@@ -209,3 +220,12 @@ func test_with_string_contains_brackets(
 			flowchart TD
 			id{"This is a rhombus node"}
 			""")
+
+
+func test_with_dynamic_paramater_resolving(name: String, value, expected, test_parameters := [
+	["test_a", auto_free(Node2D.new()), Node2D],
+	["test_b", auto_free(Node3D.new()), Node3D],
+	["test_c", _test_node, SubViewport]
+]) -> void:
+	assert_that(value).is_not_null().is_instanceof(expected)
+	collect_test_call("test_with_dynamic_paramater_resolving", [name])

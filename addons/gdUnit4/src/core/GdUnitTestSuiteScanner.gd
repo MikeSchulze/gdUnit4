@@ -175,16 +175,10 @@ func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDes
 					seed_value = arg.default()
 	# create new test
 	test.configure(fd.name(), fd.line_number(), script.resource_path, timeout, fuzzers, iterations, seed_value)
+	test.set_function_descriptor(fd)
 	test.skip(is_skipped, skip_reason)
 	_validate_argument(fd, test)
 	test_suite.add_child(test)
-	# is parameterized test?
-	if fd.is_parameterized():
-		var test_paramaters := GdTestParameterSet.extract_test_parameters(test_suite.get_script(), fd)
-		var error := GdTestParameterSet.validate(fd.args(), test_paramaters)
-		if not error.is_empty():
-			test.skip(true, error)
-		test.set_test_parameters(test_paramaters)
 
 
 func _parse_and_add_test_cases(test_suite, script :GDScript, test_case_names :PackedStringArray):
