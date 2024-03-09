@@ -4,14 +4,14 @@ extends VSplitContainer
 signal run_testcase(test_suite_resource_path, test_case, test_param_index, run_debug)
 signal run_testsuite
 
+const CONTEXT_MENU_RUN_ID = 0
+const CONTEXT_MENU_DEBUG_ID = 1
 
 @onready var _tree :Tree = $Panel/Tree
 @onready var _report_list :Node = $report/ScrollContainer/list
 @onready var _report_template :RichTextLabel = $report/report_template
+@onready var _context_menu :PopupMenu = $contextMenu
 
-@onready var _context_menu :PopupPanel = $contextMenu
-@onready var _context_menu_run := $contextMenu/items/run
-@onready var _context_menu_debug := $contextMenu/items/debug
 
 # tree icons
 @onready var ICON_SPINNER = load("res://addons/gdUnit4/src/ui/assets/spinner.tres")
@@ -22,6 +22,7 @@ signal run_testsuite
 @onready var ICON_TEST_SUCCESS_ORPHAN = load("res://addons/gdUnit4/src/ui/assets/TestCase_success_orphan.tres")
 @onready var ICON_TEST_FAILED_ORPHAN = load("res://addons/gdUnit4/src/ui/assets/TestCase_failed_orphan.tres")
 @onready var ICON_TEST_ERRORS_ORPHAN = load("res://addons/gdUnit4/src/ui/assets/TestCase_error_orphan.tres")
+@onready var debug_icon_image :Texture2D = load("res://addons/gdUnit4/src/ui/assets/PlayDebug.svg")
 
 enum GdUnitType {
 	TEST_SUITE,
@@ -128,13 +129,15 @@ func is_test_suite(item :TreeItem) -> bool:
 func _ready():
 	if Engine.is_editor_hint():
 		_editor = Engine.get_meta("GdUnitEditorPlugin")
+		var editior_control := _editor.get_editor_interface().get_base_control()
+		_context_menu.set_item_icon(CONTEXT_MENU_RUN_ID, GodotVersionFixures.get_icon(editior_control, "Play"))
+		_context_menu.set_item_icon(CONTEXT_MENU_DEBUG_ID, debug_icon_image)
 	init_tree()
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(_on_gdunit_add_test_suite)
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	var command_handler := GdUnitCommandHandler.instance()
 	command_handler.gdunit_runner_start.connect(_on_gdunit_runner_start)
 	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
-
 
 
 # we need current to manually redraw bacause of the animation bug
@@ -477,7 +480,7 @@ func add_test_cases(parent :TreeItem, test_case_names :Array) -> void:
 ################################################################################
 func _on_tree_item_mouse_selected(mouse_position :Vector2, mouse_button_index :int):
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		_context_menu.position = mouse_position + _tree.get_global_position()
+		_context_menu.position = get_screen_position() + mouse_position
 		_context_menu.popup()
 
 
@@ -501,7 +504,7 @@ func _on_run_pressed(run_debug :bool) -> void:
 func _on_Tree_item_selected() -> void:
 	# only show report checked manual item selection
 	# we need to check the run mode here otherwise it will be called every selection
-	if not _context_menu_run.disabled:
+	if not _context_menu.is_item_disabled(CONTEXT_MENU_RUN_ID):
 		var selected_item :TreeItem = _tree.get_selected()
 		show_failed_report(selected_item)
 
@@ -531,14 +534,14 @@ func _on_Tree_item_activated() -> void:
 # external signal receiver
 ################################################################################
 func _on_gdunit_runner_start():
-	_context_menu_run.disabled = true
-	_context_menu_debug.disabled = true
+	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, true)
+	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, true)
 	clear_failures()
 
 
 func _on_gdunit_runner_stop(_client_id :int):
-	_context_menu_run.disabled = false
-	_context_menu_debug.disabled = false
+	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, false)
+	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, false)
 	abort_running()
 	clear_failures()
 	collect_failures_and_errors()
@@ -576,3 +579,11 @@ func _on_StatusBar_failure_next():
 
 func _on_StatusBar_failure_prevous():
 	select_previous_failure()
+
+
+func _on_context_m_index_pressed(index):
+	match index:
+		CONTEXT_MENU_DEBUG_ID:
+			_on_run_pressed(true)
+		CONTEXT_MENU_RUN_ID:
+			_on_run_pressed(false)
