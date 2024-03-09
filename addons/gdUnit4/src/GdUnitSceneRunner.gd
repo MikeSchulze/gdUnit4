@@ -56,9 +56,16 @@ func simulate_mouse_move(pos :Vector2) -> GdUnitSceneRunner:
 
 
 ## Simulates a mouse move to the relative coordinates (offset).[br]
+## [color=yellow]You must use [b]await[/b] to wait until the simulated mouse movement is complete.[/color][br]
+## [br]
 ## [member relative] : The relative position, indicating the mouse position offset.[br]
 ## [member time] : The time to move the mouse by the relative position in seconds (default is 1 second).[br]
 ## [member trans_type] : Sets the type of transition used (default is TRANS_LINEAR).[br]
+## [codeblock]
+##    func test_move_mouse():
+##       var runner = scene_runner("res://scenes/simple_scene.tscn")
+##       await runner.simulate_mouse_move_relative(Vector2(100,100))
+## [/codeblock]
 @warning_ignore("unused_parameter")
 func simulate_mouse_move_relative(relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
@@ -66,9 +73,16 @@ func simulate_mouse_move_relative(relative: Vector2, time: float = 1.0, trans_ty
 
 
 ## Simulates a mouse move to the absolute coordinates.[br]
+## [color=yellow]You must use [b]await[/b] to wait until the simulated mouse movement is complete.[/color][br]
+## [br]
 ## [member position] : The final position of the mouse.[br]
 ## [member time] : The time to move the mouse to the final position in seconds (default is 1 second).[br]
 ## [member trans_type] : Sets the type of transition used (default is TRANS_LINEAR).[br]
+## [codeblock]
+##    func test_move_mouse():
+##       var runner = scene_runner("res://scenes/simple_scene.tscn")
+##       await runner.simulate_mouse_move_absolute(Vector2(100,100))
+## [/codeblock]
 @warning_ignore("unused_parameter")
 func simulate_mouse_move_absolute(position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
