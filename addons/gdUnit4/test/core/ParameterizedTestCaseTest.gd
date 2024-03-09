@@ -44,6 +44,11 @@ var _expected_tests = {
 		["test_a"],
 		["test_b"],
 		["test_c"]
+	],
+	"test_with_dynamic_paramater_resolving2" : [
+		["test_a"],
+		["test_b"],
+		["test_c"]
 	]
 }
 
@@ -229,3 +234,28 @@ func test_with_dynamic_paramater_resolving(name: String, value, expected, test_p
 ]) -> void:
 	assert_that(value).is_not_null().is_instanceof(expected)
 	collect_test_call("test_with_dynamic_paramater_resolving", [name])
+
+
+@warning_ignore("unused_parameter")
+func test_with_dynamic_paramater_resolving2(
+	name: String,
+	type,
+	log_level,
+	expected_logs,
+	test_parameters = [
+		["test_a", null, "LOG", {}],
+		[
+			"test_b",
+			Node2D,
+			null,
+			{Node2D: "ERROR"}
+		],
+		[
+			"test_c",
+			Node2D,
+			"LOG",
+			{Node2D: "LOG"}
+		]
+	]
+):
+	collect_test_call("test_with_dynamic_paramater_resolving2", [name])
