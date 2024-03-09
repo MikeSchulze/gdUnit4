@@ -26,6 +26,7 @@ use_parent_material = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/icon_max_width = 16
 allow_rmb_select = true
 hide_root = true
 select_mode = 1
@@ -58,43 +59,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="contextMenu" type="PopupPanel" parent="."]
-size = Vector2i(103, 80)
-
-[node name="items" type="VBoxContainer" parent="contextMenu"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = 4.0
-offset_right = -4.0
-offset_bottom = -4.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="debug" type="MenuButton" parent="contextMenu/items"]
-layout_mode = 2
-size_flags_horizontal = 11
-size_flags_vertical = 9
-keep_pressed_outside = true
-text = "Debug Test"
-switch_on_hover = true
-
-[node name="run" type="MenuButton" parent="contextMenu/items"]
-layout_mode = 2
-size_flags_horizontal = 11
-size_flags_vertical = 9
-keep_pressed_outside = true
-text = "Run Test"
-switch_on_hover = true
+[node name="contextMenu" type="PopupMenu" parent="."]
+size = Vector2i(120, 60)
+auto_translate = false
+item_count = 2
+item_0/text = "Run"
+item_0/id = 0
+item_1/text = "Debug"
+item_1/id = 1
 
 [connection signal="item_activated" from="Panel/Tree" to="." method="_on_Tree_item_activated"]
 [connection signal="item_mouse_selected" from="Panel/Tree" to="." method="_on_tree_item_mouse_selected"]
 [connection signal="item_selected" from="Panel/Tree" to="." method="_on_Tree_item_selected"]
-[connection signal="focus_exited" from="contextMenu" to="." method="_on_contextMenu_focus_exited"]
-[connection signal="popup_hide" from="contextMenu" to="." method="_on_contextMenu_popup_hide"]
-[connection signal="mouse_exited" from="contextMenu/items" to="." method="_on_items_mouse_exited"]
-[connection signal="pressed" from="contextMenu/items/debug" to="." method="_on_run_pressed" binds= [true]]
-[connection signal="pressed" from="contextMenu/items/run" to="." method="_on_run_pressed" binds= [false]]
+[connection signal="index_pressed" from="contextMenu" to="." method="_on_context_m_index_pressed"]
