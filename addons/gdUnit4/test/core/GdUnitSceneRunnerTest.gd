@@ -273,14 +273,14 @@ func test_simulate_until_object_signal(timeout=2000) -> void:
 
 func test_runner_by_null_instance() -> void:
 	var runner := scene_runner(null)
-	assert_object(runner.scene()).is_null()
+	assert_object(runner._current_scene).is_null()
 
 
 func test_runner_by_invalid_resource_path() -> void:
 	# not existing scene
-	assert_object(scene_runner("res://test_scene.tscn").scene()).is_null()
+	assert_object(scene_runner("res://test_scene.tscn")._current_scene).is_null()
 	# not a path to a scene
-	assert_object(scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.gd").scene()).is_null()
+	assert_object(scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.gd")._current_scene).is_null()
 
 
 func test_runner_by_resource_path() -> void:
@@ -300,7 +300,7 @@ func test_runner_by_resource_path() -> void:
 func test_runner_by_invalid_scene_instance() -> void:
 	var scene = RefCounted.new()
 	var runner := scene_runner(scene)
-	assert_object(runner.scene()).is_null()
+	assert_object(runner._current_scene).is_null()
 
 
 func test_runner_by_scene_instance() -> void:
@@ -349,6 +349,20 @@ func test_mouse_drag_and_drop() -> void:
 	runner.simulate_mouse_button_release(MOUSE_BUTTON_LEFT)
 	await await_idle_frame()
 	assert_that(slot_right.texture).is_equal(slot_left.texture)
+
+
+func test_runner_GD_356() -> void:
+	# to avoid reporting the expected push_error as test failure we disable it
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, false)
+	var runner = scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
+	var player = runner.invoke("find_child", "Player", true, false)
+	assert_that(player).is_not_null()
+	await assert_func(player, "is_on_floor").wait_until(500).is_true()
+	assert_that(runner.scene()).is_not_null()
+	# run simulate_mouse_move_relative without await to reproduce https://github.com/MikeSchulze/gdUnit4/issues/356
+	# this results into releasing the scene while `simulate_mouse_move_relative` is processing the mouse move
+	runner.simulate_mouse_move_relative(Vector2(100, 100), 1.0)
+	assert_that(runner.scene()).is_not_null()
 
 
 # we override the scene runner function for test purposes to hide push_error notifications

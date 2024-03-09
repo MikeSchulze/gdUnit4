@@ -18,7 +18,7 @@ const MAP_MOUSE_BUTTON_MASKS := {
 	MOUSE_BUTTON_XBUTTON2 : MOUSE_BUTTON_MASK_MB_XBUTTON2,
 }
 
-var _scene_tree :SceneTree = null
+var _is_disposed := false
 var _current_scene :Node = null
 var _awaiter :GdUnitAwaiter = GdUnitAwaiter.new()
 var _verbose :bool
@@ -61,8 +61,7 @@ func _init(p_scene, p_verbose :bool, p_hide_push_errors = false):
 		if not p_hide_push_errors:
 			push_error("GdUnitSceneRunner: Scene must be not null!")
 		return
-	_scene_tree = Engine.get_main_loop()
-	_scene_tree.root.add_child(_current_scene)
+	_scene_tree().root.add_child(_current_scene)
 	_simulate_start_time = LocalTime.now()
 	# we need to set inital a valid window otherwise the warp_mouse() is not handled
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
@@ -79,14 +78,18 @@ func _notification(what):
 		__deactivate_time_factor()
 		_reset_input_to_default()
 		if is_instance_valid(_current_scene):
-			_scene_tree.root.remove_child(_current_scene)
+			_scene_tree().root.remove_child(_current_scene)
 			# do only free scenes instanciated by this runner
 			if _scene_auto_free:
 				_current_scene.free()
-		_scene_tree = null
+		_is_disposed = true
 		_current_scene = null
 		# we hide the scene/main window after runner is finished 
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
+
+
+func _scene_tree() -> SceneTree:
+	return Engine.get_main_loop() as SceneTree
 
 
 func simulate_key_pressed(key_code :int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
@@ -134,11 +137,14 @@ func set_mouse_pos(pos :Vector2) -> GdUnitSceneRunner:
 func get_mouse_position() -> Vector2:
 	if _last_input_event is InputEventMouse:
 		return _last_input_event.position
-	return _current_scene.get_viewport().get_mouse_position()
+	var current_scene := scene()
+	if current_scene != null:
+		return current_scene.get_viewport().get_mouse_position()
+	return Vector2.ZERO
 
 
 func get_global_mouse_position() -> Vector2:
-	return _scene_tree.root.get_mouse_position()
+	return Engine.get_main_loop().root.get_mouse_position()
 
 
 func simulate_mouse_move(pos :Vector2) -> GdUnitSceneRunner:
@@ -152,7 +158,7 @@ func simulate_mouse_move(pos :Vector2) -> GdUnitSceneRunner:
 
 
 func simulate_mouse_move_relative(relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
-	var tween := _scene_tree.create_tween()
+	var tween := _scene_tree().create_tween()
 	_curent_mouse_position = get_mouse_position()
 	var final_position := _curent_mouse_position + relative
 	tween.tween_property(self, "_curent_mouse_position", final_position, time).set_trans(trans_type)
@@ -160,19 +166,19 @@ func simulate_mouse_move_relative(relative: Vector2, time: float = 1.0, trans_ty
 	
 	while not get_mouse_position().is_equal_approx(final_position):
 		simulate_mouse_move(_curent_mouse_position)
-		await _scene_tree.process_frame
+		await _scene_tree().process_frame
 	return self
 
 
 func simulate_mouse_move_absolute(position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
-	var tween := _scene_tree.create_tween()
+	var tween := _scene_tree().create_tween()
 	_curent_mouse_position = get_mouse_position()
 	tween.tween_property(self, "_curent_mouse_position", position, time).set_trans(trans_type)
 	tween.play()
 	
 	while not get_mouse_position().is_equal_approx(position):
 		simulate_mouse_move(_curent_mouse_position)
-		await _scene_tree.process_frame
+		await _scene_tree().process_frame
 	return self
 
 
@@ -217,15 +223,15 @@ func simulate_frames(frames: int, delta_milli :int = -1) -> GdUnitSceneRunner:
 	var time_shift_frames :int = max(1, frames / _time_factor)
 	for frame in time_shift_frames:
 		if delta_milli == -1:
-			await _scene_tree.process_frame
+			await _scene_tree().process_frame
 		else:
-			await _scene_tree.create_timer(delta_milli * 0.001).timeout
+			await _scene_tree().create_timer(delta_milli * 0.001).timeout
 	return self
 
 
 func simulate_until_signal(signal_name :String, arg0=NO_ARG, arg1=NO_ARG, arg2=NO_ARG, arg3=NO_ARG, arg4=NO_ARG, arg5=NO_ARG, arg6=NO_ARG, arg7=NO_ARG, arg8=NO_ARG, arg9=NO_ARG) -> GdUnitSceneRunner:
 	var args = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], NO_ARG)
-	await _awaiter.await_signal_idle_frames(_current_scene, signal_name, args, 10000)
+	await _awaiter.await_signal_idle_frames(scene(), signal_name, args, 10000)
 	return self
 
 
@@ -236,7 +242,7 @@ func simulate_until_object_signal(source :Object, signal_name :String, arg0=NO_A
 
 
 func await_func(func_name :String, args := []) -> GdUnitFuncAssert:
-	return GdUnitFuncAssertImpl.new(_current_scene, func_name, args)
+	return GdUnitFuncAssertImpl.new(scene(), func_name, args)
 
 
 func await_func_on(instance :Object, func_name :String, args := []) -> GdUnitFuncAssert:
@@ -244,7 +250,7 @@ func await_func_on(instance :Object, func_name :String, args := []) -> GdUnitFun
 
 
 func await_signal(signal_name :String, args := [], timeout := 2000 ):
-	await _awaiter.await_signal_on(_current_scene, signal_name, args, timeout)
+	await _awaiter.await_signal_on(scene(), signal_name, args, timeout)
 
 
 func await_signal_on(source :Object, signal_name :String, args := [], timeout := 2000 ):
@@ -259,37 +265,37 @@ func maximize_view() -> GdUnitSceneRunner:
 
 
 func _property_exists(name :String) -> bool:
-	return _current_scene.get_property_list().any(func(properties :Dictionary) : return properties["name"] == name)
+	return scene().get_property_list().any(func(properties :Dictionary) : return properties["name"] == name)
 
 
 func get_property(name :String) -> Variant:
 	if not _property_exists(name):
 		return "The property '%s' not exist checked loaded scene." % name
-	return _current_scene.get(name)
+	return scene().get(name)
 
 
 func set_property(name :String, value :Variant) -> bool:
 	if not _property_exists(name):
 		push_error("The property named '%s' cannot be set, it does not exist!" % name)
 		return false;
-	_current_scene.set(name, value)
+	scene().set(name, value)
 	return true
 
 
 func invoke(name :String, arg0=NO_ARG, arg1=NO_ARG, arg2=NO_ARG, arg3=NO_ARG, arg4=NO_ARG, arg5=NO_ARG, arg6=NO_ARG, arg7=NO_ARG, arg8=NO_ARG, arg9=NO_ARG):
 	var args = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], NO_ARG)
-	if _current_scene.has_method(name):
-		return _current_scene.callv(name, args)
+	if scene().has_method(name):
+		return scene().callv(name, args)
 	return "The method '%s' not exist checked loaded scene." % name
 
 
 func find_child(name :String, recursive :bool = true, owned :bool = false) -> Node:
-	return _current_scene.find_child(name, recursive, owned)
+	return scene().find_child(name, recursive, owned)
 
 
 func _scene_name() -> String:
-	var scene_script :GDScript = _current_scene.get_script()
-	var scene_name :String = _current_scene.get_name()
+	var scene_script :GDScript = scene().get_script()
+	var scene_name :String = scene().get_name()
 	if not scene_script:
 		return scene_name
 	if not scene_name.begins_with("@"):
@@ -357,14 +363,14 @@ func _handle_input_event(event :InputEvent):
 		Input.warp_mouse(event.position)
 	Input.parse_input_event(event)
 	Input.flush_buffered_events()
-	
-	if is_instance_valid(_current_scene):
-		__print("	process event %s (%s) <- %s" % [_current_scene, _scene_name(), event.as_text()])
-		if(_current_scene.has_method("_gui_input")):
-			_current_scene._gui_input(event)
-		if(_current_scene.has_method("_unhandled_input")):
-			_current_scene._unhandled_input(event)
-		_current_scene.get_viewport().set_input_as_handled()
+	var current_scene := scene()
+	if is_instance_valid(current_scene):
+		__print("	process event %s (%s) <- %s" % [current_scene, _scene_name(), event.as_text()])
+		if(current_scene.has_method("_gui_input")):
+			current_scene._gui_input(event)
+		if(current_scene.has_method("_unhandled_input")):
+			current_scene._unhandled_input(event)
+		current_scene.get_viewport().set_input_as_handled()
 	# save last input event needs to be merged with next InputEventMouseButton
 	_last_input_event = event
 	return self
@@ -393,7 +399,7 @@ func __print(message :String) -> void:
 func __print_current_focus() -> void:
 	if not _verbose:
 		return
-	var focused_node = _current_scene.get_viewport().gui_get_focus_owner()
+	var focused_node = scene().get_viewport().gui_get_focus_owner()
 	if focused_node:
 		prints("	focus checked %s" % focused_node)
 	else:
@@ -401,4 +407,8 @@ func __print_current_focus() -> void:
 
 
 func scene() -> Node:
-	return _current_scene
+	if is_instance_valid(_current_scene):
+		return _current_scene
+	if not _is_disposed:
+		push_error("The current scene instance is not valid anymore! check your test is valid. e.g. check for missing awaits.")
+	return null

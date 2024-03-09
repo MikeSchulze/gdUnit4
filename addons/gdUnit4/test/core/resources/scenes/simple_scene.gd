@@ -1,7 +1,15 @@
 extends Node2D
 
+class Player extends Node:
+	var position :Vector3 = Vector3.ZERO
+
+
+	func _init():
+		set_name("Player")
+
+	func is_on_floor() -> bool:
+		return true
+
 
 func _ready():
-	pass # Replace with function body.
-
-
+	add_child(Player.new(), true)
