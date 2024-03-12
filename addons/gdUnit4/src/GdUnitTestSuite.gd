@@ -100,7 +100,12 @@ func error_as_string(error_number :int) -> String:
 
 ## A litle helper to auto freeing your created objects after test execution
 func auto_free(obj :Variant) -> Variant:
-	return __execution_context.register_auto_free(obj)
+	if __execution_context != null:
+		return __execution_context.register_auto_free(obj)
+	else:
+		if is_instance_valid(obj):
+			obj.queue_free()
+		return obj
 
 
 @warning_ignore("native_method_override")

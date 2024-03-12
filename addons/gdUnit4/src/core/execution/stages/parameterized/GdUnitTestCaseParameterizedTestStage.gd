@@ -16,7 +16,6 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	var is_fail := false
 	var is_error := false
 	var failing_index := 0
-	var parameters :Array = []
 	var test_names := test_case.test_case_names()
 	for test_case_index in test_names.size():
 		# is test_parameter_index is set, we run this parameterized test only
@@ -28,10 +27,8 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		
 		var test_context := GdUnitExecutionContext.of(context)
 		await _stage_before.execute(test_context)
-		# we need to resolve initial the test parameters  after the `before_test` stage
-		if parameters.is_empty():
-			parameters = _resolve_test_parameters(context)
-		if not test_case.is_interupted():
+		var parameters = _resolve_test_parameters(context)
+		if not parameters.is_empty():
 			await test_case.execute_paramaterized(parameters[test_case_index])
 		await _stage_after.execute(test_context)
 		# we need to clean up the reports here so they are not reported twice
@@ -66,15 +63,17 @@ func _resolve_test_parameters(context :GdUnitExecutionContext) -> Array:
 		test_case.skip(true, error)
 		test_case._interupted = true
 	if parameters.size() != test_case.test_case_names().size():
-		test_case._interupted = true
 		push_error("Internal Error: The resolved test_case names has invalid size!")
-		context.reports().append(GdUnitReport.new().create(GdUnitReport.FAILURE, test_case.line_number(),
-		"""
+		test_case._interupted = true
+		error = """
 		%s:
 			The resolved test_case names has invalid size!
 			%s
-		""".dedent().trim_prefix("\n")
-		% [GdAssertMessages._error("Internal Error"), GdAssertMessages._error("Please report this issue as a bug!")]))
+		""".dedent().trim_prefix("\n") % [
+			GdAssertMessages._error("Internal Error"), 
+			GdAssertMessages._error("Please report this issue as a bug!")]
+		context.reports().append(GdUnitReport.new().create(GdUnitReport.INTERUPTED, test_case.line_number(), error))
+		test_case.skip(true, error)
 	return parameters
 
 

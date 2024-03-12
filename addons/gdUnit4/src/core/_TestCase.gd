@@ -231,42 +231,8 @@ func test_case_names() -> PackedStringArray:
 	# if test names already resolved?
 	if not _test_case_names.is_empty():
 		return _test_case_names
-	# Collect test case names by iterating over the test parameters
-	var parameters := GdFunctionArgument.get_parameter_set(_fd.args())
-	var test_parameter_expresion := parameters.value_as_string()
-	# test parameters are referenced externaly?
-	if not test_parameter_expresion.begins_with("["):
-		return _extract_test_names_from_expression()
-	# parse the parameters and build the test names
-	var regex := RegEx.new()
-	var s = "(?m)\\[(\\s*|((?:.|\n)*?)\\s*)\\]"
-	regex.compile(s)
-	# remove start of array before parsing
-	var matches = regex.search_all(test_parameter_expresion)
-	if matches.size() == 0:
-		push_error("Internal Error: Can't parse the parameterized test arguments!")
-	for index in matches.size():
-		var parameter = matches[index].get_string(0)
-		# cleanup parameter by remove newlines and tabs
-		parameter = parameter.replace("[\n", "").replace("\n", "").replace("\t", "")
-		_test_case_names.append(_build_test_case_name(parameter, index))
+	_test_case_names = GdTestParameterSet.extract_test_case_names(self, _fd)
 	return _test_case_names
-
-
-func _extract_test_names_from_expression() -> PackedStringArray:
-	var parameters := GdTestParameterSet.extract_test_parameters(get_parent(), _fd)
-	for index in parameters.size():
-		_test_case_names.append(_build_test_case_name(str(parameters[index]), index))
-	return _test_case_names
-
-
-func _build_test_case_name(test_parameter :String, parameter_index :int) -> String:
-	if not test_parameter.begins_with("["):
-		test_parameter = "[" + test_parameter
-	var test_name = "%s:%d %s" % [get_name(), parameter_index, test_parameter.replace('"', "'").replace("&'", "'")]
-	if test_name.length() > 96:
-		return test_name.substr(0, 96) + " ..."
-	return test_name
 
 
 func _to_string():

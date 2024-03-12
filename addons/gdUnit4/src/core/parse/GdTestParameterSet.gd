@@ -3,10 +3,10 @@ extends RefCounted
 
 const CLASS_TEMPLATE = """
 class_name _ParameterExtractor extends '${clazz_path}'
-	
+
 func __extract_test_parameters() -> Array:
 	return ${test_params}
-	
+
 """
 
 const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
@@ -53,6 +53,36 @@ static func validate_parameter_types(input_arguments :Array, input_values :Array
 	return ""
 
 
+static func extract_test_case_names(test_case :_TestCase, fd :GdFunctionDescriptor) -> PackedStringArray:
+	var fa := GdFunctionArgument.get_parameter_set(fd.args())
+	var parameter_set := fa.parameter_set()
+	# if no static parameter set than needs to resolve by reflection
+	if parameter_set.size() == 0:
+		return _extract_test_names_by_reflection(test_case, fd)
+	var test_case_names :PackedStringArray = []
+	for parameter_index in parameter_set.size():
+		test_case_names.append(_build_test_case_name(test_case, parameter_set[parameter_index], parameter_index))
+		parameter_index += 1
+	return test_case_names
+
+
+static func _extract_test_names_by_reflection(test_case :_TestCase, fd :GdFunctionDescriptor) -> PackedStringArray:
+	var parameters := GdTestParameterSet.extract_test_parameters(test_case.get_parent(), fd)
+	var test_case_names :PackedStringArray = []
+	for index in parameters.size():
+		test_case_names.append(_build_test_case_name(test_case, str(parameters[index]), index))
+	return test_case_names
+
+
+static func _build_test_case_name(test_case :_TestCase, test_parameter :String, parameter_index :int) -> String:
+	if not test_parameter.begins_with("["):
+		test_parameter = "[" + test_parameter
+	var test_name = "%s:%d %s" % [test_case.get_name(), parameter_index, test_parameter.replace('"', "'").replace("&'", "'")]
+	if test_name.length() > 96:
+		return test_name.substr(0, 96) + " ..."
+	return test_name
+
+
 # extracts the arguments from the given test case, using kind of reflection solution
 # to restore the parameters from a string representation to real instance type
 static func extract_test_parameters(ts_instance :Object, fd :GdFunctionDescriptor) -> Array:
@@ -86,18 +116,20 @@ static func copy_properties(source :Object, dest :Object) -> void:
 			continue
 		#if dest.get(property_name) == null:
 		#	prints("|%s|" % property_name, source.get(property_name))
-		
+
 		# check for invalid name property
 		if property_name == "name" and property_value == "":
 			dest.set(property_name, "<empty>");
 			continue
-		# we need to duplicate the properties to the copy, the properties could be possible registered with `auto_free`  
-		if _needs_to_duplicate(property_value):
+		# we need to duplicate the properties to the copy, the properties could be possible registered with `auto_free`
+		if context != null and _needs_to_duplicate(property_value):
 			dest.set(property_name, context.register_auto_free(property_value.duplicate(true)))
 		else:
 			dest.set(property_name, property_value)
 
 
 static func _needs_to_duplicate(property_value) -> bool:
-	var type = typeof(property_value)
-	return property_value != null and type == TYPE_OBJECT and property_value.has_method("duplicate")
+	return (property_value != null
+		and typeof(property_value) == TYPE_OBJECT
+		and is_instance_valid(property_value)
+		and property_value.has_method("duplicate"))
