@@ -78,6 +78,7 @@ static func extract_test_parameters(ts_instance :Object, fd :GdFunctionDescripto
 
 
 static func copy_properties(source :Object, dest :Object) -> void:
+	var context := GdUnitThreadManager.get_current_context().get_execution_context()
 	for property in source.get_property_list():
 		var property_name = property["name"]
 		var property_value = source.get(property_name)
@@ -90,4 +91,13 @@ static func copy_properties(source :Object, dest :Object) -> void:
 		if property_name == "name" and property_value == "":
 			dest.set(property_name, "<empty>");
 			continue
-		dest.set(property_name, property_value)
+		# we need to duplicate the properties to the copy, the properties could be possible registered with `auto_free`  
+		if _needs_to_duplicate(property_value):
+			dest.set(property_name, context.register_auto_free(property_value.duplicate(true)))
+		else:
+			dest.set(property_name, property_value)
+
+
+static func _needs_to_duplicate(property_value) -> bool:
+	var type = typeof(property_value)
+	return property_value != null and type == TYPE_OBJECT and property_value.has_method("duplicate")

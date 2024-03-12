@@ -43,9 +43,15 @@ var _expected_tests = {
 	"test_with_dynamic_paramater_resolving" : [
 		["test_a"],
 		["test_b"],
-		["test_c"]
+		["test_c"],
+		["test_d"]
 	],
 	"test_with_dynamic_paramater_resolving2" : [
+		["test_a"],
+		["test_b"],
+		["test_c"]
+	],
+	"test_with_extern_parameter_set" : [
 		["test_a"],
 		["test_b"],
 		["test_c"]
@@ -53,10 +59,16 @@ var _expected_tests = {
 }
 
 
-var _test_node :Node
+var _test_node_before :Node
+var _test_node_before_test :Node
+
 
 func before() -> void:
-	_test_node = auto_free(SubViewport.new())
+	_test_node_before = auto_free(SubViewport.new())
+
+
+func before_test() -> void:
+	_test_node_before_test = auto_free(SubViewport.new())
 
 
 func after():
@@ -230,9 +242,13 @@ func test_with_string_contains_brackets(
 func test_with_dynamic_paramater_resolving(name: String, value, expected, test_parameters := [
 	["test_a", auto_free(Node2D.new()), Node2D],
 	["test_b", auto_free(Node3D.new()), Node3D],
-	["test_c", _test_node, SubViewport]
+	["test_c", _test_node_before, SubViewport],
+	["test_d", _test_node_before_test, SubViewport],
 ]) -> void:
+	# all values must be resolved
 	assert_that(value).is_not_null().is_instanceof(expected)
+	# the argument 'test_parameters' must be replaced by <null> set to avoid re-instantiate of test arguments
+	assert_that(test_parameters).is_empty()
 	collect_test_call("test_with_dynamic_paramater_resolving", [name])
 
 
@@ -258,4 +274,19 @@ func test_with_dynamic_paramater_resolving2(
 		]
 	]
 ):
+	# the argument 'test_parameters' must be replaced by <null> set to avoid re-instantiate of test arguments
+	assert_that(test_parameters).is_empty()
 	collect_test_call("test_with_dynamic_paramater_resolving2", [name])
+
+
+var _test_set =[
+	["test_a"],
+	["test_b"],
+	["test_c"]
+]
+
+@warning_ignore("unused_parameter")
+func test_with_extern_paramater_set(value, test_parameters = _test_set):
+	assert_that(value).is_not_empty()
+	assert_that(test_parameters).is_empty()
+	collect_test_call("test_with_extern_parameter_set", [value])

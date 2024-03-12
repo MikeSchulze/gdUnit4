@@ -8,14 +8,9 @@ const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
 var _store :Array[Variant] = []
-var _orphan_detection_enabled :bool = true
 # enable for debugging purposes
 var _is_stdout_verbose := false
 const _show_debug := false
-
-
-func _init():
-	_orphan_detection_enabled = GdUnitSettings.is_verbose_orphans()
 
 
 ## Registration of an instance to be released when an execution phase is completed

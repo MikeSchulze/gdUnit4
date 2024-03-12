@@ -65,7 +65,11 @@ func execute(p_test_parameter := Array(), p_iteration := 0):
 func execute_paramaterized(p_test_parameter :Array):
 	_failure_received(false)
 	set_timeout()
-	_execute_test_case(name, p_test_parameter)
+	# We need here to add a empty array to override the `test_parameters` to prevent initial "default" parameters from being used.
+	# This prevents objects in the argument list from being unnecessarily re-instantiated.
+	var test_parameters := p_test_parameter.duplicate() # is strictly need to duplicate the paramters before extend
+	test_parameters.append([])
+	_execute_test_case(name, test_parameters)
 	await completed
 
 
