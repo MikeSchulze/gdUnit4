@@ -54,7 +54,7 @@ func collect_orphans(context :GdUnitExecutionContext, reports :Array[GdUnitRepor
 func collect_reports(context :GdUnitExecutionContext) -> Array[GdUnitReport]:
 	var reports := context.reports()
 	var test_case := context.test_case
-	if test_case.is_interupted() and not test_case.is_expect_interupted():
+	if test_case.is_interupted() and not test_case.is_expect_interupted() and test_case.report() != null:
 		reports.push_back(test_case.report())
 	# we combine the reports of test_before(), test_after() and test() to be reported by `fire_test_ended`
 	if not context._sub_context.is_empty():
