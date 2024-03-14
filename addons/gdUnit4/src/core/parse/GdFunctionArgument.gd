@@ -7,7 +7,7 @@ var _fix_comma_space := RegEx.create_from_string(""",(?=(?:[^"]*"[^"]*")*[^"]*$)
 var _name: String
 var _type: int
 var _default_value :Variant
-var _parameter_set :PackedStringArray = []
+var _parameter_sets :PackedStringArray = []
 
 const UNDEFINED :Variant = "<-NO_ARG->"
 const ARG_PARAMETERIZED_TEST := "test_parameters"
@@ -17,7 +17,7 @@ func _init(p_name :String, p_type :int = TYPE_MAX, value :Variant = UNDEFINED):
 	_name = p_name
 	_type = p_type
 	if p_name == ARG_PARAMETERIZED_TEST:
-		_parameter_set = _parse_parameter_set(value)
+		_parameter_sets = _parse_parameter_set(value)
 	_default_value = value
 
 
@@ -47,8 +47,8 @@ func is_parameter_set() -> bool:
 	return _name == ARG_PARAMETERIZED_TEST
 
 
-func parameter_set() -> PackedStringArray:
-	return _parameter_set
+func parameter_sets() -> PackedStringArray:
+	return _parameter_sets
 
 
 static func get_parameter_set(parameters :Array) -> GdFunctionArgument:

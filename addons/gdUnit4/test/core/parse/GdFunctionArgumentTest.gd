@@ -30,7 +30,7 @@ func test__parse_argument_as_array_typ1() -> void:
 		]"""
 
 	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
-	assert_array(fa.parameter_set()).contains_exactly([
+	assert_array(fa.parameter_sets()).contains_exactly([
 		"""[1, "flowchart TDid>This is a flag shaped node]"]""",
 		"""[2, "flowchart TDid(((This is a double circle node)))"]""",
 		"""[3, "flowchart TDid((This is a circular node))"]""",
@@ -61,7 +61,7 @@ func test__parse_argument_as_array_typ2() -> void:
 		]
 	]"""
 	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
-	assert_array(fa.parameter_set()).contains_exactly([
+	assert_array(fa.parameter_sets()).contains_exactly([
 		"""["test_a", null, "LOG", {}]""",
 		"""["test_b", Node2D, null, {Node2D: "ER,ROR"}]""",
 		"""["test_c", Node2D, "LOG", {Node2D: "LOG"}]"""
@@ -73,4 +73,4 @@ func test__parse_argument_as_reference() -> void:
 	var test_parameters := "_test_args()"
 
 	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
-	assert_array(fa.parameter_set()).is_empty()
+	assert_array(fa.parameter_sets()).is_empty()
