@@ -436,6 +436,42 @@ func test_parse_func_description():
 	assert_str(fd.typeless()).is_equal("static func foo(arg1, arg2=false) -> Variant:")
 
 
+func test_parse_func_description_return_type_enum():
+	var result := _parser.parse("ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"])
+	assert_result(result).is_success()
+	
+	var fd := _parser.parse_func_description("func get_enum() -> TEST_ENUM:", "ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"], 33)
+	assert_that(fd.name()).is_equal("get_enum")
+	assert_that(fd.is_static()).is_false()
+	assert_that(fd.return_type()).is_equal(GdObjects.TYPE_ENUM)
+	assert_that(fd._return_class).is_equal("TEST_ENUM")
+	assert_that(fd.args()).is_empty()
+
+
+func test_parse_func_description_return_type_internal_class_enum():
+	var result := _parser.parse("ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"])
+	assert_result(result).is_success()
+	
+	var fd := _parser.parse_func_description("func get_inner_class_enum() -> InnerClass.TEST_ENUM:", "ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"], 33)
+	assert_that(fd.name()).is_equal("get_inner_class_enum")
+	assert_that(fd.is_static()).is_false()
+	assert_that(fd.return_type()).is_equal(GdObjects.TYPE_ENUM)
+	assert_that(fd._return_class).is_equal("ClassWithEnumReturnTypes.InnerClass.TEST_ENUM")
+	assert_that(fd.args()).is_empty()
+
+
+func test_parse_func_description_return_type_external_class_enum():
+	var result := _parser.parse("ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"])
+	assert_result(result).is_success()
+	
+	var fd := _parser.parse_func_description("func get_external_class_enum() -> CustomEnums.TEST_ENUM:", "ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"], 33)
+	assert_that(fd.name()).is_equal("get_external_class_enum")
+	assert_that(fd.is_static()).is_false()
+	assert_that(fd.return_type()).is_equal(GdObjects.TYPE_ENUM)
+	assert_that(fd._return_class).is_equal("CustomEnums.TEST_ENUM")
+	assert_that(fd.args()).is_empty()
+
+
 func test_parse_class_inherits():
 	var clazz_path := GdObjects.extract_class_path(CustomClassExtendsCustomClass)
 	var clazz_name := GdObjects.extract_class_name_from_class_path(clazz_path)
@@ -556,3 +592,13 @@ func test_parse_func_descriptor_with_fuzzers():
 		GdFunctionArgument.new("fuzzer_iterations", TYPE_INT, "234"),
 		GdFunctionArgument.new("fuzzer_seed", TYPE_INT, "100")
 	]))
+
+
+func test_is_class_enum_type() -> void:
+	var parser := GdScriptParser.new()
+	assert_that(parser.is_class_enum_type("ClassWithEnumReturnTypes.InnerClass.TEST_ENUM")).is_true()
+	assert_that(parser.is_class_enum_type("ClassWithEnumReturnTypes.InnerClass")).is_false()
+	assert_that(parser.is_class_enum_type("ClassWithEnumReturnTypes.TEST_ENUM")).is_true()
+	assert_that(parser.is_class_enum_type("CustomEnums.TEST_ENUM")).is_true()
+	assert_that(parser.is_class_enum_type("CustomEnums")).is_false()
+	assert_that(parser.is_class_enum_type("ClassWithEnumReturnTypes.NOT_AN_ENUM")).is_false()
