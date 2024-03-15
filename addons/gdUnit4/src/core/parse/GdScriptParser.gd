@@ -67,6 +67,7 @@ var TOKENS := [
 var _regex_clazz_name :RegEx
 var _base_clazz :String
 var _scanned_inner_classes := PackedStringArray()
+var _script_constants := {}
 
 
 static func clean_up_row(row :String) -> String:
@@ -296,9 +297,9 @@ func get_token(input :String, current_index) -> Token:
 	return TOKEN_NOT_MATCH
 
 
-func next_token(input: String, current_index: int) -> Token:
+func next_token(input: String, current_index: int, ignore_tokens :Array[Token] = []) -> Token:
 	var token := TOKEN_NOT_MATCH
-	for t in TOKENS:
+	for t in TOKENS.filter(func(token): return not ignore_tokens.has(token)):
 		if t.match(input, current_index):
 			token = t
 			break
@@ -307,11 +308,11 @@ func next_token(input: String, current_index: int) -> Token:
 	if token == TOKEN_INNER_CLASS:
 		token = tokenize_inner_class(input, current_index, token)
 	if token == TOKEN_NOT_MATCH:
-		return tokenize_value(input, current_index, token)
+		return tokenize_value(input, current_index, token, ignore_tokens.has(TOKEN_FUNCTION))
 	return token
 
 
-func tokenize_value(input: String, current: int, token: Token) -> Token:
+func tokenize_value(input: String, current: int, token: Token, ignore_dots := false) -> Token:
 	var next := 0
 	var current_token := ""
 	# test for '--', '+-', '*-', '/-', '%-', or at least '-x'
@@ -323,7 +324,7 @@ func tokenize_value(input: String, current: int, token: Token) -> Token:
 		# or is a float value
 		if (test_for_sign and next==0) \
 			or character in ALLOWED_CHARACTERS \
-			or (character == "." and current_token.is_valid_int()):
+			or (character == "." and (ignore_dots or current_token.is_valid_int())):
 			current_token += character
 			next += 1
 			continue
@@ -386,10 +387,12 @@ func parse_return_token(input: String) -> Token:
 	if index == -1:
 		return TOKEN_NOT_MATCH
 	index += TOKEN_FUNCTION_RETURN_TYPE._consumed
-	var token := next_token(input, index)
+	# We scan for the return value exclusive '.' token because it could be referenced to a
+	# external or internal class e.g.  'func foo() -> InnerClass.Bar:'
+	var token := next_token(input, index, [TOKEN_FUNCTION])
 	while !token.is_variable() and token != TOKEN_NOT_MATCH:
 		index += token._consumed
-		token = next_token(input, index)
+		token = next_token(input, index, [TOKEN_FUNCTION])
 	return token
 
 
@@ -720,6 +723,9 @@ func parse_func_description(func_signature :String, clazz_name :String, clazz_pa
 		return_type = token.type()
 		if token.type() == TYPE_OBJECT:
 			return_clazz = _patch_inner_class_names(token.value(), clazz_name)
+			# is return type an enum?
+			if is_class_enum_type(return_clazz):
+				return_type = GdObjects.TYPE_ENUM
 	
 	return GdFunctionDescriptor.new(
 		name,
@@ -764,17 +770,34 @@ func is_func_end(row :String) -> bool:
 	return row.strip_edges(false, true).ends_with(":")
 
 
-func _patch_inner_class_names(value :String, clazz_name :String) -> String:
-	var patch := value
+func is_class_enum_type(value :String) -> bool:
+	# first check is given value a enum from the current class
+	if _script_constants.has(value):
+		return true
+	# otherwise we need to determie it by reflection
+	var script := GDScript.new()
+	script.source_code = """
+	extends Resource
+	
+	static func is_class_enum_type() -> bool:
+		return typeof(%s) == TYPE_DICTIONARY
+	
+	""".dedent() % value
+	script.reload()
+	return script.call("is_class_enum_type")
+
+
+func _patch_inner_class_names(clazz :String, clazz_name :String) -> String:
 	var base_clazz := clazz_name.split(".")[0]
-	for inner_clazz_name in _scanned_inner_classes:
-		var full_inner_clazz_path = base_clazz + "." + inner_clazz_name
-		patch = patch.replace(inner_clazz_name, full_inner_clazz_path)
-	return patch
+	var inner_clazz_name := clazz.split(".")[0]
+	if _scanned_inner_classes.has(inner_clazz_name):
+		return base_clazz + "." + clazz
+	return clazz
 
 
-func extract_functions(script :GDScript, clazz_name :String, clazz_path :PackedStringArray) -> Array:
+func extract_functions(script :GDScript, clazz_name :String, clazz_path :PackedStringArray) -> Array[GdFunctionDescriptor]:
 	var source_code := load_source_code(script, clazz_path)
+	_script_constants = script.get_script_constant_map()
 	return parse_functions(source_code, clazz_name, clazz_path)
 
 

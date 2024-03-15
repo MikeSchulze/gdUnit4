@@ -415,6 +415,69 @@ func test_mock_custom_class_func_bar_real_func():
 	verify(m, 1).bar(10, 20, "other")
 
 
+func test_mock_custom_class_func_return_type_enum():
+	var m = mock(ClassWithEnumReturnTypes)
+	assert_that(m).is_not_null()
+	verify(m, 0).get_enum()
+	
+	# verify enum return default 0
+	assert_that(m.get_enum()).is_equal(0)
+	do_return(ClassWithEnumReturnTypes.TEST_ENUM.BAR).on(m).get_enum()
+	assert_that(m.get_enum()).is_equal(ClassWithEnumReturnTypes.TEST_ENUM.BAR)
+	verify(m, 2).get_enum()
+	
+	# with call real functions
+	var m2 = mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
+	assert_that(m2).is_not_null()
+	
+	# verify enum return type
+	assert_that(m2.get_enum()).is_equal(ClassWithEnumReturnTypes.TEST_ENUM.FOO)
+	do_return(ClassWithEnumReturnTypes.TEST_ENUM.BAR).on(m2).get_enum()
+	assert_that(m2.get_enum()).is_equal(ClassWithEnumReturnTypes.TEST_ENUM.BAR)
+
+
+func test_mock_custom_class_func_return_type_internal_class_enum():
+	var m = mock(ClassWithEnumReturnTypes)
+	assert_that(m).is_not_null()
+	verify(m, 0).get_inner_class_enum()
+	
+	# verify enum return default 0
+	assert_that(m.get_inner_class_enum()).is_equal(0)
+	do_return(ClassWithEnumReturnTypes.InnerClass.TEST_ENUM.BAR).on(m).get_inner_class_enum()
+	assert_that(m.get_inner_class_enum()).is_equal(ClassWithEnumReturnTypes.InnerClass.TEST_ENUM.BAR)
+	verify(m, 2).get_inner_class_enum()
+	
+	# with call real functions
+	var m2= mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
+	assert_that(m2).is_not_null()
+	
+	# verify enum return type
+	assert_that(m2.get_inner_class_enum()).is_equal(ClassWithEnumReturnTypes.InnerClass.TEST_ENUM.FOO)
+	do_return(ClassWithEnumReturnTypes.InnerClass.TEST_ENUM.BAR).on(m2).get_inner_class_enum()
+	assert_that(m2.get_inner_class_enum()).is_equal(ClassWithEnumReturnTypes.InnerClass.TEST_ENUM.BAR)
+
+
+func test_mock_custom_class_func_return_type_external_class_enum():
+	var m = mock(ClassWithEnumReturnTypes)
+	assert_that(m).is_not_null()
+	verify(m, 0).get_external_class_enum()
+	
+	# verify enum return default 0
+	assert_that(m.get_external_class_enum()).is_equal(0)
+	do_return(CustomEnums.TEST_ENUM.BAR).on(m).get_external_class_enum()
+	assert_that(m.get_external_class_enum()).is_equal(CustomEnums.TEST_ENUM.BAR)
+	verify(m, 2).get_external_class_enum()
+	
+	# with call real functions
+	var m2 = mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
+	assert_that(m2).is_not_null()
+	
+	# verify enum return type
+	assert_that(m2.get_external_class_enum()).is_equal(CustomEnums.TEST_ENUM.FOO)
+	do_return(CustomEnums.TEST_ENUM.BAR).on(m2).get_external_class_enum()
+	assert_that(m2.get_external_class_enum()).is_equal(CustomEnums.TEST_ENUM.BAR)
+
+
 func test_mock_custom_class_extends_Node():
 	var m = mock(CustomNodeTestClass)
 	assert_that(m).is_not_null()

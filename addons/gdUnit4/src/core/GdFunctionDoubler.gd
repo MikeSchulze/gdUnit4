@@ -40,6 +40,8 @@ const DEFAULT_TYPED_RETURN_VALUES := {
 	TYPE_PACKED_VECTOR2_ARRAY: "PackedVector2Array()",
 	TYPE_PACKED_VECTOR3_ARRAY: "PackedVector3Array()",
 	TYPE_PACKED_COLOR_ARRAY: "PackedColorArray()",
+	GdObjects.TYPE_VARIANT: "null",
+	GdObjects.TYPE_ENUM: "0"
 }
 
 # @GlobalScript enums
@@ -73,20 +75,20 @@ static func default_return_value(func_descriptor :GdFunctionDescriptor) -> Strin
 		var enum_path := func_descriptor._return_class.split(".")
 		if enum_path.size() == 2:
 			var keys := ClassDB.class_get_enum_constants(enum_path[0], enum_path[1])
-			return "%s.%s" % [enum_path[0], keys[0]]
+			if not keys.is_empty():
+				return "%s.%s" % [enum_path[0], keys[0]]
 		# we need fallback for @GlobalScript enums,
 		return DEFAULT_ENUM_RETURN_VALUES.get(func_descriptor._return_class, "0")
-	return DEFAULT_TYPED_RETURN_VALUES.get(return_type, "null")
+	return DEFAULT_TYPED_RETURN_VALUES.get(return_type, "invalid")
 
 
 func _init(push_errors :bool = false):
 	_push_errors = "true" if push_errors else "false"
-	if DEFAULT_TYPED_RETURN_VALUES.size() != TYPE_MAX:
-		push_error("missing default definitions! Expexting %d bud is %d" % [DEFAULT_TYPED_RETURN_VALUES.size(), TYPE_MAX])
-		for type_key in range(0, DEFAULT_TYPED_RETURN_VALUES.size()):
-			if not DEFAULT_TYPED_RETURN_VALUES.has(type_key):
-				prints("missing default definition for type", type_key)
-				assert(DEFAULT_TYPED_RETURN_VALUES.has(type_key), "Missing Type default definition!")
+	for type_key in TYPE_MAX:
+		if not DEFAULT_TYPED_RETURN_VALUES.has(type_key):
+			push_error("missing default definitions! Expexting %d bud is %d" % [DEFAULT_TYPED_RETURN_VALUES.size(), TYPE_MAX])
+			prints("missing default definition for type", type_key)
+			assert(DEFAULT_TYPED_RETURN_VALUES.has(type_key), "Missing Type default definition!")
 
 
 @warning_ignore("unused_parameter")
