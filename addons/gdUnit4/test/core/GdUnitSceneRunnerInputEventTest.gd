@@ -176,6 +176,7 @@ func test_simulate_keypressed_as_action() -> void:
 
 	# cleanup custom action
 	InputMap.erase_action("player_jump")
+	InputMap.action_erase_events("player_jump")
 
 
 func test_simulate_set_mouse_pos():
