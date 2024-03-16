@@ -8,6 +8,7 @@ const GdUnitAssertImpl = preload("res://addons/gdUnit4/src/asserts/GdUnitAssertI
 
 var _events :Array[GdUnitEvent] = []
 
+
 func collect_report(event :GdUnitEvent):
 	_events.push_back(event)
 

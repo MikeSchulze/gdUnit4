@@ -7,20 +7,23 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdDiffTool.gd'
 
+
 func test_string_diff_empty():
 	var diffs := GdDiffTool.string_diff("", "")
 	assert_array(diffs).has_size(2)
 	assert_array(diffs[0]).is_empty()
 	assert_array(diffs[1]).is_empty()
 
+
 func test_string_diff_equals():
 	var diffs := GdDiffTool.string_diff("Abc", "Abc")
 	var expected_l_diff := "Abc".to_ascii_buffer()
 	var expected_r_diff := "Abc".to_ascii_buffer()
-	
+
 	assert_array(diffs).has_size(2)
 	assert_array(diffs[0]).contains_exactly(expected_l_diff)
 	assert_array(diffs[1]).contains_exactly(expected_r_diff)
+
 
 func test_string_diff():
 	# tests the result of string diff function like assert_str("Abc").is_equal("abc")
@@ -32,7 +35,7 @@ func test_string_diff():
 	var ord_c := chars[3]
 	var expected_l_diff := PackedByteArray([GdDiffTool.DIV_SUB, ord_A, GdDiffTool.DIV_ADD, ord_a, ord_b, ord_c])
 	var expected_r_diff := PackedByteArray([GdDiffTool.DIV_ADD, ord_A, GdDiffTool.DIV_SUB, ord_a, ord_b, ord_c])
-	
+
 	assert_array(diffs).has_size(2)
 	assert_array(diffs[0]).contains_exactly(expected_l_diff)
 	assert_array(diffs[1]).contains_exactly(expected_r_diff)

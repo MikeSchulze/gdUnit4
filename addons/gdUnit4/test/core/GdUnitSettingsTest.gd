@@ -66,7 +66,7 @@ func test_list_settings() -> void:
 func test_enum_property() -> void:
 	var value_set :PackedStringArray = GdUnitSettings.NAMING_CONVENTIONS.keys()
 	GdUnitSettings.create_property_if_need("test/enum", GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT, "help", value_set)
-	
+
 	var property := GdUnitSettings.get_property("test/enum")
 	assert_that(property.default()).is_equal(GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
 	assert_that(property.value()).is_equal(GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
@@ -83,13 +83,13 @@ func test_migrate_property_change_key() -> void:
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_equal("foo")
 	assert_str(GdUnitSettings.get_setting(new_property_X, null)).is_null()
 	var old_property := GdUnitSettings.get_property(old_property_X)
-	
+
 	# migrate
 	GdUnitSettings.migrate_property(old_property.name(),\
 		new_property_X,\
 		old_property.default(),\
 		old_property.help())
-	
+
 	var new_property := GdUnitSettings.get_property(new_property_X)
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_null()
 	assert_str(GdUnitSettings.get_setting(new_property_X, null)).is_equal("foo")
@@ -112,14 +112,14 @@ func test_migrate_property_change_value() -> void:
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_equal("foo")
 	assert_str(GdUnitSettings.get_setting(new_property_X, null)).is_null()
 	var old_property := GdUnitSettings.get_property(old_property_X)
-	
+
 	# migrate property
 	GdUnitSettings.migrate_property(old_property.name(),\
 		new_property_X,\
 		old_property.default(),\
 		old_property.help(),\
 		func(_value): return "bar")
-	
+
 	var new_property := GdUnitSettings.get_property(new_property_X)
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_null()
 	assert_str(GdUnitSettings.get_setting(new_property_X, null)).is_equal("bar")
@@ -140,10 +140,10 @@ func test_migrate_properties_v215() -> void:
 	# rebuild original settings
 	GdUnitSettings.create_property_if_need(TEST_ROOT_FOLDER, "test", HELP_TEST_ROOT_FOLDER)
 	ProjectSettings.set_setting(TEST_ROOT_FOLDER, "xxx")
-	
+
 	# migrate
 	GdUnitSettings.migrate_properties()
-	
+
 	# verify
 	var property := GdUnitSettings.get_property(GdUnitSettings.TEST_LOOKUP_FOLDER)
 	assert_str(property.value()).is_equal("xxx")

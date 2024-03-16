@@ -9,7 +9,7 @@ const __source = 'res://addons/gdUnit4/src/asserts/GdUnitGodotErrorAssertImpl.gd
 
 
 class GodotErrorTestClass:
-	
+
 	func test(value :int) -> void:
 		match value:
 			0:
@@ -76,8 +76,8 @@ func test_invalid_callable() -> void:
 
 func test_is_success() -> void:
 	await assert_error(func (): await GodotErrorTestClass.new().test(0)).is_success()
-	
-	var assert_ = await assert_failure_await(func(): 
+
+	var assert_ = await assert_failure_await(func():
 		await assert_error(func (): await GodotErrorTestClass.new().test(1)).is_success())
 	assert_.is_failed().has_message("""
 		Expecting: no error's are ocured.
@@ -88,8 +88,8 @@ func test_is_success() -> void:
 func test_is_assert_failed() -> void:
 	await assert_error(func (): await GodotErrorTestClass.new().test(1))\
 		.is_runtime_error('Assertion failed: this is an assert error')
-	
-	var assert_ = await assert_failure_await(func(): 
+
+	var assert_ = await assert_failure_await(func():
 		await assert_error(func (): GodotErrorTestClass.new().test(0)).is_runtime_error('Assertion failed: this is an assert error'))
 	assert_.is_failed().has_message("""
 		Expecting: a runtime error is triggered.
@@ -101,8 +101,8 @@ func test_is_assert_failed() -> void:
 func test_is_push_warning() -> void:
 	await assert_error(func (): GodotErrorTestClass.new().test(2))\
 		.is_push_warning('this is an push_warning')
-	
-	var assert_ = await assert_failure_await(func(): 
+
+	var assert_ = await assert_failure_await(func():
 		await assert_error(func (): GodotErrorTestClass.new().test(0)).is_push_warning('this is an push_warning'))
 	assert_.is_failed().has_message("""
 		Expecting: push_warning() is called.
@@ -114,7 +114,7 @@ func test_is_push_warning() -> void:
 func test_is_push_error() -> void:
 	await assert_error(func (): GodotErrorTestClass.new().test(3))\
 		.is_push_error('this is an push_error')
-	
+
 	var assert_ = await assert_failure_await(func():
 		await assert_error(func (): GodotErrorTestClass.new().test(0)).is_push_error('this is an push_error'))
 	assert_.is_failed().has_message("""
@@ -127,7 +127,7 @@ func test_is_push_error() -> void:
 func test_is_runtime_error() -> void:
 	await assert_error(func (): GodotErrorTestClass.new().test(4))\
 		.is_runtime_error("Division by zero error in operator '/'.")
-	
+
 	var assert_ = await assert_failure_await(func():
 		await assert_error(func (): GodotErrorTestClass.new().test(0)).is_runtime_error("Division by zero error in operator '/'."))
 	assert_.is_failed().has_message("""

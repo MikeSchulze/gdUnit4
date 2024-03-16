@@ -21,7 +21,7 @@ static func build(to_spy, debug_write := false) -> Object:
 	# spy checked a scene instance
 	if GdObjects.is_instance_scene(to_spy):
 		return spy_on_scene(to_spy, debug_write)
-	
+
 	var spy := spy_on_script(to_spy, [], debug_write)
 	if spy == null:
 		return null
@@ -57,12 +57,12 @@ static func spy_on_script(instance, function_excludes :PackedStringArray, debug_
 		return null
 	var lines := load_template(SPY_TEMPLATE.source_code, class_info, instance)
 	lines += double_functions(instance, clazz_name, clazz_path, GdUnitSpyFunctionDoubler.new(), function_excludes)
-	
+
 	var spy := GDScript.new()
 	spy.source_code = "\n".join(lines)
 	spy.resource_name = "Spy%s.gd" % clazz_name
 	spy.resource_path = GdUnitFileAccess.create_temp_dir("spy") + "/Spy%s_%d.gd" % [clazz_name, Time.get_ticks_msec()]
-	
+
 	if debug_write:
 		DirAccess.remove_absolute(spy.resource_path)
 		ResourceSaver.save(spy, spy.resource_path)
@@ -84,7 +84,7 @@ static func spy_on_scene(scene :Node, debug_write) -> Object:
 	scene_script.free()
 	if spy == null:
 		return null
-	# replace original script whit spy 
+	# replace original script whit spy
 	scene.set_script(spy)
 	return register_auto_free(scene)
 
@@ -100,7 +100,7 @@ static func copy_properties(source :Object, dest :Object) -> void:
 			continue
 		#if dest.get(property_name) == null:
 		#	prints("|%s|" % property_name, source.get(property_name))
-		
+
 		# check for invalid name property
 		if property_name == "name" and property_value == "":
 			dest.set(property_name, "<empty>");

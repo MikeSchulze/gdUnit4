@@ -43,7 +43,7 @@ func test_progress_success() -> void:
 		assert_that(_progress.value).is_equal(expected_progess_index)
 		assert_that(_status.text).is_equal("%d:42" % expected_progess_index)
 		assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
-	
+
 	# simulate execution of parameterized test with 10 iterations
 	for index in 10:
 		_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_after("res://test/testA.gd", "TestSuiteA", "test_parameterized:%d (params)" % index, {}))
@@ -55,7 +55,7 @@ func test_progress_success() -> void:
 	assert_that(_progress.value).is_equal(expected_progess_index)
 	assert_that(_status.text).is_equal("%d:42" % expected_progess_index)
 	assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
-	
+
 	# verify the max progress state is not affected
 	assert_that(_progress.max_value).is_equal(42)
 
@@ -79,6 +79,6 @@ func test_progress_failed(test_name :String, is_failed :bool, is_error :bool, ex
 		GdUnitEvent.SKIPPED: false,
 		GdUnitEvent.SKIPPED_COUNT: 0,
 	}
-	
+
 	_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_after("res://test/testA.gd", "TestSuiteA", test_name, statistics))
 	assert_that(_style.bg_color).is_equal(expected_color)

@@ -16,12 +16,13 @@ func _init(min_length :int,max_length :int,pattern :String = DEFAULT_CHARSET):
 	_max_length = max_length
 	_charset = StringFuzzer.extract_charset(pattern)
 
+
 static func extract_charset(pattern :String) -> PackedByteArray:
 	var reg := RegEx.new()
 	if reg.compile(pattern) != OK:
 		push_error("Invalid pattern to generate Strings! Use e.g  'a-zA-Z0-9+-_'")
 		return PackedByteArray()
-	
+
 	var charset := Array()
 	var char_before := -1
 	var index := 0
@@ -46,11 +47,13 @@ static func extract_charset(pattern :String) -> PackedByteArray:
 		charset.append(char_current)
 	return PackedByteArray(charset)
 
+
 static func build_chars(from :int, to :int) -> Array:
 	var characters := Array()
 	for character in range(from+1, to+1):
 		characters.append(character)
 	return characters
+
 
 func next_value() -> Variant:
 	var value := PackedByteArray()

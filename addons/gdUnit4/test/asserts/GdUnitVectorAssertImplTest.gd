@@ -63,7 +63,7 @@ func test_is_equal() -> void:
 	assert_vector(Vector2.ONE).is_equal(Vector2.ONE)
 	assert_vector(Vector2.LEFT).is_equal(Vector2.LEFT)
 	assert_vector(Vector2(1.2, 1.000001)).is_equal(Vector2(1.2, 1.000001))
-	
+
 	# is not equal
 	assert_failure(func(): assert_vector(Vector2.ONE).is_equal(Vector2(1.2, 1.000001))) \
 		.is_failed() \
@@ -88,7 +88,7 @@ func test_is_not_equal() -> void:
 	assert_vector(Vector2.ONE).is_not_equal(Vector2.LEFT)
 	assert_vector(Vector2.LEFT).is_not_equal(Vector2.ONE)
 	assert_vector(Vector2(1.2, 1.000001)).is_not_equal(Vector2(1.2, 1.000002))
-	
+
 	assert_failure(func(): assert_vector(Vector2(1.2, 1.000001)).is_not_equal(Vector2(1.2, 1.000001))) \
 		.is_failed() \
 		.has_message("Expecting:\n '(1.2, 1.000001)'\n not equal to\n '(1.2, 1.000001)'")
@@ -107,7 +107,7 @@ func test_is_equal_approx() -> void:
 	assert_vector(Vector2.ONE).is_equal_approx(Vector2.ONE, Vector2(0.004, 0.004))
 	assert_vector(Vector2(0.996, 0.996)).is_equal_approx(Vector2.ONE, Vector2(0.004, 0.004))
 	assert_vector(Vector2(1.004, 1.004)).is_equal_approx(Vector2.ONE, Vector2(0.004, 0.004))
-	
+
 	assert_failure(func(): assert_vector(Vector2(1.005, 1)).is_equal_approx(Vector2.ONE, Vector2(0.004, 0.004))) \
 		.is_failed() \
 		.has_message("Expecting:\n '(1.005, 1)'\n in range between\n '(0.996, 0.996)' <> '(1.004, 1.004)'")
@@ -155,7 +155,7 @@ func test_is_equal_approx_over_all_types(value, expected, approx, test_parameter
 func test_is_less() -> void:
 	assert_vector(Vector2.LEFT).is_less(Vector2.ONE)
 	assert_vector(Vector2(1.2, 1.000001)).is_less(Vector2(1.2, 1.000002))
-	
+
 	assert_failure(func(): assert_vector(Vector2.ONE).is_less(Vector2.ONE)) \
 		.is_failed() \
 		.has_message("Expecting to be less than:\n '(1, 1)' but was '(1, 1)'")
@@ -186,7 +186,7 @@ func test_is_less_equal() -> void:
 	assert_vector(Vector2.ONE).is_less_equal(Vector2.ONE)
 	assert_vector(Vector2(1.2, 1.000001)).is_less_equal(Vector2(1.2, 1.000001))
 	assert_vector(Vector2(1.2, 1.000001)).is_less_equal(Vector2(1.2, 1.000002))
-	
+
 	assert_failure(func(): assert_vector(Vector2.ONE).is_less_equal(Vector2.ZERO)) \
 		.is_failed() \
 		.has_message("Expecting to be less than or equal:\n '(0, 0)' but was '(1, 1)'")
@@ -222,7 +222,7 @@ func test_is_less_equal_over_all_types(value, expected, test_parameters = [
 func test_is_greater() -> void:
 	assert_vector(Vector2.ONE).is_greater(Vector2.RIGHT)
 	assert_vector(Vector2(1.2, 1.000002)).is_greater(Vector2(1.2, 1.000001))
-	
+
 	assert_failure(func(): assert_vector(Vector2.ZERO).is_greater(Vector2.ONE)) \
 		.is_failed() \
 		.has_message("Expecting to be greater than:\n '(1, 1)' but was '(0, 0)'")
@@ -254,7 +254,7 @@ func test_is_greater_equal() -> void:
 	assert_vector(Vector2.ONE).is_greater_equal(Vector2.ONE)
 	assert_vector(Vector2(1.2, 1.000001)).is_greater_equal(Vector2(1.2, 1.000001))
 	assert_vector(Vector2(1.2, 1.000002)).is_greater_equal(Vector2(1.2, 1.000001))
-	
+
 	assert_failure(func(): assert_vector(Vector2.ZERO).is_greater_equal(Vector2.ONE)) \
 		.is_failed() \
 		.has_message("Expecting to be greater than or equal:\n '(1, 1)' but was '(0, 0)'")
@@ -290,7 +290,7 @@ func test_is_greater_equal_over_all_types(value, expected, test_parameters = [
 func test_is_between(fuzzer = Fuzzers.rangev2(Vector2.ZERO, Vector2.ONE)):
 	var value :Vector2 = fuzzer.next_value()
 	assert_vector(value).is_between(Vector2.ZERO, Vector2.ONE)
-	
+
 	assert_failure(func(): assert_vector(Vector2(1, 1.00001)).is_between(Vector2.ZERO, Vector2.ONE)) \
 		.is_failed() \
 		.has_message("Expecting:\n '(1, 1.00001)'\n in range between\n '(0, 0)' <> '(1, 1)'")
@@ -318,7 +318,7 @@ func test_is_not_between(fuzzer = Fuzzers.rangev2(Vector2.ONE, Vector2.ONE*2)):
 	var value :Vector2 = fuzzer.next_value()
 	assert_vector(null).is_not_between(Vector2.ZERO, Vector2.ONE)
 	assert_vector(value).is_not_between(Vector2.ZERO, Vector2.ONE)
-	
+
 	assert_failure(func(): assert_vector(Vector2.ONE).is_not_between(Vector2.ZERO, Vector2.ONE)) \
 		.is_failed() \
 		.has_message("Expecting:\n '(1, 1)'\n not in range between\n '(0, 0)' <> '(1, 1)'")
@@ -351,16 +351,16 @@ func test_override_failure_message() -> void:
 func test_is_failure() -> void:
 	# initial is false
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked success assert
 	assert_vector(null).is_null()
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked faild assert
 	assert_failure(func(): assert_vector(RefCounted.new()).is_null()) \
 		.is_failed()
 	assert_bool(is_failure()).is_true()
-	
+
 	# checked next success assert
 	assert_vector(null).is_null()
 	# is true because we have an already failed assert

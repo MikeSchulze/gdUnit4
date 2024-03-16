@@ -9,7 +9,7 @@ const __source = 'res://addons/gdUnit4/src/asserts/GdUnitStringAssertImpl.gd'
 
 func test_is_null():
 	assert_str(null).is_null()
-	
+
 	assert_failure(func(): assert_str("abc").is_null()) \
 		.is_failed() \
 		.starts_with_message("Expecting: '<null>' but was 'abc'")
@@ -18,7 +18,7 @@ func test_is_null():
 func test_is_not_null():
 	assert_str("abc").is_not_null()
 	assert_str(&"abc").is_not_null()
-	
+
 	assert_failure(func(): assert_str(null).is_not_null()) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
@@ -30,7 +30,7 @@ func test_is_equal():
 	assert_str("abc").is_equal(&"abc")
 	assert_str(&"abc").is_equal("abc")
 	assert_str(&"abc").is_equal(&"abc")
-	
+
 	assert_failure(func(): assert_str("This is a test message").is_equal("This is a test Message")) \
 		.is_failed() \
 		.has_message("""
@@ -57,7 +57,7 @@ func test_is_equal_ignoring_case():
 	assert_str("This is a test message").is_equal_ignoring_case(&"This is a test Message")
 	assert_str(&"This is a test message").is_equal_ignoring_case("This is a test Message")
 	assert_str(&"This is a test message").is_equal_ignoring_case(&"This is a test Message")
-	
+
 	assert_failure(func(): assert_str("This is a test message").is_equal_ignoring_case("This is a Message")) \
 		.is_failed() \
 		.has_message("""
@@ -80,7 +80,7 @@ func test_is_not_equal():
 	assert_str("This is a test message").is_not_equal(&"This is a test Message")
 	assert_str(&"This is a test message").is_not_equal("This is a test Message")
 	assert_str(&"This is a test message").is_not_equal(&"This is a test Message")
-	
+
 	assert_failure(func(): assert_str("This is a test message").is_not_equal("This is a test message")) \
 		.is_failed() \
 		.has_message("""
@@ -96,7 +96,7 @@ func test_is_not_equal_ignoring_case():
 	assert_str("This is a test message").is_not_equal_ignoring_case(&"This is a Message")
 	assert_str(&"This is a test message").is_not_equal_ignoring_case("This is a Message")
 	assert_str(&"This is a test message").is_not_equal_ignoring_case(&"This is a Message")
-	
+
 	assert_failure(func(): assert_str("This is a test message").is_not_equal_ignoring_case("This is a test Message")) \
 		.is_failed() \
 		.has_message("""
@@ -109,7 +109,7 @@ func test_is_not_equal_ignoring_case():
 func test_is_empty():
 	assert_str("").is_empty()
 	assert_str(&"").is_empty()
-	
+
 	assert_failure(func(): assert_str(" ").is_empty()) \
 		.is_failed() \
 		.has_message("""
@@ -141,7 +141,7 @@ func test_is_not_empty():
 	assert_str("	").is_not_empty()
 	assert_str("abc").is_not_empty()
 	assert_str(&"abc").is_not_empty()
-	
+
 	assert_failure(func(): assert_str("").is_not_empty()) \
 		.is_failed() \
 		.has_message("""
@@ -182,7 +182,7 @@ func test_not_contains():
 	assert_str("This is a test message").not_contains(&"a tezt")
 	assert_str(&"This is a test message").not_contains("a tezt")
 	assert_str(&"This is a test message").not_contains(&"a tezt")
-	
+
 	assert_failure(func(): assert_str("This is a test message").not_contains("a test")) \
 		.is_failed() \
 		.has_message("""
@@ -204,7 +204,7 @@ func test_contains_ignoring_case():
 	assert_str("This is a test message").contains_ignoring_case(&"a Test")
 	assert_str(&"This is a test message").contains_ignoring_case("a Test")
 	assert_str(&"This is a test message").contains_ignoring_case(&"a Test")
-	
+
 	assert_failure(func(): assert_str("This is a test message").contains_ignoring_case("a Tesd")) \
 		.is_failed() \
 		.has_message("""
@@ -229,7 +229,7 @@ func test_not_contains_ignoring_case():
 	assert_str("This is a test message").not_contains_ignoring_case(&"a Tezt")
 	assert_str(&"This is a test message").not_contains_ignoring_case("a Tezt")
 	assert_str(&"This is a test message").not_contains_ignoring_case(&"a Tezt")
-	
+
 	assert_failure(func(): assert_str("This is a test message").not_contains_ignoring_case("a Test")) \
 		.is_failed() \
 		.has_message("""
@@ -245,7 +245,7 @@ func test_starts_with():
 	assert_str("This is a test message").starts_with(&"This is")
 	assert_str(&"This is a test message").starts_with("This is")
 	assert_str(&"This is a test message").starts_with(&"This is")
-	
+
 	assert_failure(func(): assert_str("This is a test message").starts_with("This iss")) \
 		.is_failed() \
 		.has_message("""
@@ -281,7 +281,7 @@ func test_ends_with():
 	assert_str("This is a test message").ends_with(&"test message")
 	assert_str(&"This is a test message").ends_with("test message")
 	assert_str(&"This is a test message").ends_with(&"test message")
-	
+
 	assert_failure(func(): assert_str("This is a test message").ends_with("tes message")) \
 		.is_failed() \
 		.has_message("""
@@ -310,7 +310,7 @@ func test_has_lenght():
 	assert_str(&"This is a test message").has_length(22)
 	assert_str("").has_length(0)
 	assert_str(&"").has_length(0)
-	
+
 	assert_failure(func(): assert_str("This is a test message").has_length(23)) \
 		.is_failed() \
 		.has_message("""
@@ -329,7 +329,7 @@ func test_has_lenght_less_than():
 	assert_str("This is a test message").has_length(23, Comparator.LESS_THAN)
 	assert_str("This is a test message").has_length(42, Comparator.LESS_THAN)
 	assert_str(&"This is a test message").has_length(42, Comparator.LESS_THAN)
-	
+
 	assert_failure(func(): assert_str("This is a test message").has_length(22, Comparator.LESS_THAN)) \
 		.is_failed() \
 		.has_message("""
@@ -348,7 +348,7 @@ func test_has_lenght_less_equal():
 	assert_str("This is a test message").has_length(22, Comparator.LESS_EQUAL)
 	assert_str("This is a test message").has_length(23, Comparator.LESS_EQUAL)
 	assert_str(&"This is a test message").has_length(23, Comparator.LESS_EQUAL)
-	
+
 	assert_failure(func(): assert_str("This is a test message").has_length(21, Comparator.LESS_EQUAL)) \
 		.is_failed() \
 		.has_message("""
@@ -366,7 +366,7 @@ func test_has_lenght_less_equal():
 func test_has_lenght_greater_than():
 	assert_str("This is a test message").has_length(21, Comparator.GREATER_THAN)
 	assert_str(&"This is a test message").has_length(21, Comparator.GREATER_THAN)
-	
+
 	assert_failure(func(): assert_str("This is a test message").has_length(22, Comparator.GREATER_THAN)) \
 		.is_failed() \
 		.has_message("""
@@ -385,7 +385,7 @@ func test_has_lenght_greater_equal():
 	assert_str("This is a test message").has_length(21, Comparator.GREATER_EQUAL)
 	assert_str("This is a test message").has_length(22, Comparator.GREATER_EQUAL)
 	assert_str(&"This is a test message").has_length(22, Comparator.GREATER_EQUAL)
-	
+
 	assert_failure(func(): assert_str("This is a test message").has_length(23, Comparator.GREATER_EQUAL)) \
 		.is_failed() \
 		.has_message("""
@@ -434,16 +434,16 @@ func test_override_failure_message() -> void:
 func test_is_failure() -> void:
 	# initial is false
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked success assert
 	assert_str(null).is_null()
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked failed assert
 	assert_failure(func(): assert_str(RefCounted.new()).is_null()) \
 		.is_failed()
 	assert_bool(is_failure()).is_true()
-	
+
 	# checked next success assert
 	assert_str(null).is_null()
 	# is true because we have an already failed assert

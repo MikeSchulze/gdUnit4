@@ -3,7 +3,7 @@ extends RefCounted
 
 
 var _cleanup_leading_spaces = RegEx.create_from_string("(?m)^[ \t]+")
-var _fix_comma_space := RegEx.create_from_string(""",(?=(?:[^"]*"[^"]*")*[^"]*$)(?!\\s)""")
+var _fix_comma_space := RegEx.create_from_string(""", {0,}\t{0,}(?=(?:[^"]*"[^"]*")*[^"]*$)(?!\\s)""")
 var _name: String
 var _type: int
 var _default_value :Variant
@@ -70,7 +70,7 @@ func _to_string() -> String:
 func _parse_parameter_set(input :String) -> PackedStringArray:
 	if not input.contains("["):
 		return []
-	
+
 	input = _cleanup_leading_spaces.sub(input, "", true)
 	input = input.trim_prefix("[").trim_suffix("]").replace("\n", "").trim_prefix(" ")
 	var single_quote := false
@@ -84,9 +84,9 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 		current_index += 1
 		match c:
 				# ignore spaces between array elements
-			32: if array_end == 0: 
+			32: if array_end == 0:
 					start_index += 1
-					continue 
+					continue
 				# step over array element seperator ','
 			44: if array_end == 0:
 					start_index += 1
@@ -95,7 +95,7 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 			34: if not single_quote: double_quote = !double_quote
 			91: if not double_quote and not single_quote: array_end +=1 # counts array open
 			93: if not double_quote and not single_quote: array_end -=1 # counts array closed
-		
+
 		# if array closed than collect the element
 		if array_end == 0 and current_index > start_index:
 			var parameters := input.substr(start_index, current_index-start_index)

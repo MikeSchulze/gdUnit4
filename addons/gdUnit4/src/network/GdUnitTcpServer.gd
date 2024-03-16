@@ -13,45 +13,45 @@ class TcpConnection extends Node:
 	var _id :int
 	var _stream
 	var _readBuffer :String = ""
-	
-	
+
+
 	func _init(p_server):
 		#assert(p_server is TCPServer)
 		_stream = p_server.take_connection()
 		_stream.set_big_endian(true)
 		_id = _stream.get_instance_id()
 		rpc_send(RPCClientConnect.new().with_id(_id))
-	
-	
+
+
 	func _ready():
 		server().client_connected.emit(_id)
-	
-	
+
+
 	func close() -> void:
 		rpc_send(RPCClientDisconnect.new().with_id(_id))
 		server().client_disconnected.emit(_id)
 		_stream.disconnect_from_host()
 		_readBuffer = ""
-	
-	
+
+
 	func id() -> int:
 		return _id
-	
-	
+
+
 	func server() -> GdUnitTcpServer:
 		return get_parent()
-	
-	
+
+
 	func rpc_send(p_rpc :RPC) -> void:
 		_stream.put_var(p_rpc.serialize(), true)
-	
-	
+
+
 	func _process(_delta):
 		if _stream.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 			return
 		receive_packages()
-	
-	
+
+
 	func receive_packages() -> void:
 		var available_bytes = _stream.get_available_bytes()
 		if available_bytes > 0:
@@ -67,8 +67,8 @@ class TcpConnection extends Node:
 					if rpc_ is RPCClientDisconnect:
 						close()
 					server().rpc_data.emit(rpc_)
-	
-	
+
+
 	func _read_next_data_packages(data_package :PackedByteArray) -> PackedStringArray:
 		_readBuffer += data_package.get_string_from_ascii()
 		var json_array := _readBuffer.split(GdUnitServerConstants.JSON_RESPONSE_DELIMITER)
@@ -85,8 +85,8 @@ class TcpConnection extends Node:
 			if index < json_array.size() and json_array[index].is_empty():
 				json_array.remove_at(index)
 		return json_array
-	
-	
+
+
 	func console(_message :String) -> void:
 		#print_debug("TCP Connection:", _message)
 		pass

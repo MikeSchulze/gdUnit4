@@ -66,7 +66,7 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 	var parser := GdScriptParser.new()
 	var exclude_override_functions := EXCLUDE_VIRTUAL_FUNCTIONS + EXCLUDE_FUNCTIONS + exclude_functions
 	var functions := Array()
-	
+
 	# double script functions
 	if not ClassDB.class_exists(clazz_name):
 		var result := parser.parse(clazz_name, clazz_path)
@@ -84,7 +84,7 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 				doubled_source += func_doubler.double(func_descriptor)
 				functions.append(func_descriptor.name())
 			class_descriptor = class_descriptor.parent()
-	
+
 	# double regular class functions
 	var clazz_functions := GdObjects.extract_class_functions(clazz_name, clazz_path)
 	for method in clazz_functions:

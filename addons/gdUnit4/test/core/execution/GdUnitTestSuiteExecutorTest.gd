@@ -55,12 +55,12 @@ func assert_event_list(events :Array[GdUnitEvent], suite_name :String, test_case
 		expected_events.append(tuple(GdUnitEvent.TESTCASE_BEFORE, suite_name, test_case, 0))
 		expected_events.append(tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, test_case, 0))
 	expected_events.append(tuple(GdUnitEvent.TESTSUITE_AFTER, suite_name, "after", 0))
-	
+
 	var expected_event_count := 2 + test_case_names.size() * 2
 	assert_array(events)\
 		.override_failure_message("Expecting be %d events emitted, but counts %d." % [expected_event_count, events.size()])\
 		.has_size(expected_event_count)
-	
+
 	assert_array(events)\
 		.extractv(extr("type"), extr("suite_name"), extr("test_name"), extr("total_count"))\
 		.contains_exactly(expected_events)
@@ -81,7 +81,7 @@ func assert_event_reports(events :Array[GdUnitEvent], expected_reports :Array) -
 		if expected.is_empty():
 			for m in current.size():
 				assert_str(flating_message(current[m].message())).is_empty()
-		
+
 		for m in expected.size():
 			if m < current.size():
 				assert_str(flating_message(current[m].message())).is_equal(expected[m])
@@ -149,11 +149,11 @@ func test_execute_failure_on_stage_before() -> void:
 	])
 	# one failure at before()
 	assert_event_reports(events, [
-			[], 
-			[], 
-			[], 
-			[], 
-			[], 
+			[],
+			[],
+			[],
+			[],
+			[],
 			["failed on before()"]
 		])
 
@@ -189,9 +189,9 @@ func test_execute_failure_on_stage_after() -> void:
 	# one failure at after()
 	assert_event_reports(events, [
 			[],
-			[], 
 			[],
-			[], 
+			[],
+			[],
 			[],
 			["failed on after()"]
 		])
@@ -229,10 +229,10 @@ func test_execute_failure_on_stage_before_test() -> void:
 	# before_test() failure report is append to each test
 	assert_event_reports(events, [
 			[],
-			[], 
+			[],
 			# verify failure report is append to 'test_case1'
 			["failed on before_test()"],
-			[], 
+			[],
 			# verify failure report is append to 'test_case2'
 			["failed on before_test()"],
 			[]
@@ -271,10 +271,10 @@ func test_execute_failure_on_stage_after_test() -> void:
 	# 'after_test' failure report is append to each test
 	assert_event_reports(events, [
 			[],
-			[], 
+			[],
 			# verify failure report is append to 'test_case1'
 			["failed on after_test()"],
-			[], 
+			[],
 			# verify failure report is append to 'test_case2'
 			["failed on after_test()"],
 			[]
@@ -311,11 +311,11 @@ func test_execute_failure_on_stage_test_case1() -> void:
 	# only 'test_case1' reports a failure
 	assert_event_reports(events, [
 			[],
-			[], 
+			[],
 			# verify failure report is append to 'test_case1'
-			["failed on test_case1()"], 
-			[], 
-			[], 
+			["failed on test_case1()"],
+			[],
+			[],
 			[]
 		])
 
@@ -355,7 +355,7 @@ func test_execute_failure_on_multiple_stages() -> void:
 			[],
 			[],
 			# verify failure reports to 'test_case1'
-			["failed on before_test()", "failed 1 on test_case1()", "failed 2 on test_case1()"], 
+			["failed on before_test()", "failed 1 on test_case1()", "failed 2 on test_case1()"],
 			[],
 			# verify failure reports to 'test_case2'
 			["failed on before_test()"],
@@ -408,7 +408,7 @@ func test_execute_failure_and_orphans() -> void:
 			["WARNING:\n Detected <2> orphan nodes during test setup! Check before_test() and after_test()!",
 			"WARNING:\n Detected <3> orphan nodes during test execution!"],
 			[],
-			# ends with failure and warnings 
+			# ends with failure and warnings
 			["WARNING:\n Detected <2> orphan nodes during test setup! Check before_test() and after_test()!",
 			"WARNING:\n Detected <4> orphan nodes during test execution!",
 			"faild on test_case2()"],
@@ -421,11 +421,11 @@ func test_execute_failure_and_orphans_report_orphan_disabled() -> void:
 	# this is a more complex failure state, we expect to find multipe orphans on different stages
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource")
 	# simulate test suite execution whit disabled orphan detection
-	
+
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ORPHANS, false)
 	var events = await execute(test_suite)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ORPHANS, true)
-	
+
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailAndOrpahnsDetected",\
@@ -473,7 +473,7 @@ func test_execute_error_on_test_timeout() -> void:
 	assert_event_list(events,\
 		"TestSuiteErrorOnTestTimeout",\
 		["test_case1", "test_case2"])
-	# we expect test_case1 fails by a timeout 
+	# we expect test_case1 fails by a timeout
 	assert_event_counters(events).contains_exactly([
 		tuple(GdUnitEvent.TESTSUITE_BEFORE, 0, 0, 0),
 		# the first test timed out after 2s
@@ -508,7 +508,7 @@ func test_execute_error_on_test_timeout() -> void:
 # This test checks if all test stages are called at each test iteration.
 func test_execute_fuzzed_metrics() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFuzzedMetricsTest.resource")
-	
+
 	var events = await execute(test_suite)
 	assert_event_states(events).contains([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -527,7 +527,7 @@ func test_execute_fuzzed_metrics() -> void:
 # This test checks if all test stages are called at each test iteration.
 func test_execute_parameterized_metrics() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteParameterizedMetricsTest.resource")
-	
+
 	var events = await execute(test_suite)
 	assert_event_states(events).contains([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -546,10 +546,10 @@ func test_execute_parameterized_metrics() -> void:
 func test_execute_failure_fuzzer_iteration() -> void:
 	# this tests a timeout on a test case reported as error
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/GdUnitFuzzerTest.resource")
-	
+
 	# simulate test suite execution
 	var events = await execute(test_suite)
-	
+
 	# verify basis infos
 	assert_event_list(events, "GdUnitFuzzerTest", [
 		"test_multi_yielding_with_fuzzer",
@@ -619,55 +619,37 @@ func test_execute_add_child_on_before_GD_106() -> void:
 func test_execute_parameterizied_tests() -> void:
 	# this is a more complex failure state, we expect to find multipe failures on different stages
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteParameterizedTests.resource")
-	
 	# simulate test suite execution
 	# run the tests with to compare type save
 	var original_mode = ProjectSettings.get_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
 	var events = await execute(test_suite)
 	var suite_name = "TestSuiteParameterizedTests"
-	
 	# the test is partial failing because of diverent type in the dictionary
 	assert_array(events).extractv(
-		extr("type"), extr("suite_name"), extr("test_name"), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
+		extr("type"), extr("suite_name"), TestCaseNameExtractor.new(), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
 		.contains([
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 0, [
-				{ top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}, { top = 50, bottom = 50, left = 50, right = 50}
-			]), false, true, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 1, [
-				{ top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
-			]), false, false, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 2, [
-				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
-			]), false, true, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 3, [
-				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
-			]), false, false, 0)
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_dictionary_div_number_types:0", false, true, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_dictionary_div_number_types:1", false, false, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_dictionary_div_number_types:2", false, true, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_dictionary_div_number_types:3", false, false, 0)
 		])
-	
+
 	# rerun the same tests again with allow to compare type unsave
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, false)
 	# simulate test suite execution
 	test_suite = _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteParameterizedTests.resource")
 	events = await execute(test_suite)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, original_mode)
-	
+
 	# the test should now be successful
 	assert_array(events).extractv(
-		extr("type"), extr("suite_name"), extr("test_name"), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
+		extr("type"), extr("suite_name"), TestCaseNameExtractor.new(), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
 		.contains([
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 0, [
-				{ top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}, { top = 50, bottom = 50, left = 50, right = 50}
-			]), false, false, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 1, [
-				{ top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
-			]), false, false, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 2, [
-				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
-			]), false, false, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, buld_test_case_name("test_dictionary_div_number_types", 3, [
-				{ top = 50, bottom = 50, left = 50, right = 50}, { top = 50.0, bottom = 50.0, left = 50.0, right = 50.0}
-			]), false, false, 0)
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_dictionary_div_number_types:0", false, false, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_dictionary_div_number_types:1", false, false, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_dictionary_div_number_types:2", false, false, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, "test_dictionary_div_number_types:3", false, false, 0)
 		])
 
 
@@ -704,7 +686,7 @@ func test_execute_test_case_is_skipped() -> void:
 		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		tuple("after", SUCCEEDED, NOT_SKIPPED, false, false, false),
 	])
-	
+
 	assert_event_reports(events, [
 			[],
 			[],
@@ -718,16 +700,9 @@ func test_execute_test_case_is_skipped() -> void:
 		])
 
 
-func add_expected_test_case_events(suite_name :String, test_name :String, parameters :Array = []) -> Array:
-	var expected_events := Array()
-	expected_events.append(tuple(GdUnitEvent.TESTCASE_BEFORE, suite_name, test_name, 0))
-	for index in parameters.size():
-		var test_case_name := buld_test_case_name(test_name, index, parameters[index])
-		expected_events.append(tuple(GdUnitEvent.TESTCASE_BEFORE, suite_name, test_case_name, 0))
-		expected_events.append(tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, test_case_name, 0))
-	expected_events.append(tuple(GdUnitEvent.TESTCASE_AFTER, suite_name, test_name, 0))
-	return expected_events
+class TestCaseNameExtractor extends GdUnitValueExtractor:
+	var r := RegEx.create_from_string("^.*:\\d")
 
-
-func buld_test_case_name(test_name :String, index :int, parameter :Array) -> String:
-	return "%s:%d %s" % [test_name, index, str(parameter).replace('"', "'")]
+	func extract_value(value):
+		var m := r.search(value.test_name())
+		return m.get_string(0) if m != null else value.test_name()

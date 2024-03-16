@@ -19,7 +19,7 @@ class TestCommands:
 
 	func cmd_bar(value :String) -> String:
 		return value
-	
+
 	func cmd_bar2(value_a: String, value_b: String) -> Array:
 		return [value_a, value_b]
 
@@ -34,7 +34,7 @@ func before() -> void:
 		CmdOption.new("-f, --foo", "some help text foo", "some description foo"),
 		CmdOption.new("-b, --bar", "some help text bar", "some description bar"),
 		CmdOption.new("-b2, --bar2", "some help text bar", "some description bar"),
-	], 
+	],
 	# advnaced options
 	[
 		CmdOption.new("-x", "some help text x", "some description x"),
@@ -44,7 +44,7 @@ func before() -> void:
 
 func test__validate_no_registerd_commands() -> void:
 	var cmd_handler := CmdCommandHandler.new(_cmd_options)
-	
+
 	assert_result(cmd_handler._validate()).is_success()
 
 
@@ -53,7 +53,7 @@ func test__validate_registerd_commands() -> void:
 	cmd_handler.register_cb("-a", Callable(_cmd_instance, "cmd_a"))
 	cmd_handler.register_cb("-f", Callable(_cmd_instance, "cmd_foo"))
 	cmd_handler.register_cb("-b", Callable(_cmd_instance, "cmd_bar"))
-	
+
 	assert_result(cmd_handler._validate()).is_success()
 
 
@@ -63,7 +63,7 @@ func test__validate_registerd_unknown_commands() -> void:
 	cmd_handler.register_cb("-d", Callable(_cmd_instance, "cmd_foo"))
 	cmd_handler.register_cb("-b", Callable(_cmd_instance, "cmd_bar"))
 	cmd_handler.register_cb("-y", Callable(_cmd_instance, "cmd_x"))
-	
+
 	assert_result(cmd_handler._validate())\
 		.is_error()\
 		.contains_message("The command '-d' is unknown, verify your CmdOptions!\nThe command '-y' is unknown, verify your CmdOptions!")
@@ -74,7 +74,7 @@ func test__validate_registerd_invalid_callbacks() -> void:
 	cmd_handler.register_cb("-a", Callable(_cmd_instance, "cmd_a"))
 	cmd_handler.register_cb("-f")
 	cmd_handler.register_cb("-b", Callable(_cmd_instance, "cmd_not_exists"))
-	
+
 	assert_result(cmd_handler._validate())\
 		.is_error()\
 		.contains_message("Invalid function reference for command '-b', Check the function reference!")
@@ -103,18 +103,18 @@ func test_execute_commands_no_cb_registered() -> void:
 func test_execute_commands_with_cb_registered() -> void:
 	var cmd_handler: = CmdCommandHandler.new(_cmd_options)
 	var cmd_spy = spy(_cmd_instance)
-	
+
 	cmd_handler.register_cb("-a", Callable(cmd_spy, "cmd_a"))
 	cmd_handler.register_cb("-b", Callable(cmd_spy, "cmd_bar"))
 	cmd_handler.register_cbv("-b2", Callable(cmd_spy, "cmd_bar2"))
-	
+
 	assert_result(cmd_handler.execute([CmdCommand.new("-a")])).is_success()
 	verify(cmd_spy).cmd_a()
 	verify_no_more_interactions(cmd_spy)
-	
+
 	reset(cmd_spy)
 	assert_result(cmd_handler.execute([
-		CmdCommand.new("-a"), 
+		CmdCommand.new("-a"),
 		CmdCommand.new("-b", ["some_value"]),
 		CmdCommand.new("-b2", ["value1", "value2"])])).is_success()
 	verify(cmd_spy).cmd_a()

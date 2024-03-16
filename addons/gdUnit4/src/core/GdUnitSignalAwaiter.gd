@@ -42,7 +42,7 @@ func on_signal(source :Object, signal_name :String, expected_signal_args :Array)
 		signal_emitted.emit(null)
 	, CONNECT_DEFERRED)
 	timer.start(_timeout_millis * 0.001 * Engine.get_time_scale())
-	
+
 	# holds the emited value
 	var value :Variant
 	# wait for signal is emitted or a timeout is happen
@@ -55,7 +55,7 @@ func on_signal(source :Object, signal_name :String, expected_signal_args :Array)
 		if expected_signal_args.size() == 0 or GdObjects.equals(value, expected_signal_args):
 			break
 		await Engine.get_main_loop().process_frame
-	
+
 	source.disconnect(signal_name, _on_signal_emmited)
 	_time_left = timer.time_left
 	await Engine.get_main_loop().process_frame

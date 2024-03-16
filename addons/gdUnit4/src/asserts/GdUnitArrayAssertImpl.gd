@@ -92,7 +92,6 @@ func _array_div(compare_mode :GdObjects.COMPARE_MODE, left :Array[Variant], righ
 	return [not_expect, not_found]
 
 
-
 func _contains(expected, compare_mode :GdObjects.COMPARE_MODE) -> GdUnitArrayAssert:
 	if not _validate_value_type(expected):
 		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))

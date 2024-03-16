@@ -56,7 +56,7 @@ static func debug_observe(name :String, obj :Object, indent :int = 0) -> void:
 
 static func guard_instance(obj :Object) -> Object:
 	if not _is_instance_guard_enabled():
-		return 
+		return
 	var tag := TAG_OBSERVE_INSTANCE + str(abs(obj.get_instance_id()))
 	if Engine.has_meta(tag):
 		return
@@ -67,7 +67,7 @@ static func guard_instance(obj :Object) -> Object:
 
 static func unguard_instance(obj :Object, verbose := true) -> void:
 	if not _is_instance_guard_enabled():
-		return 
+		return
 	var tag := TAG_OBSERVE_INSTANCE + str(abs(obj.get_instance_id()))
 	if verbose:
 		debug_observe("unguard instance", obj)
@@ -77,7 +77,7 @@ static func unguard_instance(obj :Object, verbose := true) -> void:
 
 static func gc_guarded_instance(name :String, instance :Object) -> void:
 	if not _is_instance_guard_enabled():
-		return 
+		return
 	await Engine.get_main_loop().process_frame
 	unguard_instance(instance, false)
 	if is_instance_valid(instance) and instance is RefCounted:
@@ -96,7 +96,7 @@ static func gc_guarded_instance(name :String, instance :Object) -> void:
 
 static func gc_on_guarded_instances() -> void:
 	if not _is_instance_guard_enabled():
-		return 
+		return
 	for tag in Engine.get_meta_list():
 		if tag.begins_with(TAG_OBSERVE_INSTANCE):
 			var instance = Engine.get_meta(tag)

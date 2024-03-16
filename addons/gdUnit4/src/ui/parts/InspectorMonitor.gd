@@ -13,6 +13,7 @@ signal jump_to_orphan_nodes
 var total_elapsed_time := 0
 var total_orphans := 0
 
+
 func _ready():
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	_time.text = ""

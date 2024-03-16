@@ -5,9 +5,10 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitFloatAssertImpl.gd'
 
+
 func test_is_null():
 	assert_float(null).is_null()
-	
+
 	assert_failure(func(): assert_float(23.2).is_null()) \
 		.is_failed() \
 		.starts_with_message("Expecting: '<null>' but was '23.200000'")
@@ -15,7 +16,7 @@ func test_is_null():
 
 func test_is_not_null():
 	assert_float(23.2).is_not_null()
-	
+
 	assert_failure(func(): assert_float(null).is_not_null()) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
@@ -23,7 +24,7 @@ func test_is_not_null():
 
 func test_is_equal():
 	assert_float(23.2).is_equal(23.2)
-	
+
 	assert_failure(func(): assert_float(23.2).is_equal(23.4)) \
 		.is_failed() \
 		.has_message("Expecting:\n '23.400000'\n but was\n '23.200000'")
@@ -35,7 +36,7 @@ func test_is_equal():
 func test_is_not_equal():
 	assert_float(null).is_not_equal(23.4)
 	assert_float(23.2).is_not_equal(23.4)
-	
+
 	assert_failure(func(): assert_float(23.2).is_not_equal(23.2)) \
 		.is_failed() \
 		.has_message("Expecting:\n '23.200000'\n not equal to\n '23.200000'")
@@ -46,7 +47,7 @@ func test_is_equal_approx() -> void:
 	assert_float(23.19).is_equal_approx(23.2, 0.01)
 	assert_float(23.20).is_equal_approx(23.2, 0.01)
 	assert_float(23.21).is_equal_approx(23.2, 0.01)
-	
+
 	assert_failure(func(): assert_float(23.18).is_equal_approx(23.2, 0.01)) \
 		.is_failed() \
 		.has_message("Expecting:\n '23.180000'\n in range between\n '23.190000' <> '23.210000'")
@@ -67,7 +68,7 @@ func test_is_less_():
 func test_is_less():
 	assert_float(23.2).is_less(23.4)
 	assert_float(23.2).is_less(26.0)
-	
+
 	assert_failure(func(): assert_float(23.2).is_less(23.2)) \
 		.is_failed() \
 		.has_message("Expecting to be less than:\n '23.200000' but was '23.200000'")
@@ -79,7 +80,7 @@ func test_is_less():
 func test_is_less_equal():
 	assert_float(23.2).is_less_equal(23.4)
 	assert_float(23.2).is_less_equal(23.2)
-	
+
 	assert_failure(func(): assert_float(23.2).is_less_equal(23.1)) \
 		.is_failed() \
 		.has_message("Expecting to be less than or equal:\n '23.100000' but was '23.200000'")
@@ -91,7 +92,7 @@ func test_is_less_equal():
 func test_is_greater():
 	assert_float(23.2).is_greater(23.0)
 	assert_float(23.4).is_greater(22.1)
-	
+
 	assert_failure(func(): assert_float(23.2).is_greater(23.2)) \
 		.is_failed() \
 		.has_message("Expecting to be greater than:\n '23.200000' but was '23.200000'")
@@ -103,7 +104,7 @@ func test_is_greater():
 func test_is_greater_equal():
 	assert_float(23.2).is_greater_equal(20.2)
 	assert_float(23.2).is_greater_equal(23.2)
-	
+
 	assert_failure(func(): assert_float(23.2).is_greater_equal(23.3)) \
 		.is_failed() \
 		.has_message("Expecting to be greater than or equal:\n '23.300000' but was '23.200000'")
@@ -114,7 +115,7 @@ func test_is_greater_equal():
 
 func test_is_negative():
 	assert_float(-13.2).is_negative()
-	
+
 	assert_failure(func(): assert_float(13.2).is_negative()) \
 		.is_failed() \
 		.has_message("Expecting:\n '13.200000' be negative")
@@ -125,7 +126,7 @@ func test_is_negative():
 
 func test_is_not_negative():
 	assert_float(13.2).is_not_negative()
-	
+
 	assert_failure(func(): assert_float(-13.2).is_not_negative()) \
 		.is_failed() \
 		.has_message("Expecting:\n '-13.200000' be not negative")
@@ -136,7 +137,7 @@ func test_is_not_negative():
 
 func test_is_zero():
 	assert_float(0.0).is_zero()
-	
+
 	assert_failure(func(): assert_float(0.00001).is_zero()) \
 		.is_failed() \
 		.has_message("Expecting:\n equal to 0 but is '0.000010'")
@@ -147,7 +148,7 @@ func test_is_zero():
 
 func test_is_not_zero():
 	assert_float(0.00001).is_not_zero()
-	
+
 	assert_failure(func(): assert_float(0.000001).is_not_zero()) \
 		.is_failed() \
 		.has_message("Expecting:\n not equal to 0")
@@ -224,21 +225,21 @@ func test_override_failure_message() -> void:
 func test_is_failure() -> void:
 	# initial is false
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked success assert
 	assert_float(0.0).is_zero()
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked faild assert
 	assert_failure(func(): assert_float(1.0).is_zero()) \
 		.is_failed()
 	assert_bool(is_failure()).is_true()
-	
+
 	# checked next success assert
 	assert_float(0.0).is_zero()
 	# is true because we have an already failed assert
 	assert_bool(is_failure()).is_true()
-	
+
 	# should abort here because we had an failing assert
 	if is_failure():
 		return

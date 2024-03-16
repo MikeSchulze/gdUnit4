@@ -8,7 +8,7 @@ const __source = 'res://addons/gdUnit4/src/asserts/GdUnitBoolAssertImpl.gd'
 
 func test_is_true():
 	assert_bool(true).is_true()
-	
+
 	assert_failure(func(): assert_bool(false).is_true())\
 		.is_failed() \
 		.has_message("Expecting: 'true' but is 'false'")
@@ -19,7 +19,7 @@ func test_is_true():
 
 func test_isFalse():
 	assert_bool(false).is_false()
-	
+
 	assert_failure(func(): assert_bool(true).is_false()) \
 		.is_failed() \
 		.has_message("Expecting: 'false' but is 'true'")
@@ -47,7 +47,7 @@ func test_is_not_null():
 func test_is_equal():
 	assert_bool(true).is_equal(true)
 	assert_bool(false).is_equal(false)
-	
+
 	assert_failure(func(): assert_bool(true).is_equal(false)) \
 		.is_failed() \
 		.has_message("Expecting:\n 'false'\n but was\n 'true'")
@@ -60,7 +60,7 @@ func test_is_not_equal():
 	assert_bool(null).is_not_equal(false)
 	assert_bool(true).is_not_equal(false)
 	assert_bool(false).is_not_equal(true)
-	
+
 	assert_failure(func(): assert_bool(true).is_not_equal(true)) \
 		.is_failed() \
 		.has_message("Expecting:\n 'true'\n not equal to\n 'true'")
@@ -97,20 +97,20 @@ func test_override_failure_message() -> void:
 func test_is_failure() -> void:
 	# initial is false
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked success assert
 	assert_bool(true).is_true()
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked faild assert
 	assert_failure(func(): assert_bool(true).is_false()).is_failed()
 	assert_bool(is_failure()).is_true()
-	
+
 	# checked next success assert
 	assert_bool(true).is_true()
 	# is true because we have an already failed assert
 	assert_bool(is_failure()).is_true()
-	
+
 	# should abort here because we had an failing assert
 	if is_failure():
 		return

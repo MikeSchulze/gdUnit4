@@ -41,7 +41,7 @@ static func create_instance(clazz) -> Object:
 			script = clazz
 		else:
 			script = load(clazz)
-			
+
 		var args = GdObjects.build_function_default_arguments(script, "_init")
 		return script.callv("new", args)
 	elif typeof(clazz) == TYPE_STRING and ClassDB.can_instantiate(clazz):
@@ -63,7 +63,7 @@ static func mock_on_scene(scene :PackedScene, debug_write :bool) -> Object:
 			push_error("Can't create a mockable instance for a scene without script '%s'" % scene.resource_path)
 		GdUnitTools.free_instance(scene_instance)
 		return null
-	
+
 	var script_path = scene_instance.get_script().get_path()
 	var mock = mock_on_script(scene_instance, script_path, GdUnitClassDoubler.EXLCUDE_SCENE_FUNCTIONS, debug_write)
 	if mock == null:
@@ -88,16 +88,16 @@ static func mock_on_script(instance :Object, clazz :Variant, function_excludes :
 	var function_doubler := GdUnitMockFunctionDoubler.new(push_errors)
 	var class_info := get_class_info(clazz)
 	var lines := load_template(MOCK_TEMPLATE.source_code, class_info, instance)
-	
+
 	var clazz_name :String = class_info.get("class_name")
 	var clazz_path :PackedStringArray = class_info.get("class_path", [clazz_name])
 	lines += double_functions(instance, clazz_name, clazz_path, function_doubler, function_excludes)
-	
+
 	var mock := GDScript.new()
 	mock.source_code = "\n".join(lines)
 	mock.resource_name = "Mock%s.gd" % clazz_name
 	mock.resource_path = GdUnitFileAccess.create_temp_dir("mock") + "/Mock%s_%d.gd" % [clazz_name, Time.get_ticks_msec()]
-	
+
 	if debug_write:
 		DirAccess.remove_absolute(mock.resource_path)
 		ResourceSaver.save(mock, mock.resource_path)
@@ -124,7 +124,7 @@ static func is_mockable(clazz :Variant, push_errors :bool=false) -> bool:
 			if push_errors:
 				push_error("It is not allowed to mock an instance '%s', use class name instead, Read 'Mocker' documentation for details" % clazz)
 			return false
-		
+
 		if not GdObjects.can_be_instantiate(clazz):
 			if push_errors:
 				push_error("Can't create a mockable instance for class '%s'" % clazz)

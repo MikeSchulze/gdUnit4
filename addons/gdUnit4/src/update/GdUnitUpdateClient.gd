@@ -6,19 +6,20 @@ signal request_completed(response)
 class HttpResponse:
 	var _code :int
 	var _body :PackedByteArray
-	
+
+
 	func _init(code_ :int, body_ :PackedByteArray):
 		_code = code_
 		_body = body_
-	
+
 	func code() -> int:
 		return _code
-	
+
 	func response() -> Variant:
 		var test_json_conv := JSON.new()
 		test_json_conv.parse(_body.get_string_from_utf8())
 		return test_json_conv.get_data()
-	
+
 	func body() -> PackedByteArray:
 		return _body
 

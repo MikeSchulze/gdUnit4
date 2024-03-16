@@ -84,7 +84,7 @@ func _notification(what):
 				_current_scene.free()
 		_is_disposed = true
 		_current_scene = null
-		# we hide the scene/main window after runner is finished 
+		# we hide the scene/main window after runner is finished
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 
 
@@ -163,7 +163,7 @@ func simulate_mouse_move_relative(relative: Vector2, time: float = 1.0, trans_ty
 	var final_position := _curent_mouse_position + relative
 	tween.tween_property(self, "_curent_mouse_position", final_position, time).set_trans(trans_type)
 	tween.play()
-	
+
 	while not get_mouse_position().is_equal_approx(final_position):
 		simulate_mouse_move(_curent_mouse_position)
 		await _scene_tree().process_frame
@@ -175,7 +175,7 @@ func simulate_mouse_move_absolute(position: Vector2, time: float = 1.0, trans_ty
 	_curent_mouse_position = get_mouse_position()
 	tween.tween_property(self, "_curent_mouse_position", position, time).set_trans(trans_type)
 	tween.play()
-	
+
 	while not get_mouse_position().is_equal_approx(position):
 		simulate_mouse_move(_curent_mouse_position)
 		await _scene_tree().process_frame
@@ -382,7 +382,7 @@ func _reset_input_to_default() -> void:
 		if Input.is_mouse_button_pressed(m_button):
 			simulate_mouse_button_release(m_button)
 	_mouse_button_on_press.clear()
-	
+
 	for key_scancode in _key_on_press.duplicate():
 		if Input.is_key_pressed(key_scancode):
 			simulate_key_release(key_scancode)

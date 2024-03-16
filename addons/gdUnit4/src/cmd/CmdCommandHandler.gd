@@ -50,7 +50,7 @@ func register_cbv(cmd_name: String, cb: Callable) -> CmdCommandHandler:
 func _validate() -> GdUnitResult:
 	var errors: = PackedStringArray()
 	var registered_cbs: = Dictionary()
-	
+
 	for cmd_name in _command_cbs.keys():
 		var cb: Callable = _command_cbs[cmd_name][CB_SINGLE_ARG] if _command_cbs[cmd_name][CB_SINGLE_ARG] else _command_cbs[cmd_name][CB_MULTI_ARGS]
 		if cb != NO_CB and not cb.is_valid():
@@ -61,7 +61,7 @@ func _validate() -> GdUnitResult:
 		if _enhanced_fr_test and cb != NO_CB:
 			var cb_method: = cb.get_method()
 			if registered_cbs.has(cb_method):
-				var already_registered_cmd = registered_cbs[cb_method] 
+				var already_registered_cmd = registered_cbs[cb_method]
 				errors.append("The function reference '%s' already registerd for command '%s'!" % [cb_method, already_registered_cmd])
 			else:
 				registered_cbs[cb_method] = cmd_name

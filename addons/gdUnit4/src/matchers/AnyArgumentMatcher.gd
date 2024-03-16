@@ -1,4 +1,4 @@
-class_name AnyArgumentMatcher 
+class_name AnyArgumentMatcher
 extends GdUnitArgumentMatcher
 
 

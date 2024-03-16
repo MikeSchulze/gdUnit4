@@ -37,7 +37,7 @@ func request_releases() -> void:
 		_header.text = "A new version 'v4.1.0_debug' is available"
 		await show_update()
 		return
-	
+
 	# wait 20s to allow the editor to initialize itself
 	await get_tree().create_timer(20).timeout
 	var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_latest_version()
@@ -88,7 +88,7 @@ func show_update() -> void:
 		else:
 			message_h4("\n\n\nError checked request available releases!", Color.RED)
 			return
-	
+
 	# finally force rescan to import images as textures
 	if Engine.is_editor_hint():
 		await rescan()

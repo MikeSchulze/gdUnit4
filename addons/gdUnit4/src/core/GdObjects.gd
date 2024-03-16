@@ -146,7 +146,7 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 	var clazz_name := obj.get_class()
 	var dict := Dictionary()
 	var clazz_path := ""
-	
+
 	if is_instance_valid(obj) and obj.get_script() != null:
 		var d := inst_to_dict(obj)
 		clazz_path = d["@path"]
@@ -156,7 +156,7 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 		else:
 			clazz_name = clazz_path.get_file().replace(".gd", "")
 	dict["@path"] = clazz_path
-	
+
 	for property in obj.get_property_list():
 		var property_name = property["name"]
 		var property_type = property["type"]
@@ -197,13 +197,13 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 		prints("stack_depth", stack_depth, deep_stack)
 		push_error("GdUnit equals has max stack deep reached!")
 		return false
-	
+
 	# use argument matcher if requested
 	if is_instance_valid(obj_a) and obj_a is GdUnitArgumentMatcher:
 		return (obj_a as GdUnitArgumentMatcher).is_match(obj_b)
 	if is_instance_valid(obj_b) and obj_b is GdUnitArgumentMatcher:
 		return (obj_b as GdUnitArgumentMatcher).is_match(obj_a)
-	
+
 	stack_depth += 1
 	# fast fail is different types
 	if not _is_type_equivalent(type_a, type_b):
@@ -216,7 +216,7 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 		return false
 	if obj_b == null and obj_a != null:
 		return false
-	
+
 	match type_a:
 		TYPE_OBJECT:
 			if deep_stack.has(obj_a) or deep_stack.has(obj_b):
@@ -233,7 +233,7 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 				var b = obj2dict(obj_b)
 				return _equals(a, b, case_sensitive, compare_mode, deep_stack, stack_depth)
 			return obj_a == obj_b
-		
+
 		TYPE_ARRAY:
 			if obj_a.size() != obj_b.size():
 				return false
@@ -241,7 +241,7 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 				if not _equals(obj_a[index], obj_b[index], case_sensitive, compare_mode, deep_stack, stack_depth):
 					return false
 			return true
-		
+
 		TYPE_DICTIONARY:
 			if obj_a.size() != obj_b.size():
 				return false
@@ -251,7 +251,7 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 				if not _equals(value_a, value_b, case_sensitive, compare_mode, deep_stack, stack_depth):
 					return false
 			return true
-		
+
 		TYPE_STRING:
 			if case_sensitive:
 				return obj_a.to_lower() == obj_b.to_lower()
@@ -487,7 +487,7 @@ static func extract_class_path(clazz :Variant) -> PackedStringArray:
 		if script != null:
 			return extract_class_path(script)
 		return clazz_path
-	
+
 	if clazz is GDScript:
 		if not clazz.resource_path.is_empty():
 			clazz_path.append(clazz.resource_path)
@@ -521,14 +521,14 @@ static func extract_class_name_from_class_path(clazz_path :PackedStringArray) ->
 static func extract_class_name(clazz :Variant) -> GdUnitResult:
 	if clazz == null:
 		return GdUnitResult.error("Can't extract class name form a null value.")
-	
+
 	if is_instance(clazz):
 		# is instance a script instance?
 		var script := clazz.script as GDScript
 		if script != null:
 			return extract_class_name(script)
 		return GdUnitResult.success(clazz.get_class())
-	
+
 	# extract name form full qualified class path
 	if clazz is String:
 		if ClassDB.class_exists(clazz):
@@ -536,16 +536,16 @@ static func extract_class_name(clazz :Variant) -> GdUnitResult:
 		var source_sript :Script = load(clazz)
 		var clazz_name :String = load("res://addons/gdUnit4/src/core/parse/GdScriptParser.gd").new().get_class_name(source_sript)
 		return GdUnitResult.success(to_pascal_case(clazz_name))
-	
+
 	if is_primitive_type(clazz):
 		return GdUnitResult.error("Can't extract class name for an primitive '%s'" % type_as_string(typeof(clazz)))
-	
+
 	if is_script(clazz):
 		if clazz.resource_path.is_empty():
 			var class_path := extract_class_name_from_class_path(extract_class_path(clazz))
 			return GdUnitResult.success(class_path);
 		return extract_class_name(clazz.resource_path)
-	
+
 	# need to create an instance for a class typ the extract the class name
 	var instance :Variant = clazz.new()
 	if instance == null:
@@ -557,7 +557,7 @@ static func extract_class_name(clazz :Variant) -> GdUnitResult:
 
 static func extract_inner_clazz_names(clazz_name :String, script_path :PackedStringArray) -> PackedStringArray:
 	var inner_classes := PackedStringArray()
-	
+
 	if ClassDB.class_exists(clazz_name):
 		return inner_classes
 	var script :GDScript = load(script_path[0])
@@ -573,7 +573,7 @@ static func extract_inner_clazz_names(clazz_name :String, script_path :PackedStr
 static func extract_class_functions(clazz_name :String, script_path :PackedStringArray) -> Array:
 	if ClassDB.class_get_method_list(clazz_name):
 		return ClassDB.class_get_method_list(clazz_name)
-	
+
 	if not FileAccess.file_exists(script_path[0]):
 		return Array()
 	var script :GDScript = load(script_path[0])
@@ -619,7 +619,7 @@ static func build_function_default_arguments(script :GDScript, func_name :String
 static func default_value_by_type(type :int):
 	assert(type < TYPE_MAX)
 	assert(type >= 0)
-	
+
 	match type:
 		TYPE_NIL: return null
 		TYPE_BOOL: return false
@@ -655,7 +655,7 @@ static func default_value_by_type(type :int):
 		TYPE_PACKED_STRING_ARRAY: return PackedStringArray()
 		TYPE_PACKED_VECTOR2_ARRAY: return PackedVector2Array()
 		TYPE_PACKED_VECTOR3_ARRAY: return PackedVector3Array()
-	
+
 	push_error("Can't determine a default value for type: '%s', Please create a Bug issue and attach the stacktrace please." % type)
 	return null
 

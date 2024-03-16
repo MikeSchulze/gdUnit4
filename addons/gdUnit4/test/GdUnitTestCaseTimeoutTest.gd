@@ -90,23 +90,23 @@ func test_timeout_long_running_test_abort(timeout=4000):
 	prints("E", "0s")
 	var start_time := Time.get_ticks_msec()
 	var sec_start_time := Time.get_ticks_msec()
-	
+
 	# simulate long running function
 	while true:
 		var elapsed_time := Time.get_ticks_msec() - start_time
 		var sec_time = Time.get_ticks_msec() - sec_start_time
-		
+
 		if sec_time > 1000:
 			sec_start_time = Time.get_ticks_msec()
 			prints("E", LocalTime.elapsed(elapsed_time))
-		
+
 		# give system time to check for timeout
 		await await_millis(200)
-		
+
 		# exit while after 4500ms inclusive 500ms offset
 		if elapsed_time > 4500:
 			break
-	
+
 	# this line should not reach if timeout aborts the test case after 4s
 	fail("The test case must be abort interupted by a timeout 4s")
 	prints("F", "end test test_timeout")
@@ -116,7 +116,7 @@ func test_timeout_long_running_test_abort(timeout=4000):
 func test_timeout_fuzzer(fuzzer := Fuzzers.rangei(-23, 22), timeout=2000):
 	discard_error_interupted_by_timeout()
 	var value = fuzzer.next_value()
-	# wait each iteration 200ms 
+	# wait each iteration 200ms
 	await await_millis(200)
 	# we expects the test is interupped after 10 iterations because each test takes 200ms
 	# and the test should not longer run than 2000ms

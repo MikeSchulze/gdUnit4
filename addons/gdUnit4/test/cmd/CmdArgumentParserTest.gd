@@ -13,6 +13,7 @@ var option_x := CmdOption.new("-x", "some help text x", "some description x")
 
 var _cmd_options :CmdOptions
 
+
 func before():
 	# setup command options
 	_cmd_options = CmdOptions.new([
@@ -20,7 +21,7 @@ func before():
 		option_f,
 		option_b,
 		option_c,
-	], 
+	],
 	# advnaced options
 	[
 		option_x,
@@ -29,11 +30,11 @@ func before():
 
 func test_parse_success():
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
-	
+
 	assert_result(parser.parse([])).is_empty()
 	# check with godot cmd argumnents before tool argument
 	assert_result(parser.parse(["-d", "dir/dir/CmdTool.gd"])).is_empty()
-	
+
 	# if valid argument set than don't show the help by default
 	var result := parser.parse(["-d", "dir/dir/CmdTool.gd", "-a"])
 	assert_result(result).is_success()
@@ -41,16 +42,17 @@ func test_parse_success():
 		CmdCommand.new("-a"),
 	])
 
+
 func test_parse_success_required_arg():
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
-	
+
 	var result := parser.parse(["-d", "dir/dir/CmdTool.gd", "-a", "-b", "valueA", "-b", "valueB"])
 	assert_result(result).is_success()
 	assert_array(result.value()).contains_exactly([
 		CmdCommand.new("-a"),
 		CmdCommand.new("-b", ["valueA", "valueB"]),
 	])
-	
+
 	# useing command long term
 	result = parser.parse(["-d", "dir/dir/CmdTool.gd", "-a", "--bar", "value"])
 	assert_result(result).is_success()
@@ -59,9 +61,10 @@ func test_parse_success_required_arg():
 		CmdCommand.new("-b", ["value"])
 	])
 
+
 func test_parse_success_optional_arg():
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
-	
+
 	# without argument
 	var result := parser.parse(["-d", "dir/dir/CmdTool.gd", "-c", "-a"])
 	assert_result(result).is_success()
@@ -69,7 +72,7 @@ func test_parse_success_optional_arg():
 		CmdCommand.new("-c"),
 		CmdCommand.new("-a")
 	])
-	
+
 	# without argument at end
 	result = parser.parse(["-d", "dir/dir/CmdTool.gd", "-a", "-c"])
 	assert_result(result).is_success()
@@ -77,7 +80,7 @@ func test_parse_success_optional_arg():
 		CmdCommand.new("-a"),
 		CmdCommand.new("-c")
 	])
-	
+
 	# with argument
 	result = parser.parse(["-d", "dir/dir/CmdTool.gd", "-c", "argument", "-a"])
 	assert_result(result).is_success()
@@ -86,9 +89,10 @@ func test_parse_success_optional_arg():
 		CmdCommand.new("-a")
 	])
 
+
 func test_parse_success_repead_cmd_args():
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
-	
+
 	# without argument
 	var result := parser.parse(["-d", "dir/dir/CmdTool.gd", "-c", "argument", "-a"])
 	assert_result(result).is_success()
@@ -96,7 +100,7 @@ func test_parse_success_repead_cmd_args():
 		CmdCommand.new("-c", ["argument"]),
 		CmdCommand.new("-a")
 	])
-	
+
 	# with repeading commands argument
 	result = parser.parse(["-d", "dir/dir/CmdTool.gd", "-c", "argument1", "-a",  "-c", "argument2",  "-c", "argument3"])
 	assert_result(result).is_success()
@@ -105,11 +109,12 @@ func test_parse_success_repead_cmd_args():
 		CmdCommand.new("-a")
 	])
 
+
 func test_parse_error():
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
-	
+
 	assert_result(parser.parse([])).is_empty()
-	
+
 	# if invalid arguemens set than return with error and show the help by default
 	assert_result(parser.parse(["-d", "dir/dir/CmdTool.gd", "-unknown"])).is_error()\
 		.contains_message("Unknown '-unknown' command!")

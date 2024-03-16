@@ -151,7 +151,7 @@ func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDes
 	var skip_reason := "Unknown."
 	var fuzzers :Array[GdFunctionArgument] = []
 	var test := _TestCase.new()
-	
+
 	for arg in fd.args():
 		# verify argument is allowed
 		# is test using fuzzers?
@@ -226,11 +226,11 @@ static func resolve_test_suite_path(source_script_path :String, test_root_folder
 	var suite_name := _to_naming_convention(file_name)
 	if test_root_folder.is_empty() or test_root_folder == "/":
 		return source_script_path.replace(file_name, suite_name)
-	
+
 	# is user tmp
 	if source_script_path.begins_with("user://tmp"):
 		return normalize_path(source_script_path.replace("user://tmp", "user://tmp/" + test_root_folder)).replace(file_name, suite_name)
-	
+
 	# at first look up is the script under a "src" folder located
 	var test_suite_path :String
 	var src_folder = source_script_path.find("/src/")
@@ -325,7 +325,7 @@ static func create_test_case(test_suite_path :String, func_name :String, source_
 	if test_case_exists(test_suite_path, func_name):
 		var line_number := get_test_case_line_number(test_suite_path, func_name)
 		return GdUnitResult.success({ "path" : test_suite_path, "line" : line_number})
-	
+
 	if not test_suite_exists(test_suite_path):
 		var result := create_test_suite(test_suite_path, source_script_path)
 		if result.is_error():

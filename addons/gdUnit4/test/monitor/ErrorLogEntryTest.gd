@@ -16,6 +16,7 @@ const script_error = """
 	   at: GdUnitScriptTypeTest.test_xx (res://addons/gdUnit4/test/GdUnitScriptTypeTest.gd:22)
 """
 
+
 func test_parse_script_error_line_number() -> void:
 	var line := ErrorLogEntry._parse_error_line_number(script_error.dedent())
 	assert_int(line).is_equal(22)

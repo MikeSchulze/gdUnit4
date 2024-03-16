@@ -8,7 +8,7 @@ const __source = 'res://addons/gdUnit4/src/matchers/AnyArgumentMatcher.gd'
 
 func test_is_match():
 	var matcher := AnyArgumentMatcher.new()
-	
+
 	assert_bool(matcher.is_match(null)).is_true()
 	assert_bool(matcher.is_match("")).is_true()
 	assert_bool(matcher.is_match("abc")).is_true()

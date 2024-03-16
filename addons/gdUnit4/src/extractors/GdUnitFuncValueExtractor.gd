@@ -18,7 +18,7 @@ func args() -> Array:
 
 
 # Extracts a value by given `func_name` and `args`,
-# Allows to use a chained list of functions setarated ba a dot. 
+# Allows to use a chained list of functions setarated ba a dot.
 #  e.g. "func_a.func_b.name"
 #  do calls instance.func_a().func_b().name() and returns finally the name
 # If a function returns an array, all elements will by collected in a array
@@ -51,7 +51,7 @@ func _call_func(value, func_name :String):
 	# TODO extend to all array functions
 	if GdArrayTools.is_array_type(value) and func_name == "empty":
 		return value.is_empty()
-	
+
 	if is_instance_valid(value):
 		# extract from function
 		if value.has_method(func_name):

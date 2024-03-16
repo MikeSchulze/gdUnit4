@@ -8,7 +8,7 @@ const __source = 'res://addons/gdUnit4/src/asserts/GdUnitObjectAssertImpl.gd'
 
 func test_is_equal():
 	assert_object(Mesh.new()).is_equal(Mesh.new())
-	
+
 	assert_failure(func(): assert_object(Mesh.new()).is_equal(Skin.new())) \
 		.is_failed()
 	assert_failure(func(): assert_object(null).is_equal(Skin.new())) \
@@ -22,7 +22,7 @@ func test_is_equal():
 func test_is_not_equal():
 	assert_object(null).is_not_equal(Skin.new())
 	assert_object(Mesh.new()).is_not_equal(Skin.new())
-	
+
 	assert_failure(func(): assert_object(Mesh.new()).is_not_equal(Mesh.new())) \
 		.is_failed()
 
@@ -36,7 +36,7 @@ func test_is_instanceof():
 	# inner class test
 	assert_object(auto_free(CustomClass.InnerClassA.new())).is_instanceof(Node)
 	assert_object(auto_free(CustomClass.InnerClassB.new())).is_instanceof(CustomClass.InnerClassA)
-	
+
 	assert_failure(func(): assert_object(auto_free(Path3D.new())).is_instanceof(Tree)) \
 		.is_failed() \
 		.has_message("Expected instance of:\n 'Tree'\n But it was 'Path3D'")
@@ -54,7 +54,7 @@ func test_is_not_instanceof():
 	# inner class test
 	assert_object(auto_free(CustomClass.InnerClassA.new())).is_not_instanceof(Tree)
 	assert_object(auto_free(CustomClass.InnerClassB.new())).is_not_instanceof(CustomClass.InnerClassC)
-	
+
 	assert_failure(func(): assert_object(auto_free(Path3D.new())).is_not_instanceof(Node)) \
 		.is_failed() \
 		.has_message("Expected not be a instance of <Node>")
@@ -62,7 +62,7 @@ func test_is_not_instanceof():
 
 func test_is_null():
 	assert_object(null).is_null()
-	
+
 	assert_failure(func(): assert_object(auto_free(Node.new())).is_null()) \
 		.is_failed() \
 		.starts_with_message("Expecting: '<null>' but was <Node>")
@@ -70,7 +70,7 @@ func test_is_null():
 
 func test_is_not_null():
 	assert_object(auto_free(Node.new())).is_not_null()
-	
+
 	assert_failure(func(): assert_object(null).is_not_null()) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
@@ -83,7 +83,7 @@ func test_is_same():
 	assert_object(obj1).is_same(obj1)
 	assert_object(obj1).is_same(obj2)
 	assert_object(obj2).is_same(obj1)
-	
+
 	assert_failure(func(): assert_object(null).is_same(obj1)) \
 		.is_failed() \
 		.has_message("Expecting:\n"
@@ -157,21 +157,21 @@ func test_override_failure_message() -> void:
 func test_is_failure() -> void:
 	# initial is false
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked success assert
 	assert_object(null).is_null()
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked faild assert
 	assert_failure(func(): assert_object(RefCounted.new()).is_null()) \
 		.is_failed()
 	assert_bool(is_failure()).is_true()
-	
+
 	# checked next success assert
 	assert_object(null).is_null()
 	# is true because we have an already failed assert
 	assert_bool(is_failure()).is_true()
-	
+
 	# should abort here because we had an failing assert
 	if is_failure():
 		return

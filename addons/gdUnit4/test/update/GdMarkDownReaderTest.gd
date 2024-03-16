@@ -58,7 +58,7 @@ func test_to_bbcode_embeded_text() -> void:
 func test_process_image() -> void:
 	#regex("!\\[(.*?)\\]\\((.*?)(( )+(.*?))?\\)")
 	var reg_ex :RegEx = _reader.md_replace_patterns[24][0]
-	
+
 	# without tooltip
 	assert_str(await _reader.process_image(reg_ex, "![alt text](res://addons/gdUnit4/test/update/resources/icon48.png)"))\
 		.is_equal("[img]res://addons/gdUnit4/test/update/resources/icon48.png[/img]")
@@ -68,15 +68,15 @@ func test_process_image() -> void:
 	# multiy lines
 	var input := """
 		![alt text](res://addons/gdUnit4/test/update/resources/icon48.png)
-		
+
 		![alt text](res://addons/gdUnit4/test/update/resources/icon23.png \"Logo Title Text 1\")
-		
+
 		""".dedent()
 	var expected := """
 		[img]res://addons/gdUnit4/test/update/resources/icon48.png[/img]
-		
+
 		[img]res://addons/gdUnit4/test/update/resources/icon23.png[/img]
-		
+
 		""".dedent()
 	assert_str(await _reader.process_image(reg_ex, input))\
 		.is_equal(expected)
@@ -87,21 +87,21 @@ func test_process_image_by_reference() -> void:
 	var reg_ex :RegEx = _reader.md_replace_patterns[23][0]
 	var input := """
 		![alt text1][logo-1]
-		
+
 		[logo-1]:https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
-		
+
 		![alt text2][logo-1]
-		
+
 		""".dedent()
-	
+
 	var expected := """
 		![alt text1](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png)
-		
-		
+
+
 		![alt text2](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png)
-		
+
 		""".replace("\r", "").dedent()
-	
+
 	# without tooltip
 	assert_str(_reader.process_image_references(reg_ex, input))\
 		.is_equal(expected)
@@ -112,7 +112,7 @@ func test_process_external_image_save_as_png() -> void:
 		[img]https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png[/img]
 		[img]https://github.com/MikeSchulze/gdUnit4/assets/347037/3205c9f1-1746-4716-aa6d-e3a1808b761d[/img]
 		""".dedent()
-	
+
 	var output := await _reader._process_external_image_resources(input)
 	assert_str(output).is_equal("""
 		[img]res://addons/gdUnit4/tmp-update/icon48.png[/img]

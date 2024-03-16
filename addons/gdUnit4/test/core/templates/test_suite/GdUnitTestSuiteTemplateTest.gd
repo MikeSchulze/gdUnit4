@@ -19,11 +19,14 @@ const CUSTOM_TEMPLATE = """
 		var ${source_var}_2 = load("${source_resource_path}")
 """
 
+
 func after() -> void:
 	GdUnitTestSuiteTemplate.reset_to_default(GdUnitTestSuiteTemplate.TEMPLATE_ID_GD)
 
+
 func test_default_template() -> void:
 	assert_str(GdUnitTestSuiteTemplate.default_template(GdUnitTestSuiteTemplate.TEMPLATE_ID_GD)).is_equal(GdUnitTestSuiteTemplate.default_GD_template())
+
 
 func test_build_template_default() -> void:
 	var template := GdUnitTestSuiteTemplate.build_template("res://addons/gdUnit4/test/core/resources/script_with_class_name.gd")
@@ -38,6 +41,7 @@ func test_build_template_default() -> void:
 		const __source = 'res://addons/gdUnit4/test/core/resources/script_with_class_name.gd'
 		""".dedent().trim_prefix("\n")
 	assert_str(template).is_equal(expected)
+
 
 # checked source with class_name definition
 func test_build_template_custom1() -> void:
@@ -55,6 +59,7 @@ func test_build_template_custom1() -> void:
 			var script_with_class_name_2 = load("res://addons/gdUnit4/test/core/resources/script_with_class_name.gd")
 		""".dedent().trim_prefix("\n")
 	assert_str(template).is_equal(expected)
+
 
 # checked source without class_name definition
 func test_build_template_custom2() -> void:

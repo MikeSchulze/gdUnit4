@@ -7,6 +7,7 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/report/XmlElement.gd'
 
+
 func test_attribute() -> void:
 	var element := XmlElement.new("testsuites")\
 		.attribute(JUnitXmlReport.ATTR_ID, "1")\
@@ -27,6 +28,7 @@ func test_empty() -> void:
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
 
+
 func test_add_child() -> void:
 	var child := XmlElement.new("foo")\
 		.attribute(JUnitXmlReport.ATTR_ID, "1")\
@@ -43,6 +45,7 @@ func test_add_child() -> void:
 """.replace("\r", "")
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
+
 
 func test_add_childs() -> void:
 	var child_a := XmlElement.new("foo_a")\
@@ -66,6 +69,7 @@ func test_add_childs() -> void:
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
 
+
 func test_add_text() -> void:
 	var element := XmlElement.new("testsuites")\
 		.text("This is a message")
@@ -78,6 +82,7 @@ This is a message
 """.replace("\r", "")
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
+
 
 func test_complex_example() -> void:
 	var testsuite1 := XmlElement.new("testsuite")\
@@ -142,6 +147,7 @@ Expecting true but was false
 	assert_str(root.to_xml()).is_equal(expected)
 	root.dispose()
 
+
 func test_dispose() -> void:
 	var testsuite1 := XmlElement.new("testsuite")\
 		.attribute(JUnitXmlReport.ATTR_ID, "1")\
@@ -176,31 +182,31 @@ func test_dispose() -> void:
 		.attribute(JUnitXmlReport.ATTR_FAILURES, 1)\
 		.attribute(JUnitXmlReport.ATTR_TIME, "1.22")\
 		.add_childs([testsuite1, testsuite2])
-	
+
 	assert_that(root._parent).is_null()
 	assert_array(root._childs).contains_exactly([testsuite1, testsuite2])
 	assert_dict(root._attributes).has_size(5)
-	
+
 	assert_that(testsuite1._parent).is_equal(root)
 	assert_array(testsuite1._childs).contains_exactly(testsuite1_expected_tests)
 	assert_dict(testsuite1._attributes).has_size(2)
 	testsuite1_expected_tests.clear()
-	
+
 	assert_that(testsuite2._parent).is_equal(root)
 	assert_array(testsuite2._childs).contains_exactly(testsuite2_expected_tests)
 	assert_dict(testsuite2._attributes).has_size(2)
 	testsuite2_expected_tests.clear()
-	
+
 	# free all references
 	root.dispose()
 	assert_that(root._parent).is_null()
 	assert_array(root._childs).is_empty()
 	assert_dict(root._attributes).is_empty()
-	
+
 	assert_that(testsuite1._parent).is_null()
 	assert_array(testsuite1._childs).is_empty()
 	assert_dict(testsuite1._attributes).is_empty()
-	
+
 	assert_that(testsuite2._parent).is_null()
 	assert_array(testsuite2._childs).is_empty()
 	assert_dict(testsuite2._attributes).is_empty()

@@ -3,7 +3,7 @@ extends RefCounted
 
 ## do call the real implementation
 const CALL_REAL_FUNC = "CALL_REAL_FUNC"
-## do return a default value for primitive types or null 
+## do return a default value for primitive types or null
 const RETURN_DEFAULTS = "RETURN_DEFAULTS"
 ## do return a default value for primitive types and a fully mocked value for Object types
 ## builds full deep mocked object

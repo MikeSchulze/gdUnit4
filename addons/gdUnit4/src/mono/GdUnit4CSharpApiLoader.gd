@@ -37,7 +37,7 @@ static func create_test_suite(source_path :String, line_number :int, test_suite_
 static func is_test_suite(resource_path :String) -> bool:
 	if not is_csharp_file(resource_path) or not GdUnit4CSharpApiLoader.is_mono_supported():
 		return false
-	
+
 	if resource_path.is_empty():
 		if GdUnitSettings.is_report_push_errors():
 			push_error("Can't create test suite. Missing resource path.")

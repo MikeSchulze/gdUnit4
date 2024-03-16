@@ -85,7 +85,7 @@ static func as_string(elements :Variant, encode_value := true) -> String:
 	var index := 0
 	for element in elements:
 		if max_elements != -1 and index > max_elements:
-			return prefix + "[" + formatted + delemiter + "...]" 
+			return prefix + "[" + formatted + delemiter + "...]"
 		if formatted.length() > 0 :
 			formatted += delemiter
 		formatted += GdDefaultValueDecoder.decode(element) if encode_value else str(element)

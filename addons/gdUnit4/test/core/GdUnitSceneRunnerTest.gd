@@ -5,7 +5,8 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitSceneRunnerImpl.gd'
 
-# loads the test runner and register for auto freeing after test 
+
+# loads the test runner and register for auto freeing after test
 func load_test_scene() -> Node:
 	return auto_free(load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn").instantiate())
 
@@ -48,7 +49,7 @@ func test_set_property() -> void:
 
 func test_invoke_method() -> void:
 	var runner := scene_runner(load_test_scene())
-	
+
 	assert_that(runner.invoke("add", 10, 12)).is_equal(22)
 	assert_that(runner.invoke("sub", 10, 12)).is_equal("The method 'sub' not exist checked loaded scene.")
 
@@ -59,15 +60,15 @@ func test_simulate_frames(timeout = 5000) -> void:
 	var box1 :ColorRect = runner.get_property("_box1")
 	# initial is white
 	assert_object(box1.color).is_equal(Color.WHITE)
-	
+
 	# start color cycle by invoke the function 'start_color_cycle'
 	runner.invoke("start_color_cycle")
-	
+
 	# we wait for 10 frames
 	await runner.simulate_frames(10)
 	# after 10 frame is still white
 	assert_object(box1.color).is_equal(Color.WHITE)
-	
+
 	# we wait 30 more frames
 	await runner.simulate_frames(30)
 	# after 40 frames the box one should be changed to red
@@ -80,10 +81,10 @@ func test_simulate_frames_withdelay(timeout = 4000) -> void:
 	var box1 :ColorRect = runner.get_property("_box1")
 	# initial is white
 	assert_object(box1.color).is_equal(Color.WHITE)
-	
+
 	# start color cycle by invoke the function 'start_color_cycle'
 	runner.invoke("start_color_cycle")
-	
+
 	# we wait for 10 frames each with a 50ms delay
 	await runner.simulate_frames(10, 50)
 	# after 10 frame and in sum 500ms is should be changed to red
@@ -96,10 +97,10 @@ func test_run_scene_colorcycle(timeout=2000) -> void:
 	var box1 :ColorRect = runner.get_property("_box1")
 	# verify inital color
 	assert_object(box1.color).is_equal(Color.WHITE)
-	
+
 	# start color cycle by invoke the function 'start_color_cycle'
 	runner.invoke("start_color_cycle")
-	
+
 	# await for each color cycle is emited
 	await runner.await_signal("panel_color_change", [box1, Color.RED])
 	assert_object(box1.color).is_equal(Color.RED)
@@ -111,24 +112,24 @@ func test_run_scene_colorcycle(timeout=2000) -> void:
 
 func test_simulate_scene_inteaction_by_press_enter(timeout=2000) -> void:
 	var runner := scene_runner(load_test_scene())
-	
+
 	# inital no spell is fired
 	assert_object(runner.find_child("Spell")).is_null()
-	
+
 	# fire spell be pressing enter key
 	runner.simulate_key_pressed(KEY_ENTER)
 	# wait until next frame
 	await await_idle_frame()
-	
+
 	# verify a spell is created
 	assert_object(runner.find_child("Spell")).is_not_null()
-	
+
 	# wait until spell is explode after around 1s
 	var spell = runner.find_child("Spell")
 	if spell == null:
 		return
 	await await_signal_on(spell, "spell_explode", [spell], timeout)
-	
+
 	# verify spell is removed when is explode
 	assert_object(runner.find_child("Spell")).is_null()
 
@@ -138,11 +139,11 @@ func test_simulate_scene_inteaction_in_combination_with_spy():
 	var spy_ = spy(load_test_scene())
 	# create a runner runner
 	var runner := scene_runner(spy_)
-	
+
 	# simulate a key event to fire a spell
 	runner.simulate_key_pressed(KEY_ENTER)
 	verify(spy_).create_spell()
-	
+
 	var spell = runner.find_child("Spell")
 	assert_that(spell).is_not_null()
 	assert_that(spell.is_connected("spell_explode", Callable(spy_, "_destroy_spell"))).is_true()
@@ -160,7 +161,7 @@ func test_simulate_scene_interact_with_buttons():
 	verify(spyed_scene)._on_panel_color_changed(spyed_scene._box1, Color.GRAY)
 	verify(spyed_scene, 0)._on_panel_color_changed(spyed_scene._box2, any_color())
 	verify(spyed_scene, 0)._on_panel_color_changed(spyed_scene._box3, any_color())
-	
+
 	# test button 2 interaction
 	reset(spyed_scene)
 	await await_millis(1000)
@@ -171,7 +172,7 @@ func test_simulate_scene_interact_with_buttons():
 	verify(spyed_scene)._on_panel_color_changed(spyed_scene._box2, Color.RED)
 	verify(spyed_scene)._on_panel_color_changed(spyed_scene._box2, Color.GRAY)
 	verify(spyed_scene, 0)._on_panel_color_changed(spyed_scene._box3, any_color())
-	
+
 	# test button 3 interaction (is changed after 1s to gray)
 	reset(spyed_scene)
 	await await_millis(1000)
@@ -196,7 +197,7 @@ func test_await_func_without_time_factor() -> void:
 
 func test_await_func_with_time_factor() -> void:
 	var runner := scene_runner(load_test_scene())
-	
+
 	# set max time factor to minimize waiting time checked `runner.wait_func`
 	runner.set_time_factor(10)
 	await runner.await_func("color_cycle").wait_until(200).is_equal("black")
@@ -205,12 +206,12 @@ func test_await_func_with_time_factor() -> void:
 func test_await_signal_without_time_factor() -> void:
 	var runner := scene_runner(load_test_scene())
 	var box1 :ColorRect = runner.get_property("_box1")
-	
+
 	runner.invoke("start_color_cycle")
 	await runner.await_signal("panel_color_change", [box1, Color.RED])
 	await runner.await_signal("panel_color_change", [box1, Color.BLUE])
 	await runner.await_signal("panel_color_change", [box1, Color.GREEN])
-	
+
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300)
@@ -225,11 +226,11 @@ func test_await_signal_with_time_factor() -> void:
 	# set max time factor to minimize waiting time checked `runner.wait_func`
 	runner.set_time_factor(10)
 	runner.invoke("start_color_cycle")
-	
+
 	await runner.await_signal("panel_color_change", [box1, Color.RED], 100)
 	await runner.await_signal("panel_color_change", [box1, Color.BLUE], 100)
 	await runner.await_signal("panel_color_change", [box1, Color.GREEN], 100)
-	
+
 	# should be interrupted is will never change to Color.KHAKI
 	GdAssertReports.expect_fail()
 	await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30)
@@ -241,10 +242,10 @@ func test_await_signal_with_time_factor() -> void:
 func test_simulate_until_signal() -> void:
 	var runner := scene_runner(load_test_scene())
 	var box1 :ColorRect = runner.get_property("_box1")
-	
+
 	# set max time factor to minimize waiting time checked `runner.wait_func`
 	runner.invoke("start_color_cycle")
-	
+
 	await runner.simulate_until_signal("panel_color_change", box1, Color.RED)
 	await runner.simulate_until_signal("panel_color_change", box1, Color.BLUE)
 	await runner.simulate_until_signal("panel_color_change", box1, Color.GREEN)
@@ -253,20 +254,20 @@ func test_simulate_until_signal() -> void:
 @warning_ignore("unused_parameter")
 func test_simulate_until_object_signal(timeout=2000) -> void:
 	var runner := scene_runner(load_test_scene())
-	
+
 	# inital no spell is fired
 	assert_object(runner.find_child("Spell")).is_null()
-	
+
 	# fire spell be pressing enter key
 	runner.simulate_key_pressed(KEY_ENTER)
 	# wait until next frame
 	await await_idle_frame()
 	var spell = runner.find_child("Spell")
 	prints(spell)
-	
+
 	# simmulate scene until the spell is explode
 	await runner.simulate_until_object_signal(spell, "spell_explode", spell)
-	
+
 	# verify spell is removed when is explode
 	assert_object(runner.find_child("Spell")).is_null()
 
@@ -286,7 +287,7 @@ func test_runner_by_invalid_resource_path() -> void:
 func test_runner_by_resource_path() -> void:
 	var runner = scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
 	assert_object(runner.scene()).is_instanceof(Node2D)
-	
+
 	# verify the scene is freed when the runner is freed
 	var scene = runner.scene()
 	assert_bool(is_instance_valid(scene)).is_true()
@@ -307,7 +308,7 @@ func test_runner_by_scene_instance() -> void:
 	var scene = load("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn").instantiate()
 	var runner := scene_runner(scene)
 	assert_object(runner.scene()).is_instanceof(Node2D)
-	
+
 	# verify the scene is freed when the runner is freed
 	runner._notification(NOTIFICATION_PREDELETE)
 	# give engine time to free the resources
@@ -321,31 +322,31 @@ func test_runner_by_scene_instance() -> void:
 func test_mouse_drag_and_drop() -> void:
 	var spy_scene = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
 	var runner := scene_runner(spy_scene)
-	
+
 	var slot_left :TextureRect = $"/root/DragAndDropScene/left/TextureRect"
 	var slot_right :TextureRect = $"/root/DragAndDropScene/right/TextureRect"
-	
+
 	var save_mouse_pos := get_tree().root.get_mouse_position()
 	# set inital mouse pos over the left slot
 	var mouse_pos := slot_left.global_position + Vector2(10, 10)
 	runner.set_mouse_pos(mouse_pos)
 	await await_millis(1000)
-	
+
 	await await_idle_frame()
 	var event := InputEventMouseMotion.new()
 	event.position = mouse_pos
 	event.global_position = save_mouse_pos
 	verify(spy_scene, 1)._gui_input(event)
-	
+
 	runner.simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
 	await await_idle_frame()
 	assert_bool(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_true()
-	
+
 	# start drag&drop to left pannel
 	for i in 20:
 		runner.simulate_mouse_move(mouse_pos + Vector2(i*.5*i, 0))
 		await await_millis(40)
-	
+
 	runner.simulate_mouse_button_release(MOUSE_BUTTON_LEFT)
 	await await_idle_frame()
 	assert_that(slot_right.texture).is_equal(slot_left.texture)

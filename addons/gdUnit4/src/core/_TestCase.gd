@@ -26,7 +26,6 @@ var _report: GdUnitReport = null
 var _parameter_set_resolver: GdUnitTestParameterSetResolver
 var _is_disposed := false
 
-
 var timeout: int = DEFAULT_TIMEOUT:
 	set(value):
 		timeout = value

@@ -37,19 +37,19 @@ func assert_tests(test_suite :Script) -> GdUnitArrayAssert:
 
 func test_create_gd_success() -> void:
 	var source := load(_example_source_gd)
-	
+
 	# create initial test suite based checked function selected by line 9
 	var result := GdUnitTestSuiteBuilder.create(source, 9)
-	
+
 	assert_result(result).is_success()
 	var info := result.value() as Dictionary
 	assert_str(info.get("path")).is_equal("user://tmp/test/examples/test_person_test.gd")
 	assert_int(info.get("line")).is_equal(11)
 	assert_tests(load(info.get("path"))).contains_exactly(["test_first_name"])
-	
+
 	# create additional test checked existing suite based checked function selected by line 15
 	result = GdUnitTestSuiteBuilder.create(source, 15)
-	
+
 	assert_result(result).is_success()
 	info = result.value() as Dictionary
 	assert_str(info.get("path")).is_equal("user://tmp/test/examples/test_person_test.gd")
@@ -59,7 +59,7 @@ func test_create_gd_success() -> void:
 
 func test_create_gd_fail() -> void:
 	var source := load(_example_source_gd)
-	
+
 	# attempt to create an initial test suite based checked the function selected in line 8, which has no function definition
 	var result := GdUnitTestSuiteBuilder.create(source, 8)
 	assert_result(result).is_error().contains_message("No function found at line: 8.")

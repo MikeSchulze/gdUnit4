@@ -38,7 +38,7 @@ func fire_test_ended(context :GdUnitExecutionContext) -> void:
 	var test_name := context._test_case_name if _test_name.is_empty() else _test_name
 	var reports := collect_reports(context)
 	var orphans := collect_orphans(context, reports)
-	
+
 	fire_event(GdUnitEvent.new()\
 		.test_after(test_suite.get_script().resource_path, test_suite.get_name(), test_name, context.build_report_statistics(orphans), reports))
 

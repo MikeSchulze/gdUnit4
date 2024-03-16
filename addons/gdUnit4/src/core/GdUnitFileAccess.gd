@@ -12,7 +12,7 @@ static func clear_tmp() -> void:
 	delete_directory(GDUNIT_TEMP)
 
 
-# Creates a new file under 
+# Creates a new file under
 static func create_temp_file(relative_path :String, file_name :String, mode := FileAccess.WRITE) -> FileAccess:
 	var file_path := create_temp_dir(relative_path) + "/" + file_name
 	var file := FileAccess.open(file_path, mode)
@@ -50,8 +50,8 @@ static func copy_directory(from_dir :String, to_dir :String, recursive :bool = f
 	if not DirAccess.dir_exists_absolute(from_dir):
 		push_error("Source directory not found '%s'" % from_dir)
 		return false
-		
-	# check if destination exists 
+
+	# check if destination exists
 	if not DirAccess.dir_exists_absolute(to_dir):
 		# create it
 		var err := DirAccess.make_dir_recursive_absolute(to_dir)
@@ -63,7 +63,7 @@ static func copy_directory(from_dir :String, to_dir :String, recursive :bool = f
 	if source_dir != null:
 		source_dir.list_dir_begin()
 		var next := "."
-		
+
 		while next != "":
 			next = source_dir.get_next()
 			if next == "" or next == "." or next == "..":
@@ -78,7 +78,7 @@ static func copy_directory(from_dir :String, to_dir :String, recursive :bool = f
 			if err != OK:
 				push_error("Error checked copy file '%s' to '%s'" % [source, dest])
 				return false
-		
+
 		return true
 	else:
 		push_error("Directory not found: " + from_dir)
@@ -199,7 +199,7 @@ static func extract_zip(zip_package :String, dest_path :String) -> GdUnitResult:
 	# Get base path and step over archive folder
 	var archive_path := zip_entries[0]
 	zip_entries.remove_at(0)
-	
+
 	for zip_entry in zip_entries:
 		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
 		if zip_entry.ends_with("/"):

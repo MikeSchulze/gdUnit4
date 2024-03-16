@@ -5,6 +5,7 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/LocalTime.gd'
 
+
 func test_time_constants():
 	assert_int(LocalTime.MILLIS_PER_HOUR).is_equal(1000*60*60)
 	assert_int(LocalTime.MILLIS_PER_MINUTE).is_equal(1000*60)
@@ -12,6 +13,7 @@ func test_time_constants():
 	assert_int(LocalTime.HOURS_PER_DAY).is_equal(24)
 	assert_int(LocalTime.MINUTES_PER_HOUR).is_equal(60)
 	assert_int(LocalTime.SECONDS_PER_MINUTE).is_equal(60)
+
 
 func test_now():
 	var current := Time.get_datetime_dict_from_system(true)
@@ -22,6 +24,7 @@ func test_now():
 	#  Time.get_datetime_dict_from_system() does not provide milliseconds
 	#assert_that(local_time.millis()).is_equal(0)
 
+
 @warning_ignore("integer_division")
 func test_of_unix_time():
 	var time := LocalTime._get_system_time_msecs()
@@ -31,19 +34,21 @@ func test_of_unix_time():
 	assert_int(local_time.second()).is_equal((time / LocalTime.MILLIS_PER_SECOND) % 60)
 	assert_int(local_time.millis()).is_equal(time % 1000)
 
+
 func test_to_string():
 	assert_str(LocalTime.local_time(10, 12, 22, 333)._to_string()).is_equal("10:12:22.333")
 	assert_str(LocalTime.local_time(23, 59, 59, 999)._to_string()).is_equal("23:59:59.999")
 	assert_str(LocalTime.local_time( 0, 0, 0, 000)._to_string()).is_equal("00:00:00.000")
 	assert_str(LocalTime.local_time( 2, 4, 3, 10)._to_string()).is_equal("02:04:03.010")
 
+
 func test_plus_seconds():
 	var time := LocalTime.local_time(10, 12, 22, 333)
 	assert_str(time.plus(LocalTime.TimeUnit.SECOND, 10)._to_string()).is_equal("10:12:32.333")
 	assert_str(time.plus(LocalTime.TimeUnit.SECOND, 27)._to_string()).is_equal("10:12:59.333")
 	assert_str(time.plus(LocalTime.TimeUnit.SECOND, 1)._to_string()).is_equal("10:13:00.333")
-	
-	# test overflow 
+
+	# test overflow
 	var time2 := LocalTime.local_time(10, 59, 59, 333)
 	var start_time = time2._time
 	for iteration in 10000:
@@ -52,6 +57,7 @@ func test_plus_seconds():
 		t.plus(LocalTime.TimeUnit.SECOND, seconds)
 		var expected :=  LocalTime.of_unix_time(start_time + (seconds * LocalTime.MILLIS_PER_SECOND))
 		assert_str(t._to_string()).is_equal(expected._to_string())
+
 
 func test_elapsed():
 	assert_str(LocalTime.elapsed(10)).is_equal("10ms")

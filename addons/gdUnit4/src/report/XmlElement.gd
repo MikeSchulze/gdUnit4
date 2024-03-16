@@ -1,4 +1,4 @@
-class_name XmlElement 
+class_name XmlElement
 extends RefCounted
 
 var _name :String
@@ -50,15 +50,15 @@ func to_xml() -> String:
 	var attributes := ""
 	for key in _attributes.keys():
 		attributes += ' {attr}="{value}"'.format({"attr": key, "value": _attributes.get(key)})
-	
+
 	var childs = ""
 	for child in _childs:
 		childs += child.to_xml()
-	
+
 	return "{_indentation}<{name}{attributes}>\n{childs}{text}{_indentation}</{name}>\n"\
-		.format({"name": _name, 
-			"attributes": attributes, 
-			"childs": childs, 
+		.format({"name": _name,
+			"attributes": attributes,
+			"childs": childs,
 			"_indentation": _indentation(),
 			"text": cdata(_text)})
 

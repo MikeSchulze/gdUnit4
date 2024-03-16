@@ -1,11 +1,12 @@
 extends GdUnitTestSuite
 
+
 func test_equals_string():
 	var a := ""
 	var b := ""
 	var c := "abc"
 	var d := "abC"
-	
+
 	assert_bool(GdObjects.equals("", "")).is_true()
 	assert_bool(GdObjects.equals(a, "")).is_true()
 	assert_bool(GdObjects.equals("", a)).is_true()
@@ -14,7 +15,7 @@ func test_equals_string():
 	assert_bool(GdObjects.equals(b, a)).is_true()
 	assert_bool(GdObjects.equals(c, c)).is_true()
 	assert_bool(GdObjects.equals(c, String(c))).is_true()
-	
+
 	assert_bool(GdObjects.equals(a, null)).is_false()
 	assert_bool(GdObjects.equals(null, a)).is_false()
 	assert_bool(GdObjects.equals("", c)).is_false()
@@ -33,6 +34,7 @@ func test_equals_stringname():
 	assert_bool(GdObjects.equals("abc", &"abc")).is_true()
 	assert_bool(GdObjects.equals("abc", &"abC")).is_false()
 
+
 func test_equals_array():
 	var a := []
 	var b := []
@@ -40,7 +42,7 @@ func test_equals_array():
 	var d := [1,2,3,4,5]
 	var e := [1,2,3,4,5]
 	var x := [1,2,3,6,4,5]
-	
+
 	assert_bool(GdObjects.equals(a, a)).is_true()
 	assert_bool(GdObjects.equals(a, b)).is_true()
 	assert_bool(GdObjects.equals(b, a)).is_true()
@@ -49,7 +51,7 @@ func test_equals_array():
 	assert_bool(GdObjects.equals(d, d)).is_true()
 	assert_bool(GdObjects.equals(d, e)).is_true()
 	assert_bool(GdObjects.equals(e, d)).is_true()
-	
+
 	assert_bool(GdObjects.equals(a, null)).is_false()
 	assert_bool(GdObjects.equals(null, a)).is_false()
 	assert_bool(GdObjects.equals(a, d)).is_false()
@@ -62,6 +64,7 @@ func test_equals_array():
 	assert_bool(GdObjects.equals(a, Vector2.ONE)).is_false()
 	assert_bool(GdObjects.equals(a, Vector3.ONE)).is_false()
 
+
 func test_equals_dictionary():
 	var a := {}
 	var b := {}
@@ -69,7 +72,7 @@ func test_equals_dictionary():
 	var d := {"a":"foo"}
 	var e1 := {"a":"foo", "b":"bar"}
 	var e2 := {"b":"bar", "a":"foo"}
-	
+
 	assert_bool(GdObjects.equals(a, a)).is_true()
 	assert_bool(GdObjects.equals(a, b)).is_true()
 	assert_bool(GdObjects.equals(b, a)).is_true()
@@ -77,7 +80,7 @@ func test_equals_dictionary():
 	assert_bool(GdObjects.equals(c, d)).is_true()
 	assert_bool(GdObjects.equals(e1, e2)).is_true()
 	assert_bool(GdObjects.equals(e2, e1)).is_true()
-	
+
 	assert_bool(GdObjects.equals(a, null)).is_false()
 	assert_bool(GdObjects.equals(null, a)).is_false()
 	assert_bool(GdObjects.equals(a, c)).is_false()
@@ -87,21 +90,23 @@ func test_equals_dictionary():
 	assert_bool(GdObjects.equals(c, e1)).is_false()
 	assert_bool(GdObjects.equals(e1, c)).is_false()
 
+
 class TestClass extends Resource:
-	
+
 	enum {
 		A,
 		B
 	}
-	
+
 	var _a:int
 	var _b:String
 	var _c:Array
-	
+
 	func _init(a:int = 0,b:String = "",c:Array = []):
 		_a = a
 		_b = b
 		_c = c
+
 
 func test_equals_class():
 	var a := TestClass.new()
@@ -109,13 +114,13 @@ func test_equals_class():
 	var c := TestClass.new(1, "foo", ["bar", "xxx"])
 	var d := TestClass.new(1, "foo", ["bar", "xxx"])
 	var x := TestClass.new(1, "foo", ["bar", "xsxx"])
-	
+
 	assert_bool(GdObjects.equals(a, a)).is_true()
 	assert_bool(GdObjects.equals(a, b)).is_true()
 	assert_bool(GdObjects.equals(b, a)).is_true()
 	assert_bool(GdObjects.equals(c, d)).is_true()
 	assert_bool(GdObjects.equals(d, c)).is_true()
-	
+
 	assert_bool(GdObjects.equals(a, null)).is_false()
 	assert_bool(GdObjects.equals(null, a)).is_false()
 	assert_bool(GdObjects.equals(a, c)).is_false()
@@ -123,16 +128,18 @@ func test_equals_class():
 	assert_bool(GdObjects.equals(d, x)).is_false()
 	assert_bool(GdObjects.equals(x, d)).is_false()
 
+
 func test_equals_with_stack_deep():
 	# more extended version
 	var x2 := TestClass.new(1, "foo", [TestClass.new(22, "foo"), TestClass.new(22, "foo")])
 	var x3 := TestClass.new(1, "foo", [TestClass.new(22, "foo"), TestClass.new(23, "foo")])
 	assert_bool(GdObjects.equals(x2, x3)).is_false()
 
+
 func test_equals_Node_with_deep_check():
 	var nodeA = auto_free(Node.new())
 	var nodeB = auto_free(Node.new())
-	
+
 	# compares by default with deep parameter ckeck
 	assert_bool(GdObjects.equals(nodeA, nodeA)).is_true()
 	assert_bool(GdObjects.equals(nodeB, nodeB)).is_true()
@@ -143,6 +150,7 @@ func test_equals_Node_with_deep_check():
 	assert_bool(GdObjects.equals(nodeB, nodeB, false, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)).is_true()
 	assert_bool(GdObjects.equals(nodeA, nodeB, false, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)).is_false()
 	assert_bool(GdObjects.equals(nodeB, nodeA, false, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)).is_false()
+
 
 func test_is_primitive_type():
 	assert_bool(GdObjects.is_primitive_type(false)).is_true()
@@ -156,6 +164,7 @@ func test_is_primitive_type():
 class TestClassForIsType:
 	var x
 
+
 func test_is_type():
 	# check build-in types
 	assert_bool(GdObjects.is_type(1)).is_false()
@@ -164,7 +173,7 @@ func test_is_type():
 	assert_bool(GdObjects.is_type(false)).is_false()
 	assert_bool(GdObjects.is_type([])).is_false()
 	assert_bool(GdObjects.is_type("abc")).is_false()
-	
+
 	assert_bool(GdObjects.is_type(null)).is_false()
 	# an object type
 	assert_bool(GdObjects.is_type(Node)).is_true()
@@ -177,7 +186,7 @@ func test_is_type():
 	# checked inner class type
 	assert_bool(GdObjects.is_type(CustomClass.InnerClassA)).is_true()
 	assert_bool(GdObjects.is_type(CustomClass.InnerClassC)).is_true()
-	
+
 	# for instances must allways endup with false
 	assert_bool(GdObjects.is_type(auto_free(Node.new()))).is_false()
 	assert_bool(GdObjects.is_type(AStar3D.new())).is_false()
@@ -217,6 +226,7 @@ func test_is_instance_true():
 	assert_bool(_is_instance(TestClassForIsType.new())).is_true()
 	assert_bool(_is_instance(CustomClass.InnerClassC.new())).is_true()
 
+
 func test_is_instance_false():
 	assert_bool(_is_instance(RefCounted)).is_false()
 	assert_bool(_is_instance(Node)).is_false()
@@ -236,6 +246,7 @@ func test_is_instance_false():
 func extract_class_name(value) -> GdUnitResult:
 	return GdObjects.extract_class_name(auto_free(value))
 
+
 func test_get_class_name_from_class_path():
 	# extract class name by resoure path
 	assert_result(extract_class_name("res://addons/gdUnit4/test/resources/core/Person.gd"))\
@@ -249,6 +260,7 @@ func test_get_class_name_from_class_path():
 	assert_result(extract_class_name("res://addons/gdUnit4/test/mocker/resources/OverridenGetClassTestClass.gd"))\
 		.is_success().is_value("OverridenGetClassTestClass")
 
+
 func test_get_class_name_from_snake_case_class_path():
 	assert_result(extract_class_name("res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_with_class_name.gd"))\
 		.is_success().is_value("SnakeCaseWithClassName")
@@ -256,12 +268,14 @@ func test_get_class_name_from_snake_case_class_path():
 	assert_result(extract_class_name("res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_without_class_name.gd"))\
 		.is_success().is_value("SnakeCaseWithoutClassName")
 
+
 func test_get_class_name_from_pascal_case_class_path():
 	assert_result(extract_class_name("res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithClassName.gd"))\
 		.is_success().is_value("PascalCaseWithClassName")
 	# without class_name
 	assert_result(extract_class_name("res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithoutClassName.gd"))\
 		.is_success().is_value("PascalCaseWithoutClassName")
+
 
 func test_get_class_name_from_type():
 	assert_result(extract_class_name(Animation)).is_success().is_value("Animation")
@@ -276,6 +290,7 @@ func test_get_class_name_from_type():
 	assert_result(extract_class_name(CustomResourceTestClass)).is_success().is_value("CustomResourceTestClass")
 	assert_result(extract_class_name(OverridenGetClassTestClass)).is_success().is_value("OverridenGetClassTestClass")
 	assert_result(extract_class_name(AdvancedTestClass)).is_success().is_value("AdvancedTestClass")
+
 
 func test_get_class_name_from_inner_class():
 	assert_result(extract_class_name(CustomClass))\
@@ -295,11 +310,12 @@ func test_get_class_name_from_inner_class():
 	assert_result(extract_class_name(AdvancedTestClass.Area4D))\
 		.is_success().is_value("AdvancedTestClass.Area4D")
 
+
 func test_extract_class_name_from_instance():
 	assert_result(extract_class_name(Camera3D.new())).is_equal("Camera3D")
 	assert_result(extract_class_name(GDScript.new())).is_equal("GDScript")
 	assert_result(extract_class_name(Node.new())).is_equal("Node")
-	
+
 	# extract class name from custom classes
 	assert_result(extract_class_name(Person.new())).is_equal("Person")
 	assert_result(extract_class_name(ClassWithNameA.new())).is_equal("ClassWithNameA")
@@ -316,17 +332,20 @@ func test_extract_class_name_from_instance():
 	assert_result(extract_class_name(AdvancedTestClass.Area4D.new(0))).is_equal("AdvancedTestClass.Area4D")
 	assert_result(extract_class_name(CustomClass.InnerClassC.new())).is_equal("CustomClass.InnerClassC")
 
+
 # verify enigne class names are not converted by configured naming convention
 @warning_ignore("unused_parameter")
 func test_extract_class_name_from_class_path(fuzzer=GodotClassNameFuzzer.new(true, true), fuzzer_iterations = 100) -> void:
 	var clazz_name :String = fuzzer.next_value()
 	assert_str(GdObjects.extract_class_name_from_class_path(PackedStringArray([clazz_name]))).is_equal(clazz_name)
 
+
 @warning_ignore("unused_parameter")
 func test_extract_class_name_godot_classes(fuzzer=GodotClassNameFuzzer.new(true, true), fuzzer_iterations = 100):
 	var extract_class_name_ := fuzzer.next_value() as String
 	var instance :Variant = ClassDB.instantiate(extract_class_name_)
 	assert_result(extract_class_name(instance)).is_equal(extract_class_name_)
+
 
 func test_extract_class_path_by_clazz():
 	# engine classes has no class path
@@ -335,7 +354,7 @@ func test_extract_class_path_by_clazz():
 	assert_array(GdObjects.extract_class_path(Camera3D)).is_empty()
 	assert_array(GdObjects.extract_class_path(Tree)).is_empty()
 	assert_array(GdObjects.extract_class_path(Node)).is_empty()
-	
+
 	# script classes
 	assert_array(GdObjects.extract_class_path(Person))\
 		.contains_exactly(["res://addons/gdUnit4/test/resources/core/Person.gd"])
@@ -347,7 +366,7 @@ func test_extract_class_path_by_clazz():
 		.contains_exactly(["res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd"])
 	assert_array(GdObjects.extract_class_path(OverridenGetClassTestClass))\
 		.contains_exactly(["res://addons/gdUnit4/test/mocker/resources/OverridenGetClassTestClass.gd"])
-	
+
 	# script inner classes
 	assert_array(GdObjects.extract_class_path(CustomClass.InnerClassA))\
 		.contains_exactly(["res://addons/gdUnit4/test/resources/core/CustomClass.gd", "InnerClassA"])
@@ -361,7 +380,7 @@ func test_extract_class_path_by_clazz():
 		.contains_exactly(["res://addons/gdUnit4/test/mocker/resources/AdvancedTestClass.gd", "AtmosphereData"])
 	assert_array(GdObjects.extract_class_path(AdvancedTestClass.Area4D))\
 	.contains_exactly(["res://addons/gdUnit4/test/mocker/resources/AdvancedTestClass.gd", "Area4D"])
-	
+
 	# inner inner class
 	assert_array(GdObjects.extract_class_path(CustomClass.InnerClassD.InnerInnerClassA))\
 		.contains_exactly(["res://addons/gdUnit4/test/resources/core/CustomClass.gd", "InnerClassD", "InnerInnerClassA"])
@@ -384,6 +403,7 @@ func create_instance(clazz):
 		return auto_free(result.value())
 	return null
 
+
 func test_create_instance_by_class_name():
 	# instance of engine classes
 	assert_object(create_instance(Node))\
@@ -401,11 +421,13 @@ func test_create_instance_by_class_name():
 		.is_not_null()\
 		.is_instanceof(CustomClass.InnerClassA)
 
+
 func test_extract_class_name_on_null_value():
 	# we can't extract class name from a null value
 	assert_result(GdObjects.extract_class_name(null))\
 		.is_error()\
 		.contains_message("Can't extract class name form a null value.")
+
 
 func test_is_public_script_class() -> void:
 	# snake case format class names
@@ -421,34 +443,37 @@ func test_is_instance_scene() -> void:
 	assert_bool(GdObjects.is_instance_scene(RefCounted.new())).is_false()
 	assert_bool(GdObjects.is_instance_scene(CustomClass.new())).is_false()
 	assert_bool(GdObjects.is_instance_scene(auto_free(Control.new()))).is_false()
-	
+
 	# now check checked a loaded scene
 	var resource = load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_bool(GdObjects.is_instance_scene(resource)).is_false()
 	# checked a instance of a scene
 	assert_bool(GdObjects.is_instance_scene(auto_free(resource.instantiate()))).is_true()
 
+
 func test_is_scene_resource_path() -> void:
 	assert_bool(GdObjects.is_scene_resource_path(RefCounted.new())).is_false()
 	assert_bool(GdObjects.is_scene_resource_path(CustomClass.new())).is_false()
 	assert_bool(GdObjects.is_scene_resource_path(auto_free(Control.new()))).is_false()
-	
+
 	# check checked a loaded scene
 	var resource = load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_bool(GdObjects.is_scene_resource_path(resource)).is_false()
 	# checked resource path
 	assert_bool(GdObjects.is_scene_resource_path("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")).is_true()
 
+
 func test_extract_class_functions() -> void:
 	var functions := GdObjects.extract_class_functions("Resource", [""])
 	for f in functions:
 		if f["name"] == "get_path":
 			assert_str(GdFunctionDescriptor.extract_from(f)._to_string()).is_equal("[Line:-1] func get_path() -> String:")
-	
+
 	functions = GdObjects.extract_class_functions("CustomResourceTestClass", ["res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd"])
 	for f in functions:
 		if f["name"] == "get_path":
 			assert_str(GdFunctionDescriptor.extract_from(f)._to_string()).is_equal("[Line:-1] func get_path() -> String:")
+
 
 func test_all_types() -> void:
 	var expected_types :Array[int] = []
@@ -461,20 +486,24 @@ func test_all_types() -> void:
 	expected_types.append(GdObjects.TYPE_VARIANT)
 	assert_array(GdObjects.all_types()).contains_exactly_in_any_order(expected_types)
 
+
 func test_to_camel_case() -> void:
 	assert_str(GdObjects.to_camel_case("MyClassName")).is_equal("myClassName")
 	assert_str(GdObjects.to_camel_case("my_class_name")).is_equal("myClassName")
 	assert_str(GdObjects.to_camel_case("myClassName")).is_equal("myClassName")
+
 
 func test_to_pascal_case() -> void:
 	assert_str(GdObjects.to_pascal_case("MyClassName")).is_equal("MyClassName")
 	assert_str(GdObjects.to_pascal_case("my_class_name")).is_equal("MyClassName")
 	assert_str(GdObjects.to_pascal_case("myClassName")).is_equal("MyClassName")
 
+
 func test_to_snake_case() -> void:
 	assert_str(GdObjects.to_snake_case("MyClassName")).is_equal("my_class_name")
 	assert_str(GdObjects.to_snake_case("my_class_name")).is_equal("my_class_name")
 	assert_str(GdObjects.to_snake_case("myClassName")).is_equal("my_class_name")
+
 
 func test_is_snake_case() -> void:
 	assert_bool(GdObjects.is_snake_case("my_class_name")).is_true()

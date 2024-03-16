@@ -28,19 +28,19 @@ func _input(event :InputEvent):
 		return
 	if event is InputEventKey and event.is_pressed() and not event.is_echo():
 		match event.keycode:
-			KEY_CTRL: 
+			KEY_CTRL:
 				_input_event.ctrl_pressed = true
-			KEY_SHIFT: 
+			KEY_SHIFT:
 				_input_event.shift_pressed = true
-			KEY_ALT: 
+			KEY_ALT:
 				_input_event.alt_pressed = true
-			KEY_META: 
+			KEY_META:
 				_input_event.meta_pressed = true
-			_: 
+			_:
 				_input_event.keycode = event.keycode
 		_apply_input_modifiers(event)
 		accept_event()
-	
+
 	if event is InputEventKey and not event.is_pressed():
 		input_completed.emit(_input_event)
 		hide()

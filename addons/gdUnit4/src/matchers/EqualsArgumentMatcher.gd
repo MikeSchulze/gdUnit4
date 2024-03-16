@@ -1,4 +1,4 @@
-class_name EqualsArgumentMatcher 
+class_name EqualsArgumentMatcher
 extends GdUnitArgumentMatcher
 
 var _current

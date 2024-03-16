@@ -13,7 +13,7 @@ func _initialize():
 
 # gdlint: disable=trailing-whitespace
 class SourceScanner extends Node:
-	
+
 	enum {
 		INIT,
 		STARTUP,
@@ -21,15 +21,15 @@ class SourceScanner extends Node:
 		QUIT,
 		DONE
 	}
-	
+
 	var _state = INIT
 	var _console := CmdConsole.new()
 	var _elapsed_time := 0.0
 	var _plugin: EditorPlugin
 	var _fs: EditorFileSystem
 	var _scene: SceneTree
-	
-	
+
+
 	func _init(scene :SceneTree) -> void:
 		_scene = scene
 		_console.prints_color("""
@@ -38,16 +38,16 @@ class SourceScanner extends Node:
 			Color.CORNFLOWER_BLUE
 		)
 		_state = INIT
-	
-	
+
+
 	func _process(delta :float) -> void:
 		_elapsed_time += delta
 		set_process(false)
 		await_inital_scan()
 		await scan_project()
 		set_process(true)
-	
-	
+
+
 	# !! don't use any await in this phase otherwise the editor will be instable !!
 	func await_inital_scan() -> void:
 		if _state == INIT:
@@ -56,7 +56,7 @@ class SourceScanner extends Node:
 			_fs = _plugin.get_editor_interface().get_resource_filesystem()
 			_plugin.get_editor_interface().set_plugin_enabled("gdUnit4", false)
 			_state = STARTUP
-		
+
 		if _state == STARTUP:
 			if _fs.is_scanning():
 				_console.progressBar(_fs.get_scanning_progress() * 100 as int)
@@ -66,8 +66,8 @@ class SourceScanner extends Node:
 				_console.new_line()
 				_console.prints_color("initial scanning ... done", Color.DARK_GREEN)
 				_state = SCAN
-	
-	
+
+
 	func scan_project() -> void:
 		if _state != SCAN:
 			return
