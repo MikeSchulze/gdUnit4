@@ -792,6 +792,8 @@ func _patch_inner_class_names(clazz :String, clazz_name :String) -> String:
 	var inner_clazz_name := clazz.split(".")[0]
 	if _scanned_inner_classes.has(inner_clazz_name):
 		return base_clazz + "." + clazz
+	if _script_constants.has(clazz):
+		return clazz_name + "." + clazz
 	return clazz
 
 
