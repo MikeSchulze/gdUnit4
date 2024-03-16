@@ -132,6 +132,8 @@ func test_double_return_typed_function_with_args_and_varargs() -> void:
 	var expected := [
 		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
 		'@warning_ignore("native_method_override")',
+		'@warning_ignore("int_as_enum_without_match")',
+		'@warning_ignore("int_as_enum_without_cast")',
 		'@warning_ignore("shadowed_variable")',
 		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
