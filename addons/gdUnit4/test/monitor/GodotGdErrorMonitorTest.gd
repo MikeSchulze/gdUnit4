@@ -46,12 +46,12 @@ func test_scan_for_push_errors() -> void:
 	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
 	monitor._godot_log_file = write_log(error_report)
 	monitor._report_enabled = true
-	
+
 	# with disabled push_error reporting
 	do_return(false).on(monitor)._is_report_push_errors()
 	await monitor.scan()
 	assert_array(monitor.to_reports()).is_empty()
-	
+
 	# with enabled push_error reporting
 	do_return(true).on(monitor)._is_report_push_errors()
 
@@ -69,15 +69,15 @@ func test_scan_for_script_errors() -> void:
 	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
 	monitor._godot_log_file = log_file
 	monitor._report_enabled = true
-	
+
 	# with disabled push_error reporting
 	do_return(false).on(monitor)._is_report_script_errors()
 	await monitor.scan()
 	assert_array(monitor.to_reports()).is_empty()
-	
+
 	# with enabled push_error reporting
 	do_return(true).on(monitor)._is_report_script_errors()
-	
+
 	var entry := ErrorLogEntry.new(ErrorLogEntry.TYPE.PUSH_ERROR, 22,
 		"Trying to call a function on a previously freed instance.",
 		"at: GdUnitScriptTypeTest.test_xx (res://addons/gdUnit4/test/GdUnitScriptTypeTest.gd:22)")
@@ -95,7 +95,7 @@ func test_custom_log_path() -> void:
 	FileAccess.open(custom_log_path, FileAccess.WRITE).store_line("test-log")
 	ProjectSettings.set_setting("debug/file_logging/log_path", custom_log_path)
 	var monitor := GodotGdErrorMonitor.new()
-	
+
 	assert_that(monitor._godot_log_file).is_equal(custom_log_path)
 	# restore orignal log_path
 	ProjectSettings.set_setting("debug/file_logging/log_path", log_path)
@@ -109,7 +109,7 @@ func test_integration_test() -> void:
 	monitor.stop()
 	await monitor.scan(true)
 	assert_array(monitor.to_reports()).is_empty()
-	
+
 	# push error
 	monitor.start()
 	push_error("Test GodotGdErrorMonitor 'push_error' reporting")

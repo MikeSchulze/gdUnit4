@@ -43,16 +43,16 @@ func write(report_dir :String) -> String:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/report/template/suite_report.html")
 	template = GdUnitHtmlPatterns.build(template, self, "")\
 		.replace(GdUnitHtmlPatterns.BREADCRUMP_PATH_LINK, path_as_link())
-		
+
 	var report_output_path := output_path(report_dir)
 	var test_report_table := PackedStringArray()
 	if not _failure_reports.is_empty():
 		test_report_table.append(test_suite_failure_report())
 	for test_report in _reports:
 		test_report_table.append(test_report.create_record(report_output_path))
-	
+
 	template = template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTCASES, "\n".join(test_report_table))
-	
+
 	var dir := report_output_path.get_base_dir()
 	if not DirAccess.dir_exists_absolute(dir):
 		DirAccess.make_dir_recursive_absolute(dir)

@@ -1,8 +1,10 @@
 class_name RPC
 extends RefCounted
 
+
 func serialize() -> String:
 	return JSON.stringify(inst_to_dict(self))
+
 
 # using untyped version see comments below
 static func deserialize(json_value :String) -> Object:

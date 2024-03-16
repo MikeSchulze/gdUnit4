@@ -108,13 +108,13 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	var return_value := GdFunctionDoubler.default_return_value(func_descriptor)
 	var arg_names := extract_arg_names(args)
 	var vararg_names := extract_arg_names(varargs)
-	
+
 	# save original constructor arguments
 	if func_name == "_init":
 		var constructor_args := ",".join(GdFunctionDoubler.extract_constructor_args(args))
 		var constructor := "func _init(%s) -> void:\n	super(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
-	
+
 	var double_src := ""
 	double_src += '@warning_ignore("untyped_declaration")\n' if Engine.get_version_info().hex >= 0x40200 else '\n'
 	if func_descriptor.is_engine():
@@ -130,7 +130,7 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 		.replace("$(func_name)", func_name )\
 		.replace("${default_return_value}", return_value)\
 		.replace("$(push_errors)", _push_errors)
-	
+
 	if is_static:
 		double_src = double_src.replace("$(instance)", "__instance().")
 	else:

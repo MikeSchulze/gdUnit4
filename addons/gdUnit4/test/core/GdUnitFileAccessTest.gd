@@ -41,7 +41,7 @@ func test_copy_directory_recursive() -> void:
 func test_create_temp_dir() -> void:
 	var temp_dir := create_temp_dir("examples/game/save")
 	file_to_save = temp_dir + "/save_game.dat"
-	
+
 	var data := {
 		'user': "Hoschi",
 		'level': 42
@@ -58,7 +58,7 @@ func test_create_temp_file() -> void:
 	# write some example data
 	file.store_line("some data")
 	file.close()
-	
+
 	# verify
 	var file_read := create_temp_file("examples/game", "game.sav", FileAccess.READ)
 	assert_object(file_read).is_not_null()
@@ -99,16 +99,16 @@ func test_delete_path_index_lower_equals_than() -> void:
 	var temp_dir := create_temp_dir("test_reports_delete")
 	assert_array(GdUnitFileAccess.scan_dir(temp_dir)).is_empty()
 	assert_int(GdUnitFileAccess.delete_path_index_lower_equals_than(temp_dir, "report_", 0)).is_equal(0)
-	
+
 	# create some directories
 	for index in range(10, 42):
 		create_temp_dir("test_reports_delete/report_%d" % index)
 	assert_array(GdUnitFileAccess.scan_dir(temp_dir)).has_size(32)
-	
+
 	# try to delete directories with index lower than 0, shold delete nothing
 	assert_int(GdUnitFileAccess.delete_path_index_lower_equals_than(temp_dir, "report_", 0)).is_equal(0)
 	assert_array(GdUnitFileAccess.scan_dir(temp_dir)).has_size(32)
-	
+
 	# try to delete directories with index lower_equals than 30
 	# shold delet directories report_10 to report_30 = 21
 	assert_int(GdUnitFileAccess.delete_path_index_lower_equals_than(temp_dir, "report_", 30)).is_equal(21)
@@ -133,7 +133,7 @@ func test_delete_path_index_lower_equals_than() -> void:
 func test_scan_dir() -> void:
 	var temp_dir := create_temp_dir("test_scan_dir")
 	assert_array(GdUnitFileAccess.scan_dir(temp_dir)).is_empty()
-	
+
 	create_temp_dir("test_scan_dir/report_2")
 	assert_array(GdUnitFileAccess.scan_dir(temp_dir)).contains_exactly(["report_2"])
 	# create some more directories and files
@@ -163,14 +163,14 @@ func test_delete_directory() -> void:
 	_create_file("test_delete_dir", "example_b.txt")
 	_create_file("test_delete_dir/data1", "example.txt")
 	_create_file("test_delete_dir/data2", "example2.txt")
-	
+
 	assert_array(GdUnitFileAccess.scan_dir(tmp_dir)).contains_exactly_in_any_order([
 		"data1",
 		"data2",
 		"example_a.txt",
 		"example_b.txt"
 	])
-	
+
 	# Delete the entire directory and its contents
 	GdUnitFileAccess.delete_directory(tmp_dir)
 	assert_bool(DirAccess.dir_exists_absolute(tmp_dir)).is_false()
@@ -185,14 +185,14 @@ func test_delete_directory_content_only() -> void:
 	_create_file("test_delete_dir", "example_b.txt")
 	_create_file("test_delete_dir/data1", "example.txt")
 	_create_file("test_delete_dir/data2", "example2.txt")
-	
+
 	assert_array(GdUnitFileAccess.scan_dir(tmp_dir)).contains_exactly_in_any_order([
 		"data1",
 		"data2",
 		"example_a.txt",
 		"example_b.txt"
 	])
-	
+
 	# Delete the entire directory and its contents
 	GdUnitFileAccess.delete_directory(tmp_dir, true)
 	assert_bool(DirAccess.dir_exists_absolute(tmp_dir)).is_true()
@@ -203,7 +203,7 @@ func test_extract_package() -> void:
 	clean_temp_dir()
 	var tmp_path := GdUnitFileAccess.create_temp_dir("test_update")
 	var source := "res://addons/gdUnit4/test/update/resources/update.zip"
-	
+
 	# the temp should be inital empty
 	assert_array(GdUnitFileAccess.scan_dir(tmp_path)).is_empty()
 	# now extract to temp
@@ -220,7 +220,7 @@ func test_extract_package_invalid_package() -> void:
 	clean_temp_dir()
 	var tmp_path := GdUnitFileAccess.create_temp_dir("test_update")
 	var source := "res://addons/gdUnit4/test/update/resources/update_invalid.zip"
-	
+
 	# the temp should be inital empty
 	assert_array(GdUnitFileAccess.scan_dir(tmp_path)).is_empty()
 	# now extract to temp

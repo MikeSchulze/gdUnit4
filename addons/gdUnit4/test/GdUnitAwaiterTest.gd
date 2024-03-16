@@ -12,6 +12,7 @@ signal test_signal_b()
 signal test_signal_c(value)
 signal test_signal_d(value_a, value_b)
 
+
 func after_test():
 	for node in get_children():
 		if node is Timer:
@@ -47,16 +48,16 @@ func emit_test_signal(signal_name :String, signal_args: Array):
 func test_await_signal_on() -> void:
 	install_signal_emitter("test_signal_a")
 	await await_signal_on(self, "test_signal_a", [], 100)
-	
+
 	install_signal_emitter("test_signal_b")
 	await await_signal_on(self, "test_signal_b", [], 100)
-	
+
 	install_signal_emitter("test_signal_c", [])
 	await await_signal_on(self, "test_signal_c", [], 100)
-	
+
 	install_signal_emitter("test_signal_c", ["abc"])
 	await await_signal_on(self, "test_signal_c", ["abc"], 100)
-	
+
 	install_signal_emitter("test_signal_c", ["abc", "eee"])
 	await await_signal_on(self, "test_signal_c", ["abc", "eee"], 100)
 

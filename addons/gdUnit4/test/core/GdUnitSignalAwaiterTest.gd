@@ -9,12 +9,12 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitSignalAwaiter.gd'
 
 
 class Monster extends Node:
-	
+
 	signal move(value :float)
 	signal slide(value, x, z )
-	
+
 	var _pos :float = 0.0
-	
+
 	func _process(_delta):
 		_pos += 0.2
 		emit_signal("move", _pos)

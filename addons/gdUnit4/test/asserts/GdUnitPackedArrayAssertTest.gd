@@ -55,7 +55,7 @@ func test_is_not_null(_test :String, array, test_parameters = [
 	["PackedColorArray", PackedColorArray()] ]
 	) -> void:
 	assert_array(array).is_not_null()
-	
+
 	assert_failure(func(): assert_array(null).is_not_null()) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
@@ -74,7 +74,7 @@ func test_is_equal(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
-	
+
 	var other = array.duplicate()
 	assert_array(array).is_equal(other)
 	# should fail because the array not contains same elements and has diff size
@@ -86,7 +86,7 @@ func test_is_equal(_test :String, array, test_parameters = [
 			 '%s'
 			 but was
 			 '%s'
-			
+
 			Differences found:
 			Index	Current	Expected	5	<N/A>	$value	"""
 			.dedent()
@@ -107,7 +107,7 @@ func test_is_not_equal(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
-	
+
 	var other = array.duplicate()
 	other.append(array[2])
 	assert_array(array).is_not_equal(other)
@@ -136,7 +136,7 @@ func test_is_empty(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
-		
+
 	var empty = array.duplicate()
 	empty.clear()
 	assert_array(empty).is_empty()
@@ -164,7 +164,7 @@ func test_is_not_empty(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
-	
+
 	assert_array(array).is_not_empty()
 	# should fail because the array is empty
 	var empty = array.duplicate()
@@ -188,7 +188,7 @@ func test_is_same(value, test_parameters = [
 	[PackedVector3Array([Vector3.ZERO])],
 ]) -> void:
 	assert_array(value).is_same(value)
-	
+
 	var v := GdDefaultValueDecoder.decode(value)
 	assert_failure(func(): assert_array(value).is_same(value.duplicate()))\
 		.is_failed()\
@@ -215,7 +215,7 @@ func test_is_not_same(value, test_parameters = [
 	[PackedVector3Array([Vector3.ZERO])],
 ]) -> void:
 	assert_array(value).is_not_same(value.duplicate())
-	
+
 	assert_failure(func(): assert_array(value).is_not_same(value))\
 		.is_failed()\
 		.has_message("Expecting not same:\n '%s'" % GdDefaultValueDecoder.decode(value))
@@ -234,7 +234,7 @@ func test_has_size(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
-	
+
 	assert_array(array).has_size(5)
 	# should fail because the array has a size of 5
 	assert_failure(func(): assert_array(array).has_size(4)) \
@@ -261,7 +261,7 @@ func test_contains(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
-	
+
 	assert_array(array).contains([array[1], array[3], array[4]])
 	# should fail because the array not contains 7 and 6
 	var do_contains := [array[1], 7, 6]
@@ -294,7 +294,7 @@ func test_contains_exactly(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array([Vector3.ZERO, Vector3.LEFT, Vector3.RIGHT, Vector3.UP, Vector3.DOWN])],
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
-	
+
 	assert_array(array).contains_exactly(array.duplicate())
 	# should fail because the array not contains same elements but in different order
 	var shuffled = array.duplicate()
@@ -330,7 +330,7 @@ func test_override_failure_message(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array()],
 	["PackedColorArray", PackedColorArray()] ]
 	) -> void:
-	
+
 	assert_failure(func(): assert_array(array) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \

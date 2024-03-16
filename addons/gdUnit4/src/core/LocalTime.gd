@@ -12,7 +12,6 @@ enum TimeUnit {
 	YEAR   = 7
 }
 
-
 const SECONDS_PER_MINUTE:int = 60
 const MINUTES_PER_HOUR:int = 60
 const HOURS_PER_DAY:int = 24

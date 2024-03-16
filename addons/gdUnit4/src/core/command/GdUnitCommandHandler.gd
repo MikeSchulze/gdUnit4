@@ -30,7 +30,6 @@ const SETTINGS_SHORTCUT_MAPPING := {
 	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG
 }
 
-
 var _editor_interface :EditorInterface
 # the current test runner config
 var _runner_config := GdUnitRunnerConfig.new()
@@ -54,7 +53,7 @@ static func instance() -> GdUnitCommandHandler:
 
 func _init():
 	assert_shortcut_mappings(SETTINGS_SHORTCUT_MAPPING)
-	
+
 	if Engine.is_editor_hint():
 		var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 		_editor_interface = editor.get_editor_interface()

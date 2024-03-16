@@ -38,7 +38,7 @@ func test_as_string(_test :String, value, expected :String, test_parameters = [
 	['PackedVector3Array', PackedVector3Array([Vector3.ZERO, Vector3.LEFT]), 'PackedVector3Array[Vector3(), Vector3(-1, 0, 0)]'],
 	['PackedColorArray', PackedColorArray([Color.RED, Color.GREEN]), 'PackedColorArray[Color(1, 0, 0, 1), Color(0, 1, 0, 1)]'],
 ]) -> void:
-	
+
 	assert_that(GdArrayTools.as_string(value)).is_equal(expected)
 
 
@@ -84,7 +84,7 @@ func test_is_array_type(_test :String, value, expected :bool, test_parameters = 
 	['PackedVector3Array', PackedVector3Array([Vector3.ZERO, Vector3.LEFT]), true],
 	['PackedColorArray', PackedColorArray([Color.RED, Color.GREEN]), true],
 ]) -> void:
-	
+
 	assert_that(GdArrayTools.is_array_type(value)).is_equal(expected)
 
 
@@ -110,7 +110,7 @@ func test_filter_value(value, expected_type :int, test_parameters = [
 	[PackedVector3Array([Vector3.ZERO, Vector3.ONE, Vector3.DOWN, Vector3.ZERO]), TYPE_PACKED_VECTOR3_ARRAY],
 	[PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.RED]), TYPE_PACKED_COLOR_ARRAY]
 	]) -> void:
-	
+
 	var value_to_remove = value[0]
 	var result :Variant = GdArrayTools.filter_value(value, value_to_remove)
 	assert_array(result).not_contains([value_to_remove]).has_size(2)
@@ -120,13 +120,13 @@ func test_filter_value(value, expected_type :int, test_parameters = [
 func test_filter_value_() -> void:
 	assert_array(GdArrayTools.filter_value([], null)).is_empty()
 	assert_array(GdArrayTools.filter_value([], "")).is_empty()
-	
+
 	var current :Array = [null, "a", "b", null, "c", null]
 	var filtered :Variant= GdArrayTools.filter_value(current, null)
 	assert_array(filtered).contains_exactly(["a", "b", "c"])
 	# verify the source is not affected
 	assert_array(current).contains_exactly([null, "a", "b", null, "c", null])
-	
+
 	current = [null, "a", "xxx", null, "xx", null]
 	filtered = GdArrayTools.filter_value(current, "xxx")
 	assert_array(filtered).contains_exactly([null, "a", null, "xx", null])
@@ -138,11 +138,11 @@ func test_erase_value() -> void:
 	var current := []
 	GdArrayTools.erase_value(current, null)
 	assert_array(current).is_empty()
-	
+
 	current = [null]
 	GdArrayTools.erase_value(current, null)
 	assert_array(current).is_empty()
-	
+
 	current = [null, "a", "b", null, "c", null]
 	GdArrayTools.erase_value(current, null)
 	# verify the source is affected

@@ -8,7 +8,7 @@ const __source = 'res://addons/gdUnit4/src/matchers/AnyClazzArgumentMatcher.gd'
 
 func test_is_match_reference():
 	var matcher := AnyClazzArgumentMatcher.new(RefCounted)
-	
+
 	assert_bool(matcher.is_match(Resource.new())).is_true()
 	assert_bool(matcher.is_match(RefCounted.new())).is_true()
 	assert_bool(matcher.is_match(auto_free(Node.new()))).is_false()
@@ -20,7 +20,7 @@ func test_is_match_reference():
 
 func test_is_match_node():
 	var matcher := AnyClazzArgumentMatcher.new(Node)
-	
+
 	assert_bool(matcher.is_match(auto_free(Node.new()))).is_true()
 	assert_bool(matcher.is_match(auto_free(AnimationPlayer.new()))).is_true()
 	assert_bool(matcher.is_match(auto_free(Timer.new()))).is_true()

@@ -16,6 +16,7 @@ enum {
 	COLOR_RGB
 }
 
+
 # Control Sequence Introducer
 #var csi := PackedByteArray([0x1b]).get_string_from_ascii()
 var _debug_show_color_codes := false
@@ -133,7 +134,7 @@ func print_color_table():
 				print_color("████████ ", Color8(red*42, green*42, blue*42))
 			new_line()
 		new_line()
-		
+
 	prints_color("Color Table RGB", Color.ANTIQUE_WHITE)
 	_color_mode = COLOR_RGB
 	for green in range(0, 6):

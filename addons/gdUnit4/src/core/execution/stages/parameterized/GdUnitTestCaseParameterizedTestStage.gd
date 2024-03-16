@@ -17,12 +17,12 @@ func _execute(context: GdUnitExecutionContext) -> void:
 	var failing_index := 0
 	var parameter_set_resolver := test_case.parameter_set_resolver()
 	var test_names := parameter_set_resolver.build_test_case_names(test_case)
-	
+
 	# if all parameter sets has static values we can preload and reuse it for better performance
 	var parameter_sets :Array = []
 	if parameter_set_resolver.is_parameter_sets_static():
 		parameter_sets = parameter_set_resolver.load_parameter_sets(test_case, true)
-	
+
 	for parameter_set_index in test_names.size():
 		# is test_parameter_index is set, we run this parameterized test only
 		if test_parameter_index != -1 and test_parameter_index != parameter_set_index:
@@ -30,7 +30,7 @@ func _execute(context: GdUnitExecutionContext) -> void:
 		var current_test_case_name = test_names[parameter_set_index]
 		_stage_before.set_test_name(current_test_case_name)
 		_stage_after.set_test_name(current_test_case_name)
-		
+
 		var test_context := GdUnitExecutionContext.of(context)
 		await _stage_before.execute(test_context)
 		var current_parameter_set :Array
@@ -60,7 +60,7 @@ func _load_parameter_set(context: GdUnitExecutionContext, parameter_set_index: i
 	var test_case := context.test_case
 	var test_suite := context.test_suite
 	# we need to exchange temporary for parameter resolving the execution context
-	# this is necessary because of possible usage of `auto_free` and needs to run in the parent execution context 
+	# this is necessary because of possible usage of `auto_free` and needs to run in the parent execution context
 	var save_execution_context: GdUnitExecutionContext = test_suite.__execution_context
 	context.set_active()
 	var parameters := test_case.load_parameter_sets()

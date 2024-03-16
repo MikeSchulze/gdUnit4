@@ -35,7 +35,7 @@ func setup_editor_colors() -> void:
 	var background_color :Color = settings.get_setting("text_editor/theme/highlighting/background_color")
 	var text_color :Color = settings.get_setting("text_editor/theme/highlighting/text_color")
 	var selection_color :Color = settings.get_setting("text_editor/theme/highlighting/selection_color")
-	
+
 	for e in [_template_editor, _tags_editor]:
 		var editor :CodeEdit = e
 		editor.add_theme_color_override("background_color", background_color)
@@ -56,7 +56,7 @@ func setup_highlighter(editor :CodeEdit, settings :EditorSettings) -> void:
 	var keyword_color :Color = settings.get_setting("text_editor/theme/highlighting/keyword_color")
 	var base_type_color :Color = settings.get_setting("text_editor/theme/highlighting/base_type_color")
 	var annotation_color :Color = settings.get_setting("text_editor/theme/highlighting/gdscript/annotation_color")
-	
+
 	highlighter.clear_color_regions()
 	highlighter.clear_keyword_colors()
 	highlighter.add_color_region("#", "", comment_color, true)

@@ -1,10 +1,12 @@
-class_name AnyClazzArgumentMatcher 
+class_name AnyClazzArgumentMatcher
 extends GdUnitArgumentMatcher
-	
+
 var _clazz :Object
+
 
 func _init(clazz :Object) -> void:
 	_clazz = clazz
+
 
 func is_match(value :Variant) -> bool:
 	if typeof(value) != TYPE_OBJECT:

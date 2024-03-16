@@ -31,7 +31,7 @@ func on_context_menu_show(context_menu :PopupMenu, file_tree :Tree) -> void:
 	context_menu.add_separator()
 	var current_index := context_menu.get_item_count()
 	var selected_test_suites := collect_testsuites(_context_menus.values()[0], file_tree)
-	
+
 	for menu_id in _context_menus.keys():
 		var menu_item :GdUnitContextMenuItem = _context_menus[menu_id]
 		if selected_test_suites.size() != 0:

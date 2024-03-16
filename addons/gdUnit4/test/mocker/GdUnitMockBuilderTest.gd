@@ -25,7 +25,7 @@ func test_double_return_typed_function_without_arg() -> void:
 		'@warning_ignore("shadowed_variable")',
 		'func get_class() -> String:',
 		'	var args :Array = ["get_class", ]',
-		'	',
+		'',
 		'	if __is_prepare_return_value():',
 		'		__save_function_return_value(args)',
 		'		return ""',
@@ -34,7 +34,7 @@ func test_double_return_typed_function_without_arg() -> void:
 		'		return ""',
 		'	else:',
 		'		__save_function_interaction(args)',
-		'	',
+		'',
 		'	if __do_call_real_func("get_class", args):',
 		'		return super()',
 		'	return __get_mocked_return_value_or_default(args, "")',
@@ -53,7 +53,7 @@ func test_double_return_typed_function_with_args() -> void:
 		'@warning_ignore("shadowed_variable")',
 		'func is_connected(signal_, callable_) -> bool:',
 		'	var args :Array = ["is_connected", signal_, callable_]',
-		'	',
+		'',
 		'	if __is_prepare_return_value():',
 		'		__save_function_return_value(args)',
 		'		return false',
@@ -62,7 +62,7 @@ func test_double_return_typed_function_with_args() -> void:
 		'		return false',
 		'	else:',
 		'		__save_function_interaction(args)',
-		'	',
+		'',
 		'	if __do_call_real_func("is_connected", args):',
 		'		return super(signal_, callable_)',
 		'	return __get_mocked_return_value_or_default(args, false)',
@@ -73,7 +73,7 @@ func test_double_return_typed_function_with_args() -> void:
 
 func test_double_return_untyped_function_with_args() -> void:
 	var doubler := GdUnitMockFunctionDoubler.new(false)
-	
+
 	# void disconnect(signal: StringName, callable: Callable)
 	var fd := get_function_description("Object", "disconnect")
 	var expected := [
@@ -82,7 +82,7 @@ func test_double_return_untyped_function_with_args() -> void:
 		'@warning_ignore("shadowed_variable")',
 		'func disconnect(signal_, callable_) -> void:',
 		'	var args :Array = ["disconnect", signal_, callable_]',
-		'	',
+		'',
 		'	if __is_prepare_return_value():',
 		'		if false:',
 		'			push_error("Mocking a void function \'disconnect(<args>) -> void:\' is not allowed.")',
@@ -92,7 +92,7 @@ func test_double_return_untyped_function_with_args() -> void:
 		'		return',
 		'	else:',
 		'		__save_function_interaction(args)',
-		'	',
+		'',
 		'	if __do_call_real_func("disconnect"):',
 		'		super(signal_, callable_)',
 		'',
@@ -111,7 +111,7 @@ func test_double_int_function_with_varargs() -> void:
 		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args :Array = ["emit_signal", signal_] + varargs',
-		'	',
+		'',
 		'	if __is_prepare_return_value():',
 		'		if false:',
 		'			push_error("Mocking a void function \'emit_signal(<args>) -> void:\' is not allowed.")',
@@ -122,7 +122,7 @@ func test_double_int_function_with_varargs() -> void:
 		'		return OK',
 		'	else:',
 		'		__save_function_interaction(args)',
-		'	',
+		'',
 		'	if __do_call_real_func("emit_signal", args):',
 		'		match varargs.size():',
 		'			0: return super(signal_)',
@@ -144,7 +144,7 @@ func test_double_int_function_with_varargs() -> void:
 
 func test_double_untyped_function_with_varargs() -> void:
 	var doubler := GdUnitMockFunctionDoubler.new(false)
-	
+
 	# void emit_custom(signal_name, args ...) vararg const
 	var fd := GdFunctionDescriptor.new("emit_custom", 10, false, false, false, TYPE_NIL, "",
 		[GdFunctionArgument.new("signal_", TYPE_SIGNAL)],
@@ -155,7 +155,7 @@ func test_double_untyped_function_with_varargs() -> void:
 		'func emit_custom(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:',
 		'	var varargs :Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args :Array = ["emit_custom", signal_] + varargs',
-		'	',
+		'',
 		'	if __is_prepare_return_value():',
 		'		if false:',
 		'			push_error("Mocking a void function \'emit_custom(<args>) -> void:\' is not allowed.")',
@@ -166,7 +166,7 @@ func test_double_untyped_function_with_varargs() -> void:
 		'		return null',
 		'	else:',
 		'		__save_function_interaction(args)',
-		'	',
+		'',
 		'	if __do_call_real_func("emit_custom", args):',
 		'		match varargs.size():',
 		'			0: return super(signal_)',
@@ -188,7 +188,7 @@ func test_double_untyped_function_with_varargs() -> void:
 
 func test_double_virtual_script_function_without_arg() -> void:
 	var doubler := GdUnitMockFunctionDoubler.new(false)
-	
+
 	# void _ready() virtual
 	var fd := get_function_description("Node", "_ready")
 	var expected := [
@@ -197,7 +197,7 @@ func test_double_virtual_script_function_without_arg() -> void:
 		'@warning_ignore("shadowed_variable")',
 		'func _ready() -> void:',
 		'	var args :Array = ["_ready", ]',
-		'	',
+		'',
 		'	if __is_prepare_return_value():',
 		'		if false:',
 		'			push_error("Mocking a void function \'_ready(<args>) -> void:\' is not allowed.")',
@@ -207,7 +207,7 @@ func test_double_virtual_script_function_without_arg() -> void:
 		'		return',
 		'	else:',
 		'		__save_function_interaction(args)',
-		'	',
+		'',
 		'	if __do_call_real_func("_ready"):',
 		'		super()',
 		'',
@@ -217,7 +217,7 @@ func test_double_virtual_script_function_without_arg() -> void:
 
 func test_double_virtual_script_function_with_arg() -> void:
 	var doubler := GdUnitMockFunctionDoubler.new(false)
-	
+
 	# void _input(event: InputEvent) virtual
 	var fd := get_function_description("Node", "_input")
 	var expected := [
@@ -226,7 +226,7 @@ func test_double_virtual_script_function_with_arg() -> void:
 		'@warning_ignore("shadowed_variable")',
 		'func _input(event_) -> void:',
 		'	var args :Array = ["_input", event_]',
-		'	',
+		'',
 		'	if __is_prepare_return_value():',
 		'		if false:',
 		'			push_error("Mocking a void function \'_input(<args>) -> void:\' is not allowed.")',
@@ -236,7 +236,7 @@ func test_double_virtual_script_function_with_arg() -> void:
 		'		return',
 		'	else:',
 		'		__save_function_interaction(args)',
-		'	',
+		'',
 		'	if __do_call_real_func("_input"):',
 		'		super(event_)',
 		'',

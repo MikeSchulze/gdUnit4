@@ -85,7 +85,7 @@ func build_test_case_names(test_case: _TestCase) -> PackedStringArray:
 	# if test names already resolved?
 	if not _test_case_names_cache.is_empty():
 		return _test_case_names_cache
-	
+
 	var fa := GdFunctionArgument.get_parameter_set(_fd.args())
 	var parameter_sets := fa.parameter_sets()
 	# if no parameter set detected we need to resolve it by using reflection
@@ -128,7 +128,7 @@ func _extract_test_names_by_reflection(test_case: _TestCase) -> PackedStringArra
 static func _build_test_case_name(test_case: _TestCase, test_parameter: String, parameter_set_index: int) -> String:
 	if not test_parameter.begins_with("["):
 		test_parameter = "[" + test_parameter
-	return "%s:%d %s" % [test_case.get_name(), parameter_set_index, test_parameter.replace('"', "'").replace("&'", "'")]
+	return "%s:%d %s" % [test_case.get_name(), parameter_set_index, test_parameter.replace("\t", "").replace('"', "'").replace("&'", "'")]
 
 
 # extracts the arguments from the given test case, using kind of reflection solution

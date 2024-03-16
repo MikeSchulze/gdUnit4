@@ -22,11 +22,11 @@ func test_free_instance() -> void:
 	assert_that(await GdUnitTools.free_instance(JavaClass.new())).is_true()
 	assert_that(await GdUnitTools.free_instance(InnerTestNodeClass.new())).is_true()
 	assert_that(await GdUnitTools.free_instance(InnerTestRefCountedClass.new())).is_true()
-	
+
 	# on invalid instances
 	assert_that(await GdUnitTools.free_instance(null)).is_false()
 	assert_that(await GdUnitTools.free_instance(RefCounted)).is_false()
-	
+
 	# on already freed instances
 	var node := Node.new()
 	node.free()
@@ -36,7 +36,7 @@ func test_free_instance() -> void:
 func test_richtext_normalize() -> void:
 	assert_that(GdUnitTools.richtext_normalize("")).is_equal("")
 	assert_that(GdUnitTools.richtext_normalize("This is a Color Message")).is_equal("This is a Color Message")
-	
+
 	var message = """
 		[color=green]line [/color][color=aqua]11:[/color] [color=#CD5C5C]Expecting:[/color]
 			must be empty but was

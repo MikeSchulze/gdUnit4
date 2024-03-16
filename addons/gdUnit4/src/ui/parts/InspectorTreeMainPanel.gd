@@ -365,7 +365,7 @@ func show_failed_report(selected_item) -> void:
 	for child in _report_list.get_children():
 		_report_list.remove_child(child)
 		child.queue_free()
-	
+
 	if selected_item == null or not selected_item.has_meta(META_GDUNIT_REPORT):
 		return
 	# add new reports
@@ -408,7 +408,7 @@ func add_test_suite(test_suite :GdUnitTestSuiteDto) -> void:
 	var item := _tree.create_item(_tree_root)
 	var suite_name := test_suite.name()
 	var test_count := test_suite.test_case_count()
-	
+
 	item.set_icon(0, ICON_TEST_DEFAULT)
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_NAME, suite_name)
@@ -451,7 +451,7 @@ func add_test(parent :TreeItem, test_case :GdUnitTestCaseDto) -> void:
 	item.set_meta(META_LINE_NUMBER, test_case.line_number())
 	item.set_meta(META_TEST_PARAM_INDEX, -1)
 	add_tree_item_to_cache(parent.get_meta(META_RESOURCE_PATH), test_name, item)
-	
+
 	var test_case_names := test_case.test_case_names()
 	if not test_case_names.is_empty():
 		item.set_meta(META_GDUNIT_TOTAL_TESTS, test_case_names.size())
@@ -515,7 +515,7 @@ func _on_Tree_item_activated() -> void:
 	var resource_path = selected_item.get_meta(META_RESOURCE_PATH)
 	var line_number = selected_item.get_meta(META_LINE_NUMBER)
 	var resource = load(resource_path)
-	
+
 	if selected_item.has_meta(META_GDUNIT_REPORT):
 		var reports :Array = selected_item.get_meta(META_GDUNIT_REPORT)
 		var report_line_number = reports[0].line_number()
@@ -523,7 +523,7 @@ func _on_Tree_item_activated() -> void:
 		# in non debug mode the line number is not available
 		if report_line_number != -1:
 			line_number = report_line_number
-	
+
 	var editor_interface := _editor.get_editor_interface()
 	editor_interface.get_file_system_dock().navigate_to_path(resource_path)
 	editor_interface.edit_resource(resource)

@@ -1,4 +1,4 @@
-## A tuple implementation to hold two or many values 
+## A tuple implementation to hold two or many values
 class_name GdUnitTuple
 extends RefCounted
 

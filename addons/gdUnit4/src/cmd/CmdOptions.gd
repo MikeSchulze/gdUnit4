@@ -8,7 +8,7 @@ var _advanced_options :Array
 
 func _init(p_options :Array = Array(), p_advanced_options :Array = Array()):
 	# default help options
-	_default_options = p_options 
+	_default_options = p_options
 	_advanced_options = p_advanced_options
 
 

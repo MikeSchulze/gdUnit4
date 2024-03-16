@@ -34,7 +34,7 @@ func update_test_suite_report(
 	failed_count_ :int,
 	orphan_count_ :int,
 	reports_ :Array = []) -> void:
-	
+
 	for report in _reports:
 		if report.resource_path() == resource_path_:
 			report.set_duration(duration_)

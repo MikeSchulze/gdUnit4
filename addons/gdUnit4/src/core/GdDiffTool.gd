@@ -10,7 +10,7 @@ const DIV_SUB :int = 215
 static func _diff(lb: PackedByteArray, rb: PackedByteArray, lookup: Array, ldiff: Array, rdiff: Array):
 	var loffset = lb.size()
 	var roffset = rb.size()
-	
+
 	while true:
 		#if last character of X and Y matches
 		if loffset > 0 && roffset > 0 && lb[loffset - 1] == rb[roffset - 1]:
@@ -57,7 +57,7 @@ static func _buildLookup(lb: PackedByteArray, rb: PackedByteArray) -> Array:
 	# first row of the lookup table will be all 0
 	for j in lookup[0].size():
 		lookup[0][j] = 0
-	
+
 	# fill the lookup table in bottom-up manner
 	for i in range(1, lookup.size()):
 		for j in range(1, lookup[0].size()):
@@ -92,14 +92,14 @@ static func longestCommonSubsequence(text1 :String, text2 :String) -> PackedStri
 		for n in text2WordCount+1:
 			ar.append(0)
 		solutionMatrix.append(ar)
-	
+
 	for i in range(text1WordCount-1, 0, -1):
 		for j in range(text2WordCount-1, 0, -1):
 			if text1Words[i] == text2Words[j]:
 				solutionMatrix[i][j] = solutionMatrix[i + 1][j + 1] + 1;
 			else:
 				solutionMatrix[i][j] = max(solutionMatrix[i + 1][j], solutionMatrix[i][j + 1]);
-	
+
 	var i = 0
 	var j = 0
 	var lcsResultList := PackedStringArray();
@@ -119,7 +119,7 @@ static func markTextDifferences(text1 :String, text2 :String, lcsList :PackedStr
 	var stringBuffer = ""
 	if text1 == null and lcsList == null:
 		return stringBuffer
-	
+
 	var text1Words := text1.split(" ")
 	var text2Words := text2.split(" ")
 	var i = 0
@@ -134,7 +134,7 @@ static func markTextDifferences(text1 :String, text2 :String, lcsList :PackedStr
 				word2LastIndex = j + 1
 				i = text1Words.size()
 				j = text2Words.size()
-	
+
 			else: if text1Words[i] != lcsList[k]:
 				while i < text1Words.size() and text1Words[i] != lcsList[k]:
 					stringBuffer += "<SPAN style='BACKGROUND-COLOR:" + deleteColor.to_html() + "'>" + text1Words[i] + " </SPAN>"
@@ -145,7 +145,7 @@ static func markTextDifferences(text1 :String, text2 :String, lcsList :PackedStr
 					j += 1
 			i = word1LastIndex
 			j = word2LastIndex
-		
+
 			while word1LastIndex < text1Words.size():
 				stringBuffer += "<SPAN style='BACKGROUND-COLOR:" + deleteColor.to_html() + "'>" + text1Words[word1LastIndex] + " </SPAN>"
 				word1LastIndex += 1

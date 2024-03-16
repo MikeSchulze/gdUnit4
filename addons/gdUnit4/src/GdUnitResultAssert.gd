@@ -13,7 +13,7 @@ func is_not_null() -> GdUnitResultAssert:
 	return self
 
 
-## Verifies that the result is ends up with empty 
+## Verifies that the result is ends up with empty
 func is_empty() -> GdUnitResultAssert:
 	return self
 

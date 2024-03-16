@@ -5,6 +5,7 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/.gd'
 
+
 func test_parse() -> void:
 	var expected := GdUnit4Version.new(0, 9, 1)
 	assert_object(GdUnit4Version.parse("v0.9.1-rc")).is_equal(expected)
@@ -12,15 +13,17 @@ func test_parse() -> void:
 	assert_object(GdUnit4Version.parse("0.9.1 rc")).is_equal(expected)
 	assert_object(GdUnit4Version.parse("0.9.1")).is_equal(expected)
 
+
 func test_equals() -> void:
 	var version := GdUnit4Version.new(0, 9, 1)
 	assert_bool(version.equals(version)).is_true()
 	assert_bool(version.equals(GdUnit4Version.new(0, 9, 1))).is_true()
 	assert_bool(GdUnit4Version.new(0, 9, 1).equals(version)).is_true()
-	
+
 	assert_bool(GdUnit4Version.new(0, 9, 2).equals(version)).is_false()
 	assert_bool(GdUnit4Version.new(0, 8, 1).equals(version)).is_false()
 	assert_bool(GdUnit4Version.new(1, 9, 1).equals(version)).is_false()
+
 
 func test_to_string() -> void:
 	var version := GdUnit4Version.new(0, 9, 1)

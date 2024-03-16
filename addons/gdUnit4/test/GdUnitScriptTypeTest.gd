@@ -7,6 +7,7 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitScriptType.gd'
 
+
 func test_type_of() -> void:
 	assert_str(GdUnitScriptType.type_of(null)).is_equal(GdUnitScriptType.UNKNOWN)
 	assert_str(GdUnitScriptType.type_of(ClassDB.instantiate("GDScript"))).is_equal(GdUnitScriptType.GD)

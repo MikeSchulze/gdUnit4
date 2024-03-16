@@ -4,6 +4,7 @@ extends GdUnitReportSummary
 var _suite_name :String
 var _failure_reports :Array
 
+
 func _init(
 		p_resource_path :String,
 		p_suite_name :String,

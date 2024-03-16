@@ -18,15 +18,18 @@ func test_serde():
 		.is_instanceof(GdUnitResult) \
 		.is_equal(source)
 
+
 func test_or_else_on_success():
 	var result := GdUnitResult.success("some value")
 	assert_str(result.value()).is_equal("some value")
 	assert_str(result.or_else("other value")).is_equal("some value")
 
+
 func test_or_else_on_warning():
 	var result := GdUnitResult.warn("some warning message")
 	assert_object(result.value()).is_null()
 	assert_str(result.or_else("other value")).is_equal("other value")
+
 
 func test_or_else_on_error():
 	var result := GdUnitResult.error("some error message")

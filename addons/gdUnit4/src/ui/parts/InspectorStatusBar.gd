@@ -12,6 +12,7 @@ signal failure_prevous
 var total_failed := 0
 var total_errors := 0
 
+
 func _ready():
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	_failures.text = "0"

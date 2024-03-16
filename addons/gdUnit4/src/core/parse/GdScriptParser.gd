@@ -83,14 +83,14 @@ class Token extends RefCounted:
 	var _consumed: int
 	var _is_operator: bool
 	var _regex :RegEx
-	
-	
+
+
 	func _init(p_token: String, p_is_operator := false, p_regex :RegEx = null) -> void:
 		_token = p_token
 		_is_operator = p_is_operator
 		_consumed = p_token.length()
 		_regex = p_regex
-	
+
 	func match(input: String, pos: int) -> bool:
 		if _regex:
 			var result := _regex.search(input, pos)
@@ -99,22 +99,22 @@ class Token extends RefCounted:
 			_consumed = result.get_end() - result.get_start()
 			return pos == result.get_start()
 		return input.findn(_token, pos) == pos
-	
+
 	func is_operator() -> bool:
 		return _is_operator
-	
+
 	func is_inner_class() -> bool:
 		return _token == "class"
-	
+
 	func is_variable() -> bool:
 		return false
-	
+
 	func is_token(token_name :String) -> bool:
 		return _token == token_name
-	
+
 	func is_skippable() -> bool:
 		return false
-	
+
 	func _to_string():
 		return "Token{" + _token + "}"
 
@@ -122,17 +122,17 @@ class Token extends RefCounted:
 class Operator extends Token:
 	func _init(value: String):
 		super(value, true)
-	
+
 	func _to_string():
 		return "OperatorToken{%s}" % [_token]
 
 
 # A skippable token, is just a placeholder like space or tabs
 class SkippableToken extends Token:
-	
+
 	func _init(p_token: String):
 		super(p_token)
-	
+
 	func is_skippable() -> bool:
 		return true
 
@@ -140,12 +140,12 @@ class SkippableToken extends Token:
 # Token to parse Fuzzers
 class FuzzerToken extends Token:
 	var _name: String
-	
-	
+
+
 	func _init(regex: RegEx):
 		super("", false, regex)
-	
-	
+
+
 	func match(input: String, pos: int) -> bool:
 		if _regex:
 			var result := _regex.search(input, pos)
@@ -155,16 +155,16 @@ class FuzzerToken extends Token:
 			_consumed = result.get_end() - result.get_start()
 			return pos == result.get_start()
 		return input.findn(_token, pos) == pos
-	
-	
+
+
 	func name() -> String:
 		return _name
-	
-	
+
+
 	func type() -> int:
 		return GdObjects.TYPE_FUZZER
-	
-	
+
+
 	func _to_string():
 		return "FuzzerToken{%s: '%s'}" % [_name, _token]
 
@@ -174,15 +174,15 @@ class Variable extends Token:
 	var _plain_value
 	var _typed_value
 	var _type :int = TYPE_NIL
-	
-	
+
+
 	func _init(p_value: String):
 		super(p_value)
 		_type = _scan_type(p_value)
 		_plain_value = p_value
 		_typed_value = _cast_to_type(p_value, _type)
-	
-	
+
+
 	func _scan_type(p_value: String) -> int:
 		if p_value.begins_with("\"") and p_value.ends_with("\""):
 			return TYPE_STRING
@@ -196,8 +196,8 @@ class Variable extends Token:
 		if p_value.is_valid_hex_number():
 			return TYPE_INT
 		return TYPE_OBJECT
-	
-	
+
+
 	func _cast_to_type(p_value :String, p_type: int) -> Variant:
 		match p_type:
 			TYPE_STRING:
@@ -207,24 +207,24 @@ class Variable extends Token:
 			TYPE_FLOAT:
 				return p_value.to_float()
 		return p_value
-	
-	
+
+
 	func is_variable() -> bool:
 		return true
-	
-	
+
+
 	func type() -> int:
 		return _type
-	
-	
+
+
 	func value():
 		return _typed_value
-	
-	
+
+
 	func plain_value():
 		return _plain_value
-	
-	
+
+
 	func _to_string():
 		return "Variable{%s: %s : '%s'}" % [_plain_value, GdObjects.type_as_string(_type), _token]
 
@@ -232,8 +232,8 @@ class Variable extends Token:
 class TokenInnerClass extends Token:
 	var _clazz_name
 	var _content := PackedStringArray()
-	
-	
+
+
 	static func _strip_leading_spaces(input :String) -> String:
 		var characters := input.to_ascii_buffer()
 		while not characters.is_empty():
@@ -241,25 +241,25 @@ class TokenInnerClass extends Token:
 				break
 			characters.remove_at(0)
 		return characters.get_string_from_ascii()
-	
-	
+
+
 	static func _consumed_bytes(row :String) -> int:
 		return row.replace(" ", "").replace("	", "").length()
-	
-	
+
+
 	func _init(clazz_name :String):
 		super("class")
 		_clazz_name = clazz_name
-	
-	
+
+
 	func is_class_name(clazz_name :String) -> bool:
 		return _clazz_name == clazz_name
-	
-	
+
+
 	func content() -> PackedStringArray:
 		return _content
-	
-	
+
+
 	func parse(source_rows :PackedStringArray, offset :int) -> void:
 		# add class signature
 		_content.append(source_rows[offset])
@@ -280,8 +280,8 @@ class TokenInnerClass extends Token:
 				continue
 			break
 		_consumed += TokenInnerClass._consumed_bytes("".join(_content))
-	
-	
+
+
 	func _to_string():
 		return "TokenInnerClass{%s}" % [_clazz_name]
 
@@ -540,7 +540,7 @@ func _parse_end_function(input: String, remove_trailing_char := false) -> String
 	var bracket_count := 0
 	var in_array := 0
 	var end_of_func = false
-	
+
 	while current_index < len(input) and not end_of_func:
 		var character = input[current_index]
 		# step over strings
@@ -560,7 +560,7 @@ func _parse_end_function(input: String, remove_trailing_char := false) -> String
 				push_error("Parsing error on '%s', can't evaluate end of string." % input)
 				return ""
 			continue
-		
+
 		match character:
 			# count if inside an array
 			"[": in_array += 1
@@ -612,7 +612,7 @@ func extract_source_code(script_path :PackedStringArray) -> PackedStringArray:
 
 func extract_func_signature(rows :PackedStringArray, index :int) -> String:
 	var signature := ""
-	
+
 	for rowIndex in range(index, rows.size()):
 		var row := rows[rowIndex]
 		signature += row + "\n"
@@ -630,7 +630,7 @@ func load_source_code(script :GDScript, script_path :PackedStringArray) -> Packe
 			var class_path := GdObjects.extract_class_path(value)
 			if class_path.size() > 1:
 				_scanned_inner_classes.append(class_path[1])
-	
+
 	var source_code := GdScriptParser.to_unix_format(script.source_code)
 	var source_rows := source_code.split("\n")
 	# extract all inner class names
@@ -644,7 +644,7 @@ func load_source_code(script :GDScript, script_path :PackedStringArray) -> Packe
 func get_class_name(script :GDScript) -> String:
 	var source_code := GdScriptParser.to_unix_format(script.source_code)
 	var source_rows := source_code.split("\n")
-	
+
 	for index in min(10, source_rows.size()):
 		var input = GdScriptParser.clean_up_row(source_rows[index])
 		var token := next_token(input, 0)
@@ -726,7 +726,7 @@ func parse_func_description(func_signature :String, clazz_name :String, clazz_pa
 			# is return type an enum?
 			if is_class_enum_type(return_clazz):
 				return_type = GdObjects.TYPE_ENUM
-	
+
 	return GdFunctionDescriptor.new(
 		name,
 		line_number,
@@ -778,10 +778,10 @@ func is_class_enum_type(value :String) -> bool:
 	var script := GDScript.new()
 	script.source_code = """
 	extends Resource
-	
+
 	static func is_class_enum_type() -> bool:
 		return typeof(%s) == TYPE_DICTIONARY
-	
+
 	""".dedent() % value
 	script.reload()
 	return script.call("is_class_enum_type")

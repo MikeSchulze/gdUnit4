@@ -36,7 +36,7 @@ func __verify_interactions(args :Array[Variant]) -> void:
 			summary[key] = interactions
 			# add as verified
 			__verified_interactions.append(key)
-	
+
 	var gd_assert := GdUnitAssertImpl.new("")
 	if total_interactions != __expected_interactions:
 		var expected_summary := {args : __expected_interactions}
@@ -70,7 +70,7 @@ func __verify_no_more_interactions() -> Dictionary:
 		var called_but_not_verified := called_functions.duplicate()
 		for index in __verified_interactions.size():
 			called_but_not_verified.erase(__verified_interactions[index])
-		
+
 		for index in called_but_not_verified.size():
 			var not_verified :Variant = called_but_not_verified[index]
 			summary[not_verified] = __saved_interactions[not_verified]

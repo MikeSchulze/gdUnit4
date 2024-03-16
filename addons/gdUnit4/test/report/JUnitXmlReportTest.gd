@@ -7,6 +7,7 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/report/JUnitXmlReport.gd'
 
+
 func test_to_time() -> void:
 	assert_str(JUnitXmlReport.to_time(0)).is_equal("0.000")
 	assert_str(JUnitXmlReport.to_time(1)).is_equal("0.001")
@@ -14,6 +15,7 @@ func test_to_time() -> void:
 	assert_str(JUnitXmlReport.to_time(100)).is_equal("0.100")
 	assert_str(JUnitXmlReport.to_time(1000)).is_equal("1.000")
 	assert_str(JUnitXmlReport.to_time(10123)).is_equal("10.123")
+
 
 func test_to_type() -> void:
 	assert_str(JUnitXmlReport.to_type(GdUnitReport.SUCCESS)).is_equal("SUCCESS")

@@ -5,10 +5,12 @@ extends Fuzzer
 var _from :Vector2
 var _to : Vector2
 
+
 func _init(from: Vector2,to: Vector2):
 	assert(from <= to) #,"Invalid range!")
 	_from = from
 	_to = to
+
 
 func next_value() -> Variant:
 	var x = randf_range(_from.x, _to.x)

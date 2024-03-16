@@ -95,17 +95,17 @@ func _on_gdunit_event(event :GdUnitEvent):
 	match event.type():
 		GdUnitEvent.INIT:
 			reset_statistics()
-		
+
 		GdUnitEvent.STOP:
 			print_message("Summary:", Color.DODGER_BLUE)
 			println_message("| %d total | %d error | %d failed | %d skipped | %d orphans |" % [_summary["total_count"], _summary["error_count"], _summary["failed_count"], _summary["skipped_count"], _summary["orphan_nodes"]], _text_color, 1)
 			print_message("[wave][/wave]")
-		
+
 		GdUnitEvent.TESTSUITE_BEFORE:
 			init_statistics(event)
 			print_message("Execute: ", Color.DODGER_BLUE)
 			println_message(event._suite_name, _engine_type_color)
-		
+
 		GdUnitEvent.TESTSUITE_AFTER:
 			update_statistics(event)
 			if not event.reports().is_empty():
@@ -119,13 +119,13 @@ func _on_gdunit_event(event :GdUnitEvent):
 			print_message(" | %d total | %d error | %d failed | %d skipped | %d orphans |" % [_statistics["total_count"], _statistics["error_count"], _statistics["failed_count"], _statistics["skipped_count"], _statistics["orphan_nodes"]])
 			println_message("%+12s" % LocalTime.elapsed(event.elapsed_time()))
 			println_message(" ")
-		
+
 		GdUnitEvent.TESTCASE_BEFORE:
 			var spaces = "-%d" % (80 - event._suite_name.length())
 			print_message(event._suite_name, _engine_type_color, 1)
 			print_message(":")
 			print_message(("%"+spaces+"s") % event._test_name, _function_color)
-		
+
 		GdUnitEvent.TESTCASE_AFTER:
 			var reports := event.reports()
 			update_statistics(event)
@@ -138,7 +138,7 @@ func _on_gdunit_event(event :GdUnitEvent):
 			elif event.is_warning():
 				print_message("WARNING", Color.YELLOW)
 			println_message(" %+12s" % LocalTime.elapsed(event.elapsed_time()))
-			
+
 			var report :GdUnitReport = null if reports.is_empty() else reports[0]
 			if report:
 				println_message("line %d %s" % [report._line_number, report._message], _text_color, 2)

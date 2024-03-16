@@ -29,7 +29,7 @@ func write(report_dir :String) -> String:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/report/template/folder_report.html")
 	var path_report := GdUnitHtmlPatterns.build(template, self, "")
 	path_report = apply_testsuite_reports(report_dir, path_report, _reports)
-	
+
 	var output_path := "%s/path/%s.html" % [report_dir, path().replace("/", ".")]
 	var dir := output_path.get_base_dir()
 	if not DirAccess.dir_exists_absolute(dir):
@@ -40,7 +40,7 @@ func write(report_dir :String) -> String:
 
 func apply_testsuite_reports(report_dir :String, template :String, reports_ :Array[GdUnitReportSummary]) -> String:
 	var table_records := PackedStringArray()
-	
+
 	for report in reports_:
 		var report_link = report.output_path(report_dir).replace(report_dir, "..")
 		table_records.append(report.create_record(report_link))

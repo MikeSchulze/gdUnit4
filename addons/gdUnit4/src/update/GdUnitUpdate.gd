@@ -58,7 +58,7 @@ func message_h4(message :String, color :Color) -> void:
 func run_update() -> void:
 	get_cancel_button().disabled = true
 	get_ok_button().disabled = true
-	
+
 	await update_progress("Download Release ... [img=24x24]%s[/img]" % spinner_icon)
 	await download_release()
 	await update_progress("Extract update ... [img=24x24]%s[/img]" % spinner_icon)
@@ -70,20 +70,20 @@ func run_update() -> void:
 		await get_tree().create_timer(3).timeout
 		queue_free()
 		return
-	
+
 	await update_progress("Uninstall GdUnit4 ... [img=24x24]%s[/img]" % spinner_icon)
 	disable_gdUnit()
 	if not _debug_mode:
 		delete_directory("res://addons/gdUnit4/")
 	# give editor time to react on deleted files
 	await get_tree().create_timer(1).timeout
-	
+
 	await update_progress("Install new GdUnit4 version ...")
 	if _debug_mode:
 		copy_directory(tmp_path, "res://debug")
 	else:
 		copy_directory(tmp_path, "res://")
-	
+
 	await update_progress("New GdUnit version successfully installed, Restarting Godot ...")
 	await get_tree().create_timer(3).timeout
 	enable_gdUnit()
@@ -156,7 +156,7 @@ func copy_directory(from_dir :String, to_dir :String) -> bool:
 	if not DirAccess.dir_exists_absolute(from_dir):
 		push_error("Source directory not found '%s'" % from_dir)
 		return false
-	# check if destination exists 
+	# check if destination exists
 	if not DirAccess.dir_exists_absolute(to_dir):
 		# create it
 		var err := DirAccess.make_dir_recursive_absolute(to_dir)
@@ -168,7 +168,7 @@ func copy_directory(from_dir :String, to_dir :String) -> bool:
 	if source_dir != null:
 		source_dir.list_dir_begin()
 		var next := "."
-		
+
 		while next != "":
 			next = source_dir.get_next()
 			if next == "" or next == "." or next == "..":
@@ -198,7 +198,7 @@ func extract_zip(zip_package :String, dest_path :String) -> Variant:
 	# Get base path and step over archive folder
 	var archive_path = zip_entries[0]
 	zip_entries.remove_at(0)
-	
+
 	for zip_entry in zip_entries:
 		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
 		if zip_entry.ends_with("/"):

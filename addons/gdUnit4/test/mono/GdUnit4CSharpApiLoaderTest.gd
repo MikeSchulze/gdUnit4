@@ -25,7 +25,7 @@ func test_is_engine_version_supported(version :int, expected :bool, test_paramet
 	[0x40100, false],
 	[0x40200, true],
 	[0x40201, true]]) -> void:
-	
+
 	assert_that(GdUnit4CSharpApiLoader.is_engine_version_supported(version)).is_equal(expected)
 
 
@@ -64,8 +64,8 @@ func test_executor() -> void:
 	var listener :TestRunListener = auto_free(TestRunListener.new())
 	var executor = GdUnit4CSharpApiLoader.create_executor(listener)
 	assert_that(executor).is_not_null()
-	
+
 	var test_suite := GdUnit4CSharpApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4CSharpApiTest.cs")
 	assert_that(executor.IsExecutable(test_suite)).is_true()
-	
+
 	test_suite.free()

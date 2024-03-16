@@ -9,7 +9,7 @@ const __source = 'res://addons/gdUnit4/src/asserts/GdUnitResultAssertImpl.gd'
 
 func test_is_null():
 	assert_result(null).is_null()
-	
+
 	assert_failure(func(): assert_result(GdUnitResult.success("")).is_null()) \
 		.is_failed() \
 		.has_message('Expecting: \'<null>\' but was <{ "state": 0, "value": "\\"\\"", "warn_msg": "", "err_msg": "" }>')
@@ -17,7 +17,7 @@ func test_is_null():
 
 func test_is_not_null():
 	assert_result(GdUnitResult.success("")).is_not_null()
-	
+
 	assert_failure(func(): assert_result(null).is_not_null()) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
@@ -25,7 +25,7 @@ func test_is_not_null():
 
 func test_is_empty():
 	assert_result(GdUnitResult.empty()).is_empty()
-	
+
 	assert_failure(func(): assert_result(GdUnitResult.warn("a warning")).is_empty()) \
 		.is_failed() \
 		.has_message("Expecting the result must be a EMPTY but was WARNING:\n 'a warning'")
@@ -39,7 +39,7 @@ func test_is_empty():
 
 func test_is_success():
 	assert_result(GdUnitResult.success("")).is_success()
-	
+
 	assert_failure(func(): assert_result(GdUnitResult.warn("a warning")).is_success()) \
 		.is_failed() \
 		.has_message("Expecting the result must be a SUCCESS but was WARNING:\n 'a warning'")
@@ -53,7 +53,7 @@ func test_is_success():
 
 func test_is_warning():
 	assert_result(GdUnitResult.warn("a warning")).is_warning()
-	
+
 	assert_failure(func(): assert_result(GdUnitResult.success("value")).is_warning()) \
 		.is_failed() \
 		.has_message("Expecting the result must be a WARNING but was SUCCESS.")
@@ -67,7 +67,7 @@ func test_is_warning():
 
 func test_is_error():
 	assert_result(GdUnitResult.error("a error")).is_error()
-	
+
 	assert_failure(func(): assert_result(GdUnitResult.success("")).is_error()) \
 		.is_failed() \
 		.has_message("Expecting the result must be a ERROR but was SUCCESS.")
@@ -82,7 +82,7 @@ func test_is_error():
 func test_contains_message():
 	assert_result(GdUnitResult.error("a error")).contains_message("a error")
 	assert_result(GdUnitResult.warn("a warning")).contains_message("a warning")
-	
+
 	assert_failure(func(): assert_result(GdUnitResult.success("")).contains_message("Error 500")) \
 		.is_failed() \
 		.has_message("Expecting:\n 'Error 500'\n but the GdUnitResult is a success.")
@@ -101,7 +101,7 @@ func test_is_value():
 	assert_result(GdUnitResult.success("")).is_value("")
 	var result_value = auto_free(Node.new())
 	assert_result(GdUnitResult.success(result_value)).is_value(result_value)
-	
+
 	assert_failure(func(): assert_result(GdUnitResult.success("")).is_value("abc")) \
 		.is_failed() \
 		.has_message("Expecting to contain same value:\n 'abc'\n but was\n '<empty>'.")
@@ -128,15 +128,15 @@ func test_override_failure_message() -> void:
 func test_is_failure() -> void:
 	# initial is false
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked success assert
 	assert_result(null).is_null()
 	assert_bool(is_failure()).is_false()
-	
+
 	# checked faild assert
 	assert_failure(func(): assert_result(RefCounted.new()).is_null()).is_failed()
 	assert_bool(is_failure()).is_true()
-	
+
 	# checked next success assert
 	assert_result(null).is_null()
 	# is true because we have an already failed assert

@@ -119,11 +119,11 @@ func test_extract_from_descriptor_is_virtual_func_full_check():
 	# since Godot 4.2 there are more virtual functions
 	if Engine.get_version_info().hex >= 0x40200:
 		expected_virtual_functions.append("_validate_property")
-		
+
 	var _count := 0
 	for method_descriptor in methods:
 		var fd := GdFunctionDescriptor.extract_from(method_descriptor)
-		
+
 		if fd.is_virtual():
 			_count += 1
 			assert_array(expected_virtual_functions).contains([fd.name()])

@@ -36,7 +36,7 @@ static func _to_report(errorLog :ErrorLogEntry) -> GdUnitReport:
 		GdAssertMessages._error("Godot Runtime Error !"),
 		GdAssertMessages._colored_value(errorLog._details),
 		GdAssertMessages._error("Error:"),
-		GdAssertMessages._colored_value(errorLog._message)] 
+		GdAssertMessages._colored_value(errorLog._message)]
 	return GdUnitReport.new().create(GdUnitReport.ABORT, errorLog._line, failure)
 
 
