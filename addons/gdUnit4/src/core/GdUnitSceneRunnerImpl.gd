@@ -62,6 +62,11 @@ func _init(p_scene, p_verbose :bool, p_hide_push_errors = false):
 			push_error("GdUnitSceneRunner: Scene must be not null!")
 		return
 	_scene_tree().root.add_child(_current_scene)
+	# do finally reset all open input events when the scene is removed
+	_scene_tree().root.child_exiting_tree.connect(func f(child):
+		if child == _current_scene:
+			_reset_input_to_default()
+	)
 	_simulate_start_time = LocalTime.now()
 	# we need to set inital a valid window otherwise the warp_mouse() is not handled
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
@@ -76,7 +81,6 @@ func _notification(what):
 	if what == NOTIFICATION_PREDELETE and is_instance_valid(self):
 		# reset time factor to normal
 		__deactivate_time_factor()
-		_reset_input_to_default()
 		if is_instance_valid(_current_scene):
 			_scene_tree().root.remove_child(_current_scene)
 			# do only free scenes instanciated by this runner
