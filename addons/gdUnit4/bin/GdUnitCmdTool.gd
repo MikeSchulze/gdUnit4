@@ -30,6 +30,7 @@ class CLIRunner:
 	var _report: GdUnitHtmlReport
 	var _report_dir: String
 	var _report_max: int = DEFAULT_REPORT_COUNT
+	var _headless_mode_ignore := false
 	var _runner_config := GdUnitRunnerConfig.new()
 	var _console := CmdConsole.new()
 	var _cmd_options := CmdOptions.new([
@@ -91,7 +92,12 @@ class CLIRunner:
 			CmdOption.new(
 				"--selftest", "",
 				"Runs the GdUnit self test"
-			)
+			),
+			CmdOption.new(
+				"--ignoreHeadlessMode",
+				"--ignoreHeadlessMode",
+				"By default, running GdUnit4 in headless mode is not allowed. You can switch off the headless mode check by set this property."
+			),
 		])
 
 
@@ -142,6 +148,7 @@ class CLIRunner:
 
 
 	func quit(code: int) -> void:
+		_cs_executor = null
 		GdUnitTools.dispose_all()
 		await GdUnitMemoryObserver.gc_on_guarded_instances()
 		await get_tree().physics_frame
@@ -201,6 +208,10 @@ class CLIRunner:
 			Color.DARK_SALMON
 		)
 		quit(RETURN_SUCCESS)
+
+
+	func check_headless_mode() -> void:
+		_headless_mode_ignore = true
 
 
 	func show_options(show_advanced: bool = false) -> void:
@@ -270,20 +281,6 @@ class CLIRunner:
 			Color.DARK_SALMON
 		).new_line()
 
-		if DisplayServer.get_name() == "headless":
-			_console.prints_error(
-				"Headless mode is not supported!"
-			).print_color("""
-				Tests that use UI interaction do not work in headless mode because 'InputEvents' are not transported
-				by the Godot engine and thus have no effect!
-				""".dedent(),
-				Color.CORNFLOWER_BLUE
-			).prints_error(
-				"Abnormal exit with %d" % RETURN_ERROR_HEADLESS_NOT_SUPPORTED
-			)
-			quit(RETURN_ERROR_HEADLESS_NOT_SUPPORTED)
-			return
-
 		var cmd_parser := CmdArgumentParser.new(_cmd_options, "GdUnitCmdTool.gd")
 		var result := cmd_parser.parse(OS.get_cmdline_args())
 		if result.is_error():
@@ -305,18 +302,45 @@ class CLIRunner:
 				.register_cbv("-a", Callable(_runner_config, "add_test_suites"))
 				.register_cb("-i", Callable(_runner_config, "skip_test_suite"))
 				.register_cbv("-i", Callable(_runner_config, "skip_test_suites"))
-				.register_cb("-rd", Callable(self, "set_report_dir"))
-				.register_cb("-rc", Callable(self, "set_report_count"))
-				.register_cb("--selftest", Callable(self, "run_self_test"))
-				.register_cb("-c", Callable(self, "disable_fail_fast"))
-				.register_cb("-conf", Callable(self, "load_test_config"))
-				.register_cb("--info", Callable(self, "show_version"))
+				.register_cb("-rd", set_report_dir)
+				.register_cb("-rc", set_report_count)
+				.register_cb("--selftest", run_self_test)
+				.register_cb("-c", disable_fail_fast)
+				.register_cb("-conf", load_test_config)
+				.register_cb("--info", show_version)
+				.register_cb("--ignoreHeadlessMode", check_headless_mode)
 				.execute(result.value())
 		)
 		if result.is_error():
 			_console.prints_error(result.error_message())
 			_state = STOP
 			quit(RETURN_ERROR)
+
+		if DisplayServer.get_name() == "headless":
+			if _headless_mode_ignore:
+				_console.prints_warning("""
+					Headless mode is ignored by option '--ignoreHeadlessMode'"
+
+					Please note that tests that use UI interaction do not work correctly in headless mode.
+					Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+					have no effect in the test!
+					""".dedent()
+				).new_line()
+			else:
+				_console.prints_error("""
+					Headless mode is not supported!
+
+					Please note that tests that use UI interaction do not work correctly in headless mode.
+					Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+					have no effect in the test!
+
+					You can run with '--ignoreHeadlessMode' to swtich off this check.
+					""".dedent()
+				).prints_error(
+					"Abnormal exit with %d" % RETURN_ERROR_HEADLESS_NOT_SUPPORTED
+				)
+				quit(RETURN_ERROR_HEADLESS_NOT_SUPPORTED)
+				return
 
 		_test_suites_to_process = load_testsuites(_runner_config)
 		if _test_suites_to_process.is_empty():
@@ -412,6 +436,8 @@ class CLIRunner:
 			GdUnitEvent.INIT:
 				_report = GdUnitHtmlReport.new(_report_dir)
 			GdUnitEvent.STOP:
+				if _report == null:
+					_report = GdUnitHtmlReport.new(_report_dir)
 				var report_path := _report.write()
 				_report.delete_history(_report_max)
 				JUnitXmlReport.new(_report._report_path, _report.iteration()).write(_report)
