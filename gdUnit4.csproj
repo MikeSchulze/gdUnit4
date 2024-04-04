@@ -1,6 +1,6 @@
 <Project Sdk="Godot.NET.Sdk/4.2.1">
   <PropertyGroup>
-    <TargetFrameworks>net7.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <LangVersion>11.0</LangVersion>
     <!--Force nullable warnings, you can disable if you want-->
     <Nullable>enable</Nullable>
@@ -10,6 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!--Required for GdUnit4-->
-    <PackageReference Include="gdUnit4.api" Version="4.2.1.1" />
+    <PackageReference Include="gdUnit4.api" Version="4.2.*-*" />
   </ItemGroup>
 </Project>

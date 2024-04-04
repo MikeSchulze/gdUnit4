@@ -65,6 +65,7 @@ var TOKENS := [
 ]
 
 var _regex_clazz_name :RegEx
+var _regex_strip_comments := GdUnitTools.to_regex("^([^#\"']|'[^']*'|\"[^\"]*\")*\\K#.*")
 var _base_clazz :String
 var _scanned_inner_classes := PackedStringArray()
 var _script_constants := {}
@@ -615,6 +616,9 @@ func extract_func_signature(rows :PackedStringArray, index :int) -> String:
 
 	for rowIndex in range(index, rows.size()):
 		var row := rows[rowIndex]
+		row = _regex_strip_comments.sub(row, "").strip_edges(false)
+		if row.is_empty():
+			continue
 		signature += row + "\n"
 		if is_func_end(row):
 			return signature.strip_edges()
