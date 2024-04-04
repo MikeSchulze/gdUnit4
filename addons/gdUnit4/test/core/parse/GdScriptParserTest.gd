@@ -47,48 +47,48 @@ func test_parse_argument_timeout():
 func test_parse_arguments():
 	assert_array(_parser.parse_arguments("func foo():")) \
 		.has_size(0)
-	
+
 	assert_array(_parser.parse_arguments("func foo() -> String:\n")) \
 		.has_size(0)
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1, arg2, name):")) \
 		.contains_exactly([
-			GdFunctionArgument.new("arg1", TYPE_NIL), 
+			GdFunctionArgument.new("arg1", TYPE_NIL),
 			GdFunctionArgument.new("arg2", TYPE_NIL),
 			GdFunctionArgument.new("name", TYPE_NIL)])
-	
+
 	assert_array(_parser.parse_arguments('func foo(arg1 :int, arg2 :bool, name :String = "abc"):')) \
 		.contains_exactly([
-			GdFunctionArgument.new("arg1", TYPE_INT), 
+			GdFunctionArgument.new("arg1", TYPE_INT),
 			GdFunctionArgument.new("arg2", TYPE_BOOL),
 			GdFunctionArgument.new("name", TYPE_STRING, '"abc"')])
-	
+
 	assert_array(_parser.parse_arguments('func bar(arg1 :int, arg2 :int = 23, name :String = "test") -> String:')) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_INT),
 			GdFunctionArgument.new("arg2", TYPE_INT, "23"),
 			GdFunctionArgument.new("name", TYPE_STRING, '"test"')])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1, arg2=value(1,2,3), name:=foo()):")) \
 		.contains_exactly([
-			GdFunctionArgument.new("arg1", TYPE_NIL), 
+			GdFunctionArgument.new("arg1", TYPE_NIL),
 			GdFunctionArgument.new("arg2", GdObjects.TYPE_FUNC, "value(1,2,3)"),
 			GdFunctionArgument.new("name", GdObjects.TYPE_FUNC, "foo()")])
 	# enum as prefix in value name
 	assert_array(_parser.parse_arguments("func get_value( type := ENUM_A) -> int:"))\
 		.contains_exactly([GdFunctionArgument.new("type", TYPE_STRING, "ENUM_A")])
-	
+
 	assert_array(_parser.parse_arguments("func create_timer(timeout :float) -> Timer:")) \
 		.contains_exactly([
 			GdFunctionArgument.new("timeout", TYPE_FLOAT)])
-	
+
 	# array argument
 	assert_array(_parser.parse_arguments("func foo(a :int, b :int, parameters = [[1, 2], [3, 4], [5, 6]]):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("a", TYPE_INT),
 			GdFunctionArgument.new("b", TYPE_INT),
 			GdFunctionArgument.new("parameters", TYPE_ARRAY, "[[1, 2], [3, 4], [5, 6]]")])
-	
+
 	assert_array(_parser.parse_arguments("func test_values(a:Vector2, b:Vector2, expected:Vector2, test_parameters:=[[Vector2.ONE,Vector2.ONE,Vector2(1,1)]]):"))\
 		.contains_exactly([
 			GdFunctionArgument.new("a", TYPE_VECTOR2),
@@ -109,12 +109,12 @@ func test_parse_arguments_default_build_in_type_String():
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_STRING, '"default"')])
-	
+
 	assert_array(_parser.parse_arguments('func foo(arg1 :String, arg2 :="default"):')) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_STRING, '"default"')])
-	
+
 	assert_array(_parser.parse_arguments('func foo(arg1 :String, arg2 :String ="default"):')) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
@@ -126,12 +126,12 @@ func test_parse_arguments_default_build_in_type_Boolean():
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_BOOL, "false")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :=false):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_BOOL, "false")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :bool=false):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
@@ -143,12 +143,12 @@ func test_parse_arguments_default_build_in_type_Real():
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_FLOAT, "3.14")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :=3.14):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_FLOAT, "3.14")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :float=3.14):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
@@ -160,27 +160,27 @@ func test_parse_arguments_default_build_in_type_Array():
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_ARRAY, "[]")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :Array=Array()):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_ARRAY, "Array()")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :Array=[1, 2, 3]):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_ARRAY, "[1, 2, 3]")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :=[1, 2, 3]):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_ARRAY, "[1, 2, 3]")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2=[]):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_ARRAY, "[]")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :Array=[1, 2, 3], arg3 := false):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
@@ -193,12 +193,12 @@ func test_parse_arguments_default_build_in_type_Color():
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_COLOR, "Color.RED")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :=Color.RED):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_COLOR, "Color.RED")])
-	
+
 	assert_array(_parser.parse_arguments("func foo(arg1 :String, arg2 :Color=Color.RED):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
@@ -210,12 +210,12 @@ func test_parse_arguments_default_build_in_type_Vector():
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_VECTOR3, "Vector3.FORWARD")])
-	
+
 	assert_array(_parser.parse_arguments("func bar(arg1 :String, arg2 :=Vector3.FORWARD):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_VECTOR3, "Vector3.FORWARD")])
-	
+
 	assert_array(_parser.parse_arguments("func bar(arg1 :String, arg2 :Vector3=Vector3.FORWARD):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
@@ -227,7 +227,7 @@ func test_parse_arguments_default_build_in_type_AABB():
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
 			GdFunctionArgument.new("arg2", TYPE_AABB, "AABB()")])
-	
+
 	assert_array(_parser.parse_arguments("func bar(arg1 :String, arg2 :AABB=AABB()):")) \
 		.contains_exactly([
 			GdFunctionArgument.new("arg1", TYPE_STRING),
@@ -306,7 +306,7 @@ func test_parse_func_name():
 func test_extract_source_code():
 	var path := GdObjects.extract_class_path(AdvancedTestClass)
 	var rows = _parser.extract_source_code(path)
-	
+
 	var file_content := resource_as_array(path[0])
 	assert_array(rows).contains_exactly(file_content)
 
@@ -335,20 +335,20 @@ func test_extract_source_code_inner_class_Area4D():
 func test_extract_function_signature() -> void:
 	var path := GdObjects.extract_class_path("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomFormattings.gd")
 	var rows = _parser.extract_source_code(path)
-	
+
 	assert_that(_parser.extract_func_signature(rows, 12))\
 		.is_equal("""
-			func a1(set_name:String, path:String="", load_on_init:bool=false, 
+			func a1(set_name:String, path:String="", load_on_init:bool=false,
 				set_auto_save:bool=false, set_network_sync:bool=false
 			) -> void:""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 19))\
 		.is_equal("""
-			func a2(set_name:String, path:String="", load_on_init:bool=false, 
+			func a2(set_name:String, path:String="", load_on_init:bool=false,
 				set_auto_save:bool=false, set_network_sync:bool=false
 			) -> 	void:""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 26))\
 		.is_equal("""
-			func a3(set_name:String, path:String="", load_on_init:bool=false, 
+			func a3(set_name:String, path:String="", load_on_init:bool=false,
 				set_auto_save:bool=false, set_network_sync:bool=false
 			) :""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 33))\
@@ -412,7 +412,7 @@ func test_parse_func_description():
 	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_VARIANT)
 	assert_array(fd.args()).is_empty()
 	assert_str(fd.typeless()).is_equal("func foo() -> Variant:")
-	
+
 	# static function
 	fd = _parser.parse_func_description("static func foo(arg1 :int, arg2:=false) -> String:", "clazz_name", [""], 22)
 	assert_str(fd.name()).is_equal("foo")
@@ -423,7 +423,7 @@ func test_parse_func_description():
 		GdFunctionArgument.new("arg2", TYPE_BOOL, "false")
 	])
 	assert_str(fd.typeless()).is_equal("static func foo(arg1, arg2=false) -> String:")
-	
+
 	# static function without return type
 	fd = _parser.parse_func_description("static func foo(arg1 :int, arg2:=false):", "clazz_name", [""], 23)
 	assert_str(fd.name()).is_equal("foo")
@@ -439,19 +439,19 @@ func test_parse_func_description():
 func test_parse_func_description_return_type_enum():
 	var result := _parser.parse("ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"])
 	assert_result(result).is_success()
-	
+
 	var fd := _parser.parse_func_description("func get_enum() -> TEST_ENUM:", "ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"], 33)
 	assert_that(fd.name()).is_equal("get_enum")
 	assert_that(fd.is_static()).is_false()
 	assert_that(fd.return_type()).is_equal(GdObjects.TYPE_ENUM)
-	assert_that(fd._return_class).is_equal("TEST_ENUM")
+	assert_that(fd._return_class).is_equal("ClassWithEnumReturnTypes.TEST_ENUM")
 	assert_that(fd.args()).is_empty()
 
 
 func test_parse_func_description_return_type_internal_class_enum():
 	var result := _parser.parse("ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"])
 	assert_result(result).is_success()
-	
+
 	var fd := _parser.parse_func_description("func get_inner_class_enum() -> InnerClass.TEST_ENUM:", "ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"], 33)
 	assert_that(fd.name()).is_equal("get_inner_class_enum")
 	assert_that(fd.is_static()).is_false()
@@ -463,7 +463,7 @@ func test_parse_func_description_return_type_internal_class_enum():
 func test_parse_func_description_return_type_external_class_enum():
 	var result := _parser.parse("ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"])
 	assert_result(result).is_success()
-	
+
 	var fd := _parser.parse_func_description("func get_external_class_enum() -> CustomEnums.TEST_ENUM:", "ClassWithEnumReturnTypes", ["res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd"], 33)
 	assert_that(fd.name()).is_equal("get_external_class_enum")
 	assert_that(fd.is_static()).is_false()
@@ -477,7 +477,7 @@ func test_parse_class_inherits():
 	var clazz_name := GdObjects.extract_class_name_from_class_path(clazz_path)
 	var result := _parser.parse(clazz_name, clazz_path)
 	assert_result(result).is_success()
-	
+
 	# verify class extraction
 	var clazz_desccriptor :GdClassDescriptor = result.value()
 	assert_object(clazz_desccriptor).is_not_null()
@@ -487,7 +487,7 @@ func test_parse_class_inherits():
 		GdFunctionDescriptor.new("foo2", 5, false, false, false, GdObjects.TYPE_VARIANT, "", []),
 		GdFunctionDescriptor.new("bar2", 8, false, false, false, TYPE_STRING, "", [])
 	])
-	
+
 	# extends from CustomResourceTestClass
 	clazz_desccriptor = clazz_desccriptor.parent()
 	assert_object(clazz_desccriptor).is_not_null()
@@ -504,7 +504,7 @@ func test_parse_class_inherits():
 		]),
 		GdFunctionDescriptor.new("foo5", 16, false, false, false, GdObjects.TYPE_VARIANT, "", []),
 	])
-	
+
 	# no other class extends
 	clazz_desccriptor = clazz_desccriptor.parent()
 	assert_object(clazz_desccriptor).is_null()
@@ -540,17 +540,17 @@ func test_is_func_end() -> void:
 
 func test_extract_func_signature_multiline() -> void:
 	var source_code = """
-		
+
 		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
 			[1, 2, 3, 6],
 			[3, 4, 5, 11],
 			[6, 7, 8, 21] ]):
-			
+
 			assert_that(a+b+c).is_equal(expected)
 		""".dedent().split("\n")
-	
+
 	var fs = _parser.extract_func_signature(source_code, 0)
-	
+
 	assert_that(fs).is_equal("""
 		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
 			[1, 2, 3, 6],
@@ -563,7 +563,7 @@ func test_extract_func_signature_multiline() -> void:
 
 func test_parse_func_description_paramized_test():
 	var fd = _parser.parse_func_description("functest_parameterized(a:int,b:int,c:int,expected:int,parameters=[[1,2,3,6],[3,4,5,11],[6,7,8,21]]):", "class", ["path"], 22)
-	
+
 	assert_that(fd).is_equal(GdFunctionDescriptor.new("test_parameterized", 22, false, false, false, GdObjects.TYPE_VARIANT, "", [
 		GdFunctionArgument.new("a", TYPE_INT),
 		GdFunctionArgument.new("b", TYPE_INT),
@@ -571,6 +571,34 @@ func test_parse_func_description_paramized_test():
 		GdFunctionArgument.new("expected", TYPE_INT),
 		GdFunctionArgument.new("parameters", TYPE_ARRAY, "[[1,2,3,6],[3,4,5,11],[6,7,8,21]]"),
 	]))
+
+
+func test_parse_func_description_paramized_test_with_comments() -> void:
+	var source_code = """
+		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
+			# before data set
+			[1, 2, 3, 6], # after data set
+			# between data sets
+			[3, 4, 5, 11],
+			[6, 7, 'string #ABCD', 21], # dataset with [comment] singn
+			[6, 7, "string #ABCD", 21] # dataset with "#comment" singn
+			#eof
+		]):
+			pass
+		""".dedent().split("\n")
+
+	var fs = _parser.extract_func_signature(source_code, 0)
+
+	assert_that(fs).is_equal("""
+		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
+			[1, 2, 3, 6],
+			[3, 4, 5, 11],
+			[6, 7, 'string #ABCD', 21],
+			[6, 7, "string #ABCD", 21]
+		]):"""
+			.dedent()
+			.trim_prefix("\n")
+		)
 
 
 func test_parse_func_descriptor_with_fuzzers():
@@ -583,7 +611,7 @@ func test_parse_func_descriptor_with_fuzzers():
 	""".split("\n")
 	var fs = _parser.extract_func_signature(source_code, 0)
 	var fd = _parser.parse_func_description(fs, "class", ["path"], 22)
-	
+
 	assert_that(fd).is_equal(GdFunctionDescriptor.new("test_foo", 22, false, false, false, GdObjects.TYPE_VARIANT, "", [
 		GdFunctionArgument.new("fuzzer_a", GdObjects.TYPE_FUZZER, "fuzz_a()"),
 		GdFunctionArgument.new("fuzzer_b", GdObjects.TYPE_FUZZER, "fuzz_b()"),

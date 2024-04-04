@@ -37,7 +37,7 @@ func test_example_c(a: Object, b: Object, test_parameters=[
 
 
 @warning_ignore("unused_parameter")
-func test_resolve_paramaters_static(a: int, b: int, test_parameters=[
+func test_resolve_parameters_static(a: int, b: int, test_parameters=[
 	[1, 10],
 	[2, 20]
 	]) -> void:
@@ -45,11 +45,24 @@ func test_resolve_paramaters_static(a: int, b: int, test_parameters=[
 
 
 @warning_ignore("unused_parameter")
-func test_resolve_paramaters_at_runtime(a: int, b: int, test_parameters=[
+func test_resolve_parameters_at_runtime(a: int, b: int, test_parameters=[
 	[1, _test_param1],
 	[2, _test_param2],
 	[3, 30]
 	]) -> void:
+	pass
+
+
+@warning_ignore("unused_parameter")
+func test_parameterized_with_comments(a: int, b :int, c :String, expected :int, test_parameters = [
+	# before data set
+	[1, 2, '3', 6], # after data set
+	# between data sets
+	[3, 4, '5', 11],
+	[6, 7, 'string #ABCD', 21], # dataset with [comment] singn
+	[6, 7, "string #ABCD", 21] # dataset with "comment" singn
+	#eof
+]):
 	pass
 
 
@@ -67,10 +80,10 @@ func test_example_d(a: Vector3, b: Vector3, test_parameters=[
 
 class TestObj extends RefCounted:
 	var _value: String
-	
+
 	func _init(value: String):
 		_value = value
-	
+
 	func _to_string() -> String:
 		return _value
 
@@ -86,26 +99,27 @@ func test_load_parameter_sets() -> void:
 	var tc := get_test_case("test_example_a")
 	assert_array(tc.parameter_set_resolver().load_parameter_sets(tc)) \
 		.is_equal([[1, 2], [3, 4]])
-	
+
 	tc = get_test_case("test_example_b")
 	assert_array(tc.parameter_set_resolver().load_parameter_sets(tc)) \
 		.is_equal([[Vector2.ZERO, Vector2.ONE], [Vector2(1.1, 3.2), Vector2.DOWN]])
-	
+
 	tc = get_test_case("test_example_c")
 	assert_array(tc.parameter_set_resolver().load_parameter_sets(tc)) \
 		.is_equal([[Resource.new(), Resource.new()], [Resource.new(), null]])
-	
+
 	tc = get_test_case("test_example_d")
 	assert_array(tc.parameter_set_resolver().load_parameter_sets(tc)) \
 		.is_equal([[Vector3(1, 1, 1), Vector3(3, 3, 3)], [Vector3.BACK, Vector3.UP]])
-	
+
 	tc = get_test_case("test_example_e")
 	assert_array(tc.parameter_set_resolver().load_parameter_sets(tc)) \
 		.is_equal([[TestObj.new("abc"), TestObj.new("def"), "abcdef"]])
 
 
 func test_load_parameter_sets_at_runtime() -> void:
-	var tc := get_test_case("test_resolve_paramaters_at_runtime")
+	var tc := get_test_case("test_resolve_parameters_at_runtime")
+	assert_that(tc).is_not_null()
 	# check the parameters resolved at runtime
 	assert_array(tc.parameter_set_resolver().load_parameter_sets(tc)) \
 		.is_equal([
@@ -117,28 +131,40 @@ func test_load_parameter_sets_at_runtime() -> void:
 			[3, 30]])
 
 
+func test_load_parameter_with_comments() -> void:
+	var tc := get_test_case("test_parameterized_with_comments")
+	assert_that(tc).is_not_null()
+	# check the parameters resolved at runtime
+	assert_array(tc.parameter_set_resolver().load_parameter_sets(tc)) \
+		.is_equal([
+			[1, 2, '3', 6],
+			[3, 4, '5', 11],
+			[6, 7, 'string #ABCD', 21],
+			[6, 7, "string #ABCD", 21]])
+
+
 func test_build_test_case_names_on_static_parameter_set() -> void:
-	var test_case := get_test_case("test_resolve_paramaters_static")
+	var test_case := get_test_case("test_resolve_parameters_static")
 	var resolver := test_case.parameter_set_resolver()
-	
+
 	assert_array(resolver.build_test_case_names(test_case))\
 		.contains_exactly([
-			"test_resolve_paramaters_static:0 [1, 10]",
-			"test_resolve_paramaters_static:1 [2, 20]"])
+			"test_resolve_parameters_static:0 [1, 10]",
+			"test_resolve_parameters_static:1 [2, 20]"])
 	assert_that(resolver.is_parameter_sets_static()).is_true()
 	assert_that(resolver.is_parameter_set_static(0)).is_true()
 	assert_that(resolver.is_parameter_set_static(1)).is_true()
 
 
 func test_build_test_case_names_on_runtime_parameter_set() -> void:
-	var test_case := get_test_case("test_resolve_paramaters_at_runtime")
+	var test_case := get_test_case("test_resolve_parameters_at_runtime")
 	var resolver := test_case.parameter_set_resolver()
-	
+
 	assert_array(resolver.build_test_case_names(test_case))\
 		.contains_exactly([
-			"test_resolve_paramaters_at_runtime:0 [1, _test_param1]",
-			"test_resolve_paramaters_at_runtime:1 [2, _test_param2]",
-			"test_resolve_paramaters_at_runtime:2 [3, 30]"])
+			"test_resolve_parameters_at_runtime:0 [1, _test_param1]",
+			"test_resolve_parameters_at_runtime:1 [2, _test_param2]",
+			"test_resolve_parameters_at_runtime:2 [3, 30]"])
 	assert_that(resolver.is_parameter_sets_static()).is_false()
 	assert_that(resolver.is_parameter_set_static(0)).is_false()
 	assert_that(resolver.is_parameter_set_static(1)).is_false()
