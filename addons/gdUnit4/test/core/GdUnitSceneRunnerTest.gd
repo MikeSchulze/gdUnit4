@@ -20,17 +20,6 @@ func after():
 	Engine.set_max_fps(0)
 
 
-## Utility to check if a test has failed in a particular line and if there is an error message
-func assert_failed_at(line_number :int, expected_failure :String) -> bool:
-	var is_failed = is_failure()
-	var last_failure = GdAssertReports.current_failure()
-	var last_failure_line = GdAssertReports.get_last_error_line_number()
-	assert_str(last_failure).is_equal(expected_failure)
-	assert_int(last_failure_line).is_equal(line_number)
-	GdAssertReports.expect_fail(true)
-	return is_failed
-
-
 func test_get_property() -> void:
 	var runner := scene_runner(load_test_scene())
 
@@ -211,13 +200,11 @@ func test_await_signal_without_time_factor() -> void:
 	await runner.await_signal("panel_color_change", [box1, Color.RED])
 	await runner.await_signal("panel_color_change", [box1, Color.BLUE])
 	await runner.await_signal("panel_color_change", [box1, Color.GREEN])
-
-	# should be interrupted is will never change to Color.KHAKI
-	GdAssertReports.expect_fail()
-	await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300)
-	if assert_failed_at(201, "await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)]):
-		return
-	fail("test should failed after 300ms checked 'await_signal'")
+	(
+		# should be interrupted is will never change to Color.KHAKI
+		await assert_failure_await(func x(): await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300))
+	).has_message("await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)])\
+		.has_line(205)
 
 
 func test_await_signal_with_time_factor() -> void:
@@ -230,13 +217,11 @@ func test_await_signal_with_time_factor() -> void:
 	await runner.await_signal("panel_color_change", [box1, Color.RED], 100)
 	await runner.await_signal("panel_color_change", [box1, Color.BLUE], 100)
 	await runner.await_signal("panel_color_change", [box1, Color.GREEN], 100)
-
-	# should be interrupted is will never change to Color.KHAKI
-	GdAssertReports.expect_fail()
-	await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30)
-	if assert_failed_at(220, "await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)]):
-		return
-	fail("test should failed after 30ms checked 'await_signal'")
+	(
+		# should be interrupted is will never change to Color.KHAKI
+		await assert_failure_await(func x(): await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30))
+	).has_message("await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)])\
+		.has_line(222)
 
 
 func test_simulate_until_signal() -> void:
