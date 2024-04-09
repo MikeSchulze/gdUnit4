@@ -183,7 +183,7 @@ func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDes
 
 func _parse_and_add_test_cases(test_suite, script :GDScript, test_case_names :PackedStringArray):
 	var test_cases_to_find = Array(test_case_names)
-	var functions_to_scan := test_case_names
+	var functions_to_scan := test_case_names.duplicate()
 	functions_to_scan.append("before")
 	var source := _script_parser.load_source_code(script, [script.resource_path])
 	var function_descriptors := _script_parser.parse_functions(source, "", [script.resource_path], functions_to_scan)
