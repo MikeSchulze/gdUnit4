@@ -171,5 +171,52 @@ func test_build_test_case_names_on_runtime_parameter_set() -> void:
 	assert_that(resolver.is_parameter_set_static(2)).is_false()
 
 
+func test_validate_test_parameter_set():
+	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteInvalidParameterizedTests.resource"))
+
+	assert_is_not_skipped(test_suite, "test_no_parameters")
+	assert_is_not_skipped(test_suite, "test_parameterized_success")
+	assert_is_not_skipped(test_suite, "test_parameterized_failed")
+	assert_is_skipped(test_suite, "test_parameterized_to_less_args")\
+		.contains("The parameter set at index [0] does not match the expected input parameters!")\
+		.contains("The test case requires [3] input parameters, but the set contains [4]")
+	assert_is_skipped(test_suite, "test_parameterized_to_many_args")\
+		.contains("The parameter set at index [0] does not match the expected input parameters!")\
+		.contains("The test case requires [5] input parameters, but the set contains [4]")
+	assert_is_skipped(test_suite, "test_parameterized_to_less_args_at_index_1")\
+		.contains("The parameter set at index [1] does not match the expected input parameters!")\
+		.contains("The test case requires [3] input parameters, but the set contains [4]")
+	assert_is_skipped(test_suite, "test_parameterized_invalid_struct")\
+		.contains("The parameter set at index [1] does not match the expected input parameters!")\
+		.contains("The test case requires [3] input parameters, but the set contains [1]")
+	assert_is_skipped(test_suite, "test_parameterized_invalid_args")\
+		.contains("The parameter set at index [1] does not match the expected input parameters!")\
+		.contains("The value '4' does not match the required input parameter <b:int>.")
+
+
+func assert_is_not_skipped(test_suite :GdUnitTestSuite, test_case :String) -> void:
+	# set actual execution context for this test suite
+	test_suite.__execution_context = GdUnitExecutionContext.new(test_suite.get_name())
+	var test :_TestCase = test_suite.find_child(test_case, true, false)
+	if test.is_parameterized():
+		# to load parameter set and force validate
+		var resolver := test.parameter_set_resolver()
+		resolver.build_test_case_names(test)
+		resolver.load_parameter_sets(test, true)
+	assert_that(test.is_skipped()).is_false()
+
+
+func assert_is_skipped(test_suite :GdUnitTestSuite, test_case :String) -> GdUnitStringAssert:
+	# set actual execution context for this test suite
+	test_suite.__execution_context = GdUnitExecutionContext.new(test_suite.get_name())
+	var test :_TestCase = test_suite.find_child(test_case, true, false)
+	if test.is_parameterized():
+		# to load parameter set and force validate
+		var resolver := test.parameter_set_resolver()
+		resolver.build_test_case_names(test)
+		resolver.load_parameter_sets(test, true)
+	assert_that(test.is_skipped()).is_true()
+	return assert_str(test.skip_info())
+
 func get_test_case(name: String) -> _TestCase:
 	return find_child(name, true, false)

@@ -343,22 +343,6 @@ func test_is_script_format_supported() -> void:
 	assert_bool(GdUnitTestSuiteScanner._is_script_format_supported("res://exampe.tres")).is_false()
 
 
-func test_load_parameterized_test_suite():
-	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteInvalidParameterizedTests.resource"))
-
-	assert_that(test_suite.name).is_equal("TestSuiteInvalidParameterizedTests")
-	assert_that(test_suite.get_children()).extractv(extr("get_name"), extr("is_skipped"))\
-		.contains_exactly_in_any_order([
-			tuple("test_no_parameters", false),
-			tuple("test_parameterized_success", false),
-			tuple("test_parameterized_failed", false),
-			tuple("test_parameterized_to_less_args", true),
-			tuple("test_parameterized_to_many_args", true),
-			tuple("test_parameterized_to_less_args_at_index_1", true),
-			tuple("test_parameterized_invalid_struct", true),
-			tuple("test_parameterized_invalid_args", true)])
-
-
 func test_resolve_test_suite_path() -> void:
 	# forcing the use of a test folder next to the source folder
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/folder/myclass.gd", "test")).is_equal("res://project/test/folder/myclass_test.gd")

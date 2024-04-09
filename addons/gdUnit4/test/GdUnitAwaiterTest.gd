@@ -21,16 +21,6 @@ func after_test():
 			node.free()
 
 
-## Utility to check if a test has failed in a particular line and if there is an error message
-func assert_failed_at(line_number :int, expected_failure :String) -> bool:
-	var is_failed = is_failure()
-	var last_failure = GdAssertReports.current_failure()
-	var last_failure_line = GdAssertReports.get_last_error_line_number()
-	assert_str(last_failure).is_equal(expected_failure)
-	assert_int(last_failure_line).is_equal(line_number)
-	return is_failed
-
-
 func install_signal_emitter(signal_name :String, signal_args: Array = [], time_out : float = 0.020):
 	var timer := Timer.new()
 	add_child(timer)
@@ -38,12 +28,14 @@ func install_signal_emitter(signal_name :String, signal_args: Array = [], time_o
 	timer.one_shot = true
 	timer.start(time_out)
 
+
 func emit_test_signal(signal_name :String, signal_args: Array):
 	match signal_args.size():
 		0: emit_signal(signal_name)
 		1: emit_signal(signal_name, signal_args[0])
 		2: emit_signal(signal_name, signal_args[0], signal_args[1])
 		3: emit_signal(signal_name, signal_args[0], signal_args[1], signal_args[2])
+
 
 func test_await_signal_on() -> void:
 	install_signal_emitter("test_signal_a")
@@ -61,6 +53,7 @@ func test_await_signal_on() -> void:
 	install_signal_emitter("test_signal_c", ["abc", "eee"])
 	await await_signal_on(self, "test_signal_c", ["abc", "eee"], 100)
 
+
 func test_await_signal_on_manysignals_emitted() -> void:
 	# emits many different signals
 	install_signal_emitter("test_signal_a")
@@ -73,24 +66,21 @@ func test_await_signal_on_manysignals_emitted() -> void:
 	# we only wait for 'test_signal_c("abc")' is emitted
 	await await_signal_on(self, "test_signal_c", ["abc"], 300)
 
+
 func test_await_signal_on_never_emitted_timedout() -> void:
-	# we expect 'await_signal_on' will fail, do not report as failure
-	GdAssertReports.expect_fail()
-	# we  wait for 'test_signal_c("yyy")' which  is never emitted
-	await await_signal_on(self, "test_signal_c", ["yyy"], 200)
-	# expect is failed by a timeout at line 68
-	if assert_failed_at(68, "await_signal_on(test_signal_c, [\"yyy\"]) timed out after 200ms"):
-		return
-	fail("test should failed after 400ms on 'await_signal_on'")
+	(
+		# we  wait for 'test_signal_c("yyy")' which  is never emitted
+		await assert_failure_await(func x(): await await_signal_on(self, "test_signal_c", ["yyy"], 200))
+	).has_line(73)\
+	.has_message("await_signal_on(test_signal_c, [\"yyy\"]) timed out after 200ms")
+
 
 func test_await_signal_on_invalid_source_timedout() -> void:
-	# we expect 'await_signal_on' will fail, do not report as failure
-	GdAssertReports.expect_fail()
-	# we  wait for a signal on a already freed instance
-	await await_signal_on(invalid_node(), "tree_entered", [], 300)
-	if assert_failed_at(78, GdAssertMessages.error_await_signal_on_invalid_instance(null, "tree_entered", [])):
-		return
-	fail("test should failed after 400ms on 'await_signal_on'")
+	(
+		# we  wait for a signal on a already freed instance
+		await assert_failure_await(func x(): await await_signal_on(invalid_node(), "tree_entered", [], 300))
+	).has_line(81).has_message(GdAssertMessages.error_await_signal_on_invalid_instance(null, "tree_entered", []))
+
 
 func invalid_node() -> Node:
 	return null
