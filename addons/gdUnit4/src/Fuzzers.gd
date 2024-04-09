@@ -4,7 +4,7 @@ extends Resource
 
 
 ## Generates an random string with min/max length and given charset
-static func rand_str(min_length :int, max_length, charset := StringFuzzer.DEFAULT_CHARSET) -> Fuzzer:
+static func rand_str(min_length: int, max_length, charset := StringFuzzer.DEFAULT_CHARSET) -> Fuzzer:
 	return StringFuzzer.new(min_length, max_length, charset)
 
 
@@ -12,6 +12,9 @@ static func rand_str(min_length :int, max_length, charset := StringFuzzer.DEFAUL
 static func rangei(from: int, to: int) -> Fuzzer:
 	return IntFuzzer.new(from, to)
 
+## Generates a randon float within in a given range
+static func rangef(from: float, to: float) -> Fuzzer:
+	return FloatFuzzer.new(from, to)
 
 ## Generates an random Vector2 in a range form to
 static func rangev2(from: Vector2, to: Vector2) -> Fuzzer:
