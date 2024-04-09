@@ -51,7 +51,7 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v4
         with:
-          lfs: true            
+          lfs: true
 
       - shell: bash
         run: |
