@@ -37,8 +37,9 @@ func scan(resource_path :String) -> Array[Node]:
 	# if single testsuite requested
 	if FileAccess.file_exists(resource_path):
 		var test_suite := _parse_is_test_suite(resource_path)
-		if test_suite:
+		if test_suite != null:
 			return [test_suite]
+		return [] as Array[Node]
 	var base_dir := DirAccess.open(resource_path)
 	if base_dir == null:
 			prints("Given directory or file does not exists:", resource_path)
@@ -97,10 +98,15 @@ static func _is_script_format_supported(resource_path :String) -> bool:
 
 
 func _parse_test_suite(script :GDScript) -> GdUnitTestSuite:
+	# find all test cases
+	var test_case_names := _extract_test_case_names(script)
+	# test suite do not contains any tests
+	if test_case_names.is_empty():
+		push_warning("The test suite %s do not contain any tests, it excludes from discovery." % script.resource_path)
+		return null;
+
 	var test_suite = script.new()
 	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
-	# find all test cases as array of names
-	var test_case_names := _extract_test_case_names(script)
 	# add test cases to test suite and parse test case line nummber
 	_parse_and_add_test_cases(test_suite, script, test_case_names)
 	# not all test case parsed?
