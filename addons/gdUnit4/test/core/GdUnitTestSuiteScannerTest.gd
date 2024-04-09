@@ -379,3 +379,10 @@ func test_resolve_test_suite_path_with_src_folders() -> void:
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/MyClass.gd", "")).is_equal("res://project/folder/MyClassTest.gd")
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/myclass.gd", "/")).is_equal("res://project/folder/myclass_test.gd")
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/folder/MyClass.gd", "/")).is_equal("res://project/folder/MyClassTest.gd")
+
+
+func test_scan_test_suite_without_tests() -> void:
+	var scanner :GdUnitTestSuiteScanner = auto_free(GdUnitTestSuiteScanner.new())
+	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteWithoutTests.gd")
+
+	assert_that(test_suites).is_empty()
