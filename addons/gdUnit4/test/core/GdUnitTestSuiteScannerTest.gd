@@ -279,10 +279,12 @@ func test_scan_by_inheritance_class_name() -> void:
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/")
 
 	assert_array(test_suites).has_size(3)
+	# sort by names
+	test_suites.sort_custom(func by_name(a, b): return a.get_name() <= b.get_name())
 	assert_array(test_suites).extract("get_name")\
-		.contains_same_exactly_in_any_order(["BaseTest", "ExtendedTest", "ExtendsExtendedTest"])
+		.contains_exactly(["BaseTest", "ExtendedTest", "ExtendsExtendedTest"])
 	assert_array(test_suites).extract("get_script.get_path")\
-		.contains_same_exactly_in_any_order([
+		.contains_exactly([
 			"res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/BaseTest.gd",
 			"res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/ExtendedTest.gd",
 			"res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/ExtendsExtendedTest.gd"])
@@ -292,13 +294,6 @@ func test_scan_by_inheritance_class_name() -> void:
 		.contains_same_exactly_in_any_order([&"test_foo2", &"test_foo1"])
 	assert_array(test_suites[2].get_children()).extract("name")\
 		.contains_same_exactly_in_any_order([&"test_foo3", &"test_foo2", &"test_foo1"])
-
-	assert_array(test_suites).extractv(extr("get_name"), extr("get_script.get_path"))\
-		.contains_exactly_in_any_order([
-			tuple("BaseTest", "res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/BaseTest.gd"),
-			tuple("ExtendedTest","res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/ExtendedTest.gd"),
-			tuple("ExtendsExtendedTest", "res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/ExtendsExtendedTest.gd")
-		])
 	# finally free all scaned test suites
 	for ts in test_suites:
 		ts.free()
@@ -320,7 +315,7 @@ func test_scan_by_inheritance_class_path() -> void:
 
 
 func test_get_test_case_line_number() -> void:
-	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "get_test_case_line_number")).is_equal(322)
+	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "get_test_case_line_number")).is_equal(317)
 	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "unknown")).is_equal(-1)
 
 
