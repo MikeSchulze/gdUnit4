@@ -5,27 +5,26 @@ title: Home
 
 
 
-# GdUnit4 V4.2.1
+# GdUnit4 V4.2.4
+
 ![GdUnit4](\gdUnit4\assets\images\background.png)
 build on (v4.2.1.stable.official [b09f793f5])
 
-
-
 ## What is GdUnit4?
+
 **Gd**(*Godot*)**Unit**(*Unit Testing*)**4**(*Godot 4.x*)
 
 GdUnit4 is an embedded unit testing framework designed for testing Gd scripts, C# scripts, and scenes in the Godot editor. With GdUnit4, you can easily create and run unit tests to verify the functionality and performance of your code, ensuring that it meets your requirements and specifications.<br>
 GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://en.wikipedia.org/wiki/Test-driven_development){:target="_blank"}), a popular software development approach that emphasizes creating automated tests before writing any code. By using GdUnit4 for TDD, you can ensure that your code is thoroughly tested and free of bugs, which can save you time and effort in the long run.
 
+## You are welcome to
 
-
-## You are welcome to:
-  * [Give Feedback](https://github.com/MikeSchulze/gdUnit4/discussions/157){:target="_blank"} on the gdUnit GitHub Discussions page.
-  * [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=){:target="_blank"} by creating a new feature request issue on the gdUnit GitHub Issues page.
-  * [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&projects=projects%2F5&template=bug_report.yml&title=GD-XXX%3A+Describe+the+issue+briefly){:target="_blank"} by creating a new bug report issue on the gdUnit GitHub Issues page.
-
+* [Give Feedback](https://github.com/MikeSchulze/gdUnit4/discussions/157){:target="_blank"} on the gdUnit GitHub Discussions page.
+* [Suggest Improvements](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=){:target="_blank"} by creating a new feature request issue on the gdUnit GitHub Issues page.
+* [Report Bugs](https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&projects=projects%2F5&template=bug_report.yml&title=GD-XXX%3A+Describe+the+issue+briefly){:target="_blank"} by creating a new bug report issue on the gdUnit GitHub Issues page.
 
 ## Main Features
+
 * Support for writing and executing tests in GdScript or C#
 * Embedded test Inspector in Godot for easy navigation of your test suites
 * Convenient interface for running test-suites directly from Godot<br>
@@ -48,49 +47,54 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
   * Command line tool for running tests outside of Godot editor
   * Generates HTML report
   * Generates JUnit XML report
-  * Public marketplace GitHub action to use in your own CI workflow [gdunit4-action](https://github.com/marketplace/actions/gdunit4-test-runner-action)
-* Visual Studio Code extension for additional features and integrations in managing and running tests
 
+* Public marketplace GitHub action to use in your own CI workflow [gdunit4-action](https://github.com/marketplace/actions/gdunit4-test-runner-action){:target="_blank"}
+* [GdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net/blob/master/README.md){:target="_blank"} the C# API
+  * Support for writing tests in C# [gdUnit4.api](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"}
+  * Supporting for the Visual Studio Test Platform to run and debug tests [gdunit4.test.adapter](https://github.com/MikeSchulze/gdUnit4Net/tree/master/testadapter/README.md){:target="_blank"}
 
 ## Basic Test Example
-{: .d-none .d-md-inline-block }
 
+This small example shows how to define a unit test in GdUnit4.
 {% tabs example %}
-{% tab example GdScript %}
-```ruby
-class_name GdUnitExampleTest
+{% tab example GDScript %}
+
+```gdscript
 extends GdUnitTestSuite
 
 func test_example():
-  assert_str("This is a example message")\
-    .has_length(25)\
-    .starts_with("This is a ex")
+  assert_str("This is an example message")\
+    .has_length(26)\
+    .starts_with("This is an ex")
 ```
+
 {% endtab %}
-
 {% tab example C# %}
-```cs
-namespace examples
-{
-    using gdUnit4;
-    using static gdUnit4.Assertions;
 
-    [TestSuite]
-    public class GdUnitExampleTest
+```cs
+namespace Examples;
+
+using GdUnit4;
+
+using static GdUnit4.Assertions;
+
+
+[TestSuite]
+public class GdUnitExampleTest
+{
+    [TestCase]
+    public void Example()
     {
-        [TestCase]
-        public void Example()
-        {
-            AssertString("This is a example message")
-              .HasLength(25)
-              .StartsWith("This is a ex");
-        }
+        AssertString("This is an example message")
+          .HasLength(26)
+          .StartsWith("This is an ex");
     }
 }
 
 ```
+
 {% endtab %}
 {% endtabs %}
 
 ---
-<h4> document version v4.2.1 </h4>
+<h4> document version v4.2.4 </h4>
