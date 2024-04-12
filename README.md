@@ -55,7 +55,8 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
   * Generates HTML report
   * Generates JUnit XML report
 * Public marketplace GitHub action to use in your own CI workflow [gdunit4-action](https://github.com/marketplace/actions/gdunit4-test-runner-action)
-* Visual Studio Code extension for additional features and integrations in managing and running tests
+* C# support by [gdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net/blob/master/README.md)
+  * Enables to run and debug on **Visual Studio**, **Visual Studio Code** and **JetBrains Rider** via [VSTest adapter support ](https://github.com/MikeSchulze/gdUnit4Net/blob/master/testadapter/README.md) 
 ---
 
 
