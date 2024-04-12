@@ -10,7 +10,7 @@ nav_order: 3
 An assertion tool to verify number values.<br>
 Supported numbers are **sbyte**, **byte**, **short**, **ushort**, **int**, **uint**, **long**, **ulong**, **float**, **double**, **decimal**
 
-**INumberAssert\<V\>**<br>
+**INumberAssert\<V\>**
 
 |Function|Description|
 |--- | --- |
@@ -18,6 +18,7 @@ Supported numbers are **sbyte**, **byte**, **short**, **ushort**, **int**, **uin
 |[IsNotNull](/gdUnit4/asserts/assert-number/#isnotnull) | Verifies that the current value is not null.|
 |[IsEqual](/gdUnit4/asserts/assert-number/#isequal) | Verifies that the current value is equal to the given one.|
 |[IsNotEqual](/gdUnit4/asserts/assert-number/#isnotequal) | Verifies that the current value is not equal to the given one.|
+|[IsEqualApprox](/gdUnit4/asserts/assert-number/#isequalapprox) | Verifies that the current and expected value are approximately equal.|
 |[IsLess](/gdUnit4/asserts/assert-number/#isless) | Verifies that the current value is less than the given one.|
 |[IsLessEqual](/gdUnit4/asserts/assert-number/#islessequal) | Verifies that the current value is less than or equal the given one.|
 |[IsGreater](/gdUnit4/asserts/assert-number/#isgreater) | Verifies that the current value is greater than the given one.|
@@ -32,16 +33,18 @@ Supported numbers are **sbyte**, **byte**, **short**, **ushort**, **int**, **uin
 |[IsNotIn](/gdUnit4/asserts/assert-number/#isnotin) | Verifies that the current value is not in the given set of values.|
 |[IsBetween](/gdUnit4/asserts/assert-number/#isbetween) | Verifies that the current value is between the given boundaries (inclusive).|
 
-
 ---
+
 ## NumberAssert Examples
 
 ### IsEqual
+
 Verifies that the current value is equal to the given one.
 
 ```cs
     INumberAssert AssertThat(<current>).IsEqual(<expected>)
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(23).IsEqual(23);
@@ -51,10 +54,13 @@ Verifies that the current value is equal to the given one.
 ```
 
 ### IsNotEqual
+
 Verifies that the current value is not equal to the given one.
+
 ```cs
     INumberAssert AssertThat(<current>).IsNotEqual(<expected>)
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(23).IsNotEqual(42);
@@ -63,11 +69,33 @@ Verifies that the current value is not equal to the given one.
     AssertThat(23).IsNotEqual(23);
 ```
 
+### IsEqualApprox
+
+Verifies that the current and expected value are approximately equal.
+
+```cs
+    public static INumberAssert<double> AssertThat(<current>).IsEqualApprox(<expected>, <approx>)
+```
+
+```cs
+    // this assertion succeeds
+    AssertThat(23.19).IsEqualApprox(23.2, 0.01);
+    AssertThat(23.20).IsEqualApprox(23.2, 0.01);
+    AssertThat(23.21).IsEqualApprox(23.2, 0.01);
+
+    // this assertion fails because 23.18 and 23.22 are not equal approximately to 23.2 +/- 0.01
+    AssertThat(23.18).IsEqualApprox(23.2, 0.01);
+    AssertThat(23.22).IsEqualApprox(23.2, 0.01);
+```
+
 ### IsLess
+
 Verifies that the current value is less than the given one.
+
 ```cs
     INumberAssert AssertThat(<current>).IsLess(<expected>)
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(23).IsLess(42);
@@ -78,10 +106,13 @@ Verifies that the current value is less than the given one.
 ```
 
 ### IsLessEqual
+
 Verifies that the current value is less than or equal the given one.
+
 ```cs
     INumberAssert AssertThat(<current>).IsLessEqual(<expected>)
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(23).IsLessEqual(42);
@@ -92,10 +123,13 @@ Verifies that the current value is less than or equal the given one.
 ```
 
 ### IsGreater
+
 Verifies that the current value is greater than the given one.
+
 ```cs
     INumberAssert AssertThat(<current>).IsGreater(<expected>)
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(23).IsGreater(20);
@@ -106,10 +140,13 @@ Verifies that the current value is greater than the given one.
 ```
 
 ### IsGreaterEqual
+
 Verifies that the current value is greater than or equal the given one.
+
 ```cs
     INumberAssert AssertThat(<current>).IsGreaterEqual(<expected>)
 ```
+
 ```cs
     AssertThat(23).IsGreaterEqual(20)
     AssertThat(23).IsGreaterEqual(23)
@@ -119,10 +156,13 @@ Verifies that the current value is greater than or equal the given one.
 ```
 
 ### IsEven
+
 Verifies that the current value is even.
+
 ```cs
     INumberAssert AssertThat(<current>).IsEven()
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(12).IsEven();
@@ -132,10 +172,13 @@ Verifies that the current value is even.
 ```
 
 ### IsOdd
+
 Verifies that the current value is odd.
+
 ```cs
     INumberAssert AssertThat(<current>).IsOdd()
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(13).IsOdd();
@@ -145,10 +188,13 @@ Verifies that the current value is odd.
 ```
 
 ### IsNegative
+
 Verifies that the current value is negative.
+
 ```cs
     INumberAssert AssertThat(<current>).IsNegative()
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(-13).IsNegative();
@@ -158,10 +204,13 @@ Verifies that the current value is negative.
 ```
 
 ### IsNotNegative
+
 Verifies that the current value is not negative.
+
 ```cs
     INumberAssert AssertThat(<current>).IsNotNegative()
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(13).IsNotNegative();
@@ -171,10 +220,13 @@ Verifies that the current value is not negative.
 ```
 
 ### IsZero
+
 Verifies that the current value is equal to zero.
+
 ```cs
     INumberAssert AssertThat(<current>).IsZero()
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(0).IsZero();
@@ -184,10 +236,13 @@ Verifies that the current value is equal to zero.
 ```
 
 ### IsNotZero
+
 Verifies that the current value is not equal to zero.
+
 ```cs
     INumberAssert AssertThat(<current>).IsNotZero()
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(1).IsNotZero();
@@ -197,10 +252,13 @@ Verifies that the current value is not equal to zero.
 ```
 
 ### IsIn
+
 Verifies that the current value is in the given set of values.
+
 ```cs
     INumberAssert AssertThat(<current>).IsIn([] <expected>)
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(5).IsIn(3, 4, 5, 6);
@@ -210,10 +268,13 @@ Verifies that the current value is in the given set of values.
 ```
 
 ### IsNotIn
+
 Verifies that the current value is not in the given set of values.
+
 ```cs
     INumberAssert AssertThat(<current>).IsNotIn([] <expected>)
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(5).IsNotIn(3, 4, 6, 7);
@@ -223,10 +284,13 @@ Verifies that the current value is not in the given set of values.
 ```
 
 ### IsBetween
+
 Verifies that the current value is between the given boundaries (inclusive).
+
 ```cs
     INumberAssert AssertThat(<current>).IsBetween(<from>, <to>)
 ```
+
 ```cs
     // this assertion succeeds
     AssertThat(23).IsBetween(20, 30);

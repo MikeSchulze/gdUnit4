@@ -12,6 +12,7 @@ GdUnit provides several tools to help you write tests, including managing object
 ---
 
 ## auto_free()
+
 A little helper for automatically releasing the objects you create after test execution.
 
 *Note that objects do not manage memory. If a class inherits from Object, you will need to delete its instances manually.*
@@ -22,34 +23,43 @@ Objects that are covered by **auto_free** only live in the scope where they are 
 
 {% tabs tools-auto_free %}
 {% tab tools-auto_free GdScript %}
+
 ```ruby
     func auto_free(obj :Object) -> Object:
 ```
+
 {% endtab %}
 {% tab tools-auto_free C# %}
+
 ```cs
     public static T AutoFree<T>(T obj);
 ```
+
 {% endtab %}
 {% endtabs %}
 
 Here’s an small example:
 {% tabs tools-auto_free-example %}
 {% tab tools-auto_free-example GdScript %}
+
 ```ruby
     # using auto_free() on Path object to register for freeing after the test is finished
     assert_object(auto_free(Path.new())).is_not_instanceof(Tree)
 ```
+
 {% endtab %}
 {% tab tools-auto_free-example C# %}
+
 ```cs
+using static Assertions;
+
+  ...
     // using AutoFree() on Path object to register for freeing after the test is finished
     AssertObject(AutoFree(new Godot.Path())).IsNotInstanceOf<Godot.Tree>();
 ```
+
 {% endtab %}
 {% endtabs %}
-
-
 
 Here's an extended example of a test suite to demonstrate the usage of auto_free() and freeing memory:
 
@@ -106,7 +116,6 @@ Here's an extended example of a test suite to demonstrate the usage of auto_free
         prints("|%16s | %16s | %16s | %16s |" % [name, _obj_a, _obj_b, _obj_c])
 ```
 
-
 |        State    |           _obj_a |           _obj_b |           _obj_c |
 |--- | --- |
 |        PARENTED |             Null |             Null |             Null |
@@ -122,26 +131,30 @@ Here's an extended example of a test suite to demonstrate the usage of auto_free
 |      UNPARENTED | [Deleted Object] | [Deleted Object] | [Deleted Object] |
 |       PREDELETE | [Deleted Object] | [Deleted Object] | [Deleted Object] |
 
-
-
 ## create_temp_dir()
+
 This helper function creates a new directory under the temporary directory *user://tmp*, which can be useful for storing data during test execution.<br>
 The directory is automatically deleted after the test suite has finished executing.
 
 {% tabs tools-create_temp_dir %}
 {% tab tools-create_temp_dir GdScript %}
+
 ```ruby
     func create_temp_dir(relative_path :String) -> String:
 ```
+
 {% endtab %}
 {% tab tools-create_temp_dir C# %}
+
 ```cs
     public static string CreateTempDir(string path);
 ```
+
 {% endtab %}
 {% endtabs %}
 
 Here’s an example:
+
 ```ruby
     func test_save_game_data():
         # create a temporay directory to store test data
@@ -161,34 +174,39 @@ Here’s an example:
         assert_bool(file.file_exists(file_to_save)).is_true()
 ```
 
-
 ## clean_temp_dir()
+
 Deletes the temporary directory created by **create_temp_dir()**. This function is called automatically after each execution of the test suite to ensure that the temporary directory is clean and ready for the next test suite.
 
 {% tabs tools-clean_temp_dir %}
 {% tab tools-clean_temp_dir GdScript %}
+
 ```ruby
    func clean_temp_dir():
 ```
+
 {% endtab %}
 {% tab tools-clean_temp_dir C# %}
+
 ```cs
    public static void ClearTempDir();
 ```
+
 {% endtab %}
 {% endtabs %}
 
 ## create_temp_file()
+
 The **create_temp_file()** function creates a new File under the temporary directory *user://tmp* + *\<relative_path\>* with the given name *\<file_name\>* and file *\<mode\>* (default = File.WRITE).<br>
 If successful, the returned File is automatically closed after the execution of the test suite.<br>
 We can create a small test file at the beginning of a test suite in the **before()** function and read it later in the test. It is not necessary to close the file, as the GdUnit test runner will close it automatically.
-
 
 ```ruby
     func create_temp_file(relative_path :String, file_name :String, mode :=File.WRITE) -> File:
 ```
 
 Here’s an example:
+
 ```ruby
     # setup test data
     func before():
@@ -207,8 +225,8 @@ Here’s an example:
         # not needs to be manually close, will be auto closed after test suite execution
 ```
 
-
 ## resource_as_array()
+
 This function reads a resource file located at the given path *\<resource_path\>* and returns its contents as a PackedStringArray.
 
 ```ruby
@@ -216,14 +234,15 @@ This function reads a resource file located at the given path *\<resource_path\>
 ```
 
 Here’s an example:
+
 ```ruby
     var rows = ["row a", "row b"]
     var file_content := resource_as_array("res://myproject/test/resources/TestRows.txt")
     assert_array(rows).contains_exactly(file_content)
 ```
 
-
 ## resource_as_string()
+
 This function reads a resource file located at the given path \<resource_path\> and returned the content as String.
 
 ```ruby
@@ -231,6 +250,7 @@ This function reads a resource file located at the given path \<resource_path\> 
 ```
 
 Here’s an example:
+
 ```ruby
     var rows = "row a\nrow b\n"
     var file_content := resource_as_string("res://myproject/test/resources/TestRows.txt")

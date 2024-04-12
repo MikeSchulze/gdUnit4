@@ -1,23 +1,25 @@
 ---
 layout: default
-title: C# Support
+title: C# Support on Godot Editor
 nav_order: 6
 ---
 
+# The GdUnit4 Godot Editor C# Support
 
-
-# C# Testing Support
-{% include advice.html 
-content="Please note that running C# tests is only supported with GdUnit4 version 4.2.x and higher."
+{% include advice.html
+content="Please note that running C# tests is only supported with GdUnit4 version 4.2.x and higher.<br>
+To be able to use the GdUnit4 C# Test API, at least one Godot-Mono version 4.2.x must be installed."
 %}
-![](/gdUnit4/assets/images/install/cs-test-run.png)
-To leverage the GdUnit C# testing API, it's essential to have Godot-Mono version 4.2.x installed.<br>
-With GdUnit4 version 2.4.0, we fully support .Net7 and LangVersion 11.
+
+GdUnit4 supports with [gdUnit4.api](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"} v4.2.0 to write and run tests inside the Godot editor.
+For support **Visual Studio**, **Visual Studio Code** and **JetBrains Rider** [click here](/gdUnit4/faq/vstest-adapter/){:target="_blank"}.
+
+With gdUnit4 version 4.2.2, we fully support .net7, .net8 and LangVersion 11.<br>
 This ensures compatibility and access to the enhanced features and capabilities provided by GdUnit4's C# testing functionality.
 
+## How to Enable GdUnit4 C# Test Support?
 
-## How to Enable C# Test Support?
-Before diving into GdUnit's C# testing API, make sure your project is configured appropriately.<br>
+Before diving into gdUnit4 C# testing API, make sure your project is configured appropriately.<br>
 Follow the steps outlined in the
 [Official Godot documentary](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html#setting-up-c-for-godot)
 
@@ -25,30 +27,36 @@ GdUnit4 utilizes the C# language standard 11.0. To ensure seamless integration, 
 
 1. Setup your Project
 
-    GdUnit4 C# API uses the framework **net7.0** to support the latest language standard<br>
+    gdUnit4Net C# API supports the frameworks **net7.0** and **net8.0** to support the latest language standard<br>
     Open you project file (\*.csproj), and change:
     * under section `<PropertyGroup>`
-        * change the *TargetFramework* to `net7.0`
+        * change the *TargetFramework* to `net8.0`
         * add `<LangVersion>11.0</LangVersion>`
         * add `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>`
     * add the section `<ItemGroup>` see below
-        * add `<PackageReference Include="gdUnit4.api" Version="4.2.0-rc*" />`
 
-2. Ensure the dotnet 7 SDK is installed.
+    ```cs
+      <ItemGroup>
+        <PackageReference Include="gdUnit4.api" Version="4.2.*" />
+      </ItemGroup>
+    ```
 
-```
+2. Ensure the dotnet 8 SDK is installed.
+
+```bash
 dotnet --list-sdks
-6.0.101 [C:\Program Files\dotnet\sdk]
-7.0.302 [C:\Program Files\dotnet\sdk]
+7.0.404 [C:\Program Files\dotnet\sdk]
+8.0.201 [C:\Program Files\dotnet\sdk]
 ```
 
-If no sdk 7.0 installed, you can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)<br>
+If no sdk 8.0 installed, you can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0){:target="_blank"}<br>
 If you encounter issues with older SDKs, consider uninstalling them.<br>
 Here is a complete example of what your project should look like.
+
 ```cs
-<Project Sdk="Godot.NET.Sdk/4.2.0">
+<Project Sdk="Godot.NET.Sdk/4.2.1">
   <PropertyGroup>
-    <TargetFrameworks>net7.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <LangVersion>11.0</LangVersion>
     <!--Force nullable warnings, you can disable if you want-->
     <Nullable>enable</Nullable>
@@ -58,29 +66,29 @@ Here is a complete example of what your project should look like.
   </PropertyGroup>
   <ItemGroup>
     <!--Required for GdUnit4-->
-    <PackageReference Include="gdUnit4.api" Version="4.2.0-rc*" />
+    <PackageReference Include="gdUnit4.api" Version="4.2.*" />
   </ItemGroup>
 </Project>
 ```
 
-## Test You C# build Settings
+## Test You C# build Settings in the Godot Editor
+
 Open the **MSBuild** inspector at the bottom of the Godot editor and press **Rebuild Solution**.
 ![](/gdUnit4/assets/images/install/cs-build-test.png)
 The output should indicate that the project is built successfully.
 
-## Running C# Tests inside Godot
+### Running C# Tests inside the Godot Editor
+
 How to [run test](/gdUnit4/faq/run-tests/)
 
-## Using External C# Editor
+### Using External C# Editor
+
 Open your Godot editor settings, and navigate to **dotnet** and select your preferred C# tool.
 ![](/gdUnit4/assets/images/install/cs-setup.png)
 
-## Running C# Tests by Visual Studio Test Adapter
-{% include advice.html 
-content="The VS Test Adapter is currently in a pre-alpha version and has not been released yet."
-%}
-![](/gdUnit4/assets/images/install/cs-test-adapter.png)
+### How to Setup and Running C# Tests with the Visual Studio Test Adapter
 
+See here [here](/gdUnit4/faq/vstest-adapter/)
 
 ---
-<h4> document version v4.2.0 </h4>
+<h4> document version v4.2.4 </h4>
