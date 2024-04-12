@@ -16,7 +16,7 @@ namespace GdUnit4
 		[TestCase]
 		public void GetVersion()
 		{
-			AssertThat(GdUnit4CSharpApi.Version()).IsEqual("4.2.1.0");
+			AssertThat(GdUnit4CSharpApi.Version()).IsEqual("4.2.2.0");
 		}
 	}
 }

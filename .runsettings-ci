@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+    <RunConfiguration>
+        <MaxCpuCount>1</MaxCpuCount>
+        <ResultsDirectory>./TestResults</ResultsDirectory>
+        <TargetFramework>net8.0</TargetFramework>
+        <TestSessionTimeout>180000</TestSessionTimeout>
+        <TreatNoTestsAsError>true</TreatNoTestsAsError>
+    </RunConfiguration>
+
+    <LoggerRunSettings>
+        <Loggers>
+            <Logger friendlyName="console" enabled="True">
+                <Configuration>
+                    <Verbosity>detailed</Verbosity>
+                </Configuration>
+            </Logger>
+            <Logger friendlyName="html" enabled="True">
+                <Configuration>
+                    <LogFileName>test-result.html</LogFileName>
+                </Configuration>
+            </Logger>
+            <Logger friendlyName="trx" enabled="True">
+                <Configuration>
+                    <LogFileName>test-result.trx</LogFileName>
+                </Configuration>
+            </Logger>
+        </Loggers>
+    </LoggerRunSettings>
+
+    <GdUnit4>
+        <!-- Additonal Godot runtime parameters-->
+        <!-- These parameters are crucial for configuring the Godot runtime to work in headless environments, such as those used in automated testing or CI/CD pipelines.-->
+        <Parameters>--audio-driver Dummy --display-driver x11 --rendering-driver opengl3 --screen 0</Parameters>
+        <!-- Controlls the Display name attribute of the TestCase. Allowed values are SimpleName and FullyQualifiedName.
+             This likely determines how the test names are displayed in the test results.-->
+        <DisplayName>FullyQualifiedName</DisplayName>
+    </GdUnit4>
+</RunSettings>
