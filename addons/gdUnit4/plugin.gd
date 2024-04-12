@@ -27,7 +27,7 @@ func _enter_tree() -> void:
 		var update_tool :Node = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
 		Engine.get_main_loop().root.call_deferred("add_child", update_tool)
 	if GdUnit4CSharpApiLoader.is_mono_supported():
-		prints("GdUnit4Mono Version %s loaded." % GdUnit4CSharpApiLoader.version())
+		prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
 
 
 func _exit_tree() -> void:
