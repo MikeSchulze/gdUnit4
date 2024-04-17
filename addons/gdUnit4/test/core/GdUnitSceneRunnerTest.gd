@@ -248,7 +248,6 @@ func test_simulate_until_object_signal(timeout=2000) -> void:
 	# wait until next frame
 	await await_idle_frame()
 	var spell = runner.find_child("Spell")
-	prints(spell)
 
 	# simmulate scene until the spell is explode
 	await runner.simulate_until_object_signal(spell, "spell_explode", spell)

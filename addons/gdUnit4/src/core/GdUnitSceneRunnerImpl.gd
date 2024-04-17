@@ -372,18 +372,16 @@ func _apply_input_mouse_position(event :InputEvent) -> void:
 		event.position = _last_input_event.position
 
 
-## just for testing maunally event to action handling
-func _handle_actions(event :InputEvent) -> bool:
-	var is_action_match := false
-	for action in InputMap.get_actions():
-		if InputMap.event_is_action(event, action, true):
-			is_action_match = true
-			prints(action, event, event.is_ctrl_pressed())
-			if event.is_pressed():
-				Input.action_press(action, InputMap.action_get_deadzone(action))
-			else:
-				Input.action_release(action)
-	return is_action_match
+## handle input action via Input modifieres
+func _handle_actions(event :InputEventAction) -> bool:
+	if not InputMap.event_is_action(event, event.action, true):
+		return false
+	__print("	process action %s (%s) <- %s" % [scene(), _scene_name(), event.as_text()])
+	if event.is_pressed():
+		Input.action_press(event.action, InputMap.action_get_deadzone(event.action))
+	else:
+		Input.action_release(event.action)
+	return true
 
 
 # for handling read https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html?highlight=inputevent#how-does-it-work
@@ -391,6 +389,10 @@ func _handle_input_event(event :InputEvent):
 	if event is InputEventMouse:
 		Input.warp_mouse(event.position)
 	Input.parse_input_event(event)
+
+	if event is InputEventAction:
+		_handle_actions(event)
+
 	Input.flush_buffered_events()
 	var current_scene := scene()
 	if is_instance_valid(current_scene):
@@ -400,6 +402,7 @@ func _handle_input_event(event :InputEvent):
 		if(current_scene.has_method("_unhandled_input")):
 			current_scene._unhandled_input(event)
 		current_scene.get_viewport().set_input_as_handled()
+
 	# save last input event needs to be merged with next InputEventMouseButton
 	_last_input_event = event
 	return self

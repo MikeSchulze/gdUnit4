@@ -81,7 +81,9 @@ func test_reset_to_inital_state_on_release():
 
 func test_simulate_action_press() -> void:
 	# iterate over some example actions
-	for action in ["ui_up", "ui_down", "ui_left", "ui_right"]:
+	var actions_to_simmulate := ["ui_up", "ui_down", "ui_left", "ui_right"]
+	for action in actions_to_simmulate:
+		assert_that(InputMap.has_action(action)).is_true()
 		_runner.simulate_action_press(action)
 		await await_idle_frame()
 
@@ -89,16 +91,17 @@ func test_simulate_action_press() -> void:
 		event.action = action
 		event.pressed = true
 		verify(_scene_spy, 1)._input(event)
-		assert_that(Input.is_action_pressed(action)).is_true()
+		assert_that(Input.is_action_pressed(action))\
+			.override_failure_message("Expect the action '%s' is pressed" % action).is_true()
 	# verify all this actions are still handled as pressed
-	assert_that(Input.is_action_pressed("ui_up")).is_true()
-	assert_that(Input.is_action_pressed("ui_down")).is_true()
-	assert_that(Input.is_action_pressed("ui_left")).is_true()
-	assert_that(Input.is_action_pressed("ui_right")).is_true()
+	for action in actions_to_simmulate:
+		assert_that(Input.is_action_pressed(action))\
+			.override_failure_message("Expect the action '%s' is pressed" % action).is_true()
 	# other actions are not pressed
-	assert_that(Input.is_action_pressed("ui_accept")).is_false()
-	assert_that(Input.is_action_pressed("ui_select")).is_false()
-	assert_that(Input.is_action_pressed("ui_cancel")).is_false()
+	for action in ["ui_accept", "ui_select", "ui_cancel"]:
+		assert_that(Input.is_action_pressed(action))\
+			.override_failure_message("Expect the action '%s' is NOT pressed" % action).is_false()
+
 
 func test_simulate_key_press() -> void:
 	# iterate over some example keys
@@ -206,8 +209,8 @@ func test_simulate_keypressed_as_action() -> void:
 	assert_bool(runner.scene()._player_jump_action_released).is_false()
 
 	# cleanup custom action
-	InputMap.erase_action("player_jump")
 	InputMap.action_erase_events("player_jump")
+	InputMap.erase_action("player_jump")
 
 
 func test_simulate_set_mouse_pos():
