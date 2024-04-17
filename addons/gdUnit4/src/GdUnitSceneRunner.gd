@@ -21,6 +21,27 @@ func get_global_mouse_position() -> Vector2:
 	return Vector2.ZERO
 
 
+## Simulates that an action has been pressed.[br]
+## [member action] : the action e.g. [code]"ui_up"[/code][br]
+@warning_ignore("unused_parameter")
+func simulate_action_pressed(action :String) -> GdUnitSceneRunner:
+	return self
+
+
+## Simulates that an action is pressed.[br]
+## [member action] : the action e.g. [code]"ui_up"[/code][br]
+@warning_ignore("unused_parameter")
+func simulate_action_press(action :String) -> GdUnitSceneRunner:
+	return self
+
+
+## Simulates that an action has been released.[br]
+## [member action] : the action e.g. [code]"ui_up"[/code][br]
+@warning_ignore("unused_parameter")
+func simulate_action_release(action :String) -> GdUnitSceneRunner:
+	return self
+
+
 ## Simulates that a key has been pressed.[br]
 ## [member key_code] : the key code e.g. [constant KEY_ENTER][br]
 ## [member shift_pressed] : false by default set to true if simmulate shift is press[br]

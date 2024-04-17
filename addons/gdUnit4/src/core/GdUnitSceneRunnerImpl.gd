@@ -26,6 +26,7 @@ var _simulate_start_time :LocalTime
 var _last_input_event :InputEvent = null
 var _mouse_button_on_press := []
 var _key_on_press := []
+var _action_on_press := []
 var _curent_mouse_position :Vector2
 
 # time factor settings
@@ -94,6 +95,30 @@ func _notification(what):
 
 func _scene_tree() -> SceneTree:
 	return Engine.get_main_loop() as SceneTree
+
+
+func simulate_action_pressed(action :String) -> GdUnitSceneRunner:
+	simulate_action_press(action)
+	simulate_action_release(action)
+	return self
+
+
+func simulate_action_press(action :String) -> GdUnitSceneRunner:
+	__print_current_focus()
+	var event = InputEventAction.new()
+	event.pressed = true
+	event.action = action
+	_action_on_press.append(action)
+	return _handle_input_event(event)
+
+
+func simulate_action_release(action :String) -> GdUnitSceneRunner:
+	__print_current_focus()
+	var event = InputEventAction.new()
+	event.pressed = false
+	event.action = action
+	_action_on_press.erase(action)
+	return _handle_input_event(event)
 
 
 func simulate_key_pressed(key_code :int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
@@ -391,6 +416,12 @@ func _reset_input_to_default() -> void:
 		if Input.is_key_pressed(key_scancode):
 			simulate_key_release(key_scancode)
 	_key_on_press.clear()
+
+	for action in _action_on_press.duplicate():
+		if Input.is_action_pressed(action):
+			simulate_action_release(action)
+	_action_on_press.clear()
+
 	Input.flush_buffered_events()
 	_last_input_event = null
 
