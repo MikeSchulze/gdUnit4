@@ -108,11 +108,13 @@ You need to setup the system environment variable `GODOT_BIN`, the full path to 
 
 * Install the Godot Support plugin
 ![godot-support](/gdUnit4/assets/images/faq/jetbrains/plugin-godot-support.png)
-* Configure the path to your `.runsettings`
+* [Optional] Configure the path to your `.runsettings`
 ![runsettings](/gdUnit4/assets/images/faq/jetbrains/setup-test-1.png)
 * Enable the [VSTest adapters](https://www.jetbrains.com/help/rider/Reference__Options__Tools__Unit_Testing__VSTest.html#projects-with-unit-tests){:target="_blank"} in the Rider settings
 ![enable vstest](/gdUnit4/assets/images/faq/jetbrains/setup-test-2.png)
 * Restart JetBrains Rider
+
+> **Note:** There is no need to set the `GODOT_BIN` for Rider.
 
 ---
 
