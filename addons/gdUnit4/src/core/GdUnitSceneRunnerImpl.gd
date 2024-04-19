@@ -26,6 +26,7 @@ var _simulate_start_time :LocalTime
 var _last_input_event :InputEvent = null
 var _mouse_button_on_press := []
 var _key_on_press := []
+var _action_on_press := []
 var _curent_mouse_position :Vector2
 
 # time factor settings
@@ -94,6 +95,30 @@ func _notification(what):
 
 func _scene_tree() -> SceneTree:
 	return Engine.get_main_loop() as SceneTree
+
+
+func simulate_action_pressed(action :String) -> GdUnitSceneRunner:
+	simulate_action_press(action)
+	simulate_action_release(action)
+	return self
+
+
+func simulate_action_press(action :String) -> GdUnitSceneRunner:
+	__print_current_focus()
+	var event = InputEventAction.new()
+	event.pressed = true
+	event.action = action
+	_action_on_press.append(action)
+	return _handle_input_event(event)
+
+
+func simulate_action_release(action :String) -> GdUnitSceneRunner:
+	__print_current_focus()
+	var event = InputEventAction.new()
+	event.pressed = false
+	event.action = action
+	_action_on_press.erase(action)
+	return _handle_input_event(event)
 
 
 func simulate_key_pressed(key_code :int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
@@ -347,18 +372,16 @@ func _apply_input_mouse_position(event :InputEvent) -> void:
 		event.position = _last_input_event.position
 
 
-## just for testing maunally event to action handling
-func _handle_actions(event :InputEvent) -> bool:
-	var is_action_match := false
-	for action in InputMap.get_actions():
-		if InputMap.event_is_action(event, action, true):
-			is_action_match = true
-			prints(action, event, event.is_ctrl_pressed())
-			if event.is_pressed():
-				Input.action_press(action, InputMap.action_get_deadzone(action))
-			else:
-				Input.action_release(action)
-	return is_action_match
+## handle input action via Input modifieres
+func _handle_actions(event :InputEventAction) -> bool:
+	if not InputMap.event_is_action(event, event.action, true):
+		return false
+	__print("	process action %s (%s) <- %s" % [scene(), _scene_name(), event.as_text()])
+	if event.is_pressed():
+		Input.action_press(event.action, InputMap.action_get_deadzone(event.action))
+	else:
+		Input.action_release(event.action)
+	return true
 
 
 # for handling read https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html?highlight=inputevent#how-does-it-work
@@ -366,6 +389,10 @@ func _handle_input_event(event :InputEvent):
 	if event is InputEventMouse:
 		Input.warp_mouse(event.position)
 	Input.parse_input_event(event)
+
+	if event is InputEventAction:
+		_handle_actions(event)
+
 	Input.flush_buffered_events()
 	var current_scene := scene()
 	if is_instance_valid(current_scene):
@@ -375,6 +402,7 @@ func _handle_input_event(event :InputEvent):
 		if(current_scene.has_method("_unhandled_input")):
 			current_scene._unhandled_input(event)
 		current_scene.get_viewport().set_input_as_handled()
+
 	# save last input event needs to be merged with next InputEventMouseButton
 	_last_input_event = event
 	return self
@@ -391,6 +419,12 @@ func _reset_input_to_default() -> void:
 		if Input.is_key_pressed(key_scancode):
 			simulate_key_release(key_scancode)
 	_key_on_press.clear()
+
+	for action in _action_on_press.duplicate():
+		if Input.is_action_pressed(action):
+			simulate_action_release(action)
+	_action_on_press.clear()
+
 	Input.flush_buffered_events()
 	_last_input_event = null
 

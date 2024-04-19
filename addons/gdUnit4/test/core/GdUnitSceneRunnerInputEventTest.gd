@@ -12,8 +12,15 @@ var _scene_spy :Node
 func before_test():
 	_scene_spy = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	_runner = scene_runner(_scene_spy)
+	assert_initial_action_state()
 	assert_inital_mouse_state()
 	assert_inital_key_state()
+
+
+# asserts to action strings
+func assert_initial_action_state():
+	for action in InputMap.get_actions():
+		assert_that(Input.is_action_pressed(action, true)).is_false()
 
 
 # asserts to KeyList Enums
@@ -48,12 +55,14 @@ func assert_inital_mouse_state():
 func test_reset_to_inital_state_on_release():
 	var runner = scene_runner("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	# simulate mouse buttons and key press but we never released it
+	runner.simulate_action_press("ui_up")
 	runner.simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
 	runner.simulate_mouse_button_press(MOUSE_BUTTON_RIGHT)
 	runner.simulate_mouse_button_press(MOUSE_BUTTON_MIDDLE)
 	runner.simulate_key_press(KEY_0)
 	runner.simulate_key_press(KEY_X)
 	await await_idle_frame()
+	assert_that(Input.is_action_pressed("ui_up")).is_true()
 	assert_that(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_true()
 	assert_that(Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)).is_true()
 	assert_that(Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE)).is_true()
@@ -62,11 +71,36 @@ func test_reset_to_inital_state_on_release():
 	# unreference the scene runner to enforce reset to initial Input state
 	runner._notification(NOTIFICATION_PREDELETE)
 	await await_idle_frame()
+	assert_that(Input.is_action_pressed("ui_up")).is_false()
 	assert_that(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_false()
 	assert_that(Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)).is_false()
 	assert_that(Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE)).is_false()
 	assert_that(Input.is_key_pressed(KEY_0)).is_false()
 	assert_that(Input.is_key_pressed(KEY_X)).is_false()
+
+
+func test_simulate_action_press() -> void:
+	# iterate over some example actions
+	var actions_to_simmulate := ["ui_up", "ui_down", "ui_left", "ui_right"]
+	for action in actions_to_simmulate:
+		assert_that(InputMap.has_action(action)).is_true()
+		_runner.simulate_action_press(action)
+		await await_idle_frame()
+
+		var event := InputEventAction.new()
+		event.action = action
+		event.pressed = true
+		verify(_scene_spy, 1)._input(event)
+		assert_that(Input.is_action_pressed(action))\
+			.override_failure_message("Expect the action '%s' is pressed" % action).is_true()
+	# verify all this actions are still handled as pressed
+	for action in actions_to_simmulate:
+		assert_that(Input.is_action_pressed(action))\
+			.override_failure_message("Expect the action '%s' is pressed" % action).is_true()
+	# other actions are not pressed
+	for action in ["ui_accept", "ui_select", "ui_cancel"]:
+		assert_that(Input.is_action_pressed(action))\
+			.override_failure_message("Expect the action '%s' is NOT pressed" % action).is_false()
 
 
 func test_simulate_key_press() -> void:
@@ -175,8 +209,8 @@ func test_simulate_keypressed_as_action() -> void:
 	assert_bool(runner.scene()._player_jump_action_released).is_false()
 
 	# cleanup custom action
-	InputMap.erase_action("player_jump")
 	InputMap.action_erase_events("player_jump")
+	InputMap.erase_action("player_jump")
 
 
 func test_simulate_set_mouse_pos():
