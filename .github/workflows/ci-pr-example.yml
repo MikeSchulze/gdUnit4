@@ -32,7 +32,7 @@ jobs:
           lfs: true
       - uses: MikeSchulze/gdUnit4-action@v1.0.5
         with:
-          godot-version: '4.2.1'
+          godot-version: '4.2.2'
           version: 'v4.2.0'
           paths: |
             res://project/tests/

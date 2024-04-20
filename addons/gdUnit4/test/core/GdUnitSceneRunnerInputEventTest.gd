@@ -15,6 +15,11 @@ func before_test():
 	assert_initial_action_state()
 	assert_inital_mouse_state()
 	assert_inital_key_state()
+	# do handle outstanding events
+	Input.flush_buffered_events()
+	await _runner.await_input_processed()
+	# reset to inital state
+	reset(_scene_spy)
 
 
 # asserts to action strings
@@ -221,7 +226,7 @@ func test_simulate_set_mouse_pos():
 	await await_idle_frame()
 	var event := InputEventMouseMotion.new()
 	event.position = Vector2(100, 100)
-	event.global_position = gmp
+	GodotVersionFixures.set_event_global_position(event, gmp)
 	verify(_scene_spy, 1)._input(event)
 
 	# set mouse to pos 800, 400
@@ -230,16 +235,17 @@ func test_simulate_set_mouse_pos():
 	await await_idle_frame()
 	event = InputEventMouseMotion.new()
 	event.position = Vector2(800, 400)
-	event.global_position = gmp
+	GodotVersionFixures.set_event_global_position(event, gmp)
 	verify(_scene_spy, 1)._input(event)
 
 	# and again back to 100,100
+	reset(_scene_spy)
 	gmp = _runner.get_global_mouse_position()
 	_runner.set_mouse_pos(Vector2(100, 100))
 	await await_idle_frame()
 	event = InputEventMouseMotion.new()
 	event.position = Vector2(100, 100)
-	event.global_position = gmp
+	GodotVersionFixures.set_event_global_position(event, gmp)
 	verify(_scene_spy, 1)._input(event)
 
 
@@ -285,7 +291,7 @@ func test_simulate_mouse_move():
 
 	var event = InputEventMouseMotion.new()
 	event.position = Vector2(400, 100)
-	event.global_position = gmp
+	GodotVersionFixures.set_event_global_position(event, gmp)
 	event.relative = Vector2(400, 100) - Vector2(10, 10)
 	verify(_scene_spy, 1)._input(event)
 
@@ -296,7 +302,7 @@ func test_simulate_mouse_move():
 
 	event = InputEventMouseMotion.new()
 	event.position = Vector2(55, 42)
-	event.global_position = gmp
+	GodotVersionFixures.set_event_global_position(event, gmp)
 	event.relative = Vector2(55, 42) - Vector2(400, 100)
 	verify(_scene_spy, 1)._input(event)
 

@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        godot-version: ['4.1', '4.1.1', '4.1.2', '4.1.3', '4.2', '4.2.1']
+        godot-version: ['4.1.2', '4.1.3', '4.1.4', '4.2', '4.2.1', '4.2.2']
         godot-status: ['stable']
         godot-net: ['.Net', '']
 
@@ -46,7 +46,7 @@ jobs:
           # enable selftest on gdUnit4-action
           echo "GDUNIT_SELFTEST=true" >> "$GITHUB_ENV"
 
-      - name: 'Test GdUnit4 ${{ matrix.version }} - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}'
+      - name: 'Test GdUnit4 (master) - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}'
         if: ${{ matrix.godot-net == '' }}
         uses: MikeSchulze/gdUnit4-action@v1.0.5
         with:
@@ -56,9 +56,9 @@ jobs:
           paths: |
             res://addons/gdUnit4/test/
           timeout: 10
-          report-name: report_gdUnit4-${{ matrix.version }}_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}.xml
+          report-name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}.xml
 
-      - name: 'Test GdUnit4 ${{ matrix.version }} - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net'
+      - name: 'Test GdUnit4 (master) - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net'
         if: ${{ matrix.godot-net == '.Net' }}
         uses: MikeSchulze/gdUnit4-action@v1.0.5
         with:
@@ -70,4 +70,4 @@ jobs:
             res://addons/gdUnit4/test/mono
           timeout: 5
           retries: 3 # We have set the number of repetitions to 3 because Godot mono randomly crashes during C# tests
-          report-name: report_gdUnit4-${{ matrix.version }}_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-net.xml
+          report-name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-net.xml
