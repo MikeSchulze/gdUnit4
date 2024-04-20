@@ -6,7 +6,6 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitStringAssertImpl.gd'
 
 
-
 func test_is_null():
 	assert_str(null).is_null()
 
@@ -305,7 +304,7 @@ func test_ends_with():
 			 'a test'""".dedent().trim_prefix("\n"))
 
 
-func test_has_lenght():
+func test_has_length():
 	assert_str("This is a test message").has_length(22)
 	assert_str(&"This is a test message").has_length(22)
 	assert_str("").has_length(0)
@@ -325,7 +324,7 @@ func test_has_lenght():
 			 '<null>'""".dedent().trim_prefix("\n"))
 
 
-func test_has_lenght_less_than():
+func test_has_length_less_than():
 	assert_str("This is a test message").has_length(23, Comparator.LESS_THAN)
 	assert_str("This is a test message").has_length(42, Comparator.LESS_THAN)
 	assert_str(&"This is a test message").has_length(42, Comparator.LESS_THAN)
@@ -344,7 +343,7 @@ func test_has_lenght_less_than():
 			 '<null>'""".dedent().trim_prefix("\n"))
 
 
-func test_has_lenght_less_equal():
+func test_has_length_less_equal():
 	assert_str("This is a test message").has_length(22, Comparator.LESS_EQUAL)
 	assert_str("This is a test message").has_length(23, Comparator.LESS_EQUAL)
 	assert_str(&"This is a test message").has_length(23, Comparator.LESS_EQUAL)
@@ -363,7 +362,7 @@ func test_has_lenght_less_equal():
 			 '<null>'""".dedent().trim_prefix("\n"))
 
 
-func test_has_lenght_greater_than():
+func test_has_length_greater_than():
 	assert_str("This is a test message").has_length(21, Comparator.GREATER_THAN)
 	assert_str(&"This is a test message").has_length(21, Comparator.GREATER_THAN)
 
@@ -381,7 +380,7 @@ func test_has_lenght_greater_than():
 			 '<null>'""".dedent().trim_prefix("\n"))
 
 
-func test_has_lenght_greater_equal():
+func test_has_length_greater_equal():
 	assert_str("This is a test message").has_length(21, Comparator.GREATER_EQUAL)
 	assert_str("This is a test message").has_length(22, Comparator.GREATER_EQUAL)
 	assert_str(&"This is a test message").has_length(22, Comparator.GREATER_EQUAL)
@@ -401,9 +400,9 @@ func test_has_lenght_greater_equal():
 
 
 func test_fluentable():
-	assert_str("value a").is_not_equal("a")\
-		.is_equal("value a")\
-		.has_length(7)\
+	assert_str("value a").is_not_equal("a") \
+		.is_equal("value a") \
+		.has_length(7) \
 		.is_equal("value a")
 
 
@@ -423,9 +422,9 @@ func test_must_fail_has_invlalid_type():
 
 
 func test_override_failure_message() -> void:
-	assert_failure(func(): assert_str("")\
-			.override_failure_message("Custom failure message")\
-			.is_null())\
+	assert_failure(func(): assert_str("") \
+			.override_failure_message("Custom failure message") \
+			.is_null()) \
 		.is_failed() \
 		.has_message("Custom failure message")
 
