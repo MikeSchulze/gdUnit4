@@ -50,6 +50,7 @@ func is_null() -> GdUnitResultAssert:
 	_base.is_null()
 	return self
 
+
 func is_not_null() -> GdUnitResultAssert:
 	_base.is_not_null()
 	return self

@@ -75,5 +75,5 @@ func ends_with(expected: String) -> GdUnitStringAssert:
 
 ## Verifies that the current String has the expected length by used comparator.
 @warning_ignore("unused_parameter")
-func has_length(lenght: int, comparator: int = Comparator.EQUAL) -> GdUnitStringAssert:
+func has_length(length: int, comparator: int = Comparator.EQUAL) -> GdUnitStringAssert:
 	return self
