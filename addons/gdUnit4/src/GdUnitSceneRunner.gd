@@ -167,6 +167,12 @@ func simulate_until_object_signal(source :Object, signal_name :String, arg0=NO_A
 	return self
 
 
+### Waits for all input events are processed
+func await_input_processed() -> void:
+	await Engine.get_main_loop().process_frame
+	await Engine.get_main_loop().physics_frame
+
+
 ## Waits for the function return value until specified timeout or fails.[br]
 ## [member args] : optional function arguments
 @warning_ignore("unused_parameter")
