@@ -5,7 +5,7 @@ title: Home
 
 
 
-# GdUnit4 V4.2.4
+# GdUnit4 V4.2.5
 
 ![GdUnit4](\gdUnit4\assets\images\background.png)
 build on (v4.2.1.stable.official [b09f793f5])
@@ -97,4 +97,4 @@ public class GdUnitExampleTest
 {% endtabs %}
 
 ---
-<h4> document version v4.2.4 </h4>
+<h4> document version v4.2.5 </h4>
