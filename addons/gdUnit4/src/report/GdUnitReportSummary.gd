@@ -35,11 +35,23 @@ func suite_count() -> int:
 	return _reports.size()
 
 
+func suite_executed_count() -> int:
+	var executed := _reports.size()
+	for report in _reports:
+		if report.test_count() == report.skipped_count():
+			executed -= 1
+	return executed
+
+
 func test_count() -> int:
 	var count := _test_count
 	for report in _reports:
 		count += report.test_count()
 	return count
+
+
+func test_executed_count() -> int:
+	return test_count() - skipped_count()
 
 
 func error_count() -> int:

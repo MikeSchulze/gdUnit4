@@ -5,10 +5,11 @@ var _time_stamp :int
 var _failure_reports :Array = []
 
 
-func _init(p_resource_path :String, p_name :String):
+func _init(p_resource_path :String, p_name :String, test_count :int):
 	_resource_path = p_resource_path
 	_name = p_name
 	_time_stamp = Time.get_unix_time_from_system() as int
+	_test_count = test_count
 
 
 func create_record(report_link :String) -> String:

@@ -101,7 +101,7 @@ func to_execute() -> Dictionary:
 
 
 func skipped() -> Dictionary:
-	return _config.get(SKIPPED, PackedStringArray())
+	return _config.get(SKIPPED, {})
 
 
 func save_config(path :String = CONFIG_FILE) -> GdUnitResult:

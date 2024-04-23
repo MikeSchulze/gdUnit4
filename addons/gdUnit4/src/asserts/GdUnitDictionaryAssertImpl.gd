@@ -135,7 +135,7 @@ func _contains_key_value(key, value, compare_mode :GdObjects.COMPARE_MODE) -> Gd
 		return report_error(GdAssertMessages.error_is_not_null())
 	var keys_not_found :Array = expected.filter(_filter_by_key.bind(current.keys(), compare_mode))
 	if not keys_not_found.is_empty():
-		return report_error(GdAssertMessages.error_contains_key_value(key, value, current.keys(), compare_mode))
+		return report_error(GdAssertMessages.error_contains_keys(current.keys(), expected, keys_not_found, compare_mode))
 	if not GdObjects.equals(current[key], value, false, compare_mode):
 		return report_error(GdAssertMessages.error_contains_key_value(key, value, current[key], compare_mode))
 	return report_success()

@@ -19,7 +19,6 @@ func _init(
 	_resource_path = p_resource_path
 	_suite_name = p_suite_name
 	_name = test_name
-	_test_count = 1
 	_error_count = is_error
 	_failure_count = failed_count
 	_orphan_count = orphan_count_

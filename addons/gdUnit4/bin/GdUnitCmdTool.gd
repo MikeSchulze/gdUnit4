@@ -32,6 +32,7 @@ class CLIRunner:
 	var _report_max: int = DEFAULT_REPORT_COUNT
 	var _headless_mode_ignore := false
 	var _runner_config := GdUnitRunnerConfig.new()
+	var _runner_config_file := ""
 	var _console := CmdConsole.new()
 	var _cmd_options := CmdOptions.new([
 			CmdOption.new(
@@ -259,6 +260,7 @@ class CLIRunner:
 			"Loading test configuration %s\n" % path,
 			Color.CORNFLOWER_BLUE
 		)
+		_runner_config_file = path
 		_runner_config.load_config(path)
 
 
@@ -378,18 +380,19 @@ class CLIRunner:
 
 	func skip_suites(test_suites: Array, config: GdUnitRunnerConfig) -> void:
 		var skipped := config.skipped()
+		if skipped.is_empty():
+			return
+		_console.prints_warning("Found excluded test suite's configured at '%s'" % _runner_config_file)
 		for test_suite in test_suites:
+			# skipp c# testsuites for now
+			if test_suite.get_script() == null:
+				continue
 			skip_suite(test_suite, skipped)
 
 
 	func skip_suite(test_suite: Node, skipped: Dictionary) -> void:
 		var skipped_suites := skipped.keys()
-		if skipped_suites.is_empty():
-			return
 		var suite_name := test_suite.get_name()
-		# skipp c# testsuites for now
-		if test_suite.get_script() == null:
-			return
 		var test_suite_path: String = (
 			test_suite.get_meta("ResourcePath") if test_suite.get_script() == null
 			else test_suite.get_script().resource_path
@@ -401,17 +404,19 @@ class CLIRunner:
 				or (suite_to_skip.is_valid_filename() and suite_to_skip == suite_name)
 			):
 				var skipped_tests: Array = skipped.get(suite_to_skip)
+				var skip_reason := "Excluded by config '%s'" % _runner_config_file
 				# if no tests skipped test the complete suite is skipped
 				if skipped_tests.is_empty():
-					_console.prints_warning("Skip test suite %s:%s" % suite_to_skip)
-					test_suite.skip(true)
+					_console.prints_warning("Mark test suite '%s' as skipped!" % suite_to_skip)
+					test_suite.__is_skipped = true
+					test_suite.__skip_reason = skip_reason
 				else:
 					# skip tests
 					for test_to_skip in skipped_tests:
 						var test_case: _TestCase = test_suite.find_child(test_to_skip, true, false)
 						if test_case:
-							test_case.skip(true)
-							_console.prints_warning("Skip test case %s:%s" % [suite_to_skip, test_to_skip])
+							test_case.skip(true, skip_reason)
+							_console.prints_warning("Mark test case '%s':%s as skipped" % [suite_to_skip, test_to_skip])
 						else:
 							_console.prints_error(
 								"Can't skip test '%s' checked test suite '%s', no test with given name exists!"
@@ -442,10 +447,10 @@ class CLIRunner:
 				_report.delete_history(_report_max)
 				JUnitXmlReport.new(_report._report_path, _report.iteration()).write(_report)
 				_console.prints_color(
-					"Total test suites: %s" % _report.suite_count(),
+					build_executed_test_suite_msg(_report.suite_executed_count(), _report.suite_count()),
 					Color.DARK_SALMON
 				).prints_color(
-					"Total test cases:  %s" % _report.test_count(),
+					build_executed_test_case_msg(_report.test_executed_count(), _report.test_count()),
 					Color.DARK_SALMON
 				).prints_color(
 					"Total time:        %s" % LocalTime.elapsed(_report.duration()),
@@ -456,7 +461,7 @@ class CLIRunner:
 				)
 			GdUnitEvent.TESTSUITE_BEFORE:
 				_report.add_testsuite_report(
-					GdUnitTestSuiteReport.new(event.resource_path(), event.suite_name())
+					GdUnitTestSuiteReport.new(event.resource_path(), event.suite_name(), event.total_count())
 				)
 			GdUnitEvent.TESTSUITE_AFTER:
 				_report.update_test_suite_report(
@@ -495,6 +500,18 @@ class CLIRunner:
 				)
 				_report.update_testcase_report(event.resource_path(), test_report)
 		print_status(event)
+
+
+	func build_executed_test_suite_msg(executed_count :int, total_count :int) -> String:
+		if executed_count == total_count:
+			return "Executed test suites: (%d/%d)" % [executed_count, total_count]
+		return "Executed test suites: (%d/%d), %d skipped" % [executed_count, total_count, (total_count - executed_count)]
+
+
+	func build_executed_test_case_msg(executed_count :int, total_count :int) -> String:
+		if executed_count == total_count:
+			return "Executed test cases: (%d/%d)" % [executed_count, total_count]
+		return "Executed test cases: (%d/%d), %d skipped" % [executed_count, total_count, (total_count - executed_count)]
 
 
 	func report_exit_code(report: GdUnitHtmlReport) -> int:

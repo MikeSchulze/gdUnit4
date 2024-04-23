@@ -408,10 +408,12 @@ func test_contains_same_key_value() -> void:
 	assert_failure(func(): assert_dict({key_a:1, key_b:2, key_c:3}).contains_same_key_value(key_d, 1)) \
 		.is_failed() \
 		.has_message("""
-			Expecting contains SAME key and value:
-			 <class:A:0> : '1'
-			 but contains
-			 <class:A:0> : '[class:A:0, class:B:0, class:C:0]'"""
+			Expecting contains SAME keys:
+			 '[class:A:0, class:B:0, class:C:0]'
+			 to contains:
+			 '[class:A:0]'
+			 but can't find key's:
+			 '[class:A:0]'"""
 			.dedent().trim_prefix("\n")
 		)
 
