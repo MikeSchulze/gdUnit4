@@ -152,14 +152,16 @@ func test_skip_test_suite_and_test_case():
 func test_skip_test_case():
 	var config := GdUnitRunnerConfig.new()
 
-	config.skip_test_case("res://foo1", "testcaseA")
-	assert_dict(config.skipped()).contains_key_value("res://foo1", PackedStringArray(["testcaseA"]))
+	config.skip_test_case("res://foo1.gd", "testcaseA")
+	assert_dict(config.skipped()).contains_key_value("res://foo1.gd", PackedStringArray(["testcaseA"]))
 	# add two more
-	config.skip_test_case("res://foo1", "testcaseB")
-	config.skip_test_case("res://foo2", "testcaseX")
+	config.skip_test_suite("res://foo2/skippedTestsuite.gd")
+	config.skip_test_case("res://foo1.gd", "testcaseB")
+	config.skip_test_case("res://foo2.gd", "testcaseX")
 	assert_dict(config.skipped())\
-		.contains_key_value("res://foo1", PackedStringArray(["testcaseA", "testcaseB"]))\
-		.contains_key_value("res://foo2", PackedStringArray(["testcaseX"]))
+		.contains_key_value("res://foo2/skippedTestsuite.gd", PackedStringArray())\
+		.contains_key_value("res://foo1.gd", PackedStringArray(["testcaseA", "testcaseB"]))\
+		.contains_key_value("res://foo2.gd", PackedStringArray(["testcaseX"]))
 
 
 func test_load_fail():
@@ -168,6 +170,21 @@ func test_load_fail():
 	assert_result(config.load_config("invalid_path"))\
 		.is_error()\
 		.contains_message("Can't find test runner configuration 'invalid_path'! Please select a test to run.")
+
+
+func test_load_example_config():
+	var config := GdUnitRunnerConfig.new()
+	config.load_config("res://addons/gdUnit4/test/core/resources/GdUnitRunner_with_skipped_testsuites.cfg")
+
+	assert_dict(config.to_execute())\
+		.has_size(1)\
+		.contains_key_value("res://addons/gdUnit4/test/asserts/", PackedStringArray())
+	assert_dict(config.skipped())\
+		.has_size(4)\
+		.contains_key_value("res://addons/gdUnit4/test/asserts/GdUnitFailureAssertImplTest.gd", PackedStringArray())\
+		.contains_key_value("res://addons/gdUnit4/test/asserts/GdUnitAssertImplTest.gd", PackedStringArray())\
+		.contains_key_value("res://addons/gdUnit4/test/asserts/GdUnitIntAssertImplTest.gd", PackedStringArray())\
+		.contains_key_value("res://addons/gdUnit4/test/asserts/GdUnitVectorAssertImplTest.gd", PackedStringArray())
 
 
 func test_save_load():

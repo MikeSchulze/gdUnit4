@@ -39,10 +39,9 @@ func update_test_suite_report(
 		if report.resource_path() == resource_path_:
 			report.set_duration(duration_)
 			report.set_failed(is_failed_, failed_count_)
+			report.set_skipped(skipped_count_)
 			report.set_orphans(orphan_count_)
 			report.set_reports(reports_)
-	if is_skipped_:
-		_skipped_count = skipped_count_
 
 
 func update_testcase_report(resource_path_ :String, test_report :GdUnitTestCaseReport):
