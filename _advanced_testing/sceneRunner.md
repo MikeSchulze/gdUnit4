@@ -94,6 +94,9 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit4/tutorials/sc
 {% tab scene-runner-overview GdScript %}
 |Function|Description|
 |---|---|
+|[simulate_action_pressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_pressed) | Simulates that an action has been pressed. |
+|[simulate_action_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_press) | Simulates that an action is press. |
+|[simulate_action_release](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_release) | Simulates that an action has been released. |
 |[simulate_key_pressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_pressed) | Simulates that a key has been pressed. |
 |[simulate_key_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed. |
 |[simulate_key_release](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released. |
@@ -119,6 +122,9 @@ For more advanced example, see [Tutorial - Testing Scenes](/gdUnit4/tutorials/sc
 {% tab scene-runner-overview C# %}
 |Function|Description|
 |---|---|
+|[SimulateActionPressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_pressed) | Simulates that an action has been pressed. |
+|[SimulateActionPress](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_press) | Simulates that an action is press. |
+|[SimulateActionRelease](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_release) | Simulates that an action has been released. |
 |[SimulateKeyPressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_pressed) | Simulates that a key has been pressed. |
 |[SimulateKeyPress](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_press) | Simulates that a key is pressed. |
 |[SimulateKeyRelease](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_release) | Simulates that a key has been released. |
@@ -150,6 +156,7 @@ We distinguish between *finalized* and *unfinished* functions.
 
 * Finalized Functions<br>
     A finalized function is used to simulate a key or mouse press and release in combination.
+  * [simulate_action_pressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_pressed)
   * [simulate_key_pressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_pressed)
   * [simulate_mouse_button_pressed](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_pressed)
   * [set_mouse_pos](/gdUnit4/advanced_testing/sceneRunner/#set_mouse_pos)
@@ -159,6 +166,8 @@ We distinguish between *finalized* and *unfinished* functions.
 
 * Unfinished Functions<br>
     An unfinished function is used to simulate a key or mouse press. This is typically used to simulate a key-mouse combination, such as pressing a shortcut. The unfinished function is later finalized by a key or mouse release function.
+  * [simulate_action_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_press)
+  * [simulate_action_release](/gdUnit4/advanced_testing/sceneRunner/#simulate_action_release)
   * [simulate_key_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_press)
   * [simulate_key_release](/gdUnit4/advanced_testing/sceneRunner/#simulate_key_release)
   * [simulate_mouse_button_press](/gdUnit4/advanced_testing/sceneRunner/#simulate_mouse_button_press)
@@ -168,6 +177,156 @@ We distinguish between *finalized* and *unfinished* functions.
 content="To complete the input events, you always need to process a minimum of one frame cycle. You can do this by using the `await await_idle_frame()` function."
 %}
 More details about specific key and mouse functions can be found below in this document.
+
+### simulate_action_pressed
+
+The **simulate_action_pressed** function is used to simulate that a input action has been pressed.
+
+{% tabs scene-runner-simulate_action_pressed %}
+{% tab scene-runner-simulate_action_pressed GdScript %}
+It takes the following arguments:
+
+```ruby
+    # action: the action e.g. "ui_up"
+    func simulate_action_pressed(action :String) -> GdUnitSceneRunner:
+```
+
+Here is an example of how to use simulate_action_pressed:
+
+```ruby
+    var runner := scene_runner("res://test_scene.tscn")
+
+    # Simulate the UP key is pressed by using the input action "ui_up"
+    runner.simulate_action_pressed("ui_up")
+    await await_idle_frame()
+```
+
+{% endtab %}
+{% tab scene-runner-simulate_action_pressed C# %}
+It takes the following arguments:
+
+```cs
+    /// <summary>
+    /// Simulates that an action has been pressed.
+    /// </summary>
+    /// <param name="action">The name of the action, e.g., "ui_up".</param>
+    /// <returns>The SceneRunner instance.</returns>
+    ISceneRunner SimulateActionPressed(string action);
+```
+
+Here is an example of how to use SimulateActionPressed:
+
+```cs
+    ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
+
+    // Simulate the UP key is pressed by using the input action "ui_up"
+    runner.SimulateActionPressed("ui_up");
+    await AwaitIdleFrame();
+```
+
+{% endtab %}
+{% endtabs %}
+In this example, we simulate that the action "ui-up" is pressed. We use **await_idle_frame()** to ensure that the simulation of the action is complete before moving on to the next instruction.
+
+### simulate_action_press
+
+The **simulate_action_press** function is used to simulate that an input action holding down.
+
+{% tabs scene-runner-simulate_action_press %}
+{% tab scene-runner-simulate_action_press GdScript %}
+It takes the following arguments:
+
+```ruby
+    # action: the action e.g. "ui_up"
+    func simulate_action_press(action :String) -> GdUnitSceneRunner:
+```
+
+Here is an example of how to use simulate_action_press:
+
+```ruby
+    var runner := scene_runner("res://test_scene.tscn")
+
+    # Simulate the UP key is press by using the action "ui_up"
+    runner.simulate_action_press("ui_up")
+    await await_idle_frame()
+```
+
+{% endtab %}
+{% tab scene-runner-simulate_action_press C# %}
+It takes the following arguments:
+
+```cs
+    /// <summary>
+    /// Simulates that an action is press.
+    /// </summary>
+    /// <param name="action">The name of the action, e.g., "ui_up".</param>
+    /// <returns>The SceneRunner instance.</returns>
+    ISceneRunner SimulateActionPress(string action);
+```
+
+Here is an example of how to use SimulateActionPress:
+
+```cs
+    ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
+
+    // Simulate the UP key is press by using the action "ui_up"
+    runner.SimulateActionPress("ui_up");
+    await AwaitIdleFrame();
+```
+
+{% endtab %}
+{% endtabs %}
+In this example, we simulate that the action "ui_up" is press. We use **await_idle_frame()** to ensure that the simulation of the action is complete before moving on to the next instruction.
+
+### simulate_action_release
+
+The **simulate_action_release** function is used to simulate that a input action been released.
+
+{% tabs scene-runner-simulate_action_release %}
+{% tab scene-runner-simulate_action_release GdScript %}
+It takes the following arguments:
+
+```ruby
+    # action : the action e.g. "ui_up"
+    func simulate_action_release(action :String) -> GdUnitSceneRunner:
+```
+
+Here is an example of how to use simulate_action_release:
+
+```ruby
+    var runner := scene_runner("res://test_scene.tscn")
+    
+    # Simulate the UP key is released by using the action "ui_up"
+    runner.simulate_action_release("ui-up")
+    await await_idle_frame()
+```
+
+{% endtab %}
+{% tab scene-runner-simulate_action_release C# %}
+It takes the following arguments:
+
+```cs
+    /// <summary>
+    /// Simulates that an action has been released.
+    /// </summary>
+    /// <param name="action">The name of the action, e.g., "ui_up".</param>
+    /// <returns>The SceneRunner instance.</returns>
+    ISceneRunner SimulateActionRelease(string action);
+```
+
+Here is an example of how to use SimulateActionRelease:
+
+```cs
+    ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
+
+    // Simulate the UP key is released by using the action "ui_up"
+    runner.SimulateActionRelease("ui-up");
+    await AwaitIdleFrame();
+```
+
+{% endtab %}
+{% endtabs %}
+In this example, we simulate that the action "ui_up" is released. We use **await_idle_frame()** to ensure that the simulation of the action is complete before moving on to the next instruction.
 
 ### simulate_key_pressed
 
@@ -267,7 +426,7 @@ Here is an example of how to use simulate_key_press:
 ```
 
 {% endtab %}
-{% tab scene-runner-simulate_key_press c# %}
+{% tab scene-runner-simulate_key_press C# %}
 It takes the following arguments:
 
 ```cs
@@ -1300,4 +1459,4 @@ Here is an example of how to use SetTimeFactor:
 {% endtabs %}
 
 ---
-<h4> document version v4.2.1 </h4>
+<h4> document version v4.2.5 </h4>
