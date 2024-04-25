@@ -1,18 +1,19 @@
 class_name ClassWithEnumConstructor
 extends RefCounted
 
-enum  EnumValue {
+enum MyEnumValue {
 	ONE = 10,
 	TWO = 20
 }
 
-var _value :EnumValue
+var _value :MyEnumValue
+
 
 # using an enum in the constructor
-func _init(value: EnumValue, second_parameter: PackedStringArray) -> void:
+func _init(value :MyEnumValue, second_parameter :PackedStringArray) -> void:
 	_value = value
 
 
 # using an enum as function argument
-func set_value(value: EnumValue):
+func set_value(value :MyEnumValue):
 	_value = value
