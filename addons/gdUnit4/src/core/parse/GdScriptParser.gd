@@ -461,6 +461,9 @@ func parse_arguments(input: String) -> Array[GdFunctionArgument]:
 							current_index += token._consumed
 							token = next_token(input, current_index)
 						arg_type = GdObjects.string_as_typeof(token._token)
+						# handle enum detection as argument
+						if arg_type == GdObjects.TYPE_VARIANT and is_class_enum_type(token._token):
+							arg_type = GdObjects.TYPE_ENUM
 					TOKEN_ARGUMENT_TYPE_ASIGNMENT:
 						arg_value = _parse_end_function(input.substr(current_index), true)
 						current_index += arg_value.length()
