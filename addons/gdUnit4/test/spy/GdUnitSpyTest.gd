@@ -623,8 +623,8 @@ func test_spy_ready_called_once():
 
 func test_spy_with_enum_in_constructor():
 	# this test uses a class with an enum in the constructor
-	var unit = UnitPreset.new(UnitPreset.Rarity.TWO, [])
-	var s :UnitPreset = spy(unit)
-	s.set_rarity(UnitPreset.Rarity.COMMON)
+	var unit = ClassWithEnumConstructor.new(ClassWithEnumConstructor.EnumValue.TWO, [])
+	var s :ClassWithEnumConstructor = spy(unit)
+	s.set_value(ClassWithEnumConstructor.EnumValue.ONE)
 	# test
-	verify(s, 1).set_rarity(UnitPreset.Rarity.COMMON)
+	verify(s, 1).set_value(ClassWithEnumConstructor.EnumValue.ONE)
