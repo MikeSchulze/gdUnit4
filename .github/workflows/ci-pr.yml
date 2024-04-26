@@ -64,7 +64,7 @@ jobs:
           godot-status: ${{ matrix.godot-status }}
           version: installed
           paths: |
-            res://addons/gdUnit4/test/asserts
+            res://addons/gdUnit4/test/
           timeout: 10
           publish-report: false
           report-name: gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
