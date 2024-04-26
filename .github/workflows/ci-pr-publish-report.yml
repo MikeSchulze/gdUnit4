@@ -28,8 +28,8 @@ jobs:
       - name: 'Publish Test Results'
         uses: dorny/test-reporter@v1.9.0
         with:
-          name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
-          artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
+          name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
+          artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
           path: 'home\runner\work\gdUnit4\gdUnit4\reports\report_1\results.xml'
           reporter: java-junit
           fail-on-error: 'false'
