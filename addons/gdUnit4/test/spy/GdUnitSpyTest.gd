@@ -562,7 +562,7 @@ func test_spy_scene_by_instance():
 		.is_same(instance)\
 		.is_instanceof(Control)
 	assert_object(spy_scene.get_script())\
-		.is_not_null()\
+		.is_null()\
 		.is_instanceof(GDScript)\
 		.is_not_same(original_script)
 	assert_str(spy_scene.get_script().resource_name).is_equal("SpyTestScene.gd")
@@ -609,8 +609,6 @@ class CustomNode extends Node:
 	func only_one_time_call() -> void:
 		pass
 
-
-# just a change
 
 func test_spy_ready_called_once():
 	var spy_node = spy(auto_free(CustomNode.new()))
