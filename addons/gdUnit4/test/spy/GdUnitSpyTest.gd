@@ -610,6 +610,8 @@ class CustomNode extends Node:
 		pass
 
 
+# just a change
+
 func test_spy_ready_called_once():
 	var spy_node = spy(auto_free(CustomNode.new()))
 
