@@ -562,7 +562,7 @@ func test_spy_scene_by_instance():
 		.is_same(instance)\
 		.is_instanceof(Control)
 	assert_object(spy_scene.get_script())\
-		.is_null()\
+		.is_not_null()\
 		.is_instanceof(GDScript)\
 		.is_not_same(original_script)
 	assert_str(spy_scene.get_script().resource_name).is_equal("SpyTestScene.gd")
