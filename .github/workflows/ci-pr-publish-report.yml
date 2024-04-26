@@ -1,0 +1,36 @@
+name: 'Publish Test Report'
+on:
+  workflow_run:
+    workflows: ['ci-pr']                     # runs after CI workflow
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        godot-version: ['4.1', '4.1.1', '4.1.2', '4.1.3', '4.1.4', '4.2', '4.2.1', '4.2.2']
+        godot-status: ['stable']
+        godot-net: ['.Net', '']
+        include:
+          - godot-version: '4.3'
+            godot-status: 'dev5'
+
+    steps:
+      - name: 'Publish Test Results'
+        uses: dorny/test-reporter@v1.9.0
+        with:
+          name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
+          artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
+          path: 'home\runner\work\gdUnit4\gdUnit4\reports\report_1\results.xml'
+          reporter: java-junit
+          fail-on-error: 'false'
+          fail-on-empty: 'false'
