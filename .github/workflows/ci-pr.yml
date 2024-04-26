@@ -58,11 +58,11 @@ jobs:
 
       - name: 'Test GdUnit4 dev - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}'
         if: ${{ matrix.godot-net == '' }}
-        uses: MikeSchulze/gdUnit4-action@v1.0.6
+        uses: MikeSchulze/gdUnit4-action@v1.0.5
         with:
           godot-version: ${{ matrix.godot-version }}
           godot-status: ${{ matrix.godot-status }}
-          version: ${{ github.head_ref }}
+          version: installed
           paths: |
             res://addons/gdUnit4/test/
           timeout: 10
@@ -70,12 +70,12 @@ jobs:
 
       - name: 'Test GdUnit4 dev - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net'
         if: ${{ matrix.godot-net == '.Net' }}
-        uses: MikeSchulze/gdUnit4-action@v1.0.6
+        uses: MikeSchulze/gdUnit4-action@v1.0.5
         with:
           godot-version: ${{ matrix.godot-version }}
           godot-status: ${{ matrix.godot-status }}
           godot-net: true
-          version: ${{ github.head_ref }}
+          version: installed
           paths: |
             res://addons/gdUnit4/test/mono
           timeout: 5
