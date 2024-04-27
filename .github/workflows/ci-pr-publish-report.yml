@@ -17,7 +17,7 @@ permissions:
   checks: write
 
 jobs:
-  unit-tests:
+  publish-reports:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false

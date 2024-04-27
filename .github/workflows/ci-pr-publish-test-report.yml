@@ -52,5 +52,5 @@ jobs:
         with:
           commit: ${{ github.event.workflow_run.head_sha }}
           # event_file: artifacts/Upload Test Artifacts/event.json
-          event_name: ${{ github.event.workflow_run.event }}
+          # event_name: ${{ github.event.workflow_run.event }}
           files: './home/runner/work/gdUnit4/gdUnit4/reports/**/results.xml'
