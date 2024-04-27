@@ -1,0 +1,56 @@
+name: 'Publish Test Report'
+on:
+  workflow_run:
+    workflows: ['ci-pr']  # runs after ci-pr workflow
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      workflow_run_id:
+        description: 'ID of the workflow run to download artifacts from.'
+        required: true
+        default: ''
+
+permissions: {}
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-22.04
+    if: github.event.workflow_run.conclusion != 'skipped'
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        godot-version: ['4.1', '4.1.1', '4.1.2', '4.1.3', '4.1.4', '4.2', '4.2.1', '4.2.2']
+        godot-status: ['stable']
+        godot-net: ['-net', '']
+        include:
+          - godot-version: '4.3'
+            godot-status: 'dev5'
+    permissions:
+      checks: write
+      # needed unless run with comment_mode: off
+      pull-requests: write
+      # only needed for private repository
+      contents: read
+      # only needed for private repository
+      issues: read
+      # required by download step to access artifacts API
+      actions: read
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: MikeSchulze/gdUnit4
+          run-id: ${{ github.event.inputs.workflow_run_id || github.event.workflow_run.id }}
+            
+      - name: 'Publish Test Results'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          commit: ${{ github.event.workflow_run.head_sha }}
+          event_file: artifacts/Event File/event.json
+          event_name: ${{ github.event.workflow_run.event }}
+          files: './home/runner/work/gdUnit4/gdUnit4/reports/**/results.xml'
