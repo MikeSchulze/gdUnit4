@@ -39,8 +39,8 @@ jobs:
           repository: MikeSchulze/gdUnit4
           run-id: ${{ github.event.inputs.workflow_run_id || github.event.workflow_run.id }}
       - run: |
-          ls -ls ./
-          unzip artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}.zip
+          ls -lsR ./
+          # unzip artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}.zip
 
       - name: 'Publish Test Results'
         uses: dorny/test-reporter@v1.9.0
