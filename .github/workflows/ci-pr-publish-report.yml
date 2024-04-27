@@ -31,6 +31,9 @@ jobs:
             godot-status: 'dev5'
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
       - name: Download artifacts
         uses: actions/download-artifact@v4.1.7
         with:
@@ -38,15 +41,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: MikeSchulze/gdUnit4
           run-id: ${{ github.event.inputs.workflow_run_id || github.event.workflow_run.id }}
-      - run: |
-          ls -lsR ./
-          # unzip artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}.zip
 
       - name: 'Publish Test Results'
         uses: dorny/test-reporter@v1.9.0
         with:
           name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
-          # using artifact to download is broken since download-artifact@v4 see https://github.com/dorny/test-reporter/issues/363
+          # using artifact to download is broken since download-artifact@v4 see https://github.com/dorny/test-reporter/issues/363 
+          # We do the download manually on step `Download artifacts`
           #artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
           path: 'home\runner\work\gdUnit4\gdUnit4\reports\report_1\results.xml'
           reporter: java-junit
