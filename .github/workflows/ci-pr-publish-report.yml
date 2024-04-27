@@ -1,9 +1,15 @@
 name: 'Publish Test Report'
 on:
   workflow_run:
-    workflows: ['ci-pr']                     # runs after CI workflow
+    workflows: ['ci-pr']  # runs after ci-pr workflow
     types:
       - completed
+  workflow_dispatch:
+    inputs:
+      workflow_run_id:
+        description: 'ID of the workflow run to download artifacts from.'
+        required: true
+        default: ''
 
 permissions:
   contents: read
@@ -25,17 +31,16 @@ jobs:
             godot-status: 'dev5'
 
     steps:
-      #- uses: actions/checkout@v4
       - name: Download artifacts
         uses: actions/download-artifact@v4.1.7
         with:
           name: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: MikeSchulze/gdUnit4
-          run-id: ${{ github.event.workflow_run.id }}
+          run-id: ${{ github.event.inputs.workflow_run_id || github.event.workflow_run.id }}
       - run: |
-          unzip artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
-          ls -ls
+          ls -ls ./
+          unzip artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}.zip
 
       - name: 'Publish Test Results'
         uses: dorny/test-reporter@v1.9.0
