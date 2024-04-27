@@ -11,14 +11,12 @@ on:
         required: true
         default: ''
 
-permissions:
-  contents: read
-  actions: read
-  checks: write
+permissions: {}
 
 jobs:
   unit-tests:
     runs-on: ubuntu-22.04
+    if: github.event.workflow_run.conclusion != 'skipped'
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -29,12 +27,18 @@ jobs:
         include:
           - godot-version: '4.3'
             godot-status: 'dev5'
+    permissions:
+      checks: write
+      # needed unless run with comment_mode: off
+      pull-requests: write
+      # only needed for private repository
+      contents: read
+      # only needed for private repository
+      issues: read
+      # required by download step to access artifacts API
+      actions: read
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: .github
-
       - name: Download artifacts
         uses: actions/download-artifact@v4.1.7
         with:
@@ -42,15 +46,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: MikeSchulze/gdUnit4
           run-id: ${{ github.event.inputs.workflow_run_id || github.event.workflow_run.id }}
-
+            
       - name: 'Publish Test Results'
-        uses: dorny/test-reporter@v1.9.0
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
-          # using artifact to download is broken since download-artifact@v4 see https://github.com/dorny/test-reporter/issues/363 
-          # We do the download manually on step `Download artifacts`
-          #artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
-          path: './home/runner/work/gdUnit4/gdUnit4/reports/**/results.xml'
-          reporter: java-junit
-          fail-on-error: 'false'
-          fail-on-empty: 'false'
+          commit: ${{ github.event.workflow_run.head_sha }}
+          # event_file: artifacts/Upload Test Artifacts/event.json
+          event_name: ${{ github.event.workflow_run.event }}
+          files: './home/runner/work/gdUnit4/gdUnit4/reports/**/results.xml'
