@@ -41,11 +41,12 @@ func _init(p_scene, p_verbose :bool, p_hide_push_errors = false):
 	set_time_factor(1)
 	# handle scene loading by resource path
 	if typeof(p_scene) == TYPE_STRING:
-		if !FileAccess.file_exists(p_scene):
+		var is_uid = str(p_scene).begins_with("uid://")
+		if !is_uid and !FileAccess.file_exists(p_scene):
 			if not p_hide_push_errors:
-				push_error("GdUnitSceneRunner: Can't load scene by given resource path: '%s'. The resource not exists." % p_scene)
+				push_error("GdUnitSceneRunner: Can't load scene by given resource path: '%s'. The resource does not exists." % p_scene)
 			return
-		if !str(p_scene).ends_with("tscn"):
+		if !is_uid and !str(p_scene).ends_with(".tscn") and !str(p_scene).ends_with(".scn"):
 			if not p_hide_push_errors:
 				push_error("GdUnitSceneRunner: The given resource: '%s'. is not a scene." % p_scene)
 			return

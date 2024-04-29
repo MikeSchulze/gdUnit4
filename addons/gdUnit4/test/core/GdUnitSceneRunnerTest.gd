@@ -268,6 +268,21 @@ func test_runner_by_invalid_resource_path() -> void:
 	assert_object(scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.gd")._current_scene).is_null()
 
 
+func test_runner_by_uid_path() -> void:
+	# uid is for res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn
+	var runner = scene_runner("uid://cn8ucy2rheu0f")
+	assert_object(runner.scene()).is_instanceof(Node2D)
+
+	# verify the scene is freed when the runner is freed
+	var scene = runner.scene()
+	assert_bool(is_instance_valid(scene)).is_true()
+	runner._notification(NOTIFICATION_PREDELETE)
+	# give engine time to free the resources
+	await await_idle_frame()
+	# verify runner and scene is freed
+	assert_bool(is_instance_valid(scene)).is_false()
+
+
 func test_runner_by_resource_path() -> void:
 	var runner = scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
 	assert_object(runner.scene()).is_instanceof(Node2D)
