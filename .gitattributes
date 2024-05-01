@@ -1,23 +1,7 @@
 # Exclude files not needed for AssetLib users.
 
-/.gitattributes        export-ignore
-/.gitignore            export-ignore
-/.gitmodules           export-ignore
-/.github               export-ignore
-/default_env.tres      export-ignore
-/icon.png              export-ignore
-/project.godot         export-ignore
-/process_example.txt   export-ignore
-/README.md             export-ignore
-/gdUnit4.csproj        export-ignore
-/gdUnit4.sln           export-ignore
-/CONTRIBUTING.md       export-ignore
-/LICENSE               export-ignore
-
-
+/**                    export-ignore
+/addons                !export-ignore
+/addons/gdUnit4        !export-ignore
+/addons/gdUnit4/**     !export-ignore
 /addons/gdUnit4/test   export-ignore
-/gdUnit3-examples      export-ignore
-/gdUnit4-examples      export-ignore
-
-# github page assets
-/assets                export-ignore
