@@ -2,12 +2,13 @@ class_name GdUnitTestSuiteReport
 extends GdUnitReportSummary
 
 var _time_stamp :int
-var _failure_reports :Array = []
+var _failure_reports :Array[GdUnitReport] = []
 
 
-func _init(p_resource_path :String, p_name :String, test_count :int):
-	_resource_path = p_resource_path
-	_name = p_name
+@warning_ignore("shadowed_variable")
+func _init(resource_path :String, name :String, test_count :int) -> void:
+	_resource_path = resource_path
+	_name = name
 	_time_stamp = Time.get_unix_time_from_system() as int
 	_test_count = test_count
 
@@ -26,9 +27,8 @@ func path_as_link() -> String:
 
 func failure_report() -> String:
 	var html_report := ""
-	for r in _failure_reports:
-		var report: GdUnitReport = r
-		html_report += convert_rtf_to_html(report._to_string())
+	for report in _failure_reports:
+		html_report += convert_rtf_to_html(str(report))
 	return html_report
 
 
@@ -86,8 +86,8 @@ func set_failed(failed :bool, count :int) -> void:
 		_failure_count += count
 
 
-func set_reports(reports_ :Array) -> void:
-	_failure_reports = reports_
+func set_reports(failure_reports :Array[GdUnitReport]) -> void:
+	_failure_reports = failure_reports
 
 
 func update(test_report :GdUnitTestCaseReport) -> void:

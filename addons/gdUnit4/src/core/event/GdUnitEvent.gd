@@ -134,7 +134,7 @@ func is_skipped() -> bool:
 	return _statistics.get(SKIPPED, false)
 
 
-func reports() -> Array:
+func reports() -> Array[GdUnitReport]:
 	return _reports
 
 

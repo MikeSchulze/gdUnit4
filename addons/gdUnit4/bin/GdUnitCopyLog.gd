@@ -37,11 +37,11 @@ var _cmd_options := CmdOptions.new([
 var _report_root_path: String
 
 
-func _init():
+func _init() -> void:
 	_report_root_path = GdUnitFileAccess.current_dir() + "reports"
 
 
-func _process(_delta):
+func _process(_delta :float) -> bool:
 	# check if reports exists
 	if not reports_available():
 		prints("no reports found")
@@ -50,7 +50,7 @@ func _process(_delta):
 	var iteration := GdUnitFileAccess.find_last_path_index(
 		_report_root_path, GdUnitHtmlReport.REPORT_DIR_PREFIX
 	)
-	var report_path = "%s/%s%d" % [_report_root_path, GdUnitHtmlReport.REPORT_DIR_PREFIX, iteration]
+	var report_path := "%s/%s%d" % [_report_root_path, GdUnitHtmlReport.REPORT_DIR_PREFIX, iteration]
 	# only process if godot logging is enabled
 	if not GdUnitSettings.is_log_enabled():
 		_patch_report(report_path, "")
@@ -99,7 +99,7 @@ func _patch_report(report_path: String, godot_log: String) -> void:
 		FileAccess.open(
 			"%s/logging_not_available.html" % report_path,
 			FileAccess.WRITE).store_string(NO_LOG_TEMPLATE)
-	var log_file = "logging_not_available.html" if godot_log.is_empty() else godot_log.get_file()
+	var log_file := "logging_not_available.html" if godot_log.is_empty() else godot_log.get_file()
 	var content := index_file.get_as_text().replace("${log_file}", log_file)
 	# overide it
 	index_file.seek(0)
@@ -123,9 +123,9 @@ func _copy_and_pach(from_file: String, to_dir: String) -> GdUnitResult:
 		content = content.replace(to_replace, "")
 	content = content\
 		.replace("[0m", "")\
-		.replace(CmdConsole.__CSI_BOLD, "")\
-		.replace(CmdConsole.__CSI_ITALIC, "")\
-		.replace(CmdConsole.__CSI_UNDERLINE, "")
+		.replace(CmdConsole.CSI_BOLD, "")\
+		.replace(CmdConsole.CSI_ITALIC, "")\
+		.replace(CmdConsole.CSI_UNDERLINE, "")
 	var to_file := to_dir + "/" + from_file.get_file()
 	file = FileAccess.open(to_file, FileAccess.WRITE)
 	if file == null:

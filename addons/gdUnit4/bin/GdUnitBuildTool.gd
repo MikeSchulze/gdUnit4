@@ -32,14 +32,15 @@ var _source_file :String = ""
 var _source_line :int = -1
 
 
-func _init():
+func _init() -> void:
 	var cmd_parser := CmdArgumentParser.new(_cmd_options, "GdUnitBuildTool.gd")
 	var result := cmd_parser.parse(OS.get_cmdline_args())
 	if result.is_error():
 		show_options()
 		exit(RETURN_ERROR, result.error_message());
 		return
-	var cmd_options = result.value()
+
+	var cmd_options :Array[CmdCommand] = result.value()
 	for cmd in cmd_options:
 		if cmd.name() == '-scp':
 			_source_file = cmd.arguments()[0]
@@ -56,7 +57,7 @@ func _init():
 	_status = PROCESSING
 
 
-func _idle(_delta):
+func _idle(_delta :float) -> void:
 	if _status == PROCESSING:
 		var script := ResourceLoader.load(_source_file) as Script
 		if script == null:
@@ -84,8 +85,8 @@ func exit(code :int, message :String = "") -> void:
 
 func print_json_result(result :Dictionary) -> void:
 	# convert back to system path
-	var path = ProjectSettings.globalize_path(result["path"]);
-	var json = 'JSON_RESULT:{"TestCases" : [{"line":%d, "path": "%s"}]}' % [result["line"], path]
+	var path := ProjectSettings.globalize_path(result["path"]);
+	var json := 'JSON_RESULT:{"TestCases" : [{"line":%d, "path": "%s"}]}' % [result["line"], path]
 	prints(json)
 
 
