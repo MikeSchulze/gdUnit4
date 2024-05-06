@@ -43,8 +43,8 @@ func add_childs(childs :Array[XmlElement]) -> XmlElement:
 	return self
 
 
-func _indentation() -> String:
-	return "" if _parent == null else _parent._indentation() + "	"
+func indentation() -> String:
+	return "" if _parent == null else _parent.indentation() + "	"
 
 
 func to_xml() -> String:
@@ -60,7 +60,7 @@ func to_xml() -> String:
 		.format({"name": _name,
 			"attributes": attributes,
 			"childs": childs,
-			"_indentation": _indentation(),
+			"_indentation": indentation(),
 			"text": cdata(_text)})
 
 

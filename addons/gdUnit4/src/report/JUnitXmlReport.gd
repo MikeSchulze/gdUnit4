@@ -25,7 +25,7 @@ var _report_path :String
 var _iteration :int
 
 
-func _init(path :String,iteration :int) -> void:
+func _init(path :String, iteration :int) -> void:
 	_iteration = iteration
 	_report_path = path
 
@@ -40,9 +40,9 @@ func write(report :GdUnitReportSummary) -> String:
 
 
 func build_junit_report(report :GdUnitReportSummary) -> String:
-	var ISO8601_datetime := Time.get_date_string_from_system()
+	var iso8601_datetime := Time.get_date_string_from_system()
 	var test_suites := XmlElement.new("testsuites")\
-		.attribute(ATTR_ID, ISO8601_datetime)\
+		.attribute(ATTR_ID, iso8601_datetime)\
 		.attribute(ATTR_NAME, "report_%s" % _iteration)\
 		.attribute(ATTR_TESTS, report.test_count())\
 		.attribute(ATTR_FAILURES, report.failure_count())\
@@ -57,12 +57,12 @@ func build_test_suites(summary :GdUnitReportSummary) -> Array:
 	var test_suites :Array = Array()
 	for index in summary.reports().size():
 		var suite_report :GdUnitTestSuiteReport = summary.reports()[index]
-		var ISO8601_datetime := Time.get_datetime_string_from_unix_time(suite_report.time_stamp())
+		var iso8601_datetime := Time.get_datetime_string_from_unix_time(suite_report.time_stamp())
 		test_suites.append(XmlElement.new("testsuite")\
 			.attribute(ATTR_ID, index)\
 			.attribute(ATTR_NAME, suite_report.name())\
 			.attribute(ATTR_PACKAGE, suite_report.path())\
-			.attribute(ATTR_TIMESTAMP, ISO8601_datetime)\
+			.attribute(ATTR_TIMESTAMP, iso8601_datetime)\
 			.attribute(ATTR_HOST, "localhost")\
 			.attribute(ATTR_TESTS, suite_report.test_count())\
 			.attribute(ATTR_FAILURES, suite_report.failure_count())\
@@ -78,33 +78,33 @@ func build_test_cases(suite_report :GdUnitTestSuiteReport) -> Array:
 	for index in suite_report.reports().size():
 		var report :GdUnitTestCaseReport = suite_report.reports()[index]
 		test_cases.append( XmlElement.new("testcase")\
-			.attribute(ATTR_NAME, encode_xml(report.name()))\
+			.attribute(ATTR_NAME, JUnitXmlReport.encode_xml(report.name()))\
 			.attribute(ATTR_CLASSNAME, report.suite_name())\
 			.attribute(ATTR_TIME, JUnitXmlReport.to_time(report.duration()))\
 			.add_childs(build_reports(report)))
 	return test_cases
 
 
-func build_reports(testReport :GdUnitTestCaseReport) -> Array:
+func build_reports(test_report :GdUnitTestCaseReport) -> Array:
 	var failure_reports :Array = Array()
-	if testReport.failure_count() or testReport.error_count():
-		for failure in testReport._failure_reports:
+	if test_report.failure_count() or test_report.error_count():
+		for failure in test_report._failure_reports:
 			var report := failure as GdUnitReport
 			if report.is_failure():
 				failure_reports.append( XmlElement.new("failure")\
-					.attribute(ATTR_MESSAGE, "FAILED: %s:%d" % [testReport._resource_path, report.line_number()])\
+					.attribute(ATTR_MESSAGE, "FAILED: %s:%d" % [test_report._resource_path, report.line_number()])\
 					.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
 					.text(convert_rtf_to_text(report.message())))
 			elif report.is_error():
 				failure_reports.append( XmlElement.new("error")\
-					.attribute(ATTR_MESSAGE, "ERROR: %s:%d" % [testReport._resource_path, report.line_number()])\
+					.attribute(ATTR_MESSAGE, "ERROR: %s:%d" % [test_report._resource_path, report.line_number()])\
 					.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
 					.text(convert_rtf_to_text(report.message())))
-	if testReport.skipped_count():
-		for failure in testReport._failure_reports:
+	if test_report.skipped_count():
+		for failure in test_report._failure_reports:
 			var report := failure as GdUnitReport
 			failure_reports.append( XmlElement.new("skipped")\
-				.attribute(ATTR_MESSAGE, "SKIPPED: %s:%d" % [testReport._resource_path, report.line_number()]))
+				.attribute(ATTR_MESSAGE, "SKIPPED: %s:%d" % [test_report._resource_path, report.line_number()]))
 	return failure_reports
 
 
