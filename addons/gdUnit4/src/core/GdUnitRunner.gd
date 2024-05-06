@@ -16,7 +16,7 @@ enum {
 const GDUNIT_RUNNER = "GdUnitRunner"
 
 var _config := GdUnitRunnerConfig.new()
-var _test_suites_to_process :Array
+var _test_suites_to_process :Array[Node]
 var _state :int = INIT
 var _cs_executor :RefCounted
 
@@ -93,16 +93,16 @@ func _process(_delta :float) -> void:
 			get_tree().quit(0)
 
 
-func load_test_suits() -> Array:
+func load_test_suits() -> Array[Node]:
 	var to_execute := _config.to_execute()
 	if to_execute.is_empty():
 		prints("No tests selected to execute!")
 		_state = EXIT
 		return []
 	# scan for the requested test suites
-	var test_suites := Array()
+	var test_suites :Array[Node] = []
 	var _scanner := GdUnitTestSuiteScanner.new()
-	for resource_path in to_execute.keys():
+	for resource_path :String in to_execute.keys():
 		var selected_tests :PackedStringArray = to_execute.get(resource_path)
 		var scaned_suites := _scanner.scan(resource_path)
 		_filter_test_case(scaned_suites, selected_tests)
@@ -119,7 +119,7 @@ func gdUnitInit() -> void:
 		send_test_suite(test_suite)
 
 
-func _filter_test_case(test_suites :Array, included_tests :PackedStringArray) -> void:
+func _filter_test_case(test_suites :Array[Node], included_tests :PackedStringArray) -> void:
 	if included_tests.is_empty():
 		return
 	for test_suite in test_suites:
@@ -142,7 +142,7 @@ func _do_filter_test_case(test_suite :Node, test_case :Node, included_tests :Pac
 	test_case.free()
 
 
-func _collect_test_case_count(testSuites :Array) -> int:
+func _collect_test_case_count(testSuites :Array[Node]) -> int:
 	var total :int = 0
 	for test_suite in testSuites:
 		total += test_suite.get_child_count()

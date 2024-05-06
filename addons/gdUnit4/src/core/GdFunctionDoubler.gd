@@ -94,7 +94,7 @@ static func default_return_value(func_descriptor :GdFunctionDescriptor) -> Strin
 			var keys := ClassDB.class_get_enum_constants(enum_path[0], enum_path[1])
 			if not keys.is_empty():
 				return "%s.%s" % [enum_path[0], keys[0]]
-			var enum_value := get_enum_default(enum_class)
+			var enum_value :Variant = get_enum_default(enum_class)
 			if enum_value != null:
 				return str(enum_value)
 		# we need fallback for @GlobalScript enums,
@@ -102,7 +102,7 @@ static func default_return_value(func_descriptor :GdFunctionDescriptor) -> Strin
 	return DEFAULT_TYPED_RETURN_VALUES.get(return_type, "invalid")
 
 
-func _init(push_errors :bool = false):
+func _init(push_errors :bool = false) -> void:
 	_push_errors = "true" if push_errors else "false"
 	for type_key in TYPE_MAX:
 		if not DEFAULT_TYPED_RETURN_VALUES.has(type_key):
@@ -167,12 +167,11 @@ func extract_arg_names(argument_signatures :Array[GdFunctionArgument]) -> Packed
 	return arg_names
 
 
-static func extract_constructor_args(args :Array) -> PackedStringArray:
+static func extract_constructor_args(args :Array[GdFunctionArgument]) -> PackedStringArray:
 	var constructor_args := PackedStringArray()
 	for arg in args:
-		var a := arg as GdFunctionArgument
-		var arg_name := a._name
-		var default_value = get_default(a)
+		var arg_name := arg._name
+		var default_value := get_default(arg)
 		if default_value == "null":
 			constructor_args.append(arg_name + ":Variant=" + default_value)
 		else:

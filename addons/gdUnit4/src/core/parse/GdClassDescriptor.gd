@@ -30,5 +30,5 @@ func is_inner_class() -> bool:
 	return _is_inner_class
 
 
-func functions() -> Array:
+func functions() -> Array[GdFunctionDescriptor]:
 	return _functions

@@ -2,7 +2,8 @@
 class_name GodotClassNameFuzzer
 extends Fuzzer
 
-var class_names := []
+var class_names :Array[String] = []
+
 const EXCLUDED_CLASSES = [
 	"JavaClass",
 	"_ClassDB",
@@ -19,7 +20,7 @@ const EXCLUDED_CLASSES = [
 ]
 
 
-func _init(no_singleton :bool = false,only_instancialbe :bool = false):
+func _init(no_singleton :bool = false, only_instancialbe :bool = false) -> void:
 	#class_names = ClassDB.get_class_list()
 	for clazz_name in ClassDB.get_class_list():
 		#https://github.com/godotengine/godot/issues/67643
@@ -39,5 +40,5 @@ func _init(no_singleton :bool = false,only_instancialbe :bool = false):
 		class_names.push_back(clazz_name)
 
 
-func next_value():
+func next_value() -> String:
 	return class_names[randi() % class_names.size()]

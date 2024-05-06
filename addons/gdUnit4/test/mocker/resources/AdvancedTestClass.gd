@@ -7,7 +7,7 @@ class SoundData:
 	var _sample :String
 	@warning_ignore("unused_private_class_variable")
 	var _randomnes :float
-	
+
 class AtmosphereData:
 	enum {
 		WATER,
@@ -16,42 +16,42 @@ class AtmosphereData:
 	}
 	var _toxigen :float
 	var _type :int
-	
-	func _init(type := AIR, toxigen := 0.0):
+
+	func _init(type := AIR, toxigen := 0.0) -> void:
 		_type = type
 		_toxigen = toxigen
 # some comment, and an row staring with an space to simmulate invalid formatting
 
-	
+
 	# seter func with default values
-	func set_data(type := AIR, toxigen := 0.0) :
+	func set_data(type := AIR, toxigen := 0.0) -> void:
 		_type = type
 		_toxigen = toxigen
-	
+
 	static func to_atmosphere(_value :Dictionary) -> AtmosphereData:
 		return null
- 
+
 class Area4D extends Resource:
-	
+
 	const SOUND := 1
 	const ATMOSPHERE := 2
 	var _meta := Dictionary()
 
-	func _init(_x :int, atmospere :AtmosphereData = null):
+	func _init(_x :int, atmospere :AtmosphereData = null) -> void:
 		_meta[ATMOSPHERE] = atmospere
-	
+
 	func get_sound() -> SoundData:
 		# sounds are optional
 		if _meta.has(SOUND):
 			return _meta[SOUND] as SoundData
 		return null
-	
+
 	func get_atmoshere() -> AtmosphereData:
 		return _meta[ATMOSPHERE] as AtmosphereData
- 
+
 var _areas : = {}
 
-func _init():
+func _init() -> void:
 	# add default atmoshere
 	_areas["default"] = Area4D.new(1, AtmosphereData.new())
 
@@ -66,13 +66,13 @@ enum {
 
 func a() -> String:
 	return "a"
-	
+
 func b() -> String:
 	return "b"
-	
+
 func c() -> String:
 	return "c"
-	
+
 func select( type :int) -> String:
 	match type:
 		A: return a()

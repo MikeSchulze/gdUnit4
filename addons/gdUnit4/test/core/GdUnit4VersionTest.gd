@@ -32,7 +32,7 @@ func test_to_string() -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_is_greater_major(fuzzer_major := Fuzzers.rangei(1, 20), fuzzer_minor := Fuzzers.rangei(0, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations = 500) -> void:
+func test_is_greater_major(fuzzer_major := Fuzzers.rangei(1, 20), fuzzer_minor := Fuzzers.rangei(0, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations := 500) -> void:
 	var version := GdUnit4Version.new(0, 9, 1)
 	var current := GdUnit4Version.new(fuzzer_major.next_value(), fuzzer_minor.next_value(), fuzzer_patch.next_value());
 	assert_bool(current.is_greater(version))\
@@ -41,7 +41,7 @@ func test_is_greater_major(fuzzer_major := Fuzzers.rangei(1, 20), fuzzer_minor :
 
 
 @warning_ignore("unused_parameter")
-func test_is_not_greater_major(fuzzer_major := Fuzzers.rangei(1, 10), fuzzer_minor := Fuzzers.rangei(0, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations = 500) -> void:
+func test_is_not_greater_major(fuzzer_major := Fuzzers.rangei(1, 10), fuzzer_minor := Fuzzers.rangei(0, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations := 500) -> void:
 	var version := GdUnit4Version.new(11, 0, 0)
 	var current := GdUnit4Version.new(fuzzer_major.next_value(), fuzzer_minor.next_value(), fuzzer_patch.next_value());
 	assert_bool(current.is_greater(version))\
@@ -50,7 +50,7 @@ func test_is_not_greater_major(fuzzer_major := Fuzzers.rangei(1, 10), fuzzer_min
 
 
 @warning_ignore("unused_parameter")
-func test_is_greater_minor(fuzzer_minor := Fuzzers.rangei(3, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations = 500) -> void:
+func test_is_greater_minor(fuzzer_minor := Fuzzers.rangei(3, 20), fuzzer_patch := Fuzzers.rangei(0, 20), fuzzer_iterations := 500) -> void:
 	var version := GdUnit4Version.new(0, 2, 1)
 	var current := GdUnit4Version.new(0, fuzzer_minor.next_value(), fuzzer_patch.next_value());
 	assert_bool(current.is_greater(version))\
@@ -59,7 +59,7 @@ func test_is_greater_minor(fuzzer_minor := Fuzzers.rangei(3, 20), fuzzer_patch :
 
 
 @warning_ignore("unused_parameter")
-func test_is_greater_patch(fuzzer_patch := Fuzzers.rangei(1, 20), fuzzer_iterations = 500) -> void:
+func test_is_greater_patch(fuzzer_patch := Fuzzers.rangei(1, 20), fuzzer_iterations := 500) -> void:
 	var version := GdUnit4Version.new(0, 2, 0)
 	var current := GdUnit4Version.new(0, 2, fuzzer_patch.next_value());
 	assert_bool(current.is_greater(version))\

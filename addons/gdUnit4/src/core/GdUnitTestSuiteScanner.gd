@@ -26,8 +26,7 @@ func scan_testsuite_classes() -> void:
 	_extends_test_suite_classes.append("GdUnitTestSuite")
 	if ProjectSettings.has_setting("_global_script_classes"):
 		var script_classes:Array = ProjectSettings.get_setting("_global_script_classes") as Array
-		for element in script_classes:
-			var script_meta = element as Dictionary
+		for script_meta :Dictionary in script_classes:
 			if script_meta["base"] == "GdUnitTestSuite":
 				_extends_test_suite_classes.append(script_meta["class"])
 
@@ -54,13 +53,13 @@ func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[N
 	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	var file_name := dir.get_next()
 	while file_name != "":
-		var resource_path = GdUnitTestSuiteScanner._file(dir, file_name)
+		var resource_path := GdUnitTestSuiteScanner._file(dir, file_name)
 		if dir.current_is_dir():
 			var sub_dir := DirAccess.open(resource_path)
 			if sub_dir != null:
 				_scan_test_suites(sub_dir, collected_suites)
 		else:
-			var time = LocalTime.now()
+			var time := LocalTime.now()
 			var test_suite := _parse_is_test_suite(resource_path)
 			if test_suite:
 				collected_suites.append(test_suite)
@@ -105,7 +104,7 @@ func _parse_test_suite(script :GDScript) -> GdUnitTestSuite:
 		push_warning("The test suite %s do not contain any tests, it excludes from discovery." % script.resource_path)
 		return null;
 
-	var test_suite = script.new()
+	var test_suite :Node = script.new()
 	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
 	# add test cases to test suite and parse test case line nummber
 	_parse_and_add_test_cases(test_suite, script, test_case_names)
@@ -134,11 +133,11 @@ static func parse_test_suite_name(script :Script) -> String:
 	return script.resource_path.get_file().replace(".gd", "")
 
 
-func _handle_test_suite_arguments(test_suite, script :GDScript, fd :GdFunctionDescriptor):
+func _handle_test_suite_arguments(test_suite :Node, script :GDScript, fd :GdFunctionDescriptor) -> void:
 	for arg in fd.args():
 		match arg.name():
 			_TestCase.ARGUMENT_SKIP:
-				var result = _expression_runner.execute(script, arg.value_as_string())
+				var result :Variant = _expression_runner.execute(script, arg.value_as_string())
 				if result is bool:
 					test_suite.__is_skipped = result
 				else:
@@ -149,7 +148,7 @@ func _handle_test_suite_arguments(test_suite, script :GDScript, fd :GdFunctionDe
 				push_error("Unsuported argument `%s` found on before() at '%s'!" % [arg.name(), script.resource_path])
 
 
-func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDescriptor):
+func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunctionDescriptor) -> void:
 	var timeout := _TestCase.DEFAULT_TIMEOUT
 	var iterations := Fuzzer.ITERATION_DEFAULT_COUNT
 	var seed_value := -1
@@ -168,7 +167,7 @@ func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDes
 				_TestCase.ARGUMENT_TIMEOUT:
 					timeout = arg.default()
 				_TestCase.ARGUMENT_SKIP:
-					var result = _expression_runner.execute(script, arg.value_as_string())
+					var result :Variant = _expression_runner.execute(script, arg.value_as_string())
 					if result is bool:
 						is_skipped = result
 					else:
@@ -187,8 +186,8 @@ func _handle_test_case_arguments(test_suite, script :GDScript, fd :GdFunctionDes
 	test_suite.add_child(test)
 
 
-func _parse_and_add_test_cases(test_suite, script :GDScript, test_case_names :PackedStringArray):
-	var test_cases_to_find = Array(test_case_names)
+func _parse_and_add_test_cases(test_suite :Node, script :GDScript, test_case_names :PackedStringArray) -> void:
+	var test_cases_to_find := Array(test_case_names)
 	var functions_to_scan := test_case_names.duplicate()
 	functions_to_scan.append("before")
 	var source := _script_parser.load_source_code(script, [script.resource_path])
@@ -228,7 +227,7 @@ static func _to_naming_convention(file_name :String) -> String:
 
 
 static func resolve_test_suite_path(source_script_path :String, test_root_folder :String = "test") -> String:
-	var file_name = source_script_path.get_basename().get_file()
+	var file_name := source_script_path.get_basename().get_file()
 	var suite_name := _to_naming_convention(file_name)
 	if test_root_folder.is_empty() or test_root_folder == "/":
 		return source_script_path.replace(file_name, suite_name)
@@ -239,11 +238,11 @@ static func resolve_test_suite_path(source_script_path :String, test_root_folder
 
 	# at first look up is the script under a "src" folder located
 	var test_suite_path :String
-	var src_folder = source_script_path.find("/src/")
+	var src_folder := source_script_path.find("/src/")
 	if src_folder != -1:
 		test_suite_path = source_script_path.replace("/src/", "/"+test_root_folder+"/")
 	else:
-		var paths = source_script_path.split("/", false)
+		var paths := source_script_path.split("/", false)
 		# is a plugin script?
 		if paths[1] == "addons":
 			test_suite_path = "%s//addons/%s/%s" % [paths[0], paths[2], test_root_folder]

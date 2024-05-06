@@ -5,8 +5,8 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/core/GdUnitObjectInteractionsTemplate.gd'
 
 
-func test___filter_vargs():
-	var template = load(__source).new()
+func test___filter_vargs() -> void:
+	var template :Object = load(__source).new()
 
 	var varags :Array = [
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,

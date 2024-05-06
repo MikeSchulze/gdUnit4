@@ -73,7 +73,7 @@ const TEMPLATE_FUNC_VARARG_RETURN_VALUE = """
 """
 
 
-func _init(push_errors :bool = false):
+func _init(push_errors :bool = false) -> void:
 	super._init(push_errors)
 
 
