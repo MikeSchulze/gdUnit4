@@ -4,11 +4,11 @@ extends GdUnitArgumentMatcher
 var _type : PackedInt32Array = []
 
 
-func _init(type :PackedInt32Array):
+func _init(type :PackedInt32Array) -> void:
 	_type = type
 
 
-func is_match(value) -> bool:
+func is_match(value :Variant) -> bool:
 	return _type.has(typeof(value))
 
 

@@ -91,14 +91,14 @@ static func close_open_editor_scripts() -> void:
 # The script is openend in the current editor and selected in the file system dock.
 # The line and column on which to open the script can also be specified.
 # The script will be open with the user-configured editor for the script's language which may be an external editor.
-static func edit_script(script_path :String, line_number :int = -1):
+static func edit_script(script_path :String, line_number :int = -1) -> void:
 	var interface := editor_interface()
 	var file_system := interface.get_resource_filesystem()
 	file_system.update_file(script_path)
 	var file_system_dock := interface.get_file_system_dock()
 	file_system_dock.navigate_to_path(script_path)
 	interface.select_file(script_path)
-	var script = load(script_path)
+	var script := load(script_path)
 	interface.edit_script(script, line_number)
 
 
@@ -119,7 +119,7 @@ static func _menu_popup() -> PopupMenu:
 	return script_editor().get_child(0).get_child(0).get_child(0).get_popup()
 
 
-static func _print_menu(popup :PopupMenu):
+static func _print_menu(popup :PopupMenu) -> void:
 	for itemIndex in popup.item_count:
 		prints( "get_item_id", popup.get_item_id(itemIndex))
 		prints( "get_item_accelerator", popup.get_item_accelerator(itemIndex))

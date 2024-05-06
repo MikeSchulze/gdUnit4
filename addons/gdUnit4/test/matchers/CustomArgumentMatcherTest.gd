@@ -4,14 +4,14 @@ extends GdUnitTestSuite
 class CustomArgumentMatcher extends GdUnitArgumentMatcher:
 	var _peek :int
 
-	func _init(peek :int):
+	func _init(peek :int) -> void:
 		_peek = peek
 
-	func is_match(value) -> bool:
+	func is_match(value :Variant) -> bool:
 		return value > _peek
 
 
-func test_custom_matcher():
+func test_custom_matcher() -> void:
 	var mocked_test_class : CustomArgumentMatcherTestClass = mock(CustomArgumentMatcherTestClass)
 
 	mocked_test_class.set_value(1000)

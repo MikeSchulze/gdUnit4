@@ -10,11 +10,11 @@ const __source = 'res://addons/gdUnit4/src/core/command/GdUnitCommandHandler.gd'
 var _handler :GdUnitCommandHandler
 
 
-func before():
+func before() -> void:
 	_handler = GdUnitCommandHandler.new()
 
 
-func after():
+func after() -> void:
 	_handler._notification(NOTIFICATION_PREDELETE)
 	_handler = null
 

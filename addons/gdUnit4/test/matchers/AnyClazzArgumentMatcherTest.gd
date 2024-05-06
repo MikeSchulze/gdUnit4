@@ -6,7 +6,7 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/matchers/AnyClazzArgumentMatcher.gd'
 
 
-func test_is_match_reference():
+func test_is_match_reference() -> void:
 	var matcher := AnyClazzArgumentMatcher.new(RefCounted)
 
 	assert_bool(matcher.is_match(Resource.new())).is_true()
@@ -18,7 +18,7 @@ func test_is_match_reference():
 	assert_bool(matcher.is_match(true)).is_false()
 
 
-func test_is_match_node():
+func test_is_match_node() -> void:
 	var matcher := AnyClazzArgumentMatcher.new(Node)
 
 	assert_bool(matcher.is_match(auto_free(Node.new()))).is_true()
@@ -32,7 +32,7 @@ func test_is_match_node():
 	assert_bool(matcher.is_match(true)).is_false()
 
 
-func test_any_class():
+func test_any_class() -> void:
 	assert_object(any_class(Node)).is_instanceof(AnyClazzArgumentMatcher)
 
 
