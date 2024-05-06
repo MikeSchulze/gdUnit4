@@ -57,7 +57,7 @@ func write() -> String:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/report/template/index.html")
 	var to_write := GdUnitHtmlPatterns.build(template, self, "")
 	to_write = apply_path_reports(_report_path, to_write, _reports)
-	to_write = apply_testsuite_reports(_report_path, to_write, _reports as Array[GdUnitTestSuiteReport])
+	to_write = apply_testsuite_reports(_report_path, to_write, _reports)
 	# write report
 	var index_file := "%s/index.html" % _report_path
 	FileAccess.open(index_file, FileAccess.WRITE).store_string(to_write)
@@ -73,7 +73,8 @@ func apply_path_reports(report_dir :String, template :String, report_summaries :
 	#Dictionary[String, Array[GdUnitReportSummary]]
 	var path_report_mapping := GdUnitByPathReport.sort_reports_by_path(report_summaries)
 	var table_records := PackedStringArray()
-	var paths :Array[String] = path_report_mapping.keys()
+	var paths :Array[String] = []
+	paths.append_array(path_report_mapping.keys())
 	paths.sort()
 	for report_path in paths:
 		var report := GdUnitByPathReport.new(report_path, path_report_mapping.get(report_path))
@@ -82,7 +83,7 @@ func apply_path_reports(report_dir :String, template :String, report_summaries :
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_PATHS, "\n".join(table_records))
 
 
-func apply_testsuite_reports(report_dir :String, template :String, test_suite_reports :Array[GdUnitTestSuiteReport]) -> String:
+func apply_testsuite_reports(report_dir :String, template :String, test_suite_reports :Array[GdUnitReportSummary]) -> String:
 	var table_records := PackedStringArray()
 	for report in test_suite_reports:
 		var report_link :String = report.write(report_dir).replace(report_dir, ".")

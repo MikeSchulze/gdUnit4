@@ -54,7 +54,7 @@ func build_junit_report(report :GdUnitReportSummary) -> String:
 
 
 func build_test_suites(summary :GdUnitReportSummary) -> Array:
-	var test_suites :Array = Array()
+	var test_suites :Array[XmlElement] = []
 	for index in summary.reports().size():
 		var suite_report :GdUnitTestSuiteReport = summary.reports()[index]
 		var iso8601_datetime := Time.get_datetime_string_from_unix_time(suite_report.time_stamp())
@@ -74,7 +74,7 @@ func build_test_suites(summary :GdUnitReportSummary) -> Array:
 
 
 func build_test_cases(suite_report :GdUnitTestSuiteReport) -> Array:
-	var test_cases :Array = Array()
+	var test_cases :Array[XmlElement] = []
 	for index in suite_report.reports().size():
 		var report :GdUnitTestCaseReport = suite_report.reports()[index]
 		test_cases.append( XmlElement.new("testcase")\
@@ -86,7 +86,7 @@ func build_test_cases(suite_report :GdUnitTestSuiteReport) -> Array:
 
 
 func build_reports(test_report :GdUnitTestCaseReport) -> Array:
-	var failure_reports :Array = Array()
+	var failure_reports :Array[XmlElement] = []
 	if test_report.failure_count() or test_report.error_count():
 		for failure in test_report._failure_reports:
 			var report := failure as GdUnitReport
