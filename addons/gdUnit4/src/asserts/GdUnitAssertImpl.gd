@@ -34,38 +34,38 @@ func report_error(error_message :String, failure_line_number: int = -1) -> GdUni
 	return self
 
 
-func test_fail():
+func test_fail() -> GdUnitAssert:
 	return report_error(GdAssertMessages.error_not_implemented())
 
 
-func override_failure_message(message :String):
+func override_failure_message(message :String) -> GdUnitAssert:
 	_custom_failure_message = message
 	return self
 
 
-func is_equal(expected) -> GdUnitAssert:
-	var current = current_value()
+func is_equal(expected :Variant) -> GdUnitAssert:
+	var current :Variant = current_value()
 	if not GdObjects.equals(current, expected):
 		return report_error(GdAssertMessages.error_equal(current, expected))
 	return report_success()
 
 
-func is_not_equal(expected) -> GdUnitAssert:
-	var current = current_value()
+func is_not_equal(expected :Variant) -> GdUnitAssert:
+	var current :Variant = current_value()
 	if GdObjects.equals(current, expected):
 		return report_error(GdAssertMessages.error_not_equal(current, expected))
 	return report_success()
 
 
 func is_null() -> GdUnitAssert:
-	var current = current_value()
+	var current :Variant = current_value()
 	if current != null:
 		return report_error(GdAssertMessages.error_is_null(current))
 	return report_success()
 
 
 func is_not_null() -> GdUnitAssert:
-	var current = current_value()
+	var current :Variant = current_value()
 	if current == null:
 		return report_error(GdAssertMessages.error_is_not_null())
 	return report_success()

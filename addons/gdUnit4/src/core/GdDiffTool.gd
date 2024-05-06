@@ -7,9 +7,9 @@ const DIV_ADD :int = 214
 const DIV_SUB :int = 215
 
 
-static func _diff(lb: PackedByteArray, rb: PackedByteArray, lookup: Array, ldiff: Array, rdiff: Array):
-	var loffset = lb.size()
-	var roffset = rb.size()
+static func _diff(lb: PackedByteArray, rb: PackedByteArray, lookup: Array, ldiff: Array, rdiff: Array) -> void:
+	var loffset := lb.size()
+	var roffset := rb.size()
 
 	while true:
 		#if last character of X and Y matches
@@ -43,7 +43,7 @@ static func _createLookUp(lb: PackedByteArray, rb: PackedByteArray) -> Array:
 	var lookup := Array()
 	lookup.resize(lb.size() + 1)
 	for i in lookup.size():
-		var x = []
+		var x := []
 		x.resize(rb.size() + 1)
 		lookup[i] = x
 	return lookup
@@ -55,7 +55,7 @@ static func _buildLookup(lb: PackedByteArray, rb: PackedByteArray) -> Array:
 	for i in lookup.size():
 		lookup[i][0] = 0
 	# first row of the lookup table will be all 0
-	for j in lookup[0].size():
+	for j :int in lookup[0].size():
 		lookup[0][j] = 0
 
 	# fill the lookup table in bottom-up manner
@@ -70,7 +70,7 @@ static func _buildLookup(lb: PackedByteArray, rb: PackedByteArray) -> Array:
 	return lookup
 
 
-static func string_diff(left, right) -> Array[PackedByteArray]:
+static func string_diff(left :Variant, right :Variant) -> Array[PackedByteArray]:
 	var lb := PackedByteArray() if left == null else str(left).to_ascii_buffer()
 	var rb := PackedByteArray() if right == null else str(right).to_ascii_buffer()
 	var ldiff := Array()
@@ -100,8 +100,8 @@ static func longestCommonSubsequence(text1 :String, text2 :String) -> PackedStri
 			else:
 				solutionMatrix[i][j] = max(solutionMatrix[i + 1][j], solutionMatrix[i][j + 1]);
 
-	var i = 0
-	var j = 0
+	var i := 0
+	var j := 0
 	var lcsResultList := PackedStringArray();
 	while (i < text1WordCount && j < text2WordCount):
 		if text1Words[i] == text2Words[j]:
@@ -116,16 +116,16 @@ static func longestCommonSubsequence(text1 :String, text2 :String) -> PackedStri
 
 
 static func markTextDifferences(text1 :String, text2 :String, lcsList :PackedStringArray, insertColor :Color, deleteColor:Color) -> String:
-	var stringBuffer = ""
+	var stringBuffer := ""
 	if text1 == null and lcsList == null:
 		return stringBuffer
 
 	var text1Words := text1.split(" ")
 	var text2Words := text2.split(" ")
-	var i = 0
-	var j = 0
-	var word1LastIndex = 0
-	var word2LastIndex = 0
+	var i := 0
+	var j := 0
+	var word1LastIndex := 0
+	var word2LastIndex := 0
 	for k in lcsList.size():
 		while i < text1Words.size() and j < text2Words.size():
 			if text1Words[i] == lcsList[k] and text2Words[j] == lcsList[k]:
