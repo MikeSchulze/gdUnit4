@@ -4,7 +4,7 @@ extends Resource
 
 
 ## Generates an random string with min/max length and given charset
-static func rand_str(min_length: int, max_length, charset := StringFuzzer.DEFAULT_CHARSET) -> Fuzzer:
+static func rand_str(min_length: int, max_length :int, charset := StringFuzzer.DEFAULT_CHARSET) -> Fuzzer:
 	return StringFuzzer.new(min_length, max_length, charset)
 
 
