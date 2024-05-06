@@ -25,14 +25,14 @@ var _report_path :String
 var _iteration :int
 
 
-func _init(path :String,iteration :int):
+func _init(path :String,iteration :int) -> void:
 	_iteration = iteration
 	_report_path = path
 
 
 func write(report :GdUnitReportSummary) -> String:
 	var result_file: String = "%s/results.xml" % _report_path
-	var file = FileAccess.open(result_file, FileAccess.WRITE)
+	var file := FileAccess.open(result_file, FileAccess.WRITE)
 	if file == null:
 		push_warning("Can't saving the result to '%s'\n Error: %s" % [result_file, error_string(FileAccess.get_open_error())])
 	file.store_string(build_junit_report(report))
@@ -48,7 +48,7 @@ func build_junit_report(report :GdUnitReportSummary) -> String:
 		.attribute(ATTR_FAILURES, report.failure_count())\
 		.attribute(ATTR_TIME, JUnitXmlReport.to_time(report.duration()))\
 		.add_childs(build_test_suites(report))
-	var as_string = test_suites.to_xml()
+	var as_string := test_suites.to_xml()
 	test_suites.dispose()
 	return HEADER + as_string
 
@@ -57,7 +57,7 @@ func build_test_suites(summary :GdUnitReportSummary) -> Array:
 	var test_suites :Array = Array()
 	for index in summary.reports().size():
 		var suite_report :GdUnitTestSuiteReport = summary.reports()[index]
-		var ISO8601_datetime = Time.get_datetime_string_from_unix_time(suite_report.time_stamp())
+		var ISO8601_datetime := Time.get_datetime_string_from_unix_time(suite_report.time_stamp())
 		test_suites.append(XmlElement.new("testsuite")\
 			.attribute(ATTR_ID, index)\
 			.attribute(ATTR_NAME, suite_report.name())\

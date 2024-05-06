@@ -23,10 +23,10 @@ class CLIRunner:
 	const RETURN_ERROR_GODOT_VERSION_NOT_SUPPORTED = 104
 	const RETURN_WARNING = 101
 
-	var _state = READY
+	var _state := READY
 	var _test_suites_to_process: Array
-	var _executor
-	var _cs_executor
+	var _executor :Variant
+	var _cs_executor :Variant
 	var _report: GdUnitHtmlReport
 	var _report_dir: String
 	var _report_max: int = DEFAULT_REPORT_COUNT
@@ -102,7 +102,7 @@ class CLIRunner:
 		])
 
 
-	func _ready():
+	func _ready() -> void:
 		_state = INIT
 		_report_dir = GdUnitFileAccess.current_dir() + "reports"
 		_executor = load("res://addons/gdUnit4/src/core/execution/GdUnitTestSuiteExecutor.gd").new()
@@ -296,6 +296,8 @@ class CLIRunner:
 			show_help()
 			return
 		# build runner config by given commands
+		var commands :Array[CmdCommand] = []
+		commands.append_array(result.value())
 		result = (
 			CmdCommandHandler.new(_cmd_options)
 				.register_cb("-help", Callable(self, "show_help"))
@@ -311,7 +313,7 @@ class CLIRunner:
 				.register_cb("-conf", load_test_config)
 				.register_cb("--info", show_version)
 				.register_cb("--ignoreHeadlessMode", check_headless_mode)
-				.execute(result.value())
+				.execute(commands)
 		)
 		if result.is_error():
 			_console.prints_error(result.error_message())
@@ -356,10 +358,11 @@ class CLIRunner:
 
 	func load_testsuites(config: GdUnitRunnerConfig) -> Array[Node]:
 		var test_suites_to_process: Array[Node] = []
+		# Dictionary[String, Dictionary[String, PackedStringArray]]
 		var to_execute := config.to_execute()
 		# scan for the requested test suites
 		var ts_scanner := GdUnitTestSuiteScanner.new()
-		for as_resource_path in to_execute.keys():
+		for as_resource_path in to_execute.keys() as Array[String]:
 			var selected_tests: PackedStringArray = to_execute.get(as_resource_path)
 			var scaned_suites := ts_scanner.scan(as_resource_path)
 			skip_test_case(scaned_suites, selected_tests)
@@ -368,7 +371,7 @@ class CLIRunner:
 		return test_suites_to_process
 
 
-	func skip_test_case(test_suites: Array, test_case_names: Array) -> void:
+	func skip_test_case(test_suites: Array[Node], test_case_names: Array[String]) -> void:
 		if test_case_names.is_empty():
 			return
 		for test_suite in test_suites:
@@ -378,7 +381,7 @@ class CLIRunner:
 					test_case.free()
 
 
-	func skip_suites(test_suites: Array, config: GdUnitRunnerConfig) -> void:
+	func skip_suites(test_suites: Array[Node], config: GdUnitRunnerConfig) -> void:
 		var skipped := config.skipped()
 		if skipped.is_empty():
 			return
@@ -390,8 +393,9 @@ class CLIRunner:
 			skip_suite(test_suite, skipped)
 
 
+	# Dictionary[String, PackedStringArray]
 	func skip_suite(test_suite: Node, skipped: Dictionary) -> void:
-		var skipped_suites := skipped.keys()
+		var skipped_suites :Array[String] = skipped.keys()
 		var suite_name := test_suite.get_name()
 		var test_suite_path: String = (
 			test_suite.get_meta("ResourcePath") if test_suite.get_script() == null
@@ -403,7 +407,7 @@ class CLIRunner:
 				suite_to_skip == test_suite_path
 				or (suite_to_skip.is_valid_filename() and suite_to_skip == suite_name)
 			):
-				var skipped_tests: Array = skipped.get(suite_to_skip)
+				var skipped_tests: Array[String] = skipped.get(suite_to_skip)
 				var skip_reason := "Excluded by config '%s'" % _runner_config_file
 				# if no tests skipped test the complete suite is skipped
 				if skipped_tests.is_empty():
@@ -424,10 +428,10 @@ class CLIRunner:
 							)
 
 
-	func _collect_test_case_count(test_suites: Array) -> int:
+	func _collect_test_case_count(test_suites: Array[Node]) -> int:
 		var total: int = 0
 		for test_suite in test_suites:
-			total += (test_suite as Node).get_child_count()
+			total += test_suite.get_child_count()
 		return total
 
 
@@ -436,7 +440,7 @@ class CLIRunner:
 		_on_gdunit_event(GdUnitEvent.new().deserialize(data))
 
 
-	func _on_gdunit_event(event: GdUnitEvent):
+	func _on_gdunit_event(event: GdUnitEvent) -> void:
 		match event.type():
 			GdUnitEvent.INIT:
 				_report = GdUnitHtmlReport.new(_report_dir)
@@ -564,7 +568,7 @@ class CLIRunner:
 				)
 
 
-	func _print_failure_report(reports: Array) -> void:
+	func _print_failure_report(reports: Array[GdUnitReport]) -> void:
 		for report in reports:
 			if (
 				report.is_failure()
@@ -576,7 +580,7 @@ class CLIRunner:
 					"	Report:",
 					Color.DARK_TURQUOISE, CmdConsole.BOLD | CmdConsole.UNDERLINE
 				)
-				var text = GdUnitTools.richtext_normalize(str(report))
+				var text := GdUnitTools.richtext_normalize(str(report))
 				for line in text.split("\n"):
 					_console.prints_color("		%s" % line, Color.DARK_TURQUOISE)
 		_console.new_line()
@@ -596,10 +600,10 @@ class CLIRunner:
 		)
 
 
-var _cli_runner: CLIRunner
+var _cli_runner :CLIRunner
 
 
-func _initialize():
+func _initialize() -> void:
 	if Engine.get_version_info().hex < 0x40100:
 		prints("GdUnit4 requires a minimum of Godot 4.1.x Version!")
 		quit(CLIRunner.RETURN_ERROR_GODOT_VERSION_NOT_SUPPORTED)

@@ -5,7 +5,7 @@ extends SceneTree
 const CmdConsole = preload("res://addons/gdUnit4/src/cmd/CmdConsole.gd")
 
 
-func _initialize():
+func _initialize() -> void:
 	set_auto_accept_quit(false)
 	var scanner := SourceScanner.new(self)
 	root.add_child(scanner)
@@ -22,7 +22,7 @@ class SourceScanner extends Node:
 		DONE
 	}
 
-	var _state = INIT
+	var _state := INIT
 	var _console := CmdConsole.new()
 	var _elapsed_time := 0.0
 	var _plugin: EditorPlugin

@@ -7,13 +7,13 @@ var _report_path :String
 var _iteration :int
 
 
-func _init(path_ :String):
+func _init(path_ :String) -> void:
 	_iteration = GdUnitFileAccess.find_last_path_index(path_, REPORT_DIR_PREFIX) + 1
 	_report_path = "%s/%s%d" % [path_, REPORT_DIR_PREFIX, _iteration]
 	DirAccess.make_dir_recursive_absolute(_report_path)
 
 
-func add_testsuite_report(suite_report :GdUnitTestSuiteReport):
+func add_testsuite_report(suite_report :GdUnitTestSuiteReport) -> void:
 	_reports.append(suite_report)
 
 
@@ -44,7 +44,7 @@ func update_test_suite_report(
 			report.set_reports(reports_)
 
 
-func update_testcase_report(resource_path_ :String, test_report :GdUnitTestCaseReport):
+func update_testcase_report(resource_path_ :String, test_report :GdUnitTestCaseReport) -> void:
 	for report in _reports:
 		if report.resource_path() == resource_path_:
 			report.update(test_report)
@@ -52,9 +52,9 @@ func update_testcase_report(resource_path_ :String, test_report :GdUnitTestCaseR
 
 func write() -> String:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/report/template/index.html")
-	var to_write = GdUnitHtmlPatterns.build(template, self, "")
+	var to_write := GdUnitHtmlPatterns.build(template, self, "")
 	to_write = apply_path_reports(_report_path, to_write, _reports)
-	to_write = apply_testsuite_reports(_report_path, to_write, _reports)
+	to_write = apply_testsuite_reports(_report_path, to_write, _reports as Array[GdUnitTestSuiteReport])
 	# write report
 	var index_file := "%s/index.html" % _report_path
 	FileAccess.open(index_file, FileAccess.WRITE).store_string(to_write)
@@ -67,9 +67,10 @@ func delete_history(max_reports :int) -> int:
 
 
 func apply_path_reports(report_dir :String, template :String, reports_ :Array) -> String:
+	#Dictionary[String, Array[GdUnitReportSummary]]
 	var path_report_mapping := GdUnitByPathReport.sort_reports_by_path(reports_)
 	var table_records := PackedStringArray()
-	var paths := path_report_mapping.keys()
+	var paths :Array[String] = path_report_mapping.keys()
 	paths.sort()
 	for path_ in paths:
 		var report := GdUnitByPathReport.new(path_, path_report_mapping.get(path_))
@@ -78,7 +79,7 @@ func apply_path_reports(report_dir :String, template :String, reports_ :Array) -
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_PATHS, "\n".join(table_records))
 
 
-func apply_testsuite_reports(report_dir :String, template :String, reports_ :Array) -> String:
+func apply_testsuite_reports(report_dir :String, template :String, reports_ :Array[GdUnitTestSuiteReport]) -> String:
 	var table_records := PackedStringArray()
 	for report in reports_:
 		var report_link :String = report.write(report_dir).replace(report_dir, ".")

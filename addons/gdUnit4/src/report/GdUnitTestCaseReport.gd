@@ -2,7 +2,7 @@ class_name GdUnitTestCaseReport
 extends GdUnitReportSummary
 
 var _suite_name :String
-var _failure_reports :Array
+var _failure_reports :Array[GdUnitReport]
 
 
 func _init(
@@ -14,8 +14,8 @@ func _init(
 		failed_count :int = 0,
 		orphan_count_ :int = 0,
 		is_skipped := false,
-		failure_reports :Array = [],
-		p_duration :int = 0):
+		failure_reports :Array[GdUnitReport] = [],
+		p_duration :int = 0) -> void:
 	_resource_path = p_resource_path
 	_suite_name = p_suite_name
 	_name = test_name
@@ -33,8 +33,7 @@ func suite_name() -> String:
 
 func failure_report() -> String:
 	var html_report := ""
-	for r in _failure_reports:
-		var report: GdUnitReport = r
+	for report in _failure_reports:
 		html_report += convert_rtf_to_html(report._to_string())
 	return html_report
 

@@ -6,7 +6,7 @@ var _tool_name :String
 var _parsed_commands :Dictionary = Dictionary()
 
 
-func _init(p_options :CmdOptions, p_tool_name :String):
+func _init(p_options :CmdOptions, p_tool_name :String) -> void:
 	_options = p_options
 	_tool_name = p_tool_name
 

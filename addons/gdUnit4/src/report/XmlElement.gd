@@ -2,17 +2,18 @@ class_name XmlElement
 extends RefCounted
 
 var _name :String
+# Dictionary[String, String]
 var _attributes :Dictionary = {}
-var _childs :Array = []
-var _parent = null
+var _childs :Array[XmlElement] = []
+var _parent :XmlElement = null
 var _text :String = ""
 
 
-func _init(name :String):
+func _init(name :String) -> void:
 	_name = name
 
 
-func dispose():
+func dispose() -> void:
 	for child in _childs:
 		child.dispose()
 	_childs.clear()
@@ -20,7 +21,7 @@ func dispose():
 	_parent = null
 
 
-func attribute(name :String, value) -> XmlElement:
+func attribute(name :String, value :Variant) -> XmlElement:
 	_attributes[name] = str(value)
 	return self
 
@@ -36,7 +37,7 @@ func add_child(child :XmlElement) -> XmlElement:
 	return self
 
 
-func add_childs(childs :Array) -> XmlElement:
+func add_childs(childs :Array[XmlElement]) -> XmlElement:
 	for child in childs:
 		add_child(child)
 	return self
@@ -48,10 +49,10 @@ func _indentation() -> String:
 
 func to_xml() -> String:
 	var attributes := ""
-	for key in _attributes.keys():
+	for key in _attributes.keys() as Array[String]:
 		attributes += ' {attr}="{value}"'.format({"attr": key, "value": _attributes.get(key)})
 
-	var childs = ""
+	var childs := ""
 	for child in _childs:
 		childs += child.to_xml()
 

@@ -118,7 +118,7 @@ func calculate_state(p_error_count :int, p_failure_count :int, p_orphan_count :i
 func calculate_succes_rate(p_test_count :int, p_error_count :int, p_failure_count :int) -> String:
 	if p_failure_count == 0:
 		return "100%"
-	var count = p_test_count-p_failure_count-p_error_count
+	var count := p_test_count-p_failure_count-p_error_count
 	if count < 0:
 		return "0%"
 	return "%d" % (( 0 if count < 0 else count) * 100.0 / p_test_count) + "%"
@@ -129,7 +129,7 @@ func create_summary(_report_dir :String) -> String:
 
 
 func html_encode(value :String) -> String:
-	for key in CHARACTERS_TO_ENCODE.keys():
+	for key in CHARACTERS_TO_ENCODE.keys() as Array[String]:
 		value =value.replace(key, CHARACTERS_TO_ENCODE[key])
 	return value
 
