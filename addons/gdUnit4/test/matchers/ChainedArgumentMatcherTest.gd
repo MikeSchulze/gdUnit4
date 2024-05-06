@@ -6,8 +6,8 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/matchers/ChainedArgumentMatcher.gd'
 
 
-func test_is_match_one_arg():
-	var matchers = [
+func test_is_match_one_arg() -> void:
+	var matchers := [
 		EqualsArgumentMatcher.new("foo")
 	]
 	var matcher := ChainedArgumentMatcher.new(matchers)
@@ -16,8 +16,8 @@ func test_is_match_one_arg():
 	assert_bool(matcher.is_match(["bar"])).is_false()
 
 
-func test_is_match_two_arg():
-	var matchers = [
+func test_is_match_two_arg() -> void:
+	var matchers := [
 		EqualsArgumentMatcher.new("foo"),
 		EqualsArgumentMatcher.new("value1")
 	]
@@ -28,8 +28,8 @@ func test_is_match_two_arg():
 	assert_bool(matcher.is_match(["bar", "value1"])).is_false()
 
 
-func test_is_match_different_arg_and_matcher():
-	var matchers = [
+func test_is_match_different_arg_and_matcher() -> void:
+	var matchers := [
 		EqualsArgumentMatcher.new("foo")
 	]
 	var matcher := ChainedArgumentMatcher.new(matchers)

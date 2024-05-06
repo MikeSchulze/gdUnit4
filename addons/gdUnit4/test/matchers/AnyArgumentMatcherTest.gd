@@ -6,7 +6,7 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/matchers/AnyArgumentMatcher.gd'
 
 
-func test_is_match():
+func test_is_match() -> void:
 	var matcher := AnyArgumentMatcher.new()
 
 	assert_bool(matcher.is_match(null)).is_true()
@@ -21,7 +21,7 @@ func test_is_match():
 	assert_bool(matcher.is_match(auto_free(Node.new()))).is_true()
 
 
-func test_any():
+func test_any() -> void:
 	assert_object(any()).is_instanceof(AnyArgumentMatcher)
 
 

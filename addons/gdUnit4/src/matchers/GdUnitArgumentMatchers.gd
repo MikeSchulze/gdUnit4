@@ -6,7 +6,7 @@ const TYPE_ANY = TYPE_MAX + 100
 
 static func to_matcher(arguments :Array[Variant], auto_deep_check_mode := false) -> ChainedArgumentMatcher:
 	var matchers :Array[Variant] = []
-	for arg in arguments:
+	for arg :Variant in arguments:
 		# argument is already a matcher
 		if arg is GdUnitArgumentMatcher:
 			matchers.append(arg)
