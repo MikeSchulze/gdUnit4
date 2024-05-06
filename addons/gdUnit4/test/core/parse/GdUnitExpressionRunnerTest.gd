@@ -10,47 +10,47 @@ const __source = 'res://addons/gdUnit4/src/core/parse/GdUnitExpressionRunner.gd'
 const TestFuzzers := preload("res://addons/gdUnit4/test/fuzzers/TestFuzzers.gd")
 
 
-func test_create_fuzzer_argument_default():
+func test_create_fuzzer_argument_default() -> void:
 	var fuzzer := GdUnitExpressionRunner.new().to_fuzzer(GDScript.new(), "Fuzzers.rangei(-10, 22)")
 	assert_that(fuzzer).is_not_null()
 	assert_that(fuzzer).is_instanceof(Fuzzer)
 	assert_int(fuzzer.next_value()).is_between(-10, 22)
 
 
-func test_create_fuzzer_argument_with_constants():
+func test_create_fuzzer_argument_with_constants() -> void:
 	var fuzzer := GdUnitExpressionRunner.new().to_fuzzer(TestFuzzers, "Fuzzers.rangei(-10, MAX_VALUE)")
 	assert_that(fuzzer).is_not_null()
 	assert_that(fuzzer).is_instanceof(Fuzzer)
 	assert_int(fuzzer.next_value()).is_between(-10, 22)
 
 
-func test_create_fuzzer_argument_with_custom_function():
+func test_create_fuzzer_argument_with_custom_function() -> void:
 	var fuzzer := GdUnitExpressionRunner.new().to_fuzzer(TestFuzzers, "get_fuzzer()")
 	assert_that(fuzzer).is_not_null()
 	assert_that(fuzzer).is_instanceof(Fuzzer)
 	assert_int(fuzzer.next_value()).is_between(TestFuzzers.MIN_VALUE, TestFuzzers.MAX_VALUE)
 
 
-func test_create_fuzzer_do_fail():
+func test_create_fuzzer_do_fail() -> void:
 	var fuzzer := GdUnitExpressionRunner.new().to_fuzzer(TestFuzzers, "non_fuzzer()")
 	assert_that(fuzzer).is_null()
 
 
-func test_create_nested_fuzzer_do_fail():
+func test_create_nested_fuzzer_do_fail() -> void:
 	var fuzzer := GdUnitExpressionRunner.new().to_fuzzer(TestFuzzers, "NestedFuzzer.new()")
 	assert_that(fuzzer).is_not_null()
 	assert_that(fuzzer is Fuzzer).is_true()
 	assert_bool(fuzzer is TestFuzzers.NestedFuzzer).is_true()
 
 
-func test_create_external_fuzzer():
+func test_create_external_fuzzer() -> void:
 	var fuzzer := GdUnitExpressionRunner.new().to_fuzzer(GDScript.new(), "TestExternalFuzzer.new()")
 	assert_that(fuzzer).is_not_null()
 	assert_that(fuzzer is Fuzzer).is_true()
 	assert_bool(fuzzer is TestExternalFuzzer).is_true()
 
 
-func test_create_multipe_fuzzers():
+func test_create_multipe_fuzzers() -> void:
 	var fuzzer_a := GdUnitExpressionRunner.new().to_fuzzer(TestFuzzers, "Fuzzers.rangei(-10, MAX_VALUE)")
 	var fuzzer_b := GdUnitExpressionRunner.new().to_fuzzer(GDScript.new(), "Fuzzers.rangei(10, 20)")
 	assert_that(fuzzer_a).is_not_null()

@@ -9,13 +9,13 @@ const __source = 'res://addons/gdUnit4/src/core/parse/GdFunctionDescriptor.gd'
 # helper to get method descriptor
 func get_method_description(clazz_name :String, method_name :String) -> Dictionary:
 	var method_list :Array = ClassDB.class_get_method_list(clazz_name)
-	for method_descriptor in method_list:
+	for method_descriptor :Dictionary in method_list:
 		if method_descriptor["name"] == method_name:
 			return method_descriptor
 	return Dictionary()
 
 
-func test_extract_from_func_without_return_type():
+func test_extract_from_func_without_return_type() -> void:
 	# void add_sibling(sibling: Node, force_readable_name: bool = false)
 	var method_descriptor := get_method_description("Node", "add_sibling")
 	var fd := GdFunctionDescriptor.extract_from(method_descriptor)
@@ -33,7 +33,7 @@ func test_extract_from_func_without_return_type():
 	assert_str(fd.typeless()).is_equal("func add_sibling(sibling_, force_readable_name_=false) -> void:")
 
 
-func test_extract_from_func_with_return_type():
+func test_extract_from_func_with_return_type() -> void:
 	# Node find_child(pattern: String, recursive: bool = true, owned: bool = true) const
 	var method_descriptor := get_method_description("Node", "find_child")
 	var fd := GdFunctionDescriptor.extract_from(method_descriptor)
@@ -52,7 +52,7 @@ func test_extract_from_func_with_return_type():
 	assert_str(fd.typeless()).is_equal("func find_child(pattern_, recursive_=true, owned_=true) -> Node:")
 
 
-func test_extract_from_func_with_vararg():
+func test_extract_from_func_with_vararg() -> void:
 	# Error emit_signal(signal: StringName, ...) vararg
 	var method_descriptor := get_method_description("Node", "emit_signal")
 	var fd := GdFunctionDescriptor.extract_from(method_descriptor)
@@ -78,7 +78,7 @@ func test_extract_from_func_with_vararg():
 	assert_str(fd.typeless()).is_equal("func emit_signal(signal_, vararg0_=\"__null__\", vararg1_=\"__null__\", vararg2_=\"__null__\", vararg3_=\"__null__\", vararg4_=\"__null__\", vararg5_=\"__null__\", vararg6_=\"__null__\", vararg7_=\"__null__\", vararg8_=\"__null__\", vararg9_=\"__null__\") -> Error:")
 
 
-func test_extract_from_descriptor_is_virtual_func():
+func test_extract_from_descriptor_is_virtual_func() -> void:
 	var method_descriptor := get_method_description("Node", "_enter_tree")
 	var fd := GdFunctionDescriptor.extract_from(method_descriptor)
 	assert_str(fd.name()).is_equal("_enter_tree")
@@ -92,7 +92,7 @@ func test_extract_from_descriptor_is_virtual_func():
 	assert_str(fd.typeless()).is_equal("func _enter_tree() -> void:")
 
 
-func test_extract_from_descriptor_is_virtual_func_full_check():
+func test_extract_from_descriptor_is_virtual_func_full_check() -> void:
 	var methods := ClassDB.class_get_method_list("Node")
 	var expected_virtual_functions := [
 		# Object virtuals
@@ -130,7 +130,7 @@ func test_extract_from_descriptor_is_virtual_func_full_check():
 	assert_int(_count).is_equal(expected_virtual_functions.size())
 
 
-func test_extract_from_func_with_return_type_variant():
+func test_extract_from_func_with_return_type_variant() -> void:
 	var method_descriptor := get_method_description("Node", "get")
 	var fd := GdFunctionDescriptor.extract_from(method_descriptor)
 	assert_str(fd.name()).is_equal("get")

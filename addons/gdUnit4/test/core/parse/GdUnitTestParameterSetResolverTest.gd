@@ -9,27 +9,27 @@ var _test_param1 := 10
 var _test_param2 := 20
 
 
-func before():
+func before() -> void:
 	_test_param1 = 11
 
 
-func test_before():
+func test_before() -> void:
 	_test_param2 = 22
 
 
 @warning_ignore("unused_parameter")
-func test_example_a(a: int, b: int, test_parameters=[[1, 2], [3,4]]) -> void:
+func test_example_a(a: int, b: int, test_parameters := [[1, 2], [3,4]]) -> void:
 	pass
 
 
 @warning_ignore("unused_parameter")
-func test_example_b(a: Vector2, b: Vector2, test_parameters=[
+func test_example_b(a: Vector2, b: Vector2, test_parameters := [
 	[Vector2.ZERO, Vector2.ONE], [Vector2(1.1, 3.2), Vector2.DOWN]] ) -> void:
 	pass
 
 
 @warning_ignore("unused_parameter")
-func test_example_c(a: Object, b: Object, test_parameters=[
+func test_example_c(a: Object, b: Object, test_parameters := [
 	[Resource.new(), Resource.new()],
 	[Resource.new(), null]
 	] ) -> void:
@@ -37,7 +37,7 @@ func test_example_c(a: Object, b: Object, test_parameters=[
 
 
 @warning_ignore("unused_parameter")
-func test_resolve_parameters_static(a: int, b: int, test_parameters=[
+func test_resolve_parameters_static(a: int, b: int, test_parameters := [
 	[1, 10],
 	[2, 20]
 	]) -> void:
@@ -45,7 +45,7 @@ func test_resolve_parameters_static(a: int, b: int, test_parameters=[
 
 
 @warning_ignore("unused_parameter")
-func test_resolve_parameters_at_runtime(a: int, b: int, test_parameters=[
+func test_resolve_parameters_at_runtime(a: int, b: int, test_parameters := [
 	[1, _test_param1],
 	[2, _test_param2],
 	[3, 30]
@@ -54,7 +54,7 @@ func test_resolve_parameters_at_runtime(a: int, b: int, test_parameters=[
 
 
 @warning_ignore("unused_parameter")
-func test_parameterized_with_comments(a: int, b :int, c :String, expected :int, test_parameters = [
+func test_parameterized_with_comments(a: int, b :int, c :String, expected :int, test_parameters := [
 	# before data set
 	[1, 2, '3', 6], # after data set
 	# between data sets
@@ -62,7 +62,7 @@ func test_parameterized_with_comments(a: int, b :int, c :String, expected :int, 
 	[6, 7, 'string #ABCD', 21], # dataset with [comment] singn
 	[6, 7, "string #ABCD", 21] # dataset with "comment" singn
 	#eof
-]):
+]) -> void:
 	pass
 
 
@@ -71,7 +71,7 @@ func build_param(value: float) -> Vector3:
 
 
 @warning_ignore("unused_parameter")
-func test_example_d(a: Vector3, b: Vector3, test_parameters=[
+func test_example_d(a: Vector3, b: Vector3, test_parameters:=[
 	[build_param(1), build_param(3)],
 	[Vector3.BACK, Vector3.UP]
 	] ) -> void:
@@ -81,7 +81,7 @@ func test_example_d(a: Vector3, b: Vector3, test_parameters=[
 class TestObj extends RefCounted:
 	var _value: String
 
-	func _init(value: String):
+	func _init(value: String) -> void:
 		_value = value
 
 	func _to_string() -> String:
@@ -90,7 +90,7 @@ class TestObj extends RefCounted:
 
 @warning_ignore("unused_parameter")
 func test_example_e(a: Object, b: Object, expected: String, test_parameters:=[
-	[TestObj.new("abc"), TestObj.new("def"), "abcdef"]]):
+	[TestObj.new("abc"), TestObj.new("def"), "abcdef"]]) -> void:
 	pass
 
 
@@ -171,7 +171,7 @@ func test_build_test_case_names_on_runtime_parameter_set() -> void:
 	assert_that(resolver.is_parameter_set_static(2)).is_false()
 
 
-func test_validate_test_parameter_set():
+func test_validate_test_parameter_set() -> void:
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteInvalidParameterizedTests.resource"))
 
 	assert_is_not_skipped(test_suite, "test_no_parameters")
@@ -218,5 +218,5 @@ func assert_is_skipped(test_suite :GdUnitTestSuite, test_case :String) -> GdUnit
 	assert_that(test.is_skipped()).is_true()
 	return assert_str(test.skip_info())
 
-func get_test_case(name: String) -> _TestCase:
-	return find_child(name, true, false)
+func get_test_case(child_name: String) -> _TestCase:
+	return find_child(child_name, true, false)
