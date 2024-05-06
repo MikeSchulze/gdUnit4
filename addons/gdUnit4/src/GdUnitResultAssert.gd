@@ -41,5 +41,5 @@ func contains_message(expected :String) -> GdUnitResultAssert:
 
 ## Verifies that the result contains the given value
 @warning_ignore("unused_parameter")
-func is_value(expected) -> GdUnitResultAssert:
+func is_value(expected :Variant) -> GdUnitResultAssert:
 	return self

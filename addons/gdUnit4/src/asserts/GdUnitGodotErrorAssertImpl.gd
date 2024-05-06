@@ -4,7 +4,7 @@ var _current_error_message :String
 var _callable :Callable
 
 
-func _init(callable :Callable):
+func _init(callable :Callable) -> void:
 	# we only support Godot 4.1.x+ because of await issue https://github.com/godotengine/godot/issues/80292
 	assert(Engine.get_version_info().hex >= 0x40100,
 			"This assertion is not supported for Godot 4.0.x. Please upgrade to the minimum version Godot 4.1.0!")

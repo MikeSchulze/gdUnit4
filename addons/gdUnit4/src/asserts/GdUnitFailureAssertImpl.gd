@@ -6,7 +6,7 @@ var _is_failed := false
 var _failure_message :String
 
 
-static func _set_do_expect_fail(enabled :bool = true):
+func _set_do_expect_fail(enabled :bool = true) -> void:
 	Engine.set_meta(GdUnitConstants.EXPECT_ASSERT_REPORT_FAILURES, enabled)
 
 

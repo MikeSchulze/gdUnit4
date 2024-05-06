@@ -11,7 +11,7 @@ var _timeout := DEFAULT_TIMEOUT
 var _interrupted := false
 
 
-func _init(emitter :Object):
+func _init(emitter :Object) -> void:
 	# save the actual assert instance on the current thread context
 	var context := GdUnitThreadManager.get_current_context()
 	context.set_assert(self)

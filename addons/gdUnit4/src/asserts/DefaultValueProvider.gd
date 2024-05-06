@@ -2,11 +2,12 @@
 class_name DefaultValueProvider
 extends ValueProvider
 
-var _value
+var _value: Variant
 
-func _init(value):
+
+func _init(value: Variant) -> void:
 	_value = value
 
 
-func get_value():
+func get_value() -> Variant:
 	return _value

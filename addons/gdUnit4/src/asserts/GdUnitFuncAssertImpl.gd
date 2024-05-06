@@ -14,7 +14,7 @@ var _interrupted := false
 var _sleep_timer :Timer = null
 
 
-func _init(instance :Object, func_name :String, args := Array()):
+func _init(instance :Object, func_name :String, args := Array()) -> void:
 	_line_number = GdUnitAssertions.get_line_number()
 	GdAssertReports.reset_last_error_line_number()
 	# save the actual assert instance on the current thread context
@@ -27,7 +27,7 @@ func _init(instance :Object, func_name :String, args := Array()):
 		_current_value_provider = CallBackValueProvider.new(instance, func_name, args)
 
 
-func _notification(_what):
+func _notification(_what :int) -> void:
 	if is_instance_valid(_current_value_provider):
 		_current_value_provider.dispose()
 		_current_value_provider = null
@@ -91,36 +91,36 @@ func is_true() -> GdUnitFuncAssert:
 	return self
 
 
-func is_equal(expected) -> GdUnitFuncAssert:
+func is_equal(expected :Variant) -> GdUnitFuncAssert:
 	await _validate_callback(cb_is_equal, expected)
 	return self
 
 
-func is_not_equal(expected) -> GdUnitFuncAssert:
+func is_not_equal(expected :Variant) -> GdUnitFuncAssert:
 	await _validate_callback(cb_is_not_equal, expected)
 	return self
 
 
 # we need actually to define this Callable as functions otherwise we results into leaked scripts here
 # this is actually a Godot bug and needs this kind of workaround
-func cb_is_null(c, _e): return c == null
-func cb_is_not_null(c, _e): return c != null
-func cb_is_false(c, _e): return c == false
-func cb_is_true(c, _e): return c == true
-func cb_is_equal(c, e): return GdObjects.equals(c,e)
-func cb_is_not_equal(c, e): return not GdObjects.equals(c, e)
+func cb_is_null(c :Variant, _e :Variant) -> bool: return c == null
+func cb_is_not_null(c :Variant, _e :Variant) -> bool: return c != null
+func cb_is_false(c :Variant, _e :Variant) -> bool: return c == false
+func cb_is_true(c :Variant, _e :Variant) -> bool: return c == true
+func cb_is_equal(c :Variant, e :Variant) -> bool: return GdObjects.equals(c,e)
+func cb_is_not_equal(c :Variant, e :Variant) -> bool: return not GdObjects.equals(c, e)
 
 
-func _validate_callback(predicate :Callable, expected = null):
+func _validate_callback(predicate :Callable, expected :Variant = null) -> void:
 	if _interrupted:
 		return
 	GdUnitMemoryObserver.guard_instance(self)
-	var time_scale = Engine.get_time_scale()
+	var time_scale := Engine.get_time_scale()
 	var timer := Timer.new()
 	timer.set_name("gdunit_funcassert_interrupt_timer_%d" % timer.get_instance_id())
 	Engine.get_main_loop().root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
-	timer.timeout.connect(func do_interrupt():
+	timer.timeout.connect(func do_interrupt() -> void:
 		_interrupted = true
 		, CONNECT_DEFERRED)
 	timer.set_one_shot(true)
@@ -130,7 +130,7 @@ func _validate_callback(predicate :Callable, expected = null):
 	Engine.get_main_loop().root.add_child(_sleep_timer)
 
 	while true:
-		var current = await next_current_value()
+		var current :Variant = await next_current_value()
 		# is interupted or predicate success
 		if _interrupted or predicate.call(current, expected):
 			break

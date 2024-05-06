@@ -3,7 +3,7 @@ extends GdUnitResultAssert
 var _base :GdUnitAssert
 
 
-func _init(current):
+func _init(current :Variant) -> void:
 	_base = ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
 								ResourceLoader.CACHE_MODE_REUSE).new(current)
 	# save the actual assert instance on the current thread context
@@ -12,14 +12,14 @@ func _init(current):
 		report_error("GdUnitResultAssert inital error, unexpected type <%s>" % GdObjects.typeof_as_string(current))
 
 
-func _notification(event):
+func _notification(event :int) -> void:
 	if event == NOTIFICATION_PREDELETE:
 		if _base != null:
 			_base.notification(event)
 			_base = null
 
 
-func validate_value_type(value) -> bool:
+func validate_value_type(value :Variant) -> bool:
 	return value == null or value is GdUnitResult
 
 
@@ -108,9 +108,9 @@ func contains_message(expected :String) -> GdUnitResultAssert:
 	return self
 
 
-func is_value(expected) -> GdUnitResultAssert:
+func is_value(expected :Variant) -> GdUnitResultAssert:
 	var result := current_value()
-	var value = null if result == null else result.value()
+	var value :Variant = null if result == null else result.value()
 	if not GdObjects.equals(value, expected):
 		report_error(GdAssertMessages.error_result_is_value(value, expected))
 	else:
@@ -118,5 +118,5 @@ func is_value(expected) -> GdUnitResultAssert:
 	return self
 
 
-func is_equal(expected) -> GdUnitResultAssert:
+func is_equal(expected :Variant) -> GdUnitResultAssert:
 	return is_value(expected)
