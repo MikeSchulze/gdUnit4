@@ -9,8 +9,8 @@ var _gd_console :Node
 
 
 func _enter_tree() -> void:
-	if Engine.get_version_info().hex < 0x40100:
-		prints("GdUnit4 plugin requires a minimum of Godot 4.1.x Version!")
+	if Engine.get_version_info().hex < 0x40200:
+		prints("GdUnit4 plugin requires a minimum of Godot 4.2.x Version!")
 		return
 	Engine.set_meta("GdUnitEditorPlugin", self)
 	GdUnitSettings.setup()
@@ -43,5 +43,4 @@ func _exit_tree() -> void:
 	GdUnitTools.dispose_all()
 	if Engine.has_meta("GdUnitEditorPlugin"):
 		Engine.remove_meta("GdUnitEditorPlugin")
-	if Engine.get_version_info().hex < 0x40100 or Engine.get_version_info().hex > 0x40101:
-		prints("Unload GdUnit4 Plugin success")
+	prints("Unload GdUnit4 Plugin success")
