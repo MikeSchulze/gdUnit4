@@ -158,9 +158,9 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 	dict["@path"] = clazz_path
 
 	for property in obj.get_property_list():
-		var property_name = property["name"]
-		var property_type = property["type"]
-		var property_value = obj.get(property_name)
+		var property_name :String = property["name"]
+		var property_type :int = property["type"]
+		var property_value :Variant = obj.get(property_name)
 		if property_value is GDScript or property_value is Callable:
 			continue
 		if (property["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE|PROPERTY_USAGE_DEFAULT
@@ -229,15 +229,15 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 					return false
 				if obj_a.get_class() != obj_b.get_class():
 					return false
-				var a = obj2dict(obj_a)
-				var b = obj2dict(obj_b)
+				var a := obj2dict(obj_a)
+				var b := obj2dict(obj_b)
 				return _equals(a, b, case_sensitive, compare_mode, deep_stack, stack_depth)
 			return obj_a == obj_b
 
 		TYPE_ARRAY:
 			if obj_a.size() != obj_b.size():
 				return false
-			for index in obj_a.size():
+			for index :int in obj_a.size():
 				if not _equals(obj_a[index], obj_b[index], case_sensitive, compare_mode, deep_stack, stack_depth):
 					return false
 			return true
@@ -245,9 +245,9 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 		TYPE_DICTIONARY:
 			if obj_a.size() != obj_b.size():
 				return false
-			for key in obj_a.keys():
-				var value_a = obj_a[key] if obj_a.has(key) else null
-				var value_b = obj_b[key] if obj_b.has(key) else null
+			for key :Variant in obj_a.keys():
+				var value_a :Variant = obj_a[key] if obj_a.has(key) else null
+				var value_b :Variant = obj_b[key] if obj_b.has(key) else null
 				if not _equals(value_a, value_b, case_sensitive, compare_mode, deep_stack, stack_depth):
 					return false
 			return true
@@ -271,7 +271,7 @@ static func notification_as_string(instance :Variant, notification :int) -> Stri
 
 
 static func string_to_type(value :String) -> int:
-	for type in TYPE_AS_STRING_MAPPINGS.keys():
+	for type :int in TYPE_AS_STRING_MAPPINGS.keys():
 		if TYPE_AS_STRING_MAPPINGS.get(type) == value:
 			return type
 	return TYPE_NIL
@@ -289,9 +289,9 @@ static func to_pascal_case(value :String) -> String:
 
 
 static func to_snake_case(value :String) -> String:
-	var result = PackedStringArray()
+	var result := PackedStringArray()
 	for ch in value:
-		var lower_ch = ch.to_lower()
+		var lower_ch := ch.to_lower()
 		if ch != lower_ch and result.size() > 1:
 			result.append('_')
 		result.append(lower_ch)
@@ -494,7 +494,7 @@ static func extract_class_path(clazz :Variant) -> PackedStringArray:
 			return clazz_path
 		# if not found we go the expensive way and extract the path form the script by creating an instance
 		var arg_list := build_function_default_arguments(clazz, "_init")
-		var instance = clazz.callv("new", arg_list)
+		var instance :Variant = clazz.callv("new", arg_list)
 		var clazz_info := inst_to_dict(instance)
 		GdUnitTools.free_instance(instance)
 		clazz_path.append(clazz_info["@path"])
@@ -562,8 +562,8 @@ static func extract_inner_clazz_names(clazz_name :String, script_path :PackedStr
 		return inner_classes
 	var script :GDScript = load(script_path[0])
 	var map := script.get_script_constant_map()
-	for key in map.keys():
-		var value = map.get(key)
+	for key :String in map.keys():
+		var value :Variant = map.get(key)
 		if value is GDScript:
 			var class_path := extract_class_path(value)
 			inner_classes.append(class_path[1])
@@ -607,16 +607,16 @@ static func build_function_default_arguments(script :GDScript, func_name :String
 	var arg_list := Array()
 	for func_sig in script.get_script_method_list():
 		if func_sig["name"] == func_name:
-			var args :Array = func_sig["args"]
+			var args :Array[Dictionary] = func_sig["args"]
 			for arg in args:
-				var value_type := arg["type"] as int
-				var default_value = default_value_by_type(value_type)
+				var value_type :int = arg["type"]
+				var default_value :Variant = default_value_by_type(value_type)
 				arg_list.append(default_value)
 			return arg_list
 	return arg_list
 
 
-static func default_value_by_type(type :int):
+static func default_value_by_type(type :int) -> Variant:
 	assert(type < TYPE_MAX)
 	assert(type >= 0)
 

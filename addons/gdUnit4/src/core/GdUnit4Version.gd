@@ -8,7 +8,7 @@ var _minor :int
 var _patch :int
 
 
-func _init(major :int,minor :int,patch :int):
+func _init(major :int, minor :int, patch :int) -> void:
 	_major = major
 	_minor = minor
 	_patch = patch
@@ -26,16 +26,16 @@ static func parse(value :String) -> GdUnit4Version:
 
 
 static func current() -> GdUnit4Version:
-	var config = ConfigFile.new()
+	var config := ConfigFile.new()
 	config.load('addons/gdUnit4/plugin.cfg')
 	return parse(config.get_value('plugin', 'version'))
 
 
-func equals(other :) -> bool:
+func equals(other :GdUnit4Version) -> bool:
 	return _major == other._major and _minor == other._minor and _patch == other._patch
 
 
-func is_greater(other :) -> bool:
+func is_greater(other :GdUnit4Version) -> bool:
 	if _major > other._major:
 		return true
 	if _major == other._major and _minor > other._minor:
@@ -44,9 +44,9 @@ func is_greater(other :) -> bool:
 
 
 static func init_version_label(label :Control) -> void:
-	var config = ConfigFile.new()
+	var config := ConfigFile.new()
 	config.load('addons/gdUnit4/plugin.cfg')
-	var version = config.get_value('plugin', 'version')
+	var version :String = config.get_value('plugin', 'version')
 	if label is RichTextLabel:
 		label.text = VERSION_PATTERN.replace('${version}', version)
 	else:

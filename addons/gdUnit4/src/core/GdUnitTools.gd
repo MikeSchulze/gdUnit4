@@ -25,7 +25,7 @@ static func prints_verbose(message :String) -> void:
 
 static func free_instance(instance :Variant, is_stdout_verbose :=false) -> bool:
 	if instance is Array:
-		for element in instance:
+		for element :Variant in instance:
 			free_instance(element)
 		instance.clear()
 		return true
@@ -79,7 +79,7 @@ static func _release_connections(instance :Object) -> void:
 
 static func release_timers() -> void:
 	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
-	for node in Engine.get_main_loop().root.get_children():
+	for node :Node in Engine.get_main_loop().root.get_children():
 		if is_instance_valid(node) and node.is_in_group("GdUnitTimers"):
 			if is_instance_valid(node):
 				Engine.get_main_loop().root.remove_child(node)

@@ -37,7 +37,7 @@ func test_richtext_normalize() -> void:
 	assert_that(GdUnitTools.richtext_normalize("")).is_equal("")
 	assert_that(GdUnitTools.richtext_normalize("This is a Color Message")).is_equal("This is a Color Message")
 
-	var message = """
+	var message := """
 		[color=green]line [/color][color=aqua]11:[/color] [color=#CD5C5C]Expecting:[/color]
 			must be empty but was
 		'[color=#1E90FF]after[/color]'

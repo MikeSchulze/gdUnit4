@@ -114,7 +114,7 @@ static func migrate_properties() -> void:
 			TEST_LOOKUP_FOLDER,\
 			DEFAULT_TEST_LOOKUP_FOLDER,\
 			HELP_TEST_LOOKUP_FOLDER,\
-			func(value): return DEFAULT_TEST_LOOKUP_FOLDER if value == null else value)
+			func(value :Variant) -> String: return DEFAULT_TEST_LOOKUP_FOLDER if value == null else value)
 
 
 static func create_shortcut_properties_if_need() -> void:

@@ -77,8 +77,8 @@ func test_enum_property() -> void:
 
 func test_migrate_property_change_key() -> void:
 	# setup old property
-	var old_property_X = "/category_patch/group_old/name"
-	var new_property_X = "/category_patch/group_new/name"
+	var old_property_X := "/category_patch/group_old/name"
+	var new_property_X := "/category_patch/group_new/name"
 	GdUnitSettings.create_property_if_need(old_property_X, "foo")
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_equal("foo")
 	assert_str(GdUnitSettings.get_setting(new_property_X, null)).is_null()
@@ -106,8 +106,8 @@ func test_migrate_property_change_key() -> void:
 
 func test_migrate_property_change_value() -> void:
 	# setup old property
-	var old_property_X = "/category_patch/group_old/name"
-	var new_property_X = "/category_patch/group_new/name"
+	var old_property_X := "/category_patch/group_old/name"
+	var new_property_X := "/category_patch/group_new/name"
 	GdUnitSettings.create_property_if_need(old_property_X, "foo", "help to foo")
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_equal("foo")
 	assert_str(GdUnitSettings.get_setting(new_property_X, null)).is_null()
@@ -118,7 +118,7 @@ func test_migrate_property_change_value() -> void:
 		new_property_X,\
 		old_property.default(),\
 		old_property.help(),\
-		func(_value): return "bar")
+		func(_value :Variant) -> String: return "bar")
 
 	var new_property := GdUnitSettings.get_property(new_property_X)
 	assert_str(GdUnitSettings.get_setting(old_property_X, null)).is_null()

@@ -1,7 +1,7 @@
 extends GdUnitTestSuite
 
 
-func test_equals_string():
+func test_equals_string() -> void:
 	var a := ""
 	var b := ""
 	var c := "abc"
@@ -29,13 +29,13 @@ func test_equals_string():
 	assert_bool(GdObjects.equals(d, Vector3.ONE)).is_false()
 
 
-func test_equals_stringname():
+func test_equals_stringname() -> void:
 	assert_bool(GdObjects.equals("",  &"")).is_true()
 	assert_bool(GdObjects.equals("abc", &"abc")).is_true()
 	assert_bool(GdObjects.equals("abc", &"abC")).is_false()
 
 
-func test_equals_array():
+func test_equals_array() -> void:
 	var a := []
 	var b := []
 	var c := Array()
@@ -65,7 +65,7 @@ func test_equals_array():
 	assert_bool(GdObjects.equals(a, Vector3.ONE)).is_false()
 
 
-func test_equals_dictionary():
+func test_equals_dictionary() -> void:
 	var a := {}
 	var b := {}
 	var c := {"a":"foo"}
@@ -102,13 +102,13 @@ class TestClass extends Resource:
 	var _b:String
 	var _c:Array
 
-	func _init(a:int = 0,b:String = "",c:Array = []):
+	func _init(a:int = 0, b:String = "", c:Array = []) -> void:
 		_a = a
 		_b = b
 		_c = c
 
 
-func test_equals_class():
+func test_equals_class() -> void:
 	var a := TestClass.new()
 	var b := TestClass.new()
 	var c := TestClass.new(1, "foo", ["bar", "xxx"])
@@ -129,16 +129,16 @@ func test_equals_class():
 	assert_bool(GdObjects.equals(x, d)).is_false()
 
 
-func test_equals_with_stack_deep():
+func test_equals_with_stack_deep() -> void:
 	# more extended version
 	var x2 := TestClass.new(1, "foo", [TestClass.new(22, "foo"), TestClass.new(22, "foo")])
 	var x3 := TestClass.new(1, "foo", [TestClass.new(22, "foo"), TestClass.new(23, "foo")])
 	assert_bool(GdObjects.equals(x2, x3)).is_false()
 
 
-func test_equals_Node_with_deep_check():
-	var nodeA = auto_free(Node.new())
-	var nodeB = auto_free(Node.new())
+func test_equals_Node_with_deep_check() -> void:
+	var nodeA :Node = auto_free(Node.new())
+	var nodeB :Node = auto_free(Node.new())
 
 	# compares by default with deep parameter ckeck
 	assert_bool(GdObjects.equals(nodeA, nodeA)).is_true()
@@ -152,7 +152,7 @@ func test_equals_Node_with_deep_check():
 	assert_bool(GdObjects.equals(nodeB, nodeA, false, GdObjects.COMPARE_MODE.OBJECT_REFERENCE)).is_false()
 
 
-func test_is_primitive_type():
+func test_is_primitive_type() -> void:
 	assert_bool(GdObjects.is_primitive_type(false)).is_true()
 	assert_bool(GdObjects.is_primitive_type(true)).is_true()
 	assert_bool(GdObjects.is_primitive_type(0)).is_true()
@@ -162,10 +162,10 @@ func test_is_primitive_type():
 
 
 class TestClassForIsType:
-	var x
+	var x :int
 
 
-func test_is_type():
+func test_is_type() -> void:
 	# check build-in types
 	assert_bool(GdObjects.is_type(1)).is_false()
 	assert_bool(GdObjects.is_type(1.3)).is_false()
@@ -199,7 +199,7 @@ func test_is_type():
 
 func test_is_singleton() -> void:
 	for singleton_name in Engine.get_singleton_list():
-		var singleton = Engine.get_singleton(singleton_name)
+		var singleton := Engine.get_singleton(singleton_name)
 		assert_bool(GdObjects.is_singleton(singleton)) \
 			.override_failure_message("Expect to a singleton: '%s' Instance: %s, Class: %s" % [singleton_name, singleton, singleton.get_class()]) \
 			.is_true()
@@ -210,11 +210,11 @@ func test_is_singleton() -> void:
 	assert_bool(GdObjects.is_singleton(auto_free(Node.new()))).is_false()
 
 
-func _is_instance(value) -> bool:
+func _is_instance(value :Variant) -> bool:
 	return GdObjects.is_instance(auto_free(value))
 
 
-func test_is_instance_true():
+func test_is_instance_true() -> void:
 	assert_bool(_is_instance(RefCounted.new())).is_true()
 	assert_bool(_is_instance(Node.new())).is_true()
 	assert_bool(_is_instance(AStar3D.new())).is_true()
@@ -227,7 +227,7 @@ func test_is_instance_true():
 	assert_bool(_is_instance(CustomClass.InnerClassC.new())).is_true()
 
 
-func test_is_instance_false():
+func test_is_instance_false() -> void:
 	assert_bool(_is_instance(RefCounted)).is_false()
 	assert_bool(_is_instance(Node)).is_false()
 	assert_bool(_is_instance(AStar3D)).is_false()
@@ -243,11 +243,11 @@ func test_is_instance_false():
 
 
 # shorter helper func to extract class name and using auto_free
-func extract_class_name(value) -> GdUnitResult:
+func extract_class_name(value :Variant) -> GdUnitResult:
 	return GdObjects.extract_class_name(auto_free(value))
 
 
-func test_get_class_name_from_class_path():
+func test_get_class_name_from_class_path() -> void:
 	# extract class name by resoure path
 	assert_result(extract_class_name("res://addons/gdUnit4/test/resources/core/Person.gd"))\
 		.is_success().is_value("Person")
@@ -261,7 +261,7 @@ func test_get_class_name_from_class_path():
 		.is_success().is_value("OverridenGetClassTestClass")
 
 
-func test_get_class_name_from_snake_case_class_path():
+func test_get_class_name_from_snake_case_class_path() -> void:
 	assert_result(extract_class_name("res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_with_class_name.gd"))\
 		.is_success().is_value("SnakeCaseWithClassName")
 	# without class_name
@@ -269,7 +269,7 @@ func test_get_class_name_from_snake_case_class_path():
 		.is_success().is_value("SnakeCaseWithoutClassName")
 
 
-func test_get_class_name_from_pascal_case_class_path():
+func test_get_class_name_from_pascal_case_class_path() -> void:
 	assert_result(extract_class_name("res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithClassName.gd"))\
 		.is_success().is_value("PascalCaseWithClassName")
 	# without class_name
@@ -277,7 +277,7 @@ func test_get_class_name_from_pascal_case_class_path():
 		.is_success().is_value("PascalCaseWithoutClassName")
 
 
-func test_get_class_name_from_type():
+func test_get_class_name_from_type() -> void:
 	assert_result(extract_class_name(Animation)).is_success().is_value("Animation")
 	assert_result(extract_class_name(GDScript)).is_success().is_value("GDScript")
 	assert_result(extract_class_name(Camera3D)).is_success().is_value("Camera3D")
@@ -292,7 +292,7 @@ func test_get_class_name_from_type():
 	assert_result(extract_class_name(AdvancedTestClass)).is_success().is_value("AdvancedTestClass")
 
 
-func test_get_class_name_from_inner_class():
+func test_get_class_name_from_inner_class() -> void:
 	assert_result(extract_class_name(CustomClass))\
 		.is_success().is_value("CustomClass")
 	assert_result(extract_class_name(CustomClass.InnerClassA))\
@@ -311,7 +311,7 @@ func test_get_class_name_from_inner_class():
 		.is_success().is_value("AdvancedTestClass.Area4D")
 
 
-func test_extract_class_name_from_instance():
+func test_extract_class_name_from_instance() -> void:
 	assert_result(extract_class_name(Camera3D.new())).is_equal("Camera3D")
 	assert_result(extract_class_name(GDScript.new())).is_equal("GDScript")
 	assert_result(extract_class_name(Node.new())).is_equal("Node")
@@ -320,7 +320,7 @@ func test_extract_class_name_from_instance():
 	assert_result(extract_class_name(Person.new())).is_equal("Person")
 	assert_result(extract_class_name(ClassWithNameA.new())).is_equal("ClassWithNameA")
 	assert_result(extract_class_name(ClassWithNameB.new())).is_equal("ClassWithNameB")
-	var classWithoutNameA = load("res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd")
+	var classWithoutNameA := load("res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd")
 	assert_result(extract_class_name(classWithoutNameA.new())).is_equal("ClassWithoutNameA")
 	assert_result(extract_class_name(CustomNodeTestClass.new())).is_equal("CustomNodeTestClass")
 	assert_result(extract_class_name(CustomResourceTestClass.new())).is_equal("CustomResourceTestClass")
@@ -335,19 +335,19 @@ func test_extract_class_name_from_instance():
 
 # verify enigne class names are not converted by configured naming convention
 @warning_ignore("unused_parameter")
-func test_extract_class_name_from_class_path(fuzzer=GodotClassNameFuzzer.new(true, true), fuzzer_iterations = 100) -> void:
+func test_extract_class_name_from_class_path(fuzzer := GodotClassNameFuzzer.new(true, true), fuzzer_iterations := 100) -> void:
 	var clazz_name :String = fuzzer.next_value()
 	assert_str(GdObjects.extract_class_name_from_class_path(PackedStringArray([clazz_name]))).is_equal(clazz_name)
 
 
 @warning_ignore("unused_parameter")
-func test_extract_class_name_godot_classes(fuzzer=GodotClassNameFuzzer.new(true, true), fuzzer_iterations = 100):
+func test_extract_class_name_godot_classes(fuzzer := GodotClassNameFuzzer.new(true, true), fuzzer_iterations := 100) -> void:
 	var extract_class_name_ := fuzzer.next_value() as String
 	var instance :Variant = ClassDB.instantiate(extract_class_name_)
 	assert_result(extract_class_name(instance)).is_equal(extract_class_name_)
 
 
-func test_extract_class_path_by_clazz():
+func test_extract_class_path_by_clazz() -> void:
 	# engine classes has no class path
 	assert_array(GdObjects.extract_class_path(Animation)).is_empty()
 	assert_array(GdObjects.extract_class_path(GDScript)).is_empty()
@@ -397,14 +397,14 @@ func test_extract_class_path_by_clazz():
 #
 # creates a test instance by given class name or resource path
 # instances created with auto free
-func create_instance(clazz):
+func create_instance(clazz :Variant) -> Object:
 	var result := GdObjects.create_instance(clazz)
 	if result.is_success():
 		return auto_free(result.value())
 	return null
 
 
-func test_create_instance_by_class_name():
+func test_create_instance_by_class_name() -> void:
 	# instance of engine classes
 	assert_object(create_instance(Node))\
 		.is_not_null()\
@@ -422,7 +422,7 @@ func test_create_instance_by_class_name():
 		.is_instanceof(CustomClass.InnerClassA)
 
 
-func test_extract_class_name_on_null_value():
+func test_extract_class_name_on_null_value() -> void:
 	# we can't extract class name from a null value
 	assert_result(GdObjects.extract_class_name(null))\
 		.is_error()\
@@ -445,7 +445,7 @@ func test_is_instance_scene() -> void:
 	assert_bool(GdObjects.is_instance_scene(auto_free(Control.new()))).is_false()
 
 	# now check checked a loaded scene
-	var resource = load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_bool(GdObjects.is_instance_scene(resource)).is_false()
 	# checked a instance of a scene
 	assert_bool(GdObjects.is_instance_scene(auto_free(resource.instantiate()))).is_true()
@@ -457,7 +457,7 @@ func test_is_scene_resource_path() -> void:
 	assert_bool(GdObjects.is_scene_resource_path(auto_free(Control.new()))).is_false()
 
 	# check checked a loaded scene
-	var resource = load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_bool(GdObjects.is_scene_resource_path(resource)).is_false()
 	# checked resource path
 	assert_bool(GdObjects.is_scene_resource_path("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")).is_true()
@@ -465,12 +465,12 @@ func test_is_scene_resource_path() -> void:
 
 func test_extract_class_functions() -> void:
 	var functions := GdObjects.extract_class_functions("Resource", [""])
-	for f in functions:
+	for f :Dictionary in functions:
 		if f["name"] == "get_path":
 			assert_str(GdFunctionDescriptor.extract_from(f)._to_string()).is_equal("[Line:-1] func get_path() -> String:")
 
 	functions = GdObjects.extract_class_functions("CustomResourceTestClass", ["res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd"])
-	for f in functions:
+	for f :Dictionary in functions:
 		if f["name"] == "get_path":
 			assert_str(GdFunctionDescriptor.extract_from(f)._to_string()).is_equal("[Line:-1] func get_path() -> String:")
 
