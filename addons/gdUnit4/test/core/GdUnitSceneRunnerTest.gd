@@ -11,12 +11,12 @@ func load_test_scene() -> Node:
 	return auto_free(load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn").instantiate())
 
 
-func before():
+func before() -> void:
 	# use a dedicated FPS because we calculate frames by time
 	Engine.set_max_fps(60)
 
 
-func after():
+func after() -> void:
 	Engine.set_max_fps(0)
 
 
@@ -44,7 +44,7 @@ func test_invoke_method() -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_simulate_frames(timeout = 5000) -> void:
+func test_simulate_frames(timeout := 5000) -> void:
 	var runner := scene_runner(load_test_scene())
 	var box1 :ColorRect = runner.get_property("_box1")
 	# initial is white
@@ -65,7 +65,7 @@ func test_simulate_frames(timeout = 5000) -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_simulate_frames_withdelay(timeout = 4000) -> void:
+func test_simulate_frames_withdelay(timeout := 4000) -> void:
 	var runner := scene_runner(load_test_scene())
 	var box1 :ColorRect = runner.get_property("_box1")
 	# initial is white
@@ -81,7 +81,7 @@ func test_simulate_frames_withdelay(timeout = 4000) -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_run_scene_colorcycle(timeout=2000) -> void:
+func test_run_scene_colorcycle(timeout := 2000) -> void:
 	var runner := scene_runner(load_test_scene())
 	var box1 :ColorRect = runner.get_property("_box1")
 	# verify inital color
@@ -99,7 +99,7 @@ func test_run_scene_colorcycle(timeout=2000) -> void:
 	assert_object(box1.color).is_equal(Color.GREEN)
 
 
-func test_simulate_scene_inteaction_by_press_enter(timeout=2000) -> void:
+func test_simulate_scene_inteaction_by_press_enter(timeout := 2000) -> void:
 	var runner := scene_runner(load_test_scene())
 
 	# inital no spell is fired
@@ -114,7 +114,7 @@ func test_simulate_scene_inteaction_by_press_enter(timeout=2000) -> void:
 	assert_object(runner.find_child("Spell")).is_not_null()
 
 	# wait until spell is explode after around 1s
-	var spell = runner.find_child("Spell")
+	var spell := runner.find_child("Spell")
 	if spell == null:
 		return
 	await await_signal_on(spell, "spell_explode", [spell], timeout)
@@ -124,8 +124,8 @@ func test_simulate_scene_inteaction_by_press_enter(timeout=2000) -> void:
 
 
 # mock on a runner and spy on created spell
-func test_simulate_scene_inteaction_in_combination_with_spy():
-	var spy_ = spy(load_test_scene())
+func test_simulate_scene_inteaction_in_combination_with_spy() -> void:
+	var spy_ := spy(load_test_scene())
 	# create a runner runner
 	var runner := scene_runner(spy_)
 
@@ -133,13 +133,13 @@ func test_simulate_scene_inteaction_in_combination_with_spy():
 	runner.simulate_key_pressed(KEY_ENTER)
 	verify(spy_).create_spell()
 
-	var spell = runner.find_child("Spell")
+	var spell := runner.find_child("Spell")
 	assert_that(spell).is_not_null()
 	assert_that(spell.is_connected("spell_explode", Callable(spy_, "_destroy_spell"))).is_true()
 
 
-func test_simulate_scene_interact_with_buttons():
-	var spyed_scene = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+func test_simulate_scene_interact_with_buttons() -> void:
+	var spyed_scene := spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var runner := scene_runner(spyed_scene)
 	# test button 1 interaction
 	await await_millis(1000)
@@ -202,7 +202,7 @@ func test_await_signal_without_time_factor() -> void:
 	await runner.await_signal("panel_color_change", [box1, Color.GREEN])
 	(
 		# should be interrupted is will never change to Color.KHAKI
-		await assert_failure_await(func x(): await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300))
+		await assert_failure_await(func x() -> void: await runner.await_signal( "panel_color_change", [box1, Color.KHAKI], 300))
 	).has_message("await_signal_on(panel_color_change, [%s, %s]) timed out after 300ms" % [str(box1), str(Color.KHAKI)])\
 		.has_line(205)
 
@@ -219,7 +219,7 @@ func test_await_signal_with_time_factor() -> void:
 	await runner.await_signal("panel_color_change", [box1, Color.GREEN], 100)
 	(
 		# should be interrupted is will never change to Color.KHAKI
-		await assert_failure_await(func x(): await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30))
+		await assert_failure_await(func x() -> void: await runner.await_signal("panel_color_change", [box1, Color.KHAKI], 30))
 	).has_message("await_signal_on(panel_color_change, [%s, %s]) timed out after 30ms" % [str(box1), str(Color.KHAKI)])\
 		.has_line(222)
 
@@ -237,7 +237,7 @@ func test_simulate_until_signal() -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_simulate_until_object_signal(timeout=2000) -> void:
+func test_simulate_until_object_signal(timeout := 2000) -> void:
 	var runner := scene_runner(load_test_scene())
 
 	# inital no spell is fired
@@ -247,7 +247,7 @@ func test_simulate_until_object_signal(timeout=2000) -> void:
 	runner.simulate_key_pressed(KEY_ENTER)
 	# wait until next frame
 	await await_idle_frame()
-	var spell = runner.find_child("Spell")
+	var spell := runner.find_child("Spell")
 
 	# simmulate scene until the spell is explode
 	await runner.simulate_until_object_signal(spell, "spell_explode", spell)
@@ -275,11 +275,11 @@ func test_runner_by_invalid_uid_path() -> void:
 
 func test_runner_by_uid_path() -> void:
 	# uid is for res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn
-	var runner = scene_runner("uid://cn8ucy2rheu0f")
+	var runner := scene_runner("uid://cn8ucy2rheu0f")
 	assert_object(runner.scene()).is_instanceof(Node2D)
 
 	# verify the scene is freed when the runner is freed
-	var scene = runner.scene()
+	var scene := runner.scene()
 	assert_bool(is_instance_valid(scene)).is_true()
 	runner._notification(NOTIFICATION_PREDELETE)
 	# give engine time to free the resources
@@ -289,11 +289,11 @@ func test_runner_by_uid_path() -> void:
 
 
 func test_runner_by_binary_resource_path() -> void:
-	var runner = scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.scn")
+	var runner := scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.scn")
 	assert_object(runner.scene()).is_instanceof(Node2D)
 
 	# verify the scene is freed when the runner is freed
-	var scene = runner.scene()
+	var scene := runner.scene()
 	assert_bool(is_instance_valid(scene)).is_true()
 	runner._notification(NOTIFICATION_PREDELETE)
 	# give engine time to free the resources
@@ -303,11 +303,11 @@ func test_runner_by_binary_resource_path() -> void:
 
 
 func test_runner_by_resource_path() -> void:
-	var runner = scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
+	var runner := scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
 	assert_object(runner.scene()).is_instanceof(Node2D)
 
 	# verify the scene is freed when the runner is freed
-	var scene = runner.scene()
+	var scene := runner.scene()
 	assert_bool(is_instance_valid(scene)).is_true()
 	runner._notification(NOTIFICATION_PREDELETE)
 	# give engine time to free the resources
@@ -317,13 +317,13 @@ func test_runner_by_resource_path() -> void:
 
 
 func test_runner_by_invalid_scene_instance() -> void:
-	var scene = RefCounted.new()
+	var scene := RefCounted.new()
 	var runner := scene_runner(scene)
 	assert_object(runner._current_scene).is_null()
 
 
 func test_runner_by_scene_instance() -> void:
-	var scene = load("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn").instantiate()
+	var scene :Node = load("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn").instantiate()
 	var runner := scene_runner(scene)
 	assert_object(runner.scene()).is_instanceof(Node2D)
 
@@ -338,7 +338,7 @@ func test_runner_by_scene_instance() -> void:
 
 
 func test_mouse_drag_and_drop() -> void:
-	var spy_scene = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
+	var spy_scene := spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
 	var runner := scene_runner(spy_scene)
 
 	var slot_left :TextureRect = $"/root/DragAndDropScene/left/TextureRect"
@@ -373,8 +373,8 @@ func test_mouse_drag_and_drop() -> void:
 func test_runner_GD_356() -> void:
 	# to avoid reporting the expected push_error as test failure we disable it
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, false)
-	var runner = scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
-	var player = runner.invoke("find_child", "Player", true, false)
+	var runner := scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
+	var player :Variant = runner.invoke("find_child", "Player", true, false)
 	assert_that(player).is_not_null()
 	await assert_func(player, "is_on_floor").wait_until(500).is_true()
 	assert_that(runner.scene()).is_not_null()
@@ -385,5 +385,5 @@ func test_runner_GD_356() -> void:
 
 
 # we override the scene runner function for test purposes to hide push_error notifications
-func scene_runner(scene, verbose := false) -> GdUnitSceneRunner:
+func scene_runner(scene :Variant, verbose := false) -> GdUnitSceneRunner:
 	return auto_free(GdUnitSceneRunnerImpl.new(scene, verbose, true))

@@ -12,7 +12,7 @@ var _to : int = 0
 var _mode : int = NORMAL
 
 
-func _init(from: int, to: int, mode :int = NORMAL):
+func _init(from: int, to: int, mode :int = NORMAL) -> void:
 	assert(from <= to, "Invalid range!")
 	_from = from
 	_to = to

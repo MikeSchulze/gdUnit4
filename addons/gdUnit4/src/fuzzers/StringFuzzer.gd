@@ -9,7 +9,7 @@ var _max_length :int
 var _charset :PackedByteArray
 
 
-func _init(min_length :int,max_length :int,pattern :String = DEFAULT_CHARSET):
+func _init(min_length :int, max_length :int, pattern :String = DEFAULT_CHARSET) -> void:
 	assert(min_length>0 and min_length < max_length)
 	assert(not null or not pattern.is_empty())
 	_min_length = min_length
@@ -48,8 +48,8 @@ static func extract_charset(pattern :String) -> PackedByteArray:
 	return PackedByteArray(charset)
 
 
-static func build_chars(from :int, to :int) -> Array:
-	var characters := Array()
+static func build_chars(from :int, to :int) -> Array[int]:
+	var characters :Array[int] = []
 	for character in range(from+1, to+1):
 		characters.append(character)
 	return characters

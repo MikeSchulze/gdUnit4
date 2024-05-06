@@ -11,7 +11,7 @@ static func get_icon(control: Control, icon_name: String) -> Texture2D:
 
 
 @warning_ignore("shadowed_global_identifier")
-static func type_convert(value: Variant, type: int):
+static func type_convert(value: Variant, type: int) -> Variant:
 	return convert(value, type)
 
 
@@ -21,7 +21,7 @@ static func convert(value: Variant, type: int) -> Variant:
 
 
 # handle global_position fixed by https://github.com/godotengine/godot/pull/88473
-static func set_event_global_position(event: InputEventMouseMotion, global_position: Vector2):
+static func set_event_global_position(event: InputEventMouseMotion, global_position: Vector2) -> void:
 	if Engine.get_version_info().hex >= 0x40202 or Engine.get_version_info().hex == 0x40104:
 		event.global_position = event.position
 	else:
