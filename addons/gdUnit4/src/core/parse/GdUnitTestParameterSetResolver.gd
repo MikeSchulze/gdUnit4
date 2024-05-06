@@ -41,14 +41,14 @@ func is_parameter_set_static(index: int) -> bool:
 func validate(input_value_set: Array) -> String:
 	var input_arguments := _fd.args()
 	# check given parameter set with test case arguments
-	var expected_arg_count = input_arguments.size() - 1
-	for input_values in input_value_set:
+	var expected_arg_count := input_arguments.size() - 1
+	for input_values :Variant in input_value_set:
 		var parameter_set_index := input_value_set.find(input_values)
 		if input_values is Array:
-			var current_arg_count = input_values.size()
+			var current_arg_count :int = input_values.size()
 			if current_arg_count != expected_arg_count:
 				return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	The test case requires [%d] input parameters, but the set contains [%d]" % [parameter_set_index, expected_arg_count, current_arg_count]
-			var error := validate_parameter_types(input_arguments, input_values, parameter_set_index)
+			var error := GdUnitTestParameterSetResolver.validate_parameter_types(input_arguments, input_values, parameter_set_index)
 			if not error.is_empty():
 				return error
 		else:
@@ -63,10 +63,10 @@ static func validate_parameter_types(input_arguments: Array, input_values: Array
 		if input_param.is_parameter_set():
 			continue
 		var input_param_type := input_param.type()
-		var input_value = input_values[i]
+		var input_value :Variant = input_values[i]
 		var input_value_type := typeof(input_value)
-		# input parameter is not typed we skip the type test
-		if input_param_type == TYPE_NIL:
+		# input parameter is not typed or is Variant we skip the type test
+		if input_param_type == TYPE_NIL or input_param_type == GdObjects.TYPE_VARIANT:
 			continue
 		# is input type enum allow int values
 		if input_param_type == GdObjects.TYPE_VARIANT and input_value_type == TYPE_INT:
@@ -96,20 +96,20 @@ func build_test_case_names(test_case: _TestCase) -> PackedStringArray:
 		var property_names := _extract_property_names(test_case.get_parent())
 		for parameter_set_index in parameter_sets.size():
 			var parameter_set := parameter_sets[parameter_set_index]
-			_static_sets_by_index[parameter_set_index] = _is_static_parameter_set(test_case, parameter_set, property_names)
-			_test_case_names_cache.append(_build_test_case_name(test_case, parameter_set, parameter_set_index))
+			_static_sets_by_index[parameter_set_index] = _is_static_parameter_set(parameter_set, property_names)
+			_test_case_names_cache.append(GdUnitTestParameterSetResolver._build_test_case_name(test_case, parameter_set, parameter_set_index))
 			parameter_set_index += 1
 	return _test_case_names_cache
 
 
 func _extract_property_names(node :Node) -> PackedStringArray:
 	return node.get_property_list()\
-		.map(func(property): return property["name"])\
-		.filter(func(property): return !EXCLUDE_PROPERTIES_TO_COPY.has(property))
+		.map(func(property :Dictionary) -> String: return property["name"])\
+		.filter(func(property :String) -> bool: return !EXCLUDE_PROPERTIES_TO_COPY.has(property))
 
 
 # tests if the test property set contains an property reference by name, if not the parameter set holds only static values
-func _is_static_parameter_set(test_case: _TestCase, parameters :String, property_names :PackedStringArray) -> bool:
+func _is_static_parameter_set(parameters :String, property_names :PackedStringArray) -> bool:
 	for property_name in property_names:
 		if parameters.contains(property_name):
 			_is_static = false
@@ -121,7 +121,7 @@ func _extract_test_names_by_reflection(test_case: _TestCase) -> PackedStringArra
 	var parameter_sets := load_parameter_sets(test_case)
 	var test_case_names: PackedStringArray = []
 	for index in parameter_sets.size():
-		test_case_names.append(_build_test_case_name(test_case, str(parameter_sets[index]), index))
+		test_case_names.append(GdUnitTestParameterSetResolver._build_test_case_name(test_case, str(parameter_sets[index]), index))
 	return test_case_names
 
 
@@ -133,27 +133,27 @@ static func _build_test_case_name(test_case: _TestCase, test_parameter: String, 
 
 # extracts the arguments from the given test case, using kind of reflection solution
 # to restore the parameters from a string representation to real instance type
-func load_parameter_sets(test_case: _TestCase, validate := false) -> Array:
-	var source_script = test_case.get_parent().get_script()
+func load_parameter_sets(test_case: _TestCase, do_validate := false) -> Array:
+	var source_script :Script = test_case.get_parent().get_script()
 	var parameter_arg := GdFunctionArgument.get_parameter_set(_fd.args())
-	var source_code = CLASS_TEMPLATE \
+	var source_code := CLASS_TEMPLATE \
 		.replace("${clazz_path}", source_script.resource_path) \
 		.replace("${test_params}", parameter_arg.value_as_string())
-	var script = GDScript.new()
+	var script := GDScript.new()
 	script.source_code = source_code
 	# enable this lines only for debuging
 	#script.resource_path = GdUnitTools.create_temp_dir("parameter_extract") + "/%s__.gd" % fd.name()
 	#DirAccess.remove_absolute(script.resource_path)
 	#ResourceSaver.save(script, script.resource_path)
-	var result = script.reload()
+	var result := script.reload()
 	if result != OK:
 		push_error("Extracting test parameters failed! Script loading error: %s" % result)
 		return []
-	var instance = script.new()
-	copy_properties(test_case.get_parent(), instance)
+	var instance :Variant = script.new()
+	GdUnitTestParameterSetResolver.copy_properties(test_case.get_parent(), instance)
 	instance.queue_free()
-	var parameter_sets = instance.call("__extract_test_parameters")
-	if not validate:
+	var parameter_sets :Variant = instance.call("__extract_test_parameters")
+	if not do_validate:
 		return parameter_sets
 	# validate the parameter set
 	var error := validate(parameter_sets)
@@ -178,10 +178,9 @@ func load_parameter_sets(test_case: _TestCase, validate := false) -> Array:
 
 
 static func copy_properties(source: Object, dest: Object) -> void:
-	var context := GdUnitThreadManager.get_current_context().get_execution_context()
 	for property in source.get_property_list():
-		var property_name = property["name"]
-		var property_value = source.get(property_name)
+		var property_name :String = property["name"]
+		var property_value :Variant = source.get(property_name)
 		if EXCLUDE_PROPERTIES_TO_COPY.has(property_name):
 			continue
 		#if dest.get(property_name) == null:

@@ -9,7 +9,7 @@ enum {
 }
 
 
-static func load_test_suite(resource_path :String, script_type = GD_SUITE) -> Node:
+static func load_test_suite(resource_path :String, script_type := GD_SUITE) -> Node:
 	match script_type:
 		GD_SUITE:
 			return load_test_suite_gd(resource_path)
@@ -34,7 +34,7 @@ static func load_test_suite_gd(resource_path :String) -> GdUnitTestSuite:
 static func load_test_suite_cs(resource_path :String) -> Node:
 	if not GdUnit4CSharpApiLoader.is_mono_supported():
 		return null
-	var script = ClassDB.instantiate("CSharpScript")
+	var script :Script = ClassDB.instantiate("CSharpScript")
 	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
 	script.resource_path = resource_path
 	script.reload()
@@ -44,7 +44,7 @@ static func load_test_suite_cs(resource_path :String) -> Node:
 static func load_cs_script(resource_path :String, debug_write := false) -> Script:
 	if not GdUnit4CSharpApiLoader.is_mono_supported():
 		return null
-	var script = ClassDB.instantiate("CSharpScript")
+	var script :Script = ClassDB.instantiate("CSharpScript")
 	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
 	script.resource_path = GdUnitFileAccess.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".cs")
 	if debug_write:

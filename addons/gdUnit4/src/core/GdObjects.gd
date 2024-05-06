@@ -161,7 +161,7 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 		var property_name :String = property["name"]
 		var property_type :int = property["type"]
 		var property_value :Variant = obj.get(property_name)
-		if property_value is GDScript or property_value is Callable:
+		if property_value is GDScript or property_value is Callable or property_value is RegEx:
 			continue
 		if (property["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE|PROPERTY_USAGE_DEFAULT
 			and not property["usage"] & PROPERTY_USAGE_CATEGORY
