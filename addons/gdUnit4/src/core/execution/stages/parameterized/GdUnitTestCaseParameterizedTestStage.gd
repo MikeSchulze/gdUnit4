@@ -27,7 +27,7 @@ func _execute(context: GdUnitExecutionContext) -> void:
 		# is test_parameter_index is set, we run this parameterized test only
 		if test_parameter_index != -1 and test_parameter_index != parameter_set_index:
 			continue
-		var current_test_case_name = test_names[parameter_set_index]
+		var current_test_case_name := test_names[parameter_set_index]
 		_stage_before.set_test_name(current_test_case_name)
 		_stage_after.set_test_name(current_test_case_name)
 
@@ -70,7 +70,7 @@ func _load_parameter_set(context: GdUnitExecutionContext, parameter_set_index: i
 	return parameters[parameter_set_index]
 
 
-func set_debug_mode(debug_mode: bool=false):
+func set_debug_mode(debug_mode: bool=false) -> void:
 	super.set_debug_mode(debug_mode)
 	_stage_before.set_debug_mode(debug_mode)
 	_stage_after.set_debug_mode(debug_mode)

@@ -132,43 +132,47 @@ func build_report_statistics(orphans :int, recursive := true) -> Dictionary:
 
 
 func has_failures() -> bool:
-	return _sub_context.any(func(c): return c.has_failures()) or _report_collector.has_failures()
+	return _sub_context.any(func(c :GdUnitExecutionContext) -> bool:
+			return c.has_failures()) or _report_collector.has_failures()
 
 
 func has_errors() -> bool:
-	return _sub_context.any(func(c): return c.has_errors()) or _report_collector.has_errors()
+	return _sub_context.any(func(c :GdUnitExecutionContext) -> bool:
+			return c.has_errors()) or _report_collector.has_errors()
 
 
 func has_warnings() -> bool:
-	return _sub_context.any(func(c): return c.has_warnings()) or _report_collector.has_warnings()
+	return _sub_context.any(func(c :GdUnitExecutionContext) -> bool:
+			return c.has_warnings()) or _report_collector.has_warnings()
 
 
 func has_skipped() -> bool:
-	return _sub_context.any(func(c): return c.has_skipped()) or _report_collector.has_skipped()
+	return _sub_context.any(func(c :GdUnitExecutionContext) -> bool:
+			return c.has_skipped()) or _report_collector.has_skipped()
 
 
 func count_failures(recursive :bool) -> int:
 	if not recursive:
 		return _report_collector.count_failures()
 	return _sub_context\
-		.map(func(c): return c.count_failures(recursive))\
-		.reduce(sum, _report_collector.count_failures())
+		.map(func(c :GdUnitExecutionContext) -> int:
+				return c.count_failures(recursive)).reduce(sum, _report_collector.count_failures())
 
 
 func count_errors(recursive :bool) -> int:
 	if not recursive:
 		return _report_collector.count_errors()
 	return _sub_context\
-		.map(func(c): return c.count_errors(recursive))\
-		.reduce(sum, _report_collector.count_errors())
+		.map(func(c :GdUnitExecutionContext) -> int:
+				return c.count_errors(recursive)).reduce(sum, _report_collector.count_errors())
 
 
 func count_skipped(recursive :bool) -> int:
 	if not recursive:
 		return _report_collector.count_skipped()
 	return _sub_context\
-		.map(func(c): return c.count_skipped(recursive))\
-		.reduce(sum, _report_collector.count_skipped())
+		.map(func(c :GdUnitExecutionContext) -> int:
+				return c.count_skipped(recursive)).reduce(sum, _report_collector.count_skipped())
 
 
 func count_orphans() -> int:
