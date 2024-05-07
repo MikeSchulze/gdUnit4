@@ -215,12 +215,12 @@ const RETURN_DEEP_STUB = GdUnitMock.RETURN_DEEP_STUB
 
 
 ## Creates a mock for given class name
-func mock(clazz :Variant, mock_mode := RETURN_DEFAULTS) -> Object:
+func mock(clazz :Variant, mock_mode := RETURN_DEFAULTS) -> Variant:
 	return __lazy_load("res://addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd").build(clazz, mock_mode)
 
 
 ## Creates a spy checked given object instance
-func spy(instance :Variant) -> Object:
+func spy(instance :Variant) -> Variant:
 	return __lazy_load("res://addons/gdUnit4/src/spy/GdUnitSpyBuilder.gd").build(instance)
 
 

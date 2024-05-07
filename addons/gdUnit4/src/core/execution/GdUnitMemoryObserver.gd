@@ -14,7 +14,7 @@ const _show_debug := false
 
 
 ## Registration of an instance to be released when an execution phase is completed
-func register_auto_free(obj) -> Variant:
+func register_auto_free(obj :Variant) -> Variant:
 	if not is_instance_valid(obj):
 		return obj
 	# do not register on GDScriptNativeClass
@@ -99,7 +99,7 @@ static func gc_on_guarded_instances() -> void:
 		return
 	for tag in Engine.get_meta_list():
 		if tag.begins_with(TAG_OBSERVE_INSTANCE):
-			var instance = Engine.get_meta(tag)
+			var instance :Object = Engine.get_meta(tag)
 			await gc_guarded_instance("Leaked instance detected:", instance)
 			await GdUnitTools.free_instance(instance, false)
 
@@ -127,5 +127,5 @@ func gc() -> void:
 
 
 ## Checks whether the specified object is registered for automatic release
-static func is_marked_auto_free(obj) -> bool:
+static func is_marked_auto_free(obj :Object) -> bool:
 	return Engine.get_meta(TAG_AUTO_FREE, []).has(obj)

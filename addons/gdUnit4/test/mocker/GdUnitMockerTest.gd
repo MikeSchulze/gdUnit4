@@ -4,28 +4,28 @@ extends GdUnitTestSuite
 
 var resource_path := "res://addons/gdUnit4/test/mocker/resources/"
 
-var _saved_report_error_settings
+var _saved_report_error_settings :Variant
 
 
-func before():
+func before() -> void:
 	# disable error pushing for testing
 	_saved_report_error_settings = ProjectSettings.get_setting(GdUnitSettings.REPORT_PUSH_ERRORS)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, false)
 
 
-func after():
+func after() -> void:
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, _saved_report_error_settings)
 
 
-func test_mock_instance_id_is_unique():
-	var m1  = mock(RefCounted)
-	var m2  = mock(RefCounted)
+func test_mock_instance_id_is_unique() -> void:
+	var m1 :Variant = mock(RefCounted)
+	var m2 :Variant = mock(RefCounted)
 	# test the internal instance id is unique
 	assert_that(m1.__instance_id()).is_not_equal(m2.__instance_id())
 	assert_object(m1).is_not_same(m2)
 
 
-func test_is_mockable_godot_classes():
+func test_is_mockable_godot_classes() -> void:
 	# verify enigne classes
 	for clazz_name in ClassDB.get_class_list():
 		# mocking is not allowed for:
@@ -38,24 +38,24 @@ func test_is_mockable_godot_classes():
 			.is_equal(is_mockable)
 
 
-func test_is_mockable_by_class_type():
+func test_is_mockable_by_class_type() -> void:
 	assert_that(GdUnitMockBuilder.is_mockable(Node)).is_true()
 	assert_that(GdUnitMockBuilder.is_mockable(CSGBox3D)).is_true()
 
 
-func test_is_mockable_custom_class_type():
+func test_is_mockable_custom_class_type() -> void:
 	assert_that(GdUnitMockBuilder.is_mockable(CustomResourceTestClass)).is_true()
 	assert_that(GdUnitMockBuilder.is_mockable(CustomNodeTestClass)).is_true()
 
 
-func test_is_mockable_by_script_path():
+func test_is_mockable_by_script_path() -> void:
 	assert_that(GdUnitMockBuilder.is_mockable(resource_path + "CustomResourceTestClass.gd")).is_true()
 	assert_that(GdUnitMockBuilder.is_mockable(resource_path + "CustomNodeTestClass.gd")).is_true()
 	# verify for non scripts
 	assert_that(GdUnitMockBuilder.is_mockable(resource_path + "capsuleshape2d.tres")).is_false()
 
 
-func test_is_mockable__overriden_func_get_class():
+func test_is_mockable__overriden_func_get_class() -> void:
 	# test with class type
 	assert_that(GdUnitMockBuilder.is_mockable(OverridenGetClassTestClass))\
 		.override_failure_message("The class 'CustomResourceTestClass' should be mockable when 'func get_class()' is overriden")\
@@ -67,27 +67,27 @@ func test_is_mockable__overriden_func_get_class():
 
 
 @warning_ignore("unused_parameter")
-func test_mock_godot_class_fullcheck(fuzzer=GodotClassNameFuzzer.new(), fuzzer_iterations=200):
-	var clazz_name = fuzzer.next_value()
+func test_mock_godot_class_fullcheck(fuzzer := GodotClassNameFuzzer.new(), fuzzer_iterations := 200) -> void:
+	var clazz_name := fuzzer.next_value()
 	# try to create a mock
 	if GdUnitMockBuilder.is_mockable(clazz_name):
-		var m = mock(clazz_name, CALL_REAL_FUNC)
+		var m :Variant = mock(clazz_name, CALL_REAL_FUNC)
 		assert_that(m)\
 			.override_failure_message("The class %s should be mockable" % clazz_name)\
 			.is_not_null()
 
 
-func test_mock_by_script_path():
+func test_mock_by_script_path() -> void:
 	assert_that(mock(resource_path + "CustomResourceTestClass.gd")).is_not_null()
 	assert_that(mock(resource_path + "CustomNodeTestClass.gd")).is_not_null()
 
 
-func test_mock_class__overriden_func_get_class():
+func test_mock_class__overriden_func_get_class() -> void:
 	assert_that(mock(OverridenGetClassTestClass)).is_not_null()
 	assert_that(mock(resource_path + "OverridenGetClassTestClass.gd")).is_not_null()
 
 
-func test_mock_fail():
+func test_mock_fail() -> void:
 	# not godot class
 	assert_that(mock("CustomResourceTestClass")).is_null()
 	# invalid path to script
@@ -96,13 +96,13 @@ func test_mock_fail():
 	assert_that(mock(CustomResourceTestClass.new())).is_null()
 
 
-func test_mock_special_classes():
-	var m = mock("JavaClass") as JavaClass
+func test_mock_special_classes() -> void:
+	var m := mock("JavaClass") as JavaClass
 	assert_that(m).is_not_null()
 
 
-func test_mock_Node():
-	var mocked_node = mock(Node)
+func test_mock_Node() -> void:
+	var mocked_node :Variant = mock(Node)
 	assert_that(mocked_node).is_not_null()
 
 	# test we have initial no interactions checked this mock
@@ -131,7 +131,7 @@ func test_mock_Node():
 
 func test_mock_source_with_class_name_by_resource_path() -> void:
 	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
-	var m = mock(resource_path_)
+	var m :Variant = mock(resource_path_)
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
 		.contains("class_name DoubledMunderwoodPathingWorld")\
@@ -140,7 +140,7 @@ func test_mock_source_with_class_name_by_resource_path() -> void:
 
 func test_mock_source_with_class_name_by_class() -> void:
 	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
-	var m = mock(Munderwood_Pathing_World)
+	var m :Variant = mock(Munderwood_Pathing_World)
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
 		.contains("class_name DoubledMunderwoodPathingWorld")\
@@ -148,7 +148,7 @@ func test_mock_source_with_class_name_by_class() -> void:
 
 
 func test_mock_extends_godot_class() -> void:
-	var m = mock(World3D)
+	var m :Variant = mock(World3D)
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
 		.contains("class_name DoubledWorld")\
@@ -156,13 +156,13 @@ func test_mock_extends_godot_class() -> void:
 
 
 var _test_signal_args := Array()
-func _emit_ready(a, b, c = null):
+func _emit_ready(a :String, b :String, c :Variant = null) -> void:
 	_test_signal_args = [a, b, c]
 
 
-func test_mock_Node_func_vararg():
+func test_mock_Node_func_vararg() -> void:
 	# setup
-	var mocked_node = mock(Node)
+	var mocked_node :Variant = mock(Node)
 
 	# mock return value
 	do_return(ERR_CANT_CONNECT).on(mocked_node).rpc("test", "arg1", "arg2", "invalid")
@@ -177,9 +177,9 @@ func test_mock_Node_func_vararg():
 	assert_that(mocked_node.rpc("test", "arg1", "argX", 42)).is_equal(ERR_CANT_CREATE)
 
 
-func test_mock_Node_func_vararg_call_real_func():
+func test_mock_Node_func_vararg_call_real_func() -> void:
 	# setup
-	var mocked_node = mock(Node, CALL_REAL_FUNC)
+	var mocked_node :Variant = mock(Node, CALL_REAL_FUNC)
 	assert_that(mocked_node).is_not_null()
 	assert_that(_test_signal_args).is_empty()
 	mocked_node.connect("ready", _emit_ready)
@@ -219,8 +219,8 @@ class ClassWithSignal:
 		return true
 
 
-func _test_mock_verify_emit_signal():
-	var mocked_node = mock(ClassWithSignal, CALL_REAL_FUNC)
+func _test_mock_verify_emit_signal() -> void:
+	var mocked_node :Variant = mock(ClassWithSignal, CALL_REAL_FUNC)
 	assert_that(mocked_node).is_not_null()
 
 	mocked_node.foo(0)
@@ -243,8 +243,8 @@ func _test_mock_verify_emit_signal():
 	verify(mocked_node, 1).emit_signal("test_signal_b", "bb", true)
 
 
-func test_mock_custom_class_by_class_name():
-	var m = mock(CustomResourceTestClass)
+func test_mock_custom_class_by_class_name() -> void:
+	var m :Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
 
 	# test we have initial no interactions checked this mock
@@ -265,8 +265,8 @@ func test_mock_custom_class_by_class_name():
 	assert_that(m.bar(2)).is_equal("arg_2")
 
 
-func test_mock_custom_class_by_resource_path():
-	var m = mock("res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd")
+func test_mock_custom_class_by_resource_path() -> void:
+	var m :Variant = mock("res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd")
 	assert_that(m).is_not_null()
 
 	# test we have initial no interactions checked this mock
@@ -287,8 +287,8 @@ func test_mock_custom_class_by_resource_path():
 	assert_that(m.bar(2)).is_equal("arg_2")
 
 
-func test_mock_custom_class_func_foo_use_real_func():
-	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+func test_mock_custom_class_func_foo_use_real_func() -> void:
+	var m :Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	# test mocked function returns value from real function
 	assert_that(m.foo()).is_equal("foo")
@@ -298,8 +298,8 @@ func test_mock_custom_class_func_foo_use_real_func():
 	assert_that(m.foo()).is_equal("overridden value")
 
 
-func test_mock_custom_class_void_func():
-	var m = mock(CustomResourceTestClass)
+func test_mock_custom_class_void_func() -> void:
+	var m :Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
 	# test mocked void function returns null by default
 	assert_that(m.foo_void()).is_null()
@@ -309,8 +309,8 @@ func test_mock_custom_class_void_func():
 	assert_that(m.foo_void()).is_null()
 
 
-func test_mock_custom_class_void_func_real_func():
-	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+func test_mock_custom_class_void_func_real_func() -> void:
+	var m :Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	# test mocked void function returns null by default
 	assert_that(m.foo_void()).is_null()
@@ -320,8 +320,8 @@ func test_mock_custom_class_void_func_real_func():
 	assert_that(m.foo_void()).is_null()
 
 
-func test_mock_custom_class_func_foo_call_times():
-	var m = mock(CustomResourceTestClass)
+func test_mock_custom_class_func_foo_call_times() -> void:
+	var m :Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
 	verify(m, 0).foo()
 	m.foo()
@@ -333,8 +333,8 @@ func test_mock_custom_class_func_foo_call_times():
 	verify(m, 4).foo()
 
 
-func test_mock_custom_class_func_foo_call_times_real_func():
-	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+func test_mock_custom_class_func_foo_call_times_real_func() -> void:
+	var m :Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	verify(m, 0).foo()
 	m.foo()
@@ -346,8 +346,8 @@ func test_mock_custom_class_func_foo_call_times_real_func():
 	verify(m, 4).foo()
 
 
-func test_mock_custom_class_func_foo_full_test():
-	var m = mock(CustomResourceTestClass)
+func test_mock_custom_class_func_foo_full_test() -> void:
+	var m :Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
 	verify(m, 0).foo()
 	assert_that(m.foo()).is_equal("")
@@ -358,8 +358,8 @@ func test_mock_custom_class_func_foo_full_test():
 	verify(m, 2).foo()
 
 
-func test_mock_custom_class_func_foo_full_test_real_func():
-	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+func test_mock_custom_class_func_foo_full_test_real_func() -> void:
+	var m :Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	verify(m, 0).foo()
 	assert_that(m.foo()).is_equal("foo")
@@ -370,8 +370,8 @@ func test_mock_custom_class_func_foo_full_test_real_func():
 	verify(m, 2).foo()
 
 
-func test_mock_custom_class_func_bar():
-	var m = mock(CustomResourceTestClass)
+func test_mock_custom_class_func_bar() -> void:
+	var m :Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
 	assert_that(m.bar(10)).is_equal("")
 	# verify 'bar' with args [10] is called one time at this point
@@ -391,8 +391,8 @@ func test_mock_custom_class_func_bar():
 	verify(m, 0).bar(23)
 
 
-func test_mock_custom_class_func_bar_real_func():
-	var m = mock(CustomResourceTestClass, CALL_REAL_FUNC)
+func test_mock_custom_class_func_bar_real_func() -> void:
+	var m :Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	assert_that(m.bar(10)).is_equal("test_33")
 	# verify 'bar' with args [10] is called one time at this point
@@ -416,8 +416,8 @@ func test_mock_custom_class_func_bar_real_func():
 	verify(m, 1).bar(10, 20, "other")
 
 
-func test_mock_custom_class_func_return_type_enum():
-	var m = mock(ClassWithEnumReturnTypes)
+func test_mock_custom_class_func_return_type_enum() -> void:
+	var m :Variant = mock(ClassWithEnumReturnTypes)
 	assert_that(m).is_not_null()
 	verify(m, 0).get_enum()
 
@@ -428,7 +428,7 @@ func test_mock_custom_class_func_return_type_enum():
 	verify(m, 2).get_enum()
 
 	# with call real functions
-	var m2 = mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
+	var m2 :Variant = mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
 	assert_that(m2).is_not_null()
 
 	# verify enum return type
@@ -437,8 +437,8 @@ func test_mock_custom_class_func_return_type_enum():
 	assert_that(m2.get_enum()).is_equal(ClassWithEnumReturnTypes.TEST_ENUM.BAR)
 
 
-func test_mock_custom_class_func_return_type_internal_class_enum():
-	var m = mock(ClassWithEnumReturnTypes)
+func test_mock_custom_class_func_return_type_internal_class_enum() -> void:
+	var m :Variant = mock(ClassWithEnumReturnTypes)
 	assert_that(m).is_not_null()
 	verify(m, 0).get_inner_class_enum()
 
@@ -449,7 +449,7 @@ func test_mock_custom_class_func_return_type_internal_class_enum():
 	verify(m, 2).get_inner_class_enum()
 
 	# with call real functions
-	var m2= mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
+	var m2 :Variant = mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
 	assert_that(m2).is_not_null()
 
 	# verify enum return type
@@ -458,8 +458,8 @@ func test_mock_custom_class_func_return_type_internal_class_enum():
 	assert_that(m2.get_inner_class_enum()).is_equal(ClassWithEnumReturnTypes.InnerClass.TEST_ENUM.BAR)
 
 
-func test_mock_custom_class_func_return_type_external_class_enum():
-	var m = mock(ClassWithEnumReturnTypes)
+func test_mock_custom_class_func_return_type_external_class_enum() -> void:
+	var m :Variant = mock(ClassWithEnumReturnTypes)
 	assert_that(m).is_not_null()
 	verify(m, 0).get_external_class_enum()
 
@@ -470,7 +470,7 @@ func test_mock_custom_class_func_return_type_external_class_enum():
 	verify(m, 2).get_external_class_enum()
 
 	# with call real functions
-	var m2 = mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
+	var m2 :Variant = mock(ClassWithEnumReturnTypes, CALL_REAL_FUNC)
 	assert_that(m2).is_not_null()
 
 	# verify enum return type
@@ -479,15 +479,15 @@ func test_mock_custom_class_func_return_type_external_class_enum():
 	assert_that(m2.get_external_class_enum()).is_equal(CustomEnums.TEST_ENUM.BAR)
 
 
-func test_mock_custom_class_extends_Node():
-	var m = mock(CustomNodeTestClass)
+func test_mock_custom_class_extends_Node() -> void:
+	var m :Variant = mock(CustomNodeTestClass)
 	assert_that(m).is_not_null()
 
 	# test mocked function returns null as default
 	assert_that(m.get_child_count()).is_equal(0)
 	assert_that(m.get_children()).contains_exactly([])
 	# test seters has no affect
-	var node = auto_free(Node.new())
+	var node :Node = auto_free(Node.new())
 	m.add_child(node)
 	assert_that(m.get_child_count()).is_equal(0)
 	assert_that(m.get_children()).contains_exactly([])
@@ -496,16 +496,16 @@ func test_mock_custom_class_extends_Node():
 	verify(m, 2).get_children()
 
 
-func test_mock_custom_class_extends_Node_real_func():
-	var m = mock(CustomNodeTestClass, CALL_REAL_FUNC)
+func test_mock_custom_class_extends_Node_real_func() -> void:
+	var m :Variant = mock(CustomNodeTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	# test mocked function returns default mock value
 	assert_that(m.get_child_count()).is_equal(0)
 	assert_that(m.get_children()).is_equal([])
 	# test real seters used
-	var nodeA = auto_free(Node.new())
-	var nodeB = auto_free(Node.new())
-	var nodeC = auto_free(Node.new())
+	var nodeA :Node = auto_free(Node.new())
+	var nodeB :Node = auto_free(Node.new())
+	var nodeC :Node = auto_free(Node.new())
 	m.add_child(nodeA)
 	m.add_child(nodeB)
 	assert_that(m.get_child_count()).is_equal(2)
@@ -517,8 +517,8 @@ func test_mock_custom_class_extends_Node_real_func():
 	verify(m, 2).get_children()
 
 
-func test_mock_custom_class_extends_other_custom_class():
-	var m = mock(CustomClassExtendsCustomClass)
+func test_mock_custom_class_extends_other_custom_class() -> void:
+	var m :Variant = mock(CustomClassExtendsCustomClass)
 	assert_that(mock).is_not_null()
 
 	# foo() form parent class
@@ -546,8 +546,8 @@ func test_mock_custom_class_extends_other_custom_class():
 	assert_that(m.bar2()).is_equal("abc3")
 
 
-func test_mock_custom_class_extends_other_custom_class_call_real_func():
-	var m = mock(CustomClassExtendsCustomClass, CALL_REAL_FUNC)
+func test_mock_custom_class_extends_other_custom_class_call_real_func() -> void:
+	var m :Variant = mock(CustomClassExtendsCustomClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 
 	# foo() form parent class
@@ -575,8 +575,8 @@ func test_mock_custom_class_extends_other_custom_class_call_real_func():
 	assert_that(m.bar2()).is_equal("abc3")
 
 
-func test_mock_static_func():
-	var m = mock(CustomNodeTestClass)
+func test_mock_static_func() -> void:
+	var m :Variant = mock(CustomNodeTestClass)
 	assert_that(m).is_not_null()
 	# initial not called
 	verify(m, 0).static_test()
@@ -594,8 +594,8 @@ func test_mock_static_func():
 	verify(m, 3).static_test_void()
 
 
-func test_mock_static_func_real_func():
-	var m = mock(CustomNodeTestClass, CALL_REAL_FUNC)
+func test_mock_static_func_real_func() -> void:
+	var m :Variant = mock(CustomNodeTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	# initial not called
 	verify(m, 0).static_test()
@@ -613,10 +613,10 @@ func test_mock_static_func_real_func():
 	verify(m, 3).static_test_void()
 
 
-func test_mock_custom_class_assert_has_no_side_affect():
-	var m = mock(CustomNodeTestClass)
+func test_mock_custom_class_assert_has_no_side_affect() -> void:
+	var m :Variant = mock(CustomNodeTestClass)
 	assert_that(m).is_not_null()
-	var node = Node.new()
+	var node := Node.new()
 	# verify the assertions has no side affect checked mocked object
 	verify(m, 0).add_child(node)
 	# expect no change checked childrens
@@ -632,10 +632,10 @@ func test_mock_custom_class_assert_has_no_side_affect():
 	node.free()
 
 
-func test_mock_custom_class_assert_has_no_side_affect_real_func():
-	var m = mock(CustomNodeTestClass, CALL_REAL_FUNC)
+func test_mock_custom_class_assert_has_no_side_affect_real_func() -> void:
+	var m :Variant = mock(CustomNodeTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
-	var node = Node.new()
+	var node := Node.new()
 	# verify the assertions has no side affect checked mocked object
 	verify(m, 0).add_child(node)
 	# expect no change checked childrens
@@ -651,8 +651,8 @@ func test_mock_custom_class_assert_has_no_side_affect_real_func():
 
 # This test verifies a function is calling other internally functions
 # to collect the access times and the override return value is working as expected
-func test_mock_advanced_func_path():
-	var m = mock(AdvancedTestClass, CALL_REAL_FUNC)
+func test_mock_advanced_func_path() -> void:
+	var m :Variant = mock(AdvancedTestClass, CALL_REAL_FUNC)
 	# initial nothing is called
 	verify(m, 0).select(AdvancedTestClass.A)
 	verify(m, 0).select(AdvancedTestClass.B)
@@ -690,16 +690,16 @@ func test_mock_advanced_func_path():
 	verify(m, 1).c()
 
 
-func _test_mock_godot_class_calls_sub_function():
-	var m = mock(MeshInstance3D, CALL_REAL_FUNC)
+func _test_mock_godot_class_calls_sub_function() -> void:
+	var m :Variant = mock(MeshInstance3D, CALL_REAL_FUNC)
 	verify(m, 0)._mesh_changed()
 	m.set_mesh(QuadMesh.new())
 	verify(m, 1).set_mesh(any_class(Mesh))
 	verify(m, 1)._mesh_changed()
 
 
-func test_mock_class_with_inner_classs():
-	var mock_advanced = mock(AdvancedTestClass)
+func test_mock_class_with_inner_classs() -> void:
+	var mock_advanced :Variant = mock(AdvancedTestClass)
 	assert_that(mock_advanced).is_not_null()
 
 	var mock_a := mock(AdvancedTestClass.SoundData) as AdvancedTestClass.SoundData
@@ -712,8 +712,8 @@ func test_mock_class_with_inner_classs():
 	assert_object(mock_c).is_not_null()
 
 
-func test_do_return():
-	var mocked_node = mock(Node)
+func test_do_return() -> void:
+	var mocked_node :Variant = mock(Node)
 
 	# is return 0 by default
 	mocked_node.get_child_count()
@@ -723,7 +723,7 @@ func test_do_return():
 	assert_int(mocked_node.get_child_count()).is_equal(10)
 
 	# is return 'null' by default
-	var node = mocked_node.get_child(0)
+	var node :Node = mocked_node.get_child(0)
 	assert_object(node).is_null()
 
 	# configure to return a mocked 'Camera3D' for child 0
@@ -732,15 +732,15 @@ func test_do_return():
 	do_return(mock(Area3D)).on(mocked_node).get_child(1)
 
 	# will now return the Camera3D node
-	var node0 = mocked_node.get_child(0)
+	var node0 :Node = mocked_node.get_child(0)
 	assert_object(node0).is_instanceof(Camera3D)
 	# will now return the Area3D node
-	var node1 = mocked_node.get_child(1)
+	var node1 :Node = mocked_node.get_child(1)
 	assert_object(node1).is_instanceof(Area3D)
 
 
-func test_matching_is_sorted():
-	var mocked_node = mock(Node)
+func test_matching_is_sorted() -> void:
+	var mocked_node :Variant = mock(Node)
 	do_return(null).on(mocked_node).get_child(any(), false)
 	do_return(null).on(mocked_node).get_child(1, false)
 	do_return(null).on(mocked_node).get_child(10, false)
@@ -752,7 +752,7 @@ func test_matching_is_sorted():
 	assert_array(mocked_args).has_size(5)
 
 	# we expect all argument matchers are sorted to the end
-	var first_arguments = mocked_args.map(func (v): return v[0])
+	var first_arguments := mocked_args.map(func (v :Array) -> Variant: return v[0])
 	assert_int(first_arguments[0]).is_equal(3)
 	assert_int(first_arguments[1]).is_equal(10)
 	assert_int(first_arguments[2]).is_equal(1)
@@ -760,8 +760,8 @@ func test_matching_is_sorted():
 	assert_object(first_arguments[4]).is_instanceof(GdUnitArgumentMatcher)
 
 
-func test_do_return_with_matchers():
-	var mocked_node = mock(Node)
+func test_do_return_with_matchers() -> void:
+	var mocked_node :Variant = mock(Node)
 	var childN :Node = auto_free(Node2D.new())
 	var child1 :Node = auto_free(Node2D.new())
 	var child10 :Node = auto_free(Node2D.new())
@@ -791,8 +791,8 @@ func test_do_return_with_matchers():
 	assert_that(mocked_node.get_child(10)).is_same(child10)
 
 
-func test_example_verify():
-	var mocked_node = mock(Node)
+func test_example_verify() -> void:
+	var mocked_node :Variant = mock(Node)
 
 	# verify we have no interactions currently checked this instance
 	verify_no_interactions(mocked_node)
@@ -810,8 +810,8 @@ func test_example_verify():
 	verify(mocked_node, 3).set_process(any_bool())
 
 
-func test_verify_fail():
-	var mocked_node = mock(Node)
+func test_verify_fail() -> void:
+	var mocked_node :Variant = mock(Node)
 
 	# interact two time
 	mocked_node.set_process(true) # 1 times
@@ -827,13 +827,13 @@ func test_verify_fail():
 		But found interactions on:
 			'set_process(true :bool)'	2 time's""" \
 			.dedent().trim_prefix("\n").replace("\r", "")
-	assert_failure(func(): verify(mocked_node, 1).set_process(true)) \
+	assert_failure(func() -> void: verify(mocked_node, 1).set_process(true)) \
 		.is_failed() \
 		.has_message(expected_error)
 
 
-func test_verify_func_interaction_wiht_PoolStringArray():
-	var mocked = mock(ClassWithPoolStringArrayFunc)
+func test_verify_func_interaction_wiht_PoolStringArray() -> void:
+	var mocked :Variant = mock(ClassWithPoolStringArrayFunc)
 
 	mocked.set_values(PackedStringArray())
 
@@ -841,8 +841,8 @@ func test_verify_func_interaction_wiht_PoolStringArray():
 	verify_no_more_interactions(mocked)
 
 
-func test_verify_func_interaction_wiht_PoolStringArray_fail():
-	var mocked = mock(ClassWithPoolStringArrayFunc)
+func test_verify_func_interaction_wiht_PoolStringArray_fail() -> void:
+	var mocked :Variant = mock(ClassWithPoolStringArrayFunc)
 
 	mocked.set_values(PackedStringArray())
 
@@ -853,7 +853,7 @@ func test_verify_func_interaction_wiht_PoolStringArray_fail():
 		But found interactions on:
 			'set_values([] :PackedStringArray)'	1 time's""" \
 			.dedent().trim_prefix("\n").replace("\r", "")
-	assert_failure(func(): verify(mocked, 1).set_values([])) \
+	assert_failure(func() -> void: verify(mocked, 1).set_values([])) \
 		.is_failed() \
 		.has_message(expected_error)
 
@@ -870,13 +870,13 @@ func test_verify_func_interaction_wiht_PoolStringArray_fail():
 			'set_values(["a", "b"] :PackedStringArray)'	1 time's
 			'set_values([1, 2] :Array)'	1 time's""" \
 			.dedent().trim_prefix("\n").replace("\r", "")
-	assert_failure(func(): verify(mocked, 1).set_values([])) \
+	assert_failure(func() -> void: verify(mocked, 1).set_values([])) \
 		.is_failed() \
 		.has_message(expected_error)
 
 
-func test_reset():
-	var mocked_node = mock(Node)
+func test_reset() -> void:
+	var mocked_node :Variant = mock(Node)
 
 	# call with different arguments
 	mocked_node.set_process(false) # 1 times
@@ -892,35 +892,35 @@ func test_reset():
 	verify_no_interactions(mocked_node)
 
 
-func test_verify_no_interactions():
-	var mocked_node = mock(Node)
+func test_verify_no_interactions() -> void:
+	var mocked_node :Variant = mock(Node)
 
 	# verify we have no interactions checked this mock
 	verify_no_interactions(mocked_node)
 
 
-func test_verify_no_interactions_fails():
-	var mocked_node = mock(Node)
+func test_verify_no_interactions_fails() -> void:
+	var mocked_node :Variant = mock(Node)
 
 	# interact
 	mocked_node.set_process(false) # 1 times
 	mocked_node.set_process(true) # 1 times
 	mocked_node.set_process(true) # 2 times
 
-	var expected_error ="""
+	var expected_error :="""
 		Expecting no more interactions!
 		But found interactions on:
 			'set_process(false :bool)'	1 time's
 			'set_process(true :bool)'	2 time's""" \
 			.dedent().trim_prefix("\n")
 	# it should fail because we have interactions
-	assert_failure(func(): verify_no_interactions(mocked_node)) \
+	assert_failure(func() -> void: verify_no_interactions(mocked_node)) \
 		.is_failed() \
 		.has_message(expected_error)
 
 
-func test_verify_no_more_interactions():
-	var mocked_node = mock(Node)
+func test_verify_no_more_interactions() -> void:
+	var mocked_node :Variant = mock(Node)
 
 	mocked_node.is_ancestor_of(null)
 	mocked_node.set_process(false)
@@ -936,8 +936,8 @@ func test_verify_no_more_interactions():
 	verify_no_more_interactions(mocked_node)
 
 
-func test_verify_no_more_interactions_but_has():
-	var mocked_node = mock(Node)
+func test_verify_no_more_interactions_but_has() -> void:
+	var mocked_node :Variant = mock(Node)
 
 	mocked_node.is_ancestor_of(null)
 	mocked_node.set_process(false)
@@ -959,27 +959,27 @@ func test_verify_no_more_interactions_but_has():
 
 	# now use 'verify_no_more_interactions' to check we have no more interactions checked this mock
 	# but should fail with a collecion of all not validated interactions
-	var expected_error ="""
+	var expected_error :="""
 		Expecting no more interactions!
 		But found interactions on:
 			'is_inside_tree()'	2 time's
 			'find_child(mask :String, true :bool, true :bool)'	1 time's
 			'find_child(mask :String, false :bool, false :bool)'	1 time's""" \
 			.dedent().trim_prefix("\n")
-	assert_failure(func(): verify_no_more_interactions(mocked_node)) \
+	assert_failure(func() -> void: verify_no_more_interactions(mocked_node)) \
 		.is_failed() \
 		.has_message(expected_error)
 
 
-func test_mock_snake_case_named_class_by_resource_path():
-	var mock_a = mock("res://addons/gdUnit4/test/mocker/resources/snake_case.gd")
+func test_mock_snake_case_named_class_by_resource_path() -> void:
+	var mock_a :Variant = mock("res://addons/gdUnit4/test/mocker/resources/snake_case.gd")
 	assert_object(mock_a).is_not_null()
 
 	mock_a.custom_func()
 	verify(mock_a).custom_func()
 	verify_no_more_interactions(mock_a)
 
-	var mock_b = mock("res://addons/gdUnit4/test/mocker/resources/snake_case_class_name.gd")
+	var mock_b :Variant = mock("res://addons/gdUnit4/test/mocker/resources/snake_case_class_name.gd")
 	assert_object(mock_b).is_not_null()
 
 	mock_b.custom_func()
@@ -987,9 +987,9 @@ func test_mock_snake_case_named_class_by_resource_path():
 	verify_no_more_interactions(mock_b)
 
 
-func test_mock_snake_case_named_godot_class_by_name():
+func test_mock_snake_case_named_godot_class_by_name() -> void:
 	# try checked Godot class
-	var mocked_tcp_server = mock("TCPServer")
+	var mocked_tcp_server :Variant = mock("TCPServer")
 	assert_object(mocked_tcp_server).is_not_null()
 
 	mocked_tcp_server.is_listening()
@@ -999,8 +999,8 @@ func test_mock_snake_case_named_godot_class_by_name():
 	verify_no_more_interactions(mocked_tcp_server)
 
 
-func test_mock_snake_case_named_class_by_class():
-	var m = mock(snake_case_class_name)
+func test_mock_snake_case_named_class_by_class() -> void:
+	var m :Variant = mock(snake_case_class_name)
 	assert_object(m).is_not_null()
 
 	m.custom_func()
@@ -1008,7 +1008,7 @@ func test_mock_snake_case_named_class_by_class():
 	verify_no_more_interactions(m)
 
 	# try checked Godot class
-	var mocked_tcp_server = mock(TCPServer)
+	var mocked_tcp_server :Variant = mock(TCPServer)
 	assert_object(mocked_tcp_server).is_not_null()
 
 	mocked_tcp_server.is_listening()
@@ -1018,8 +1018,8 @@ func test_mock_snake_case_named_class_by_class():
 	verify_no_more_interactions(mocked_tcp_server)
 
 
-func test_mock_func_with_default_build_in_type():
-	var m = mock(ClassWithDefaultBuildIntTypes)
+func test_mock_func_with_default_build_in_type() -> void:
+	var m :Variant = mock(ClassWithDefaultBuildIntTypes)
 	assert_object(m).is_not_null()
 	# call with default arg
 	m.foo("abc")
@@ -1048,7 +1048,7 @@ func test_mock_virtual_function_is_not_called_twice() -> void:
 	#       get_script_instance()->call_multilevel_reversed(SceneStringNames::get_singleton()->_ready,NULL,0);
 	#    }
 
-	var m = mock(ClassWithOverridenVirtuals, CALL_REAL_FUNC)
+	var m :Variant = mock(ClassWithOverridenVirtuals, CALL_REAL_FUNC)
 	assert_object(m).is_not_null()
 
 	# inital constructor
@@ -1061,15 +1061,15 @@ func test_mock_virtual_function_is_not_called_twice() -> void:
 	assert_that(m._x).is_equal("_ready")
 
 	# now simulate an input event calls '_input'
-	var action = InputEventKey.new()
+	var action := InputEventKey.new()
 	action.pressed = false
 	action.keycode = KEY_ENTER
 	get_tree().root.push_input(action)
 	assert_that(m._x).is_equal("ui_accept")
 
 
-func test_mock_scene_by_path():
-	var mocked_scene = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+func test_mock_scene_by_path() -> void:
+	var mocked_scene :Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(mocked_scene).is_not_null()
 	assert_object(mocked_scene.get_script()).is_not_null()
 	assert_str(mocked_scene.get_script().resource_name).is_equal("MockTestScene.gd")
@@ -1077,9 +1077,9 @@ func test_mock_scene_by_path():
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(mocked_scene)).is_true()
 
 
-func test_mock_scene_by_resource():
-	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
-	var mocked_scene = mock(resource)
+func test_mock_scene_by_resource() -> void:
+	var resource :Variant = load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+	var mocked_scene :Variant = mock(resource)
 	assert_object(mocked_scene).is_not_null()
 	assert_object(mocked_scene.get_script()).is_not_null()
 	assert_str(mocked_scene.get_script().resource_name).is_equal("MockTestScene.gd")
@@ -1087,21 +1087,21 @@ func test_mock_scene_by_resource():
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(mocked_scene)).is_true()
 
 
-func test_mock_scene_by_instance():
+func test_mock_scene_by_instance() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var instance :Control = auto_free(resource.instantiate())
-	var mocked_scene = mock(instance)
+	var mocked_scene :Variant = mock(instance)
 	# must fail mock an instance is not allowed
 	assert_object(mocked_scene).is_null()
 
 
-func test_mock_scene_by_path_fail_has_no_script_attached():
-	var mocked_scene = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestSceneWithoutScript.tscn")
+func test_mock_scene_by_path_fail_has_no_script_attached() -> void:
+	var mocked_scene :Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestSceneWithoutScript.tscn")
 	assert_object(mocked_scene).is_null()
 
 
-func test_mock_scene_variables_is_set():
-	var mocked_scene = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+func test_mock_scene_variables_is_set() -> void:
+	var mocked_scene :Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(mocked_scene).is_not_null()
 
 	# Add as child to a node to trigger _ready to initalize all variables
@@ -1118,12 +1118,12 @@ func test_mock_scene_variables_is_set():
 
 
 func test_mock_scene_execute_func_yielded() -> void:
-	var mocked_scene = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+	var mocked_scene :Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(mocked_scene).is_not_null()
 	add_child(mocked_scene)
 	# execute the 'color_cycle' func where emits three signals
 	# using yield to wait for function is completed
-	var result = await mocked_scene.color_cycle()
+	var result :String = await mocked_scene.color_cycle()
 	# verify the return value of 'color_cycle'
 	assert_str(result).is_equal("black")
 
@@ -1133,16 +1133,15 @@ func test_mock_scene_execute_func_yielded() -> void:
 
 
 class Base:
-	func _init(_value :String):
+	func _init(_value :String) -> void:
 		pass
 
 
 class Foo extends Base:
-	func _init():
+	func _init() -> void:
 		super("test")
-		pass
 
 
 func test_mock_with_inheritance_method() -> void:
-	var foo = mock(Foo)
+	var foo :Variant = mock(Foo)
 	assert_object(foo).is_not_null()

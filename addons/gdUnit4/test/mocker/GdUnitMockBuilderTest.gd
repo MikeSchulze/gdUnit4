@@ -9,7 +9,7 @@ const __source = 'res://addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd'
 # helper to get function descriptor
 func get_function_description(clazz_name :String, method_name :String) -> GdFunctionDescriptor:
 	var method_list :Array = ClassDB.class_get_method_list(clazz_name)
-	for method_descriptor in method_list:
+	for method_descriptor :Dictionary in method_list:
 		if method_descriptor["name"] == method_name:
 			return GdFunctionDescriptor.extract_from(method_descriptor)
 	return null
@@ -247,7 +247,7 @@ func test_double_virtual_script_function_with_arg() -> void:
 
 
 func test_mock_on_script_path_without_class_name() -> void:
-	var instance = load("res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd").new()
+	var instance :Object = load("res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd").new()
 	var script := GdUnitMockBuilder.mock_on_script(instance, "res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd", [], true);
 	assert_that(script.resource_name).is_equal("MockClassWithoutNameA.gd")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
@@ -257,7 +257,7 @@ func test_mock_on_script_path_without_class_name() -> void:
 
 func test_mock_on_script_path_with_custom_class_name() -> void:
 	# the class contains a class_name definition
-	var instance = load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomClassName.gd").new()
+	var instance :Object = load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomClassName.gd").new()
 	var script := GdUnitMockBuilder.mock_on_script(instance, "res://addons/gdUnit4/test/mocker/resources/ClassWithCustomClassName.gd", [], false);
 	assert_that(script.resource_name).is_equal("MockGdUnitTestCustomClassName.gd")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")

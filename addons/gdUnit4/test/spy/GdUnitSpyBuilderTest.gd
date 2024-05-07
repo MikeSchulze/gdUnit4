@@ -9,7 +9,7 @@ const __source = 'res://addons/gdUnit4/src/spy/GdUnitSpyBuilder.gd'
 # helper to get function descriptor
 func get_function_description(clazz_name :String, method_name :String) -> GdFunctionDescriptor:
 	var method_list :Array = ClassDB.class_get_method_list(clazz_name)
-	for method_descriptor in method_list:
+	for method_descriptor :Dictionary in method_list:
 		if method_descriptor["name"] == method_name:
 			return GdFunctionDescriptor.extract_from(method_descriptor)
 	return null
@@ -321,12 +321,12 @@ func test_double_virtual_return_void_function_without_arg() -> void:
 
 
 class NodeWithOutVirtualFunc extends Node:
-	func _ready():
+	func _ready() -> void:
 		pass
 
 	#func _input(event :InputEvent) -> void:
 
-func test_spy_on_script_respect_virtual_functions():
-	var do_spy = auto_free(GdUnitSpyBuilder.spy_on_script(auto_free(NodeWithOutVirtualFunc.new()), [], true).new())
+func test_spy_on_script_respect_virtual_functions() -> void:
+	var do_spy :Node = auto_free(GdUnitSpyBuilder.spy_on_script(auto_free(NodeWithOutVirtualFunc.new()), [], true).new())
 	assert_that(do_spy.has_method("_ready")).is_true()
 	assert_that(do_spy.has_method("_input")).is_false()
