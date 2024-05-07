@@ -17,12 +17,12 @@ var _update_client :GdUnitUpdateClient
 var _download_url :String
 
 
-func _ready():
+func _ready() -> void:
 	message_h4("Press 'Update' to start!", Color.GREEN)
 	init_progress(5)
 
 
-func _process(_delta):
+func _process(_delta :float) -> void:
 	if _progress_content != null and _progress_content.is_visible_in_tree():
 		_progress_content.queue_redraw()
 
@@ -122,7 +122,7 @@ func temp_dir() -> String:
 
 
 func create_temp_dir(folder_name :String) -> String:
-	var new_folder = temp_dir() + "/" + folder_name
+	var new_folder := temp_dir() + "/" + folder_name
 	delete_directory(new_folder)
 	if not DirAccess.dir_exists_absolute(new_folder):
 		DirAccess.make_dir_recursive_absolute(new_folder)
@@ -143,7 +143,7 @@ func delete_directory(path :String, only_content := false) -> void:
 				delete_directory(next)
 			else:
 				# delete file
-				var err = dir.remove(next)
+				var err := dir.remove(next)
 				if err:
 					push_error("Delete %s failed: %s" % [next, error_string(err)])
 		if not only_content:
@@ -178,7 +178,7 @@ func copy_directory(from_dir :String, to_dir :String) -> bool:
 			if source_dir.current_is_dir():
 				copy_directory(source + "/", dest)
 				continue
-			var err = source_dir.copy(source, dest)
+			var err := source_dir.copy(source, dest)
 			if err != OK:
 				push_error("Error checked copy file '%s' to '%s'" % [source, dest])
 				return false
@@ -196,7 +196,7 @@ func extract_zip(zip_package :String, dest_path :String) -> Variant:
 		return null
 	var zip_entries: PackedStringArray = zip.get_files()
 	# Get base path and step over archive folder
-	var archive_path = zip_entries[0]
+	var archive_path := zip_entries[0]
 	zip_entries.remove_at(0)
 
 	for zip_entry in zip_entries:
@@ -226,5 +226,5 @@ func download_release() -> void:
 		return
 
 
-func _on_confirmed():
+func _on_confirmed() -> void:
 	await run_update()

@@ -1,6 +1,6 @@
 extends GdUnitPatch
 
-func _init():
+func _init() -> void:
 	super(GdUnit4Version.parse("v0.9.5"))
 
 func execute() -> bool:

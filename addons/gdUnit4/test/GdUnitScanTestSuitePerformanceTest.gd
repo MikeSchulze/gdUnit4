@@ -2,7 +2,7 @@ extends GdUnitTestSuite
 
 
 func test_load_performance() -> void:
-	var time = LocalTime.now()
+	var time := LocalTime.now()
 	prints("Scan for test suites.")
 	var test_suites := GdUnitTestSuiteScanner.new().scan("res://addons/gdUnit4/test/")
 	assert_int(time.elapsed_since_ms())\

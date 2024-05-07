@@ -6,17 +6,17 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/update/GdMarkDownReader.gd'
 const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
 
-var _reader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd").new()
+var _reader := preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd").new()
 var _client :GdUnitUpdateClient
 
 
-func before():
+func before() -> void:
 	_client = GdUnitUpdateClient.new()
 	add_child(_client)
 	_reader.set_http_client(_client)
 
 
-func after():
+func after() -> void:
 	_client.queue_free()
 
 

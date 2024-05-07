@@ -1,5 +1,7 @@
 extends RefCounted
 
+const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
+
 const FONT_H1 := 32
 const FONT_H2 := 28
 const FONT_H3 := 24
@@ -94,27 +96,27 @@ var md_replace_patterns := [
 var _img_replace_regex := RegEx.new()
 var _image_urls := PackedStringArray()
 var _on_table_tag := false
-var _client
+var _client :GdUnitUpdateClient
 
 
 func regex(pattern :String) -> RegEx:
 	var regex_ := RegEx.new()
-	var err = regex_.compile(pattern)
+	var err := regex_.compile(pattern)
 	if err != OK:
 		push_error("error '%s' checked pattern '%s'" % [err, pattern])
 		return null
 	return regex_
 
 
-func _init():
+func _init() -> void:
 	_img_replace_regex.compile("\\[img\\]((.*?))\\[/img\\]")
 
 
-func set_http_client(client) -> void:
+func set_http_client(client :GdUnitUpdateClient) -> void:
 	_client = client
 
 
-func _notification(what):
+func _notification(what :int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		# finally remove_at the downloaded images
 		for image in _image_urls:
@@ -143,9 +145,9 @@ func code_block(replace :String, border :bool = false) -> String:
 func to_bbcode(input :String) -> String:
 	input = process_tables(input)
 
-	for pattern in md_replace_patterns:
+	for pattern :Array in md_replace_patterns:
 		var regex_ :RegEx = pattern[0]
-		var bb_replace = pattern[1]
+		var bb_replace :Variant = pattern[1]
 		if bb_replace is Callable:
 			input = await bb_replace.call(regex_, input)
 		else:
@@ -171,7 +173,7 @@ class Table:
 	class Row:
 		var _cells := PackedStringArray()
 
-		func _init(cells :PackedStringArray,columns :int):
+		func _init(cells :PackedStringArray, columns :int) -> void:
 			_cells = cells
 			for i in range(_cells.size(), columns):
 				_cells.append("")
@@ -193,7 +195,7 @@ class Table:
 				line += "-"
 			return line
 
-	func _init(columns :int):
+	func _init(columns :int) -> void:
 		_columns = columns
 
 	func parse_row(line :String) -> bool:
@@ -273,15 +275,15 @@ func process_image_references(p_regex :RegEx, p_input :String) -> String:
 	var input := p_input.replace("\r", "")
 	var extracted_references :=  p_input.replace("\r", "")
 	for reg_match in link_regex.search_all(input):
-		var line = reg_match.get_string(0) + "\n"
-		var ref = reg_match.get_string(1)
+		var line := reg_match.get_string(0) + "\n"
+		var ref := reg_match.get_string(1)
 		#var topl_tip = reg_match.get_string(4)
 		# collect reference and url
 		references[ref] = reg_match.get_string(2)
 		extracted_references = extracted_references.replace(line, "")
 
 	# replace image references by collected url's
-	for reference_key in references.keys():
+	for reference_key :String in references.keys():
 		var regex_key := regex("\\](\\[%s\\])" % reference_key)
 		for reg_match in regex_key.search_all(extracted_references):
 			var ref :String = reg_match.get_string(0)
@@ -319,10 +321,10 @@ func _process_external_image_resources(input :String) -> String:
 			if image_url.begins_with("http"):
 				if OS.is_stdout_verbose():
 					prints("download image:", image_url)
-				var response = await _client.request_image(image_url)
+				var response := await _client.request_image(image_url)
 				if response.code() == 200:
-					var image = Image.new()
-					var error = image.load_png_from_buffer(response.body())
+					var image := Image.new()
+					var error := image.load_png_from_buffer(response.body())
 					if error != OK:
 						prints("Error creating image from response", error)
 					# replace characters where format characters
