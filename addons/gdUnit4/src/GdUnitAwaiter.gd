@@ -23,7 +23,7 @@ func await_signal_on(source :Object, signal_name :String, args :Array = [], time
 	var awaiter := GdUnitSignalAwaiter.new(timeout_millis)
 	var value :Variant = await awaiter.on_signal(source, signal_name, args)
 	if awaiter.is_interrupted():
-		var failure = "await_signal_on(%s, %s) timed out after %sms" % [signal_name, args, timeout_millis]
+		var failure := "await_signal_on(%s, %s) timed out after %sms" % [signal_name, args, timeout_millis]
 		assert_that.report_error(failure, line_number)
 	return value
 
@@ -43,7 +43,7 @@ func await_signal_idle_frames(source :Object, signal_name :String, args :Array =
 	var awaiter := GdUnitSignalAwaiter.new(timeout_millis, true)
 	var value :Variant = await awaiter.on_signal(source, signal_name, args)
 	if awaiter.is_interrupted():
-		var failure = "await_signal_idle_frames(%s, %s) timed out after %sms" % [signal_name, args, timeout_millis]
+		var failure := "await_signal_idle_frames(%s, %s) timed out after %sms" % [signal_name, args, timeout_millis]
 		GdUnitAssertImpl.new(signal_name).report_error(failure, line_number)
 	return value
 

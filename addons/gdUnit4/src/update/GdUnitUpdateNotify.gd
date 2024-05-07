@@ -1,7 +1,7 @@
 @tool
 extends Window
 
-signal request_completed(response)
+#signal request_completed(response)
 
 const GdMarkDownReader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
 const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
@@ -23,7 +23,7 @@ var _available_versions :Array
 var _download_zip_url :String
 
 
-func _ready():
+func _ready() -> void:
 	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 	_editor_interface = plugin.get_editor_interface()
 	_update_button.disabled = true
@@ -68,7 +68,7 @@ func message(message :String, color :Color) -> void:
 	_content.append_text(_colored(message, color))
 
 
-func _process(_delta):
+func _process(_delta :float) -> void:
 	if _content != null and _content.is_visible_in_tree():
 		_content.queue_redraw()
 
@@ -79,7 +79,7 @@ func show_update() -> void:
 	prints("Scan for GdUnit4 Update ...")
 	var content :String
 	if _debug_mode:
-		var template = FileAccess.open("res://addons/gdUnit4/test/update/resources/markdown.txt", FileAccess.READ).get_as_text()
+		var template := FileAccess.open("res://addons/gdUnit4/test/update/resources/markdown.txt", FileAccess.READ).get_as_text()
 		content = await _md_reader.to_bbcode(template)
 	else:
 		var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_releases()
@@ -106,10 +106,10 @@ static func extract_zip_url(response :GdUnitUpdateClient.HttpResponse) -> String
 	return body[0]["zipball_url"]
 
 
-func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version) -> String:
+func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version :GdUnit4Version) -> String:
 	await get_tree().process_frame
 	var result := ""
-	for release in response.response():
+	for release :Dictionary in response.response():
 		if GdUnit4Version.parse(release["tag_name"]).equals(current_version):
 			break
 		var release_description :String = release["body"]
@@ -131,7 +131,7 @@ func rescan() -> void:
 	await get_tree().create_timer(1).timeout
 
 
-func progressBar(p_progress :int, p_color :Color = Color.POWDER_BLUE):
+func progressBar(p_progress :int, p_color :Color = Color.POWDER_BLUE) -> void:
 	if p_progress < 0:
 		p_progress = 0
 	if p_progress > 100:
@@ -139,7 +139,7 @@ func progressBar(p_progress :int, p_color :Color = Color.POWDER_BLUE):
 	printraw("scan [%-50s] %-3d%%\r" % ["".lpad(int(p_progress/2.0), "#").rpad(50, "-"), p_progress])
 
 
-func _on_update_pressed():
+func _on_update_pressed() -> void:
 	_update_button.set_disabled(true)
 	# close all opend scripts before start the update
 	if not _debug_mode:
@@ -153,31 +153,31 @@ func _on_update_pressed():
 	var dest := FileAccess.open("res://addons/.gdunit_update/GdUnitUpdate.tscn", FileAccess.WRITE)
 	dest.store_string(content)
 	hide()
-	var update = load("res://addons/.gdunit_update/GdUnitUpdate.tscn").instantiate()
+	var update :Variant = load("res://addons/.gdunit_update/GdUnitUpdate.tscn").instantiate()
 	update.setup(_editor_interface, _update_client, _download_zip_url)
 	Engine.get_main_loop().root.add_child(update)
 	update.popup_centered()
 
 
-func _on_show_next_toggled(enabled :bool):
+func _on_show_next_toggled(enabled :bool) -> void:
 	GdUnitSettings.set_update_notification(enabled)
 
 
-func _on_cancel_pressed():
+func _on_cancel_pressed() -> void:
 	hide()
 
 
-func _on_content_meta_clicked(meta :String):
-	var properties = str_to_var(meta)
+func _on_content_meta_clicked(meta :String) -> void:
+	var properties :Variant = str_to_var(meta)
 	if properties.has("url"):
 		OS.shell_open(properties.get("url"))
 
 
-func _on_content_meta_hover_started(meta :String):
-	var properties = str_to_var(meta)
+func _on_content_meta_hover_started(meta :String) -> void:
+	var properties :Variant = str_to_var(meta)
 	if properties.has("tool_tip"):
 		_content.set_tooltip_text(properties.get("tool_tip"))
 
 
-func _on_content_meta_hover_ended(meta):
+func _on_content_meta_hover_ended(meta :String) -> void:
 	_content.set_tooltip_text("")

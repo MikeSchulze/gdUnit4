@@ -87,14 +87,14 @@ func _wail_until_signal(signal_name :String, expected_args :Array, expect_not_em
 		report_error("Can't wait for non-existion signal '%s' checked object '%s'." % [signal_name,_emitter.get_class()])
 		return self
 	_signal_collector.register_emitter(_emitter)
-	var time_scale = Engine.get_time_scale()
+	var time_scale := Engine.get_time_scale()
 	var timer := Timer.new()
 	Engine.get_main_loop().root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
 	timer.set_one_shot(true)
-	timer.timeout.connect(func on_timeout(): _interrupted = true)
+	timer.timeout.connect(func on_timeout() -> void: _interrupted = true)
 	timer.start((_timeout/1000.0)*time_scale)
-	var is_signal_emitted = false
+	var is_signal_emitted := false
 	while not _interrupted and not is_signal_emitted:
 		await Engine.get_main_loop().process_frame
 		if is_instance_valid(_emitter):

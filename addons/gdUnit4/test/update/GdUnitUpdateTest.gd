@@ -6,7 +6,7 @@ extends GdUnitTestSuite
 const GdUnitUpdate = preload('res://addons/gdUnit4/src/update/GdUnitUpdate.gd')
 
 
-func after_test():
+func after_test() -> void:
 	clean_temp_dir()
 
 

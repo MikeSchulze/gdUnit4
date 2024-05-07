@@ -10,11 +10,11 @@ const _patches := "res://addons/gdUnit4/test/update/resources/patches/"
 var _patcher :GdUnitPatcher
 
 
-func before():
+func before() -> void:
 	_patcher = auto_free(GdUnitPatcher.new())
 
 
-func before_test():
+func before_test() -> void:
 	Engine.set_meta(GdUnitPatch.PATCH_VERSION, [])
 	_patcher._patches.clear()
 
