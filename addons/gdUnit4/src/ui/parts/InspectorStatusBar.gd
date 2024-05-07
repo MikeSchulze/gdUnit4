@@ -1,11 +1,11 @@
 @tool
 extends PanelContainer
 
-signal failure_next
-signal failure_prevous
+signal failure_next()
+signal failure_prevous()
 
-@onready var _errors = $GridContainer/Errors/value
-@onready var _failures = $GridContainer/Failures/value
+@onready var _errors := $GridContainer/Errors/value
+@onready var _failures := $GridContainer/Failures/value
 @onready var _button_failure_up := $GridContainer/Failures/buttons/failure_up
 @onready var _button_failure_down := $GridContainer/Failures/buttons/failure_down
 
@@ -13,7 +13,7 @@ var total_failed := 0
 var total_errors := 0
 
 
-func _ready():
+func _ready() -> void:
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	_failures.text = "0"
 	_errors.text = "0"
@@ -23,7 +23,7 @@ func _ready():
 	_button_failure_down.icon = GodotVersionFixures.get_icon(editior_control, "ArrowDown")
 
 
-func status_changed(errors :int, failed :int):
+func status_changed(errors :int, failed :int) -> void:
 	total_failed += failed
 	total_errors += errors
 	_failures.text = str(total_failed)
@@ -52,9 +52,9 @@ func _on_gdunit_event(event :GdUnitEvent) -> void:
 				status_changed(0, event.failed_count())
 
 
-func _on_failure_up_pressed():
-	emit_signal("failure_prevous")
+func _on_failure_up_pressed() -> void:
+	failure_prevous.emit()
 
 
-func _on_failure_down_pressed():
-	emit_signal("failure_next")
+func _on_failure_down_pressed() -> void:
+	failure_next.emit()

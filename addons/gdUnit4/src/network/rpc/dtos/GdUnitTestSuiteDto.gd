@@ -1,6 +1,8 @@
 class_name GdUnitTestSuiteDto
 extends GdUnitResourceDto
 
+
+# Dictionary[String, GdUnitTestCaseDto]
 var _test_cases_by_name := Dictionary()
 
 
@@ -29,5 +31,7 @@ func test_case_count() -> int:
 	return _test_cases_by_name.size()
 
 
-func test_cases() -> Array:
-	return _test_cases_by_name.values()
+func test_cases() -> Array[GdUnitTestCaseDto]:
+	var test_cases :Array[GdUnitTestCaseDto] = []
+	test_cases.append_array(_test_cases_by_name.values())
+	return test_cases

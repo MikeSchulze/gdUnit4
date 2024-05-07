@@ -5,14 +5,14 @@ extends Control
 
 signal input_completed(input_event :InputEventKey)
 
-@onready var _label = %Label
+@onready var _label := %Label
 
 
 var _tween :Tween
 var _input_event :InputEventKey
 
 
-func _ready():
+func _ready() -> void:
 	reset()
 	_tween = create_tween()
 	_tween.set_loops(-1)
@@ -23,7 +23,7 @@ func reset() -> void:
 	_input_event = InputEventKey.new()
 
 
-func _input(event :InputEvent):
+func _input(event :InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 	if event is InputEventKey and event.is_pressed() and not event.is_echo():
