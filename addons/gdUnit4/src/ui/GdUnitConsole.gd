@@ -10,8 +10,8 @@ const TITLE = "gdUnit4 ${version} Console"
 var _text_color :Color
 var _function_color :Color
 var _engine_type_color :Color
-var _statistics = {}
-var _summary = {
+var _statistics := {}
+var _summary := {
 	"total_count": 0,
 	"error_count": 0,
 	"failed_count": 0,
@@ -20,7 +20,7 @@ var _summary = {
 }
 
 
-func _ready():
+func _ready() -> void:
 	init_colors()
 	GdUnitFonts.init_fonts(output)
 	GdUnit4Version.init_version_label(title)
@@ -31,7 +31,7 @@ func _ready():
 	output.clear()
 
 
-func _notification(what):
+func _notification(what :int) -> void:
 	if what == EditorSettings.NOTIFICATION_EDITOR_SETTINGS_CHANGED:
 		init_colors()
 	if what == NOTIFICATION_PREDELETE:
@@ -49,7 +49,7 @@ func init_colors() -> void:
 	_engine_type_color = settings.get_setting("text_editor/theme/highlighting/engine_type_color")
 
 
-func init_statistics(event :GdUnitEvent) :
+func init_statistics(event :GdUnitEvent) -> void:
 	_statistics["total_count"] = event.total_count()
 	_statistics["error_count"] = 0
 	_statistics["failed_count"] = 0
@@ -59,13 +59,13 @@ func init_statistics(event :GdUnitEvent) :
 
 
 func reset_statistics() -> void:
-	for k in _statistics.keys():
+	for k :String in _statistics.keys():
 		_statistics[k] = 0
-	for k in _summary.keys():
+	for k :String in _summary.keys():
 		_summary[k] = 0
 
 
-func update_statistics(event :GdUnitEvent) :
+func update_statistics(event :GdUnitEvent) -> void:
 	_statistics["error_count"] += event.error_count()
 	_statistics["failed_count"] += event.failed_count()
 	_statistics["skipped_count"] += event.skipped_count()
@@ -91,7 +91,7 @@ func println_message(message :String, color :Color = _text_color, indent :int = 
 	output.newline()
 
 
-func _on_gdunit_event(event :GdUnitEvent):
+func _on_gdunit_event(event :GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
 			reset_statistics()
@@ -121,7 +121,7 @@ func _on_gdunit_event(event :GdUnitEvent):
 			println_message(" ")
 
 		GdUnitEvent.TESTCASE_BEFORE:
-			var spaces = "-%d" % (80 - event._suite_name.length())
+			var spaces := "-%d" % (80 - event._suite_name.length())
 			print_message(event._suite_name, _engine_type_color, 1)
 			print_message(":")
 			print_message(("%"+spaces+"s") % event._test_name, _function_color)
@@ -155,7 +155,7 @@ func _on_gdunit_client_disconnected(client_id :int) -> void:
 	output.newline()
 
 
-func _on_gdunit_message(message :String):
+func _on_gdunit_message(message :String) -> void:
 	output.newline()
 	output.append_text(message)
 	output.newline()

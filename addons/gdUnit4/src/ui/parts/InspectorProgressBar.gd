@@ -1,12 +1,12 @@
 @tool
 extends ProgressBar
 
-@onready var bar = $"."
-@onready var status = $Label
+@onready var bar := $"."
+@onready var status := $Label
 @onready var style :StyleBoxFlat = bar.get("theme_override_styles/fill")
 
 
-func _ready():
+func _ready() -> void:
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	style.bg_color = Color.DARK_GREEN
 	update_text()

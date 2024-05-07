@@ -1,8 +1,8 @@
 @tool
 extends VSplitContainer
 
-signal run_testcase(test_suite_resource_path, test_case, test_param_index, run_debug)
-signal run_testsuite
+signal run_testcase(test_suite_resource_path :String, test_case :String, test_param_index :int, run_debug :bool)
+signal run_testsuite()
 
 const CONTEXT_MENU_RUN_ID = 0
 const CONTEXT_MENU_DEBUG_ID = 1
@@ -14,14 +14,14 @@ const CONTEXT_MENU_DEBUG_ID = 1
 
 
 # tree icons
-@onready var ICON_SPINNER = load("res://addons/gdUnit4/src/ui/assets/spinner.tres")
-@onready var ICON_TEST_DEFAULT = load("res://addons/gdUnit4/src/ui/assets/TestCase.svg")
-@onready var ICON_TEST_SUCCESS = load("res://addons/gdUnit4/src/ui/assets/TestCaseSuccess.svg")
-@onready var ICON_TEST_FAILED = load("res://addons/gdUnit4/src/ui/assets/TestCaseFailed.svg")
-@onready var ICON_TEST_ERROR = load("res://addons/gdUnit4/src/ui/assets/TestCaseError.svg")
-@onready var ICON_TEST_SUCCESS_ORPHAN = load("res://addons/gdUnit4/src/ui/assets/TestCase_success_orphan.tres")
-@onready var ICON_TEST_FAILED_ORPHAN = load("res://addons/gdUnit4/src/ui/assets/TestCase_failed_orphan.tres")
-@onready var ICON_TEST_ERRORS_ORPHAN = load("res://addons/gdUnit4/src/ui/assets/TestCase_error_orphan.tres")
+@onready var ICON_SPINNER := load("res://addons/gdUnit4/src/ui/assets/spinner.tres")
+@onready var ICON_TEST_DEFAULT := load("res://addons/gdUnit4/src/ui/assets/TestCase.svg")
+@onready var ICON_TEST_SUCCESS := load("res://addons/gdUnit4/src/ui/assets/TestCaseSuccess.svg")
+@onready var ICON_TEST_FAILED := load("res://addons/gdUnit4/src/ui/assets/TestCaseFailed.svg")
+@onready var ICON_TEST_ERROR := load("res://addons/gdUnit4/src/ui/assets/TestCaseError.svg")
+@onready var ICON_TEST_SUCCESS_ORPHAN := load("res://addons/gdUnit4/src/ui/assets/TestCase_success_orphan.tres")
+@onready var ICON_TEST_FAILED_ORPHAN := load("res://addons/gdUnit4/src/ui/assets/TestCase_failed_orphan.tres")
+@onready var ICON_TEST_ERRORS_ORPHAN := load("res://addons/gdUnit4/src/ui/assets/TestCase_error_orphan.tres")
 @onready var debug_icon_image :Texture2D = load("res://addons/gdUnit4/src/ui/assets/PlayDebug.svg")
 
 enum GdUnitType {
@@ -76,7 +76,7 @@ func clear_tree_item_cache() -> void:
 
 
 func _find_item(parent :TreeItem, resource_path :String, test_case :String = "") -> TreeItem:
-	var item = _find_by_resource_path(parent, resource_path)
+	var item := _find_by_resource_path(parent, resource_path)
 	if not item:
 		return null
 	if test_case.is_empty():
@@ -126,7 +126,7 @@ func is_test_suite(item :TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_TYPE) and item.get_meta(META_GDUNIT_TYPE) == GdUnitType.TEST_SUITE
 
 
-func _ready():
+func _ready() -> void:
 	if Engine.is_editor_hint():
 		_editor = Engine.get_meta("GdUnitEditorPlugin")
 		var editior_control := _editor.get_editor_interface().get_base_control()
@@ -142,7 +142,7 @@ func _ready():
 
 # we need current to manually redraw bacause of the animation bug
 # https://github.com/godotengine/godot/issues/69330
-func _process(_delta):
+func _process(_delta :float) -> void:
 	if is_visible_in_tree():
 		queue_redraw()
 
@@ -252,7 +252,7 @@ func set_elapsed_time(item :TreeItem, time :int) -> void:
 
 
 func set_state_orphan(item :TreeItem, event: GdUnitEvent) -> void:
-	var orphan_count = event.statistic(GdUnitEvent.ORPHAN_NODES)
+	var orphan_count := event.statistic(GdUnitEvent.ORPHAN_NODES)
 	if orphan_count == 0:
 		return
 	if item.has_meta(META_GDUNIT_ORPHAN):
@@ -286,9 +286,9 @@ func update_state(item: TreeItem, event :GdUnitEvent) -> void:
 
 
 func add_report(item :TreeItem, report: GdUnitReport) -> void:
-	var reports = []
+	var reports :Array[GdUnitReport] = []
 	if item.has_meta(META_GDUNIT_REPORT):
-		reports = item.get_meta(META_GDUNIT_REPORT)
+		reports = get_item_reports(item)
 	reports.append(report)
 	item.set_meta(META_GDUNIT_REPORT, reports)
 
@@ -360,7 +360,7 @@ func select_first_orphan() -> void:
 					return
 
 
-func show_failed_report(selected_item) -> void:
+func show_failed_report(selected_item :TreeItem) -> void:
 	# clear old reports
 	for child in _report_list.get_children():
 		_report_list.remove_child(child)
@@ -369,8 +369,7 @@ func show_failed_report(selected_item) -> void:
 	if selected_item == null or not selected_item.has_meta(META_GDUNIT_REPORT):
 		return
 	# add new reports
-	for r in selected_item.get_meta(META_GDUNIT_REPORT):
-		var report := r as GdUnitReport
+	for report in get_item_reports(selected_item):
 		var reportNode :RichTextLabel = _report_template.duplicate()
 		_report_list.add_child(reportNode)
 		reportNode.append_text(report.to_string())
@@ -423,7 +422,7 @@ func add_test_suite(test_suite :GdUnitTestSuiteDto) -> void:
 		add_test(item, test_case)
 
 
-func _update_item_counter(item: TreeItem):
+func _update_item_counter(item: TreeItem) -> void:
 	if item.has_meta(META_GDUNIT_TOTAL_TESTS):
 		item.set_text(0, "(%s/%s) %s" % [
 			item.get_meta(META_GDUNIT_SUCCESS_TESTS),
@@ -431,7 +430,7 @@ func _update_item_counter(item: TreeItem):
 			item.get_meta(META_GDUNIT_NAME)])
 
 
-func _update_parent_item_state(item: TreeItem, success : bool):
+func _update_parent_item_state(item: TreeItem, success :bool) -> void:
 	if success:
 		var parent_item := item.get_parent()
 		var successes: int = parent_item.get_meta(META_GDUNIT_SUCCESS_TESTS)
@@ -460,9 +459,9 @@ func add_test(parent :TreeItem, test_case :GdUnitTestCaseDto) -> void:
 		add_test_cases(item, test_case_names)
 
 
-func add_test_cases(parent :TreeItem, test_case_names :Array) -> void:
+func add_test_cases(parent :TreeItem, test_case_names :PackedStringArray) -> void:
 	for index in test_case_names.size():
-		var test_case_name = test_case_names[index]
+		var test_case_name := test_case_names[index]
 		var item := _tree.create_item(parent)
 		item.set_text(0, test_case_name)
 		item.set_icon(0, ICON_TEST_DEFAULT)
@@ -478,7 +477,7 @@ func add_test_cases(parent :TreeItem, test_case_names :Array) -> void:
 ################################################################################
 # Tree signal receiver
 ################################################################################
-func _on_tree_item_mouse_selected(mouse_position :Vector2, mouse_button_index :int):
+func _on_tree_item_mouse_selected(mouse_position :Vector2, mouse_button_index :int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
 		_context_menu.position = get_screen_position() + mouse_position
 		_context_menu.popup()
@@ -488,14 +487,14 @@ func _on_run_pressed(run_debug :bool) -> void:
 	_context_menu.hide()
 	var item := _tree.get_selected()
 	if item.get_meta(META_GDUNIT_TYPE) == GdUnitType.TEST_SUITE:
-		var resource_path = item.get_meta(META_RESOURCE_PATH)
+		var resource_path :String = item.get_meta(META_RESOURCE_PATH)
 		run_testsuite.emit([resource_path], run_debug)
 		return
-	var parent = item.get_parent()
-	var test_suite_resource_path = parent.get_meta(META_RESOURCE_PATH)
-	var test_case = item.get_meta(META_GDUNIT_NAME)
+	var parent := item.get_parent()
+	var test_suite_resource_path :String = parent.get_meta(META_RESOURCE_PATH)
+	var test_case :String = item.get_meta(META_GDUNIT_NAME)
 	# handle parameterized test selection
-	var test_param_index = item.get_meta(META_TEST_PARAM_INDEX)
+	var test_param_index :int = item.get_meta(META_TEST_PARAM_INDEX)
 	if test_param_index != -1:
 		test_case = parent.get_meta(META_GDUNIT_NAME)
 	run_testcase.emit(test_suite_resource_path, test_case, test_param_index, run_debug)
@@ -512,13 +511,13 @@ func _on_Tree_item_selected() -> void:
 # Opens the test suite
 func _on_Tree_item_activated() -> void:
 	var selected_item := _tree.get_selected()
-	var resource_path = selected_item.get_meta(META_RESOURCE_PATH)
-	var line_number = selected_item.get_meta(META_LINE_NUMBER)
-	var resource = load(resource_path)
+	var resource_path :String = selected_item.get_meta(META_RESOURCE_PATH)
+	var line_number :int = selected_item.get_meta(META_LINE_NUMBER)
+	var resource := load(resource_path)
 
 	if selected_item.has_meta(META_GDUNIT_REPORT):
-		var reports :Array = selected_item.get_meta(META_GDUNIT_REPORT)
-		var report_line_number = reports[0].line_number()
+		var reports := get_item_reports(selected_item)
+		var report_line_number := reports[0].line_number()
 		# if number -1 we use original stored line number of the test case
 		# in non debug mode the line number is not available
 		if report_line_number != -1:
@@ -533,13 +532,13 @@ func _on_Tree_item_activated() -> void:
 ################################################################################
 # external signal receiver
 ################################################################################
-func _on_gdunit_runner_start():
+func _on_gdunit_runner_start() -> void:
 	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, true)
 	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, true)
 	clear_failures()
 
 
-func _on_gdunit_runner_stop(_client_id :int):
+func _on_gdunit_runner_stop(_client_id :int) -> void:
 	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, false)
 	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, false)
 	abort_running()
@@ -569,21 +568,25 @@ func _on_gdunit_event(event :GdUnitEvent) -> void:
 			update_test_suite(event)
 
 
-func _on_Monitor_jump_to_orphan_nodes():
+func _on_Monitor_jump_to_orphan_nodes() -> void:
 	select_first_orphan()
 
 
-func _on_StatusBar_failure_next():
+func _on_StatusBar_failure_next() -> void:
 	select_next_failure()
 
 
-func _on_StatusBar_failure_prevous():
+func _on_StatusBar_failure_prevous() -> void:
 	select_previous_failure()
 
 
-func _on_context_m_index_pressed(index):
+func _on_context_m_index_pressed(index :int) -> void:
 	match index:
 		CONTEXT_MENU_DEBUG_ID:
 			_on_run_pressed(true)
 		CONTEXT_MENU_RUN_ID:
 			_on_run_pressed(false)
+
+
+func get_item_reports(item :TreeItem) -> Array[GdUnitReport]:
+	return item.get_meta(META_GDUNIT_REPORT)

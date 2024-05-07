@@ -21,7 +21,7 @@ const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdate
 var _font_size :float
 
 
-func _ready():
+func _ready() -> void:
 	# initialize for testing
 	if not Engine.is_editor_hint():
 		GdUnitSettings.setup()
@@ -44,7 +44,7 @@ func _sort_by_key(left :GdUnitProperty, right :GdUnitProperty) -> bool:
 	return left.name() < right.name()
 
 
-func setup_properties(properties_parent :Node, property_category) -> void:
+func setup_properties(properties_parent :Node, property_category :String) -> void:
 	var category_properties := GdUnitSettings.list_settings(property_category)
 	# sort by key
 	category_properties.sort_custom(_sort_by_key)
@@ -58,7 +58,7 @@ func setup_properties(properties_parent :Node, property_category) -> void:
 		grid.columns = 4
 		grid.theme = theme_
 		var property : GdUnitProperty = p
-		var current_category = property.category()
+		var current_category := property.category()
 		if current_category != last_category:
 			var sub_category :Node = _properties_template.get_child(3).duplicate()
 			sub_category.get_child(0).text = current_category.capitalize()
@@ -100,8 +100,7 @@ func _create_input_element(property: GdUnitProperty, reset_btn :Button) -> Node:
 	if property.is_selectable_value():
 		var options := OptionButton.new()
 		options.alignment = HORIZONTAL_ALIGNMENT_CENTER
-		var values_set := Array(property.value_set())
-		for value in values_set:
+		for value in property.value_set():
 			options.add_item(value)
 		options.item_selected.connect(_on_option_selected.bind(property, reset_btn))
 		options.select(property.value())
@@ -209,25 +208,25 @@ func rescan(update_scripts :bool = false) -> void:
 		plugin.get_editor_interface().get_resource_filesystem().update_script_classes()
 
 
-func _on_btn_report_bug_pressed():
-	OS.shell_open("https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&template=bug_report.md&title=")
+func _on_btn_report_bug_pressed() -> void:
+	OS.shell_open("https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&projects=projects%2F5&template=bug_report.yml&title=GD-XXX%3A+Describe+the+issue+briefly")
 
 
-func _on_btn_request_feature_pressed():
-	OS.shell_open("https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&template=feature_request.md&title=")
+func _on_btn_request_feature_pressed() -> void:
+	OS.shell_open("https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&projects=&template=feature_request.md&title=")
 
 
-func _on_btn_install_examples_pressed():
+func _on_btn_install_examples_pressed() -> void:
 	_btn_install.disabled = true
 	await _install_examples()
 	_btn_install.disabled = false
 
 
-func _on_btn_close_pressed():
+func _on_btn_close_pressed() -> void:
 	hide()
 
 
-func _on_btn_property_reset_pressed(property: GdUnitProperty, input :Node, reset_btn :Button):
+func _on_btn_property_reset_pressed(property: GdUnitProperty, input :Node, reset_btn :Button) -> void:
 	if input is CheckButton:
 		input.button_pressed = property.default()
 	elif input is LineEdit:
@@ -242,7 +241,7 @@ func _on_btn_property_reset_pressed(property: GdUnitProperty, input :Node, reset
 		_on_property_text_changed(property.default(), property, reset_btn)
 
 
-func _on_property_text_changed(new_value :Variant, property: GdUnitProperty, reset_btn :Button):
+func _on_property_text_changed(new_value :Variant, property: GdUnitProperty, reset_btn :Button) -> void:
 	property.set_value(new_value)
 	reset_btn.disabled = property.value() == property.default()
 	var error :Variant = GdUnitSettings.update_property(property)
@@ -255,7 +254,7 @@ func _on_property_text_changed(new_value :Variant, property: GdUnitProperty, res
 			_property_error.position = control.global_position + Vector2(self.position) + Vector2(40, 40)
 
 
-func _on_option_selected(index :int, property: GdUnitProperty, reset_btn :Button):
+func _on_option_selected(index :int, property: GdUnitProperty, reset_btn :Button) -> void:
 	property.set_value(index)
 	reset_btn.disabled = property.value() == property.default()
 	GdUnitSettings.update_property(property)

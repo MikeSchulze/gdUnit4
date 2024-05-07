@@ -5,17 +5,17 @@ extends Control
 var _context_menus := Dictionary()
 
 
-func _init(context_menus :Array[GdUnitContextMenuItem]):
+func _init(context_menus :Array[GdUnitContextMenuItem]) -> void:
 	set_name("EditorFileSystemContextMenuHandler")
 	for menu in context_menus:
 		_context_menus[menu.id] = menu
-	var popup := _menu_popup()
-	var file_tree := _file_tree()
+	var popup := EditorFileSystemContextMenuHandler._menu_popup()
+	var file_tree := EditorFileSystemContextMenuHandler._file_tree()
 	popup.about_to_popup.connect(on_context_menu_show.bind(popup, file_tree))
 	popup.id_pressed.connect(on_context_menu_pressed.bind(file_tree))
 
 
-static func dispose():
+static func dispose() -> void:
 	var handler :EditorFileSystemContextMenuHandler = Engine.get_main_loop().root.find_child("EditorFileSystemContextMenuHandler*", false, false)
 	if handler:
 		var popup := _menu_popup()
@@ -32,7 +32,7 @@ func on_context_menu_show(context_menu :PopupMenu, file_tree :Tree) -> void:
 	var current_index := context_menu.get_item_count()
 	var selected_test_suites := collect_testsuites(_context_menus.values()[0], file_tree)
 
-	for menu_id in _context_menus.keys():
+	for menu_id :int in _context_menus.keys():
 		var menu_item :GdUnitContextMenuItem = _context_menus[menu_id]
 		if selected_test_suites.size() != 0:
 			context_menu.add_item(menu_item.name, menu_id)

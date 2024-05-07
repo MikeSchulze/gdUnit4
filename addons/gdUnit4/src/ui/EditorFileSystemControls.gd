@@ -24,7 +24,7 @@ static func unregister_context_menu() -> void:
 	EditorFileSystemContextMenuHandler.dispose()
 
 
-static func _print_menu(popup :PopupMenu):
+static func _print_menu(popup :PopupMenu) -> void:
 	for itemIndex in popup.item_count:
 		prints( "get_item_id", popup.get_item_id(itemIndex))
 		prints( "get_item_accelerator", popup.get_item_accelerator(itemIndex))

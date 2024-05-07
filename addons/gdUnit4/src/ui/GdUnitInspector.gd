@@ -6,11 +6,11 @@ extends Panel
 var _command_handler := GdUnitCommandHandler.instance()
 
 
-func _ready():
+func _ready() -> void:
 	if Engine.is_editor_hint():
 		var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
 		_getEditorThemes(plugin.get_editor_interface())
-	GdUnitCommandHandler.instance().gdunit_runner_start.connect(func():
+	GdUnitCommandHandler.instance().gdunit_runner_start.connect(func() -> void:
 		var tab_container :TabContainer = get_parent_control()
 		for tab_index in tab_container.get_tab_count():
 			if tab_container.get_tab_title(tab_index) == "GdUnit":
@@ -18,19 +18,19 @@ func _ready():
 	)
 
 
-func _enter_tree():
+func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		add_script_editor_context_menu()
 		add_file_system_dock_context_menu()
 
 
-func _exit_tree():
+func _exit_tree() -> void:
 	if Engine.is_editor_hint():
 		ScriptEditorControls.unregister_context_menu()
 		EditorFileSystemControls.unregister_context_menu()
 
 
-func _process(_delta):
+func _process(_delta :float) -> void:
 	_command_handler._do_process()
 
 
@@ -55,7 +55,7 @@ func _getEditorThemes(interface :EditorInterface) -> void:
 
 # Context menu registrations ----------------------------------------------------------------------
 func add_file_system_dock_context_menu() -> void:
-	var is_test_suite := func is_visible(script :Script, is_test_suite :bool):
+	var is_test_suite := func is_visible(script :Script, is_test_suite :bool) -> bool:
 		if script == null:
 			return true
 		return GdObjects.is_test_suite(script) == is_test_suite
@@ -66,8 +66,8 @@ func add_file_system_dock_context_menu() -> void:
 	EditorFileSystemControls.register_context_menu(menu)
 
 
-func add_script_editor_context_menu():
-	var is_test_suite := func is_visible(script :Script, is_test_suite :bool):
+func add_script_editor_context_menu() -> void:
+	var is_test_suite := func is_visible(script :Script, is_test_suite :bool) -> bool:
 		return GdObjects.is_test_suite(script) == is_test_suite
 	var menu :Array[GdUnitContextMenuItem] = [
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE)),
@@ -77,9 +77,9 @@ func add_script_editor_context_menu():
 	ScriptEditorControls.register_context_menu(menu)
 
 
-func _on_MainPanel_run_testsuite(test_suite_paths :Array, debug :bool):
+func _on_MainPanel_run_testsuite(test_suite_paths :Array, debug :bool) -> void:
 	_command_handler.cmd_run_test_suites(test_suite_paths, debug)
 
 
-func _on_MainPanel_run_testcase(resource_path :String, test_case :String, test_param_index :int, debug :bool):
+func _on_MainPanel_run_testcase(resource_path :String, test_case :String, test_param_index :int, debug :bool) -> void:
 	_command_handler.cmd_run_test_case(resource_path, test_case, test_param_index, debug)

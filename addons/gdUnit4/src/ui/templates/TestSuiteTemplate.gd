@@ -36,7 +36,7 @@ func setup_editor_colors() -> void:
 	var text_color :Color = settings.get_setting("text_editor/theme/highlighting/text_color")
 	var selection_color :Color = settings.get_setting("text_editor/theme/highlighting/selection_color")
 
-	for e in [_template_editor, _tags_editor]:
+	for e :CodeEdit in [_template_editor, _tags_editor]:
 		var editor :CodeEdit = e
 		editor.add_theme_color_override("background_color", background_color)
 		editor.add_theme_color_override("font_color", text_color)
