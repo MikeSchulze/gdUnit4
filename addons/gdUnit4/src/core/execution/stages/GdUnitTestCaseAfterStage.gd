@@ -8,7 +8,7 @@ var _test_name :StringName = ""
 var _call_stage :bool
 
 
-func _init(call_stage := true):
+func _init(call_stage := true) -> void:
 	_call_stage = call_stage
 
 
@@ -29,7 +29,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		context.test_case.dispose()
 
 
-func set_test_name(test_name :StringName):
+func set_test_name(test_name :StringName) -> void:
 	_test_name = test_name
 
 
@@ -80,11 +80,11 @@ func add_orphan_report_teststage(context :GdUnitExecutionContext, reports :Array
 	return orphans
 
 
-func fire_test_skipped(context :GdUnitExecutionContext):
+func fire_test_skipped(context :GdUnitExecutionContext) -> void:
 	var test_suite := context.test_suite
 	var test_case := context.test_case
 	var test_case_name :=  context._test_case_name if _test_name.is_empty() else _test_name
-	var statistics = {
+	var statistics := {
 		GdUnitEvent.ORPHAN_NODES: 0,
 		GdUnitEvent.ELAPSED_TIME: 0,
 		GdUnitEvent.WARNINGS: false,

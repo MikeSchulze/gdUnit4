@@ -25,7 +25,7 @@ func after() -> void:
 	GdUnitSignals.instance().gdunit_event_debug.disconnect(_on_gdunit_event_debug)
 
 
-func after_test():
+func after_test() -> void:
 	_collected_events.clear()
 
 
@@ -42,7 +42,7 @@ func flating_message(message :String) -> String:
 
 
 func execute(test_suite :GdUnitTestSuite) -> Array[GdUnitEvent]:
-	await GdUnitThreadManager.run("test_executor", func():
+	await GdUnitThreadManager.run("test_executor", func() -> void:
 		var executor := GdUnitTestSuiteExecutor.new(true)
 		await executor.execute(test_suite))
 	return _collected_events
@@ -77,7 +77,7 @@ func assert_event_states(events :Array[GdUnitEvent]) -> GdUnitArrayAssert:
 func assert_event_reports(events :Array[GdUnitEvent], expected_reports :Array) -> void:
 	for event_index in events.size():
 		var current :Array = events[event_index].reports()
-		var expected = expected_reports[event_index] if expected_reports.size() > event_index else []
+		var expected :Array = expected_reports[event_index] if expected_reports.size() > event_index else []
 		if expected.is_empty():
 			for m in current.size():
 				assert_str(flating_message(current[m].message())).is_empty()
@@ -122,7 +122,7 @@ func test_execute_success() -> void:
 func test_execute_failure_on_stage_before() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageBefore.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailOnStageBefore",\
@@ -161,7 +161,7 @@ func test_execute_failure_on_stage_before() -> void:
 func test_execute_failure_on_stage_after() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageAfter.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailOnStageAfter",\
@@ -200,7 +200,7 @@ func test_execute_failure_on_stage_after() -> void:
 func test_execute_failure_on_stage_before_test() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageBeforeTest.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailOnStageBeforeTest",\
@@ -242,7 +242,7 @@ func test_execute_failure_on_stage_before_test() -> void:
 func test_execute_failure_on_stage_after_test() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageAfterTest.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailOnStageAfterTest",\
@@ -284,7 +284,7 @@ func test_execute_failure_on_stage_after_test() -> void:
 func test_execute_failure_on_stage_test_case1() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnStageTestCase1.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailOnStageTestCase1",\
@@ -324,7 +324,7 @@ func test_execute_failure_on_multiple_stages() -> void:
 	# this is a more complex failure state, we expect to find multipe failures on different stages
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailOnMultipeStages.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailOnMultipeStages",\
@@ -369,7 +369,7 @@ func test_execute_failure_and_orphans() -> void:
 	# this is a more complex failure state, we expect to find multipe orphans on different stages
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailAndOrpahnsDetected",\
@@ -423,7 +423,7 @@ func test_execute_failure_and_orphans_report_orphan_disabled() -> void:
 	# simulate test suite execution whit disabled orphan detection
 
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ORPHANS, false)
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ORPHANS, true)
 
 	# verify basis infos
@@ -468,7 +468,7 @@ func test_execute_error_on_test_timeout() -> void:
 	# this tests a timeout on a test case reported as error
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteErrorOnTestTimeout.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteErrorOnTestTimeout",\
@@ -509,7 +509,7 @@ func test_execute_error_on_test_timeout() -> void:
 func test_execute_fuzzed_metrics() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFuzzedMetricsTest.resource")
 
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	assert_event_states(events).contains([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		tuple("after", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -528,7 +528,7 @@ func test_execute_fuzzed_metrics() -> void:
 func test_execute_parameterized_metrics() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteParameterizedMetricsTest.resource")
 
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	assert_event_states(events).contains([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
 		tuple("after", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -548,7 +548,7 @@ func test_execute_failure_fuzzer_iteration() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/GdUnitFuzzerTest.resource")
 
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 
 	# verify basis infos
 	assert_event_list(events, "GdUnitFuzzerTest", [
@@ -588,7 +588,7 @@ func test_execute_failure_fuzzer_iteration() -> void:
 func test_execute_add_child_on_before_GD_106() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAddChildStageBefore.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# verify basis infos
 	assert_event_list(events,\
 		"TestSuiteFailAddChildStageBefore",\
@@ -621,10 +621,10 @@ func test_execute_parameterizied_tests() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteParameterizedTests.resource")
 	# simulate test suite execution
 	# run the tests with to compare type save
-	var original_mode = ProjectSettings.get_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE)
+	var original_mode :Variant = ProjectSettings.get_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
-	var events = await execute(test_suite)
-	var suite_name = "TestSuiteParameterizedTests"
+	var events := await execute(test_suite)
+	var suite_name := "TestSuiteParameterizedTests"
 	# the test is partial failing because of diverent type in the dictionary
 	assert_array(events).extractv(
 		extr("type"), extr("suite_name"), TestCaseNameExtractor.new(), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
@@ -656,7 +656,7 @@ func test_execute_parameterizied_tests() -> void:
 func test_execute_test_suite_is_skipped() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteSkipped.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# the entire test-suite is skipped
 	assert_event_states(events).contains_exactly([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -676,7 +676,7 @@ func test_execute_test_suite_is_skipped() -> void:
 func test_execute_test_case_is_skipped() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestCaseSkipped.resource")
 	# simulate test suite execution
-	var events = await execute(test_suite)
+	var events := await execute(test_suite)
 	# the test_case1 is skipped
 	assert_event_states(events).contains_exactly([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
@@ -703,6 +703,6 @@ func test_execute_test_case_is_skipped() -> void:
 class TestCaseNameExtractor extends GdUnitValueExtractor:
 	var r := RegEx.create_from_string("^.*:\\d")
 
-	func extract_value(value):
+	func extract_value(value :Variant) -> String:
 		var m := r.search(value.test_name())
 		return m.get_string(0) if m != null else value.test_name()

@@ -22,7 +22,7 @@ var _message :String
 var _details :String
 
 
-func _init(type :TYPE, line :int, message :String, details :String):
+func _init(type :TYPE, line :int, message :String, details :String) -> void:
 	_type = type
 	_line = line
 	_message = message
@@ -52,7 +52,8 @@ static func _extract(records :PackedStringArray, index :int, type :TYPE, pattern
 
 
 static func _parse_error_line_number(record :String) -> int:
-	var regex := GdUnitSingleton.instance("error_line_regex", func() : return GdUnitTools.to_regex("at: .*res://.*:(\\d+)")) as RegEx
+	var regex := GdUnitSingleton.instance("error_line_regex", func() ->RegEx:
+			return GdUnitTools.to_regex("at: .*res://.*:(\\d+)")) as RegEx
 	var matches := regex.search(record)
 	if matches != null:
 		return matches.get_string(1).to_int()

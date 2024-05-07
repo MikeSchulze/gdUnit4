@@ -8,7 +8,7 @@ var _test_name :StringName = ""
 var _call_stage :bool
 
 
-func _init(call_stage := true):
+func _init(call_stage := true) -> void:
 	_call_stage = call_stage
 
 
@@ -25,5 +25,5 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	context.error_monitor_start()
 
 
-func set_test_name(test_name :StringName):
+func set_test_name(test_name :StringName) -> void:
 	_test_name = test_name

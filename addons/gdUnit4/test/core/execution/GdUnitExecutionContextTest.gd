@@ -12,7 +12,7 @@ func add_report(ec :GdUnitExecutionContext, report :GdUnitReport) -> void:
 	ec._report_collector.on_reports(ec.get_instance_id(), report)
 
 
-func assert_statistics(ec :GdUnitExecutionContext):
+func assert_statistics(ec :GdUnitExecutionContext) -> void:
 	assert_that(ec.has_failures()).is_false()
 	assert_that(ec.has_errors()).is_false()
 	assert_that(ec.has_warnings()).is_false()
