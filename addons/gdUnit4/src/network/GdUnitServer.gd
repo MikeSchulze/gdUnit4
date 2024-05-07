@@ -4,7 +4,7 @@ extends Node
 @onready var _server :GdUnitTcpServer = $TcpServer
 
 
-func _ready():
+func _ready() -> void:
 	var result := _server.start()
 	if result.is_error():
 		push_error(result.error_message())
@@ -25,7 +25,7 @@ func _on_client_disconnected(client_id :int) -> void:
 	GdUnitSignals.instance().gdunit_client_disconnected.emit(client_id)
 
 
-func _on_gdunit_runner_stop(client_id :int):
+func _on_gdunit_runner_stop(client_id :int) -> void:
 	if _server:
 		_server.disconnect_client(client_id)
 
