@@ -313,7 +313,7 @@ func test_extract_function_signature() -> void:
 		.is_equal("""
 			func a3(set_name:String, path:String="", load_on_init:bool=false,
 				set_auto_save:bool=false, set_network_sync:bool=false
-			) :""".dedent().trim_prefix("\n"))
+			) -> void:""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 33))\
 		.is_equal("""
 			func a4(set_name:String,
@@ -321,7 +321,7 @@ func test_extract_function_signature() -> void:
 				load_on_init:bool=false,
 				set_auto_save:bool=false,
 				set_network_sync:bool=false
-			):""".dedent().trim_prefix("\n"))
+			) -> void:""".dedent().trim_prefix("\n"))
 	assert_that(_parser.extract_func_signature(rows, 43))\
 		.is_equal("""
 			func a5(
@@ -331,7 +331,7 @@ func test_extract_function_signature() -> void:
 					[ ["a"], "a" ],
 					[ ["a", "very", "long", "argument"], "a very long argument" ],
 				]
-			):""".dedent().trim_prefix("\n"))
+			) -> void:""".dedent().trim_prefix("\n"))
 
 
 func test_strip_leading_spaces() -> void:
@@ -447,8 +447,8 @@ func test_parse_class_inherits() -> void:
 	assert_str(clazz_desccriptor.name()).is_equal("CustomClassExtendsCustomClass")
 	assert_bool(clazz_desccriptor.is_inner_class()).is_false()
 	assert_array(clazz_desccriptor.functions()).contains_exactly([
-		GdFunctionDescriptor.new("foo2", 5, false, false, false, GdObjects.TYPE_VARIANT, "", []),
-		GdFunctionDescriptor.new("bar2", 8, false, false, false, TYPE_STRING, "", [])
+		GdFunctionDescriptor.new("foo2", 6, false, false, false, GdObjects.TYPE_VARIANT, "", []),
+		GdFunctionDescriptor.new("bar2", 9, false, false, false, TYPE_STRING, "", [])
 	])
 
 	# extends from CustomResourceTestClass
@@ -465,7 +465,7 @@ func test_parse_class_inherits() -> void:
 			GdFunctionArgument.new("arg2", TYPE_INT, "23"),
 			GdFunctionArgument.new("name", TYPE_STRING, '"test"'),
 		]),
-		GdFunctionDescriptor.new("foo5", 16, false, false, false, GdObjects.TYPE_VARIANT, "", []),
+		GdFunctionDescriptor.new("foo5", 17, false, false, false, GdObjects.TYPE_VARIANT, "", []),
 	])
 
 	# no other class extends

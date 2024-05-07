@@ -13,7 +13,7 @@ var _status :Label
 var _style :StyleBoxFlat
 
 
-func before_test():
+func before_test() -> void:
 	_runner = scene_runner('res://addons/gdUnit4/src/ui/parts/InspectorProgressBar.tscn')
 	_progress = _runner.get_property("bar")
 	_status = _runner.get_property("status")
@@ -61,14 +61,14 @@ func test_progress_success() -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_progress_failed(test_name :String, is_failed :bool, is_error :bool, expected_color :Color, test_parameters = [
+func test_progress_failed(test_name :String, is_failed :bool, is_error :bool, expected_color :Color, test_parameters := [
 	["test_a", false, false, Color.DARK_GREEN],
 	["test_b", false, false, Color.DARK_GREEN],
 	["test_c", false, false, Color.DARK_GREEN],
 	["test_d", true, false, Color.DARK_RED],
 	["test_e", true, false, Color.DARK_RED],
 ]) -> void:
-	var statistics = {
+	var statistics := {
 		GdUnitEvent.ORPHAN_NODES: 0,
 		GdUnitEvent.ELAPSED_TIME: 100,
 		GdUnitEvent.WARNINGS: false,

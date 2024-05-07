@@ -55,7 +55,7 @@ static func build_chars(from :int, to :int) -> Array[int]:
 	return characters
 
 
-func next_value() -> Variant:
+func next_value() -> String:
 	var value := PackedByteArray()
 	var max_char := len(_charset)
 	var length :int = max(_min_length, randi() % _max_length)

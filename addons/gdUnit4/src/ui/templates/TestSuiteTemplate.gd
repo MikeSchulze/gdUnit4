@@ -30,8 +30,7 @@ func _notification(what :int) -> void:
 func setup_editor_colors() -> void:
 	if not Engine.is_editor_hint():
 		return
-	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	var settings := plugin.get_editor_interface().get_editor_settings()
+	var settings := EditorInterface.get_editor_settings()
 	var background_color :Color = settings.get_setting("text_editor/theme/highlighting/background_color")
 	var text_color :Color = settings.get_setting("text_editor/theme/highlighting/text_color")
 	var selection_color :Color = settings.get_setting("text_editor/theme/highlighting/selection_color")

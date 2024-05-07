@@ -10,7 +10,7 @@ const __source = 'res://addons/gdUnit4/src/mono/GdUnit4CSharpApiLoader.gd'
 
 
 @warning_ignore("unused_parameter")
-func before(do_skip = not GdUnit4CSharpApiLoader.is_mono_supported(), skip_reason = "Do run only for Godot Mono version"):
+func before(do_skip := not GdUnit4CSharpApiLoader.is_mono_supported(), skip_reason := "Do run only for Godot Mono version") -> void:
 	pass
 
 
@@ -38,7 +38,7 @@ func test_create_test_suite() -> void:
 	var result := GdUnitFileAccess.copy_file("res://addons/gdUnit4/test/resources/core/sources/TestPerson.cs", temp)
 	assert_result(result).is_success()
 
-	var example_source_cs = result.value() as String
+	var example_source_cs := result.value() as String
 	var source := load(example_source_cs)
 	var test_suite_path := GdUnitTestSuiteScanner.resolve_test_suite_path(source.resource_path, "test")
 	result = GdUnit4CSharpApiLoader.create_test_suite(source.resource_path, 18, test_suite_path)
@@ -62,7 +62,7 @@ class TestRunListener extends Node:
 
 func test_executor() -> void:
 	var listener :TestRunListener = auto_free(TestRunListener.new())
-	var executor = GdUnit4CSharpApiLoader.create_executor(listener)
+	var executor := GdUnit4CSharpApiLoader.create_executor(listener)
 	assert_that(executor).is_not_null()
 
 	var test_suite := GdUnit4CSharpApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4CSharpApiTest.cs")

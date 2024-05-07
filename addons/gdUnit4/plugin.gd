@@ -12,7 +12,6 @@ func _enter_tree() -> void:
 	if Engine.get_version_info().hex < 0x40200:
 		prints("GdUnit4 plugin requires a minimum of Godot 4.2.x Version!")
 		return
-	Engine.set_meta("GdUnitEditorPlugin", self)
 	GdUnitSettings.setup()
 	# install the GdUnit inspector
 	_gd_inspector = load("res://addons/gdUnit4/src/ui/GdUnitInspector.tscn").instantiate()
@@ -41,6 +40,4 @@ func _exit_tree() -> void:
 		remove_child(_server_node)
 		_server_node.free()
 	GdUnitTools.dispose_all()
-	if Engine.has_meta("GdUnitEditorPlugin"):
-		Engine.remove_meta("GdUnitEditorPlugin")
 	prints("Unload GdUnit4 Plugin success")

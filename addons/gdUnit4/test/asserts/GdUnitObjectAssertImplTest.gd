@@ -6,12 +6,12 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitObjectAssertImpl.gd'
 
 
-func test_is_equal():
+func test_is_equal() -> void:
 	assert_object(Mesh.new()).is_equal(Mesh.new())
 
-	assert_failure(func(): assert_object(Mesh.new()).is_equal(Skin.new())) \
+	assert_failure(func() -> void: assert_object(Mesh.new()).is_equal(Skin.new())) \
 		.is_failed()
-	assert_failure(func(): assert_object(null).is_equal(Skin.new())) \
+	assert_failure(func() -> void: assert_object(null).is_equal(Skin.new())) \
 		.is_failed() \
 		.has_message("Expecting:\n"
 			+ " <Skin>\n"
@@ -19,15 +19,15 @@ func test_is_equal():
 			+ " '<null>'")
 
 
-func test_is_not_equal():
+func test_is_not_equal() -> void:
 	assert_object(null).is_not_equal(Skin.new())
 	assert_object(Mesh.new()).is_not_equal(Skin.new())
 
-	assert_failure(func(): assert_object(Mesh.new()).is_not_equal(Mesh.new())) \
+	assert_failure(func() -> void: assert_object(Mesh.new()).is_not_equal(Mesh.new())) \
 		.is_failed()
 
 
-func test_is_instanceof():
+func test_is_instanceof() -> void:
 	# engine class test
 	assert_object(auto_free(Path3D.new())).is_instanceof(Node)
 	assert_object(auto_free(Camera3D.new())).is_instanceof(Camera3D)
@@ -37,15 +37,15 @@ func test_is_instanceof():
 	assert_object(auto_free(CustomClass.InnerClassA.new())).is_instanceof(Node)
 	assert_object(auto_free(CustomClass.InnerClassB.new())).is_instanceof(CustomClass.InnerClassA)
 
-	assert_failure(func(): assert_object(auto_free(Path3D.new())).is_instanceof(Tree)) \
+	assert_failure(func() -> void: assert_object(auto_free(Path3D.new())).is_instanceof(Tree)) \
 		.is_failed() \
 		.has_message("Expected instance of:\n 'Tree'\n But it was 'Path3D'")
-	assert_failure(func(): assert_object(null).is_instanceof(Tree)) \
+	assert_failure(func() -> void: assert_object(null).is_instanceof(Tree)) \
 		.is_failed() \
 		.has_message("Expected instance of:\n 'Tree'\n But it was '<null>'")
 
 
-func test_is_not_instanceof():
+func test_is_not_instanceof() -> void:
 	assert_object(null).is_not_instanceof(Tree)
 	# engine class test
 	assert_object(auto_free(Path3D.new())).is_not_instanceof(Tree)
@@ -55,73 +55,73 @@ func test_is_not_instanceof():
 	assert_object(auto_free(CustomClass.InnerClassA.new())).is_not_instanceof(Tree)
 	assert_object(auto_free(CustomClass.InnerClassB.new())).is_not_instanceof(CustomClass.InnerClassC)
 
-	assert_failure(func(): assert_object(auto_free(Path3D.new())).is_not_instanceof(Node)) \
+	assert_failure(func() -> void: assert_object(auto_free(Path3D.new())).is_not_instanceof(Node)) \
 		.is_failed() \
 		.has_message("Expected not be a instance of <Node>")
 
 
-func test_is_null():
+func test_is_null() -> void:
 	assert_object(null).is_null()
 
-	assert_failure(func(): assert_object(auto_free(Node.new())).is_null()) \
+	assert_failure(func() -> void: assert_object(auto_free(Node.new())).is_null()) \
 		.is_failed() \
 		.starts_with_message("Expecting: '<null>' but was <Node>")
 
 
-func test_is_not_null():
+func test_is_not_null() -> void:
 	assert_object(auto_free(Node.new())).is_not_null()
 
-	assert_failure(func(): assert_object(null).is_not_null()) \
+	assert_failure(func() -> void: assert_object(null).is_not_null()) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
 
 
-func test_is_same():
-	var obj1 = auto_free(Node.new())
-	var obj2 = obj1
-	var obj3 = auto_free(obj1.duplicate())
+func test_is_same() -> void:
+	var obj1 :Variant = auto_free(Node.new())
+	var obj2 :Variant = obj1
+	var obj3 :Variant = auto_free(obj1.duplicate())
 	assert_object(obj1).is_same(obj1)
 	assert_object(obj1).is_same(obj2)
 	assert_object(obj2).is_same(obj1)
 
-	assert_failure(func(): assert_object(null).is_same(obj1)) \
+	assert_failure(func() -> void: assert_object(null).is_same(obj1)) \
 		.is_failed() \
 		.has_message("Expecting:\n"
 			+ " <Node>\n"
 			+ " to refer to the same object\n"
 			+ " '<null>'")
-	assert_failure(func(): assert_object(obj1).is_same(obj3)) \
+	assert_failure(func() -> void: assert_object(obj1).is_same(obj3)) \
 		.is_failed()
-	assert_failure(func(): assert_object(obj3).is_same(obj1)) \
+	assert_failure(func() -> void: assert_object(obj3).is_same(obj1)) \
 		.is_failed()
-	assert_failure(func(): assert_object(obj3).is_same(obj2)) \
+	assert_failure(func() -> void: assert_object(obj3).is_same(obj2)) \
 		.is_failed()
 
 
-func test_is_not_same():
-	var obj1 = auto_free(Node.new())
-	var obj2 = obj1
-	var obj3 = auto_free(obj1.duplicate())
+func test_is_not_same() -> void:
+	var obj1 :Variant = auto_free(Node.new())
+	var obj2 :Variant = obj1
+	var obj3 :Variant = auto_free(obj1.duplicate())
 	assert_object(null).is_not_same(obj1)
 	assert_object(obj1).is_not_same(obj3)
 	assert_object(obj3).is_not_same(obj1)
 	assert_object(obj3).is_not_same(obj2)
 
-	assert_failure(func(): assert_object(obj1).is_not_same(obj1)) \
+	assert_failure(func() -> void: assert_object(obj1).is_not_same(obj1)) \
 		.is_failed() \
 		.has_message("""
 			Expecting not same:
 			 <Node>"""
 			.dedent()
 			.trim_prefix("\n"))
-	assert_failure(func(): assert_object(obj1).is_not_same(obj2)) \
+	assert_failure(func() -> void: assert_object(obj1).is_not_same(obj2)) \
 		.is_failed() \
 		.has_message("""
 			Expecting not same:
 			 <Node>"""
 			.dedent()
 			.trim_prefix("\n"))
-	assert_failure(func(): assert_object(obj2).is_not_same(obj1)) \
+	assert_failure(func() -> void: assert_object(obj2).is_not_same(obj1)) \
 		.is_failed() \
 		.has_message("""
 			Expecting not same:
@@ -130,23 +130,23 @@ func test_is_not_same():
 			.trim_prefix("\n"))
 
 
-func test_must_fail_has_invlalid_type():
-	assert_failure(func(): assert_object(1)) \
+func test_must_fail_has_invlalid_type() -> void:
+	assert_failure(func() -> void: assert_object(1)) \
 		.is_failed() \
 		.has_message("GdUnitObjectAssert inital error, unexpected type <int>")
-	assert_failure(func(): assert_object(1.3)) \
+	assert_failure(func() -> void: assert_object(1.3)) \
 		.is_failed() \
 		.has_message("GdUnitObjectAssert inital error, unexpected type <float>")
-	assert_failure(func(): assert_object(true)) \
+	assert_failure(func() -> void: assert_object(true)) \
 		.is_failed() \
 		.has_message("GdUnitObjectAssert inital error, unexpected type <bool>")
-	assert_failure(func(): assert_object("foo")) \
+	assert_failure(func() -> void: assert_object("foo")) \
 		.is_failed() \
 		.has_message("GdUnitObjectAssert inital error, unexpected type <String>")
 
 
 func test_override_failure_message() -> void:
-	assert_failure(func(): assert_object(auto_free(Node.new())) \
+	assert_failure(func() -> void: assert_object(auto_free(Node.new())) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
@@ -163,7 +163,7 @@ func test_is_failure() -> void:
 	assert_bool(is_failure()).is_false()
 
 	# checked faild assert
-	assert_failure(func(): assert_object(RefCounted.new()).is_null()) \
+	assert_failure(func() -> void: assert_object(RefCounted.new()).is_null()) \
 		.is_failed()
 	assert_bool(is_failure()).is_true()
 

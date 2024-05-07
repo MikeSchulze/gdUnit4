@@ -12,19 +12,19 @@ func test_attribute() -> void:
 	var element := XmlElement.new("testsuites")\
 		.attribute(JUnitXmlReport.ATTR_ID, "1")\
 		.attribute(JUnitXmlReport.ATTR_NAME, "foo")
-	var expected = \
-"""<testsuites id="1" name="foo">
-</testsuites>
-""".replace("\r", "")
+	var expected :="""
+		<testsuites id="1" name="foo">
+		</testsuites>
+		""".dedent().trim_prefix("\n").replace("\r", "")
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
 
 func test_empty() -> void:
 	var element := XmlElement.new("testsuites")
-	var expected = \
-"""<testsuites>
-</testsuites>
-""".replace("\r", "")
+	var expected := """
+		<testsuites>
+		</testsuites>
+		""".dedent().trim_prefix("\n").replace("\r", "")
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
 
@@ -37,12 +37,12 @@ func test_add_child() -> void:
 		.attribute(JUnitXmlReport.ATTR_ID, "1")\
 		.attribute(JUnitXmlReport.ATTR_NAME, "bar")\
 		.add_child(child)
-	var expected = \
-"""<bar id="1" name="bar">
-	<foo id="1" name="foo">
-	</foo>
-</bar>
-""".replace("\r", "")
+	var expected := """
+		<bar id="1" name="bar">
+			<foo id="1" name="foo">
+			</foo>
+		</bar>
+		""".dedent().trim_prefix("\n").replace("\r", "")
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
 
@@ -58,14 +58,14 @@ func test_add_childs() -> void:
 		.attribute(JUnitXmlReport.ATTR_ID, "1")\
 		.attribute(JUnitXmlReport.ATTR_NAME, "bar")\
 		.add_childs([child_a, child_b])
-	var expected = \
-"""<bar id="1" name="bar">
-	<foo_a id="1" name="foo_a">
-	</foo_a>
-	<foo_b id="2" name="foo_b">
-	</foo_b>
-</bar>
-""".replace("\r", "")
+	var expected := """
+		<bar id="1" name="bar">
+			<foo_a id="1" name="foo_a">
+			</foo_a>
+			<foo_b id="2" name="foo_b">
+			</foo_b>
+		</bar>
+		""".dedent().trim_prefix("\n").replace("\r", "")
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
 
@@ -73,13 +73,13 @@ func test_add_childs() -> void:
 func test_add_text() -> void:
 	var element := XmlElement.new("testsuites")\
 		.text("This is a message")
-	var expected = \
-"""<testsuites>
-<![CDATA[
-This is a message
-]]>
-</testsuites>
-""".replace("\r", "")
+	var expected := """
+		<testsuites>
+		<![CDATA[
+		This is a message
+		]]>
+		</testsuites>
+		""".dedent().trim_prefix("\n").replace("\r", "")
 	assert_str(element.to_xml()).is_equal(expected)
 	element.dispose()
 
@@ -88,7 +88,7 @@ func test_complex_example() -> void:
 	var testsuite1 := XmlElement.new("testsuite")\
 		.attribute(JUnitXmlReport.ATTR_ID, "1")\
 		.attribute(JUnitXmlReport.ATTR_NAME, "bar")
-	for test_case in [1,2,3,4,5]:
+	for test_case :int in [1,2,3,4,5]:
 		var test := XmlElement.new("testcase")\
 			.attribute(JUnitXmlReport.ATTR_ID, str(test_case))\
 			.attribute(JUnitXmlReport.ATTR_NAME, "test_case_%d" % test_case)
@@ -96,7 +96,7 @@ func test_complex_example() -> void:
 	var testsuite2 := XmlElement.new("testsuite")\
 		.attribute(JUnitXmlReport.ATTR_ID, "2")\
 		.attribute(JUnitXmlReport.ATTR_NAME, "bar2")
-	for test_case in [1,2,3]:
+	for test_case :int in [1,2,3]:
 		var test := XmlElement.new("testcase")\
 			.attribute(JUnitXmlReport.ATTR_ID, str(test_case))\
 			.attribute(JUnitXmlReport.ATTR_NAME, "test_case_%d" % test_case)
@@ -114,36 +114,36 @@ func test_complex_example() -> void:
 		.attribute(JUnitXmlReport.ATTR_FAILURES, 1)\
 		.attribute(JUnitXmlReport.ATTR_TIME, "1.22")\
 		.add_childs([testsuite1, testsuite2])
-	var expected = \
-"""<testsuites id="ID-XXX" name="report_foo" tests="42" failures="1" time="1.22">
-	<testsuite id="1" name="bar">
-		<testcase id="1" name="test_case_1">
-		</testcase>
-		<testcase id="2" name="test_case_2">
-		</testcase>
-		<testcase id="3" name="test_case_3">
-		</testcase>
-		<testcase id="4" name="test_case_4">
-		</testcase>
-		<testcase id="5" name="test_case_5">
-		</testcase>
-	</testsuite>
-	<testsuite id="2" name="bar2">
-		<testcase id="1" name="test_case_1">
-		</testcase>
-		<testcase id="2" name="test_case_2">
-			<failure message="test_case.gd:12" type="FAILURE">
-<![CDATA[
-This is a failure
-Expecting true but was false
-]]>
-			</failure>
-		</testcase>
-		<testcase id="3" name="test_case_3">
-		</testcase>
-	</testsuite>
-</testsuites>
-""".replace("\r", "")
+	var expected := """
+		<testsuites id="ID-XXX" name="report_foo" tests="42" failures="1" time="1.22">
+			<testsuite id="1" name="bar">
+				<testcase id="1" name="test_case_1">
+				</testcase>
+				<testcase id="2" name="test_case_2">
+				</testcase>
+				<testcase id="3" name="test_case_3">
+				</testcase>
+				<testcase id="4" name="test_case_4">
+				</testcase>
+				<testcase id="5" name="test_case_5">
+				</testcase>
+			</testsuite>
+			<testsuite id="2" name="bar2">
+				<testcase id="1" name="test_case_1">
+				</testcase>
+				<testcase id="2" name="test_case_2">
+					<failure message="test_case.gd:12" type="FAILURE">
+		<![CDATA[
+		This is a failure
+		Expecting true but was false
+		]]>
+					</failure>
+				</testcase>
+				<testcase id="3" name="test_case_3">
+				</testcase>
+			</testsuite>
+		</testsuites>
+		""".dedent().trim_prefix("\n").replace("\r", "")
 	assert_str(root.to_xml()).is_equal(expected)
 	root.dispose()
 
@@ -153,7 +153,7 @@ func test_dispose() -> void:
 		.attribute(JUnitXmlReport.ATTR_ID, "1")\
 		.attribute(JUnitXmlReport.ATTR_NAME, "bar")
 	var testsuite1_expected_tests := Array()
-	for test_case in [1,2,3,4,5]:
+	for test_case :int in [1,2,3,4,5]:
 		var test := XmlElement.new("testcase")\
 			.attribute(JUnitXmlReport.ATTR_ID, str(test_case))\
 			.attribute(JUnitXmlReport.ATTR_NAME, "test_case_%d" % test_case)
@@ -163,7 +163,7 @@ func test_dispose() -> void:
 		.attribute(JUnitXmlReport.ATTR_ID, "2")\
 		.attribute(JUnitXmlReport.ATTR_NAME, "bar2")
 	var testsuite2_expected_tests := Array()
-	for test_case in [1,2,3]:
+	for test_case :int in [1,2,3]:
 		var test := XmlElement.new("testcase")\
 			.attribute(JUnitXmlReport.ATTR_ID, str(test_case))\
 			.attribute(JUnitXmlReport.ATTR_NAME, "test_case_%d" % test_case)

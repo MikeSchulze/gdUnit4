@@ -5,20 +5,21 @@ var _context_menus := Dictionary()
 var _editor :ScriptEditor
 
 
-func _init(context_menus :Array[GdUnitContextMenuItem], p_editor :ScriptEditor) -> void:
+func _init(context_menus :Array[GdUnitContextMenuItem]) -> void:
 	set_name("ScriptEditorContextMenuHandler")
 	for menu in context_menus:
 		_context_menus[menu.id] = menu
-	_editor = p_editor
-	p_editor.editor_script_changed.connect(on_script_changed)
+	_editor = EditorInterface.get_script_editor()
+	_editor.editor_script_changed.connect(on_script_changed)
 	on_script_changed(active_script())
 
 
-static func dispose(p_editor :ScriptEditor) -> void:
+static func dispose() -> void:
 	var handler :ScriptEditorContextMenuHandler = Engine.get_main_loop().root.find_child("ScriptEditorContextMenuHandler*", false, false)
 	if handler:
-		if p_editor.editor_script_changed.is_connected(handler.on_script_changed):
-			p_editor.editor_script_changed.disconnect(handler.on_script_changed)
+		var editor := EditorInterface.get_script_editor()
+		if editor.editor_script_changed.is_connected(handler.on_script_changed):
+			editor.editor_script_changed.disconnect(handler.on_script_changed)
 		Engine.get_main_loop().root.call_deferred("remove_child", handler)
 		handler.queue_free()
 

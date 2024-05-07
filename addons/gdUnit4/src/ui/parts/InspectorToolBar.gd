@@ -38,8 +38,7 @@ func _ready() -> void:
 
 
 func init_buttons() -> void:
-	var editor :EditorPlugin = EditorPlugin.new()
-	var editior_control := editor.get_editor_interface().get_base_control()
+	var editior_control := EditorInterface.get_base_control()
 	_button_run_overall.icon = overall_icon_image
 	_button_run_overall.visible = GdUnitSettings.is_inspector_toolbar_button_show()
 	_button_run.icon = GodotVersionFixures.get_icon(editior_control, "Play")

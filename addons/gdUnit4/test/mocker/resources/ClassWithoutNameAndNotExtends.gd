@@ -1,5 +1,5 @@
 # some comment
 
-func foo():
+func foo() -> void:
 	pass
 

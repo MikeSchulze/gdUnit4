@@ -115,8 +115,8 @@ func test_simulate_key_press() -> void:
 		await await_idle_frame()
 
 		var event := InputEventKey.new()
-		event.keycode = key
-		event.physical_keycode = key
+		event.keycode = key as Key
+		event.physical_keycode = key as Key
 		event.pressed = true
 		verify(_scene_spy, 1)._input(event)
 		assert_that(Input.is_key_pressed(key)).is_true()
@@ -274,7 +274,7 @@ func test_simulate_set_mouse_pos_with_modifiers() -> void:
 			event.ctrl_pressed = is_control
 			event.shift_pressed = is_shift
 			event.pressed = true
-			event.button_index = mouse_button
+			event.button_index = mouse_button as MouseButton
 			event.button_mask = GdUnitSceneRunnerImpl.MAP_MOUSE_BUTTON_MASKS.get(mouse_button)
 			verify(_scene_spy, 1)._input(event)
 			assert_that(Input.is_mouse_button_pressed(mouse_button)).is_true()
@@ -491,7 +491,7 @@ func test_simulate_mouse_button_pressed() -> void:
 		event.position = Vector2.ZERO
 		event.global_position = gmp
 		event.pressed = true
-		event.button_index = mouse_button
+		event.button_index = mouse_button as MouseButton
 		event.button_mask = GdUnitSceneRunnerImpl.MAP_MOUSE_BUTTON_MASKS.get(mouse_button)
 		verify(_scene_spy, 1)._input(event)
 
@@ -499,7 +499,7 @@ func test_simulate_mouse_button_pressed() -> void:
 		event.position = Vector2.ZERO
 		event.global_position = gmp
 		event.pressed = false
-		event.button_index = mouse_button
+		event.button_index = mouse_button as MouseButton
 		event.button_mask = 0
 		verify(_scene_spy, 1)._input(event)
 		assert_that(Input.is_mouse_button_pressed(mouse_button)).is_false()
@@ -520,7 +520,7 @@ func test_simulate_mouse_button_pressed_doubleclick() -> void:
 		event.global_position = gmp
 		event.pressed = true
 		event.double_click = true
-		event.button_index = mouse_button
+		event.button_index = mouse_button as MouseButton
 		event.button_mask = GdUnitSceneRunnerImpl.MAP_MOUSE_BUTTON_MASKS.get(mouse_button)
 		verify(_scene_spy, 1)._input(event)
 
@@ -529,7 +529,7 @@ func test_simulate_mouse_button_pressed_doubleclick() -> void:
 		event.global_position = gmp
 		event.pressed = false
 		event.double_click = false
-		event.button_index = mouse_button
+		event.button_index = mouse_button as MouseButton
 		event.button_mask = 0
 		verify(_scene_spy, 1)._input(event)
 		assert_that(Input.is_mouse_button_pressed(mouse_button)).is_false()
@@ -548,7 +548,7 @@ func test_simulate_mouse_button_press_and_release() -> void:
 		event.position = Vector2.ZERO
 		event.global_position = gmp
 		event.pressed = true
-		event.button_index = mouse_button
+		event.button_index = mouse_button as MouseButton
 		event.button_mask = GdUnitSceneRunnerImpl.MAP_MOUSE_BUTTON_MASKS.get(mouse_button)
 		verify(_scene_spy, 1)._input(event)
 		assert_that(Input.is_mouse_button_pressed(mouse_button)).is_true()
@@ -562,7 +562,7 @@ func test_simulate_mouse_button_press_and_release() -> void:
 		event.position = Vector2.ZERO
 		event.global_position = gmp
 		event.pressed = false
-		event.button_index = mouse_button
+		event.button_index = mouse_button as MouseButton
 		#event.button_mask = 0
 		verify(_scene_spy, 1)._input(event)
 		assert_that(Input.is_mouse_button_pressed(mouse_button)).is_false()

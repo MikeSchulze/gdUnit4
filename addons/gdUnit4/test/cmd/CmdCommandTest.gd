@@ -6,7 +6,7 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/cmd/CmdCommand.gd'
 
 
-func test_create():
+func test_create() -> void:
 	var cmd_a := CmdCommand.new("cmd_a")
 	assert_str(cmd_a.name()).is_equal("cmd_a")
 	assert_array(cmd_a.arguments()).is_empty()
@@ -18,7 +18,7 @@ func test_create():
 	assert_object(cmd_a).is_not_equal(cmd_b)
 
 
-func test_add_argument():
+func test_add_argument() -> void:
 	var cmd_a := CmdCommand.new("cmd_a")
 	cmd_a.add_argument("arg1")
 	cmd_a.add_argument("arg2")

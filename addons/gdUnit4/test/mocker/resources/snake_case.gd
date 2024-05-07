@@ -1,4 +1,4 @@
 extends RefCounted
 
-func custom_func():
+func custom_func() -> void:
 	pass

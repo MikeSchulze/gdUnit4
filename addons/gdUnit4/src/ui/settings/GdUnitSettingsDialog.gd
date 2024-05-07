@@ -162,11 +162,7 @@ func _get_btn_icon(p_name :String) -> Texture2D:
 		var placeholder := PlaceholderTexture2D.new()
 		placeholder.size = Vector2(8,8)
 		return placeholder
-	var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	if editor:
-		var editior_control := editor.get_editor_interface().get_base_control()
-		return GodotVersionFixures.get_icon(editior_control, p_name)
-	return null
+	return GodotVersionFixures.get_icon(EditorInterface.get_base_control(), p_name)
 
 
 func _install_examples() -> void:
@@ -199,13 +195,12 @@ func _install_examples() -> void:
 
 func rescan(update_scripts :bool = false) -> void:
 	await get_tree().idle_frame
-	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	var fs := plugin.get_editor_interface().get_resource_filesystem()
+	var fs := EditorInterface.get_resource_filesystem()
 	fs.scan_sources()
 	while fs.is_scanning():
 		await get_tree().create_timer(1).timeout
 	if update_scripts:
-		plugin.get_editor_interface().get_resource_filesystem().update_script_classes()
+		EditorInterface.get_resource_filesystem().update_script_classes()
 
 
 func _on_btn_report_bug_pressed() -> void:

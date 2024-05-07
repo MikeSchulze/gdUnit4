@@ -50,7 +50,7 @@ func on_context_menu_pressed(id :int, file_tree :Tree) -> void:
 
 
 func collect_testsuites(_menu_item :GdUnitContextMenuItem, file_tree :Tree) -> PackedStringArray:
-	var file_system := editor_interface().get_resource_filesystem()
+	var file_system := EditorInterface.get_resource_filesystem()
 	var selected_item := file_tree.get_selected()
 	var selected_test_suites := PackedStringArray()
 	while selected_item:
@@ -69,17 +69,9 @@ func collect_testsuites(_menu_item :GdUnitContextMenuItem, file_tree :Tree) -> P
 	return selected_test_suites
 
 
-# Returns the EditorInterface instance
-static func editor_interface() -> EditorInterface:
-	if not Engine.has_meta("GdUnitEditorPlugin"):
-		return null
-	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	return plugin.get_editor_interface()
-
-
 # Returns the FileSystemDock instance
 static func filesystem_dock() -> FileSystemDock:
-	return editor_interface().get_file_system_dock()
+	return EditorInterface.get_file_system_dock()
 
 
 static func _file_tree() -> Tree:

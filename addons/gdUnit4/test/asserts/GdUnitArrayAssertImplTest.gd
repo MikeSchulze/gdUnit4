@@ -4,22 +4,22 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd'
 
-var _saved_report_assert_warnings
+var _saved_report_assert_warnings :Variant
 
 
-func before():
+func before() -> void:
 	_saved_report_assert_warnings = ProjectSettings.get_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS, false)
 
 
-func after():
+func after() -> void:
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_WARNINGS, _saved_report_assert_warnings)
 
 
 func test_is_null() -> void:
 	assert_array(null).is_null()
 
-	assert_failure(func(): assert_array([]).is_null()) \
+	assert_failure(func() -> void: assert_array([]).is_null()) \
 		.is_failed() \
 		.has_message("Expecting: '<null>' but was '<empty>'")
 
@@ -27,20 +27,20 @@ func test_is_null() -> void:
 func test_is_not_null() -> void:
 	assert_array([]).is_not_null()
 
-	assert_failure(func(): assert_array(null).is_not_null()) \
+	assert_failure(func() -> void: assert_array(null).is_not_null()) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
 
 
-func test_is_equal():
+func test_is_equal() -> void:
 	assert_array([1, 2, 3, 4, 2, 5]).is_equal([1, 2, 3, 4, 2, 5])
 	# should fail because the array not contains same elements and has diff size
-	assert_failure(func(): assert_array([1, 2, 4, 5]).is_equal([1, 2, 3, 4, 2, 5])) \
+	assert_failure(func() -> void: assert_array([1, 2, 4, 5]).is_equal([1, 2, 3, 4, 2, 5])) \
 		.is_failed()
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).is_equal([1, 2, 3, 4])) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).is_equal([1, 2, 3, 4])) \
 		.is_failed()
 	# current array is bigger than expected
-	assert_failure(func(): assert_array([1, 2222, 3, 4, 5, 6]).is_equal([1, 2, 3, 4])) \
+	assert_failure(func() -> void: assert_array([1, 2222, 3, 4, 5, 6]).is_equal([1, 2, 3, 4])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -53,7 +53,7 @@ func test_is_equal():
 			.dedent().trim_prefix("\n"))
 
 	# expected array is bigger than current
-	assert_failure(func(): assert_array([1, 222, 3, 4]).is_equal([1, 2, 3, 4, 5, 6])) \
+	assert_failure(func() -> void: assert_array([1, 222, 3, 4]).is_equal([1, 2, 3, 4, 5, 6])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -65,7 +65,7 @@ func test_is_equal():
 			Index	Current	Expected	1	222	2	4	<N/A>	5	5	<N/A>	6	"""
 			.dedent().trim_prefix("\n"))
 
-	assert_failure(func(): assert_array(null).is_equal([1, 2, 3])) \
+	assert_failure(func() -> void: assert_array(null).is_equal([1, 2, 3])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -75,7 +75,7 @@ func test_is_equal():
 			.dedent().trim_prefix("\n"))
 
 
-func test_is_equal_big_arrays():
+func test_is_equal_big_arrays() -> void:
 	var expeted := Array()
 	expeted.resize(1000)
 	for i in 1000:
@@ -86,7 +86,7 @@ func test_is_equal_big_arrays():
 	current[100] = "invalid"
 	current[888] = "invalid"
 
-	assert_failure(func(): assert_array(current).is_equal(expeted)) \
+	assert_failure(func() -> void: assert_array(current).is_equal(expeted)) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -99,12 +99,12 @@ func test_is_equal_big_arrays():
 			.dedent().trim_prefix("\n"))
 
 
-func test_is_equal_ignoring_case():
+func test_is_equal_ignoring_case() -> void:
 	assert_array(["this", "is", "a", "message"]).is_equal_ignoring_case(["This", "is", "a", "Message"])
 	# should fail because the array not contains same elements
-	assert_failure(func(): assert_array(["this", "is", "a", "message"]).is_equal_ignoring_case(["This", "is", "an", "Message"])) \
+	assert_failure(func() -> void: assert_array(["this", "is", "a", "message"]).is_equal_ignoring_case(["This", "is", "an", "Message"])) \
 		.is_failed()
-	assert_failure(func(): assert_array(null).is_equal_ignoring_case(["This", "is"])) \
+	assert_failure(func() -> void: assert_array(null).is_equal_ignoring_case(["This", "is"])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -114,11 +114,11 @@ func test_is_equal_ignoring_case():
 			.dedent().trim_prefix("\n"))
 
 
-func test_is_not_equal():
+func test_is_not_equal() -> void:
 	assert_array(null).is_not_equal([1, 2, 3])
 	assert_array([1, 2, 3, 4, 5]).is_not_equal([1, 2, 3, 4, 5, 6])
 	# should fail because the array  contains same elements
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).is_not_equal([1, 2, 3, 4, 5])) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).is_not_equal([1, 2, 3, 4, 5])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -128,11 +128,11 @@ func test_is_not_equal():
 			.dedent().trim_prefix("\n"))
 
 
-func test_is_not_equal_ignoring_case():
+func test_is_not_equal_ignoring_case() -> void:
 	assert_array(null).is_not_equal_ignoring_case(["This", "is", "an", "Message"])
 	assert_array(["this", "is", "a", "message"]).is_not_equal_ignoring_case(["This", "is", "an", "Message"])
 	# should fail because the array contains same elements ignoring case sensitive
-	assert_failure(func(): assert_array(["this", "is", "a", "message"]).is_not_equal_ignoring_case(["This", "is", "a", "Message"])) \
+	assert_failure(func() -> void: assert_array(["this", "is", "a", "message"]).is_not_equal_ignoring_case(["This", "is", "a", "Message"])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -142,17 +142,17 @@ func test_is_not_equal_ignoring_case():
 			.dedent().trim_prefix("\n"))
 
 
-func test_is_empty():
+func test_is_empty() -> void:
 	assert_array([]).is_empty()
 
-	assert_failure(func(): assert_array([1, 2, 3]).is_empty()) \
+	assert_failure(func() -> void: assert_array([1, 2, 3]).is_empty()) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
 			 must be empty but was
 			 '[1, 2, 3]'"""
 			.dedent().trim_prefix("\n"))
-	assert_failure(func(): assert_array(null).is_empty()) \
+	assert_failure(func() -> void: assert_array(null).is_empty()) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -161,11 +161,11 @@ func test_is_empty():
 			.dedent().trim_prefix("\n"))
 
 
-func test_is_not_empty():
+func test_is_not_empty() -> void:
 	assert_array(null).is_not_empty()
 	assert_array([1]).is_not_empty()
 
-	assert_failure(func(): assert_array([]).is_not_empty()) \
+	assert_failure(func() -> void: assert_array([]).is_not_empty()) \
 		.is_failed() \
 		.has_message("Expecting:\n must not be empty")
 
@@ -174,7 +174,7 @@ func test_is_same() -> void:
 	var value := [0]
 	assert_array(value).is_same(value)
 
-	assert_failure(func(): assert_array(value).is_same(value.duplicate()))\
+	assert_failure(func() -> void: assert_array(value).is_same(value.duplicate()))\
 		.is_failed()\
 		.has_message("Expecting:\n '[0]'\n to refer to the same object\n '[0]'")
 
@@ -182,16 +182,16 @@ func test_is_same() -> void:
 func test_is_not_same() -> void:
 	assert_array([0]).is_not_same([0])
 	var value := [0]
-	assert_failure(func(): assert_array(value).is_not_same(value))\
+	assert_failure(func() -> void: assert_array(value).is_not_same(value))\
 		.is_failed()\
 		.has_message("Expecting not same:\n '[0]'")
 
 
-func test_has_size():
+func test_has_size() -> void:
 	assert_array([1, 2, 3, 4, 5]).has_size(5)
 	assert_array(["a", "b", "c", "d", "e", "f"]).has_size(6)
 
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).has_size(4)) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).has_size(4)) \
 		.is_failed() \
 		.has_message("""
 			Expecting size:
@@ -199,7 +199,7 @@ func test_has_size():
 			 but was
 			 '5'"""
 			.dedent().trim_prefix("\n"))
-	assert_failure(func(): assert_array(null).has_size(4)) \
+	assert_failure(func() -> void: assert_array(null).has_size(4)) \
 		.is_failed() \
 		.has_message("""
 			Expecting size:
@@ -209,7 +209,7 @@ func test_has_size():
 			.dedent().trim_prefix("\n"))
 
 
-func test_contains():
+func test_contains() -> void:
 	assert_array([1, 2, 3, 4, 5]).contains([])
 	assert_array([1, 2, 3, 4, 5]).contains([5, 2])
 	assert_array([1, 2, 3, 4, 5]).contains([5, 4, 3, 2, 1])
@@ -218,7 +218,7 @@ func test_contains():
 	assert_array([valueA, valueB]).contains([TestObj.new("A", 0)])
 
 	# should fail because the array not contains 7 and 6
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).contains([2, 7, 6])) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).contains([2, 7, 6])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains elements:
@@ -229,7 +229,7 @@ func test_contains():
 			 '[7, 6]'"""
 			.dedent().trim_prefix("\n"))
 
-	assert_failure(func(): assert_array(null).contains([2, 7, 6])) \
+	assert_failure(func() -> void: assert_array(null).contains([2, 7, 6])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains elements:
@@ -240,7 +240,7 @@ func test_contains():
 			 '[2, 7, 6]'"""
 			.dedent().trim_prefix("\n"))
 
-	assert_failure(func(): assert_array([valueA, valueB]).contains([TestObj.new("C", 0)])) \
+	assert_failure(func() -> void: assert_array([valueA, valueB]).contains([TestObj.new("C", 0)])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains elements:
@@ -252,14 +252,14 @@ func test_contains():
 			.dedent().trim_prefix("\n"))
 
 
-func test_contains_exactly():
+func test_contains_exactly() -> void:
 	assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 2, 3, 4, 5])
 	var valueA := TestObj.new("A", 0)
 	var valueB := TestObj.new("B", 0)
 	assert_array([valueA, valueB]).contains_exactly([TestObj.new("A", 0), valueB])
 
 	# should fail because the array contains the same elements but in a different order
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 4, 3, 2, 5])) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 4, 3, 2, 5])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -271,7 +271,7 @@ func test_contains_exactly():
 			.dedent().trim_prefix("\n"))
 
 	# should fail because the array contains more elements and in a different order
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5, 6, 7]).contains_exactly([1, 4, 3, 2, 5])) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5, 6, 7]).contains_exactly([1, 4, 3, 2, 5])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -283,7 +283,7 @@ func test_contains_exactly():
 			.dedent().trim_prefix("\n"))
 
 	# should fail because the array contains less elements and in a different order
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 4, 3, 2, 5, 6, 7])) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 4, 3, 2, 5, 6, 7])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -294,7 +294,7 @@ func test_contains_exactly():
 			 '[6, 7]'"""
 			.dedent().trim_prefix("\n"))
 
-	assert_failure(func(): assert_array(null).contains_exactly([1, 4, 3])) \
+	assert_failure(func() -> void: assert_array(null).contains_exactly([1, 4, 3])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -305,7 +305,7 @@ func test_contains_exactly():
 			 '[1, 4, 3]'"""
 			.dedent().trim_prefix("\n"))
 
-	assert_failure(func(): assert_array([valueA, valueB]).contains_exactly([valueB, TestObj.new("A", 0)])) \
+	assert_failure(func() -> void: assert_array([valueA, valueB]).contains_exactly([valueB, TestObj.new("A", 0)])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -317,7 +317,7 @@ func test_contains_exactly():
 		.dedent().trim_prefix("\n"))
 
 
-func test_contains_exactly_in_any_order():
+func test_contains_exactly_in_any_order() -> void:
 	assert_array([1, 2, 3, 4, 5]).contains_exactly_in_any_order([1, 2, 3, 4, 5])
 	assert_array([1, 2, 3, 4, 5]).contains_exactly_in_any_order([5, 3, 2, 4, 1])
 	assert_array([1, 2, 3, 4, 5]).contains_exactly_in_any_order([5, 1, 2, 4, 3])
@@ -326,7 +326,7 @@ func test_contains_exactly_in_any_order():
 	assert_array([valueA, valueB]).contains_exactly_in_any_order([valueB, TestObj.new("A", 0)])
 
 	# should fail because the array contains not exactly the same elements in any order
-	assert_failure(func(): assert_array([1, 2, 6, 4, 5]).contains_exactly_in_any_order([5, 3, 2, 4, 1, 9, 10])) \
+	assert_failure(func() -> void: assert_array([1, 2, 6, 4, 5]).contains_exactly_in_any_order([5, 3, 2, 4, 1, 9, 10])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -340,7 +340,7 @@ func test_contains_exactly_in_any_order():
 			.dedent().trim_prefix("\n"))
 
 	#should fail because the array contains the same elements but in a different order
-	assert_failure(func(): assert_array([1, 2, 6, 9, 10, 4, 5]).contains_exactly_in_any_order([5, 3, 2, 4, 1])) \
+	assert_failure(func() -> void: assert_array([1, 2, 6, 9, 10, 4, 5]).contains_exactly_in_any_order([5, 3, 2, 4, 1])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -353,7 +353,7 @@ func test_contains_exactly_in_any_order():
 			 '[3]'"""
 			.dedent().trim_prefix("\n"))
 
-	assert_failure(func(): assert_array(null).contains_exactly_in_any_order([1, 4, 3])) \
+	assert_failure(func() -> void: assert_array(null).contains_exactly_in_any_order([1, 4, 3])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -364,7 +364,7 @@ func test_contains_exactly_in_any_order():
 			 '[1, 4, 3]'"""
 			.dedent().trim_prefix("\n"))
 
-	assert_failure(func():  assert_array([valueA, valueB]).contains_exactly_in_any_order([valueB, TestObj.new("C", 0)])) \
+	assert_failure(func() -> void:  assert_array([valueA, valueB]).contains_exactly_in_any_order([valueB, TestObj.new("C", 0)])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -378,13 +378,13 @@ func test_contains_exactly_in_any_order():
 			.dedent().trim_prefix("\n"))
 
 
-func test_contains_same():
+func test_contains_same() -> void:
 	var valueA := TestObj.new("A", 0)
 	var valueB := TestObj.new("B", 0)
 
 	assert_array([valueA, valueB]).contains_same([valueA])
 
-	assert_failure(func(): assert_array([valueA, valueB]).contains_same([TestObj.new("A", 0)])) \
+	assert_failure(func() -> void: assert_array([valueA, valueB]).contains_same([TestObj.new("A", 0)])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains SAME elements:
@@ -396,12 +396,12 @@ func test_contains_same():
 			.dedent().trim_prefix("\n"))
 
 
-func test_contains_same_exactly():
+func test_contains_same_exactly() -> void:
 	var valueA := TestObj.new("A", 0)
 	var valueB := TestObj.new("B", 0)
 	assert_array([valueA, valueB]).contains_same_exactly([valueA, valueB])
 
-	assert_failure(func(): assert_array([valueA, valueB]).contains_same_exactly([valueB, valueA])) \
+	assert_failure(func() -> void: assert_array([valueA, valueB]).contains_same_exactly([valueB, valueA])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains SAME exactly elements:
@@ -412,7 +412,7 @@ func test_contains_same_exactly():
 			 'class:A' vs 'class:B'"""
 		.dedent().trim_prefix("\n"))
 
-	assert_failure(func(): assert_array([valueA, valueB]).contains_same_exactly([TestObj.new("A", 0), valueB])) \
+	assert_failure(func() -> void: assert_array([valueA, valueB]).contains_same_exactly([TestObj.new("A", 0), valueB])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains SAME exactly elements:
@@ -426,12 +426,12 @@ func test_contains_same_exactly():
 			.dedent().trim_prefix("\n"))
 
 
-func test_contains_same_exactly_in_any_order():
+func test_contains_same_exactly_in_any_order() -> void:
 	var valueA := TestObj.new("A", 0)
 	var valueB := TestObj.new("B", 0)
 	assert_array([valueA, valueB]).contains_same_exactly_in_any_order([valueB, valueA])
 
-	assert_failure(func():  assert_array([valueA, valueB]).contains_same_exactly_in_any_order([valueB, TestObj.new("A", 0)])) \
+	assert_failure(func() -> void:  assert_array([valueA, valueB]).contains_same_exactly_in_any_order([valueB, TestObj.new("A", 0)])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains SAME exactly elements:
@@ -445,7 +445,7 @@ func test_contains_same_exactly_in_any_order():
 			.dedent().trim_prefix("\n"))
 
 
-func test_not_contains():
+func test_not_contains() -> void:
 	assert_array([]).not_contains([0])
 	assert_array([1, 2, 3, 4, 5]).not_contains([0])
 	assert_array([1, 2, 3, 4, 5]).not_contains([0, 6])
@@ -453,7 +453,7 @@ func test_not_contains():
 	var valueB := TestObj.new("B", 0)
 	assert_array([valueA, valueB]).not_contains([TestObj.new("C", 0)])
 
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([5]))\
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).not_contains([5]))\
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -465,7 +465,7 @@ func test_not_contains():
 			.dedent().trim_prefix("\n")
 		)
 
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([1, 4, 6])) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).not_contains([1, 4, 6])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -477,7 +477,7 @@ func test_not_contains():
 			.dedent().trim_prefix("\n")
 		)
 
-	assert_failure(func(): assert_array([1, 2, 3, 4, 5]).not_contains([6, 4, 1])) \
+	assert_failure(func() -> void: assert_array([1, 2, 3, 4, 5]).not_contains([6, 4, 1])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -489,7 +489,7 @@ func test_not_contains():
 			.dedent().trim_prefix("\n")
 		)
 
-	assert_failure(func(): assert_array([valueA, valueB]).not_contains([TestObj.new("A", 0)])) \
+	assert_failure(func() -> void: assert_array([valueA, valueB]).not_contains([TestObj.new("A", 0)])) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -502,13 +502,13 @@ func test_not_contains():
 		)
 
 
-func test_not_contains_same():
+func test_not_contains_same() -> void:
 	var valueA := TestObj.new("A", 0)
 	var valueB := TestObj.new("B", 0)
 	var valueC := TestObj.new("B", 0)
 	assert_array([valueA, valueB]).not_contains_same([valueC])
 
-	assert_failure(func(): assert_array([valueA, valueB]).not_contains_same([valueB])) \
+	assert_failure(func() -> void: assert_array([valueA, valueB]).not_contains_same([valueB])) \
 		.is_failed() \
 		.has_message("""
 			Expecting SAME:
@@ -521,7 +521,7 @@ func test_not_contains_same():
 		)
 
 
-func test_fluent():
+func test_fluent() -> void:
 	assert_array([])\
 		.has_size(0)\
 		.is_empty()\
@@ -530,17 +530,17 @@ func test_fluent():
 		.contains_exactly([])
 
 
-func test_must_fail_has_invlalid_type():
-	assert_failure(func(): assert_array(1)) \
+func test_must_fail_has_invlalid_type() -> void:
+	assert_failure(func() -> void: assert_array(1)) \
 		.is_failed() \
 		.has_message("GdUnitArrayAssert inital error, unexpected type <int>")
-	assert_failure(func(): assert_array(1.3)) \
+	assert_failure(func() -> void: assert_array(1.3)) \
 		.is_failed() \
 		.has_message("GdUnitArrayAssert inital error, unexpected type <float>")
-	assert_failure(func(): assert_array(true)) \
+	assert_failure(func() -> void: assert_array(true)) \
 		.is_failed() \
 		.has_message("GdUnitArrayAssert inital error, unexpected type <bool>")
-	assert_failure(func(): assert_array(Resource.new())) \
+	assert_failure(func() -> void: assert_array(Resource.new())) \
 		.is_failed() \
 		.has_message("GdUnitArrayAssert inital error, unexpected type <Object>")
 
@@ -563,7 +563,7 @@ func test_extract() -> void:
 	assert_array([RefCounted.new(), 2, AStar3D.new(), auto_free(Node.new())]).extract("remove_meta", [""]) \
 		.contains_exactly([null, "n.a.", null, null])
 
-	assert_failure(func(): assert_array(null).extract("get_class").contains_exactly(["AStar3D", "Node"])) \
+	assert_failure(func() -> void: assert_array(null).extract("get_class").contains_exactly(["AStar3D", "Node"])) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -575,12 +575,13 @@ func test_extract() -> void:
 			.dedent().trim_prefix("\n"))
 
 
+
 class TestObj:
 	var _name :String
-	var _value
-	var _x
+	var _value :Variant
+	var _x :Variant
 
-	func _init(name :String, value, x = null):
+	func _init(name :String, value :Variant, x :Variant = null) -> void:
 		_name = name
 		_value = value
 		_x = x
@@ -588,10 +589,10 @@ class TestObj:
 	func get_name() -> String:
 		return _name
 
-	func get_value():
+	func get_value() -> Variant:
 		return _value
 
-	func get_x():
+	func get_x() -> Variant:
 		return _x
 
 	func get_x1() -> String:
@@ -624,6 +625,7 @@ class TestObj:
 	func _to_string() -> String:
 		return "class:" + _name
 
+
 func test_extractv() -> void:
 	# single extract
 	assert_array([1, false, 3.14, null, Color.ALICE_BLUE])\
@@ -638,7 +640,7 @@ func test_extractv() -> void:
 		.extractv(extr("get_name"), extr("get_value"), extr("get_x"))\
 		.contains_exactly([tuple("A", 10, null), tuple("B", "foo", "bar"), tuple("C", 11, 42)])
 
-	assert_failure(func():
+	assert_failure(func() -> void:
 			assert_array(null) \
 				.extractv(extr("get_name"), extr("get_value"), extr("get_x")) \
 				.contains_exactly([tuple("A", 10, null), tuple("B", "foo", "bar"), tuple("C", 11, 42)])) \
@@ -654,13 +656,13 @@ func test_extractv() -> void:
 
 
 func test_extractv_chained_func() -> void:
-	var root_a = TestObj.new("root_a", null)
-	var obj_a = TestObj.new("A", root_a)
-	var obj_b = TestObj.new("B", root_a)
-	var obj_c = TestObj.new("C", root_a)
-	var root_b = TestObj.new("root_b", root_a)
-	var obj_x = TestObj.new("X", root_b)
-	var obj_y = TestObj.new("Y", root_b)
+	var root_a := TestObj.new("root_a", null)
+	var obj_a := TestObj.new("A", root_a)
+	var obj_b := TestObj.new("B", root_a)
+	var obj_c := TestObj.new("C", root_a)
+	var root_b := TestObj.new("root_b", root_a)
+	var obj_x := TestObj.new("X", root_b)
+	var obj_y := TestObj.new("Y", root_b)
 
 	assert_array([obj_a, obj_b, obj_c, obj_x, obj_y])\
 		.extractv(extr("get_name"), extr("get_value.get_name"))\
@@ -674,13 +676,13 @@ func test_extractv_chained_func() -> void:
 
 
 func test_extract_chained_func() -> void:
-	var root_a = TestObj.new("root_a", null)
-	var obj_a = TestObj.new("A", root_a)
-	var obj_b = TestObj.new("B", root_a)
-	var obj_c = TestObj.new("C", root_a)
-	var root_b = TestObj.new("root_b", root_a)
-	var obj_x = TestObj.new("X", root_b)
-	var obj_y = TestObj.new("Y", root_b)
+	var root_a := TestObj.new("root_a", null)
+	var obj_a := TestObj.new("A", root_a)
+	var obj_b := TestObj.new("B", root_a)
+	var obj_c := TestObj.new("C", root_a)
+	var root_b := TestObj.new("root_b", root_a)
+	var obj_x := TestObj.new("X", root_b)
+	var obj_y := TestObj.new("Y", root_b)
 
 	assert_array([obj_a, obj_b, obj_c, obj_x, obj_y])\
 		.extract("get_value.get_name")\
@@ -713,7 +715,7 @@ func test_extractv_max_args() -> void:
 
 
 func test_override_failure_message() -> void:
-	assert_failure(func(): assert_array([]) \
+	assert_failure(func() -> void: assert_array([]) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
@@ -730,7 +732,7 @@ func test_is_failure() -> void:
 	assert_bool(is_failure()).is_false()
 
 	# checked faild assert
-	assert_failure(func(): assert_array([]).is_not_empty()) \
+	assert_failure(func() -> void: assert_array([]).is_not_empty()) \
 		.is_failed()
 	assert_bool(is_failure()).is_true()
 
@@ -747,7 +749,7 @@ func test_is_failure() -> void:
 
 class ExampleTestClass extends RefCounted:
 	var _childs := Array()
-	var _parent = null
+	var _parent :RefCounted = null
 
 
 	func add_child(child :ExampleTestClass) -> ExampleTestClass:
@@ -756,7 +758,7 @@ class ExampleTestClass extends RefCounted:
 		return self
 
 
-	func dispose():
+	func dispose() -> void:
 		_parent = null
 		_childs.clear()
 
@@ -770,7 +772,7 @@ func test_contains_exactly_stuck() -> void:
 		.add_child(ExampleTestClass.new())
 	# this test was stuck and ends after a while into an aborted test case
 	# https://github.com/MikeSchulze/gdUnit3/issues/244
-	assert_failure(func(): assert_array([example_a, example_b]).contains_exactly([example_a, example_b, example_a]))\
+	assert_failure(func() -> void: assert_array([example_a, example_b]).contains_exactly([example_a, example_b, example_a]))\
 		.is_failed()
 	# manual free because of cross references
 	example_a.dispose()

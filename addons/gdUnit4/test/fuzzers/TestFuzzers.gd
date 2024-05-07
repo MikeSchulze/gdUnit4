@@ -5,7 +5,7 @@ const MAX_VALUE := 22
 
 class NestedFuzzer extends Fuzzer:
 
-	func _init():
+	func _init() -> void:
 		pass
 
 	func next_value() -> Variant:

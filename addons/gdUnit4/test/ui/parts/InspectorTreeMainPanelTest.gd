@@ -9,22 +9,22 @@ var TEST_SUITE_A :String
 var TEST_SUITE_B :String
 var TEST_SUITE_C :String
 
-var _inspector
+var _inspector :Node
 
 
-func before_test():
+func before_test() -> void:
 	_inspector = load("res://addons/gdUnit4/src/ui/parts/InspectorTreePanel.tscn").instantiate()
 	add_child(_inspector)
 	_inspector.init_tree()
 
 	# load a testsuite
-	for test_suite in setup_test_env():
+	for test_suite :Node in setup_test_env():
 		_inspector.add_test_suite(toDto(test_suite))
 	# verify no failures are exists
 	assert_array(_inspector.collect_failures_and_errors()).is_empty()
 
 
-func after_test():
+func after_test() -> void:
 	_inspector.cleanup_tree()
 	remove_child(_inspector)
 	_inspector.free()
@@ -45,7 +45,7 @@ func setup_test_env() -> Array:
 	return Array([auto_free(test_suite_a), auto_free(test_suite_b), auto_free(test_suite_c)])
 
 
-func mark_as_failure(inspector, test_cases :Array) -> void:
+func mark_as_failure(inspector :Node, test_cases :Array) -> void:
 	var tree_root :TreeItem = inspector._tree_root
 	assert_object(tree_root).is_not_null()
 	# mark all test as failed
@@ -61,7 +61,7 @@ func mark_as_failure(inspector, test_cases :Array) -> void:
 		parent = parent.get_next()
 
 func get_item_state(parent :TreeItem, item_name :String) -> int:
-	var item = _inspector._find_by_name(parent, item_name)
+	var item :TreeItem = _inspector._find_by_name(parent, item_name)
 	return item.get_meta(_inspector.META_GDUNIT_STATE)
 
 func test_collect_failures_and_errors() -> void:
@@ -221,8 +221,8 @@ func test_suite_text_responds_to_test_case_events() -> void:
 # test coverage for issue GD-117
 func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	# add a second test suite where has same name as TEST_SUITE_A
-	var test_suite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/ui/parts/resources/bar/ExampleTestSuiteA.resource"))
-	var test_suite_aa_path = test_suite.get_script().resource_path
+	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/ui/parts/resources/bar/ExampleTestSuiteA.resource"))
+	var test_suite_aa_path :String = test_suite.get_script().resource_path
 	_inspector.add_test_suite(toDto(test_suite))
 
 	# verify the items exists checked the tree
@@ -265,9 +265,9 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 
 # Test coverage for issue GD-278: GdUnit Inspector: Test marks as passed if both warning and error
 func test_update_icon_state() -> void:
-	var TEST_SUITE_PATH = "res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource"
-	var TEST_SUITE_NAME = "TestSuiteFailAndOrpahnsDetected"
-	var test_suite = auto_free(GdUnitTestResourceLoader.load_test_suite(TEST_SUITE_PATH))
+	var TEST_SUITE_PATH := "res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource"
+	var TEST_SUITE_NAME := "TestSuiteFailAndOrpahnsDetected"
+	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite(TEST_SUITE_PATH))
 	_inspector.add_test_suite(toDto(test_suite))
 
 	var suite: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_PATH)

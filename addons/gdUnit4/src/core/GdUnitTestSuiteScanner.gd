@@ -263,9 +263,9 @@ static func normalize_path(path :String) -> String:
 static func create_test_suite(test_suite_path :String, source_path :String) -> GdUnitResult:
 	# create directory if not exists
 	if not DirAccess.dir_exists_absolute(test_suite_path.get_base_dir()):
-		var error := DirAccess.make_dir_recursive_absolute(test_suite_path.get_base_dir())
-		if error != OK:
-			return GdUnitResult.error("Can't create directoy  at: %s. Error code %s" % [test_suite_path.get_base_dir(), error])
+		var error_ := DirAccess.make_dir_recursive_absolute(test_suite_path.get_base_dir())
+		if error_ != OK:
+			return GdUnitResult.error("Can't create directoy  at: %s. Error code %s" % [test_suite_path.get_base_dir(), error_])
 	var script := GDScript.new()
 	script.source_code = GdUnitTestSuiteTemplate.build_template(source_path)
 	var error := ResourceSaver.save(script, test_suite_path)
@@ -297,8 +297,7 @@ static func add_test_case(resource_path :String, func_name :String)  -> GdUnitRe
 	var line_number := count_lines(script) + 2
 	var func_body := TEST_FUNC_TEMPLATE.replace("${func_name}", func_name)
 	if Engine.is_editor_hint():
-		var ep :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-		var settings := ep.get_editor_interface().get_editor_settings()
+		var settings := EditorInterface.get_editor_settings()
 		var ident_type :int = settings.get_setting("text_editor/behavior/indent/type")
 		var ident_size :int = settings.get_setting("text_editor/behavior/indent/size")
 		if ident_type == 1:

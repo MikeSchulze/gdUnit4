@@ -18,7 +18,7 @@ class TestValueProvider:
 	var _max_iterations :int
 	var _current_itteration := 0
 
-	func _init(iterations := 0):
+	func _init(iterations := 0) -> void:
 		_max_iterations = iterations
 
 	func bool_value() -> bool:
@@ -54,7 +54,7 @@ class TestValueProvider:
 	func no_value() -> void:
 		pass
 
-	func unknown_value():
+	func unknown_value() -> Vector3:
 		return Vector3.ONE
 
 
@@ -73,10 +73,10 @@ class ValueProvidersWithArguments:
 class TestIterativeValueProvider:
 	var _max_iterations :int
 	var _current_itteration := 0
-	var _inital_value
-	var _final_value
+	var _inital_value :Variant
+	var _final_value :Variant
 
-	func _init(inital_value, iterations :int, final_value):
+	func _init(inital_value :Variant, iterations :int, final_value :Variant) -> void:
 		_max_iterations = iterations
 		_inital_value = inital_value
 		_final_value = final_value
@@ -122,7 +122,7 @@ class TestIterativeValueProvider:
 
 
 @warning_ignore("unused_parameter")
-func test_is_null(timeout = 2000) -> void:
+func test_is_null(timeout := 2000) -> void:
 	var value_provider := TestIterativeValueProvider.new(RefCounted.new(), 5, null)
 	# without default timeout od 2000ms
 	assert_func(value_provider, "obj_value").is_not_null()
@@ -140,12 +140,12 @@ func test_is_null(timeout = 2000) -> void:
 		return
 	value_provider = TestIterativeValueProvider.new(RefCounted.new(), 1, RefCounted.new())
 	(
-		await assert_failure_await(func(): await assert_func(value_provider, "obj_value", []).wait_until(100).is_null())
+		await assert_failure_await(func() -> void: await assert_func(value_provider, "obj_value", []).wait_until(100).is_null())
 	).has_message("Expected: is null but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
-func test_is_not_null(timeout = 2000) -> void:
+func test_is_not_null(timeout := 2000) -> void:
 	var value_provider := TestIterativeValueProvider.new(null, 5, RefCounted.new())
 	# without default timeout od 2000ms
 	assert_func(value_provider, "obj_value").is_null()
@@ -163,12 +163,12 @@ func test_is_not_null(timeout = 2000) -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(value_provider, "obj_value", []).wait_until(100).is_not_null())
+		await assert_failure_await(func() -> void: await assert_func(value_provider, "obj_value", []).wait_until(100).is_not_null())
 	).has_message("Expected: is not null but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
-func test_is_true(timeout = 2000) -> void:
+func test_is_true(timeout := 2000) -> void:
 	var value_provider := TestIterativeValueProvider.new(false, 5, true)
 	# without default timeout od 2000ms
 	assert_func(value_provider, "bool_value").is_false()
@@ -186,12 +186,12 @@ func test_is_true(timeout = 2000) -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(value_provider, "bool_value", []).wait_until(100).is_true())
+		await assert_failure_await(func() -> void: await assert_func(value_provider, "bool_value", []).wait_until(100).is_true())
 	).has_message("Expected: is true but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
-func test_is_false(timeout = 2000) -> void:
+func test_is_false(timeout := 2000) -> void:
 	var value_provider := TestIterativeValueProvider.new(true, 5, false)
 	# without default timeout od 2000ms
 	assert_func(value_provider, "bool_value").is_true()
@@ -209,12 +209,12 @@ func test_is_false(timeout = 2000) -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(value_provider, "bool_value", []).wait_until(100).is_false())
+		await assert_failure_await(func() -> void: await assert_func(value_provider, "bool_value", []).wait_until(100).is_false())
 	).has_message("Expected: is false but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
-func test_is_equal(timeout = 2000) -> void:
+func test_is_equal(timeout := 2000) -> void:
 	var value_provider := TestIterativeValueProvider.new(42, 5, 23)
 	# without default timeout od 2000ms
 	assert_func(value_provider, "int_value").is_equal(42)
@@ -232,12 +232,12 @@ func test_is_equal(timeout = 2000) -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(value_provider, "int_value", []).wait_until(100).is_equal(25))
+		await assert_failure_await(func() -> void: await assert_func(value_provider, "int_value", []).wait_until(100).is_equal(25))
 	).has_message("Expected: is equal '25' but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
-func test_is_not_equal(timeout = 2000) -> void:
+func test_is_not_equal(timeout := 2000) -> void:
 	var value_provider := TestIterativeValueProvider.new(42, 5, 23)
 	# without default timeout od 2000ms
 	assert_func(value_provider, "int_value").is_equal(42)
@@ -255,12 +255,12 @@ func test_is_not_equal(timeout = 2000) -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(value_provider, "int_value", []).wait_until(100).is_not_equal(23))
+		await assert_failure_await(func() -> void: await assert_func(value_provider, "int_value", []).wait_until(100).is_not_equal(23))
 	).has_message("Expected: is not equal '23' but timed out after 100ms")
 
 
 @warning_ignore("unused_parameter")
-func test_is_equal_wiht_func_arg(timeout = 1300) -> void:
+func test_is_equal_wiht_func_arg(timeout := 1300) -> void:
 	var value_provider := TestIterativeValueProvider.new(42, 10, 23)
 	# without default timeout od 2000ms
 	assert_func(value_provider, "has_type", [1]).is_equal(42)
@@ -276,7 +276,7 @@ func test_is_equal_wiht_func_arg(timeout = 1300) -> void:
 
 # abort test after 500ms to fail
 @warning_ignore("unused_parameter")
-func test_timeout_and_assert_fails(timeout = 500) -> void:
+func test_timeout_and_assert_fails(timeout := 500) -> void:
 	# disable temporary the timeout errors for this test
 	discard_error_interupted_by_timeout()
 	var value_provider := TestIterativeValueProvider.new(1, 10, 10)
@@ -286,7 +286,7 @@ func test_timeout_and_assert_fails(timeout = 500) -> void:
 
 
 func timed_function() -> Color:
-	var color = Color.RED
+	var color := Color.RED
 	await await_millis(20)
 	color = Color.GREEN
 	await await_millis(20)
@@ -304,7 +304,7 @@ func test_timer_yielded_function() -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(self, "timed_function", []).wait_until(100).is_equal(Color.RED))
+		await assert_failure_await(func() -> void: await assert_func(self, "timed_function", []).wait_until(100).is_equal(Color.RED))
 	).has_message("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 100ms")
 
 
@@ -312,12 +312,12 @@ func test_timer_yielded_function_timeout() -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(self, "timed_function", []).wait_until(40).is_equal(Color.BLACK))
+		await assert_failure_await(func() -> void: await assert_func(self, "timed_function", []).wait_until(40).is_equal(Color.BLACK))
 	).has_message("Expected: is equal 'Color()' but timed out after 40ms")
 
 
 func yielded_function() -> Color:
-	var color = Color.RED
+	var color := Color.RED
 	await get_tree().process_frame
 	color = Color.GREEN
 	await get_tree().process_frame
@@ -332,7 +332,7 @@ func test_idle_frame_yielded_function() -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(self, "yielded_function", []).wait_until(500).is_equal(Color.RED))
+		await assert_failure_await(func() -> void: await assert_func(self, "yielded_function", []).wait_until(500).is_equal(Color.RED))
 	).has_message("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 500ms")
 
 
@@ -341,7 +341,7 @@ func test_has_failure_message() -> void:
 		return
 	var value_provider := TestIterativeValueProvider.new(10, 1, 10)
 	(
-		await assert_failure_await(func(): await assert_func(value_provider, "int_value", []).wait_until(500).is_equal(42))
+		await assert_failure_await(func() -> void: await assert_func(value_provider, "int_value", []).wait_until(500).is_equal(42))
 	).has_message("Expected: is equal '42' but timed out after 500ms")
 
 
@@ -350,7 +350,7 @@ func test_override_failure_message() -> void:
 		return
 	var value_provider := TestIterativeValueProvider.new(10, 1, 20)
 	(
-		await assert_failure_await(func(): await assert_func(value_provider, "int_value", []) \
+		await assert_failure_await(func() -> void: await assert_func(value_provider, "int_value", []) \
 			.override_failure_message("Custom failure message") \
 			.wait_until(100) \
 			.is_equal(42))
@@ -358,11 +358,11 @@ func test_override_failure_message() -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_invalid_function(timeout = 100):
+func test_invalid_function(timeout := 100) -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_func(self, "invalid_func_name", [])\
+		await assert_failure_await(func() -> void: await assert_func(self, "invalid_func_name", [])\
 		.wait_until(1000)\
 		.is_equal(42))
 	).starts_with_message("The function 'invalid_func_name' do not exists checked instance")

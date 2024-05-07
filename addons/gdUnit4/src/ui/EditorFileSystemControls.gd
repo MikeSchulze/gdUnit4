@@ -3,14 +3,6 @@ class_name EditorFileSystemControls
 extends RefCounted
 
 
-# Returns the EditorInterface instance
-static func editor_interface() -> EditorInterface:
-	if not Engine.has_meta("GdUnitEditorPlugin"):
-		return null
-	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	return plugin.get_editor_interface()
-
-
 # Register the given context menu to the filesystem dock
 # Is called when the plugin is activated
 # The filesystem popup is connected to the EditorFileSystemContextMenuHandler
