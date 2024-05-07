@@ -239,7 +239,7 @@ func test_with_string_contains_brackets(
 			""")
 
 
-func test_with_dynamic_parameter_resolving(name: String, value :Variant, expected :Variant, test_parameters := [
+func test_with_dynamic_parameter_resolving(name_: String, value :Variant, expected :Variant, test_parameters := [
 	["test_a", auto_free(Node2D.new()), Node2D],
 	["test_b", auto_free(Node3D.new()), Node3D],
 	["test_c", _test_node_before, SubViewport],
@@ -247,18 +247,18 @@ func test_with_dynamic_parameter_resolving(name: String, value :Variant, expecte
 ]) -> void:
 	# all values must be resolved
 	assert_that(value).is_not_null().is_instanceof(expected)
-	if name == "test_c":
+	if name_ == "test_c":
 		assert_that(value).is_same(_test_node_before)
-	if name == "test_d":
+	if name_ == "test_d":
 		assert_that(value).is_same(_test_node_before_test)
 	# the argument 'test_parameters' must be replaced by <null> set to avoid re-instantiate of test arguments
 	assert_that(test_parameters).is_empty()
-	collect_test_call("test_with_dynamic_paramater_resolving", [name])
+	collect_test_call("test_with_dynamic_paramater_resolving", [name_])
 
 
 @warning_ignore("unused_parameter")
 func test_with_dynamic_parameter_resolving2(
-	name: String,
+	name_: String,
 	type :Variant,
 	log_level :Variant,
 	expected_logs :Dictionary,
@@ -280,7 +280,7 @@ func test_with_dynamic_parameter_resolving2(
 ) -> void:
 	# the argument 'test_parameters' must be replaced by <null> set to avoid re-instantiate of test arguments
 	assert_that(test_parameters).is_empty()
-	collect_test_call("test_with_dynamic_paramater_resolving2", [name])
+	collect_test_call("test_with_dynamic_paramater_resolving2", [name_])
 
 
 var _test_set := [

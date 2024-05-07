@@ -10,7 +10,7 @@ func __init() -> void:
 	InputMap.action_add_event("player_jump", event)
 
 
-func _input(event :InputEvent) -> void:
+func _input(_event :InputEvent) -> void:
 	if InputMap.has_action("player_jump"):
 		_player_jump_action_released = Input.is_action_just_released("player_jump", true)
 	#prints("_input2:player_jump", Input.is_action_just_released("player_jump"), Input.is_action_just_released("player_jump", true))

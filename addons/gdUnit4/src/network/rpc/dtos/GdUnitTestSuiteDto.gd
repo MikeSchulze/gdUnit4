@@ -32,6 +32,6 @@ func test_case_count() -> int:
 
 
 func test_cases() -> Array[GdUnitTestCaseDto]:
-	var test_cases :Array[GdUnitTestCaseDto] = []
-	test_cases.append_array(_test_cases_by_name.values())
-	return test_cases
+	var test_cases_ :Array[GdUnitTestCaseDto] = []
+	test_cases_.append_array(_test_cases_by_name.values())
+	return test_cases_

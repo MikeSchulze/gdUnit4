@@ -81,7 +81,6 @@ static func get_enum_default(value :String) -> Variant:
 
 	""".dedent() % value
 	script.reload()
-	script.source_code
 	return script.new().call("get_enum_default")
 
 

@@ -17,8 +17,7 @@ func _ready() -> void:
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	_failures.text = "0"
 	_errors.text = "0"
-	var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	var editior_control := editor.get_editor_interface().get_base_control()
+	var editior_control := EditorInterface.get_base_control()
 	_button_failure_up.icon = GodotVersionFixures.get_icon(editior_control, "ArrowUp")
 	_button_failure_down.icon = GodotVersionFixures.get_icon(editior_control, "ArrowDown")
 

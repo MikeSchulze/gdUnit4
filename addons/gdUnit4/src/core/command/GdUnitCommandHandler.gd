@@ -30,7 +30,6 @@ const SETTINGS_SHORTCUT_MAPPING := {
 	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG
 }
 
-var _editor_interface :EditorInterface
 # the current test runner config
 var _runner_config := GdUnitRunnerConfig.new()
 
@@ -54,9 +53,6 @@ static func instance() -> GdUnitCommandHandler:
 func _init() -> void:
 	assert_shortcut_mappings(SETTINGS_SHORTCUT_MAPPING)
 
-	if Engine.is_editor_hint():
-		var editor :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-		_editor_interface = editor.get_editor_interface()
 	GdUnitSignals.instance().gdunit_event.connect(_on_event)
 	GdUnitSignals.instance().gdunit_client_connected.connect(_on_client_connected)
 	GdUnitSignals.instance().gdunit_client_disconnected.connect(_on_client_disconnected)
@@ -97,7 +93,7 @@ func check_test_run_stopped_manually() -> void:
 
 
 func is_test_running_but_stop_pressed() -> bool:
-	return _editor_interface and _running_debug_mode and _is_running and not _editor_interface.is_playing_scene()
+	return _running_debug_mode and _is_running and not EditorInterface.is_playing_scene()
 
 
 func assert_shortcut_mappings(mappings :Dictionary) -> void:
@@ -225,7 +221,7 @@ func cmd_stop(client_id :int) -> void:
 	_is_running = false
 	gdunit_runner_stop.emit(client_id)
 	if _running_debug_mode:
-		_editor_interface.stop_playing_scene()
+		EditorInterface.stop_playing_scene()
 	else: if _current_runner_process_id > 0:
 		var result := OS.kill(_current_runner_process_id)
 		if result != OK:
@@ -286,7 +282,7 @@ static func match_test_directory(directory :String, test_directory: String) -> b
 
 
 func run_debug_mode() -> void:
-	_editor_interface.play_custom_scene("res://addons/gdUnit4/src/core/GdUnitRunner.tscn")
+	EditorInterface.play_custom_scene("res://addons/gdUnit4/src/core/GdUnitRunner.tscn")
 	_is_running = true
 
 
@@ -302,16 +298,12 @@ func run_release_mode() -> void:
 	_is_running = true
 
 
-func script_editor() -> ScriptEditor:
-	return _editor_interface.get_script_editor()
-
-
 func active_base_editor() -> TextEdit:
-	return script_editor().get_current_editor().get_base_editor()
+	return EditorInterface.get_script_editor().get_current_editor().get_base_editor()
 
 
 func active_script() -> Script:
-	return script_editor().get_current_script()
+	return EditorInterface.get_script_editor().get_current_script()
 
 
 

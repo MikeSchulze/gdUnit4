@@ -300,7 +300,7 @@ func get_token(input :String, current_index :int) -> Token:
 
 func next_token(input: String, current_index: int, ignore_tokens :Array[Token] = []) -> Token:
 	var token := TOKEN_NOT_MATCH
-	for t :Token in TOKENS.filter(func(token :Token) -> bool: return not ignore_tokens.has(token)):
+	for t :Token in TOKENS.filter(func(t :Token) -> bool: return not ignore_tokens.has(t)):
 		if t.match(input, current_index):
 			token = t
 			break

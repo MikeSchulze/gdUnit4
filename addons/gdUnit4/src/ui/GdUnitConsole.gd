@@ -42,8 +42,7 @@ func _notification(what :int) -> void:
 
 
 func init_colors() -> void:
-	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	var settings := plugin.get_editor_interface().get_editor_settings()
+	var settings := EditorInterface.get_editor_settings()
 	_text_color = settings.get_setting("text_editor/theme/highlighting/text_color")
 	_function_color = settings.get_setting("text_editor/theme/highlighting/function_color")
 	_engine_type_color = settings.get_setting("text_editor/theme/highlighting/engine_type_color")

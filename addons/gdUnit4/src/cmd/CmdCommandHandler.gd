@@ -83,14 +83,13 @@ func execute(commands :Array[CmdCommand]) -> GdUnitResult:
 			var cb_s :Callable = _command_cbs.get(cmd_name)[CB_SINGLE_ARG]
 			var arguments := cmd.arguments()
 			var cmd_option := _cmd_options.get_option(cmd_name)
-			var argument :Variant = arguments[0] if arguments.size() > 0 else null
-			match cmd_option.type():
-				TYPE_BOOL:
-					argument = true if argument == "true" else false
 			if cb_s and arguments.size() == 0:
 				cb_s.call()
 			elif cb_s:
-				cb_s.call(argument)
+				if cmd_option.type() == TYPE_BOOL:
+					cb_s.call(true if arguments[0] == "true" else false)
+				else:
+					cb_s.call(arguments[0])
 			else:
 				var cb_m :Callable = _command_cbs.get(cmd_name)[CB_MULTI_ARGS]
 				# we need to find the method and determin the arguments to call the right function

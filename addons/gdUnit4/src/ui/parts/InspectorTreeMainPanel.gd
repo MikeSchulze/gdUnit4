@@ -51,7 +51,6 @@ const META_RESOURCE_PATH := "resource_path"
 const META_LINE_NUMBER := "line_number"
 const META_TEST_PARAM_INDEX := "test_param_index"
 
-var _editor :EditorPlugin
 var _tree_root :TreeItem
 var _current_failures := Array()
 var _item_hash := Dictionary()
@@ -128,8 +127,7 @@ func is_test_suite(item :TreeItem) -> bool:
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
-		_editor = Engine.get_meta("GdUnitEditorPlugin")
-		var editior_control := _editor.get_editor_interface().get_base_control()
+		var editior_control := EditorInterface.get_base_control()
 		_context_menu.set_item_icon(CONTEXT_MENU_RUN_ID, GodotVersionFixures.get_icon(editior_control, "Play"))
 		_context_menu.set_item_icon(CONTEXT_MENU_DEBUG_ID, debug_icon_image)
 	init_tree()
@@ -154,7 +152,7 @@ func init_tree() -> void:
 	_tree.allow_rmb_select = true
 	_tree_root = _tree.create_item()
 	# fix tree icon scaling
-	var scale_factor := _editor.get_editor_interface().get_editor_scale() if Engine.is_editor_hint() else 1.0
+	var scale_factor := EditorInterface.get_editor_scale() if Engine.is_editor_hint() else 1.0
 	_tree.set("theme_override_constants/icon_max_width", 16*scale_factor)
 
 
@@ -523,10 +521,9 @@ func _on_Tree_item_activated() -> void:
 		if report_line_number != -1:
 			line_number = report_line_number
 
-	var editor_interface := _editor.get_editor_interface()
-	editor_interface.get_file_system_dock().navigate_to_path(resource_path)
-	editor_interface.edit_resource(resource)
-	editor_interface.get_script_editor().goto_line(line_number-1)
+	EditorInterface.get_file_system_dock().navigate_to_path(resource_path)
+	EditorInterface.edit_resource(resource)
+	EditorInterface.get_script_editor().goto_line(line_number-1)
 
 
 ################################################################################

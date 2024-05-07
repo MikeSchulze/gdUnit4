@@ -11,21 +11,15 @@ const spinner_icon := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
 @onready var _header :Label = $Panel/GridContainer/PanelContainer/header
 @onready var _update_button :Button = $Panel/GridContainer/Panel/HBoxContainer/update
-@onready var _close_button :Button = $Panel/GridContainer/Panel/HBoxContainer/close
 @onready var _content :RichTextLabel = $Panel/GridContainer/PanelContainer2/ScrollContainer/MarginContainer/content
 
 var _debug_mode := false
-
-var _editor_interface :EditorInterface
 var _patcher :GdUnitPatcher = GdUnitPatcher.new()
 var _current_version := GdUnit4Version.current()
-var _available_versions :Array
 var _download_zip_url :String
 
 
 func _ready() -> void:
-	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	_editor_interface = plugin.get_editor_interface()
 	_update_button.disabled = true
 	_md_reader.set_http_client(_update_client)
 	GdUnitFonts.init_fonts(_content)
@@ -53,19 +47,19 @@ func request_releases() -> void:
 		await show_update()
 
 
-func _colored(message :String, color :Color) -> String:
-	return "[color=#%s]%s[/color]" % [color.to_html(), message]
+func _colored(message_ :String, color :Color) -> String:
+	return "[color=#%s]%s[/color]" % [color.to_html(), message_]
 
 
-func message_h4(message :String, color :Color, clear := true) -> void:
+func message_h4(message_ :String, color :Color, clear := true) -> void:
 	if clear:
 		_content.clear()
-	_content.append_text("[font_size=16]%s[/font_size]" % _colored(message, color))
+	_content.append_text("[font_size=16]%s[/font_size]" % _colored(message_, color))
 
 
-func message(message :String, color :Color) -> void:
+func message(message_ :String, color :Color) -> void:
 	_content.clear()
-	_content.append_text(_colored(message, color))
+	_content.append_text(_colored(message_, color))
 
 
 func _process(_delta :float) -> void:
@@ -96,12 +90,12 @@ func show_update() -> void:
 	_update_button.set_disabled(false)
 
 
-static func extract_latest_version(response :GdUnitUpdateClient.HttpResponse) -> GdUnit4Version:
+func extract_latest_version(response :GdUnitUpdateClient.HttpResponse) -> GdUnit4Version:
 	var body :Array = response.response()
 	return GdUnit4Version.parse(body[0]["name"])
 
 
-static func extract_zip_url(response :GdUnitUpdateClient.HttpResponse) -> String:
+func extract_zip_url(response :GdUnitUpdateClient.HttpResponse) -> String:
 	var body :Array = response.response()
 	return body[0]["zipball_url"]
 
@@ -121,7 +115,7 @@ func rescan() -> void:
 	if Engine.is_editor_hint():
 		if OS.is_stdout_verbose():
 			prints(".. reimport release resources")
-		var fs := _editor_interface.get_resource_filesystem()
+		var fs := EditorInterface.get_resource_filesystem()
 		fs.scan()
 		while fs.is_scanning():
 			if OS.is_stdout_verbose():
@@ -131,7 +125,7 @@ func rescan() -> void:
 	await get_tree().create_timer(1).timeout
 
 
-func progressBar(p_progress :int, p_color :Color = Color.POWDER_BLUE) -> void:
+func progressBar(p_progress :int) -> void:
 	if p_progress < 0:
 		p_progress = 0
 	if p_progress > 100:
@@ -154,7 +148,7 @@ func _on_update_pressed() -> void:
 	dest.store_string(content)
 	hide()
 	var update :Variant = load("res://addons/.gdunit_update/GdUnitUpdate.tscn").instantiate()
-	update.setup(_editor_interface, _update_client, _download_zip_url)
+	update.setup(_update_client, _download_zip_url)
 	Engine.get_main_loop().root.add_child(update)
 	update.popup_centered()
 
@@ -179,5 +173,6 @@ func _on_content_meta_hover_started(meta :String) -> void:
 		_content.set_tooltip_text(properties.get("tool_tip"))
 
 
+@warning_ignore("unused_parameter")
 func _on_content_meta_hover_ended(meta :String) -> void:
 	_content.set_tooltip_text("")

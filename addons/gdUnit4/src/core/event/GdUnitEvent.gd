@@ -164,9 +164,9 @@ func deserialize(serialized :Dictionary) -> GdUnitEvent:
 	_statistics    = serialized.get("statistics", Dictionary())
 	if serialized.has("reports"):
 		# needs this workaround to copy typed values in the array
-		var reports :Array[Dictionary] = []
-		reports.append_array(serialized.get("reports"))
-		_reports = _deserialize_reports(reports)
+		var reports_to_deserializ :Array[Dictionary] = []
+		reports_to_deserializ.append_array(serialized.get("reports"))
+		_reports = _deserialize_reports(reports_to_deserializ)
 	return self
 
 
