@@ -3,7 +3,7 @@ extends RefCounted
 var _first_name :String
 var _last_name :String
 
-func _init(first_name_ :String,last_name_ :String):
+func _init(first_name_ :String, last_name_ :String) -> void:
 	_first_name = first_name_
 	_last_name = last_name_
 

@@ -5,7 +5,7 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const SPY_TEMPLATE :GDScript = preload("res://addons/gdUnit4/src/spy/GdUnitSpyImpl.gd")
 
 
-static func build(to_spy, debug_write := false) -> Object:
+static func build(to_spy :Variant, debug_write := false) -> Variant:
 	if GdObjects.is_singleton(to_spy):
 		push_error("Spy on a Singleton is not allowed! '%s'" % to_spy.get_class())
 		return null
@@ -25,7 +25,7 @@ static func build(to_spy, debug_write := false) -> Object:
 	var spy := spy_on_script(to_spy, [], debug_write)
 	if spy == null:
 		return null
-	var spy_instance = spy.new()
+	var spy_instance :Variant = spy.new()
 	copy_properties(to_spy, spy_instance)
 	GdUnitObjectInteractions.reset(spy_instance)
 	spy_instance.__set_singleton(to_spy)
@@ -43,7 +43,7 @@ static func get_class_info(clazz :Variant) -> Dictionary:
 	}
 
 
-static func spy_on_script(instance, function_excludes :PackedStringArray, debug_write) -> GDScript:
+static func spy_on_script(instance :Variant, function_excludes :PackedStringArray, debug_write :bool) -> GDScript:
 	if GdArrayTools.is_array_type(instance):
 		if GdUnitSettings.is_verbose_assert_errors():
 			push_error("Can't build spy checked type '%s'! Spy checked Container Built-In Type not supported!" % instance.get_class())
@@ -73,13 +73,13 @@ static func spy_on_script(instance, function_excludes :PackedStringArray, debug_
 	return spy
 
 
-static func spy_on_scene(scene :Node, debug_write) -> Object:
+static func spy_on_scene(scene :Node, debug_write :bool) -> Object:
 	if scene.get_script() == null:
 		if GdUnitSettings.is_verbose_assert_errors():
 			push_error("Can't create a spy checked a scene without script '%s'" % scene.get_scene_file_path())
 		return null
 	# buils spy checked original script
-	var scene_script = scene.get_script().new()
+	var scene_script :Object = scene.get_script().new()
 	var spy := spy_on_script(scene_script, GdUnitClassDoubler.EXLCUDE_SCENE_FUNCTIONS, debug_write)
 	scene_script.free()
 	if spy == null:
@@ -94,8 +94,8 @@ const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
 
 static func copy_properties(source :Object, dest :Object) -> void:
 	for property in source.get_property_list():
-		var property_name = property["name"]
-		var property_value = source.get(property_name)
+		var property_name :String = property["name"]
+		var property_value :Variant = source.get(property_name)
 		if EXCLUDE_PROPERTIES_TO_COPY.has(property_name):
 			continue
 		#if dest.get(property_name) == null:

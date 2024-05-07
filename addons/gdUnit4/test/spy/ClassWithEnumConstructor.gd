@@ -15,5 +15,5 @@ func _init(value :MyEnumValue, second_parameter :PackedStringArray) -> void:
 
 
 # using an enum as function argument
-func set_value(value :MyEnumValue):
+func set_value(value :MyEnumValue) -> void:
 	_value = value

@@ -2,23 +2,23 @@ class_name GdUnitSpyTest
 extends GdUnitTestSuite
 
 
-func test_spy_instance_id_is_unique():
-	var m1  = spy(RefCounted.new())
-	var m2  = spy(RefCounted.new())
+func test_spy_instance_id_is_unique() -> void:
+	var m1  :Variant = spy(RefCounted.new())
+	var m2  :Variant = spy(RefCounted.new())
 	# test the internal instance id is unique
 	assert_that(m1.__instance_id()).is_not_equal(m2.__instance_id())
 	assert_object(m1).is_not_same(m2)
 
 
-func test_cant_spy_is_not_a_instance():
+func test_cant_spy_is_not_a_instance() -> void:
 	# returns null because spy needs an 'real' instance to by spy checked
-	var spy_node = spy(Node)
+	var spy_node :Variant = spy(Node)
 	assert_object(spy_node).is_null()
 
 
-func test_spy_on_Node():
+func test_spy_on_Node() -> void:
 	var instance :Node = auto_free(Node.new())
-	var spy_node = spy(instance)
+	var spy_node :Variant = spy(instance)
 
 	# verify we have no interactions currently checked this instance
 	verify_no_interactions(spy_node)
@@ -44,8 +44,8 @@ func test_spy_on_Node():
 
 
 func test_spy_source_with_class_name_by_resource_path() -> void:
-	var instance = auto_free(load('res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd').new())
-	var m = spy(instance)
+	var instance :Object = auto_free(load('res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd').new())
+	var m :Variant = spy(instance)
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
 		.contains("class_name DoubledMunderwoodPathingWorld")\
@@ -53,7 +53,7 @@ func test_spy_source_with_class_name_by_resource_path() -> void:
 
 
 func test_spy_source_with_class_name_by_class() -> void:
-	var m = spy(auto_free(Munderwood_Pathing_World.new()))
+	var m :Variant = spy(auto_free(Munderwood_Pathing_World.new()))
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
 		.contains("class_name DoubledMunderwoodPathingWorld")\
@@ -61,16 +61,16 @@ func test_spy_source_with_class_name_by_class() -> void:
 
 
 func test_spy_extends_godot_class() -> void:
-	var m = spy(auto_free(World3D.new()))
+	var m :Variant = spy(auto_free(World3D.new()))
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
 		.contains("class_name DoubledWorld")\
 		.contains("extends World3D")
 
 
-func test_spy_on_custom_class():
+func test_spy_on_custom_class() -> void:
 	var instance :AdvancedTestClass = auto_free(AdvancedTestClass.new())
-	var spy_instance = spy(instance)
+	var spy_instance :Variant = spy(instance)
 
 	# verify we have currently no interactions
 	verify_no_interactions(spy_instance)
@@ -104,25 +104,25 @@ func test_spy_on_custom_class():
 
 # GD-291 https://github.com/MikeSchulze/gdUnit4/issues/291
 func test_spy_class_with_custom_formattings() -> void:
-	var resource = load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomFormattings.gd")
-	var do_spy = spy(auto_free(resource.new("test")))
+	var resource := load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomFormattings.gd")
+	var do_spy :Variant = spy(auto_free(resource.new("test")))
 	do_spy.a1("set_name", "", true)
 	verify(do_spy, 1).a1("set_name", "", true)
 	verify_no_more_interactions(do_spy)
-	assert_failure(func(): verify_no_interactions(do_spy))\
+	assert_failure(func() -> void: verify_no_interactions(do_spy))\
 		.is_failed() \
 		.has_line(112)
 
 
-func test_spy_copied_class_members():
-	var instance = auto_free(load("res://addons/gdUnit4/test/mocker/resources/TestPersion.gd").new("user-x", "street", 56616))
+func test_spy_copied_class_members() -> void:
+	var instance :Object = auto_free(load("res://addons/gdUnit4/test/mocker/resources/TestPersion.gd").new("user-x", "street", 56616))
 	assert_that(instance._name).is_equal("user-x")
 	assert_that(instance._value).is_equal(1024)
 	assert_that(instance._address._street).is_equal("street")
 	assert_that(instance._address._code).is_equal(56616)
 
 	# spy it
-	var spy_instance = spy(instance)
+	var spy_instance :Variant = spy(instance)
 	reset(spy_instance)
 
 	# verify members are inital copied
@@ -136,7 +136,7 @@ func test_spy_copied_class_members():
 	assert_that(spy_instance._value).is_equal(2048)
 
 
-func test_spy_copied_class_members_on_node():
+func test_spy_copied_class_members_on_node() -> void:
 	var node :Node = auto_free(Node.new())
 	# checked a fresh node the name is empty and results into a error when copied at spy
 	# E 0:00:01.518   set_name: Condition "name == """ is true.
@@ -148,7 +148,7 @@ func test_spy_copied_class_members_on_node():
 	assert_that(spy(node).name).is_equal("foo")
 
 
-func test_spy_on_inner_class():
+func test_spy_on_inner_class() -> void:
 	var instance :AdvancedTestClass.AtmosphereData = auto_free(AdvancedTestClass.AtmosphereData.new())
 	var spy_instance :AdvancedTestClass.AtmosphereData = spy(instance)
 
@@ -166,16 +166,16 @@ func test_spy_on_inner_class():
 	verify(spy_instance, 1).set_data(AdvancedTestClass.AtmosphereData.SMOKY, 1.3)
 
 
-func test_spy_on_singleton():
+func test_spy_on_singleton() -> void:
 	await assert_error(func () -> void:
-							var spy_node_ = spy(Input)
+							var spy_node_ :Variant = spy(Input)
 							assert_object(spy_node_).is_null()
 							await await_idle_frame()).is_push_error("Spy on a Singleton is not allowed! 'Input'")
 
 
-func test_example_verify():
+func test_example_verify() -> void:
 	var instance :Node = auto_free(Node.new())
-	var spy_node = spy(instance)
+	var spy_node :Variant = spy(instance)
 
 	# verify we have no interactions currently checked this instance
 	verify_no_interactions(spy_node)
@@ -193,9 +193,9 @@ func test_example_verify():
 	verify(spy_node, 3).set_process(any_bool())
 
 
-func test_verify_fail():
+func test_verify_fail() -> void:
 	var instance :Node = auto_free(Node.new())
-	var spy_node = spy(instance)
+	var spy_node :Variant = spy(instance)
 
 	# interact two time
 	spy_node.set_process(true) # 1 times
@@ -211,13 +211,13 @@ func test_verify_fail():
 		But found interactions on:
 			'set_process(true :bool)'	2 time's""" \
 			.dedent().trim_prefix("\n")
-	assert_failure(func(): verify(spy_node, 1).set_process(true)) \
+	assert_failure(func() -> void: verify(spy_node, 1).set_process(true)) \
 		.is_failed() \
 		.has_line(214) \
 		.has_message(expected_error)
 
 
-func test_verify_func_interaction_wiht_PoolStringArray():
+func test_verify_func_interaction_wiht_PoolStringArray() -> void:
 	var spy_instance :ClassWithPoolStringArrayFunc = spy(ClassWithPoolStringArrayFunc.new())
 
 	spy_instance.set_values(PackedStringArray())
@@ -226,7 +226,7 @@ func test_verify_func_interaction_wiht_PoolStringArray():
 	verify_no_more_interactions(spy_instance)
 
 
-func test_verify_func_interaction_wiht_PackedStringArray_fail():
+func test_verify_func_interaction_wiht_PackedStringArray_fail() -> void:
 	var spy_instance :ClassWithPoolStringArrayFunc = spy(ClassWithPoolStringArrayFunc.new())
 
 	spy_instance.set_values(PackedStringArray())
@@ -238,7 +238,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 		But found interactions on:
 			'set_values([] :PackedStringArray)'	1 time's""" \
 			.dedent().trim_prefix("\n")
-	assert_failure(func(): verify(spy_instance, 1).set_values([])) \
+	assert_failure(func() -> void: verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
 		.has_line(241) \
 		.has_message(expected_error)
@@ -256,15 +256,15 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail():
 			'set_values(["a", "b"] :PackedStringArray)'	1 time's
 			'set_values([1, 2] :Array)'	1 time's""" \
 			.dedent().trim_prefix("\n")
-	assert_failure(func(): verify(spy_instance, 1).set_values([])) \
+	assert_failure(func() -> void: verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
 		.has_line(259) \
 		.has_message(expected_error)
 
 
-func test_reset():
+func test_reset() -> void:
 	var instance :Node = auto_free(Node.new())
-	var spy_node = spy(instance)
+	var spy_node :Variant = spy(instance)
 
 	# call with different arguments
 	spy_node.set_process(false) # 1 times
@@ -280,39 +280,39 @@ func test_reset():
 	verify_no_interactions(spy_node)
 
 
-func test_verify_no_interactions():
+func test_verify_no_interactions() -> void:
 	var instance :Node = auto_free(Node.new())
-	var spy_node = spy(instance)
+	var spy_node :Variant = spy(instance)
 
 	# verify we have no interactions checked this mock
 	verify_no_interactions(spy_node)
 
 
-func test_verify_no_interactions_fails():
+func test_verify_no_interactions_fails() -> void:
 	var instance :Node = auto_free(Node.new())
-	var spy_node = spy(instance)
+	var spy_node :Variant = spy(instance)
 
 	# interact
 	spy_node.set_process(false) # 1 times
 	spy_node.set_process(true) # 1 times
 	spy_node.set_process(true) # 2 times
 
-	var expected_error ="""
+	var expected_error :="""
 		Expecting no more interactions!
 		But found interactions on:
 			'set_process(false :bool)'	1 time's
 			'set_process(true :bool)'	2 time's""" \
 			.dedent().trim_prefix("\n")
 	# it should fail because we have interactions
-	assert_failure(func(): verify_no_interactions(spy_node)) \
+	assert_failure(func() -> void: verify_no_interactions(spy_node)) \
 		.is_failed() \
 		.has_line(307) \
 		.has_message(expected_error)
 
 
-func test_verify_no_more_interactions():
+func test_verify_no_more_interactions() -> void:
 	var instance :Node = auto_free(Node.new())
-	var spy_node = spy(instance)
+	var spy_node :Variant = spy(instance)
 
 	spy_node.is_ancestor_of(instance)
 	spy_node.set_process(false)
@@ -328,9 +328,9 @@ func test_verify_no_more_interactions():
 	verify_no_more_interactions(spy_node)
 
 
-func test_verify_no_more_interactions_but_has():
+func test_verify_no_more_interactions_but_has() -> void:
 	var instance :Node = auto_free(Node.new())
-	var spy_node = spy(instance)
+	var spy_node :Variant = spy(instance)
 
 	spy_node.is_ancestor_of(instance)
 	spy_node.set_process(false)
@@ -352,14 +352,14 @@ func test_verify_no_more_interactions_but_has():
 
 	# now use 'verify_no_more_interactions' to check we have no more interactions checked this mock
 	# but should fail with a collecion of all not validated interactions
-	var expected_error ="""
+	var expected_error :="""
 		Expecting no more interactions!
 		But found interactions on:
 			'is_inside_tree()'	2 time's
 			'find_child(mask :String, true :bool, true :bool)'	1 time's
 			'find_child(mask :String, false :bool, false :bool)'	1 time's""" \
 			.dedent().trim_prefix("\n")
-	assert_failure(func(): verify_no_more_interactions(spy_node)) \
+	assert_failure(func() -> void: verify_no_more_interactions(spy_node)) \
 		.is_failed() \
 		.has_line(362) \
 		.has_message(expected_error)
@@ -370,26 +370,26 @@ class ClassWithStaticFunctions:
 	static func foo() -> void:
 		pass
 
-	static func bar():
+	static func bar() -> void:
 		pass
 
 
-func test_create_spy_static_func_untyped():
-	var instance = spy(ClassWithStaticFunctions.new())
+func test_create_spy_static_func_untyped() -> void:
+	var instance :Variant = spy(ClassWithStaticFunctions.new())
 	assert_object(instance).is_not_null()
 
 
-func test_spy_snake_case_named_class_by_resource_path():
-	var instance_a = load("res://addons/gdUnit4/test/mocker/resources/snake_case.gd").new()
-	var spy_a = spy(instance_a)
+func test_spy_snake_case_named_class_by_resource_path() -> void:
+	var instance_a :Object = load("res://addons/gdUnit4/test/mocker/resources/snake_case.gd").new()
+	var spy_a :Variant = spy(instance_a)
 	assert_object(spy_a).is_not_null()
 
 	spy_a.custom_func()
 	verify(spy_a).custom_func()
 	verify_no_more_interactions(spy_a)
 
-	var instance_b = load("res://addons/gdUnit4/test/mocker/resources/snake_case_class_name.gd").new()
-	var spy_b = spy(instance_b)
+	var instance_b :Object = load("res://addons/gdUnit4/test/mocker/resources/snake_case_class_name.gd").new()
+	var spy_b :Variant = spy(instance_b)
 	assert_object(spy_b).is_not_null()
 
 	spy_b.custom_func()
@@ -397,8 +397,8 @@ func test_spy_snake_case_named_class_by_resource_path():
 	verify_no_more_interactions(spy_b)
 
 
-func test_spy_snake_case_named_class_by_class():
-	var do_spy = spy(snake_case_class_name.new())
+func test_spy_snake_case_named_class_by_class() -> void:
+	var do_spy :Variant = spy(snake_case_class_name.new())
 	assert_object(do_spy).is_not_null()
 
 	do_spy.custom_func()
@@ -406,7 +406,7 @@ func test_spy_snake_case_named_class_by_class():
 	verify_no_more_interactions(do_spy)
 
 	# try checked Godot class
-	var spy_tcp_server = spy(TCPServer.new())
+	var spy_tcp_server :Variant = spy(TCPServer.new())
 	assert_object(spy_tcp_server).is_not_null()
 
 	spy_tcp_server.is_listening()
@@ -421,8 +421,8 @@ const Type = preload("res://addons/gdUnit4/test/resources/issues/gd-166/types.gd
 
 
 func test_spy_preload_class_GD_166() -> void:
-	var instance = auto_free(Issue.new())
-	var spy_instance = spy(instance)
+	var instance :Object = auto_free(Issue.new())
+	var spy_instance :Variant = spy(instance)
 
 	spy_instance.type = Type.FOO
 	verify(spy_instance, 1)._set_type_name(Type.FOO)
@@ -431,17 +431,17 @@ func test_spy_preload_class_GD_166() -> void:
 
 
 var _test_signal_args := Array()
-func _emit_ready(a, b, c = null):
+func _emit_ready(a :String, b :String, c :Variant = null) -> void:
 	_test_signal_args = [a, b, c]
 
 
 # https://github.com/MikeSchulze/gdUnit4/issues/38
-func test_spy_Node_use_real_func_vararg():
+func test_spy_Node_use_real_func_vararg() -> void:
 	# setup
 	var instance := Node.new()
 	instance.connect("ready", _emit_ready)
 	assert_that(_test_signal_args).is_empty()
-	var spy_node = spy(auto_free(instance))
+	var spy_node :Variant = spy(auto_free(instance))
 	assert_that(spy_node).is_not_null()
 
 	# test emit it
@@ -478,8 +478,8 @@ class ClassWithSignal:
 
 
 # https://github.com/MikeSchulze/gdUnit4/issues/14
-func _test_spy_verify_emit_signal():
-	var spy_instance = spy(ClassWithSignal.new())
+func _test_spy_verify_emit_signal() -> void:
+	var spy_instance :Variant = spy(ClassWithSignal.new())
 	assert_that(spy_instance).is_not_null()
 
 	spy_instance.foo(0)
@@ -502,7 +502,7 @@ func _test_spy_verify_emit_signal():
 	verify(spy_instance, 1).emit_signal("test_signal_b", "bb", true)
 
 
-func test_spy_func_with_default_build_in_type():
+func test_spy_func_with_default_build_in_type() -> void:
 	var spy_instance :ClassWithDefaultBuildIntTypes = spy(ClassWithDefaultBuildIntTypes.new())
 	assert_object(spy_instance).is_not_null()
 	# call with default arg
@@ -520,8 +520,8 @@ func test_spy_func_with_default_build_in_type():
 	verify_no_more_interactions(spy_instance)
 
 
-func test_spy_scene_by_resource_path():
-	var spy_scene = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+func test_spy_scene_by_resource_path() -> void:
+	var spy_scene :Variant = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(spy_scene)\
 		.is_not_null()\
 		.is_not_instanceof(PackedScene)\
@@ -531,12 +531,12 @@ func test_spy_scene_by_resource_path():
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
-func test_spy_on_PackedScene():
+func test_spy_on_PackedScene() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
-	var original_script = resource.get_script()
+	var original_script :Script = resource.get_script()
 	assert_object(resource).is_instanceof(PackedScene)
 
-	var spy_scene = spy(resource)
+	var spy_scene :Variant = spy(resource)
 
 	assert_object(spy_scene)\
 		.is_not_null()\
@@ -551,11 +551,11 @@ func test_spy_on_PackedScene():
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
-func test_spy_scene_by_instance():
+func test_spy_scene_by_instance() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var instance :Control = resource.instantiate()
-	var original_script = instance.get_script()
-	var spy_scene = spy(instance)
+	var original_script :Script = instance.get_script()
+	var spy_scene :Variant = spy(instance)
 
 	assert_object(spy_scene)\
 		.is_not_null()\
@@ -570,17 +570,17 @@ func test_spy_scene_by_instance():
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
-func test_spy_scene_by_path_fail_has_no_script_attached():
+func test_spy_scene_by_path_fail_has_no_script_attached() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestSceneWithoutScript.tscn")
 	var instance :Control = auto_free(resource.instantiate())
 
 	# has to fail and return null
-	var spy_scene = spy(instance)
+	var spy_scene :Variant = spy(instance)
 	assert_object(spy_scene).is_null()
 
 
-func test_spy_scene_initalize():
-	var spy_scene = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+func test_spy_scene_initalize() -> void:
+	var spy_scene :Variant = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(spy_scene).is_not_null()
 
 	# Add as child to a scene tree to trigger _ready to initalize all variables
@@ -601,7 +601,7 @@ func test_spy_scene_initalize():
 
 class CustomNode extends Node:
 
-	func _ready():
+	func _ready() -> void:
 		# we call this function to verify the _ready is only once called
 		# this is need to verify `add_child` is calling the original implementation only once
 		only_one_time_call()
@@ -610,8 +610,8 @@ class CustomNode extends Node:
 		pass
 
 
-func test_spy_ready_called_once():
-	var spy_node = spy(auto_free(CustomNode.new()))
+func test_spy_ready_called_once() -> void:
+	var spy_node :Variant = spy(auto_free(CustomNode.new()))
 
 	# Add as child to a scene tree to trigger _ready to initalize all variables
 	add_child(spy_node)
@@ -621,10 +621,10 @@ func test_spy_ready_called_once():
 	verify(spy_node, 1).only_one_time_call()
 
 
-func test_spy_with_enum_in_constructor():
+func test_spy_with_enum_in_constructor() -> void:
 	# this test uses a class with an enum in the constructor
-	var unit = ClassWithEnumConstructor.new(ClassWithEnumConstructor.MyEnumValue.TWO, [])
-	var s  = spy(unit)
+	var unit := ClassWithEnumConstructor.new(ClassWithEnumConstructor.MyEnumValue.TWO, [])
+	var s  :Variant = spy(unit)
 	s.set_value(ClassWithEnumConstructor.MyEnumValue.ONE)
 	# test
 	verify(s, 1).set_value(ClassWithEnumConstructor.MyEnumValue.ONE)
