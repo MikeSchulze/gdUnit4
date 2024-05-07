@@ -1,7 +1,7 @@
 # this test suite simulates long running test cases
 extends GdUnitTestSuite
 
-var _iteration_timer_start = 0
+var _iteration_timer_start := 0
 var _test_values_current :Dictionary
 var _test_values_expected :Dictionary
 
@@ -13,12 +13,12 @@ class TestCaseStatistics:
 	var _test_after_calls :int
 
 
-	func _init(before_calls := 0, after_calls := 0):
+	func _init(before_calls := 0, after_calls := 0) -> void:
 		_test_before_calls = before_calls
 		_test_after_calls = after_calls
 
 
-func before():
+func before() -> void:
 	_test_values_current = {
 		"test_2s" : TestCaseStatistics.new(),
 		"test_multi_yielding" : TestCaseStatistics.new(),
@@ -31,8 +31,8 @@ func before():
 	}
 
 
-func after():
-	for test_case in _test_values_expected.keys():
+func after() -> void:
+	for test_case :String in _test_values_expected.keys():
 		var current := _test_values_current[test_case] as TestCaseStatistics
 		var expected := _test_values_expected[test_case] as TestCaseStatistics
 		assert_int(current._test_before_calls)\
@@ -43,24 +43,24 @@ func after():
 			.is_equal(expected._test_after_calls)
 
 
-func before_test():
-	var current = _test_values_current[__active_test_case] as TestCaseStatistics
+func before_test() -> void:
+	var current := _test_values_current[__active_test_case] as TestCaseStatistics
 	current._test_before_calls +=1
 
 
-func after_test():
-	var current = _test_values_current[__active_test_case] as TestCaseStatistics
+func after_test() -> void:
+	var current := _test_values_current[__active_test_case] as TestCaseStatistics
 	current._test_after_calls +=1
 
 
-func test_2s():
+func test_2s() -> void:
 	var timer_start := Time.get_ticks_msec()
 	await await_millis(2000)
 	# subtract an offset of 100ms because the time is not accurate
 	assert_int(Time.get_ticks_msec()-timer_start).is_between(2*SECOND-100, 2*SECOND+100)
 
 
-func test_multi_yielding():
+func test_multi_yielding() -> void:
 	var timer_start := Time.get_ticks_msec()
 	prints("test_yielding")
 	await get_tree().process_frame
@@ -76,7 +76,7 @@ func test_multi_yielding():
 	assert_int(Time.get_ticks_msec()-timer_start).is_greater_equal(4*(SECOND-50))
 
 
-func test_multi_yielding_with_fuzzer(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations = 5):
+func test_multi_yielding_with_fuzzer(fuzzer := Fuzzers.rangei(0, 1000), fuzzer_iterations := 5) -> void:
 	if fuzzer.iteration_index() > 5:
 		fail("Should only called 5 times")
 	if fuzzer.iteration_index() == 1:

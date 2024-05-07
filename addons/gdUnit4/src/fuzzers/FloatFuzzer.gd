@@ -9,5 +9,5 @@ func _init(from: float, to: float) -> void:
 	_from = from
 	_to = to
 
-func next_value() -> Variant:
+func next_value() -> float:
 	return randf_range(_from, _to)

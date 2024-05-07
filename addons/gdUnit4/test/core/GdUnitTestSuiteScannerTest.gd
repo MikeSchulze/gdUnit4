@@ -7,12 +7,12 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/core/GdUnitTestSuiteScanner.gd'
 
-func before_test():
+func before_test() -> void:
 	ProjectSettings.set_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
 	clean_temp_dir()
 
 
-func after():
+func after() -> void:
 	clean_temp_dir()
 
 
@@ -35,7 +35,7 @@ func test_resolve_test_suite_path_plugins() -> void:
 	assert_str(resolve_path("res://addons/plugin_a/src/foo.gd")).is_equal("res://addons/plugin_a/_test_/foo_test.gd")
 
 
-func test_resolve_test_suite_path__no_test_root():
+func test_resolve_test_suite_path__no_test_root() -> void:
 	# from a project path
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/models/events/ModelChangedEvent.gd", ""))\
 		.is_equal("res://project/src/models/events/ModelChangedEventTest.gd")
@@ -47,7 +47,7 @@ func test_resolve_test_suite_path__no_test_root():
 		.is_equal("user://project/src/models/events/ModelChangedEventTest.gd")
 
 
-func test_resolve_test_suite_path__path_contains_src_folder():
+func test_resolve_test_suite_path__path_contains_src_folder() -> void:
 	# from a project path
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/src/models/events/ModelChangedEvent.gd"))\
 		.is_equal("res://project/test/models/events/ModelChangedEventTest.gd")
@@ -65,7 +65,7 @@ func test_resolve_test_suite_path__path_contains_src_folder():
 		.is_equal("user://project/custom_test/models/events/ModelChangedEventTest.gd")
 
 
-func test_resolve_test_suite_path__path_not_contains_src_folder():
+func test_resolve_test_suite_path__path_not_contains_src_folder() -> void:
 	# from a project path
 	assert_str(GdUnitTestSuiteScanner.resolve_test_suite_path("res://project/models/events/ModelChangedEvent.gd"))\
 		.is_equal("res://test/project/models/events/ModelChangedEventTest.gd")
@@ -83,20 +83,20 @@ func test_resolve_test_suite_path__path_not_contains_src_folder():
 		.is_equal("user://custom_test/project/models/events/ModelChangedEventTest.gd")
 
 
-func test_test_suite_exists():
+func test_test_suite_exists() -> void:
 	var path_exists := "res://addons/gdUnit4/test/resources/core/GeneratedPersonTest.gd"
 	var path_not_exists := "res://addons/gdUnit4/test/resources/core/FamilyTest.gd"
 	assert_that(GdUnitTestSuiteScanner.test_suite_exists(path_exists)).is_true()
 	assert_that(GdUnitTestSuiteScanner.test_suite_exists(path_not_exists)).is_false()
 
 
-func test_test_case_exists():
+func test_test_case_exists() -> void:
 	var test_suite_path := "res://addons/gdUnit4/test/resources/core/GeneratedPersonTest.gd"
 	assert_that(GdUnitTestSuiteScanner.test_case_exists(test_suite_path, "name")).is_true()
 	assert_that(GdUnitTestSuiteScanner.test_case_exists(test_suite_path, "last_name")).is_false()
 
 
-func test_create_test_suite_pascal_case_path():
+func test_create_test_suite_pascal_case_path() -> void:
 	var temp_dir := create_temp_dir("TestSuiteScannerTest")
 	# checked source with class_name is set
 	var source_path := "res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithClassName.gd"
@@ -138,7 +138,7 @@ func test_create_test_suite_pascal_case_path():
 			""])
 
 
-func test_create_test_suite_snake_case_path():
+func test_create_test_suite_snake_case_path() -> void:
 	var temp_dir := create_temp_dir("TestSuiteScannerTest")
 	# checked source with class_name is set
 	var source_path :="res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_with_class_name.gd"
@@ -180,12 +180,12 @@ func test_create_test_suite_snake_case_path():
 			""])
 
 
-func test_create_test_case():
+func test_create_test_case() -> void:
 	# store test class checked temp dir
 	var tmp_path := create_temp_dir("TestSuiteScannerTest")
 	var source_path := "res://addons/gdUnit4/test/resources/core/Person.gd"
 	# generate new test suite with test 'test_last_name()'
-	var test_suite_path = tmp_path + "/test/PersonTest.gd"
+	var test_suite_path := tmp_path + "/test/PersonTest.gd"
 	var result := GdUnitTestSuiteScanner.create_test_case(test_suite_path, "last_name", source_path)
 	assert_that(result.is_success()).is_true()
 	var info :Dictionary = result.value()
@@ -280,7 +280,7 @@ func test_scan_by_inheritance_class_name() -> void:
 
 	assert_array(test_suites).has_size(3)
 	# sort by names
-	test_suites.sort_custom(func by_name(a, b): return a.get_name() <= b.get_name())
+	test_suites.sort_custom(func by_name(a :GdUnitTestSuite, b :GdUnitTestSuite) -> bool: return a.get_name().length() <= b.get_name().length())
 	assert_array(test_suites).extract("get_name")\
 		.contains_exactly(["BaseTest", "ExtendedTest", "ExtendsExtendedTest"])
 	assert_array(test_suites).extract("get_script.get_path")\

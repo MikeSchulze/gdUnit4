@@ -2,11 +2,11 @@ class_name ExtendedTest
 extends BaseTest
 
 
-func before_test():
+func before_test() -> void:
 	pass
 
 
-func after_test():
+func after_test() -> void:
 	pass
 
 

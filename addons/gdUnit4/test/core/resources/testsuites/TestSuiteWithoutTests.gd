@@ -1,9 +1,9 @@
 extends GdUnitTestSuite
 
 
-func before():
+func before() -> void:
 	pass
 
 
-func foo():
+func foo() -> void:
 	pass

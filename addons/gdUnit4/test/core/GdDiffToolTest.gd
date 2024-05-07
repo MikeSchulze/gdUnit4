@@ -8,14 +8,14 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/core/GdDiffTool.gd'
 
 
-func test_string_diff_empty():
+func test_string_diff_empty() -> void:
 	var diffs := GdDiffTool.string_diff("", "")
 	assert_array(diffs).has_size(2)
 	assert_array(diffs[0]).is_empty()
 	assert_array(diffs[1]).is_empty()
 
 
-func test_string_diff_equals():
+func test_string_diff_equals() -> void:
 	var diffs := GdDiffTool.string_diff("Abc", "Abc")
 	var expected_l_diff := "Abc".to_ascii_buffer()
 	var expected_r_diff := "Abc".to_ascii_buffer()
@@ -25,7 +25,7 @@ func test_string_diff_equals():
 	assert_array(diffs[1]).contains_exactly(expected_r_diff)
 
 
-func test_string_diff():
+func test_string_diff() -> void:
 	# tests the result of string diff function like assert_str("Abc").is_equal("abc")
 	var diffs := GdDiffTool.string_diff("Abc", "abc")
 	var chars := "Aabc".to_ascii_buffer()
@@ -42,7 +42,7 @@ func test_string_diff():
 
 
 @warning_ignore("unused_parameter")
-func test_string_diff_large_value(fuzzer := Fuzzers.rand_str(1000, 4000), fuzzer_iterations = 10):
+func test_string_diff_large_value(fuzzer := Fuzzers.rand_str(1000, 4000), fuzzer_iterations := 10) -> void:
 	# test diff with large values not crashes the API GD-100
 	var value :String = fuzzer.next_value()
 	GdDiffTool.string_diff(value, value)

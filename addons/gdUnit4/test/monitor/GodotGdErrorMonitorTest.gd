@@ -22,7 +22,7 @@ var _save_is_report_push_errors :bool
 var _save_is_report_script_errors :bool
 
 
-func before():
+func before() -> void:
 	_save_is_report_push_errors = GdUnitSettings.is_report_push_errors()
 	_save_is_report_script_errors = GdUnitSettings.is_report_script_errors()
 	# disable default error reporting for testing
@@ -30,7 +30,7 @@ func before():
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_SCRIPT_ERRORS, false)
 
 
-func after():
+func after() -> void:
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, _save_is_report_push_errors)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_SCRIPT_ERRORS, _save_is_report_script_errors)
 

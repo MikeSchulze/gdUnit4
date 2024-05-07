@@ -4,23 +4,23 @@ extends GdUnitTestSuite
 const SECOND :int = 1000
 const MINUTE :int = SECOND*60
 
-var _before_arg
-var _test_arg
+var _before_arg :String
+var _test_arg :String
 
 
-func before():
+func before() -> void:
 	# use some variables to test clone test suite works as expected
 	_before_arg = "---before---"
 
 
-func before_test():
+func before_test() -> void:
 	# set failing test to success if failed by timeout
 	discard_error_interupted_by_timeout()
 	_test_arg = "abc"
 
 
 # without custom timeout should execute the complete test
-func test_timeout_after_test_completes():
+func test_timeout_after_test_completes() -> void:
 	assert_str(_before_arg).is_equal("---before---")
 	var counter := 0
 	await await_millis(1000)
@@ -41,7 +41,7 @@ func test_timeout_after_test_completes():
 
 # set test timeout to 2s
 @warning_ignore("unused_parameter")
-func test_timeout_2s(timeout=2000):
+func test_timeout_2s(timeout:=2000) -> void:
 	assert_str(_before_arg).is_equal("---before---")
 	prints("B", "0s")
 	await await_millis(1000)
@@ -57,7 +57,7 @@ func test_timeout_2s(timeout=2000):
 
 # set test timeout to 4s
 @warning_ignore("unused_parameter")
-func test_timeout_4s(timeout=4000):
+func test_timeout_4s(timeout:=4000) -> void:
 	assert_str(_before_arg).is_equal("---before---")
 	prints("C", "0s")
 	await await_millis(1000)
@@ -74,7 +74,7 @@ func test_timeout_4s(timeout=4000):
 
 
 @warning_ignore("unused_parameter")
-func test_timeout_single_yield_wait(timeout=3000):
+func test_timeout_single_yield_wait(timeout:=3000) -> void:
 	assert_str(_before_arg).is_equal("---before---")
 	prints("D", "0s")
 	await await_millis(6000)
@@ -85,7 +85,7 @@ func test_timeout_single_yield_wait(timeout=3000):
 
 
 @warning_ignore("unused_parameter")
-func test_timeout_long_running_test_abort(timeout=4000):
+func test_timeout_long_running_test_abort(timeout:=4000) -> void:
 	assert_str(_before_arg).is_equal("---before---")
 	prints("E", "0s")
 	var start_time := Time.get_ticks_msec()
@@ -94,7 +94,7 @@ func test_timeout_long_running_test_abort(timeout=4000):
 	# simulate long running function
 	while true:
 		var elapsed_time := Time.get_ticks_msec() - start_time
-		var sec_time = Time.get_ticks_msec() - sec_start_time
+		var sec_time := Time.get_ticks_msec() - sec_start_time
 
 		if sec_time > 1000:
 			sec_start_time = Time.get_ticks_msec()
@@ -113,9 +113,9 @@ func test_timeout_long_running_test_abort(timeout=4000):
 
 
 @warning_ignore("unused_parameter", "unused_variable")
-func test_timeout_fuzzer(fuzzer := Fuzzers.rangei(-23, 22), timeout=2000):
+func test_timeout_fuzzer(fuzzer := Fuzzers.rangei(-23, 22), timeout:=2000) -> void:
 	discard_error_interupted_by_timeout()
-	var value = fuzzer.next_value()
+	var value :int = fuzzer.next_value()
 	# wait each iteration 200ms
 	await await_millis(200)
 	# we expects the test is interupped after 10 iterations because each test takes 200ms

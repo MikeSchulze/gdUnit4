@@ -1,7 +1,7 @@
 extends GdUnitTestSuite
 
 
-func test_testsuite_loading_performance():
+func test_testsuite_loading_performance() -> void:
 	var time := LocalTime.now()
 	var reload_counter := 100
 	for i in range(1, reload_counter):

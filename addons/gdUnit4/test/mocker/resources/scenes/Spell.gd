@@ -1,4 +1,4 @@
-class_name Spell 
+class_name Spell
 extends Node
 
 signal spell_explode
@@ -14,14 +14,14 @@ var _spell_pos :Vector3 = Vector3.ZERO
 @warning_ignore("unused_private_class_variable")
 var _debug_process_counted := 0
 
-func _ready():
+func _ready() -> void:
 	set_name("Spell")
 
 # only comment in for debugging reasons
 #func _notification(what):
 #	prints("Spell", GdObjects.notification_as_string(what))
 
-func _process(delta :float):
+func _process(delta :float) -> void:
 	# added pseudo yield to check `simulate_frames` works wih custom yielding
 	await get_tree().process_frame
 	_spell_live_time += delta * 1000
@@ -32,7 +32,7 @@ func _process(delta :float):
 
 func move(delta :float) -> void:
 	#await get_tree().create_timer(0.1).timeout
-	_spell_pos.x += delta 
+	_spell_pos.x += delta
 
 func explode() -> void:
 	emit_signal("spell_explode", self)

@@ -9,7 +9,7 @@ const __source = 'res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.gd'
 
 
 func test_show() -> void:
-	var template = spy("res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.tscn")
+	var template :Variant = spy("res://addons/gdUnit4/src/ui/templates/TestSuiteTemplate.tscn")
 	scene_runner(template)
 
 	# verify the followup functions are called by _ready()

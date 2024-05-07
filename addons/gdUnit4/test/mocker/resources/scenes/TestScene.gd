@@ -1,12 +1,12 @@
 extends Control
 
-signal panel_color_change(box, color)
+signal panel_color_change(box :ColorRect, color :Color)
 
 const COLOR_CYCLE := [Color.ROYAL_BLUE, Color.CHARTREUSE, Color.YELLOW_GREEN]
 
-@onready var _box1 = $VBoxContainer/PanelContainer/HBoxContainer/Panel1
-@onready var _box2 = $VBoxContainer/PanelContainer/HBoxContainer/Panel2
-@onready var _box3 = $VBoxContainer/PanelContainer/HBoxContainer/Panel3
+@onready var _box1 := $VBoxContainer/PanelContainer/HBoxContainer/Panel1
+@onready var _box2 := $VBoxContainer/PanelContainer/HBoxContainer/Panel2
+@onready var _box3 := $VBoxContainer/PanelContainer/HBoxContainer/Panel3
 
 @warning_ignore("unused_private_class_variable")
 @export var _initial_color := Color.RED
@@ -14,7 +14,7 @@ const COLOR_CYCLE := [Color.ROYAL_BLUE, Color.CHARTREUSE, Color.YELLOW_GREEN]
 @warning_ignore("unused_private_class_variable")
 var _nullable :Object
 
-func _ready():
+func _ready() -> void:
 	connect("panel_color_change", _on_panel_color_changed)
 	# we call this function to verify the _ready is only once called
 	# this is need to verify `add_child` is calling the original implementation only once
@@ -29,7 +29,7 @@ func only_one_time_call() -> void:
 #	prints("TestScene", GdObjects.notification_as_string(what))
 
 
-func _on_test_pressed(button_id :int):
+func _on_test_pressed(button_id :int) -> void:
 	var box :ColorRect
 	match button_id:
 		1: box = _box1
@@ -42,7 +42,7 @@ func _on_test_pressed(button_id :int):
 	emit_signal("panel_color_change", box, Color.GRAY)
 
 
-func _on_panel_color_changed(box :ColorRect, color :Color):
+func _on_panel_color_changed(box :ColorRect, color :Color) -> void:
 	box.color = color
 
 
@@ -55,7 +55,7 @@ func create_timer(timeout :float) -> Timer:
 	return timer
 
 
-func _on_timeout(timer :Timer):
+func _on_timeout(timer :Timer) -> void:
 	remove_child(timer)
 	timer.queue_free()
 
@@ -74,7 +74,7 @@ func color_cycle() -> String:
 	return "black"
 
 
-func start_color_cycle():
+func start_color_cycle() -> void:
 	color_cycle()
 
 
@@ -95,7 +95,7 @@ func _destroy_spell(spell :Spell) -> void:
 	spell.queue_free()
 
 
-func _input(event):
+func _input(event :InputEvent) -> void:
 	if event.is_action_released("ui_accept"):
 		add_child(create_spell())
 

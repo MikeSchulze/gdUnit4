@@ -2,7 +2,7 @@ class_name TestExternalFuzzer
 extends Fuzzer
 
 
-func _init():
+func _init() -> void:
 	pass
 
 

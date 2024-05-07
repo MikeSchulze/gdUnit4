@@ -2,19 +2,19 @@ class_name BaseTest
 extends GdUnitTestSuite
 
 
-func before():
+func before() -> void:
 	pass
 
 
-func after():
+func after() -> void:
 	pass
 
 
-func before_test():
+func before_test() -> void:
 	pass
 
 
-func after_test():
+func after_test() -> void:
 	pass
 
 

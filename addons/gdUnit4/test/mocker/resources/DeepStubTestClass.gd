@@ -1,5 +1,5 @@
 class_name DeepStubTestClass
-	
+
 class XShape:
 	var _shape : Shape3D = BoxShape3D.new()
 
@@ -8,9 +8,9 @@ class XShape:
 
 
 var _shape :XShape
-	
-func add(shape :XShape):
+
+func add(shape :XShape) -> void:
 	_shape = shape
 
-func validate() -> bool: 
+func validate() -> bool:
 	return _shape.get_shape().get_margin() == 0.0

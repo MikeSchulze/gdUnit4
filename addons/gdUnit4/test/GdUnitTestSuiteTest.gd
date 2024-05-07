@@ -9,16 +9,16 @@ const GdUnitAssertImpl = preload("res://addons/gdUnit4/src/asserts/GdUnitAssertI
 var _events :Array[GdUnitEvent] = []
 
 
-func collect_report(event :GdUnitEvent):
+func collect_report(event :GdUnitEvent) -> void:
 	_events.push_back(event)
 
 
-func before():
+func before() -> void:
 	# register to receive test reports
 	GdUnitSignals.instance().gdunit_event.connect(collect_report)
 
 
-func after():
+func after() -> void:
 	# verify the test case `test_unknown_argument_in_test_case` was skipped
 	assert_array(_events).extractv(extr("type"), extr("is_skipped"), extr("test_name"))\
 		.contains([tuple(GdUnitEvent.TESTCASE_AFTER, true, "test_unknown_argument_in_test_case")])
@@ -44,5 +44,5 @@ func test_assert_that_types() -> void:
 	assert_object(assert_that(Plane.PLANE_XY)).is_instanceof(GdUnitAssertImpl)
 
 
-func test_unknown_argument_in_test_case(_invalid_arg) -> void:
+func test_unknown_argument_in_test_case(_invalid_arg :int) -> void:
 	fail("This test case should be not executed, it must be skipped.")

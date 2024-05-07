@@ -125,7 +125,7 @@ func test_simulate_scene_inteaction_by_press_enter(timeout := 2000) -> void:
 
 # mock on a runner and spy on created spell
 func test_simulate_scene_inteaction_in_combination_with_spy() -> void:
-	var spy_ := spy(load_test_scene())
+	var spy_ :Variant = spy(load_test_scene())
 	# create a runner runner
 	var runner := scene_runner(spy_)
 
@@ -139,7 +139,7 @@ func test_simulate_scene_inteaction_in_combination_with_spy() -> void:
 
 
 func test_simulate_scene_interact_with_buttons() -> void:
-	var spyed_scene := spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
+	var spyed_scene :Variant = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var runner := scene_runner(spyed_scene)
 	# test button 1 interaction
 	await await_millis(1000)
@@ -338,7 +338,7 @@ func test_runner_by_scene_instance() -> void:
 
 
 func test_mouse_drag_and_drop() -> void:
-	var spy_scene := spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
+	var spy_scene :Variant = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
 	var runner := scene_runner(spy_scene)
 
 	var slot_left :TextureRect = $"/root/DragAndDropScene/left/TextureRect"
