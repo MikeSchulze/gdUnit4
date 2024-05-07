@@ -2,28 +2,30 @@
 class_name GdUnitTcpServer
 extends Node
 
-signal client_connected(client_id)
-signal client_disconnected(client_id)
-signal rpc_data(rpc_data)
+signal client_connected(client_id :int)
+signal client_disconnected(client_id :int)
+signal rpc_data(rpc_data :RPC)
 
 var _server :TCPServer
 
 
 class TcpConnection extends Node:
 	var _id :int
+	# we do use untyped here because we using a mock for testing and the static type is break the mock
+	@warning_ignore("untyped_declaration")
 	var _stream
 	var _readBuffer :String = ""
 
 
-	func _init(p_server):
-		#assert(p_server is TCPServer)
+	func _init(p_server :Variant) -> void:
+		assert(p_server is TCPServer)
 		_stream = p_server.take_connection()
 		_stream.set_big_endian(true)
 		_id = _stream.get_instance_id()
 		rpc_send(RPCClientConnect.new().with_id(_id))
 
 
-	func _ready():
+	func _ready() -> void:
 		server().client_connected.emit(_id)
 
 
@@ -46,16 +48,16 @@ class TcpConnection extends Node:
 		_stream.put_var(p_rpc.serialize(), true)
 
 
-	func _process(_delta):
+	func _process(_delta :float) -> void:
 		if _stream.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 			return
 		receive_packages()
 
 
 	func receive_packages() -> void:
-		var available_bytes = _stream.get_available_bytes()
+		var available_bytes :int = _stream.get_available_bytes()
 		if available_bytes > 0:
-			var partial_data = _stream.get_partial_data(available_bytes)
+			var partial_data :Array = _stream.get_partial_data(available_bytes)
 			# Check for read error.
 			if partial_data[0] != OK:
 				push_error("Error getting data from stream: %s " % partial_data[0])
@@ -63,7 +65,7 @@ class TcpConnection extends Node:
 			else:
 				var received_data := partial_data[1] as PackedByteArray
 				for package in _read_next_data_packages(received_data):
-					var rpc_ = RPC.deserialize(package)
+					var rpc_ := RPC.deserialize(package)
 					if rpc_ is RPCClientDisconnect:
 						close()
 					server().rpc_data.emit(rpc_)
@@ -92,13 +94,13 @@ class TcpConnection extends Node:
 		pass
 
 
-func _ready():
+func _ready() -> void:
 	_server = TCPServer.new()
-	client_connected.connect(Callable(self, "_on_client_connected"))
-	client_disconnected.connect(Callable(self, "_on_client_disconnected"))
+	client_connected.connect(_on_client_connected)
+	client_disconnected.connect(_on_client_disconnected)
 
 
-func _notification(what):
+func _notification(what :int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		stop()
 
@@ -137,7 +139,7 @@ func disconnect_client(client_id :int) -> void:
 			connection.close()
 
 
-func _process(_delta):
+func _process(_delta :float) -> void:
 	if not _server.is_listening():
 		return
 	# check if connection is ready to be used
@@ -145,11 +147,11 @@ func _process(_delta):
 		add_child(TcpConnection.new(_server))
 
 
-func _on_client_connected(client_id :int):
+func _on_client_connected(client_id :int) -> void:
 	console("Client connected %d" % client_id)
 
 
-func _on_client_disconnected(client_id :int):
+func _on_client_disconnected(client_id :int) -> void:
 	console("Client disconnected %d" % client_id)
 	for connection in get_children():
 		if connection is TcpConnection and connection.id() == client_id:

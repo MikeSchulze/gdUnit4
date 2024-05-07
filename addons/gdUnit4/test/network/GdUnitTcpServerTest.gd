@@ -11,15 +11,15 @@ const DLM := GdUnitServerConstants.JSON_RESPONSE_DELIMITER
 
 
 func test_read_next_data_packages() -> void:
-	var server = mock(TCPServer)
-	var stream = mock(StreamPeerTCP)
+	var server : Variant = mock(TCPServer)
+	var stream : Variant = mock(StreamPeerTCP)
 
 	do_return(stream).on(server).take_connection()
 
 	var connection :GdUnitTcpServer.TcpConnection = auto_free(GdUnitTcpServer.TcpConnection.new(server))
 
 	# single package
-	var data = DLM + "aaaa" + DLM
+	var data := DLM + "aaaa" + DLM
 	var data_packages := connection._read_next_data_packages(data.to_utf8_buffer())
 	assert_array(data_packages).contains_exactly(["aaaa"])
 
@@ -40,8 +40,8 @@ func test_read_next_data_packages() -> void:
 
 
 func test_receive_packages() -> void:
-	var server = mock(TCPServer)
-	var stream = mock(StreamPeerTCP)
+	var server :Variant = mock(TCPServer)
+	var stream :Variant = mock(StreamPeerTCP)
 
 	do_return(stream).on(server).take_connection()
 
@@ -53,7 +53,7 @@ func test_receive_packages() -> void:
 
 	# mock send RPCMessage
 	var data := DLM + RPCMessage.of("Test Message").serialize() + DLM
-	var package_data = [0, data.to_ascii_buffer()]
+	var package_data := [0, data.to_ascii_buffer()]
 	do_return(data.length()).on(stream).get_available_bytes()
 	do_return(package_data).on(stream).get_partial_data(data.length())
 
@@ -70,7 +70,7 @@ class TestGdUnitSignalCollector:
 	var _emitter :Variant
 
 
-	func _init(emitter :Variant):
+	func _init(emitter :Variant) -> void:
 		_emitter = emitter
 		_signalCollector = GdUnitSignalCollector.new()
 		_signalCollector.register_emitter(emitter)
@@ -80,7 +80,7 @@ class TestGdUnitSignalCollector:
 		return _signalCollector.match(_emitter, signal_name, expected_args)
 
 
-	func _notification(what):
+	func _notification(what :int) -> void:
 		if what == NOTIFICATION_PREDELETE:
 			_signalCollector.unregister_emitter(_emitter)
 

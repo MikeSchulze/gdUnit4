@@ -1,10 +1,9 @@
 class_name GdUnitTcpClient
 extends Node
 
-signal connection_succeeded(message)
-signal connection_failed(message)
+signal connection_succeeded(message :String)
+signal connection_failed(message :String)
 
-var _timer :Timer
 
 var _host :String
 var _port :int
@@ -13,14 +12,10 @@ var _connected :bool
 var _stream :StreamPeerTCP
 
 
-func _ready():
+func _ready() -> void:
 	_connected = false
 	_stream = StreamPeerTCP.new()
 	_stream.set_big_endian(true)
-	_timer = Timer.new()
-	add_child(_timer)
-	_timer.set_one_shot(true)
-	_timer.connect('timeout', Callable(self, '_connecting_timeout'))
 
 
 func stop() -> void:
@@ -47,7 +42,7 @@ func start(host :String, port :int) -> GdUnitResult:
 	return GdUnitResult.success("GdUnit3: Client connected checked port %d" % port)
 
 
-func _process(_delta):
+func _process(_delta :float) -> void:
 	match _stream.get_status():
 		StreamPeerTCP.STATUS_NONE:
 			return
@@ -66,11 +61,11 @@ func _process(_delta):
 			set_process(true)
 			_stream.disconnect_from_host()
 			console("connection failed")
-			emit_signal("connection_failed", "Connect to TCP Server %s:%d faild!" % [_host, _port])
+			connection_failed.emit("Connect to TCP Server %s:%d faild!" % [_host, _port])
 
 		StreamPeerTCP.STATUS_CONNECTED:
 			if not _connected:
-				var rpc_ = null
+				var rpc_ :RPC = null
 				set_process(false)
 				while rpc_ == null:
 					await get_tree().create_timer(0.500).timeout
@@ -78,14 +73,14 @@ func _process(_delta):
 				set_process(true)
 				_client_id = rpc_.client_id()
 				console("Connected to Server: %d" % _client_id)
-				emit_signal("connection_succeeded", "Connect to TCP Server %s:%d success." % [_host, _port])
+				connection_succeeded.emit("Connect to TCP Server %s:%d success." % [_host, _port])
 				_connected = true
 			process_rpc()
 
 		StreamPeerTCP.STATUS_ERROR:
 			console("connection failed")
 			_stream.disconnect_from_host()
-			emit_signal("connection_failed", "Connect to TCP Server %s:%d faild!" % [_host, _port])
+			connection_failed.emit("Connect to TCP Server %s:%d faild!" % [_host, _port])
 			return
 
 
@@ -95,7 +90,7 @@ func is_client_connected() -> bool:
 
 func process_rpc() -> void:
 	if _stream.get_available_bytes() > 0:
-		var rpc_ = rpc_receive()
+		var rpc_ := rpc_receive()
 		if rpc_ is RPCClientDisconnect:
 			stop()
 
@@ -129,9 +124,9 @@ func console(message :String) -> void:
 	pass
 
 
-func _on_connection_failed(message :String):
+func _on_connection_failed(message :String) -> void:
 	console("connection faild: " + message)
 
 
-func _on_connection_succeeded(message :String):
+func _on_connection_succeeded(message :String) -> void:
 	console("connected: " + message)
