@@ -10,17 +10,17 @@ const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
 class TestEmitter extends Node:
-	signal test_signal_counted(value)
+	signal test_signal_counted(value :int)
 	signal test_signal(value :int)
 	signal test_signal_unused()
 
 	var _trigger_count :int
 	var _count := 0
 
-	func _init(trigger_count := 10):
+	func _init(trigger_count := 10) -> void:
 		_trigger_count = trigger_count
 
-	func _process(_delta):
+	func _process(_delta :float) -> void:
 		if _count >= _trigger_count:
 			test_signal_counted.emit(_count)
 
@@ -36,7 +36,7 @@ class TestEmitter extends Node:
 var signal_emitter :TestEmitter
 
 
-func before_test():
+func before_test() -> void:
 	signal_emitter = auto_free(TestEmitter.new())
 	add_child(signal_emitter)
 
@@ -48,16 +48,16 @@ func is_skip_fail_await() -> bool:
 
 func test_invalid_arg() -> void:
 	(
-		await assert_failure_await(func(): await assert_signal(null).wait_until(50).is_emitted("test_signal_counted"))
+		await assert_failure_await(func() -> void: await assert_signal(null).wait_until(50).is_emitted("test_signal_counted"))
 	).has_message("Can't wait for signal checked a NULL object.")
 	(
-		await assert_failure_await(func(): await assert_signal(null).wait_until(50).is_not_emitted("test_signal_counted"))
+		await assert_failure_await(func() -> void: await assert_signal(null).wait_until(50).is_not_emitted("test_signal_counted"))
 	).has_message("Can't wait for signal checked a NULL object.")
 
 
 func test_unknown_signal() -> void:
 	(
-		await assert_failure_await(func(): await assert_signal(signal_emitter).wait_until(50).is_emitted("unknown"))
+		await assert_failure_await(func() -> void: await assert_signal(signal_emitter).wait_until(50).is_emitted("unknown"))
 	).has_message("Can't wait for non-existion signal 'unknown' checked object 'Node'.")
 
 
@@ -70,7 +70,7 @@ func test_signal_is_emitted_without_args() -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_signal(signal_emitter).wait_until(500).is_emitted("test_signal_unused"))
+		await assert_failure_await(func() -> void: await assert_signal(signal_emitter).wait_until(500).is_emitted("test_signal_unused"))
 	).has_message("Expecting emit signal: 'test_signal_unused()' but timed out after 500ms")
 
 
@@ -81,7 +81,7 @@ func test_signal_is_emitted_with_args() -> void:
 	if is_skip_fail_await():
 		return
 	(
-		await assert_failure_await(func(): await assert_signal(signal_emitter).wait_until(50).is_emitted("test_signal_counted", [500]))
+		await assert_failure_await(func() -> void: await assert_signal(signal_emitter).wait_until(50).is_emitted("test_signal_counted", [500]))
 	).has_message("Expecting emit signal: 'test_signal_counted([500])' but timed out after 50ms")
 
 
@@ -96,7 +96,7 @@ func test_signal_is_emitted_use_argument_matcher() -> void:
 	# should fail because the matcher uses the wrong type
 	signal_emitter.reset_trigger()
 	(
-		await assert_failure_await( func(): await assert_signal(signal_emitter).wait_until(50).is_emitted("test_signal_counted", [any_string()]))
+		await assert_failure_await( func() -> void: await assert_signal(signal_emitter).wait_until(50).is_emitted("test_signal_counted", [any_string()]))
 	).has_message("Expecting emit signal: 'test_signal_counted([any_string()])' but timed out after 50ms")
 
 
@@ -110,7 +110,7 @@ func test_signal_is_not_emitted() -> void:
 		return
 	# until the next 500ms the signal is emitted and ends in a failure
 	(
-		await assert_failure_await(func(): await assert_signal(signal_emitter).wait_until(1000).is_not_emitted("test_signal_counted", [50]))
+		await assert_failure_await(func() -> void: await assert_signal(signal_emitter).wait_until(1000).is_not_emitted("test_signal_counted", [50]))
 	).starts_with_message("Expecting do not emit signal: 'test_signal_counted([50])' but is emitted after")
 
 
@@ -119,14 +119,14 @@ func test_override_failure_message() -> void:
 		return
 
 	(
-		await assert_failure_await(func(): await assert_signal(signal_emitter) \
+		await assert_failure_await(func() -> void: await assert_signal(signal_emitter) \
 		.override_failure_message("Custom failure message")\
 		.wait_until(100)\
 		.is_emitted("test_signal_unused"))
 	).has_message("Custom failure message")
 
 
-func test_node_changed_emitting_signals():
+func test_node_changed_emitting_signals() -> void:
 	var node :Node2D = auto_free(Node2D.new())
 	add_child(node)
 
@@ -139,7 +139,7 @@ func test_node_changed_emitting_signals():
 	#node.visible = true;
 	if not is_skip_fail_await():
 		(
-			await assert_failure_await(func(): await assert_signal(node).wait_until(200).is_emitted("visibility_changed"))
+			await assert_failure_await(func() -> void: await assert_signal(node).wait_until(200).is_emitted("visibility_changed"))
 		).has_message("Expecting emit signal: 'visibility_changed()' but timed out after 200ms")
 
 	node.show()
@@ -160,7 +160,7 @@ func test_is_signal_exists() -> void:
 		return
 
 	(
-		await assert_failure_await(func(): assert_signal(node).is_signal_exists("not_existing_signal"))
+		await assert_failure_await(func() -> void: assert_signal(node).is_signal_exists("not_existing_signal"))
 	).has_message("The signal 'not_existing_signal' not exists checked object 'Node2D'.")
 
 
@@ -217,7 +217,7 @@ class ExampleResource extends Resource:
 
 
 func test_monitor_signals_on_resource_set() -> void:
-	var sut = ExampleResource.new()
+	var sut := ExampleResource.new()
 	var emitter := monitor_signals(sut)
 
 	sut.change_title("Some title")

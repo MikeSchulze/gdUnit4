@@ -14,7 +14,7 @@ var option_x := CmdOption.new("-x", "some help text x", "some description x")
 var _cmd_options :CmdOptions
 
 
-func before():
+func before() -> void:
 	# setup command options
 	_cmd_options = CmdOptions.new([
 		option_a,
@@ -28,7 +28,7 @@ func before():
 	])
 
 
-func test_parse_success():
+func test_parse_success() -> void:
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
 
 	assert_result(parser.parse([])).is_empty()
@@ -43,7 +43,7 @@ func test_parse_success():
 	])
 
 
-func test_parse_success_required_arg():
+func test_parse_success_required_arg() -> void:
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
 
 	var result := parser.parse(["-d", "dir/dir/CmdTool.gd", "-a", "-b", "valueA", "-b", "valueB"])
@@ -62,7 +62,7 @@ func test_parse_success_required_arg():
 	])
 
 
-func test_parse_success_optional_arg():
+func test_parse_success_optional_arg() -> void:
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
 
 	# without argument
@@ -90,7 +90,7 @@ func test_parse_success_optional_arg():
 	])
 
 
-func test_parse_success_repead_cmd_args():
+func test_parse_success_repead_cmd_args() -> void:
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
 
 	# without argument
@@ -110,7 +110,7 @@ func test_parse_success_repead_cmd_args():
 	])
 
 
-func test_parse_error():
+func test_parse_error() -> void:
 	var parser := CmdArgumentParser.new(_cmd_options, "CmdTool.gd")
 
 	assert_result(parser.parse([])).is_empty()

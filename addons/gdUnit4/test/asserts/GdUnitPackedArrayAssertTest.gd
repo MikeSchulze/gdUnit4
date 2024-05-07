@@ -6,7 +6,7 @@ const __source = 'res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd'
 
 
 @warning_ignore("unused_parameter")
-func test_is_array_assert(_test :String, array, test_parameters = [
+func test_is_array_assert(_test :String, array :Variant, test_parameters := [
 	["Array", Array()],
 	["PackedByteArray", PackedByteArray()],
 	["PackedInt32Array", PackedInt32Array()],
@@ -18,12 +18,12 @@ func test_is_array_assert(_test :String, array, test_parameters = [
 	["PackedVector3Array", PackedVector3Array()],
 	["PackedColorArray", PackedColorArray()] ]
 	) -> void:
-	var assert_ = assert_that(array)
+	var assert_ := assert_that(array)
 	assert_object(assert_).is_instanceof(GdUnitArrayAssert)
 
 
 @warning_ignore("unused_parameter")
-func test_is_null(_test :String, value, test_parameters = [
+func test_is_null(_test :String, value :Variant, test_parameters := [
 	["Array", Array()],
 	["PackedByteArray", PackedByteArray()],
 	["PackedInt32Array", PackedInt32Array()],
@@ -36,13 +36,13 @@ func test_is_null(_test :String, value, test_parameters = [
 	["PackedColorArray", PackedColorArray()] ]
 	) -> void:
 	assert_array(null).is_null()
-	assert_failure(func(): assert_array(value).is_null()) \
+	assert_failure(func() -> void: assert_array(value).is_null()) \
 		.is_failed() \
 		.has_message("Expecting: '<null>' but was '%s'" % GdDefaultValueDecoder.decode(value))
 
 
 @warning_ignore("unused_parameter")
-func test_is_not_null(_test :String, array, test_parameters = [
+func test_is_not_null(_test :String, array :Variant, test_parameters := [
 	["Array", Array()],
 	["PackedByteArray", PackedByteArray()],
 	["PackedInt32Array", PackedInt32Array()],
@@ -56,13 +56,13 @@ func test_is_not_null(_test :String, array, test_parameters = [
 	) -> void:
 	assert_array(array).is_not_null()
 
-	assert_failure(func(): assert_array(null).is_not_null()) \
+	assert_failure(func() -> void: assert_array(null).is_not_null()) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
 
 
 @warning_ignore("unused_parameter")
-func test_is_equal(_test :String, array, test_parameters = [
+func test_is_equal(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
 	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
@@ -75,11 +75,11 @@ func test_is_equal(_test :String, array, test_parameters = [
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
 
-	var other = array.duplicate()
+	var other :Variant = array.duplicate()
 	assert_array(array).is_equal(other)
 	# should fail because the array not contains same elements and has diff size
 	other.append(array[2])
-	assert_failure(func(): assert_array(array).is_equal(other)) \
+	assert_failure(func() -> void: assert_array(array).is_equal(other)) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -95,7 +95,7 @@ func test_is_equal(_test :String, array, test_parameters = [
 
 
 @warning_ignore("unused_parameter")
-func test_is_not_equal(_test :String, array, test_parameters = [
+func test_is_not_equal(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
 	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
@@ -108,11 +108,11 @@ func test_is_not_equal(_test :String, array, test_parameters = [
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
 
-	var other = array.duplicate()
+	var other :Variant = array.duplicate()
 	other.append(array[2])
 	assert_array(array).is_not_equal(other)
 	# should fail because the array  contains same elements
-	assert_failure(func(): assert_array(array).is_not_equal(array.duplicate())) \
+	assert_failure(func() -> void: assert_array(array).is_not_equal(array.duplicate())) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -124,7 +124,7 @@ func test_is_not_equal(_test :String, array, test_parameters = [
 
 
 @warning_ignore("unused_parameter")
-func test_is_empty(_test :String, array, test_parameters = [
+func test_is_empty(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
 	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
@@ -137,11 +137,11 @@ func test_is_empty(_test :String, array, test_parameters = [
 	["PackedColorArray", PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK])] ]
 	) -> void:
 
-	var empty = array.duplicate()
+	var empty :Variant = array.duplicate()
 	empty.clear()
 	assert_array(empty).is_empty()
 	# should fail because the array is not empty
-	assert_failure(func(): assert_array(array).is_empty()) \
+	assert_failure(func() -> void: assert_array(array).is_empty()) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
@@ -152,7 +152,7 @@ func test_is_empty(_test :String, array, test_parameters = [
 
 
 @warning_ignore("unused_parameter")
-func test_is_not_empty(_test :String, array, test_parameters = [
+func test_is_not_empty(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
 	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
@@ -167,15 +167,15 @@ func test_is_not_empty(_test :String, array, test_parameters = [
 
 	assert_array(array).is_not_empty()
 	# should fail because the array is empty
-	var empty = array.duplicate()
+	var empty :Variant = array.duplicate()
 	empty.clear()
-	assert_failure(func(): assert_array(empty).is_not_empty()) \
+	assert_failure(func() -> void: assert_array(empty).is_not_empty()) \
 		.is_failed() \
 		.has_message("Expecting:\n must not be empty")
 
 
 @warning_ignore("unused_parameter")
-func test_is_same(value, test_parameters = [
+func test_is_same(value :Variant, test_parameters := [
 	[[0]],
 	[PackedByteArray([0])],
 	[PackedFloat32Array([0.0])],
@@ -190,7 +190,7 @@ func test_is_same(value, test_parameters = [
 	assert_array(value).is_same(value)
 
 	var v := GdDefaultValueDecoder.decode(value)
-	assert_failure(func(): assert_array(value).is_same(value.duplicate()))\
+	assert_failure(func() -> void: assert_array(value).is_same(value.duplicate()))\
 		.is_failed()\
 		.has_message("""
 			Expecting:
@@ -202,7 +202,7 @@ func test_is_same(value, test_parameters = [
 
 
 @warning_ignore("unused_parameter")
-func test_is_not_same(value, test_parameters = [
+func test_is_not_same(value :Variant, test_parameters := [
 	[[0]],
 	[PackedByteArray([0])],
 	[PackedFloat32Array([0.0])],
@@ -216,13 +216,13 @@ func test_is_not_same(value, test_parameters = [
 ]) -> void:
 	assert_array(value).is_not_same(value.duplicate())
 
-	assert_failure(func(): assert_array(value).is_not_same(value))\
+	assert_failure(func() -> void: assert_array(value).is_not_same(value))\
 		.is_failed()\
 		.has_message("Expecting not same:\n '%s'" % GdDefaultValueDecoder.decode(value))
 
 
 @warning_ignore("unused_parameter")
-func test_has_size(_test :String, array, test_parameters = [
+func test_has_size(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
 	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
@@ -237,7 +237,7 @@ func test_has_size(_test :String, array, test_parameters = [
 
 	assert_array(array).has_size(5)
 	# should fail because the array has a size of 5
-	assert_failure(func(): assert_array(array).has_size(4)) \
+	assert_failure(func() -> void: assert_array(array).has_size(4)) \
 		.is_failed() \
 		.has_message("""
 			Expecting size:
@@ -249,7 +249,7 @@ func test_has_size(_test :String, array, test_parameters = [
 
 
 @warning_ignore("unused_parameter")
-func test_contains(_test :String, array, test_parameters = [
+func test_contains(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
 	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
@@ -265,7 +265,7 @@ func test_contains(_test :String, array, test_parameters = [
 	assert_array(array).contains([array[1], array[3], array[4]])
 	# should fail because the array not contains 7 and 6
 	var do_contains := [array[1], 7, 6]
-	assert_failure(func(): assert_array(array).contains(do_contains)) \
+	assert_failure(func() -> void: assert_array(array).contains(do_contains)) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains elements:
@@ -282,7 +282,7 @@ func test_contains(_test :String, array, test_parameters = [
 
 
 @warning_ignore("unused_parameter")
-func test_contains_exactly(_test :String, array, test_parameters = [
+func test_contains_exactly(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
 	["PackedInt32Array", PackedInt32Array([1, 2, 3, 4, 5])],
@@ -297,10 +297,10 @@ func test_contains_exactly(_test :String, array, test_parameters = [
 
 	assert_array(array).contains_exactly(array.duplicate())
 	# should fail because the array not contains same elements but in different order
-	var shuffled = array.duplicate()
+	var shuffled :Variant = array.duplicate()
 	shuffled[1] = array[3]
 	shuffled[3] = array[1]
-	assert_failure(func(): assert_array(array).contains_exactly(shuffled)) \
+	assert_failure(func() -> void: assert_array(array).contains_exactly(shuffled)) \
 		.is_failed() \
 		.has_message("""
 			Expecting contains exactly elements:
@@ -318,7 +318,7 @@ func test_contains_exactly(_test :String, array, test_parameters = [
 		)
 
 @warning_ignore("unused_parameter")
-func test_override_failure_message(_test :String, array, test_parameters = [
+func test_override_failure_message(_test :String, array :Variant, test_parameters := [
 	["Array", Array()],
 	["PackedByteArray", PackedByteArray()],
 	["PackedInt32Array", PackedInt32Array()],
@@ -331,7 +331,7 @@ func test_override_failure_message(_test :String, array, test_parameters = [
 	["PackedColorArray", PackedColorArray()] ]
 	) -> void:
 
-	assert_failure(func(): assert_array(array) \
+	assert_failure(func() -> void: assert_array(array) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \

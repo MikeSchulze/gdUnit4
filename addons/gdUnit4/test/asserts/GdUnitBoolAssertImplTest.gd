@@ -6,87 +6,87 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/asserts/GdUnitBoolAssertImpl.gd'
 
 
-func test_is_true():
+func test_is_true() -> void:
 	assert_bool(true).is_true()
 
-	assert_failure(func(): assert_bool(false).is_true())\
+	assert_failure(func() -> void: assert_bool(false).is_true())\
 		.is_failed() \
 		.has_message("Expecting: 'true' but is 'false'")
-	assert_failure(func(): assert_bool(null).is_true()) \
+	assert_failure(func() -> void: assert_bool(null).is_true()) \
 		.is_failed() \
 		.has_message("Expecting: 'true' but is '<null>'")
 
 
-func test_isFalse():
+func test_isFalse() -> void:
 	assert_bool(false).is_false()
 
-	assert_failure(func(): assert_bool(true).is_false()) \
+	assert_failure(func() -> void: assert_bool(true).is_false()) \
 		.is_failed() \
 		.has_message("Expecting: 'false' but is 'true'")
-	assert_failure(func(): assert_bool(null).is_false()) \
+	assert_failure(func() -> void: assert_bool(null).is_false()) \
 		.is_failed() \
 		.has_message("Expecting: 'false' but is '<null>'")
 
 
-func test_is_null():
+func test_is_null() -> void:
 	assert_bool(null).is_null()
 	# should fail because the current is not null
-	assert_failure(func(): assert_bool(true).is_null())\
+	assert_failure(func() -> void: assert_bool(true).is_null())\
 		.is_failed() \
 		.starts_with_message("Expecting: '<null>' but was 'true'")
 
 
-func test_is_not_null():
+func test_is_not_null() -> void:
 	assert_bool(true).is_not_null()
 	# should fail because the current is null
-	assert_failure(func(): assert_bool(null).is_not_null())\
+	assert_failure(func() -> void: assert_bool(null).is_not_null())\
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
 
 
-func test_is_equal():
+func test_is_equal() -> void:
 	assert_bool(true).is_equal(true)
 	assert_bool(false).is_equal(false)
 
-	assert_failure(func(): assert_bool(true).is_equal(false)) \
+	assert_failure(func() -> void: assert_bool(true).is_equal(false)) \
 		.is_failed() \
 		.has_message("Expecting:\n 'false'\n but was\n 'true'")
-	assert_failure(func(): assert_bool(null).is_equal(false)) \
+	assert_failure(func() -> void: assert_bool(null).is_equal(false)) \
 		.is_failed() \
 		.has_message("Expecting:\n 'false'\n but was\n '<null>'")
 
 
-func test_is_not_equal():
+func test_is_not_equal() -> void:
 	assert_bool(null).is_not_equal(false)
 	assert_bool(true).is_not_equal(false)
 	assert_bool(false).is_not_equal(true)
 
-	assert_failure(func(): assert_bool(true).is_not_equal(true)) \
+	assert_failure(func() -> void: assert_bool(true).is_not_equal(true)) \
 		.is_failed() \
 		.has_message("Expecting:\n 'true'\n not equal to\n 'true'")
 
 
-func test_fluent():
+func test_fluent() -> void:
 	assert_bool(true).is_true().is_equal(true).is_not_equal(false)
 
 
-func test_must_fail_has_invlalid_type():
-	assert_failure(func(): assert_bool(1)) \
+func test_must_fail_has_invlalid_type() -> void:
+	assert_failure(func() -> void: assert_bool(1)) \
 		.is_failed() \
 		.has_message("GdUnitBoolAssert inital error, unexpected type <int>")
-	assert_failure(func(): assert_bool(3.13)) \
+	assert_failure(func() -> void: assert_bool(3.13)) \
 		.is_failed() \
 		.has_message("GdUnitBoolAssert inital error, unexpected type <float>")
-	assert_failure(func(): assert_bool("foo")) \
+	assert_failure(func() -> void: assert_bool("foo")) \
 		.is_failed() \
 		.has_message("GdUnitBoolAssert inital error, unexpected type <String>")
-	assert_failure(func(): assert_bool(Resource.new())) \
+	assert_failure(func() -> void: assert_bool(Resource.new())) \
 		.is_failed() \
 		.has_message("GdUnitBoolAssert inital error, unexpected type <Object>")
 
 
 func test_override_failure_message() -> void:
-	assert_failure(func(): assert_bool(true) \
+	assert_failure(func() -> void: assert_bool(true) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
@@ -103,7 +103,7 @@ func test_is_failure() -> void:
 	assert_bool(is_failure()).is_false()
 
 	# checked faild assert
-	assert_failure(func(): assert_bool(true).is_false()).is_failed()
+	assert_failure(func() -> void: assert_bool(true).is_false()).is_failed()
 	assert_bool(is_failure()).is_true()
 
 	# checked next success assert

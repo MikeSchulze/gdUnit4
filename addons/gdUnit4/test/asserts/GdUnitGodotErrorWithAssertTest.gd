@@ -15,7 +15,7 @@ func test_assert_method_with_disabled_global_error_report() -> void:
 
 
 @warning_ignore("assert_always_false")
-func do_a_fail():
+func do_a_fail() -> void:
 	if OS.is_debug_build():
 		# On debug level we need to simulate the assert log entry, otherwise we stuck on a breakpoint
 		prints("""

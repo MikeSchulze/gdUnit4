@@ -102,7 +102,7 @@ func test_execute_commands_no_cb_registered() -> void:
 
 func test_execute_commands_with_cb_registered() -> void:
 	var cmd_handler: = CmdCommandHandler.new(_cmd_options)
-	var cmd_spy = spy(_cmd_instance)
+	var cmd_spy :Variant = spy(_cmd_instance)
 
 	cmd_handler.register_cb("-a", Callable(cmd_spy, "cmd_a"))
 	cmd_handler.register_cb("-b", Callable(cmd_spy, "cmd_bar"))

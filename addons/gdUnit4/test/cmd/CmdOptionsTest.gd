@@ -14,7 +14,7 @@ var option_x := CmdOption.new("-x", "some help text x", "some description x")
 var _cmd_options :CmdOptions
 
 
-func before():
+func before() -> void:
 	# setup command options
 	_cmd_options = CmdOptions.new([
 		option_a,
@@ -27,7 +27,7 @@ func before():
 	])
 
 
-func test_get_option():
+func test_get_option() -> void:
 	assert_object(_cmd_options.get_option("-a")).is_same(option_a)
 	assert_object(_cmd_options.get_option("-f")).is_same(option_f)
 	assert_object(_cmd_options.get_option("--foo")).is_same(option_f)
@@ -38,18 +38,18 @@ func test_get_option():
 	assert_object(_cmd_options.get_option("-z")).is_null()
 
 
-func test_default_options():
+func test_default_options() -> void:
 	assert_array(_cmd_options.default_options()).contains_exactly([
 		option_a,
 		option_f,
 		option_b])
 
 
-func test_advanced_options():
+func test_advanced_options() -> void:
 	assert_array(_cmd_options.advanced_options()).contains_exactly([option_x])
 
 
-func test_options():
+func test_options() -> void:
 	assert_array(_cmd_options.options()).contains_exactly([
 		option_a,
 		option_f,
