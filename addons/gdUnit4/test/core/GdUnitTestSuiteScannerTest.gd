@@ -241,7 +241,7 @@ func test_build_test_suite_path() -> void:
 
 func test_parse_and_add_test_cases() -> void:
 	var default_time := GdUnitSettings.test_timeout()
-	var scanner :GdUnitTestSuiteScanner = auto_free(GdUnitTestSuiteScanner.new())
+	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
 	# fake a test suite
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
 	test_suite.set_script( load("res://addons/gdUnit4/test/core/resources/test_script_with_arguments.gd"))
@@ -275,7 +275,7 @@ func test_parse_and_add_test_cases() -> void:
 
 
 func test_scan_by_inheritance_class_name() -> void:
-	var scanner :GdUnitTestSuiteScanner = auto_free(GdUnitTestSuiteScanner.new())
+	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/")
 
 	assert_array(test_suites).has_size(3)
@@ -300,7 +300,7 @@ func test_scan_by_inheritance_class_name() -> void:
 
 
 func test_scan_by_inheritance_class_path() -> void:
-	var scanner :GdUnitTestSuiteScanner = auto_free(GdUnitTestSuiteScanner.new())
+	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_path/")
 
 	assert_array(test_suites).extractv(extr("get_name"), extr("get_script.get_path"), extr("get_children.get_name"))\
@@ -366,7 +366,15 @@ func test_resolve_test_suite_path_with_src_folders() -> void:
 
 
 func test_scan_test_suite_without_tests() -> void:
-	var scanner :GdUnitTestSuiteScanner = auto_free(GdUnitTestSuiteScanner.new())
+	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteWithoutTests.gd")
 
+	assert_that(test_suites).is_empty()
+
+
+func test_scan_test_suite_exclude_non_test_suites() -> void:
+	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
+	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/plugin/")
+
+	# we expect the scanner do not break on scanning plugin classes
 	assert_that(test_suites).is_empty()
