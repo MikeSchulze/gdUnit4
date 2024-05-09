@@ -17,22 +17,26 @@ const exclude_scan_directories = [
 
 
 var _script_parser := GdScriptParser.new()
-var _extends_test_suite_classes := Array()
+var _included_resources :PackedStringArray = []
+var _excluded_resources :PackedStringArray = []
 var _expression_runner := GdUnitExpressionRunner.new()
+var _regex_extends_clazz_name := RegEx.create_from_string("extends[\\s]+([\\S]+)")
 
 
-func scan_testsuite_classes() -> void:
+func prescan_testsuite_classes() -> void:
 	# scan and cache extends GdUnitTestSuite by class name an resource paths
-	_extends_test_suite_classes.append("GdUnitTestSuite")
-	if ProjectSettings.has_setting("_global_script_classes"):
-		var script_classes:Array = ProjectSettings.get_setting("_global_script_classes") as Array
-		for script_meta :Dictionary in script_classes:
-			if script_meta["base"] == "GdUnitTestSuite":
-				_extends_test_suite_classes.append(script_meta["class"])
+	var script_classes :Array[Dictionary] = ProjectSettings.get_global_class_list()
+	for script_meta in script_classes:
+		var base_class :String = script_meta["base"]
+		var resource_path :String = script_meta["path"]
+		if base_class == "GdUnitTestSuite":
+			_included_resources.append(resource_path)
+		elif ClassDB.class_exists(base_class):
+			_excluded_resources.append(resource_path)
 
 
 func scan(resource_path :String) -> Array[Node]:
-	scan_testsuite_classes()
+	prescan_testsuite_classes()
 	# if single testsuite requested
 	if FileAccess.file_exists(resource_path):
 		var test_suite := _parse_is_test_suite(resource_path)
@@ -81,12 +85,25 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 		return null
 	if GdUnit4CSharpApiLoader.is_test_suite(resource_path):
 		return GdUnit4CSharpApiLoader.parse_test_suite(resource_path)
-	var script :Script = ResourceLoader.load(resource_path)
+
+	# We use the global cache to fast scan for test suites.
+	if _excluded_resources.has(resource_path):
+		return null
+	# Check in the global class cache whether the GdUnitTestSuite class has been extended.
+	if _included_resources.has(resource_path):
+		return _parse_test_suite(ResourceLoader.load(resource_path))
+
+	# Otherwise we need to scan manual, we need to exclude classes where direct extends form Godot classes
+	# the resource loader can fail to load e.g. plugin classes with do preload other scripts
+	var extends_from := get_extends_classname(resource_path)
+	# If not extends is defined or extends from a Godot class
+	if extends_from.is_empty() or ClassDB.class_exists(extends_from):
+		return null
+	# Finally, we need to load the class to determine it is a test suite
+	var script := ResourceLoader.load(resource_path)
 	if not GdObjects.is_test_suite(script):
 		return null
-	if GdObjects.is_gd_script(script):
-		return _parse_test_suite(script)
-	return null
+	return _parse_test_suite(ResourceLoader.load(resource_path))
 
 
 static func _is_script_format_supported(resource_path :String) -> bool:
@@ -289,6 +306,23 @@ static func get_test_case_line_number(resource_path :String, func_name :String) 
 			if script_parser.parse_func_name(row) == "test_" + func_name:
 				return line_number
 	return -1
+
+
+func get_extends_classname(resource_path :String) -> String:
+	var file := FileAccess.open(resource_path, FileAccess.READ)
+	if file != null:
+		while not file.eof_reached():
+			var row := file.get_line()
+			# skip comments and empty lines
+			if row.begins_with("#") || row.length() == 0:
+				continue
+			# Stop at first function
+			if row.contains("func"):
+				return ""
+			var result := _regex_extends_clazz_name.search(row)
+			if result != null:
+				return result.get_string(1)
+	return ""
 
 
 static func add_test_case(resource_path :String, func_name :String)  -> GdUnitResult:
