@@ -15,16 +15,13 @@ func _ready() -> void:
 			if tab_container.get_tab_title(tab_index) == "GdUnit":
 				tab_container.set_current_tab(tab_index)
 	)
-
-
-func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		add_script_editor_context_menu()
 		add_file_system_dock_context_menu()
 
 
-func _exit_tree() -> void:
-	if Engine.is_editor_hint():
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
 		ScriptEditorControls.unregister_context_menu()
 		EditorFileSystemControls.unregister_context_menu()
 
