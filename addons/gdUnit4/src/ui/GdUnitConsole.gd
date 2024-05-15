@@ -4,12 +4,12 @@ extends Control
 const TITLE = "gdUnit4 ${version} Console"
 
 @onready var header := $VBoxContainer/Header
-@onready var title :RichTextLabel = $VBoxContainer/Header/header_title
-@onready var output :RichTextLabel = $VBoxContainer/Console/TextEdit
+@onready var title: RichTextLabel = $VBoxContainer/Header/header_title
+@onready var output: RichTextLabel = $VBoxContainer/Console/TextEdit
 
-var _text_color :Color
-var _function_color :Color
-var _engine_type_color :Color
+var _text_color: Color
+var _function_color: Color
+var _engine_type_color: Color
 var _statistics := {}
 var _summary := {
 	"total_count": 0,
@@ -31,7 +31,7 @@ func _ready() -> void:
 	output.clear()
 
 
-func _notification(what :int) -> void:
+func _notification(what: int) -> void:
 	if what == EditorSettings.NOTIFICATION_EDITOR_SETTINGS_CHANGED:
 		init_colors()
 	if what == NOTIFICATION_PREDELETE:
@@ -48,7 +48,7 @@ func init_colors() -> void:
 	_engine_type_color = settings.get_setting("text_editor/theme/highlighting/engine_type_color")
 
 
-func init_statistics(event :GdUnitEvent) -> void:
+func init_statistics(event: GdUnitEvent) -> void:
 	_statistics["total_count"] = event.total_count()
 	_statistics["error_count"] = 0
 	_statistics["failed_count"] = 0
@@ -58,13 +58,13 @@ func init_statistics(event :GdUnitEvent) -> void:
 
 
 func reset_statistics() -> void:
-	for k :String in _statistics.keys():
+	for k: String in _statistics.keys():
 		_statistics[k] = 0
-	for k :String in _summary.keys():
+	for k: String in _summary.keys():
 		_summary[k] = 0
 
 
-func update_statistics(event :GdUnitEvent) -> void:
+func update_statistics(event: GdUnitEvent) -> void:
 	_statistics["error_count"] += event.error_count()
 	_statistics["failed_count"] += event.failed_count()
 	_statistics["skipped_count"] += event.skipped_count()
@@ -75,7 +75,7 @@ func update_statistics(event :GdUnitEvent) -> void:
 	_summary["orphan_nodes"] += event.orphan_nodes()
 
 
-func print_message(message :String, color :Color = _text_color, indent :int = 0) -> void:
+func print_message(message: String, color: Color=_text_color, indent: int=0) -> void:
 	for i in indent:
 		output.push_indent(1)
 	output.push_color(color)
@@ -85,12 +85,12 @@ func print_message(message :String, color :Color = _text_color, indent :int = 0)
 		output.pop()
 
 
-func println_message(message :String, color :Color = _text_color, indent :int = -1) -> void:
+func println_message(message: String, color: Color=_text_color, indent: int=- 1) -> void:
 	print_message(message, color, indent)
 	output.newline()
 
 
-func _on_gdunit_event(event :GdUnitEvent) -> void:
+func _on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
 			reset_statistics()
@@ -108,8 +108,8 @@ func _on_gdunit_event(event :GdUnitEvent) -> void:
 		GdUnitEvent.TESTSUITE_AFTER:
 			update_statistics(event)
 			if not event.reports().is_empty():
-				var report :GdUnitReport = event.reports().front()
-				println_message("\t" +event._suite_name, _engine_type_color)
+				var report: GdUnitReport = event.reports().front()
+				println_message("\t" + event._suite_name, _engine_type_color)
 				println_message("line %d %s" % [report._line_number, report._message], _text_color, 2)
 			if event.is_success():
 				print_message("[wave]PASSED[/wave]", Color.LIGHT_GREEN)
@@ -123,7 +123,7 @@ func _on_gdunit_event(event :GdUnitEvent) -> void:
 			var spaces := "-%d" % (80 - event._suite_name.length())
 			print_message(event._suite_name, _engine_type_color, 1)
 			print_message(":")
-			print_message(("%"+spaces+"s") % event._test_name, _function_color)
+			print_message(("%" + spaces + "s") % event._test_name, _function_color)
 
 		GdUnitEvent.TESTCASE_AFTER:
 			var reports := event.reports()
@@ -138,23 +138,23 @@ func _on_gdunit_event(event :GdUnitEvent) -> void:
 				print_message("WARNING", Color.YELLOW)
 			println_message(" %+12s" % LocalTime.elapsed(event.elapsed_time()))
 
-			var report :GdUnitReport = null if reports.is_empty() else reports[0]
+			var report: GdUnitReport = null if reports.is_empty() else reports[0]
 			if report:
 				println_message("line %d %s" % [report._line_number, report._message], _text_color, 2)
 
 
-func _on_gdunit_client_connected(client_id :int) -> void:
+func _on_gdunit_client_connected(client_id: int) -> void:
 	output.clear()
 	output.append_text("[color=#9887c4]GdUnit Test Client connected with id %d[/color]\n" % client_id)
 	output.newline()
 
 
-func _on_gdunit_client_disconnected(client_id :int) -> void:
+func _on_gdunit_client_disconnected(client_id: int) -> void:
 	output.append_text("[color=#9887c4]GdUnit Test Client disconnected with id %d[/color]\n" % client_id)
 	output.newline()
 
 
-func _on_gdunit_message(message :String) -> void:
+func _on_gdunit_message(message: String) -> void:
 	output.newline()
 	output.append_text(message)
 	output.newline()

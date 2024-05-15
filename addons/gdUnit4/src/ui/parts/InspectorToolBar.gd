@@ -1,26 +1,24 @@
 @tool
-extends HBoxContainer
+extends PanelContainer
 
-signal run_overall_pressed(debug :bool)
-signal run_pressed(debug :bool)
+signal run_overall_pressed(debug: bool)
+signal run_pressed(debug: bool)
 signal stop_pressed()
 
-@onready var debug_icon_image :Texture2D = load("res://addons/gdUnit4/src/ui/assets/PlayDebug.svg")
-@onready var overall_icon_image :Texture2D = load("res://addons/gdUnit4/src/ui/assets/PlayOverall.svg")
 @onready var _version_label := %version
 @onready var _button_wiki := %help
 @onready var _tool_button := %tool
-@onready var _button_run_overall :Button = %"run-overall"
+@onready var _button_run_overall := %run_overall
 @onready var _button_run := %run
 @onready var _button_run_debug := %debug
 @onready var _button_stop := %stop
 
 
 const SETTINGS_SHORTCUT_MAPPING := {
-	GdUnitSettings.SHORTCUT_INSPECTOR_RERUN_TEST : GdUnitShortcut.ShortCut.RERUN_TESTS,
-	GdUnitSettings.SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG,
-	GdUnitSettings.SHORTCUT_INSPECTOR_RUN_TEST_OVERALL : GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL,
-	GdUnitSettings.SHORTCUT_INSPECTOR_RUN_TEST_STOP : GdUnitShortcut.ShortCut.STOP_TEST_RUN,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RERUN_TEST: GdUnitShortcut.ShortCut.RERUN_TESTS,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG: GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RUN_TEST_OVERALL: GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL,
+	GdUnitSettings.SHORTCUT_INSPECTOR_RUN_TEST_STOP: GdUnitShortcut.ShortCut.STOP_TEST_RUN,
 }
 
 
@@ -38,17 +36,16 @@ func _ready() -> void:
 
 
 func init_buttons() -> void:
-	var editior_control := EditorInterface.get_base_control()
-	_button_run_overall.icon = overall_icon_image
+	_button_run_overall.icon = GdUnitUiTools.get_run_overall_icon()
 	_button_run_overall.visible = GdUnitSettings.is_inspector_toolbar_button_show()
-	_button_run.icon = GodotVersionFixures.get_icon(editior_control, "Play")
-	_button_run_debug.icon = debug_icon_image
-	_button_stop.icon = GodotVersionFixures.get_icon(editior_control, "Stop")
-	_tool_button.icon = GodotVersionFixures.get_icon(editior_control, "Tools")
-	_button_wiki.icon = GodotVersionFixures.get_icon(editior_control, "HelpSearch")
+	_button_run.icon = GdUnitUiTools.get_icon("Play")
+	_button_run_debug.icon = GdUnitUiTools.get_icon("PlayStart")
+	_button_stop.icon = GdUnitUiTools.get_icon("Stop")
+	_tool_button.icon = GdUnitUiTools.get_icon("Tools")
+	_button_wiki.icon = GdUnitUiTools.get_icon("HelpSearch")
 
 
-func init_shortcuts(command_handler :GdUnitCommandHandler) -> void:
+func init_shortcuts(command_handler: GdUnitCommandHandler) -> void:
 	_button_run.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RERUN_TESTS)
 	_button_run_overall.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL)
 	_button_run_debug.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG)
@@ -57,7 +54,7 @@ func init_shortcuts(command_handler :GdUnitCommandHandler) -> void:
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed.bind(command_handler))
 
 
-func _on_runoverall_pressed(debug := false) -> void:
+func _on_runoverall_pressed(debug:=false) -> void:
 	run_overall_pressed.emit(debug)
 
 
@@ -76,14 +73,14 @@ func _on_gdunit_runner_start() -> void:
 	_button_stop.disabled = false
 
 
-func _on_gdunit_runner_stop(_client_id :int) -> void:
+func _on_gdunit_runner_stop(_client_id: int) -> void:
 	_button_run_overall.disabled = false
 	_button_run.disabled = false
 	_button_run_debug.disabled = false
 	_button_stop.disabled = true
 
 
-func _on_gdunit_settings_changed(_property :GdUnitProperty) -> void:
+func _on_gdunit_settings_changed(_property: GdUnitProperty) -> void:
 	_button_run_overall.visible = GdUnitSettings.is_inspector_toolbar_button_show()
 
 
@@ -92,15 +89,15 @@ func _on_wiki_pressed() -> void:
 
 
 func _on_btn_tool_pressed() -> void:
-	var tool_popup :Node = load("res://addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.tscn").instantiate()
+	var tool_popup: Node = load("res://addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.tscn").instantiate()
 	get_parent_control().add_child(tool_popup)
 
 
-func _on_settings_changed(property :GdUnitProperty, command_handler :GdUnitCommandHandler) -> void:
+func _on_settings_changed(property: GdUnitProperty, command_handler: GdUnitCommandHandler) -> void:
 	# needs to wait a frame to be command handler notified first for settings changes
 	await get_tree().process_frame
 	if SETTINGS_SHORTCUT_MAPPING.has(property.name()):
-		var shortcut :GdUnitShortcut.ShortCut = SETTINGS_SHORTCUT_MAPPING.get(property.name(), GdUnitShortcut.ShortCut.NONE)
+		var shortcut: GdUnitShortcut.ShortCut = SETTINGS_SHORTCUT_MAPPING.get(property.name(), GdUnitShortcut.ShortCut.NONE)
 		match shortcut:
 			GdUnitShortcut.ShortCut.RERUN_TESTS:
 				_button_run.shortcut = command_handler.get_shortcut(shortcut)

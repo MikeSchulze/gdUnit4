@@ -2,20 +2,17 @@
 class_name GdUnitInputCapture
 extends Control
 
-
-signal input_completed(input_event :InputEventKey)
-
-@onready var _label := %Label
+signal input_completed(input_event: InputEventKey)
 
 
-var _tween :Tween
-var _input_event :InputEventKey
+var _tween: Tween
+var _input_event: InputEventKey
 
 
 func _ready() -> void:
 	reset()
 	_tween = create_tween()
-	_tween.set_loops(-1)
+	_tween.set_loops( - 1)
 	_tween.tween_property(self, "modulate", Color(0, 0, 0, .1), 1.0).from_current().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 
 
@@ -23,7 +20,7 @@ func reset() -> void:
 	_input_event = InputEventKey.new()
 
 
-func _input(event :InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 	if event is InputEventKey and event.is_pressed() and not event.is_echo():
@@ -46,7 +43,7 @@ func _input(event :InputEvent) -> void:
 		hide()
 
 
-func _apply_input_modifiers(event :InputEvent) -> void:
+func _apply_input_modifiers(event: InputEvent) -> void:
 	if event is InputEventWithModifiers:
 		_input_event.meta_pressed = event.meta_pressed or _input_event.meta_pressed
 		_input_event.alt_pressed = event.alt_pressed or _input_event.alt_pressed

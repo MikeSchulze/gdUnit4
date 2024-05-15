@@ -18,6 +18,8 @@ enum {
 	TESTSUITE_AFTER,
 	TESTCASE_BEFORE,
 	TESTCASE_AFTER,
+	DISCOVER_START,
+	DISCOVER_END,
 }
 
 var _event_type :int

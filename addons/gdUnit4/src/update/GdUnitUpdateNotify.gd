@@ -5,7 +5,6 @@ extends Window
 
 const GdMarkDownReader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
 const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
-const spinner_icon := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
 
 @onready var _md_reader :GdMarkDownReader = GdMarkDownReader.new()
 @onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
@@ -68,7 +67,7 @@ func _process(_delta :float) -> void:
 
 
 func show_update() -> void:
-	message_h4("\n\n\nRequest release infos ... [img=24x24]%s[/img]" % spinner_icon, Color.SNOW)
+	message_h4("\n\n\nRequest release infos ... [img=24x24]%s[/img]" % GdUnitUiTools.get_spinner(), Color.SNOW)
 	popup_centered_ratio(.5)
 	prints("Scan for GdUnit4 Update ...")
 	var content :String

@@ -115,8 +115,9 @@ func gdUnitInit() -> void:
 	send_message("Scaned %d test suites" % _test_suites_to_process.size())
 	var total_count := _collect_test_case_count(_test_suites_to_process)
 	_on_gdunit_event(GdUnitInit.new(_test_suites_to_process.size(), total_count))
-	for test_suite in _test_suites_to_process:
-		send_test_suite(test_suite)
+	if not GdUnitSettings.is_inspector_test_discover_enabled():
+		for test_suite in _test_suites_to_process:
+			send_test_suite(test_suite)
 
 
 func _filter_test_case(test_suites :Array[Node], included_tests :PackedStringArray) -> void:

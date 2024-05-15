@@ -45,6 +45,7 @@ const TEMPLATE_TS_CS = TEMPLATES_TS + "/CSharpScript"
 const UI_SETTINGS = MAIN_CATEGORY + "/ui"
 const GROUP_UI_INSPECTOR = UI_SETTINGS + "/inspector"
 const INSPECTOR_NODE_COLLAPSE = GROUP_UI_INSPECTOR + "/node_collapse"
+const INSPECTOR_DISCOVER_TESTS = GROUP_UI_INSPECTOR + "/discover_tests"
 
 
 # Shortcut Setiings
@@ -100,6 +101,7 @@ static func setup() -> void:
 	create_property_if_need(REPORT_ASSERT_WARNINGS, true, "Enables/Disables warning reporting checked asserts")
 	create_property_if_need(REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true, "Enabled/disabled number values will be compared strictly by type. (real vs int)")
 	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true, "Enables/Disables that the testsuite node is closed after a successful test run.")
+	create_property_if_need(INSPECTOR_DISCOVER_TESTS, false, "Enables/Disables automatic test discovery at runtime.")
 	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false, "Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")
 	create_property_if_need(TEMPLATE_TS_GD, GdUnitTestSuiteTemplate.default_GD_template(), "Defines the test suite template")
 	create_shortcut_properties_if_need()
@@ -223,6 +225,16 @@ static func is_inspector_node_collapse() -> bool:
 
 static func is_inspector_toolbar_button_show() -> bool:
 	return get_setting(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, true)
+
+
+static func is_inspector_test_discover_enabled() -> bool:
+	return get_setting(INSPECTOR_DISCOVER_TESTS, false)
+
+
+static func set_inspector_test_discover_enabled(enable :bool) -> void:
+	var property := get_property(INSPECTOR_DISCOVER_TESTS)
+	property.set_value(enable)
+	update_property(property)
 
 
 static func is_log_enabled() -> bool:

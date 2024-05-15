@@ -21,7 +21,7 @@ func before_test() -> void:
 	for test_suite :Node in setup_test_env():
 		_inspector.add_test_suite(toDto(test_suite))
 	# verify no failures are exists
-	assert_array(_inspector.collect_failures_and_errors()).is_empty()
+	assert_array(_inspector.select_next_failure()).is_null()
 
 
 func after_test() -> void:
@@ -45,76 +45,65 @@ func setup_test_env() -> Array:
 	return Array([auto_free(test_suite_a), auto_free(test_suite_b), auto_free(test_suite_c)])
 
 
-func mark_as_failure(inspector :Node, test_cases :Array) -> void:
-	var tree_root :TreeItem = inspector._tree_root
-	assert_object(tree_root).is_not_null()
+func find_item(resource_path :String) -> TreeItem:
+	return _inspector.get_tree_item(resource_path, resource_path.get_file().replace(".resource", ""))
+
+
+func find_test_case(resource_path :String, test_case :String) -> TreeItem:
+	return _inspector.get_tree_item(resource_path, test_case)
+
+
+func mark_as_failure(test_cases :PackedStringArray, parent :TreeItem = _inspector._tree_root) -> void:
+	assert_object(parent).is_not_null()
 	# mark all test as failed
-	for parent in tree_root.get_children():
-		inspector.set_state_succeded(parent)
-		for item in parent.get_children():
-			if test_cases.has(item.get_text(0)):
-				inspector.set_state_failed(parent)
-				inspector.set_state_failed(item)
-			else:
-				inspector.set_state_succeded(item)
-			item = item.get_next()
-		parent = parent.get_next()
+	if parent != _inspector._tree_root:
+		_inspector.set_state_succeded(parent)
+	for item in parent.get_children():
+		mark_as_failure(test_cases, item)
+		if test_cases.has(item.get_text(0)):
+			_inspector.set_state_failed(parent)
+			_inspector.set_state_failed(item)
+		else:
+			_inspector.set_state_succeded(item)
 
-func get_item_state(parent :TreeItem, item_name :String) -> int:
-	var item :TreeItem = _inspector._find_by_name(parent, item_name)
-	return item.get_meta(_inspector.META_GDUNIT_STATE)
 
-func test_collect_failures_and_errors() -> void:
-	# mark some test as failed
-	mark_as_failure(_inspector, ["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
+func get_item_state(parent :TreeItem, item_name :String = "") -> int:
+	for item in parent.get_children():
+		if item.get_text(0) == item_name:
+			return item.get_meta(_inspector.META_GDUNIT_STATE)
+	return parent.get_meta(_inspector.META_GDUNIT_STATE)
 
-	assert_array(_inspector.collect_failures_and_errors())\
-		.extract("get_text", [0])\
-		.contains_exactly(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
 
 func test_select_first_failure() -> void:
 	# test initial nothing is selected
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# we have no failures or errors
-	_inspector.collect_failures_and_errors()
-	_inspector.select_first_failure()
+	_inspector.select_next_failure()
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	mark_as_failure(_inspector, ["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
-	_inspector.collect_failures_and_errors()
+	mark_as_failure(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
+
 	# select first failure
-	_inspector.select_first_failure()
+	_inspector.select_next_failure()
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_aa")
+
 
 func test_select_last_failure() -> void:
 	# test initial nothing is selected
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# we have no failures or errors
-	_inspector.collect_failures_and_errors()
-	_inspector.select_last_failure()
+	_inspector.select_previous_failure()
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	mark_as_failure(_inspector, ["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
-	_inspector.collect_failures_and_errors()
+	mark_as_failure(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
 	# select last failure
-	_inspector.select_last_failure()
+	_inspector.select_previous_failure()
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
 
-
-func test_clear_failures() -> void:
-	assert_array(_inspector._current_failures).is_empty()
-
-	mark_as_failure(_inspector, ["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
-	_inspector.collect_failures_and_errors()
-	assert_array(_inspector._current_failures).is_not_empty()
-
-	# clear it
-	_inspector.clear_failures()
-	assert_array(_inspector._current_failures).is_empty()
 
 func test_select_next_failure() -> void:
 	# test initial nothing is selected
@@ -125,8 +114,7 @@ func test_select_next_failure() -> void:
 	assert_str(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	mark_as_failure(_inspector, ["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
-	_inspector.collect_failures_and_errors()
+	mark_as_failure(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
 
 	# first time select next than select first failure
 	_inspector.select_next_failure()
@@ -145,6 +133,7 @@ func test_select_next_failure() -> void:
 	_inspector.select_next_failure()
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ad")
 
+
 func test_select_previous_failure() -> void:
 	# test initial nothing is selected
 	assert_object(_inspector._tree.get_selected()).is_null()
@@ -154,8 +143,7 @@ func test_select_previous_failure() -> void:
 	assert_str(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	mark_as_failure(_inspector, ["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
-	_inspector.collect_failures_and_errors()
+	mark_as_failure(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
 
 	# first time select previous than select last failure
 	_inspector.select_previous_failure()
@@ -174,29 +162,17 @@ func test_select_previous_failure() -> void:
 	_inspector.select_previous_failure()
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cc")
 
-func test_find_item_for_test_suites() -> void:
-	var suite_a: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_A)
-	assert_str(suite_a.get_meta(_inspector.META_GDUNIT_NAME)).is_equal("ExampleTestSuiteA")
-
-	var suite_b: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_B)
-	assert_str(suite_b.get_meta(_inspector.META_GDUNIT_NAME)).is_equal("ExampleTestSuiteB")
-
-func test_find_item_for_test_cases() -> void:
-	var case_aa: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_A, "test_aa")
-	assert_str(case_aa.get_meta(_inspector.META_GDUNIT_NAME)).is_equal("test_aa")
-
-	var case_ce: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_C, "test_ce")
-	assert_str(case_ce.get_meta(_inspector.META_GDUNIT_NAME)).is_equal("test_ce")
 
 func test_suite_text_shows_amount_of_cases() -> void:
-	var suite_a: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_A)
+	var suite_a: TreeItem = find_item(TEST_SUITE_A)
 	assert_str(suite_a.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
 
-	var suite_b: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_B)
+	var suite_b: TreeItem = find_item(TEST_SUITE_B)
 	assert_str(suite_b.get_text(0)).is_equal("(0/3) ExampleTestSuiteB")
 
+
 func test_suite_text_responds_to_test_case_events() -> void:
-	var suite_a: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_A)
+	var suite_a: TreeItem = find_item(TEST_SUITE_A)
 
 	var success_aa := GdUnitEvent.new().test_after(TEST_SUITE_A, "ExampleTestSuiteA", "test_aa")
 	_inspector._on_gdunit_event(success_aa)
@@ -218,6 +194,7 @@ func test_suite_text_responds_to_test_case_events() -> void:
 	_inspector._on_gdunit_event(success_ae)
 	assert_str(suite_a.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
 
+
 # test coverage for issue GD-117
 func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	# add a second test suite where has same name as TEST_SUITE_A
@@ -227,8 +204,8 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 
 	# verify the items exists checked the tree
 	assert_str(TEST_SUITE_A).is_not_equal(test_suite_aa_path)
-	var suite_a: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_A)
-	var suite_aa: TreeItem = _inspector._find_item(_inspector._tree_root, test_suite_aa_path)
+	var suite_a: TreeItem = find_item(TEST_SUITE_A)
+	var suite_aa: TreeItem = find_item(test_suite_aa_path)
 	assert_object(suite_a).is_not_same(suite_aa)
 	assert_str(suite_a.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(TEST_SUITE_A)
 	assert_str(suite_aa.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(test_suite_aa_path)
@@ -270,12 +247,12 @@ func test_update_icon_state() -> void:
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite(TEST_SUITE_PATH))
 	_inspector.add_test_suite(toDto(test_suite))
 
-	var suite: TreeItem = _inspector._find_item(_inspector._tree_root, TEST_SUITE_PATH)
+	var suite: TreeItem = find_item(TEST_SUITE_PATH)
 
 	# Verify the inital state
 	assert_str(suite.get_text(0)).is_equal("(0/2) "+ TEST_SUITE_NAME)
 	assert_str(suite.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(TEST_SUITE_PATH)
-	assert_int(get_item_state(_inspector._tree_root, TEST_SUITE_NAME)).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite)).is_equal(_inspector.STATE.INITIAL)
 	assert_int(get_item_state(suite, "test_case1")).is_equal(_inspector.STATE.INITIAL)
 	assert_int(get_item_state(suite, "test_case2")).is_equal(_inspector.STATE.INITIAL)
 
@@ -298,6 +275,15 @@ func test_update_icon_state() -> void:
 		.test_after(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case2", {GdUnitEvent.WARNINGS: true}))
 
 	# Verify the final state
-	assert_str(suite.get_text(0)).is_equal("(1/2) " + TEST_SUITE_NAME)
+	assert_str(suite.get_text(0)).is_equal("(2/2) " + TEST_SUITE_NAME)
 	assert_int(get_item_state(suite, "test_case1")).is_equal(_inspector.STATE.SUCCESS)
 	assert_int(get_item_state(suite, "test_case2")).is_equal(_inspector.STATE.FAILED)
+
+
+func test_tree_view_mode_tree() -> void:
+	var root: TreeItem = _inspector._tree_root
+
+	var childs := root.get_children()
+	assert_array(childs).extract("get_text", [0]).contains_exactly(["(0/13) ui"])
+
+
