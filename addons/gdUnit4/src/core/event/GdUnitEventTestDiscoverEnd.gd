@@ -2,13 +2,13 @@ class_name GdUnitEventTestDiscoverEnd
 extends GdUnitEvent
 
 
-var _total_testsuites :int
+var _total_testsuites: int
 
 
-func _init(p_total_testsuites :int, p_total_count :int) -> void:
+func _init(testsuite_count: int, test_count: int) -> void:
 	_event_type = DISCOVER_END
-	_total_testsuites = p_total_testsuites
-	_total_count = p_total_count
+	_total_testsuites = testsuite_count
+	_total_count = test_count
 
 
 func total_test_suites() -> int:

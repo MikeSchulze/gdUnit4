@@ -154,7 +154,7 @@ func to_keys(input_event: InputEventKey) -> PackedInt32Array:
 
 
 func _to_human_readable(value: String) -> String:
-	return value.split("/")[- 1].capitalize()
+	return value.split("/")[-1].capitalize()
 
 
 func _get_btn_icon(p_name: String) -> Texture2D:
@@ -193,7 +193,7 @@ func _install_examples() -> void:
 	stop_progress()
 
 
-func rescan(update_scripts: bool=false) -> void:
+func rescan(update_scripts:=false) -> void:
 	await get_tree().idle_frame
 	var fs := EditorInterface.get_resource_filesystem()
 	fs.scan_sources()

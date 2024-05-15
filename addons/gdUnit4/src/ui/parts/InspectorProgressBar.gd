@@ -41,7 +41,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 		GdUnitEvent.TESTCASE_AFTER:
 			# we only count when the test is finished (excluding parameterized test iterrations)
 			# test_name:<number> indicates a parameterized test run
-			if event.test_name().find(":") == - 1:
+			if event.test_name().find(":") == -1:
 				progress_update(1, event.is_failed() or event.is_error())
 
 		GdUnitEvent.TESTSUITE_AFTER:

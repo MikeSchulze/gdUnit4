@@ -3,6 +3,7 @@ extends Control
 
 var _context_menus := Dictionary()
 
+
 func _init(context_menus: Array[GdUnitContextMenuItem]) -> void:
 	set_name("EditorFileSystemContextMenuHandler")
 	for menu in context_menus:
@@ -11,6 +12,7 @@ func _init(context_menus: Array[GdUnitContextMenuItem]) -> void:
 	var file_tree := EditorFileSystemContextMenuHandler._file_tree()
 	popup.about_to_popup.connect(on_context_menu_show.bind(popup, file_tree))
 	popup.id_pressed.connect(on_context_menu_pressed.bind(file_tree))
+
 
 static func dispose() -> void:
 	var handler: EditorFileSystemContextMenuHandler = Engine.get_main_loop().root.find_child("EditorFileSystemContextMenuHandler*", false, false)
@@ -22,6 +24,7 @@ static func dispose() -> void:
 			popup.id_pressed.disconnect(Callable(handler, "on_context_menu_pressed"))
 		Engine.get_main_loop().root.call_deferred("remove_child", handler)
 		handler.queue_free()
+
 
 func on_context_menu_show(context_menu: PopupMenu, file_tree: Tree) -> void:
 	context_menu.add_separator()
@@ -35,6 +38,7 @@ func on_context_menu_show(context_menu: PopupMenu, file_tree: Tree) -> void:
 			context_menu.set_item_disabled(current_index, !menu_item.is_enabled(null))
 			current_index += 1
 
+
 func on_context_menu_pressed(id: int, file_tree: Tree) -> void:
 	#prints("on_context_menu_pressed", id)
 	if !_context_menus.has(id):
@@ -42,6 +46,7 @@ func on_context_menu_pressed(id: int, file_tree: Tree) -> void:
 	var menu_item: GdUnitContextMenuItem = _context_menus[id]
 	var selected_test_suites := collect_testsuites(menu_item, file_tree)
 	menu_item.execute([selected_test_suites])
+
 
 func collect_testsuites(_menu_item: GdUnitContextMenuItem, file_tree: Tree) -> PackedStringArray:
 	var file_system := EditorInterface.get_resource_filesystem()
@@ -62,12 +67,15 @@ func collect_testsuites(_menu_item: GdUnitContextMenuItem, file_tree: Tree) -> P
 		selected_item = file_tree.get_next_selected(selected_item)
 	return selected_test_suites
 
+
 # Returns the FileSystemDock instance
 static func filesystem_dock() -> FileSystemDock:
 	return EditorInterface.get_file_system_dock()
 
+
 static func _file_tree() -> Tree:
-	return GdObjects.find_nodes_by_class(filesystem_dock(), "Tree", true)[- 1]
+	return GdObjects.find_nodes_by_class(filesystem_dock(), "Tree", true)[-1]
+
 
 static func _menu_popup() -> PopupMenu:
-	return GdObjects.find_nodes_by_class(filesystem_dock(), "PopupMenu")[- 1]
+	return GdObjects.find_nodes_by_class(filesystem_dock(), "PopupMenu")[-1]

@@ -75,7 +75,7 @@ func update_statistics(event: GdUnitEvent) -> void:
 	_summary["orphan_nodes"] += event.orphan_nodes()
 
 
-func print_message(message: String, color: Color=_text_color, indent: int=0) -> void:
+func print_message(message: String, color: Color=_text_color, indent:=0) -> void:
 	for i in indent:
 		output.push_indent(1)
 	output.push_color(color)
@@ -85,7 +85,7 @@ func print_message(message: String, color: Color=_text_color, indent: int=0) -> 
 		output.pop()
 
 
-func println_message(message: String, color: Color=_text_color, indent: int=- 1) -> void:
+func println_message(message: String, color: Color=_text_color, indent:=-1) -> void:
 	print_message(message, color, indent)
 	output.newline()
 

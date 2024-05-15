@@ -2,11 +2,11 @@ class_name GdUnitUiTools
 extends RefCounted
 
 
-static var _spinner :AnimatedTexture
+static var _spinner: AnimatedTexture
 
 
 ## Returns the icon property defined by name and theme_type, if it exists.
-static func get_icon(icon_name: String, color: Color=Color.BLACK) -> Texture2D:
+static func get_icon(icon_name: String, color:=Color.BLACK) -> Texture2D:
 	if not Engine.is_editor_hint():
 		return null
 	var icon := EditorInterface.get_base_control().get_theme_icon(icon_name, "EditorIcons")
@@ -35,7 +35,7 @@ static func get_run_overall_icon() -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 
-static func get_GDScript_icon(status :String, color :Color) -> Texture2D:
+static func get_GDScript_icon(status: String, color: Color) -> Texture2D:
 	if not Engine.is_editor_hint():
 		return null
 	var icon_a := EditorInterface.get_base_control().get_theme_icon("GDScript", "EditorIcons")
@@ -45,7 +45,7 @@ static func get_GDScript_icon(status :String, color :Color) -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 
-static func get_CSharpScript_icon(status :String, color :Color) -> Texture2D:
+static func get_CSharpScript_icon(status: String, color: Color) -> Texture2D:
 	if not Engine.is_editor_hint():
 		return null
 	var icon_a := EditorInterface.get_base_control().get_theme_icon("CSharpScript", "EditorIcons")

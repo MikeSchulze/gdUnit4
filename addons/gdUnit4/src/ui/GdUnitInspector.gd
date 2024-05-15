@@ -83,11 +83,3 @@ func _on_MainPanel_run_testcase(resource_path: String, test_case: String, test_p
 @warning_ignore("redundant_await")
 func _on_status_bar_request_discover_tests() -> void:
 	await _command_handler.cmd_discover_tests()
-
-
-func _on_status_bar_tree_view_mode_changed(flat: bool) -> void:
-	push_warning("Change the tree mode style is not yet implemented!")
-
-
-func _on_status_bar_tree_sort_mode_changed(asscending: bool) -> void:
-	push_warning("Change tree sorting is not yet implemented!")

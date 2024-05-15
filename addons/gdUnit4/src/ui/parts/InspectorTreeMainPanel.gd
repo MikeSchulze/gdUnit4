@@ -14,9 +14,10 @@ const CONTEXT_MENU_DEBUG_ID = 1
 @onready var _discover_hint := %discover_hint
 @onready var _spinner := %spinner
 
-# tree icons
+# loading tree icons
 @onready var ICON_SPINNER := GdUnitUiTools.get_spinner()
 @onready var ICON_FOLDER := GdUnitUiTools.get_icon("Folder")
+# gdscript icons
 @onready var ICON_GDSCRIPT_TEST_DEFAULT := GdUnitUiTools.get_icon("GDScript", Color.GHOST_WHITE)
 @onready var ICON_GDSCRIPT_TEST_SUCCESS := GdUnitUiTools.get_GDScript_icon("StatusSuccess", Color.DARK_GREEN)
 @onready var ICON_GDSCRIPT_TEST_FAILED := GdUnitUiTools.get_GDScript_icon("StatusError", Color.SKY_BLUE)
@@ -24,8 +25,7 @@ const CONTEXT_MENU_DEBUG_ID = 1
 @onready var ICON_GDSCRIPT_TEST_SUCCESS_ORPHAN := GdUnitUiTools.get_GDScript_icon("Unlinked", Color.DARK_GREEN)
 @onready var ICON_GDSCRIPT_TEST_FAILED_ORPHAN := GdUnitUiTools.get_GDScript_icon("Unlinked", Color.SKY_BLUE)
 @onready var ICON_GDSCRIPT_TEST_ERRORS_ORPHAN := GdUnitUiTools.get_GDScript_icon("Unlinked", Color.DARK_RED)
-
-
+# csharp script icons
 @onready var ICON_CSSCRIPT_TEST_DEFAULT := GdUnitUiTools.get_icon("CSharpScript")
 @onready var ICON_CSSCRIPT_TEST_SUCCESS := GdUnitUiTools.get_CSharpScript_icon("StatusSuccess", Color.DARK_GREEN)
 @onready var ICON_CSSCRIPT_TEST_FAILED := GdUnitUiTools.get_CSharpScript_icon("StatusError", Color.SKY_BLUE)
@@ -33,7 +33,6 @@ const CONTEXT_MENU_DEBUG_ID = 1
 @onready var ICON_CSSCRIPT_TEST_SUCCESS_ORPHAN := GdUnitUiTools.get_CSharpScript_icon("Unlinked", Color.DARK_GREEN)
 @onready var ICON_CSSCRIPT_TEST_FAILED_ORPHAN := GdUnitUiTools.get_CSharpScript_icon("Unlinked", Color.SKY_BLUE)
 @onready var ICON_CSSCRIPT_TEST_ERRORS_ORPHAN := GdUnitUiTools.get_CSharpScript_icon("Unlinked", Color.DARK_RED)
-
 
 
 enum GdUnitType {
@@ -69,6 +68,8 @@ const META_TEST_PARAM_INDEX := "test_param_index"
 
 var _tree_root: TreeItem
 var _item_hash := Dictionary()
+var _sort_ascending := true
+var _tree_view_mode := false
 
 
 func _build_cache_key(resource_path: String, test_name: String) -> Array:
@@ -205,14 +206,14 @@ func _free_recursive(items:=_tree_root.get_children()) -> void:
 
 func sort_tree_items(parent :TreeItem) -> void:
 	var items := parent.get_children()
-	items.sort_custom(sort_folders_first)
+	items.sort_custom(sort_items.bind(_sort_ascending))
 	for item in items:
 		parent.remove_child(item)
 		parent.add_child(item)
 		sort_tree_items(item)
 
 
-func sort_folders_first(a: TreeItem, b: TreeItem) -> bool:
+func sort_items(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
 	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
 	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
 	 # Compare types first
@@ -220,10 +221,10 @@ func sort_folders_first(a: TreeItem, b: TreeItem) -> bool:
 		return type_a == GdUnitType.FOLDER
 	var name_a :String = a.get_meta(META_GDUNIT_NAME)
 	var name_b :String = b.get_meta(META_GDUNIT_NAME)
-	return name_a.naturalnocasecmp_to(name_b) < 0
+	return name_a.naturalnocasecmp_to(name_b) < 0 if ascending else name_a.naturalnocasecmp_to(name_b) > 0
 
 
-func reset_tree_state(parent :TreeItem) -> void:
+func reset_tree_state(parent: TreeItem) -> void:
 	for item in parent.get_children():
 		set_state_initial(item)
 		reset_tree_state(item)
@@ -461,11 +462,9 @@ func update_test_case(event: GdUnitEvent) -> void:
 			update_item_counter(item)
 	update_state(item, event)
 
-var is_flat := false
-
 
 func create_tree_item(test_suite: GdUnitTestSuiteDto) -> TreeItem:
-	if is_flat:
+	if _tree_view_mode:
 		return _tree.create_item(_tree_root)
 
 	var root_folder := GdUnitSettings.test_root_folder()
@@ -516,7 +515,7 @@ func init_item_counter(item: TreeItem) -> void:
 	init_folder_counter(item.get_parent())
 
 
-func increment_item_counter(item: TreeItem, increment_count :int) -> void:
+func increment_item_counter(item: TreeItem, increment_count: int) -> void:
 	if item != _tree_root and item.get_meta(META_GDUNIT_TOTAL_TESTS) != 0:
 		var count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
 		item.set_meta(META_GDUNIT_SUCCESS_TESTS, count + increment_count)
@@ -539,7 +538,7 @@ func init_folder_counter(item: TreeItem) -> void:
 		init_item_counter(item)
 
 
-func count_tests_total(accum :int, item: TreeItem) -> int:
+func count_tests_total(accum: int, item: TreeItem) -> int:
 	return accum + item.get_meta(META_GDUNIT_TOTAL_TESTS)
 
 
@@ -557,7 +556,7 @@ func update_item_counter(item: TreeItem) -> void:
 			increment_item_counter(item.get_parent(), count)
 
 
-func get_icon_by_file_type(path :String, state :STATE, orphans :bool) -> Texture2D:
+func get_icon_by_file_type(path: String, state: STATE, orphans: bool) -> Texture2D:
 	if path.get_extension() == "gd":
 		match state:
 			STATE.INITIAL:
@@ -680,7 +679,7 @@ func _on_run_pressed(run_debug: bool) -> void:
 	var test_case: String = item.get_meta(META_GDUNIT_NAME)
 	# handle parameterized test selection
 	var test_param_index: int = item.get_meta(META_TEST_PARAM_INDEX)
-	if test_param_index != - 1:
+	if test_param_index != -1:
 		test_case = parent.get_meta(META_GDUNIT_NAME)
 	run_testcase.emit(test_suite_resource_path, test_case, test_param_index, run_debug)
 
@@ -705,7 +704,7 @@ func _on_Tree_item_activated() -> void:
 		var report_line_number := reports[0].line_number()
 		# if number -1 we use original stored line number of the test case
 		# in non debug mode the line number is not available
-		if report_line_number != - 1:
+		if report_line_number != -1:
 			line_number = report_line_number
 
 	EditorInterface.get_file_system_dock().navigate_to_path(resource_path)
@@ -765,5 +764,11 @@ func _on_context_m_index_pressed(index: int) -> void:
 			_on_run_pressed(false)
 
 
-func _on_status_bar_trew_sort_mode_changed(asscending: bool, extra_arg_0: bool) -> void:
-	pass # Replace with function body.
+func _on_status_bar_tree_sort_mode_changed(asscending: bool) -> void:
+	push_warning("Change tree sorting is not yet implemented!")
+	_sort_ascending = asscending
+
+
+func _on_status_bar_tree_view_mode_changed(flat: bool) -> void:
+	push_warning("Change the tree mode style is not yet implemented!")
+	_tree_view_mode = flat
