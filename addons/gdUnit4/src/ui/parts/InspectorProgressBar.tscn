@@ -28,7 +28,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-text = "0:0"
 horizontal_alignment = 1
 vertical_alignment = 1
 max_lines_visible = 1

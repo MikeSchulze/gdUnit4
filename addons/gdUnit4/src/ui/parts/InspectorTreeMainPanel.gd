@@ -6,8 +6,8 @@ signal run_testsuite()
 
 const CONTEXT_MENU_RUN_ID = 0
 const CONTEXT_MENU_DEBUG_ID = 1
-const CONTEXT_MENU_EXPAND_ALL = 3
-const CONTEXT_MENU_COLLAPSE_ALL = 4
+const CONTEXT_MENU_COLLAPSE_ALL = 3
+const CONTEXT_MENU_EXPAND_ALL = 4
 
 
 @onready var _tree: Tree = $Panel/Tree
@@ -251,11 +251,11 @@ func do_collapse_parent(item: TreeItem) -> void:
 		do_collapse_parent(item.get_parent())
 
 
-func do_collapse_all(collapsed: bool, parent := _tree_root) -> void:
+func do_collapse_all(collapse: bool, parent := _tree_root) -> void:
 	for item in parent.get_children():
-		item.collapsed = collapsed
-		if not collapsed:
-			do_collapse_all(collapsed, item)
+		item.collapsed = collapse
+		if not collapse:
+			do_collapse_all(collapse, item)
 
 
 func set_state_initial(item: TreeItem) -> void:

@@ -9,6 +9,8 @@ extends ProgressBar
 func _ready() -> void:
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	style.bg_color = Color.DARK_GREEN
+	bar.value = 0
+	bar.max_value = 0
 	update_text()
 
 
