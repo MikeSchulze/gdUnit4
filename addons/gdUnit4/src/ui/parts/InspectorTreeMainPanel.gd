@@ -6,6 +6,9 @@ signal run_testsuite()
 
 const CONTEXT_MENU_RUN_ID = 0
 const CONTEXT_MENU_DEBUG_ID = 1
+const CONTEXT_MENU_EXPAND_ALL = 3
+const CONTEXT_MENU_COLLAPSE_ALL = 4
+
 
 @onready var _tree: Tree = $Panel/Tree
 @onready var _report_list: Node = $report/ScrollContainer/list
@@ -162,6 +165,8 @@ func is_folder(item: TreeItem) -> bool:
 func _ready() -> void:
 	_context_menu.set_item_icon(CONTEXT_MENU_RUN_ID, GdUnitUiTools.get_icon("Play"))
 	_context_menu.set_item_icon(CONTEXT_MENU_DEBUG_ID, GdUnitUiTools.get_icon("PlayStart"))
+	_context_menu.set_item_icon(CONTEXT_MENU_EXPAND_ALL, GdUnitUiTools.get_icon("ExpandTree"))
+	_context_menu.set_item_icon(CONTEXT_MENU_COLLAPSE_ALL, GdUnitUiTools.get_icon("CollapseTree"))
 	_spinner.icon = GdUnitUiTools.get_spinner()
 	init_tree()
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(_on_gdunit_add_test_suite)
@@ -246,6 +251,13 @@ func do_collapse_parent(item: TreeItem) -> void:
 		do_collapse_parent(item.get_parent())
 
 
+func do_collapse_all(collapsed: bool, parent := _tree_root) -> void:
+	for item in parent.get_children():
+		item.collapsed = collapsed
+		if not collapsed:
+			do_collapse_all(collapsed, item)
+
+
 func set_state_initial(item: TreeItem) -> void:
 	item.set_custom_color(0, Color.GHOST_WHITE)
 	item.set_tooltip_text(0, "")
@@ -256,7 +268,6 @@ func set_state_initial(item: TreeItem) -> void:
 	item.remove_meta(META_GDUNIT_ORPHAN)
 	set_item_icon_by_state(item)
 	init_item_counter(item)
-	item.collapsed = false
 
 
 func set_state_running(item: TreeItem) -> void:
@@ -762,6 +773,10 @@ func _on_context_m_index_pressed(index: int) -> void:
 			_on_run_pressed(true)
 		CONTEXT_MENU_RUN_ID:
 			_on_run_pressed(false)
+		CONTEXT_MENU_EXPAND_ALL:
+			do_collapse_all(false)
+		CONTEXT_MENU_COLLAPSE_ALL:
+			do_collapse_all(true)
 
 
 func _on_status_bar_tree_sort_mode_changed(asscending: bool) -> void:
