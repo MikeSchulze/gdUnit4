@@ -55,8 +55,8 @@ func add_file_system_dock_context_menu() -> void:
 			return true
 		return GdObjects.is_test_suite(script) == is_ts
 	var menu :Array[GdUnitContextMenuItem] = [
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Testsuites", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE)),
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Testsuites", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE_DEBUG)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Testsuites", "Play", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Testsuites", "PlayStart", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE_DEBUG)),
 	]
 	EditorFileSystemControls.register_context_menu(menu)
 
@@ -65,9 +65,9 @@ func add_script_editor_context_menu() -> void:
 	var is_test_suite := func is_visible(script: Script, is_ts: bool) -> bool:
 		return GdObjects.is_test_suite(script) == is_ts
 	var menu :Array[GdUnitContextMenuItem] = [
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE)),
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", is_test_suite.bind(true),_command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG)),
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.CREATE_TEST, "Create Test", is_test_suite.bind(false), _command_handler.command(GdUnitCommandHandler.CMD_CREATE_TESTCASE))
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", "Play", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", "PlayStart", is_test_suite.bind(true),_command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.CREATE_TEST, "Create Test", "New", is_test_suite.bind(false), _command_handler.command(GdUnitCommandHandler.CMD_CREATE_TESTCASE))
 	]
 	ScriptEditorControls.register_context_menu(menu)
 

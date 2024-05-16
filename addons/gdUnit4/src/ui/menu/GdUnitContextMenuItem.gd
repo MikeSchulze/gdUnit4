@@ -31,13 +31,20 @@ var visible: Callable:
 	get:
 		return visible
 
+var icon: String:
+	set(value):
+		icon = value
+	get:
+		return icon
 
-func _init(p_id: MENU_ID, p_name: StringName, p_is_visible: Callable, p_command: GdUnitCommand) -> void:
+
+func _init(p_id: MENU_ID, p_name: StringName, p_icon :String, p_is_visible: Callable, p_command: GdUnitCommand) -> void:
 	assert(p_id != null, "(%s) missing parameter 'MENU_ID'" % p_name)
 	assert(p_is_visible != null, "(%s) missing parameter 'GdUnitCommand'" % p_name)
 	assert(p_command != null, "(%s) missing parameter 'GdUnitCommand'" % p_name)
 	self.id = p_id
 	self.name = p_name
+	self.icon = p_icon
 	self.command = p_command
 	self.visible = p_is_visible
 
