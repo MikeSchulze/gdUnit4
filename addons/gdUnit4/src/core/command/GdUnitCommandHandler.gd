@@ -74,7 +74,7 @@ func _init() -> void:
 	register_command(GdUnitCommand.new(CMD_STOP_TEST_RUN, is_running, cmd_stop.bind(_client_id), GdUnitShortcut.ShortCut.STOP_TEST_RUN))
 
 	# schedule discover tests if enabled
-	if GdUnitSettings.is_inspector_test_discover_enabled():
+	if GdUnitSettings.is_test_discover_enabled():
 		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(5)
 		timer.timeout.connect(cmd_discover_tests)
 
@@ -262,7 +262,6 @@ func cmd_create_test() -> void:
 	ScriptEditorControls.edit_script(info.get("path"), info.get("line"))
 
 
-
 func cmd_discover_tests() -> void:
 	await GdUnitTestDiscoverer.run()
 
@@ -342,6 +341,9 @@ func _on_settings_changed(property :GdUnitProperty) -> void:
 		var input_event := create_shortcut_input_even(property.value())
 		prints("Shortcut changed: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[shortcut], input_event.as_text()])
 		register_shortcut(shortcut, input_event)
+	if property.name() == GdUnitSettings.TEST_DISCOVER_ENABLED:
+		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(3)
+		timer.timeout.connect(cmd_discover_tests)
 
 
 ################################################################################

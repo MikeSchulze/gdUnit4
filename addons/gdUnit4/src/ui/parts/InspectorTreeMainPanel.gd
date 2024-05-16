@@ -755,7 +755,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			_discover_hint.visible = false
 			_tree_root.visible = true
 		GdUnitEvent.INIT:
-			if not GdUnitSettings.is_inspector_test_discover_enabled():
+			if not GdUnitSettings.is_test_discover_enabled():
 				init_tree()
 		GdUnitEvent.TESTCASE_BEFORE:
 			update_test_case(event)
