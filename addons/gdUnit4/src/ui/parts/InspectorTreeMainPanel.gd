@@ -167,6 +167,10 @@ func _ready() -> void:
 	_context_menu.set_item_icon(CONTEXT_MENU_DEBUG_ID, GdUnitUiTools.get_icon("PlayStart"))
 	_context_menu.set_item_icon(CONTEXT_MENU_EXPAND_ALL, GdUnitUiTools.get_icon("ExpandTree"))
 	_context_menu.set_item_icon(CONTEXT_MENU_COLLAPSE_ALL, GdUnitUiTools.get_icon("CollapseTree"))
+	# do colorize the icons
+	#for index in _context_menu.item_count:
+	#	_context_menu.set_item_icon_modulate(index, Color.MEDIUM_PURPLE)
+
 	_spinner.icon = GdUnitUiTools.get_spinner()
 	init_tree()
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(_on_gdunit_add_test_suite)

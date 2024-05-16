@@ -35,6 +35,7 @@ func on_context_menu_show(context_menu: PopupMenu, file_tree: Tree) -> void:
 		var menu_item: GdUnitContextMenuItem = _context_menus[menu_id]
 		if selected_test_suites.size() != 0:
 			context_menu.add_item(menu_item.name, menu_id)
+			#context_menu.set_item_icon_modulate(current_index, Color.MEDIUM_PURPLE)
 			context_menu.set_item_disabled(current_index, !menu_item.is_enabled(null))
 			context_menu.set_item_icon(current_index, GdUnitUiTools.get_icon(menu_item.icon))
 			current_index += 1
