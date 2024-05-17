@@ -8,6 +8,9 @@ var _server_node :Node
 var _gd_console :Node
 
 
+static var guard: GdUnitTestDiscoverGuard
+
+
 func _enter_tree() -> void:
 	if Engine.get_version_info().hex < 0x40200:
 		prints("GdUnit4 plugin requires a minimum of Godot 4.2.x Version!")
@@ -27,6 +30,9 @@ func _enter_tree() -> void:
 		Engine.get_main_loop().root.call_deferred("add_child", update_tool)
 	if GdUnit4CSharpApiLoader.is_mono_supported():
 		prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
+	# connect to be notified for script changes to be able to discover new tests
+	guard = GdUnitTestDiscoverGuard.new()
+	resource_saved.connect(_on_resource_saved)
 
 
 func _exit_tree() -> void:
@@ -41,3 +47,8 @@ func _exit_tree() -> void:
 		_server_node.free()
 	GdUnitTools.dispose_all()
 	prints("Unload GdUnit4 Plugin success")
+
+
+func _on_resource_saved(resource :Resource) -> void:
+	if resource is Script:
+		guard.discover(resource)

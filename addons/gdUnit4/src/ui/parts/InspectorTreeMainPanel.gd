@@ -84,6 +84,16 @@ func get_tree_item(resource_path: String, item_name: String) -> TreeItem:
 	return _item_hash.get(key, null)
 
 
+func remove_tree_item(resource_path: String, item_name: String) -> bool:
+	var key := _build_cache_key(resource_path, item_name)
+	var item :TreeItem= _item_hash.get(key, null)
+	if item:
+		item.get_parent().remove_child(item)
+		item.free()
+		return _item_hash.erase(key)
+	return false
+
+
 func add_tree_item_to_cache(resource_path: String, test_name: String, item: TreeItem) -> void:
 	var key := _build_cache_key(resource_path, test_name)
 	_item_hash[key] = item
@@ -173,7 +183,7 @@ func _ready() -> void:
 
 	_spinner.icon = GdUnitUiTools.get_spinner()
 	init_tree()
-	GdUnitSignals.instance().gdunit_add_test_suite.connect(_on_gdunit_add_test_suite)
+	GdUnitSignals.instance().gdunit_add_test_suite.connect(do_add_test_suite)
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	var command_handler := GdUnitCommandHandler.instance()
 	command_handler.gdunit_runner_start.connect(_on_gdunit_runner_start)
@@ -611,7 +621,42 @@ func get_icon_by_file_type(path: String, state: STATE, orphans: bool) -> Texture
 			return ICON_FOLDER
 
 
-func add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
+func discover_test_added(event: GdUnitEventTestDiscoverTestAdded) -> void:
+	# check if the test already exists
+	var test_name := event.test_case_dto().name()
+	var item := get_tree_item(event.resource_path(), test_name)
+	if item != null:
+		return
+
+	item = get_tree_item(event.resource_path(), event.suite_name())
+	if not item:
+		push_error("Internal Error: Can't find test suite %s:%s" % [event.suite_name(), event.resource_path()])
+		return
+	prints("Discovered test added: '%s' on %s" % [event.test_name(), event.resource_path()])
+	# update test case count
+	var test_count :int = item.get_meta(META_GDUNIT_TOTAL_TESTS)
+	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_count + 1)
+	init_item_counter(item)
+	# add new discovered test
+	add_test(item, event.test_case_dto())
+
+
+func discover_test_removed(event: GdUnitEventTestDiscoverTestRemoved) -> void:
+	prints("Discovered test removed: '%s' on %s" % [event.test_name(), event.resource_path()])
+	var item := get_tree_item(event.resource_path(), event.test_name())
+	if not item:
+		push_error("Internal Error: Can't find test suite %s:%s" % [event.suite_name(), event.resource_path()])
+		return
+	# update test case count on test suite
+	var parent := item.get_parent()
+	var test_count :int = parent.get_meta(META_GDUNIT_TOTAL_TESTS)
+	parent.set_meta(META_GDUNIT_TOTAL_TESTS, test_count - 1)
+	init_item_counter(parent)
+	# finally remove the test
+	remove_tree_item(event.resource_path(), event.test_name())
+
+
+func do_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
 	var item := create_tree_item(test_suite)
 	var suite_name := test_suite.name()
 
@@ -744,29 +789,37 @@ func _on_gdunit_runner_stop(_client_id: int) -> void:
 	select_first_failure()
 
 
-func _on_gdunit_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
-	add_test_suite(test_suite)
-
-
 func _on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.DISCOVER_START:
 			_tree_root.visible = false
 			_discover_hint.visible = true
 			init_tree()
+
 		GdUnitEvent.DISCOVER_END:
 			sort_tree_items(_tree_root)
 			_discover_hint.visible = false
 			_tree_root.visible = true
+
+		GdUnitEvent.DISCOVER_TEST_ADDED:
+			discover_test_added(event)
+
+		GdUnitEvent.DISCOVER_TEST_REMOVED:
+			discover_test_removed(event)
+
 		GdUnitEvent.INIT:
 			if not GdUnitSettings.is_test_discover_enabled():
 				init_tree()
+
 		GdUnitEvent.TESTCASE_BEFORE:
 			update_test_case(event)
+
 		GdUnitEvent.TESTCASE_AFTER:
 			update_test_case(event)
+
 		GdUnitEvent.TESTSUITE_BEFORE:
 			update_test_suite(event)
+
 		GdUnitEvent.TESTSUITE_AFTER:
 			update_test_suite(event)
 

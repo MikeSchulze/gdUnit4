@@ -19,7 +19,7 @@ func before_test() -> void:
 
 	# load a testsuite
 	for test_suite :Node in setup_test_env():
-		_inspector.add_test_suite(toDto(test_suite))
+		_inspector.do_add_test_suite(toDto(test_suite))
 	# verify no failures are exists
 	assert_array(_inspector.select_next_failure()).is_null()
 
@@ -200,7 +200,7 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	# add a second test suite where has same name as TEST_SUITE_A
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/ui/parts/resources/bar/ExampleTestSuiteA.resource"))
 	var test_suite_aa_path :String = test_suite.get_script().resource_path
-	_inspector.add_test_suite(toDto(test_suite))
+	_inspector.do_add_test_suite(toDto(test_suite))
 
 	# verify the items exists checked the tree
 	assert_str(TEST_SUITE_A).is_not_equal(test_suite_aa_path)
@@ -245,7 +245,7 @@ func test_update_icon_state() -> void:
 	var TEST_SUITE_PATH := "res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource"
 	var TEST_SUITE_NAME := "TestSuiteFailAndOrpahnsDetected"
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite(TEST_SUITE_PATH))
-	_inspector.add_test_suite(toDto(test_suite))
+	_inspector.do_add_test_suite(toDto(test_suite))
 
 	var suite: TreeItem = find_item(TEST_SUITE_PATH)
 
