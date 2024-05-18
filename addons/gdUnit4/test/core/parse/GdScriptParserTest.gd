@@ -487,6 +487,11 @@ func test_get_class_name_snake_case() -> void:
 		.is_equal("SnakeCaseWithoutClassName")
 
 
+func test_get_class_with_extends_in_same_line() -> void:
+	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/extends_on_same_line.gd")))\
+		.is_equal("ClassNameExtendsInSameLine")
+
+
 func test_is_func_end() -> void:
 	assert_bool(_parser.is_func_end("")).is_false()
 	assert_bool(_parser.is_func_end("func test_a():")).is_true()
