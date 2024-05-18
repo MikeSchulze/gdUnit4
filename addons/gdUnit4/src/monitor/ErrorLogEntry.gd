@@ -15,6 +15,7 @@ const PATTERN_SCRIPT_ERROR := "USER SCRIPT ERROR:"
 const PATTERN_PUSH_ERROR := "USER ERROR:"
 const PATTERN_PUSH_WARNING := "USER WARNING:"
 
+static var _regex_parse_error_line_number: RegEx
 
 var _type :TYPE
 var _line :int
@@ -52,9 +53,9 @@ static func _extract(records :PackedStringArray, index :int, type :TYPE, pattern
 
 
 static func _parse_error_line_number(record :String) -> int:
-	var regex := GdUnitSingleton.instance("error_line_regex", func() ->RegEx:
-			return GdUnitTools.to_regex("at: .*res://.*:(\\d+)")) as RegEx
-	var matches := regex.search(record)
+	if _regex_parse_error_line_number == null:
+		_regex_parse_error_line_number = GdUnitTools.to_regex("at: .*res://.*:(\\d+)")
+	var matches := _regex_parse_error_line_number.search(record)
 	if matches != null:
 		return matches.get_string(1).to_int()
 	return -1

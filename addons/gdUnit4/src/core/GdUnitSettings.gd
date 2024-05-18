@@ -15,6 +15,7 @@ const GROUP_TEST = COMMON_SETTINGS + "/test"
 const TEST_TIMEOUT = GROUP_TEST + "/test_timeout_seconds"
 const TEST_LOOKUP_FOLDER = GROUP_TEST + "/test_lookup_folder"
 const TEST_SITE_NAMING_CONVENTION = GROUP_TEST + "/test_suite_naming_convention"
+const TEST_DISCOVER_ENABLED = GROUP_TEST + "/test_discovery"
 
 
 # Report Setiings
@@ -45,6 +46,8 @@ const TEMPLATE_TS_CS = TEMPLATES_TS + "/CSharpScript"
 const UI_SETTINGS = MAIN_CATEGORY + "/ui"
 const GROUP_UI_INSPECTOR = UI_SETTINGS + "/inspector"
 const INSPECTOR_NODE_COLLAPSE = GROUP_UI_INSPECTOR + "/node_collapse"
+const INSPECTOR_TREE_VIEW_MODE = GROUP_UI_INSPECTOR + "/tree_view_mode"
+const INSPECTOR_TREE_SORT_MODE = GROUP_UI_INSPECTOR + "/tree_sort_mode"
 
 
 # Shortcut Setiings
@@ -93,18 +96,25 @@ static func setup() -> void:
 	create_property_if_need(TEST_TIMEOUT, DEFAULT_TEST_TIMEOUT, "Sets the test case runtime timeout in seconds.")
 	create_property_if_need(TEST_LOOKUP_FOLDER, DEFAULT_TEST_LOOKUP_FOLDER, HELP_TEST_LOOKUP_FOLDER)
 	create_property_if_need(TEST_SITE_NAMING_CONVENTION, NAMING_CONVENTIONS.AUTO_DETECT, "Sets test-suite genrate script name convention.", NAMING_CONVENTIONS.keys())
+	create_property_if_need(TEST_DISCOVER_ENABLED, false, "Enables/Disables the automatic detection of tests by finding tests in test lookup folders at runtime.")
 	create_property_if_need(REPORT_PUSH_ERRORS, false, "Enables/Disables report of push_error() as failure!")
 	create_property_if_need(REPORT_SCRIPT_ERRORS, true, "Enables/Disables report of script errors as failure!")
 	create_property_if_need(REPORT_ORPHANS, true, "Enables/Disables orphan reporting.")
 	create_property_if_need(REPORT_ASSERT_ERRORS, true, "Enables/Disables error reporting checked asserts.")
 	create_property_if_need(REPORT_ASSERT_WARNINGS, true, "Enables/Disables warning reporting checked asserts")
 	create_property_if_need(REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true, "Enabled/disabled number values will be compared strictly by type. (real vs int)")
-	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true, "Enables/Disables that the testsuite node is closed after a successful test run.")
-	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false, "Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")
+	# inspector
+	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true,
+		"Enables/Disables that the testsuite node is closed after a successful test run.")
+	create_property_if_need(INSPECTOR_TREE_VIEW_MODE, GdUnitInspectorTreeConstants.VIEW_MODE.TREE,
+		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.VIEW_MODE.keys())
+	create_property_if_need(INSPECTOR_TREE_SORT_MODE, GdUnitInspectorTreeConstants.SORT_MODE.NATURAL,
+		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.SORT_MODE.keys())
+	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false,
+		"Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")
 	create_property_if_need(TEMPLATE_TS_GD, GdUnitTestSuiteTemplate.default_GD_template(), "Defines the test suite template")
 	create_shortcut_properties_if_need()
 	migrate_properties()
-
 
 
 static func migrate_properties() -> void:
@@ -223,6 +233,16 @@ static func is_inspector_node_collapse() -> bool:
 
 static func is_inspector_toolbar_button_show() -> bool:
 	return get_setting(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, true)
+
+
+static func is_test_discover_enabled() -> bool:
+	return get_setting(TEST_DISCOVER_ENABLED, false)
+
+
+static func set_test_discover_enabled(enable :bool) -> void:
+	var property := get_property(TEST_DISCOVER_ENABLED)
+	property.set_value(enable)
+	update_property(property)
 
 
 static func is_log_enabled() -> bool:

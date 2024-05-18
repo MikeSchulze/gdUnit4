@@ -1,5 +1,5 @@
 class_name GdUnitCommandHandler
-extends RefCounted
+extends Object
 
 signal gdunit_runner_start()
 signal gdunit_runner_stop(client_id :int)
@@ -72,6 +72,15 @@ func _init() -> void:
 	register_command(GdUnitCommand.new(CMD_RERUN_TESTS_DEBUG, is_not_running, cmd_run.bind(true), GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG))
 	register_command(GdUnitCommand.new(CMD_CREATE_TESTCASE, is_not_running, cmd_create_test, GdUnitShortcut.ShortCut.CREATE_TEST))
 	register_command(GdUnitCommand.new(CMD_STOP_TEST_RUN, is_running, cmd_stop.bind(_client_id), GdUnitShortcut.ShortCut.STOP_TEST_RUN))
+
+
+	# do not reschedule inside of test run (called on GdUnitCommandHandlerTest)
+	if Engine.has_meta("GdUnitRunner"):
+		return
+	# schedule discover tests if enabled
+	if GdUnitSettings.is_test_discover_enabled():
+		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(5)
+		timer.timeout.connect(cmd_discover_tests)
 
 
 func _notification(what :int) -> void:
@@ -257,6 +266,10 @@ func cmd_create_test() -> void:
 	ScriptEditorControls.edit_script(info.get("path"), info.get("line"))
 
 
+func cmd_discover_tests() -> void:
+	await GdUnitTestDiscoverer.run()
+
+
 static func scan_test_directorys(base_directory :String, test_directory: String, test_suite_paths :PackedStringArray) -> PackedStringArray:
 	print_verbose("Scannning for test directory '%s' at %s" % [test_directory, base_directory])
 	for directory in DirAccess.get_directories_at(base_directory):
@@ -266,7 +279,6 @@ static func scan_test_directorys(base_directory :String, test_directory: String,
 		if GdUnitTestSuiteScanner.exclude_scan_directories.has(current_directory):
 			continue
 		if match_test_directory(directory, test_directory):
-			prints("Collect tests at:", current_directory)
 			test_suite_paths.append(current_directory)
 		else:
 			scan_test_directorys(current_directory, test_directory, test_suite_paths)
@@ -333,6 +345,9 @@ func _on_settings_changed(property :GdUnitProperty) -> void:
 		var input_event := create_shortcut_input_even(property.value())
 		prints("Shortcut changed: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[shortcut], input_event.as_text()])
 		register_shortcut(shortcut, input_event)
+	if property.name() == GdUnitSettings.TEST_DISCOVER_ENABLED:
+		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(3)
+		timer.timeout.connect(cmd_discover_tests)
 
 
 ################################################################################

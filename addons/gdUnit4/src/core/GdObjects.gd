@@ -77,7 +77,7 @@ const NOTIFICATION_AS_STRING_MAPPINGS := {
 	TYPE_NODE: {
 		Node.NOTIFICATION_ENTER_TREE : "ENTER_TREE",
 		Node.NOTIFICATION_EXIT_TREE: "EXIT_TREE",
-		Node.NOTIFICATION_MOVED_IN_PARENT: "MOVED_IN_PARENT",
+		Node.NOTIFICATION_CHILD_ORDER_CHANGED: "CHILD_ORDER_CHANGED",
 		Node.NOTIFICATION_READY: "READY",
 		Node.NOTIFICATION_PAUSED: "PAUSED",
 		Node.NOTIFICATION_UNPAUSED: "UNPAUSED",
@@ -119,6 +119,7 @@ const NOTIFICATION_AS_STRING_MAPPINGS := {
 		#Popup.NOTIFICATION_POPUP_HIDE: "POPUP_HIDE",
 	},
 	TYPE_CONTROL : {
+		Object.NOTIFICATION_PREDELETE: "PREDELETE",
 		Container.NOTIFICATION_SORT_CHILDREN: "SORT_CHILDREN",
 		Control.NOTIFICATION_RESIZED: "RESIZED",
 		Control.NOTIFICATION_MOUSE_ENTER: "MOUSE_ENTER",
@@ -263,9 +264,9 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 @warning_ignore("shadowed_variable_base_class")
 static func notification_as_string(instance :Variant, notification :int) -> String:
 	var error := "Unknown notification: '%s' at instance:  %s" % [notification, instance]
-	if instance is Node:
+	if instance is Node and NOTIFICATION_AS_STRING_MAPPINGS[TYPE_NODE].has(notification):
 		return NOTIFICATION_AS_STRING_MAPPINGS[TYPE_NODE].get(notification, error)
-	if instance is Control:
+	if instance is Control and NOTIFICATION_AS_STRING_MAPPINGS[TYPE_CONTROL].has(notification):
 		return NOTIFICATION_AS_STRING_MAPPINGS[TYPE_CONTROL].get(notification, error)
 	return NOTIFICATION_AS_STRING_MAPPINGS[TYPE_OBJECT].get(notification, error)
 

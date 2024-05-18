@@ -4,9 +4,6 @@ extends ConfirmationDialog
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const GdUnitUpdateClient := preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
 
-const spinner_icon := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
-
-
 @onready var _progress_content :RichTextLabel = %message
 @onready var _progress_bar :TextureProgressBar = %progress
 
@@ -57,9 +54,9 @@ func run_update() -> void:
 	get_cancel_button().disabled = true
 	get_ok_button().disabled = true
 
-	await update_progress("Download Release ... [img=24x24]%s[/img]" % spinner_icon)
+	await update_progress("Download Release ... [img=24x24]%s[/img]" % GdUnitUiTools.get_spinner())
 	await download_release()
-	await update_progress("Extract update ... [img=24x24]%s[/img]" % spinner_icon)
+	await update_progress("Extract update ... [img=24x24]%s[/img]" % GdUnitUiTools.get_spinner())
 	var zip_file := temp_dir() + "/update.zip"
 	var tmp_path := create_temp_dir("update")
 	var result :Variant = extract_zip(zip_file, tmp_path)
@@ -69,7 +66,7 @@ func run_update() -> void:
 		queue_free()
 		return
 
-	await update_progress("Uninstall GdUnit4 ... [img=24x24]%s[/img]" % spinner_icon)
+	await update_progress("Uninstall GdUnit4 ... [img=24x24]%s[/img]" % GdUnitUiTools.get_spinner())
 	disable_gdUnit()
 	if not _debug_mode:
 		delete_directory("res://addons/gdUnit4/")

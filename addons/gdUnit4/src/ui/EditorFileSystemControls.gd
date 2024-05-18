@@ -6,7 +6,7 @@ extends RefCounted
 # Register the given context menu to the filesystem dock
 # Is called when the plugin is activated
 # The filesystem popup is connected to the EditorFileSystemContextMenuHandler
-static func register_context_menu(menu :Array[GdUnitContextMenuItem]) -> void:
+static func register_context_menu(menu: Array[GdUnitContextMenuItem]) -> void:
 	Engine.get_main_loop().root.call_deferred("add_child", EditorFileSystemContextMenuHandler.new(menu))
 
 
@@ -16,10 +16,10 @@ static func unregister_context_menu() -> void:
 	EditorFileSystemContextMenuHandler.dispose()
 
 
-static func _print_menu(popup :PopupMenu) -> void:
+static func _print_menu(popup: PopupMenu) -> void:
 	for itemIndex in popup.item_count:
-		prints( "get_item_id", popup.get_item_id(itemIndex))
-		prints( "get_item_accelerator", popup.get_item_accelerator(itemIndex))
-		prints( "get_item_shortcut", popup.get_item_shortcut(itemIndex))
-		prints( "get_item_text", popup.get_item_text(itemIndex))
+		prints("get_item_id", popup.get_item_id(itemIndex))
+		prints("get_item_accelerator", popup.get_item_accelerator(itemIndex))
+		prints("get_item_shortcut", popup.get_item_shortcut(itemIndex))
+		prints("get_item_text", popup.get_item_text(itemIndex))
 		prints()

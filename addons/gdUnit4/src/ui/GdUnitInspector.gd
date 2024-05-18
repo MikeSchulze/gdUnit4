@@ -26,7 +26,7 @@ func _notification(what: int) -> void:
 		EditorFileSystemControls.unregister_context_menu()
 
 
-func _process(_delta :float) -> void:
+func _process(_delta: float) -> void:
 	_command_handler._do_process()
 
 
@@ -50,31 +50,36 @@ func _getEditorThemes() -> void:
 
 # Context menu registrations ----------------------------------------------------------------------
 func add_file_system_dock_context_menu() -> void:
-	var is_test_suite := func is_visible(script :Script, is_ts :bool) -> bool:
+	var is_test_suite := func is_visible(script: Script, is_ts: bool) -> bool:
 		if script == null:
 			return true
 		return GdObjects.is_test_suite(script) == is_ts
 	var menu :Array[GdUnitContextMenuItem] = [
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Testsuites", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE)),
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Testsuites", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE_DEBUG)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Testsuites", "Play", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Testsuites", "PlayStart", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE_DEBUG)),
 	]
 	EditorFileSystemControls.register_context_menu(menu)
 
 
 func add_script_editor_context_menu() -> void:
-	var is_test_suite := func is_visible(script :Script, is_ts :bool) -> bool:
+	var is_test_suite := func is_visible(script: Script, is_ts: bool) -> bool:
 		return GdObjects.is_test_suite(script) == is_ts
 	var menu :Array[GdUnitContextMenuItem] = [
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE)),
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", is_test_suite.bind(true),_command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG)),
-		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.CREATE_TEST, "Create Test", is_test_suite.bind(false), _command_handler.command(GdUnitCommandHandler.CMD_CREATE_TESTCASE))
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Tests", "Play", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", "PlayStart", is_test_suite.bind(true),_command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG)),
+		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.CREATE_TEST, "Create Test", "New", is_test_suite.bind(false), _command_handler.command(GdUnitCommandHandler.CMD_CREATE_TESTCASE))
 	]
 	ScriptEditorControls.register_context_menu(menu)
 
 
-func _on_MainPanel_run_testsuite(test_suite_paths :Array, debug :bool) -> void:
+func _on_MainPanel_run_testsuite(test_suite_paths: Array, debug: bool) -> void:
 	_command_handler.cmd_run_test_suites(test_suite_paths, debug)
 
 
-func _on_MainPanel_run_testcase(resource_path :String, test_case :String, test_param_index :int, debug :bool) -> void:
+func _on_MainPanel_run_testcase(resource_path: String, test_case: String, test_param_index: int, debug: bool) -> void:
 	_command_handler.cmd_run_test_case(resource_path, test_case, test_param_index, debug)
+
+
+@warning_ignore("redundant_await")
+func _on_status_bar_request_discover_tests() -> void:
+	await _command_handler.cmd_discover_tests()

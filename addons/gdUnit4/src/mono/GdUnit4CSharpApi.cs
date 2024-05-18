@@ -8,7 +8,7 @@ using GdUnit4;
 
 
 // GdUnit4 GDScript - C# API wrapper
-public partial class GdUnit4CSharpApi : RefCounted
+public partial class GdUnit4CSharpApi : Godot.GodotObject
 {
 	private static Type? apiType;
 

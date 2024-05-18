@@ -2,7 +2,6 @@
 class_name ScriptEditorControls
 extends RefCounted
 
-
 # https://github.com/godotengine/godot/blob/master/editor/plugins/script_editor_plugin.h
 # the Editor menu popup items
 enum {
@@ -43,7 +42,7 @@ enum {
 # Saves the given script and closes if requested by <close=true>
 # The script is saved when is opened in the editor.
 # The script is closed when <close> is set to true.
-static func save_an_open_script(script_path :String, close := false) -> bool:
+static func save_an_open_script(script_path: String, close:=false) -> bool:
 	#prints("save_an_open_script", script_path, close)
 	if !Engine.is_editor_hint():
 		return false
@@ -77,7 +76,7 @@ static func close_open_editor_scripts() -> void:
 # The script is openend in the current editor and selected in the file system dock.
 # The line and column on which to open the script can also be specified.
 # The script will be open with the user-configured editor for the script's language which may be an external editor.
-static func edit_script(script_path :String, line_number :int = -1) -> void:
+static func edit_script(script_path: String, line_number:=-1) -> void:
 	var file_system := EditorInterface.get_resource_filesystem()
 	file_system.update_file(script_path)
 	var file_system_dock := EditorInterface.get_file_system_dock()
@@ -90,7 +89,7 @@ static func edit_script(script_path :String, line_number :int = -1) -> void:
 # Register the given context menu to the current script editor
 # Is called when the plugin is activated
 # The active script is connected to the ScriptEditorContextMenuHandler
-static func register_context_menu(menu :Array[GdUnitContextMenuItem]) -> void:
+static func register_context_menu(menu: Array[GdUnitContextMenuItem]) -> void:
 	Engine.get_main_loop().root.call_deferred("add_child", ScriptEditorContextMenuHandler.new(menu))
 
 
@@ -104,10 +103,10 @@ static func _menu_popup() -> PopupMenu:
 	return EditorInterface.get_script_editor().get_child(0).get_child(0).get_child(0).get_popup()
 
 
-static func _print_menu(popup :PopupMenu) -> void:
+static func _print_menu(popup: PopupMenu) -> void:
 	for itemIndex in popup.item_count:
-		prints( "get_item_id", popup.get_item_id(itemIndex))
-		prints( "get_item_accelerator", popup.get_item_accelerator(itemIndex))
-		prints( "get_item_shortcut", popup.get_item_shortcut(itemIndex))
-		prints( "get_item_text", popup.get_item_text(itemIndex))
+		prints("get_item_id", popup.get_item_id(itemIndex))
+		prints("get_item_accelerator", popup.get_item_accelerator(itemIndex))
+		prints("get_item_shortcut", popup.get_item_shortcut(itemIndex))
+		prints("get_item_text", popup.get_item_text(itemIndex))
 		prints()

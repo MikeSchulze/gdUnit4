@@ -1,13 +1,17 @@
 extends RefCounted
 
+
+static var _richtext_normalize: RegEx
+
+
 static func normalize_text(text :String) -> String:
 	return text.replace("\r", "");
 
 
 static func richtext_normalize(input :String) -> String:
-	return GdUnitSingleton.instance("regex_richtext", func _regex_richtext() -> RegEx:
-		return to_regex("\\[/?(b|color|bgcolor|right|table|cell).*?\\]") )\
-	.sub(input, "", true).replace("\r", "")
+	if _richtext_normalize == null:
+		_richtext_normalize = to_regex("\\[/?(b|color|bgcolor|right|table|cell).*?\\]")
+	return _richtext_normalize.sub(input, "", true).replace("\r", "")
 
 
 static func to_regex(pattern :String) -> RegEx:
@@ -40,8 +44,6 @@ static func free_instance(instance :Variant, is_stdout_verbose :=false) -> bool:
 	release_double(instance)
 	if instance is RefCounted:
 		instance.notification(Object.NOTIFICATION_PREDELETE)
-		await Engine.get_main_loop().process_frame
-		await Engine.get_main_loop().physics_frame
 		return true
 	else:
 		# is instance already freed?

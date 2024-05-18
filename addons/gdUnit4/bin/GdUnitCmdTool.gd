@@ -604,8 +604,8 @@ var _cli_runner :CLIRunner
 
 
 func _initialize() -> void:
-	if Engine.get_version_info().hex < 0x40100:
-		prints("GdUnit4 requires a minimum of Godot 4.1.x Version!")
+	if Engine.get_version_info().hex < 0x40200:
+		prints("GdUnit4 requires a minimum of Godot 4.2.x Version!")
 		quit(CLIRunner.RETURN_ERROR_GODOT_VERSION_NOT_SUPPORTED)
 		return
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
@@ -614,8 +614,9 @@ func _initialize() -> void:
 
 
 # do not use print statements on _finalize it results in random crashes
-#func _finalize():
-#	prints("Finallize ..")
-#	prints("-Orphan nodes report-----------------------")
-#	Window.print_orphan_nodes()
-#	prints("Finallize .. done")
+func _finalize() -> void:
+	if OS.is_stdout_verbose():
+		prints("Finallize ..")
+		prints("-Orphan nodes report-----------------------")
+		Window.print_orphan_nodes()
+		prints("Finallize .. done")
