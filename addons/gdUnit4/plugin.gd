@@ -2,13 +2,13 @@
 extends EditorPlugin
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+const GdUnitTestDiscoverGuard := preload("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd")
+
 
 var _gd_inspector :Node
 var _server_node :Node
 var _gd_console :Node
-
-
-static var guard: GdUnitTestDiscoverGuard
+var _guard: GdUnitTestDiscoverGuard
 
 
 func _enter_tree() -> void:
@@ -31,7 +31,7 @@ func _enter_tree() -> void:
 	if GdUnit4CSharpApiLoader.is_mono_supported():
 		prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
 	# connect to be notified for script changes to be able to discover new tests
-	guard = GdUnitTestDiscoverGuard.new()
+	_guard = GdUnitTestDiscoverGuard.new()
 	resource_saved.connect(_on_resource_saved)
 
 
@@ -51,4 +51,4 @@ func _exit_tree() -> void:
 
 func _on_resource_saved(resource :Resource) -> void:
 	if resource is Script:
-		guard.discover(resource)
+		_guard.discover(resource)

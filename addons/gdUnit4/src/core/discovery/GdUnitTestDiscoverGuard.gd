@@ -1,4 +1,3 @@
-class_name GdUnitTestDiscoverGuard
 extends RefCounted
 
 # contains all tracked test suites where edited since editor start
