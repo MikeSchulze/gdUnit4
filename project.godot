@@ -31,9 +31,16 @@ gdscript/warnings/return_value_discarded=false
 
 project/assembly_name="gdUnit4"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
+
 [gdunit4]
 
 settings/common/update_notification_enabled=false
+ui/toolbar/run_overall=true
+ui/inspector/node_collapse=false
+report/godot/script_error=false
 
 [importer_defaults]
 

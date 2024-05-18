@@ -21,7 +21,7 @@ const CONTEXT_MENU_EXPAND_ALL = 4
 @onready var ICON_SPINNER := GdUnitUiTools.get_spinner()
 @onready var ICON_FOLDER := GdUnitUiTools.get_icon("Folder")
 # gdscript icons
-@onready var ICON_GDSCRIPT_TEST_DEFAULT := GdUnitUiTools.get_icon("GDScript", Color.GHOST_WHITE)
+@onready var ICON_GDSCRIPT_TEST_DEFAULT := GdUnitUiTools.get_icon("GDScript", Color.LIGHT_GRAY)
 @onready var ICON_GDSCRIPT_TEST_SUCCESS := GdUnitUiTools.get_GDScript_icon("StatusSuccess", Color.DARK_GREEN)
 @onready var ICON_GDSCRIPT_TEST_FAILED := GdUnitUiTools.get_GDScript_icon("StatusError", Color.SKY_BLUE)
 @onready var ICON_GDSCRIPT_TEST_ERROR := GdUnitUiTools.get_GDScript_icon("StatusError", Color.DARK_RED)
@@ -29,7 +29,7 @@ const CONTEXT_MENU_EXPAND_ALL = 4
 @onready var ICON_GDSCRIPT_TEST_FAILED_ORPHAN := GdUnitUiTools.get_GDScript_icon("Unlinked", Color.SKY_BLUE)
 @onready var ICON_GDSCRIPT_TEST_ERRORS_ORPHAN := GdUnitUiTools.get_GDScript_icon("Unlinked", Color.DARK_RED)
 # csharp script icons
-@onready var ICON_CSSCRIPT_TEST_DEFAULT := GdUnitUiTools.get_icon("CSharpScript")
+@onready var ICON_CSSCRIPT_TEST_DEFAULT := GdUnitUiTools.get_icon("CSharpScript", Color.LIGHT_GRAY)
 @onready var ICON_CSSCRIPT_TEST_SUCCESS := GdUnitUiTools.get_CSharpScript_icon("StatusSuccess", Color.DARK_GREEN)
 @onready var ICON_CSSCRIPT_TEST_FAILED := GdUnitUiTools.get_CSharpScript_icon("StatusError", Color.SKY_BLUE)
 @onready var ICON_CSSCRIPT_TEST_ERROR := GdUnitUiTools.get_CSharpScript_icon("StatusError", Color.DARK_RED)
@@ -273,7 +273,7 @@ func do_collapse_all(collapse: bool, parent := _tree_root) -> void:
 
 
 func set_state_initial(item: TreeItem) -> void:
-	item.set_custom_color(0, Color.GHOST_WHITE)
+	item.set_custom_color(0, Color.LIGHT_GRAY)
 	item.set_tooltip_text(0, "")
 	item.set_suffix(0, "")
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)

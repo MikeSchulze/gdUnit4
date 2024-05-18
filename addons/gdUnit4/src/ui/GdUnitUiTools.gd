@@ -27,6 +27,18 @@ static func get_spinner() -> AnimatedTexture:
 	return _spinner
 
 
+static func get_color_animated_icon(icon_name :String, from :Color, to :Color) -> AnimatedTexture:
+	var texture := AnimatedTexture.new()
+	texture.frames = 8
+	texture.speed_scale = 2.5
+	var color := from
+	for frame in texture.frames:
+		color = lerp(color, to, .2)
+		texture.set_frame_texture(frame, get_icon(icon_name, color))
+		texture.set_frame_duration(frame, 0.2)
+	return texture
+
+
 static func get_run_overall_icon() -> Texture2D:
 	if not Engine.is_editor_hint():
 		return null
@@ -41,7 +53,7 @@ static func get_GDScript_icon(status: String, color: Color) -> Texture2D:
 	var icon_a := EditorInterface.get_base_control().get_theme_icon("GDScript", "EditorIcons")
 	var icon_b := EditorInterface.get_base_control().get_theme_icon(status, "EditorIcons")
 	var overlay_image := _modulate_image(icon_b.get_image(), color)
-	var image := _merge_images_scaled(icon_a.get_image(), Vector2i(0, 0), overlay_image, Vector2i(7, 7))
+	var image := _merge_images_scaled(icon_a.get_image(), Vector2i(0, 0), overlay_image, Vector2i(5, 5))
 	return ImageTexture.create_from_image(image)
 
 
@@ -51,7 +63,7 @@ static func get_CSharpScript_icon(status: String, color: Color) -> Texture2D:
 	var icon_a := EditorInterface.get_base_control().get_theme_icon("CSharpScript", "EditorIcons")
 	var icon_b := EditorInterface.get_base_control().get_theme_icon(status, "EditorIcons")
 	var overlay_image := _modulate_image(icon_b.get_image(), color)
-	var image := _merge_images_scaled(icon_a.get_image(), Vector2i(0, 0), overlay_image, Vector2i(7, 7))
+	var image := _merge_images_scaled(icon_a.get_image(), Vector2i(0, 0), overlay_image, Vector2i(5, 5))
 	return ImageTexture.create_from_image(image)
 
 
@@ -102,7 +114,7 @@ static func _merge_images_scaled(image1: Image, offset1: Vector2i, image2: Image
 	# Create a new Image for the merged result
 	var merged_image := Image.create(image1.get_width(), image1.get_height(), false, image1.get_format())
 	merged_image.blend_rect(image1, Rect2(Vector2.ZERO, image1.get_size()), offset1)
-	image2.resize(image2.get_width()/1.5, image2.get_height()/1.5)
+	image2.resize(image2.get_width()/1.3, image2.get_height()/1.3)
 	merged_image.blend_rect(image2, Rect2(Vector2.ZERO, image2.get_size()), offset2)
 	return merged_image
 
