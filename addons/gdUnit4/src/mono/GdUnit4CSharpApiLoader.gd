@@ -6,7 +6,7 @@ static func instance() -> Object:
 	return GdUnitSingleton.instance("GdUnit4CSharpApi", func() -> Object:
 		if not GdUnit4CSharpApiLoader.is_mono_supported():
 			return null
-		return load("res://addons/gdUnit4/src/mono/GdUnit4CSharpApi.cs")
+		return load("res://addons/gdUnit4/src/mono/GdUnit4CSharpApi.cs").new()
 	)
 
 

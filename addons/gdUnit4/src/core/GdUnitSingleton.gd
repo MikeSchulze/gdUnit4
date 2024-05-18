@@ -5,7 +5,7 @@
 # around plugin handling
 ################################################################################
 class_name GdUnitSingleton
-extends RefCounted
+extends Object
 
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
@@ -16,6 +16,10 @@ static func instance(name :String, clazz :Callable) -> Variant:
 	if Engine.has_meta(name):
 		return Engine.get_meta(name)
 	var singleton :Variant = clazz.call()
+	if  is_instance_of(singleton, RefCounted):
+		push_error("Invalid singleton implementation detected for '%s' is `%s`!" % [name, singleton.get_class()])
+		return
+
 	Engine.set_meta(name, singleton)
 	GdUnitTools.prints_verbose("Register singleton '%s:%s'" % [name, singleton])
 	var singletons :PackedStringArray = Engine.get_meta(MEATA_KEY, PackedStringArray())

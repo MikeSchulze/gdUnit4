@@ -23,7 +23,7 @@ func _enter_tree() -> void:
 	_gd_console = load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn").instantiate()
 	add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
 	_server_node = load("res://addons/gdUnit4/src/network/GdUnitServer.tscn").instantiate()
-	add_child(_server_node)
+	Engine.get_main_loop().root.call_deferred("add_child", _server_node)
 	prints("Loading GdUnit4 Plugin success")
 	if GdUnitSettings.is_update_notification_enabled():
 		var update_tool :Node = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
@@ -43,7 +43,7 @@ func _exit_tree() -> void:
 		remove_control_from_bottom_panel(_gd_console)
 		_gd_console.free()
 	if is_instance_valid(_server_node):
-		remove_child(_server_node)
+		Engine.get_main_loop().root.remove_child(_server_node)
 		_server_node.free()
 	GdUnitTools.dispose_all()
 	prints("Unload GdUnit4 Plugin success")

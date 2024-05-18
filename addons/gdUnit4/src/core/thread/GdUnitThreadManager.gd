@@ -1,6 +1,6 @@
 ## A manager to run new thread and crate a ThreadContext shared over the actual test run
 class_name GdUnitThreadManager
-extends RefCounted
+extends Object
 
 ## { <thread_id> = <GdUnitThreadContext> }
 var _thread_context_by_id := {}
