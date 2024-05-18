@@ -628,10 +628,13 @@ func get_class_name(script :GDScript) -> String:
 	var source_rows := source_code.split("\n")
 
 	for index :int in min(10, source_rows.size()):
-		var input := GdScriptParser.clean_up_row(source_rows[index])
+		var input := source_rows[index]
 		var token := next_token(input, 0)
 		if token == TOKEN_CLASS_NAME:
-			token = tokenize_value(input, token._consumed, token)
+			var current_index := token._consumed
+			token = next_token(input, current_index)
+			current_index += token._consumed
+			token = tokenize_value(input, current_index, token)
 			return token.value()
 	# if no class_name found extract from file name
 	return GdObjects.to_pascal_case(script.resource_path.get_basename().get_file())
