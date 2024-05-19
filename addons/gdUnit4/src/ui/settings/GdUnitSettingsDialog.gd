@@ -31,13 +31,6 @@ func _ready() -> void:
 	setup_properties(_properties_ui, GdUnitSettings.UI_SETTINGS)
 	setup_properties(_properties_report, GdUnitSettings.REPORT_SETTINGS)
 	setup_properties(_properties_shortcuts, GdUnitSettings.SHORTCUT_SETTINGS)
-	await get_tree().process_frame
-	if not Engine.is_editor_hint():
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_size(Vector2i(1600, 800))
-		popup_centered_ratio(1)
-	else:
-		popup_centered_ratio(.75)
 
 
 func _sort_by_key(left: GdUnitProperty, right: GdUnitProperty) -> bool:
