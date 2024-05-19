@@ -5,14 +5,32 @@ extends RefCounted
 static var _spinner: AnimatedTexture
 
 
-## Returns the icon property defined by name and theme_type, if it exists.
-static func get_icon(icon_name: String, color:=Color.BLACK) -> Texture2D:
+enum ImageFlipMode {
+	HORIZONTAl,
+	VERITCAL
+}
+
+
+## Returns the icon by name, if it exists.
+static func get_icon(icon_name: String, color: = Color.BLACK) -> Texture2D:
 	if not Engine.is_editor_hint():
 		return null
 	var icon := EditorInterface.get_base_control().get_theme_icon(icon_name, "EditorIcons")
+	if icon == null:
+		return null
 	if color != Color.BLACK:
-		return _modulate_texture(icon, color)
+		icon = _modulate_texture(icon, color)
 	return icon
+
+
+## Returns the icon flipped
+static func get_flipped_icon(icon_name: String, mode: = ImageFlipMode.HORIZONTAl) -> Texture2D:
+	if not Engine.is_editor_hint():
+		return null
+	var icon := EditorInterface.get_base_control().get_theme_icon(icon_name, "EditorIcons")
+	if icon == null:
+		return null
+	return ImageTexture.create_from_image(_flip_image(icon, mode))
 
 
 static func get_spinner() -> AnimatedTexture:
@@ -117,6 +135,16 @@ static func _merge_images_scaled(image1: Image, offset1: Vector2i, image2: Image
 	image2.resize(image2.get_width()/1.3, image2.get_height()/1.3)
 	merged_image.blend_rect(image2, Rect2(Vector2.ZERO, image2.get_size()), offset2)
 	return merged_image
+
+
+static func _flip_image(texture: Texture2D, mode: ImageFlipMode) -> Image:
+	var flipped_image := Image.new()
+	flipped_image.copy_from(texture.get_image())
+	if mode == ImageFlipMode.VERITCAL:
+		flipped_image.flip_x()
+	else:
+		flipped_image.flip_y()
+	return flipped_image
 
 
 static func _to_color(data: PackedByteArray, position: int) -> Color:

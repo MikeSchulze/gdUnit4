@@ -106,9 +106,9 @@ static func setup() -> void:
 	# inspector
 	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true,
 		"Enables/Disables that the testsuite node is closed after a successful test run.")
-	create_property_if_need(INSPECTOR_TREE_VIEW_MODE, GdUnitInspectorTreeConstants.VIEW_MODE.TREE,
+	create_property_if_need(INSPECTOR_TREE_VIEW_MODE, GdUnitInspectorTreeConstants.VIEW_MODE.Tree,
 		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.VIEW_MODE.keys())
-	create_property_if_need(INSPECTOR_TREE_SORT_MODE, GdUnitInspectorTreeConstants.SORT_MODE.NATURAL,
+	create_property_if_need(INSPECTOR_TREE_SORT_MODE, GdUnitInspectorTreeConstants.SORT_MODE.NAME_ASCENDING,
 		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.SORT_MODE.keys())
 	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false,
 		"Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")
@@ -186,6 +186,17 @@ static func set_log_path(path :String) -> void:
 	ProjectSettings.set_setting(STDOUT_ENABLE_TO_FILE, true)
 	ProjectSettings.set_setting(STDOUT_WITE_TO_FILE, path)
 	ProjectSettings.save()
+
+
+static func set_inspector_tree_sort_mode(sort_mode: GdUnitInspectorTreeConstants.SORT_MODE) -> void:
+	var property := get_property(INSPECTOR_TREE_SORT_MODE)
+	property.set_value(sort_mode)
+	update_property(property)
+
+
+static func get_inspector_tree_sort_mode() -> GdUnitInspectorTreeConstants.SORT_MODE:
+	var property := get_property(INSPECTOR_TREE_SORT_MODE)
+	return property.value()
 
 
 # the configured server connection timeout in ms

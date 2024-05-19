@@ -4,14 +4,14 @@ extends RefCounted
 
 # the inspector panel presantation
 enum VIEW_MODE {
-	TREE,
-	FLAT
+	Tree,
+	Flat
 }
 
 
 # The inspector sort modes
 enum SORT_MODE {
-	NATURAL,
 	NAME_ASCENDING,
-	NAME_DESCENDING
+	NAME_DESCENDING,
+	EXECUTION_TIME
 }
