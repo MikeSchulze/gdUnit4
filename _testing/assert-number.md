@@ -14,24 +14,24 @@ Supported numbers are **sbyte**, **byte**, **short**, **ushort**, **int**, **uin
 
 |Function|Description|
 |--- | --- |
-|[IsNull](/gdUnit4/asserts/assert-number/#isnull) | Verifies that the current value is null.|
-|[IsNotNull](/gdUnit4/asserts/assert-number/#isnotnull) | Verifies that the current value is not null.|
-|[IsEqual](/gdUnit4/asserts/assert-number/#isequal) | Verifies that the current value is equal to the given one.|
-|[IsNotEqual](/gdUnit4/asserts/assert-number/#isnotequal) | Verifies that the current value is not equal to the given one.|
-|[IsEqualApprox](/gdUnit4/asserts/assert-number/#isequalapprox) | Verifies that the current and expected value are approximately equal.|
-|[IsLess](/gdUnit4/asserts/assert-number/#isless) | Verifies that the current value is less than the given one.|
-|[IsLessEqual](/gdUnit4/asserts/assert-number/#islessequal) | Verifies that the current value is less than or equal the given one.|
-|[IsGreater](/gdUnit4/asserts/assert-number/#isgreater) | Verifies that the current value is greater than the given one.|
-|[IsGreaterEqual](/gdUnit4/asserts/assert-number/#isgreaterequal) | Verifies that the current value is greater than or equal the given one.|
-|[IsEven](/gdUnit4/asserts/assert-number/#iseven) | Verifies that the current value is even.|
-|[IsOdd](/gdUnit4/asserts/assert-number/#isodd) | Verifies that the current value is odd.|
-|[IsNegative](/gdUnit4/asserts/assert-number/#isnegative) | Verifies that the current value is negative.|
-|[IsNotNegative](/gdUnit4/asserts/assert-number/#isnotnegative) | Verifies that the current value is not negative.|
-|[IsZero](/gdUnit4/asserts/assert-number/#iszero) | Verifies that the current value is equal to zero.|
-|[IsNotZero](/gdUnit4/asserts/assert-number/#isnotzero) | Verifies that the current value is not equal to zero.|
-|[IsIn](/gdUnit4/asserts/assert-number/#isin) | Verifies that the current value is in the given set of values.|
-|[IsNotIn](/gdUnit4/asserts/assert-number/#isnotin) | Verifies that the current value is not in the given set of values.|
-|[IsBetween](/gdUnit4/asserts/assert-number/#isbetween) | Verifies that the current value is between the given boundaries (inclusive).|
+|[IsNull](/gdUnit4/testing/assert-number/#isnull) | Verifies that the current value is null.|
+|[IsNotNull](/gdUnit4/testing/assert-number/#isnotnull) | Verifies that the current value is not null.|
+|[IsEqual](/gdUnit4/testing/assert-number/#isequal) | Verifies that the current value is equal to the given one.|
+|[IsNotEqual](/gdUnit4/testing/assert-number/#isnotequal) | Verifies that the current value is not equal to the given one.|
+|[IsEqualApprox](/gdUnit4/testing/assert-number/#isequalapprox) | Verifies that the current and expected value are approximately equal.|
+|[IsLess](/gdUnit4/testing/assert-number/#isless) | Verifies that the current value is less than the given one.|
+|[IsLessEqual](/gdUnit4/testing/assert-number/#islessequal) | Verifies that the current value is less than or equal the given one.|
+|[IsGreater](/gdUnit4/testing/assert-number/#isgreater) | Verifies that the current value is greater than the given one.|
+|[IsGreaterEqual](/gdUnit4/testing/assert-number/#isgreaterequal) | Verifies that the current value is greater than or equal the given one.|
+|[IsEven](/gdUnit4/testing/assert-number/#iseven) | Verifies that the current value is even.|
+|[IsOdd](/gdUnit4/testing/assert-number/#isodd) | Verifies that the current value is odd.|
+|[IsNegative](/gdUnit4/testing/assert-number/#isnegative) | Verifies that the current value is negative.|
+|[IsNotNegative](/gdUnit4/testing/assert-number/#isnotnegative) | Verifies that the current value is not negative.|
+|[IsZero](/gdUnit4/testing/assert-number/#iszero) | Verifies that the current value is equal to zero.|
+|[IsNotZero](/gdUnit4/testing/assert-number/#isnotzero) | Verifies that the current value is not equal to zero.|
+|[IsIn](/gdUnit4/testing/assert-number/#isin) | Verifies that the current value is in the given set of values.|
+|[IsNotIn](/gdUnit4/testing/assert-number/#isnotin) | Verifies that the current value is not in the given set of values.|
+|[IsBetween](/gdUnit4/testing/assert-number/#isbetween) | Verifies that the current value is between the given boundaries (inclusive).|
 
 ---
 

@@ -32,7 +32,7 @@ collections:
   csharp_project_setup:
     permalink: "/:collection/:path/"
     output: true
-  asserts:
+  testing:
     permalink: "/:collection/:path/"
     output: true
   advanced_testing:
@@ -51,7 +51,8 @@ just_the_docs:
       name: First Steps
     csharp_project_setup:
       name: C# Project Setup
-    asserts:
+    testing:
+      name: Testing
     advanced_testing:
     tutorials:
     faq:

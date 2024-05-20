@@ -121,7 +121,7 @@ func test_full_name() -> void:
 {% endtabs %}
 
 
-GdUnit offers a wide range of [Asserts](/gdUnit4/asserts/index/) for all basic built-in types and much more. A collection of tests is called a Test Suite in GdUnit.<br>
+GdUnit offers a wide range of [Asserts](/gdUnit4/testing/index/) for all basic built-in types and much more. A collection of tests is called a Test Suite in GdUnit.<br>
 You can find more details about creating Test Suite's [here](/gdUnit4/faq/test-suite).
 
 Now, run your test again and it should complete successfully.<br>

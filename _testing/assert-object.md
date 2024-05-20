@@ -15,28 +15,28 @@ An assertion tool to verify Objects.
 
 |Function|Description|
 |--- | --- |
-|[is_null](/gdUnit4/asserts/assert-object/#is_null) | Verifies that the current value is null.|
-|[is_not_null](/gdUnit4/asserts/assert-object/#is_not_null) | Verifies that the current value is not null.|
-|[is_equal](/gdUnit4/asserts/assert-object/#is_equal) | Verifies that the current value is equal to expected one.|
-|[is_not_equal](/gdUnit4/asserts/assert-object/#is_not_equal) | Verifies that the current value is not equal to expected one.|
-|[is_same](/gdUnit4/asserts/assert-object/#is_same) | Verifies that the current value is the same as the given one.|
-|[is_not_same](/gdUnit4/asserts/assert-object/#is_not_same) | Verifies that the current value is not the same as the given one.|
-|[is_instanceof](/gdUnit4/asserts/assert-object/#is_instanceof) | Verifies that the current value is an instance of the given type.|
-|[is_not_instanceof](/gdUnit4/asserts/assert-object/#is_not_instanceof) | Verifies that the current value is not an instance of the given type.|
+|[is_null](/gdUnit4/testing/assert-object/#is_null) | Verifies that the current value is null.|
+|[is_not_null](/gdUnit4/testing/assert-object/#is_not_null) | Verifies that the current value is not null.|
+|[is_equal](/gdUnit4/testing/assert-object/#is_equal) | Verifies that the current value is equal to expected one.|
+|[is_not_equal](/gdUnit4/testing/assert-object/#is_not_equal) | Verifies that the current value is not equal to expected one.|
+|[is_same](/gdUnit4/testing/assert-object/#is_same) | Verifies that the current value is the same as the given one.|
+|[is_not_same](/gdUnit4/testing/assert-object/#is_not_same) | Verifies that the current value is not the same as the given one.|
+|[is_instanceof](/gdUnit4/testing/assert-object/#is_instanceof) | Verifies that the current value is an instance of the given type.|
+|[is_not_instanceof](/gdUnit4/testing/assert-object/#is_not_instanceof) | Verifies that the current value is not an instance of the given type.|
 {% endtab %}
 {% tab assert-obj-overview C# %}
 **IObjectAssert**<br>
 
 |Function|Description|
 |--- | --- |
-|[IsNull](/gdUnit4/asserts/assert-object/#is_null) | Verifies that the current value is null.|
-|[IsNotNull](/gdUnit4/asserts/assert-object/#is_not_null) | Verifies that the current value is not null.|
-|[IsEqual](/gdUnit4/asserts/assert-object/#is_equal) | Verifies that the current value is equal to expected one.|
-|[IsNotRqual](/gdUnit4/asserts/assert-object/#is_not_equal) | Verifies that the current value is not equal to expected one.|
-|[IsSame](/gdUnit4/asserts/assert-object/#is_same) | Verifies that the current value is the same as the given one.|
-|[IsNotSame](/gdUnit4/asserts/assert-object/#is_not_same) | Verifies that the current value is not the same as the given one.|
-|[IsInstanceOf](/gdUnit4/asserts/assert-object/#is_instanceof) | Verifies that the current value is an instance of the given type.|
-|[IsNotInstanceOf](/gdUnit4/asserts/assert-object/#is_not_instanceof) | Verifies that the current value is not an instance of the given type.|
+|[IsNull](/gdUnit4/testing/assert-object/#is_null) | Verifies that the current value is null.|
+|[IsNotNull](/gdUnit4/testing/assert-object/#is_not_null) | Verifies that the current value is not null.|
+|[IsEqual](/gdUnit4/testing/assert-object/#is_equal) | Verifies that the current value is equal to expected one.|
+|[IsNotRqual](/gdUnit4/testing/assert-object/#is_not_equal) | Verifies that the current value is not equal to expected one.|
+|[IsSame](/gdUnit4/testing/assert-object/#is_same) | Verifies that the current value is the same as the given one.|
+|[IsNotSame](/gdUnit4/testing/assert-object/#is_not_same) | Verifies that the current value is not the same as the given one.|
+|[IsInstanceOf](/gdUnit4/testing/assert-object/#is_instanceof) | Verifies that the current value is an instance of the given type.|
+|[IsNotInstanceOf](/gdUnit4/testing/assert-object/#is_not_instanceof) | Verifies that the current value is not an instance of the given type.|
 {% endtab %}
 {% endtabs %}
 
