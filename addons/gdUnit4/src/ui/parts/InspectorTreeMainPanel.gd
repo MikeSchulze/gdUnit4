@@ -57,7 +57,7 @@ enum STATE {
 	SKIPPED
 }
 
-
+const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
 const META_GDUNIT_NAME := "gdUnit_name"
 const META_GDUNIT_STATE := "gdUnit_state"
 const META_GDUNIT_TYPE := "gdUnit_type"
@@ -65,13 +65,13 @@ const META_GDUNIT_TOTAL_TESTS := "gdUnit_suite_total_tests"
 const META_GDUNIT_SUCCESS_TESTS := "gdUnit_suite_success_tests"
 const META_GDUNIT_REPORT := "gdUnit_report"
 const META_GDUNIT_ORPHAN := "gdUnit_orphan"
+const META_GDUNIT_EXECUTION_TIME := "gdUnit_execution_time"
 const META_RESOURCE_PATH := "resource_path"
 const META_LINE_NUMBER := "line_number"
 const META_TEST_PARAM_INDEX := "test_param_index"
 
 var _tree_root: TreeItem
 var _item_hash := Dictionary()
-var _sort_ascending := true
 var _tree_view_mode := false
 
 
@@ -183,6 +183,7 @@ func _ready() -> void:
 
 	_spinner.icon = GdUnitUiTools.get_spinner()
 	init_tree()
+	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(do_add_test_suite)
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	var command_handler := GdUnitCommandHandler.instance()
@@ -202,6 +203,12 @@ func init_tree() -> void:
 	_tree.set_hide_root(true)
 	_tree.ensure_cursor_is_visible()
 	_tree.allow_rmb_select = true
+	_tree.columns = 2
+	_tree.set_column_clip_content(0, true)
+	_tree.set_column_expand_ratio(0, 1)
+	_tree.set_column_custom_minimum_width(0, 240)
+	_tree.set_column_expand_ratio(1, 0)
+	_tree.set_column_custom_minimum_width(1, 100)
 	_tree_root = _tree.create_item()
 	# fix tree icon scaling
 	var scale_factor := EditorInterface.get_editor_scale() if Engine.is_editor_hint() else 1.0
@@ -224,15 +231,33 @@ func _free_recursive(items:=_tree_root.get_children()) -> void:
 
 
 func sort_tree_items(parent :TreeItem) -> void:
+	parent.visible = false
 	var items := parent.get_children()
-	items.sort_custom(sort_items.bind(_sort_ascending))
+
+	# do sort by selected sort mode
+	match GdUnitSettings.get_inspector_tree_sort_mode():
+		GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED:
+			items.sort_custom(sort_items_by_original_index)
+
+		GdUnitInspectorTreeConstants.SORT_MODE.NAME_ASCENDING:
+			items.sort_custom(sort_items_by_name.bind(true))
+
+		GdUnitInspectorTreeConstants.SORT_MODE.NAME_DESCENDING:
+			items.sort_custom(sort_items_by_name.bind(false))
+
+		GdUnitInspectorTreeConstants.SORT_MODE.EXECUTION_TIME:
+			items.sort_custom(sort_items_by_execution_time)
+
 	for item in items:
 		parent.remove_child(item)
 		parent.add_child(item)
-		sort_tree_items(item)
+		if item.get_child_count() > 0:
+			sort_tree_items(item)
+	parent.visible = true
+	_tree.queue_redraw()
 
 
-func sort_items(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
+func sort_items_by_name(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
 	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
 	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
 	 # Compare types first
@@ -241,6 +266,32 @@ func sort_items(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
 	var name_a :String = a.get_meta(META_GDUNIT_NAME)
 	var name_b :String = b.get_meta(META_GDUNIT_NAME)
 	return name_a.naturalnocasecmp_to(name_b) < 0 if ascending else name_a.naturalnocasecmp_to(name_b) > 0
+
+
+func sort_items_by_execution_time(a: TreeItem, b: TreeItem) -> bool:
+	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
+	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
+	 # Compare types first
+	if type_a != type_b:
+		return type_a == GdUnitType.FOLDER
+	var execution_time_a :int = a.get_meta(META_GDUNIT_EXECUTION_TIME)
+	var execution_time_b :int = b.get_meta(META_GDUNIT_EXECUTION_TIME)
+	# if has same execution time sort by name
+	if execution_time_a == execution_time_b:
+		var name_a :String = a.get_meta(META_GDUNIT_NAME)
+		var name_b :String = b.get_meta(META_GDUNIT_NAME)
+		return name_a.naturalnocasecmp_to(name_b) > 0
+	return execution_time_a > execution_time_b
+
+
+func sort_items_by_original_index(a: TreeItem, b: TreeItem) -> bool:
+	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
+	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
+	if type_a != type_b:
+		return type_a == GdUnitType.FOLDER
+	var index_a :int = a.get_meta(META_GDUNIT_ORIGINAL_INDEX)
+	var index_b :int = b.get_meta(META_GDUNIT_ORIGINAL_INDEX)
+	return index_a < index_b
 
 
 func reset_tree_state(parent: TreeItem) -> void:
@@ -275,7 +326,14 @@ func do_collapse_all(collapse: bool, parent := _tree_root) -> void:
 func set_state_initial(item: TreeItem) -> void:
 	item.set_custom_color(0, Color.LIGHT_GRAY)
 	item.set_tooltip_text(0, "")
-	item.set_suffix(0, "")
+	item.set_text_overrun_behavior(0, TextServer.OVERRUN_TRIM_CHAR)
+	item.set_expand_right(0, true)
+
+	item.set_custom_color(1, Color.LIGHT_GRAY)
+	item.set_text(1, "")
+	item.set_expand_right(1, true)
+	item.set_tooltip_text(1, "")
+
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
 	item.remove_meta(META_GDUNIT_REPORT)
@@ -288,8 +346,8 @@ func set_state_running(item: TreeItem) -> void:
 	if is_state_running(item):
 		return
 	item.set_custom_color(0, Color.DARK_GREEN)
+	item.set_custom_color(1, Color.DARK_GREEN)
 	item.set_icon(0, ICON_SPINNER)
-	item.set_suffix(0, "")
 	item.set_meta(META_GDUNIT_STATE, STATE.RUNNING)
 	item.collapsed = false
 	var parent := item.get_parent()
@@ -301,6 +359,7 @@ func set_state_running(item: TreeItem) -> void:
 
 func set_state_succeded(item: TreeItem) -> void:
 	item.set_custom_color(0, Color.GREEN)
+	item.set_custom_color(1, Color.GREEN)
 	item.set_meta(META_GDUNIT_STATE, STATE.SUCCESS)
 	item.collapsed = GdUnitSettings.is_inspector_node_collapse()
 	set_item_icon_by_state(item)
@@ -308,8 +367,10 @@ func set_state_succeded(item: TreeItem) -> void:
 
 func set_state_skipped(item: TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.SKIPPED)
-	item.set_suffix(0, "(skipped)")
+	item.set_text(1, "(skipped)")
+	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 	item.set_custom_color(0, Color.DARK_GRAY)
+	item.set_custom_color(1, Color.DARK_GRAY)
 	item.collapsed = false
 	set_item_icon_by_state(item)
 
@@ -320,6 +381,7 @@ func set_state_warnings(item: TreeItem) -> void:
 		return
 	item.set_meta(META_GDUNIT_STATE, STATE.WARNING)
 	item.set_custom_color(0, Color.YELLOW)
+	item.set_custom_color(1, Color.YELLOW)
 	item.collapsed = false
 	set_item_icon_by_state(item)
 
@@ -330,6 +392,7 @@ func set_state_failed(item: TreeItem) -> void:
 		return
 	item.set_meta(META_GDUNIT_STATE, STATE.FAILED)
 	item.set_custom_color(0, Color.LIGHT_BLUE)
+	item.set_custom_color(1, Color.LIGHT_BLUE)
 	item.collapsed = false
 	set_item_icon_by_state(item)
 
@@ -337,7 +400,7 @@ func set_state_failed(item: TreeItem) -> void:
 func set_state_error(item: TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.ERROR)
 	item.set_custom_color(0, Color.ORANGE_RED)
-	item.set_suffix(0, item.get_suffix(0))
+	item.set_custom_color(1, Color.ORANGE_RED)
 	set_item_icon_by_state(item)
 	item.collapsed = false
 
@@ -345,14 +408,12 @@ func set_state_error(item: TreeItem) -> void:
 func set_state_aborted(item: TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.ABORDED)
 	item.set_custom_color(0, Color.ORANGE_RED)
+	item.set_custom_color(1, Color.ORANGE_RED)
 	item.clear_custom_bg_color(0)
-	item.set_suffix(0, "(aborted)")
+	item.set_text(1, "(aborted)")
+	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 	set_item_icon_by_state(item)
 	item.collapsed = false
-
-
-func set_elapsed_time(item: TreeItem, time: int) -> void:
-	item.set_suffix(0, "(%s)" % LocalTime.elapsed(time))
 
 
 func set_state_orphan(item: TreeItem, event: GdUnitEvent) -> void:
@@ -363,6 +424,7 @@ func set_state_orphan(item: TreeItem, event: GdUnitEvent) -> void:
 		orphan_count += item.get_meta(META_GDUNIT_ORPHAN)
 	item.set_meta(META_GDUNIT_ORPHAN, orphan_count)
 	item.set_custom_color(0, Color.YELLOW)
+	item.set_custom_color(1, Color.YELLOW)
 	item.set_tooltip_text(0, "Total <%d> orphan nodes detected." % orphan_count)
 	set_item_icon_by_state(item)
 
@@ -466,8 +528,8 @@ func update_test_suite(event: GdUnitEvent) -> void:
 		set_state_running(item)
 		return
 	if event.type() == GdUnitEvent.TESTSUITE_AFTER:
-		set_elapsed_time(item, event.elapsed_time())
 		update_item_counter(item)
+		update_item_elapsed_time_counter(item, event.elapsed_time())
 
 	update_state(item, event)
 	update_state(item.get_parent(), event, false)
@@ -482,7 +544,7 @@ func update_test_case(event: GdUnitEvent) -> void:
 		set_state_running(item)
 		return
 	if event.type() == GdUnitEvent.TESTCASE_AFTER:
-		set_elapsed_time(item, event.elapsed_time())
+		update_item_elapsed_time_counter(item, event.elapsed_time())
 		if event.is_success() or event.is_warning():
 			update_item_counter(item)
 	update_state(item, event)
@@ -512,12 +574,29 @@ func create_or_find_item(parent: TreeItem, resource_path: String, item_name: Str
 	if item != null:
 		return item
 	item = _tree.create_item(parent)
+	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, item_name)
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, GdUnitType.FOLDER)
 	item.set_meta(META_RESOURCE_PATH, resource_path)
 	item.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
+	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
+	set_item_icon_by_state(item)
+	item.collapsed = true
+	return item
+
+
+func create_item(parent: TreeItem, resource_path: String, item_name: String, type: GdUnitType) -> TreeItem:
+	var item := _tree.create_item(parent)
+	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
+	item.set_text(0, item_name)
+	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
+	item.set_meta(META_GDUNIT_NAME, item_name)
+	item.set_meta(META_GDUNIT_TYPE, type)
+	item.set_meta(META_RESOURCE_PATH, resource_path)
+	item.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
+	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
 	set_item_icon_by_state(item)
 	item.collapsed = true
 	return item
@@ -560,6 +639,7 @@ func init_folder_counter(item: TreeItem) -> void:
 		var count :int = item.get_children().reduce(count_tests_total, 0)
 		item.set_meta(META_GDUNIT_TOTAL_TESTS, count)
 		item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
+		item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
 		init_item_counter(item)
 
 
@@ -579,6 +659,25 @@ func update_item_counter(item: TreeItem) -> void:
 		GdUnitType.TEST_SUITE:
 			var count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
 			increment_item_counter(item.get_parent(), count)
+
+
+func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:
+	item.set_text(1, "%s" % LocalTime.elapsed(time))
+	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	item.set_meta(META_GDUNIT_EXECUTION_TIME, time)
+
+	var parent := item.get_parent()
+	if parent == _tree_root:
+		return
+	var elapsed_time :int = parent.get_meta(META_GDUNIT_EXECUTION_TIME) + time
+	var type :GdUnitType = item.get_meta(META_GDUNIT_TYPE)
+	match type:
+		GdUnitType.TEST_CASE:
+			return
+		GdUnitType.TEST_SUITE:
+			update_item_elapsed_time_counter(parent, elapsed_time)
+		#GdUnitType.FOLDER:
+		#	update_item_elapsed_time_counter(parent, elapsed_time)
 
 
 func get_icon_by_file_type(path: String, state: STATE, orphans: bool) -> Texture2D:
@@ -660,11 +759,13 @@ func do_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
 	var item := create_tree_item(test_suite)
 	var suite_name := test_suite.name()
 
+	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_NAME, suite_name)
 	item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_SUITE)
 	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_suite.test_case_count())
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
+	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
 	item.set_meta(META_RESOURCE_PATH, test_suite.path())
 	item.set_meta(META_LINE_NUMBER, 1)
 	item.collapsed = true
@@ -681,12 +782,14 @@ func add_test(parent: TreeItem, test_case: GdUnitTestCaseDto) -> void:
 	var resource_path :String = parent.get_meta(META_RESOURCE_PATH)
 	var test_case_names := test_case.test_case_names()
 
+	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, test_name)
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_NAME, test_name)
 	item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_CASE)
 	item.set_meta(META_RESOURCE_PATH, resource_path)
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
+	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
 	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_case_names.size())
 	item.set_meta(META_LINE_NUMBER, test_case.line_number())
 	item.set_meta(META_TEST_PARAM_INDEX, -1)
@@ -702,11 +805,13 @@ func add_test_cases(parent: TreeItem, test_case_names: PackedStringArray) -> voi
 		var item := _tree.create_item(parent)
 		var test_case_name := test_case_names[index]
 		var resource_path :String = parent.get_meta(META_RESOURCE_PATH)
+		item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 		item.set_text(0, test_case_name)
 		item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 		item.set_meta(META_GDUNIT_NAME, test_case_name)
 		item.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
 		item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_CASE_PARAMETERIZED)
+		item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
 		item.set_meta(META_RESOURCE_PATH, resource_path)
 		item.set_meta(META_LINE_NUMBER, parent.get_meta(META_LINE_NUMBER))
 		item.set_meta(META_TEST_PARAM_INDEX, index)
@@ -716,6 +821,19 @@ func add_test_cases(parent: TreeItem, test_case_names: PackedStringArray) -> voi
 
 func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:
 	return item.get_meta(META_GDUNIT_REPORT)
+
+
+func _dump_tree_as_json(dump_name: String) -> void:
+	var dict := _to_json(_tree_root)
+	var file := FileAccess.open("res://%s.json" % dump_name, FileAccess.WRITE)
+	file.store_string(JSON.stringify(dict, "\t"))
+
+
+func _to_json(parent :TreeItem) -> Dictionary:
+	var item_as_dict := GdObjects.obj2dict(parent)
+	item_as_dict["TreeItem"]["childs"] = parent.get_children().map(func(item: TreeItem) -> Dictionary:
+			return _to_json(item))
+	return item_as_dict
 
 
 ################################################################################
@@ -786,6 +904,7 @@ func _on_gdunit_runner_stop(_client_id: int) -> void:
 	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, false)
 	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, false)
 	abort_running()
+	sort_tree_items(_tree_root)
 	select_first_failure()
 
 
@@ -800,6 +919,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			sort_tree_items(_tree_root)
 			_discover_hint.visible = false
 			_tree_root.visible = true
+			#_dump_tree_as_json("tree_example_discovered")
 
 		GdUnitEvent.DISCOVER_TEST_ADDED:
 			discover_test_added(event)
@@ -810,6 +930,10 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 		GdUnitEvent.INIT:
 			if not GdUnitSettings.is_test_discover_enabled():
 				init_tree()
+
+		GdUnitEvent.STOP:
+			sort_tree_items(_tree_root)
+			#_dump_tree_as_json("tree_example")
 
 		GdUnitEvent.TESTCASE_BEFORE:
 			update_test_case(event)
@@ -836,11 +960,12 @@ func _on_context_m_index_pressed(index: int) -> void:
 			do_collapse_all(true)
 
 
-func _on_status_bar_tree_sort_mode_changed(asscending: bool) -> void:
-	push_warning("Change tree sorting is not yet implemented!")
-	_sort_ascending = asscending
-
-
 func _on_status_bar_tree_view_mode_changed(flat: bool) -> void:
 	push_warning("Change the tree mode style is not yet implemented!")
 	_tree_view_mode = flat
+
+
+func _on_settings_changed(property :GdUnitProperty) -> void:
+	if property.name() == GdUnitSettings.INSPECTOR_TREE_SORT_MODE:
+		sort_tree_items(_tree_root)
+		# _dump_tree_as_json("tree_sorted_by_%s" % GdUnitInspectorTreeConstants.SORT_MODE.keys()[property.value()])

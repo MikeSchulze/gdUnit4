@@ -27,6 +27,11 @@ func _ready() -> void:
 		GdUnitSettings.setup()
 	GdUnit4Version.init_version_label(_version_label)
 	_font_size = GdUnitFonts.init_fonts(_version_label)
+	about_to_popup.connect(_do_setup_properties)
+
+
+# do setup the dialog with given settings
+func _do_setup_properties() -> void:
 	setup_properties(_properties_common, GdUnitSettings.COMMON_SETTINGS)
 	setup_properties(_properties_ui, GdUnitSettings.UI_SETTINGS)
 	setup_properties(_properties_report, GdUnitSettings.REPORT_SETTINGS)
@@ -38,6 +43,10 @@ func _sort_by_key(left: GdUnitProperty, right: GdUnitProperty) -> bool:
 
 
 func setup_properties(properties_parent: Node, property_category: String) -> void:
+	# Do remove first potential previous added properties (could be happened when the dlg is opened at twice)
+	for child in properties_parent.get_children():
+		properties_parent.remove_child(child)
+
 	var category_properties := GdUnitSettings.list_settings(property_category)
 	# sort by key
 	category_properties.sort_custom(_sort_by_key)
