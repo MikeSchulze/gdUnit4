@@ -21,6 +21,8 @@ When naming your tests, use a descriptive name that accurately represents what t
 {% tab faq-test-case-name GdScript %}
 To define a TestCase you have to use the prefix `test_` e.g. `test_verify_is_string`<br>
 ```ruby
+extends GdUnitTestSuite
+
 func test_string_to_lower() -> void:
    assert_str("AbcD".to_lower()).is_equal("abcd")
 ```
@@ -30,9 +32,18 @@ We named it **test_*string_to_lower()*** because we test the `to_lower` function
 {% tab faq-test-case-name C# %}
 Use the **[TestCase]** attribute to define a method as a TestCase.
 ```cs
-[TestCase]
-public void StringToLower() {
-   AssertString("AbcD".ToLower()).IsEqual("abcd");
+namespace Examples;
+
+using GdUnit4;
+using static GdUnit4.Assertions;
+
+[TestSuite]
+public class GdUnitExampleTest
+{
+   [TestCase]
+   public void StringToLower() {
+      AssertString("AbcD".ToLower()).IsEqual("abcd");
+   }
 }
 ```
 We named it **StringToLower()** because we test the `ToLower` function on a string.<br>
