@@ -205,7 +205,10 @@ func init_tree() -> void:
 	_tree.allow_rmb_select = true
 	_tree.columns = 2
 	_tree.set_column_clip_content(0, true)
+	_tree.set_column_expand_ratio(0, 1)
 	_tree.set_column_custom_minimum_width(0, 240)
+	_tree.set_column_expand_ratio(1, 0)
+	_tree.set_column_custom_minimum_width(1, 100)
 	_tree_root = _tree.create_item()
 	# fix tree icon scaling
 	var scale_factor := EditorInterface.get_editor_scale() if Engine.is_editor_hint() else 1.0
@@ -316,9 +319,15 @@ func do_collapse_all(collapse: bool, parent := _tree_root) -> void:
 
 func set_state_initial(item: TreeItem) -> void:
 	item.set_custom_color(0, Color.LIGHT_GRAY)
-	item.set_custom_color(1, Color.LIGHT_GRAY)
 	item.set_tooltip_text(0, "")
 	item.set_text_overrun_behavior(0, TextServer.OVERRUN_TRIM_CHAR)
+	item.set_expand_right(0, true)
+
+	item.set_custom_color(1, Color.LIGHT_GRAY)
+	item.set_text(1, "")
+	item.set_expand_right(1, true)
+	item.set_tooltip_text(1, "")
+
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
 	item.remove_meta(META_GDUNIT_REPORT)
@@ -353,6 +362,7 @@ func set_state_succeded(item: TreeItem) -> void:
 func set_state_skipped(item: TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.SKIPPED)
 	item.set_text(1, "(skipped)")
+	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 	item.set_custom_color(0, Color.DARK_GRAY)
 	item.set_custom_color(1, Color.DARK_GRAY)
 	item.collapsed = false
@@ -395,6 +405,7 @@ func set_state_aborted(item: TreeItem) -> void:
 	item.set_custom_color(1, Color.ORANGE_RED)
 	item.clear_custom_bg_color(0)
 	item.set_text(1, "(aborted)")
+	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 	set_item_icon_by_state(item)
 	item.collapsed = false
 
@@ -629,7 +640,8 @@ func update_item_counter(item: TreeItem) -> void:
 
 
 func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:
-	item.set_text(1, "(%s)" % LocalTime.elapsed(time))
+	item.set_text(1, "%s" % LocalTime.elapsed(time))
+	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 	item.set_meta(META_GDUNIT_EXECUTION_TIME, time)
 
 	var parent := item.get_parent()
