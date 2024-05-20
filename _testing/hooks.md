@@ -1,10 +1,10 @@
 ---
 layout: default
-title: TestSuite
-nav_order: 5
+title: Test Setup/Teardown
+nav_order: 4
 ---
 
-# TestSuite
+# Test Setup/Teardown
 
 ## Definition
 A TestSuite is a collection of tests that are aligned to a specific class or module that you want to test. When writing tests, it is common to find that several tests require similar test data to be created before and cleaned up after the test run. GdUnit TestSuites allow you to define pre-initialized test data and cleanup functions that will be executed at specific points during test execution.

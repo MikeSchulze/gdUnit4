@@ -15,42 +15,42 @@ An assertion tool to verify dictionaries.
 
 |Function|Description|
 |--- | --- |
-|[is_null](/gdUnit4/asserts/assert-dictionary/#is_null) | Verifies that the current value is null.|
-|[is_not_null](/gdUnit4/asserts/assert-dictionary/#is_not_null) | Verifies that the current value is not null.|
-|[is_equal](/gdUnit4/asserts/assert-dictionary/#is_equal) | Verifies that the current dictionary is equal to the given one, ignoring order.|
-|[is_not_equal](/gdUnit4/asserts/assert-dictionary/#is_not_equal) | Verifies that the current dictionary is not equal to the given one, ignoring order.|
-|[is_same](/gdUnit4/asserts/assert-dictionary/#is_same) | Verifies that the current dictionary is the same.|
-|[is_not_same](/gdUnit4/asserts/assert-dictionary/#is_not_same) | Verifies that the current dictionary is NOT the same.|
-|[is_empty](/gdUnit4/asserts/assert-dictionary/#is_empty) | Verifies that the current dictionary is empty, it has a size of 0.|
-|[is_not_empty](/gdUnit4/asserts/assert-dictionary/#is_not_empty) | Verifies that the current dictionary is not empty, it has a size of minimum 1.|
-|[has_size](/gdUnit4/asserts/assert-dictionary/#has_size) | Verifies that the current dictionary has a size of given value.|
-|[contains_keys](/gdUnit4/asserts/assert-dictionary/#contains_keys) | Verifies that the current dictionary contains the given keys.|
-|[contains_key_value](/gdUnit4/asserts/assert-dictionary/#contains_key_value) | Verifies that the current dictionary contains the given key and value.|
-|[not_contains_keys](/gdUnit4/asserts/assert-dictionary/#not_contains_keys) | Verifies that the current dictionary not contains the given keys.|
-|[contains_same_keys](/gdUnit4/asserts/assert-dictionary/#contains_same_keys) | Verifies that the current dictionary contains the given keys.|
-|[contains_same_key_value](/gdUnit4/asserts/assert-dictionary/#contains_same_key_value) | Verifies that the current dictionary contains the given key and value.|
-|[not_contains_same_keys](/gdUnit4/asserts/assert-dictionary/#not_contains_same_keys) | Verifies that the current dictionary not contains the given keys.|
+|[is_null](/gdUnit4/testing/assert-dictionary/#is_null) | Verifies that the current value is null.|
+|[is_not_null](/gdUnit4/testing/assert-dictionary/#is_not_null) | Verifies that the current value is not null.|
+|[is_equal](/gdUnit4/testing/assert-dictionary/#is_equal) | Verifies that the current dictionary is equal to the given one, ignoring order.|
+|[is_not_equal](/gdUnit4/testing/assert-dictionary/#is_not_equal) | Verifies that the current dictionary is not equal to the given one, ignoring order.|
+|[is_same](/gdUnit4/testing/assert-dictionary/#is_same) | Verifies that the current dictionary is the same.|
+|[is_not_same](/gdUnit4/testing/assert-dictionary/#is_not_same) | Verifies that the current dictionary is NOT the same.|
+|[is_empty](/gdUnit4/testing/assert-dictionary/#is_empty) | Verifies that the current dictionary is empty, it has a size of 0.|
+|[is_not_empty](/gdUnit4/testing/assert-dictionary/#is_not_empty) | Verifies that the current dictionary is not empty, it has a size of minimum 1.|
+|[has_size](/gdUnit4/testing/assert-dictionary/#has_size) | Verifies that the current dictionary has a size of given value.|
+|[contains_keys](/gdUnit4/testing/assert-dictionary/#contains_keys) | Verifies that the current dictionary contains the given keys.|
+|[contains_key_value](/gdUnit4/testing/assert-dictionary/#contains_key_value) | Verifies that the current dictionary contains the given key and value.|
+|[not_contains_keys](/gdUnit4/testing/assert-dictionary/#not_contains_keys) | Verifies that the current dictionary not contains the given keys.|
+|[contains_same_keys](/gdUnit4/testing/assert-dictionary/#contains_same_keys) | Verifies that the current dictionary contains the given keys.|
+|[contains_same_key_value](/gdUnit4/testing/assert-dictionary/#contains_same_key_value) | Verifies that the current dictionary contains the given key and value.|
+|[not_contains_same_keys](/gdUnit4/testing/assert-dictionary/#not_contains_same_keys) | Verifies that the current dictionary not contains the given keys.|
 {% endtab %}
 {% tab assert-dict-overview C# %}
 **IDictionaryAssert**<br>
 
 |Function|Description|
 |--- | --- |
-|[IsNull](/gdUnit4/asserts/assert-dictionary/#is_null) | Verifies that the current value is null.|
-|[IsNotNull](/gdUnit4/asserts/assert-dictionary/#is_not_null) | Verifies that the current value is not null.|
-|[IsEqual](/gdUnit4/asserts/assert-dictionary/#is_equal) | Verifies that the current dictionary is equal to the given one, ignoring order.|
-|[IsNotEqual](/gdUnit4/asserts/assert-dictionary/#is_not_equal) | Verifies that the current dictionary is not equal to the given one, ignoring order.|
-|[IsSame](/gdUnit4/asserts/assert-dictionary/#is_same) | Verifies that the current dictionary is the same.|
-|[IsNotSame](/gdUnit4/asserts/assert-dictionary/#is_not_same) | Verifies that the current dictionary is NOT the same.|
-|[IsEmpty](/gdUnit4/asserts/assert-dictionary/#is_empty) | Verifies that the current dictionary is empty, it has a size of 0.|
-|[IsNotEmpty](/gdUnit4/asserts/assert-dictionary/#is_not_empty) | Verifies that the current dictionary is not empty, it has a size of minimum 1.|
-|[HasSize](/gdUnit4/asserts/assert-dictionary/#has_size) | Verifies that the current dictionary has a size of given value.|
-|[ContainsKeys](/gdUnit4/asserts/assert-dictionary/#contains_keys) | Verifies that the current dictionary contains the given keys.|
-|[ContainsKeyValue](/gdUnit4/asserts/assert-dictionary/#contains_key_value) | Verifies that the current dictionary contains the given key and value.|
-|[NotContainsKeys](/gdUnit4/asserts/assert-dictionary/#contains_not_keys) | Verifies that the current dictionary not contains the given keys.|
-|[ContainsSameKeys](/gdUnit4/asserts/assert-dictionary/#contains_same_keys) | Verifies that the current dictionary contains the given keys.|
-|[ContainsSameKeyValue](/gdUnit4/asserts/assert-dictionary/#contains_same_key_value) | Verifies that the current dictionary contains the given key and value.|
-|[NotContainsSameKeys](/gdUnit4/asserts/assert-dictionary/#not_contains_same_keys) | Verifies that the current dictionary not contains the given keys.|
+|[IsNull](/gdUnit4/testing/assert-dictionary/#is_null) | Verifies that the current value is null.|
+|[IsNotNull](/gdUnit4/testing/assert-dictionary/#is_not_null) | Verifies that the current value is not null.|
+|[IsEqual](/gdUnit4/testing/assert-dictionary/#is_equal) | Verifies that the current dictionary is equal to the given one, ignoring order.|
+|[IsNotEqual](/gdUnit4/testing/assert-dictionary/#is_not_equal) | Verifies that the current dictionary is not equal to the given one, ignoring order.|
+|[IsSame](/gdUnit4/testing/assert-dictionary/#is_same) | Verifies that the current dictionary is the same.|
+|[IsNotSame](/gdUnit4/testing/assert-dictionary/#is_not_same) | Verifies that the current dictionary is NOT the same.|
+|[IsEmpty](/gdUnit4/testing/assert-dictionary/#is_empty) | Verifies that the current dictionary is empty, it has a size of 0.|
+|[IsNotEmpty](/gdUnit4/testing/assert-dictionary/#is_not_empty) | Verifies that the current dictionary is not empty, it has a size of minimum 1.|
+|[HasSize](/gdUnit4/testing/assert-dictionary/#has_size) | Verifies that the current dictionary has a size of given value.|
+|[ContainsKeys](/gdUnit4/testing/assert-dictionary/#contains_keys) | Verifies that the current dictionary contains the given keys.|
+|[ContainsKeyValue](/gdUnit4/testing/assert-dictionary/#contains_key_value) | Verifies that the current dictionary contains the given key and value.|
+|[NotContainsKeys](/gdUnit4/testing/assert-dictionary/#contains_not_keys) | Verifies that the current dictionary not contains the given keys.|
+|[ContainsSameKeys](/gdUnit4/testing/assert-dictionary/#contains_same_keys) | Verifies that the current dictionary contains the given keys.|
+|[ContainsSameKeyValue](/gdUnit4/testing/assert-dictionary/#contains_same_key_value) | Verifies that the current dictionary contains the given key and value.|
+|[NotContainsSameKeys](/gdUnit4/testing/assert-dictionary/#not_contains_same_keys) | Verifies that the current dictionary not contains the given keys.|
 {% endtab %}
 {% endtabs %}
 
@@ -121,8 +121,8 @@ Verifies that the current value is not null.
 
 ### is_equal
 Verifies that the current dictionary is equal to the given one, ignoring order.<br>
-The values are compared by deep parameter comparision, for object reference compare you have to use [is_same](/gdUnit4/asserts/assert-dictionary/#is_same).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The values are compared by deep parameter comparision, for object reference compare you have to use [is_same](/gdUnit4/testing/assert-dictionary/#is_same).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-is_equal %}
 {% tab assert-dict-is_equal GdScript %}
 ```ruby
@@ -160,8 +160,8 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 
 ### is_not_equal
 Verifies that the current dictionary is not equal to the given one, ignoring order.<br>
-The values are compared by deep parameter comparision, for object reference compare you have to use [is_not_same](/gdUnit4/asserts/assert-dictionary/#is_not_same).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The values are compared by deep parameter comparision, for object reference compare you have to use [is_not_same](/gdUnit4/testing/assert-dictionary/#is_not_same).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-is_not_equal %}
 {% tab assert-dict-is_not_equal GdScript %}
 ```ruby
@@ -205,8 +205,8 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 
 ### is_same
 Verifies that the current dictionary is the same.<br>
-The dictionary are compared by object reference, for deep parameter comparision use [is_equal](/gdUnit4/asserts/assert-dictionary/#is_equal).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The dictionary are compared by object reference, for deep parameter comparision use [is_equal](/gdUnit4/testing/assert-dictionary/#is_equal).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 
 {% tabs assert-dict-is_same %}
 {% tab assert-dict-is_same GdScript %}
@@ -243,8 +243,8 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 
 ### is_not_same
 Verifies that the current dictionary is NOT the same.<br>
-The dictionary are compared by object reference, for deep parameter comparision use [is_not_equal](/gdUnit4/asserts/assert-dictionary/#is_not_equal).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The dictionary are compared by object reference, for deep parameter comparision use [is_not_equal](/gdUnit4/testing/assert-dictionary/#is_not_equal).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 
 {% tabs assert-dict-is_not_same %}
 {% tab assert-dict-is_not_same GdScript %}
@@ -380,8 +380,8 @@ Verifies that the current dictionary has a size of given value.
 
 ### contains_keys
 Verifies that the current dictionary contains the given key(s).<br>
-The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_keys](/gdUnit4/asserts/assert-dictionary/#contains_same_keys).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_keys](/gdUnit4/testing/assert-dictionary/#contains_same_keys).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-contains_keys %}
 {% tab assert-dict-contains_keys GdScript %}
 ```ruby
@@ -415,8 +415,8 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 
 ### contains_key_value
 Verifies that the current dictionary contains the given key and value.<br>
-The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_key_value](/gdUnit4/asserts/assert-dictionary/#contains_same_key_value).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_key_value](/gdUnit4/testing/assert-dictionary/#contains_same_key_value).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-contains_key_value %}
 {% tab assert-dict-contains_key_value GdScript %}
 ```ruby
@@ -449,8 +449,8 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 
 ### not_contains_keys
 Verifies that the current dictionary not contains the given key(s).<br>
-The values are compared by deep parameter comparision, for object reference compare you have to use [not_contains_same_keys](/gdUnit4/asserts/assert-dictionary/#not_contains_same_keys).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The values are compared by deep parameter comparision, for object reference compare you have to use [not_contains_same_keys](/gdUnit4/testing/assert-dictionary/#not_contains_same_keys).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-not_contains_keys %}
 {% tab assert-dict-not_contains_keys GdScript %}
 ```ruby
@@ -485,8 +485,8 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 
 ### contains_same_keys
 Verifies that the current dictionary contains the given key(s).<br>
-The dictionary are compared by object reference, for deep parameter comparision use [contains_keys](/gdUnit4/asserts/assert-dictionary/#contains_keys).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The dictionary are compared by object reference, for deep parameter comparision use [contains_keys](/gdUnit4/testing/assert-dictionary/#contains_keys).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-contains_same_keys %}
 {% tab assert-dict-contains_same_keys GdScript %}
 ```ruby
@@ -527,8 +527,8 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 
 ### contains_same_key_value
 Verifies that the current dictionary contains the given key and value.<br>
-The values are compared by deep parameter comparision, for object reference compare you have to use [contains_key_value](/gdUnit4/asserts/assert-dictionary/#contains_key_value).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The values are compared by deep parameter comparision, for object reference compare you have to use [contains_key_value](/gdUnit4/testing/assert-dictionary/#contains_key_value).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-contains_same_key_value %}
 {% tab assert-dict-contains_same_key_value GdScript %}
 ```ruby
@@ -573,8 +573,8 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 
 ### not_contains_same_keys
 Verifies that the current dictionary not contains the given key(s).<br>
-The values are compared by deep parameter comparision, for object reference compare you have to use [not_contains_keys](/gdUnit4/asserts/assert-dictionary/#not_contains_keys).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/asserts/index/#how-gdunit-asserts-compares-objects)
+The values are compared by deep parameter comparision, for object reference compare you have to use [not_contains_keys](/gdUnit4/testing/assert-dictionary/#not_contains_keys).<br>
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-not_contains_same_keys %}
 {% tab assert-dict-not_contains_same_keys GdScript %}
 ```ruby

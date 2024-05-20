@@ -12,7 +12,7 @@ By using these tools, you can test the emission of signals in your Godot project
 
 ## Verify Signals
 The `assert_signal()` an Assertion Tool to verify for emitted signals until a certain time. When the timeout is reached, the assertion fails with a timeout error.<br>
-For more details show [assert_signal](/gdUnit4/asserts/assert-signal/#signal-assertions)
+For more details show [assert_signal](/gdUnit4/testing/assert-signal/#signal-assertions)
 
 Here's an example of using `assert_signal()`:
 

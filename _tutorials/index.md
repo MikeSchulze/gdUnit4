@@ -17,7 +17,7 @@ Before starting these tutorials, you should have a basic understanding of the Go
 
 ## Tutorial List
 Here's a list of tutorials we currently have available:<br>
-* [Writing Your First Test](/gdUnit4/first_steps/firstTest/#create-your-first-test)<br>
+* [Getting Started with GDScript Tests](/gdUnit4/first_steps/getting-started/#create-your-first-test)<br>
 * [~~Test Fixtures and Setup Methods~~]()<br>
 * [~~Assertions and Expectations~~]()<br>
 * [~~Test Doubles: Stubs, Mocks, and Spies~~]()<br>

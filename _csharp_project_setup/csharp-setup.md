@@ -1,23 +1,14 @@
 ---
 layout: default
-title: C# Support on Godot Editor
-nav_order: 6
+title: C# Setup
+nav_order: 1
 ---
 
-# The GdUnit4 Godot Editor C# Support
 
-{% include advice.html
-content="Please note that running C# tests is only supported with GdUnit4 version 4.2.x and higher.<br>
-To be able to use the GdUnit4 C# Test API, at least one Godot-Mono version 4.2.x must be installed."
-%}
-
-GdUnit4 supports with [gdUnit4.api](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"} v4.2.0 to write and run tests inside the Godot editor.
-For support **Visual Studio**, **Visual Studio Code** and **JetBrains Rider** [click here](/gdUnit4/faq/vstest-adapter/){:target="_blank"}.
+## GdUnit4 C# Test Setup
 
 With gdUnit4 version 4.2.2, we fully support .net7, .net8 and LangVersion 11.<br>
 This ensures compatibility and access to the enhanced features and capabilities provided by GdUnit4's C# testing functionality.
-
-## How to Enable GdUnit4 C# Test Support?
 
 Before diving into gdUnit4 C# testing API, make sure your project is configured appropriately.<br>
 Follow the steps outlined in the
@@ -71,6 +62,16 @@ Here is a complete example of what your project should look like.
 </Project>
 ```
 
+## The GdUnit4 Godot Editor C# Support
+
+{% include advice.html
+content="Please note that running C# tests is only supported with GdUnit4 version 4.2.x and higher.<br>
+To be able to use the GdUnit4 C# Test API, at least one Godot-Mono version 4.2.x must be installed."
+%}
+
+GdUnit4 supports with [gdUnit4.api](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"} v4.2.0 to write and run tests inside the Godot editor.
+For support **Visual Studio**, **Visual Studio Code** and **JetBrains Rider** [click here](/gdUnit4/csharp_project_setup/vstest-adapter/){:target="_blank"}.
+
 ## Test You C# build Settings in the Godot Editor
 
 Open the **MSBuild** inspector at the bottom of the Godot editor and press **Rebuild Solution**.
@@ -79,16 +80,13 @@ The output should indicate that the project is built successfully.
 
 ### Running C# Tests inside the Godot Editor
 
-How to [run test](/gdUnit4/faq/run-tests/)
+How to [run test](/gdUnit4/testing/run-tests/)
 
-### Using External C# Editor
+
+## Using External C# Editor
 
 Open your Godot editor settings, and navigate to **dotnet** and select your preferred C# tool.
 ![](/gdUnit4/assets/images/install/cs-setup.png)
-
-### How to Setup and Running C# Tests with the Visual Studio Test Adapter
-
-See here [here](/gdUnit4/faq/vstest-adapter/)
 
 ---
 <h4> document version v4.2.4 </h4>

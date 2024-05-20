@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Create Your First Test
+title: Getting Started with GDScript Tests
 nav_order: 3
 ---
 
-# Create Your First Test
+# Getting Started with GDScript Tests
 
 ## Before You Start
 Create a new folder called **first_steps** in your project's root directory and copy the following class into it. It should be located at `res://first_steps/test_person.gd`.
@@ -92,7 +92,7 @@ func test_full_name() -> void:
 
 Now, run the test again by pressing the **ReRun Debug** button in the inspector.<br>
 ![](/gdUnit4/assets/images/first-steps/rerun-test.png){:.centered}
-For more details about the inspector buttons, see [Button Bar](/gdUnit4/faq/inspector/#button-bar)
+For more details about the inspector buttons, see [Button Bar](/gdUnit4/testing/run-tests/#button-bar)
 
 
 The test failure is fixed but now we get a warning!
@@ -121,8 +121,8 @@ func test_full_name() -> void:
 {% endtabs %}
 
 
-GdUnit offers a wide range of [Asserts](/gdUnit4/asserts/index/) for all basic built-in types and much more. A collection of tests is called a Test Suite in GdUnit.<br>
-You can find more details about creating Test Suite's [here](/gdUnit4/faq/test-suite).
+GdUnit offers a wide range of [Asserts](/gdUnit4/testing/assert/) for all basic built-in types and much more. A collection of tests is called a Test Suite in GdUnit.<br>
+You can find more details about creating Test Setup/Teardown [here](/gdUnit4/testing/hooks).
 
 Now, run your test again and it should complete successfully.<br>
 ![](/gdUnit4/assets/images/first-steps/fixed-rerun-test-result.png){:.centered}

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Asserts
-nav_order: 1
+nav_order: 5
 has_children: true
 ---
 
@@ -189,8 +189,8 @@ The generic assert, assert_that (in GdScript) and AssertThat (in C#), can be use
 
 |Assert|Type|
 |--|--|
-|[assert_that](/gdUnit4/asserts/assert-that/)| auto typing (not type-safe) |
-|[AssertThat](/gdUnit4/asserts/assert-that/)| auto typing (type-safe) |
+|[assert_that](/gdUnit4/testing/assert-that/)| auto typing (not type-safe) |
+|[AssertThat](/gdUnit4/testing/assert-that/)| auto typing (type-safe) |
 
 ---
 
@@ -200,17 +200,17 @@ The generic assert, assert_that (in GdScript) and AssertThat (in C#), can be use
 {% tab assert-basic-types GdScript %}
 |Assert|Type|
 |--|--|
-|[assert_str](/gdUnit4/asserts/assert-string/) | string |
-|[assert_bool](/gdUnit4/asserts/assert-bool/) | bool |
-|[assert_int](/gdUnit4/asserts/assert-integer/) | int |
-|[assert_float](/gdUnit4/asserts/assert-float/) | float |
+|[assert_str](/gdUnit4/testing/assert-string/) | string |
+|[assert_bool](/gdUnit4/testing/assert-bool/) | bool |
+|[assert_int](/gdUnit4/testing/assert-integer/) | int |
+|[assert_float](/gdUnit4/testing/assert-float/) | float |
 {% endtab %}
 {% tab assert-basic-types C# %}
 |Assert|Type|
 |--|--|
-|[IStringAssert](/gdUnit4/asserts/assert-string/) | string |
-|[IBoolAssert](/gdUnit4/asserts/assert-bool/) | bool |
-|[INumberAssert](/gdUnit4/asserts/assert-number/) | number (sbyte,byte,short,ushort,int,uint,long,ulong,float,double,decimal) |
+|[IStringAssert](/gdUnit4/testing/assert-string/) | string |
+|[IBoolAssert](/gdUnit4/testing/assert-bool/) | bool |
+|[INumberAssert](/gdUnit4/testing/assert-number/) | number (sbyte,byte,short,ushort,int,uint,long,ulong,float,double,decimal) |
 {% endtab %}
 {% endtabs %}
 For more details about Build-In types click here 
@@ -224,14 +224,14 @@ For more details about Build-In types click here
 {% tab assert-container-types GdScript %}
 |Assert|Type|
 |--|--|
-|[assert_array](/gdUnit4/asserts/assert-array/) | All Godot Array Types |
-|[assert_dict](/gdUnit4/asserts/assert-dictionary/) | Dictionary |
+|[assert_array](/gdUnit4/testing/assert-array/) | All Godot Array Types |
+|[assert_dict](/gdUnit4/testing/assert-dictionary/) | Dictionary |
 {% endtab %}
 {% tab assert-container-types C# %}
 |Assert|Type|
 |--|--|
-|[IEnumerableAssert](/gdUnit4/asserts/assert-array/) | IEnumerable |
-|[IDictionaryAssert](/gdUnit4/asserts/assert-dictionary/) | IDictionary |
+|[IEnumerableAssert](/gdUnit4/testing/assert-array/) | IEnumerable |
+|[IDictionaryAssert](/gdUnit4/testing/assert-dictionary/) | IDictionary |
 {% endtab %}
 {% endtabs %}
 
@@ -247,15 +247,15 @@ For more details about Build-In types click here
 {% tab assert-engine-types GdScript %}
 |Type|Assert|
 |--|--|
-|[assert_object](/gdUnit4/asserts/assert-object/) | Object|
-|[assert_vector](/gdUnit4/asserts/assert-vector/) | All Godot Vector Types |
-|[assert_file](/gdUnit4/asserts/assert-file/) | File|
+|[assert_object](/gdUnit4/testing/assert-object/) | Object|
+|[assert_vector](/gdUnit4/testing/assert-vector/) | All Godot Vector Types |
+|[assert_file](/gdUnit4/testing/assert-file/) | File|
 {% endtab %}
 {% tab assert-engine-types C# %}
 |Type|Assert|
 |--|--|
-|[IObjectAssert](/gdUnit4/asserts/assert-object/) | Godot.Object, System.object|
-|[IVectorAssert](/gdUnit4/asserts/assert-vector/) | Godot.Vector2|
+|[IObjectAssert](/gdUnit4/testing/assert-object/) | Godot.Object, System.object|
+|[IVectorAssert](/gdUnit4/testing/assert-vector/) | Godot.Vector2|
 {% endtab %}
 {% endtabs %}
 
@@ -267,14 +267,14 @@ For more details about Build-In types click here
 {% tab assert-tool-types GdScript %}
 |Type|Assert|
 |--|--|
-|[assert_signal](/gdUnit4/asserts/assert-signal/) | Signals |
-|[assert_error](/gdUnit4/asserts/assert-error/) | Godot Errors |
+|[assert_signal](/gdUnit4/testing/assert-signal/) | Signals |
+|[assert_error](/gdUnit4/testing/assert-error/) | Godot Errors |
 {% endtab %}
 {% tab assert-tool-types C# %}
 |Type|Assert|
 |--|--|
-|[ISignalAssert](/gdUnit4/asserts/assert-signal/) | Signals |
-|[IErrorAssert](/gdUnit4/asserts/assert-error/) | Godot Errors |
+|[ISignalAssert](/gdUnit4/testing/assert-signal/) | Signals |
+|[IErrorAssert](/gdUnit4/testing/assert-error/) | Godot Errors |
 {% endtab %}
 {% endtabs %}
 

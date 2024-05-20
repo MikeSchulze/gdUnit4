@@ -1,9 +1,8 @@
 ---
 layout: default
-title: Home
+title: About
+nav_order: 1
 ---
-
-
 
 # GdUnit4 V4.2.5
 
@@ -53,48 +52,6 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
   * Support for writing tests in C# [gdUnit4.api](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"}
   * Supporting for the Visual Studio Test Platform to run and debug tests [gdunit4.test.adapter](https://github.com/MikeSchulze/gdUnit4Net/tree/master/testadapter/README.md){:target="_blank"}
 
-## Basic Test Example
-
-This small example shows how to define a unit test in GdUnit4.
-{% tabs example %}
-{% tab example GDScript %}
-
-```gdscript
-extends GdUnitTestSuite
-
-func test_example():
-  assert_str("This is an example message")\
-    .has_length(26)\
-    .starts_with("This is an ex")
-```
-
-{% endtab %}
-{% tab example C# %}
-
-```cs
-namespace Examples;
-
-using GdUnit4;
-
-using static GdUnit4.Assertions;
-
-
-[TestSuite]
-public class GdUnitExampleTest
-{
-    [TestCase]
-    public void Example()
-    {
-        AssertString("This is an example message")
-          .HasLength(26)
-          .StartsWith("This is an ex");
-    }
-}
-
-```
-
-{% endtab %}
-{% endtabs %}
 
 ---
 <h4> document version v4.2.5 </h4>

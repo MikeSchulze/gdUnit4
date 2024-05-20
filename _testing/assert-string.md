@@ -15,42 +15,42 @@ An assertion tool to verify **String** and **StringName** values.
 
 |Function|Description|
 |--- | --- |
-|[is_null](/gdUnit4/asserts/assert-string/#is_null)| Verifies that the current value is null.|
-|[is_not_null](/gdUnit4/asserts/assert-string/#is_not_null)| Verifies that the current value is not null.|
-|[is_equal](/gdUnit4/asserts/assert-string/#is_equal) | Verifies that the current String is equal to the given one.|
-|[is_equal_ignoring_case](/gdUnit4/asserts/assert-string/#is_equal_ignoring_case) | Verifies that the current String is equal to the given one, ignoring case considerations.|
-|[is_not_equal](/gdUnit4/asserts/assert-string/#is_not_equal) | Verifies that the current String is not equal to the given one.|
-|[is_not_equal_ignoring_case](/gdUnit4/asserts/assert-string/#is_not_equal_ignoring_case) | Verifies that the current String is not equal to the given one, ignoring case considerations.|
-|[is_empty](/gdUnit4/asserts/assert-string/#is_empty) | Verifies that the current String is empty, it has a length of 0.| 
-|[is_not_empty](/gdUnit4/asserts/assert-string/#is_not_empty) | Verifies that the current String is not empty, it has a length of minimum 1.|
-|[contains](/gdUnit4/asserts/assert-string/#contains) | Verifies that the current String contains the given String.|
-|[contains_ignoring_case](/gdUnit4/asserts/assert-string/#contains_ignoring_case) | Verifies that the current String does not contain the given String, ignoring case considerations.|
-|[not_contains](/gdUnit4/asserts/assert-string/#not_contains) | Verifies that the current String does not contain the given String.|
-|[not_contains_ignoring_case](/gdUnit4/asserts/assert-string/#not_contains_ignoring_case) | Verifies that the current String does not contain the given String, ignoring case considerations.|
-|[starts_with](/gdUnit4/asserts/assert-string/#starts_with) | Verifies that the current String starts with the given prefix.|
-|[ends_with](/gdUnit4/asserts/assert-string/#ends_with) | Verifies that the current String ends with the given suffix.|
-|[has_length](/gdUnit4/asserts/assert-string/#has_length) | Verifies that the current String has the expected length by used comparator.|
+|[is_null](/gdUnit4/testing/assert-string/#is_null)| Verifies that the current value is null.|
+|[is_not_null](/gdUnit4/testing/assert-string/#is_not_null)| Verifies that the current value is not null.|
+|[is_equal](/gdUnit4/testing/assert-string/#is_equal) | Verifies that the current String is equal to the given one.|
+|[is_equal_ignoring_case](/gdUnit4/testing/assert-string/#is_equal_ignoring_case) | Verifies that the current String is equal to the given one, ignoring case considerations.|
+|[is_not_equal](/gdUnit4/testing/assert-string/#is_not_equal) | Verifies that the current String is not equal to the given one.|
+|[is_not_equal_ignoring_case](/gdUnit4/testing/assert-string/#is_not_equal_ignoring_case) | Verifies that the current String is not equal to the given one, ignoring case considerations.|
+|[is_empty](/gdUnit4/testing/assert-string/#is_empty) | Verifies that the current String is empty, it has a length of 0.| 
+|[is_not_empty](/gdUnit4/testing/assert-string/#is_not_empty) | Verifies that the current String is not empty, it has a length of minimum 1.|
+|[contains](/gdUnit4/testing/assert-string/#contains) | Verifies that the current String contains the given String.|
+|[contains_ignoring_case](/gdUnit4/testing/assert-string/#contains_ignoring_case) | Verifies that the current String does not contain the given String, ignoring case considerations.|
+|[not_contains](/gdUnit4/testing/assert-string/#not_contains) | Verifies that the current String does not contain the given String.|
+|[not_contains_ignoring_case](/gdUnit4/testing/assert-string/#not_contains_ignoring_case) | Verifies that the current String does not contain the given String, ignoring case considerations.|
+|[starts_with](/gdUnit4/testing/assert-string/#starts_with) | Verifies that the current String starts with the given prefix.|
+|[ends_with](/gdUnit4/testing/assert-string/#ends_with) | Verifies that the current String ends with the given suffix.|
+|[has_length](/gdUnit4/testing/assert-string/#has_length) | Verifies that the current String has the expected length by used comparator.|
 {% endtab %}
 {% tab assert-str-overview C# %}
 **IStringAssert**<br>
 
 |Function|Description|
 |--- | --- |
-|[IsNull](/gdUnit4/asserts/assert-string/#is_null)| Verifies that the current value is null.|
-|[IsNotNull](/gdUnit4/asserts/assert-string/#is_not_null)| Verifies that the current value is not null.|
-|[IsEqual](/gdUnit4/asserts/assert-string/#is_equal) | Verifies that the current String is equal to the given one.|
-|[IsEqualIgnoringCase](/gdUnit4/asserts/assert-string/#is_equal_ignoring_case) | Verifies that the current String is equal to the given one, ignoring case considerations.|
-|[IsNotEqual](/gdUnit4/asserts/assert-string/#is_not_equal) | Verifies that the current String is not equal to the given one.|
-|[IsNotEqualIgnoringCase](/gdUnit4/asserts/assert-string/#is_not_equal_ignoring_case) | Verifies that the current String is not equal to the given one, ignoring case considerations.|
-|[IsEmpty](/gdUnit4/asserts/assert-string/#is_empty) | Verifies that the current String is empty, it has a length of 0.| 
-|[IsNotEmpty](/gdUnit4/asserts/assert-string/#is_not_empty) | Verifies that the current String is not empty, it has a length of minimum 1.|
-|[Contains](/gdUnit4/asserts/assert-string/#contains) | Verifies that the current String contains the given String.|
-|[ContainsIgnoringCase](/gdUnit4/asserts/assert-string/#contains_ignoring_case) | Verifies that the current String does not contain the given String, ignoring case considerations.|
-|[NotContains](/gdUnit4/asserts/assert-string/#not_contains) | Verifies that the current String does not contain the given String.|
-|[NotContainsIgnoringCase](/gdUnit4/asserts/assert-string/#not_contains_ignoring_case) | Verifies that the current String does not contain the given String, ignoring case considerations.|
-|[StartsWith](/gdUnit4/asserts/assert-string/#starts_with) | Verifies that the current String starts with the given prefix.|
-|[EndsWith](/gdUnit4/asserts/assert-string/#ends_with) | Verifies that the current String ends with the given suffix.|
-|[HasLength](/gdUnit4/asserts/assert-string/#has_length) | Verifies that the current String has the expected length by used comparator.|
+|[IsNull](/gdUnit4/testing/assert-string/#is_null)| Verifies that the current value is null.|
+|[IsNotNull](/gdUnit4/testing/assert-string/#is_not_null)| Verifies that the current value is not null.|
+|[IsEqual](/gdUnit4/testing/assert-string/#is_equal) | Verifies that the current String is equal to the given one.|
+|[IsEqualIgnoringCase](/gdUnit4/testing/assert-string/#is_equal_ignoring_case) | Verifies that the current String is equal to the given one, ignoring case considerations.|
+|[IsNotEqual](/gdUnit4/testing/assert-string/#is_not_equal) | Verifies that the current String is not equal to the given one.|
+|[IsNotEqualIgnoringCase](/gdUnit4/testing/assert-string/#is_not_equal_ignoring_case) | Verifies that the current String is not equal to the given one, ignoring case considerations.|
+|[IsEmpty](/gdUnit4/testing/assert-string/#is_empty) | Verifies that the current String is empty, it has a length of 0.| 
+|[IsNotEmpty](/gdUnit4/testing/assert-string/#is_not_empty) | Verifies that the current String is not empty, it has a length of minimum 1.|
+|[Contains](/gdUnit4/testing/assert-string/#contains) | Verifies that the current String contains the given String.|
+|[ContainsIgnoringCase](/gdUnit4/testing/assert-string/#contains_ignoring_case) | Verifies that the current String does not contain the given String, ignoring case considerations.|
+|[NotContains](/gdUnit4/testing/assert-string/#not_contains) | Verifies that the current String does not contain the given String.|
+|[NotContainsIgnoringCase](/gdUnit4/testing/assert-string/#not_contains_ignoring_case) | Verifies that the current String does not contain the given String, ignoring case considerations.|
+|[StartsWith](/gdUnit4/testing/assert-string/#starts_with) | Verifies that the current String starts with the given prefix.|
+|[EndsWith](/gdUnit4/testing/assert-string/#ends_with) | Verifies that the current String ends with the given suffix.|
+|[HasLength](/gdUnit4/testing/assert-string/#has_length) | Verifies that the current String has the expected length by used comparator.|
 {% endtab %}
 {% endtabs %}
 

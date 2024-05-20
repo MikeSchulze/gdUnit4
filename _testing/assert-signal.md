@@ -17,19 +17,19 @@ To watch for signals emitted during the test execution you have to use in additi
 
 |Function|Description|
 |--- | --- |
-|[is_emitted](/gdUnit4/asserts/assert-signal/#is_emitted) | Verifies that given signal is emitted until waiting time.|
-|[is_not_emitted](/gdUnit4/asserts/assert-signal/#is_not_emitted) | Verifies that given signal is NOT emitted until waiting time.|
-|[is_signal_exists](/gdUnit4/asserts/assert-signal/#is_signal_exists) | Verifies if the signal exists on the emitter.|
-|[wait_until](/gdUnit4/asserts/assert-signal/#wait_until) | Sets the assert signal timeout in ms.|
+|[is_emitted](/gdUnit4/testing/assert-signal/#is_emitted) | Verifies that given signal is emitted until waiting time.|
+|[is_not_emitted](/gdUnit4/testing/assert-signal/#is_not_emitted) | Verifies that given signal is NOT emitted until waiting time.|
+|[is_signal_exists](/gdUnit4/testing/assert-signal/#is_signal_exists) | Verifies if the signal exists on the emitter.|
+|[wait_until](/gdUnit4/testing/assert-signal/#wait_until) | Sets the assert signal timeout in ms.|
 {% endtab %}
 {% tab assert-signal-overview C# %}
 **ISignalAssert**<br>
 
 |Function|Description|
 |--- | --- |
-|[IsEmitted](/gdUnit4/asserts/assert-signal/#is_emitted) | Verifies that given signal is emitted until waiting time.|
-|[IsNotEmitted](/gdUnit4/asserts/assert-signal/#is_not_emitted) | Verifies that given signal is NOT emitted until waiting time.|
-|[IsSignalExists](/gdUnit4/asserts/assert-signal/#is_signal_exists) | Verifies if the signal exists on the emitter.|
+|[IsEmitted](/gdUnit4/testing/assert-signal/#is_emitted) | Verifies that given signal is emitted until waiting time.|
+|[IsNotEmitted](/gdUnit4/testing/assert-signal/#is_not_emitted) | Verifies that given signal is NOT emitted until waiting time.|
+|[IsSignalExists](/gdUnit4/testing/assert-signal/#is_signal_exists) | Verifies if the signal exists on the emitter.|
 {% endtab %}
 {% endtabs %}
 

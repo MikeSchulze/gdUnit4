@@ -1,7 +1,7 @@
 ---
 layout: default
-title: C# Supported IDE's
-nav_order: 7
+title: C# Configure Your IDE
+nav_order: 2
 ---
 
 # The gdUnit4 Test Adapter

@@ -15,46 +15,46 @@ An assertion tool to verify integer values.
 
 |Function|Description|
 |--- | --- |
-|[is_null](/gdUnit4/asserts/assert-integer/#is_null) | Verifies that the current value is null.|
-|[is_not_null](/gdUnit4/asserts/assert-integer/#is_not_null) | Verifies that the current value is not null.|
-|[is_equal](/gdUnit4/asserts/assert-integer/#is_equal) | Verifies that the current value is equal to the given one.|
-|[is_not_equal](/gdUnit4/asserts/assert-integer/#is_not_equal) | Verifies that the current value is not equal to the given one.|
-|[is_less](/gdUnit4/asserts/assert-integer/#is_less) | Verifies that the current value is less than the given one.|
-|[is_less_equal](/gdUnit4/asserts/assert-integer/#is_less_equal) | Verifies that the current value is less than or equal the given one.|
-|[is_greater](/gdUnit4/asserts/assert-integer/#is_greater) | Verifies that the current value is greater than the given one.|
-|[is_greater_equal](/gdUnit4/asserts/assert-integer/#is_greater_equal) | Verifies that the current value is greater than or equal the given one.|
-|[is_even](/gdUnit4/asserts/assert-integer/#is_even) | Verifies that the current value is even.|
-|[is_odd](/gdUnit4/asserts/assert-integer/#is_odd) | Verifies that the current value is odd.|
-|[is_negative](/gdUnit4/asserts/assert-integer/#is_negative) | Verifies that the current value is negative.|
-|[is_not_negative](/gdUnit4/asserts/assert-integer/#is_not_negative) | Verifies that the current value is not negative.|
-|[is_zero](/gdUnit4/asserts/assert-integer/#is_zero) | Verifies that the current value is equal to zero.|
-|[is_not_zero](/gdUnit4/asserts/assert-integer/#is_not_zero) | Verifies that the current value is not equal to zero.|
-|[is_in](/gdUnit4/asserts/assert-integer/#is_in) | Verifies that the current value is in the given set of values.|
-|[is_not_in](/gdUnit4/asserts/assert-integer/#is_not_in) | Verifies that the current value is not in the given set of values.|
-|[is_between](/gdUnit4/asserts/assert-integer/#is_between) | Verifies that the current value is between the given boundaries (inclusive).|
+|[is_null](/gdUnit4/testing/assert-integer/#is_null) | Verifies that the current value is null.|
+|[is_not_null](/gdUnit4/testing/assert-integer/#is_not_null) | Verifies that the current value is not null.|
+|[is_equal](/gdUnit4/testing/assert-integer/#is_equal) | Verifies that the current value is equal to the given one.|
+|[is_not_equal](/gdUnit4/testing/assert-integer/#is_not_equal) | Verifies that the current value is not equal to the given one.|
+|[is_less](/gdUnit4/testing/assert-integer/#is_less) | Verifies that the current value is less than the given one.|
+|[is_less_equal](/gdUnit4/testing/assert-integer/#is_less_equal) | Verifies that the current value is less than or equal the given one.|
+|[is_greater](/gdUnit4/testing/assert-integer/#is_greater) | Verifies that the current value is greater than the given one.|
+|[is_greater_equal](/gdUnit4/testing/assert-integer/#is_greater_equal) | Verifies that the current value is greater than or equal the given one.|
+|[is_even](/gdUnit4/testing/assert-integer/#is_even) | Verifies that the current value is even.|
+|[is_odd](/gdUnit4/testing/assert-integer/#is_odd) | Verifies that the current value is odd.|
+|[is_negative](/gdUnit4/testing/assert-integer/#is_negative) | Verifies that the current value is negative.|
+|[is_not_negative](/gdUnit4/testing/assert-integer/#is_not_negative) | Verifies that the current value is not negative.|
+|[is_zero](/gdUnit4/testing/assert-integer/#is_zero) | Verifies that the current value is equal to zero.|
+|[is_not_zero](/gdUnit4/testing/assert-integer/#is_not_zero) | Verifies that the current value is not equal to zero.|
+|[is_in](/gdUnit4/testing/assert-integer/#is_in) | Verifies that the current value is in the given set of values.|
+|[is_not_in](/gdUnit4/testing/assert-integer/#is_not_in) | Verifies that the current value is not in the given set of values.|
+|[is_between](/gdUnit4/testing/assert-integer/#is_between) | Verifies that the current value is between the given boundaries (inclusive).|
 {% endtab %}
 {% tab assert-int-overview C# %}
 **INumberAssert\<int\>**<br>
 
 |Function|Description|
 |--- | --- |
-|[IsNull](/gdUnit4/asserts/assert-integer/#is_null) | Verifies that the current value is null.|
-|[IsNotNull](/gdUnit4/asserts/assert-integer/#is_not_null) | Verifies that the current value is not null.|
-|[IsEqual](/gdUnit4/asserts/assert-integer/#is_equal) | Verifies that the current value is equal to the given one.|
-|[IsNotEqual](/gdUnit4/asserts/assert-integer/#is_not_equal) | Verifies that the current value is not equal to the given one.|
-|[IsLess](/gdUnit4/asserts/assert-integer/#is_less) | Verifies that the current value is less than the given one.|
-|[IsLessEqual](/gdUnit4/asserts/assert-integer/#is_less_equal) | Verifies that the current value is less than or equal the given one.|
-|[IsGreater](/gdUnit4/asserts/assert-integer/#is_greater) | Verifies that the current value is greater than the given one.|
-|[IsGreaterEqual](/gdUnit4/asserts/assert-integer/#is_greater_equal) | Verifies that the current value is greater than or equal the given one.|
-|[IsEven](/gdUnit4/asserts/assert-integer/#is_even) | Verifies that the current value is even.|
-|[IsOdd](/gdUnit4/asserts/assert-integer/#is_odd) | Verifies that the current value is odd.|
-|[IsNegative](/gdUnit4/asserts/assert-integer/#is_negative) | Verifies that the current value is negative.|
-|[IsNotNegative](/gdUnit4/asserts/assert-integer/#is_not_negative) | Verifies that the current value is not negative.|
-|[IsZero](/gdUnit4/asserts/assert-integer/#is_zero) | Verifies that the current value is equal to zero.|
-|[IsNotZero](/gdUnit4/asserts/assert-integer/#is_not_zero) | Verifies that the current value is not equal to zero.|
-|[IsIn](/gdUnit4/asserts/assert-integer/#is_in) | Verifies that the current value is in the given set of values.|
-|[IsNotIn](/gdUnit4/asserts/assert-integer/#is_not_in) | Verifies that the current value is not in the given set of values.|
-|[IsBetween](/gdUnit4/asserts/assert-integer/#is_between) | Verifies that the current value is between the given boundaries (inclusive).|
+|[IsNull](/gdUnit4/testing/assert-integer/#is_null) | Verifies that the current value is null.|
+|[IsNotNull](/gdUnit4/testing/assert-integer/#is_not_null) | Verifies that the current value is not null.|
+|[IsEqual](/gdUnit4/testing/assert-integer/#is_equal) | Verifies that the current value is equal to the given one.|
+|[IsNotEqual](/gdUnit4/testing/assert-integer/#is_not_equal) | Verifies that the current value is not equal to the given one.|
+|[IsLess](/gdUnit4/testing/assert-integer/#is_less) | Verifies that the current value is less than the given one.|
+|[IsLessEqual](/gdUnit4/testing/assert-integer/#is_less_equal) | Verifies that the current value is less than or equal the given one.|
+|[IsGreater](/gdUnit4/testing/assert-integer/#is_greater) | Verifies that the current value is greater than the given one.|
+|[IsGreaterEqual](/gdUnit4/testing/assert-integer/#is_greater_equal) | Verifies that the current value is greater than or equal the given one.|
+|[IsEven](/gdUnit4/testing/assert-integer/#is_even) | Verifies that the current value is even.|
+|[IsOdd](/gdUnit4/testing/assert-integer/#is_odd) | Verifies that the current value is odd.|
+|[IsNegative](/gdUnit4/testing/assert-integer/#is_negative) | Verifies that the current value is negative.|
+|[IsNotNegative](/gdUnit4/testing/assert-integer/#is_not_negative) | Verifies that the current value is not negative.|
+|[IsZero](/gdUnit4/testing/assert-integer/#is_zero) | Verifies that the current value is equal to zero.|
+|[IsNotZero](/gdUnit4/testing/assert-integer/#is_not_zero) | Verifies that the current value is not equal to zero.|
+|[IsIn](/gdUnit4/testing/assert-integer/#is_in) | Verifies that the current value is in the given set of values.|
+|[IsNotIn](/gdUnit4/testing/assert-integer/#is_not_in) | Verifies that the current value is not in the given set of values.|
+|[IsBetween](/gdUnit4/testing/assert-integer/#is_between) | Verifies that the current value is between the given boundaries (inclusive).|
 {% endtab %}
 {% endtabs %}
 

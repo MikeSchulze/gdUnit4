@@ -16,10 +16,10 @@ The `assert_error` function in GdUnit4 is designed to test for Godot runtime err
 
 |Function|Description|
 |--- | --- |
-|[is_success](/gdUnit4/asserts/assert-error/#testing-for-success)| Verifies if the executed code runs without any runtime errors.|
-|[is_runtime_error](/gdUnit4/asserts/assert-error/#testing-for-assert-failed)| Verifies if the executed code runs into a runtime error.|
-|[is_push_warning](/gdUnit4/asserts/assert-error/#testing-for-push-warnings-and-push-errors)| Verifies if the executed code has a push_warning() used.|
-|[is_push_error](/gdUnit4/asserts/assert-error/#testing-for-push-warnings-and-push-errors)| Verifies if the executed code has a push_error() used.|
+|[is_success](/gdUnit4/testing/assert-error/#testing-for-success)| Verifies if the executed code runs without any runtime errors.|
+|[is_runtime_error](/gdUnit4/testing/assert-error/#testing-for-assert-failed)| Verifies if the executed code runs into a runtime error.|
+|[is_push_warning](/gdUnit4/testing/assert-error/#testing-for-push-warnings-and-push-errors)| Verifies if the executed code has a push_warning() used.|
+|[is_push_error](/gdUnit4/testing/assert-error/#testing-for-push-warnings-and-push-errors)| Verifies if the executed code has a push_error() used.|
 
 {% endtab %}
 {% tab assert-error-overview C# %}
@@ -29,10 +29,10 @@ The `assert_error` function in GdUnit4 is designed to test for Godot runtime err
 
 |Function|Description|
 |--- | --- |
-|[IsSuccess](/gdUnit4/asserts/assert-error/#testing-for-success)| Verifies if the executed code runs without any runtime errors.|
-|[IsRuntimeError](/gdUnit4/asserts/assert-error/#testing-for-assert-failed)| Verifies if the executed code runs into a runtime error.|
-|[IsPushWarning](/gdUnit4/asserts/assert-error/#testing-for-push-warnings-and-push-errors)| Verifies if the executed code has a push_warning() used.|
-|[IsPushError](/gdUnit4/asserts/assert-error/#testing-for-push-warnings-and-push-errors)| Verifies if the executed code has a push_error() used.|
+|[IsSuccess](/gdUnit4/testing/assert-error/#testing-for-success)| Verifies if the executed code runs without any runtime errors.|
+|[IsRuntimeError](/gdUnit4/testing/assert-error/#testing-for-assert-failed)| Verifies if the executed code runs into a runtime error.|
+|[IsPushWarning](/gdUnit4/testing/assert-error/#testing-for-push-warnings-and-push-errors)| Verifies if the executed code has a push_warning() used.|
+|[IsPushError](/gdUnit4/testing/assert-error/#testing-for-push-warnings-and-push-errors)| Verifies if the executed code has a push_error() used.|
 
 {% endtab %}
 {% endtabs %}
