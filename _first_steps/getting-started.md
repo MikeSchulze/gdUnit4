@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Getting Started with GDScript Tests
-nav_order: 1
+nav_order: 3
 ---
 
 # Getting Started with GDScript Tests
