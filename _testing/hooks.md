@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Test Setup/Teardown
-nav_order: 5
+nav_order: 4
 ---
 
 # Test Setup/Teardown

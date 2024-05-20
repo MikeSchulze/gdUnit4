@@ -122,7 +122,7 @@ func test_full_name() -> void:
 
 
 GdUnit offers a wide range of [Asserts](/gdUnit4/testing/assert/) for all basic built-in types and much more. A collection of tests is called a Test Suite in GdUnit.<br>
-You can find more details about creating Test Setup/Teardown [here](/gdUnit4/faq/hooks).
+You can find more details about creating Test Setup/Teardown [here](/gdUnit4/testing/hooks).
 
 Now, run your test again and it should complete successfully.<br>
 ![](/gdUnit4/assets/images/first-steps/fixed-rerun-test-result.png){:.centered}
