@@ -75,6 +75,7 @@ GEM
 PLATFORMS
   x64-mingw-ucrt
   x86_64-darwin-15
+  x86_64-linux
 
 DEPENDENCIES
   http_parser.rb (~> 0.6.0)

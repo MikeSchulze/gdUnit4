@@ -29,6 +29,9 @@ collections:
   first_steps:
     permalink: "/:collection/:path/"
     output: true
+  csharp_project_setup:
+    permalink: "/:collection/:path/"
+    output: true
   asserts:
     permalink: "/:collection/:path/"
     output: true
@@ -46,6 +49,8 @@ just_the_docs:
   collections:
     first_steps:
       name: First Steps
+    csharp_project_setup:
+      name: C# Project Setup
     asserts:
     advanced_testing:
     tutorials:
