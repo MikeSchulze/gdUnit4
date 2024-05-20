@@ -132,7 +132,7 @@ Verifies that the current value is not null.
 ### is_equal
 Verifies that the current Array is equal to the given one.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [is_same](/gdUnit4/testing/assert-array/#is_same).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-is_not_null %}
 {% tab assert-array-is_not_null GdScript %}
 ```ruby
@@ -195,7 +195,7 @@ Verifies that the current Array is equal to the given one, ignoring case conside
 ### is_not_equal
 Verifies that the current Array is not equal to the given one.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [is_not_same](/gdUnit4/testing/assert-array/#is_not_same).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-is_equal_ignoring_case %}
 {% tab assert-array-is_equal_ignoring_case GdScript %}
 ```ruby
@@ -258,7 +258,7 @@ Verifies that the current Array is not equal to the given one, ignoring case con
 ### is_same
 Verifies that the current Array is the same.<br>
 The array are compared by object reference, for deep parameter comparision use [is_equal](/gdUnit4/testing/assert-array/#is_equal).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-is_same %}
 {% tab assert-array-is_same GdScript %}
 ```ruby
@@ -295,7 +295,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### is_not_same
 Verifies that the current Array is the NOT same.<br>
 The array are compared by object reference, for deep parameter comparision use [is_not_equal](/gdUnit4/testing/assert-array/#is_not_equal).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-is_not_same %}
 {% tab assert-array-is_not_same GdScript %}
 ```ruby
@@ -425,7 +425,7 @@ Verifies that the current Array has a size of given value.
 ### contains
 Verifies that the current Array contains the given values, in any order.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same](/gdUnit4/testing/assert-array/#contains_same).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains %}
 {% tab assert-array-contains GdScript %}
 ```ruby
@@ -457,7 +457,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### contains_exactly
 Verifies that the current Array contains exactly only the given values and nothing else, in same order.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_exactly](/gdUnit4/testing/assert-array/#contains_same_exactly).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains_exactly %}
 {% tab assert-array-contains_exactly GdScript %}
 ```ruby
@@ -489,7 +489,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### contains_exactly_in_any_order
 Verifies that the current Array contains exactly only the given values and nothing else, in any order.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_exactly_in_any_order](/gdUnit4/testing/assert-array/#contains_same_exactly_in_any_order).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains_exactly_in_any_order %}
 {% tab assert-array-contains_exactly_in_any_order GdScript %}
 ```ruby
@@ -521,7 +521,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### not_contains
 Verifies that the current Array do NOT contains the given values, in any order.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [not_contains_same](/gdUnit4/testing/assert-array/#not_contains_same).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-not_contains %}
 {% tab assert-array-not_contains GdScript %}
 ```ruby
@@ -554,7 +554,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### contains_same
 Verifies that the current Array contains the same values, in any order.<br>
 The values are compared by object reference, for deep parameter comparision use [contains](/gdUnit4/testing/assert-array/#contains).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains_same %}
 {% tab assert-array-contains_same GdScript %}
 ```ruby
@@ -595,7 +595,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### contains_same_exactly
 Verifies that the current Array contains exactly only the given values and nothing else, in same order.<br>
 The values are compared by object reference, for deep parameter comparision use [contains_exactly](/gdUnit4/testing/assert-array/#contains_exactly).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains_same_exactly %}
 {% tab assert-array-contains_same_exactly GdScript %}
 ```ruby
@@ -634,7 +634,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### contains_same_exactly_in_any_order
 Verifies that the current Array contains exactly only the given values and nothing else, in any order.<br>
 The values are compared by object reference, for deep parameter comparision use [contains_exactly_in_any_order](/gdUnit4/testing/assert-array/#contains_exactly_in_any_order).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-contains_same_exactly_in_any_order %}
 {% tab assert-array-contains_same_exactly_in_any_order GdScript %}
 ```ruby
@@ -673,7 +673,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### not_contains_same
 Verifies that the current Array do NOT contains the same values, in any order.<br>
 The values are compared by object reference, for deep parameter comparision use [not_contains](/gdUnit4/testing/assert-array/#not_contains).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-array-not_contains_same %}
 {% tab assert-array-not_contains_same GdScript %}
 ```ruby

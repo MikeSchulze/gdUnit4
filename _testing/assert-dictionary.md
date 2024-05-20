@@ -122,7 +122,7 @@ Verifies that the current value is not null.
 ### is_equal
 Verifies that the current dictionary is equal to the given one, ignoring order.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [is_same](/gdUnit4/testing/assert-dictionary/#is_same).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-is_equal %}
 {% tab assert-dict-is_equal GdScript %}
 ```ruby
@@ -161,7 +161,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### is_not_equal
 Verifies that the current dictionary is not equal to the given one, ignoring order.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [is_not_same](/gdUnit4/testing/assert-dictionary/#is_not_same).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-is_not_equal %}
 {% tab assert-dict-is_not_equal GdScript %}
 ```ruby
@@ -206,7 +206,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### is_same
 Verifies that the current dictionary is the same.<br>
 The dictionary are compared by object reference, for deep parameter comparision use [is_equal](/gdUnit4/testing/assert-dictionary/#is_equal).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 
 {% tabs assert-dict-is_same %}
 {% tab assert-dict-is_same GdScript %}
@@ -244,7 +244,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### is_not_same
 Verifies that the current dictionary is NOT the same.<br>
 The dictionary are compared by object reference, for deep parameter comparision use [is_not_equal](/gdUnit4/testing/assert-dictionary/#is_not_equal).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 
 {% tabs assert-dict-is_not_same %}
 {% tab assert-dict-is_not_same GdScript %}
@@ -381,7 +381,7 @@ Verifies that the current dictionary has a size of given value.
 ### contains_keys
 Verifies that the current dictionary contains the given key(s).<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_keys](/gdUnit4/testing/assert-dictionary/#contains_same_keys).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-contains_keys %}
 {% tab assert-dict-contains_keys GdScript %}
 ```ruby
@@ -416,7 +416,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### contains_key_value
 Verifies that the current dictionary contains the given key and value.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [contains_same_key_value](/gdUnit4/testing/assert-dictionary/#contains_same_key_value).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-contains_key_value %}
 {% tab assert-dict-contains_key_value GdScript %}
 ```ruby
@@ -450,7 +450,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### not_contains_keys
 Verifies that the current dictionary not contains the given key(s).<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [not_contains_same_keys](/gdUnit4/testing/assert-dictionary/#not_contains_same_keys).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-not_contains_keys %}
 {% tab assert-dict-not_contains_keys GdScript %}
 ```ruby
@@ -486,7 +486,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### contains_same_keys
 Verifies that the current dictionary contains the given key(s).<br>
 The dictionary are compared by object reference, for deep parameter comparision use [contains_keys](/gdUnit4/testing/assert-dictionary/#contains_keys).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-contains_same_keys %}
 {% tab assert-dict-contains_same_keys GdScript %}
 ```ruby
@@ -528,7 +528,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### contains_same_key_value
 Verifies that the current dictionary contains the given key and value.<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [contains_key_value](/gdUnit4/testing/assert-dictionary/#contains_key_value).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-contains_same_key_value %}
 {% tab assert-dict-contains_same_key_value GdScript %}
 ```ruby
@@ -574,7 +574,7 @@ For more details about comparision works see [How GdUnit Asserts compares Object
 ### not_contains_same_keys
 Verifies that the current dictionary not contains the given key(s).<br>
 The values are compared by deep parameter comparision, for object reference compare you have to use [not_contains_keys](/gdUnit4/testing/assert-dictionary/#not_contains_keys).<br>
-For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/index/#how-gdunit-asserts-compares-objects)
+For more details about comparision works see [How GdUnit Asserts compares Objects](/gdUnit4/testing/assert/#how-gdunit-asserts-compares-objects)
 {% tabs assert-dict-not_contains_same_keys %}
 {% tab assert-dict-not_contains_same_keys GdScript %}
 ```ruby

@@ -80,7 +80,7 @@ The output should indicate that the project is built successfully.
 
 ### Running C# Tests inside the Godot Editor
 
-How to [run test](/gdUnit4/faq/run-tests/)
+How to [run test](/gdUnit4/testing/run-tests/)
 
 
 ## Using External C# Editor
