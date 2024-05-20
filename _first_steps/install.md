@@ -59,7 +59,7 @@ Godot has an issue with the project cache when installing plugins, for more deta
 
 After successfully installing and activating the GdUnit4 plugin, you will find the GdUnit4 inspector in the upper left corner of the Godot editor.
 
-* For detailed information about the inspector, please refer to the [GdUnit Inspector](/gdUnit4/faq/inspector/#the-gdunit-test-inspectorexplorer)
+* For detailed information about the inspector, please refer to the [GdUnit Inspector](/gdUnit4/faq/run-tests/#the-gdunit-test-inspectorexplorer)
 ![](/gdUnit4/assets/images/install/activate-gdunit-step3.png)
 
 ---

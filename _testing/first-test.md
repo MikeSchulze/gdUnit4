@@ -92,7 +92,7 @@ func test_full_name() -> void:
 
 Now, run the test again by pressing the **ReRun Debug** button in the inspector.<br>
 ![](/gdUnit4/assets/images/first-steps/rerun-test.png){:.centered}
-For more details about the inspector buttons, see [Button Bar](/gdUnit4/faq/inspector/#button-bar)
+For more details about the inspector buttons, see [Button Bar](/gdUnit4/faq/run-tests/#button-bar)
 
 
 The test failure is fixed but now we get a warning!
