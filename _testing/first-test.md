@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Create Your First Test
-nav_order: 4
+nav_order: 1
 ---
 
 # Create Your First Test
