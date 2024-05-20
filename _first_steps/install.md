@@ -17,7 +17,7 @@ To install GdUnit4 from the AssetLib, please follow these steps:
 3. Select the GdUnit4 plugin from the search results.
 ![](/gdUnit4/assets/images/install/activate-gdunit-step0.png)
 4. Click on the "Download" button to download and install the plugin.
-5. Activate the plugin [follow this steps](/gdUnit4/first_steps/install/#activate-the-plugin)
+5. Activate the plugin [follow this steps](/gdUnit4/first_steps/install/#activating-the-plugin)
 
 {% include advice.html
 content="It is recommended to restart the Godot Editor after the plugin installation.<br>
