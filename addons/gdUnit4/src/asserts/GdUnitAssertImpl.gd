@@ -31,6 +31,7 @@ func report_error(error_message :String, failure_line_number: int = -1) -> GdUni
 	GdAssertReports.set_last_error_line_number(line_number)
 	_current_error_message = error_message if _custom_failure_message.is_empty() else _custom_failure_message
 	GdAssertReports.report_error(_current_error_message, line_number)
+	Engine.set_meta("GD_TEST_FAILURE", true)
 	return self
 
 

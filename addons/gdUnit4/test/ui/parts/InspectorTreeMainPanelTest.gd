@@ -3,13 +3,13 @@ class_name InspectorTreeMainPanelTest
 extends GdUnitTestSuite
 
 # TestSuite generated from
-const __source = 'res://addons/gdUnit4/src/ui/parts/InspectorTreeMainPanel.gd'
+const InspectorTreeMainPanel := preload('res://addons/gdUnit4/src/ui/parts/InspectorTreeMainPanel.gd')
 
 var TEST_SUITE_A :String
 var TEST_SUITE_B :String
 var TEST_SUITE_C :String
 
-var _inspector :Node
+var _inspector :InspectorTreeMainPanel
 
 
 func before_test() -> void:
@@ -287,3 +287,114 @@ func test_tree_view_mode_tree() -> void:
 	assert_array(childs).extract("get_text", [0]).contains_exactly(["(0/13) ui"])
 
 
+@warning_ignore("unused_parameter")
+func test_sort_tree_mode(sort_mode: GdUnitInspectorTreeConstants.SORT_MODE, expected_result: String, test_parameters := [
+	[GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED, "tree_sorted_by_UNSORTED"],
+	[GdUnitInspectorTreeConstants.SORT_MODE.NAME_ASCENDING, "tree_sorted_by_NAME_ASCENDING"],
+	[GdUnitInspectorTreeConstants.SORT_MODE.NAME_DESCENDING, "tree_sorted_by_NAME_DESCENDING"],
+	[GdUnitInspectorTreeConstants.SORT_MODE.EXECUTION_TIME, "tree_sorted_by_EXECUTION_TIME"],
+	]) -> void:
+
+	# setup tree sort mode
+	ProjectSettings.set_setting(GdUnitSettings.INSPECTOR_TREE_SORT_MODE, sort_mode)
+
+	# load example tree
+	var tree_sorted :TreeItem = rebuild_tree_from_resource("res://addons/gdUnit4/test/ui/parts/resources/tree/tree_example.json")
+
+	# do sort
+	_inspector.sort_tree_items(tree_sorted)
+
+	# verify
+	var expected_tree :TreeItem = rebuild_tree_from_resource("res://addons/gdUnit4/test/ui/parts/resources/tree/%s.json" % expected_result)
+	assert_tree_equals(tree_sorted, expected_tree)
+
+
+## test helpers to validate two trees
+# ------------------------------------------------------------------------------------------------------------------------------------------
+
+
+func assert_tree_equals(tree_left :TreeItem, tree_right: TreeItem) -> bool:
+	var left_childs := tree_left.get_children()
+	var right_childs := tree_right.get_children()
+
+	assert_that(left_childs.size()).is_equal(right_childs.size())
+	if is_failure():
+		return false
+
+	for index in left_childs.size():
+		var l := left_childs[index]
+		var r := right_childs[index]
+
+		assert_that(get_item_name(l)).is_equal(get_item_name(r))
+		if is_failure():
+			_print_tree_up(l)
+			_print_tree_up(r)
+			_print_execution_times(tree_left)
+			_print_execution_times(tree_right)
+			return false
+		if not assert_tree_equals(l, r):
+			return false
+	return true
+
+
+func _print_execution_times(item: TreeItem) -> void:
+	for child in item.get_children():
+		prints(get_item_name(child), get_item_execution_time(child))
+	prints("_________________________________________________")
+
+
+func _print_tree(tree_left :TreeItem, indent: String = "\t") -> void:
+	var left := tree_left.get_children()
+	for index in left.size():
+		var l := left[index]
+		prints(indent, get_item_name(l))
+		_print_tree(l, indent+"\t")
+
+
+func _print_tree_up(item :TreeItem, indent: String = "\t") -> void:
+	prints(indent, get_item_name(item))
+	var parent := item.get_parent()
+	if parent != null:
+		_print_tree_up(parent, indent+"\t")
+
+
+func get_item_name(item: TreeItem) -> String:
+	if item.has_meta("gdUnit_name"):
+		return "'" + item.get_meta("gdUnit_name") + "'"
+	return "''"
+
+
+func get_item_execution_time(item: TreeItem) -> String:
+	if item.has_meta("gdUnit_execution_time"):
+		return "'" + str(item.get_meta("gdUnit_execution_time")) + "'"
+	return "''"
+
+
+func rebuild_tree_from_resource(resource: String) -> TreeItem:
+	var json := FileAccess.open(resource, FileAccess.READ)
+	var dict :Dictionary = JSON.parse_string(json.get_as_text())
+	var tree :Tree = auto_free(Tree.new())
+	var root := tree.create_item()
+	create_tree_item_form_dict(root, dict["TreeItem"])
+	return root
+
+
+func create_tree_item_form_dict(item: TreeItem, data: Dictionary) -> TreeItem:
+	for key:String in data.keys():
+		match key:
+			"collapsed":
+				item.collapsed = data[key] as bool
+
+			"TreeItem":
+				var next := item.create_child()
+				return create_tree_item_form_dict(next, data[key])
+
+			"childs":
+				var childs_data :Array = data[key]
+				for child_data:Dictionary in childs_data:
+					create_tree_item_form_dict(item, child_data)
+
+		if key.begins_with("metadata"):
+			var meta_key := key.replace("metadata/", "")
+			item.set_meta(meta_key, data[key])
+	return item

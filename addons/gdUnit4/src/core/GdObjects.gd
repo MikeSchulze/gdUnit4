@@ -176,6 +176,10 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 				dict[property_name] = obj2dict(property_value, hashed_objects)
 			else:
 				dict[property_name] = property_value
+	if obj.has_method("get_children"):
+		var childrens :Array = obj.get_children()
+		dict["childrens"] = childrens.map(func (child :Object) -> Dictionary: return obj2dict(child, hashed_objects))
+
 	return {"%s" % clazz_name : dict}
 
 

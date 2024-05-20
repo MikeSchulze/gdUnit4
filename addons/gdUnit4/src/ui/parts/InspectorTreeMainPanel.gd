@@ -276,10 +276,11 @@ func sort_items_by_execution_time(a: TreeItem, b: TreeItem) -> bool:
 		return type_a == GdUnitType.FOLDER
 	var execution_time_a :int = a.get_meta(META_GDUNIT_EXECUTION_TIME)
 	var execution_time_b :int = b.get_meta(META_GDUNIT_EXECUTION_TIME)
-	if execution_time_a == 0 and execution_time_b == 0:
+	# if has same execution time sort by name
+	if execution_time_a == execution_time_b:
 		var name_a :String = a.get_meta(META_GDUNIT_NAME)
 		var name_b :String = b.get_meta(META_GDUNIT_NAME)
-		return name_a.naturalnocasecmp_to(name_b) < 0
+		return name_a.naturalnocasecmp_to(name_b) > 0
 	return execution_time_a > execution_time_b
 
 
@@ -586,6 +587,21 @@ func create_or_find_item(parent: TreeItem, resource_path: String, item_name: Str
 	return item
 
 
+func create_item(parent: TreeItem, resource_path: String, item_name: String, type: GdUnitType) -> TreeItem:
+	var item := _tree.create_item(parent)
+	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
+	item.set_text(0, item_name)
+	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
+	item.set_meta(META_GDUNIT_NAME, item_name)
+	item.set_meta(META_GDUNIT_TYPE, type)
+	item.set_meta(META_RESOURCE_PATH, resource_path)
+	item.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
+	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
+	set_item_icon_by_state(item)
+	item.collapsed = true
+	return item
+
+
 func set_item_icon_by_state(item :TreeItem) -> void:
 	var resource_path :String = item.get_meta(META_RESOURCE_PATH)
 	var state :STATE = item.get_meta(META_GDUNIT_STATE)
@@ -807,6 +823,19 @@ func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:
 	return item.get_meta(META_GDUNIT_REPORT)
 
 
+func _dump_tree_as_json(dump_name: String) -> void:
+	var dict := _to_json(_tree_root)
+	var file := FileAccess.open("res://%s.json" % dump_name, FileAccess.WRITE)
+	file.store_string(JSON.stringify(dict, "\t"))
+
+
+func _to_json(parent :TreeItem) -> Dictionary:
+	var item_as_dict := GdObjects.obj2dict(parent)
+	item_as_dict["TreeItem"]["childs"] = parent.get_children().map(func(item: TreeItem) -> Dictionary:
+			return _to_json(item))
+	return item_as_dict
+
+
 ################################################################################
 # Tree signal receiver
 ################################################################################
@@ -875,6 +904,7 @@ func _on_gdunit_runner_stop(_client_id: int) -> void:
 	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, false)
 	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, false)
 	abort_running()
+	sort_tree_items(_tree_root)
 	select_first_failure()
 
 
@@ -889,6 +919,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			sort_tree_items(_tree_root)
 			_discover_hint.visible = false
 			_tree_root.visible = true
+			#_dump_tree_as_json("tree_example_discovered")
 
 		GdUnitEvent.DISCOVER_TEST_ADDED:
 			discover_test_added(event)
@@ -902,6 +933,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 
 		GdUnitEvent.STOP:
 			sort_tree_items(_tree_root)
+			#_dump_tree_as_json("tree_example")
 
 		GdUnitEvent.TESTCASE_BEFORE:
 			update_test_case(event)
@@ -936,3 +968,4 @@ func _on_status_bar_tree_view_mode_changed(flat: bool) -> void:
 func _on_settings_changed(property :GdUnitProperty) -> void:
 	if property.name() == GdUnitSettings.INSPECTOR_TREE_SORT_MODE:
 		sort_tree_items(_tree_root)
+		# _dump_tree_as_json("tree_sorted_by_%s" % GdUnitInspectorTreeConstants.SORT_MODE.keys()[property.value()])
