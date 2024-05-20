@@ -24,7 +24,7 @@ Find more information in the [Using the Run Overall Button](#the-run-overall-but
 The Editor Context Menu provides options to run or debug individual test cases or entire testsuites:
 
 - **Using the Context Menu**: You can right-click on a specific test case or testsuite in the editor and select the appropriate option from the context menu.<br>
-For detailed steps, refer to the [Using the Context Menu](/gdUnit4/testing/first-test/#execute-your-test) section.
+For detailed steps, refer to the [Using the Context Menu](/gdUnit4/testing/getting-started/#execute-your-test) section.
 
 
 ### Using the FileSystem Context Menu

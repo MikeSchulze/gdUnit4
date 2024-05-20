@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Create Your First Test
+title: Getting Started with GDScript Tests
 nav_order: 1
 ---
 
-# Create Your First Test
+# Getting Started with GDScript Tests
 
 ## Before You Start
 Create a new folder called **first_steps** in your project's root directory and copy the following class into it. It should be located at `res://first_steps/test_person.gd`.
