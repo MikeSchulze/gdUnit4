@@ -1,10 +1,10 @@
 ---
 layout: default
-title: TestCase
+title: Create Your First Test
 nav_order: 4
 ---
 
-# TestCase
+# Create Your First Test
 
 ## Definition
 
