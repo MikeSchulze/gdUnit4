@@ -57,7 +57,7 @@ enum STATE {
 	SKIPPED
 }
 
-
+const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
 const META_GDUNIT_NAME := "gdUnit_name"
 const META_GDUNIT_STATE := "gdUnit_state"
 const META_GDUNIT_TYPE := "gdUnit_type"
@@ -236,6 +236,9 @@ func sort_tree_items(parent :TreeItem) -> void:
 
 	# do sort by selected sort mode
 	match GdUnitSettings.get_inspector_tree_sort_mode():
+		GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED:
+			items.sort_custom(sort_items_by_original_index)
+
 		GdUnitInspectorTreeConstants.SORT_MODE.NAME_ASCENDING:
 			items.sort_custom(sort_items_by_name.bind(true))
 
@@ -248,7 +251,8 @@ func sort_tree_items(parent :TreeItem) -> void:
 	for item in items:
 		parent.remove_child(item)
 		parent.add_child(item)
-		sort_tree_items(item)
+		if item.get_child_count() > 0:
+			sort_tree_items(item)
 	parent.visible = true
 	_tree.queue_redraw()
 
@@ -279,13 +283,14 @@ func sort_items_by_execution_time(a: TreeItem, b: TreeItem) -> bool:
 	return execution_time_a > execution_time_b
 
 
-func sort_items_default(a: TreeItem, b: TreeItem) -> bool:
+func sort_items_by_original_index(a: TreeItem, b: TreeItem) -> bool:
 	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
 	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
-	 # Compare types first
 	if type_a != type_b:
 		return type_a == GdUnitType.FOLDER
-	return false
+	var index_a :int = a.get_meta(META_GDUNIT_ORIGINAL_INDEX)
+	var index_b :int = b.get_meta(META_GDUNIT_ORIGINAL_INDEX)
+	return index_a < index_b
 
 
 func reset_tree_state(parent: TreeItem) -> void:
@@ -568,6 +573,7 @@ func create_or_find_item(parent: TreeItem, resource_path: String, item_name: Str
 	if item != null:
 		return item
 	item = _tree.create_item(parent)
+	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, item_name)
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_NAME, item_name)
@@ -737,6 +743,7 @@ func do_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
 	var item := create_tree_item(test_suite)
 	var suite_name := test_suite.name()
 
+	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_NAME, suite_name)
 	item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_SUITE)
@@ -759,6 +766,7 @@ func add_test(parent: TreeItem, test_case: GdUnitTestCaseDto) -> void:
 	var resource_path :String = parent.get_meta(META_RESOURCE_PATH)
 	var test_case_names := test_case.test_case_names()
 
+	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, test_name)
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_NAME, test_name)
@@ -781,6 +789,7 @@ func add_test_cases(parent: TreeItem, test_case_names: PackedStringArray) -> voi
 		var item := _tree.create_item(parent)
 		var test_case_name := test_case_names[index]
 		var resource_path :String = parent.get_meta(META_RESOURCE_PATH)
+		item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 		item.set_text(0, test_case_name)
 		item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 		item.set_meta(META_GDUNIT_NAME, test_case_name)

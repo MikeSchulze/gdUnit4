@@ -11,6 +11,7 @@ enum VIEW_MODE {
 
 # The inspector sort modes
 enum SORT_MODE {
+	UNSORTED,
 	NAME_ASCENDING,
 	NAME_DESCENDING,
 	EXECUTION_TIME

@@ -108,7 +108,7 @@ static func setup() -> void:
 		"Enables/Disables that the testsuite node is closed after a successful test run.")
 	create_property_if_need(INSPECTOR_TREE_VIEW_MODE, GdUnitInspectorTreeConstants.VIEW_MODE.Tree,
 		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.VIEW_MODE.keys())
-	create_property_if_need(INSPECTOR_TREE_SORT_MODE, GdUnitInspectorTreeConstants.SORT_MODE.NAME_ASCENDING,
+	create_property_if_need(INSPECTOR_TREE_SORT_MODE, GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED,
 		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.SORT_MODE.keys())
 	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false,
 		"Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")

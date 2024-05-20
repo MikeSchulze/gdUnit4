@@ -23,6 +23,7 @@ var total_errors := 0
 
 
 var sort_mappings := {
+	GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED : GdUnitUiTools.get_icon("TripleBar"),
 	GdUnitInspectorTreeConstants.SORT_MODE.NAME_ASCENDING : GdUnitUiTools.get_icon("Sort"),
 	GdUnitInspectorTreeConstants.SORT_MODE.NAME_DESCENDING : GdUnitUiTools.get_flipped_icon("Sort"),
 	GdUnitInspectorTreeConstants.SORT_MODE.EXECUTION_TIME : GdUnitUiTools.get_icon("History"),
@@ -62,11 +63,9 @@ func _set_sort_mode_menu_options() -> void:
 
 
 func normalise(value: String) -> String:
-	var parts := value.split("_")
-	var output := "By"
-	for p in parts:
-		output += " " + p.capitalize()
-	return output
+	var parts := value.to_lower().split("_")
+	parts[0] = parts[0].capitalize()
+	return " ".join(parts)
 
 
 func status_changed(errors: int, failed: int) -> void:
