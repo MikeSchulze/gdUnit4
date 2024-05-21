@@ -90,6 +90,10 @@ func println_message(message: String, color: Color=_text_color, indent:=-1) -> v
 	output.newline()
 
 
+func line_number(report: GdUnitReport) -> String:
+	return str(report._line_number) if report._line_number != -1 else "<n/a>"
+
+
 func _on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
@@ -108,9 +112,9 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 		GdUnitEvent.TESTSUITE_AFTER:
 			update_statistics(event)
 			if not event.reports().is_empty():
-				var report: GdUnitReport = event.reports().front()
 				println_message("\t" + event._suite_name, _engine_type_color)
-				println_message("line %d %s" % [report._line_number, report._message], _text_color, 2)
+				for report: GdUnitReport in event.reports():
+					println_message("line %s: %s" % [line_number(report), report._message], _text_color, 2)
 			if event.is_success():
 				print_message("[wave]PASSED[/wave]", Color.LIGHT_GREEN)
 			else:
@@ -138,9 +142,8 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 				print_message("WARNING", Color.YELLOW)
 			println_message(" %+12s" % LocalTime.elapsed(event.elapsed_time()))
 
-			var report: GdUnitReport = null if reports.is_empty() else reports[0]
-			if report:
-				println_message("line %d %s" % [report._line_number, report._message], _text_color, 2)
+			for report: GdUnitReport in event.reports():
+				println_message("line %s: %s" % [line_number(report), report._message], _text_color, 2)
 
 
 func _on_gdunit_client_connected(client_id: int) -> void:
