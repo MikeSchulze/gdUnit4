@@ -72,34 +72,43 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 		return []
 
 	input = _cleanup_leading_spaces.sub(input, "", true)
-	input = input.trim_prefix("[").trim_suffix("]").replace("\n", "").trim_prefix(" ")
+	input = input.replace("\n", "").trim_prefix("[").trim_suffix("]").trim_prefix(" ")
 	var single_quote := false
 	var double_quote := false
 	var array_end := 0
 	var current_index := 0
 	var output :PackedStringArray = []
-	var start_index := 0
 	var buf := input.to_ascii_buffer()
+	var collected_characters: = PackedByteArray()
+	var matched :bool = false
+
 	for c in buf:
 		current_index += 1
+		matched = current_index == buf.size()
+		collected_characters.push_back(c)
+
 		match c:
-				# ignore spaces between array elements
-			32: if array_end == 0:
-					start_index += 1
-					continue
-				# step over array element seperator ','
+			# ' ': ignore spaces between array elements
+			32: if array_end == 0 and (not double_quote and not single_quote):
+					collected_characters.remove_at(collected_characters.size()-1)
+			# ',': step over array element seperator ','
 			44: if array_end == 0:
-					start_index += 1
-					continue
+					matched = true
+					collected_characters.remove_at(collected_characters.size()-1)
+			# '`':
 			39: single_quote = !single_quote
+			# '"':
 			34: if not single_quote: double_quote = !double_quote
+			# '['
 			91: if not double_quote and not single_quote: array_end +=1 # counts array open
+			# ']'
 			93: if not double_quote and not single_quote: array_end -=1 # counts array closed
 
 		# if array closed than collect the element
-		if array_end == 0 and current_index > start_index:
-			var parameters := input.substr(start_index, current_index-start_index)
-			parameters = _fix_comma_space.sub(parameters, ", ", true)
-			output.append(parameters)
-			start_index = current_index
+		if matched:
+			var parameters := _fix_comma_space.sub(collected_characters.get_string_from_ascii(), ", ", true)
+			if not parameters.is_empty():
+				output.append(parameters)
+			collected_characters.clear()
+			matched = false
 	return output

@@ -55,6 +55,10 @@ var _expected_tests := {
 		["test_a"],
 		["test_b"],
 		["test_c"]
+	],
+	"test_with_extern_const_parameter_set" : [
+		["aa"],
+		["bb"]
 	]
 }
 
@@ -294,3 +298,13 @@ func test_with_extern_parameter_set(value :String, test_parameters := _test_set)
 	assert_that(value).is_not_empty()
 	assert_that(test_parameters).is_empty()
 	collect_test_call("test_with_extern_parameter_set", [value])
+
+
+const _data1 := ["aa"]
+const _data2 := ["bb"]
+
+@warning_ignore("unused_parameter")
+func test_with_extern_const_parameter_set(value :String, test_parameters := [_data1, _data2]) -> void:
+	assert_that(value).is_not_empty()
+	assert_that(test_parameters).is_empty()
+	collect_test_call("test_with_extern_const_parameter_set", [value])
