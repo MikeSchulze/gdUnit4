@@ -142,7 +142,7 @@ func load_parameter_sets(test_case: _TestCase, do_validate := false) -> Array:
 	var script := GDScript.new()
 	script.source_code = source_code
 	# enable this lines only for debuging
-	#script.resource_path = GdUnitTools.create_temp_dir("parameter_extract") + "/%s__.gd" % fd.name()
+	#script.resource_path = GdUnitFileAccess.create_temp_dir("parameter_extract") + "/%s__.gd" % test_case.get_name()
 	#DirAccess.remove_absolute(script.resource_path)
 	#ResourceSaver.save(script, script.resource_path)
 	var result := script.reload()
