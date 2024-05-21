@@ -106,8 +106,8 @@ static func setup() -> void:
 	# inspector
 	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true,
 		"Enables/Disables that the testsuite node is closed after a successful test run.")
-	create_property_if_need(INSPECTOR_TREE_VIEW_MODE, GdUnitInspectorTreeConstants.VIEW_MODE.Tree,
-		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.VIEW_MODE.keys())
+	create_property_if_need(INSPECTOR_TREE_VIEW_MODE, GdUnitInspectorTreeConstants.TREE_VIEW_MODE.TREE,
+		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.TREE_VIEW_MODE.keys())
 	create_property_if_need(INSPECTOR_TREE_SORT_MODE, GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED,
 		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.SORT_MODE.keys())
 	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false,
@@ -196,7 +196,18 @@ static func set_inspector_tree_sort_mode(sort_mode: GdUnitInspectorTreeConstants
 
 static func get_inspector_tree_sort_mode() -> GdUnitInspectorTreeConstants.SORT_MODE:
 	var property := get_property(INSPECTOR_TREE_SORT_MODE)
-	return property.value()
+	return property.value() if property != null else GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED
+
+
+static func set_inspector_tree_view_mode(tree_view_mode: GdUnitInspectorTreeConstants.TREE_VIEW_MODE) -> void:
+	var property := get_property(INSPECTOR_TREE_VIEW_MODE)
+	property.set_value(tree_view_mode)
+	update_property(property)
+
+
+static func get_inspector_tree_view_mode() -> GdUnitInspectorTreeConstants.TREE_VIEW_MODE:
+	var property := get_property(INSPECTOR_TREE_VIEW_MODE)
+	return property.value() if property != null else GdUnitInspectorTreeConstants.TREE_VIEW_MODE.TREE
 
 
 # the configured server connection timeout in ms
