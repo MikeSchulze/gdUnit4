@@ -3,9 +3,9 @@ extends RefCounted
 
 
 # the inspector panel presantation
-enum VIEW_MODE {
-	Tree,
-	Flat
+enum TREE_VIEW_MODE {
+	TREE,
+	FLAT
 }
 
 

@@ -72,7 +72,7 @@ const META_TEST_PARAM_INDEX := "test_param_index"
 
 var _tree_root: TreeItem
 var _item_hash := Dictionary()
-var _tree_view_mode := false
+var _tree_view_mode_flat := GdUnitSettings.get_inspector_tree_view_mode() == GdUnitInspectorTreeConstants.TREE_VIEW_MODE.FLAT
 
 
 func _build_cache_key(resource_path: String, test_name: String) -> Array:
@@ -551,21 +551,26 @@ func update_test_case(event: GdUnitEvent) -> void:
 
 
 func create_tree_item(test_suite: GdUnitTestSuiteDto) -> TreeItem:
-	if _tree_view_mode:
-		return _tree.create_item(_tree_root)
-
 	var root_folder := GdUnitSettings.test_root_folder()
 	var path_spliced := ProjectSettings.localize_path(test_suite.path()).split(root_folder)
-	var path_elements := path_spliced[1]
-	var parent := _tree_root
 	var resource_path := path_spliced[0] + "/" + root_folder
+	var parent := _tree_root
+
+	if _tree_view_mode_flat:
+		var element := path_spliced[1].get_base_dir().trim_prefix("/")
+		if element.is_empty():
+			return _tree.create_item(parent)
+		resource_path += "/" + element
+		parent = create_or_find_item(parent, resource_path, element)
+		return _tree.create_item(parent)
+
+	var path_elements := path_spliced[1]
 	var elements := path_elements.split("/")
 	elements.remove_at(0)
 	elements.remove_at(elements.size() - 1)
 	for element in elements:
 		resource_path += "/" + element
-		var item := create_or_find_item(parent, resource_path, element)
-		parent = item
+		parent = create_or_find_item(parent, resource_path, element)
 	return _tree.create_item(parent)
 
 
@@ -960,12 +965,11 @@ func _on_context_m_index_pressed(index: int) -> void:
 			do_collapse_all(true)
 
 
-func _on_status_bar_tree_view_mode_changed(flat: bool) -> void:
-	push_warning("Change the tree mode style is not yet implemented!")
-	_tree_view_mode = flat
-
-
 func _on_settings_changed(property :GdUnitProperty) -> void:
 	if property.name() == GdUnitSettings.INSPECTOR_TREE_SORT_MODE:
 		sort_tree_items(_tree_root)
 		# _dump_tree_as_json("tree_sorted_by_%s" % GdUnitInspectorTreeConstants.SORT_MODE.keys()[property.value()])
+
+	if property.name() == GdUnitSettings.INSPECTOR_TREE_VIEW_MODE:
+		_tree_view_mode_flat = property.value() == GdUnitInspectorTreeConstants.TREE_VIEW_MODE.FLAT
+		GdUnitCommandHandler.instance().cmd_discover_tests()
