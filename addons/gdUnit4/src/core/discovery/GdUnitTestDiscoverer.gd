@@ -17,8 +17,7 @@ static func run() -> void:
 				return accum + test_suite.get_child_count(), 0)
 
 	for test_suite in _test_suites_to_process:
-		var dto := GdUnitTestSuiteDto.new()
-		var ts_dto :GdUnitTestSuiteDto = dto.deserialize(dto.serialize(test_suite))
+		var ts_dto := GdUnitTestSuiteDto.of(test_suite)
 		GdUnitSignals.instance().gdunit_add_test_suite.emit(ts_dto)
 
 	prints("%d test suites discovered." % _test_suites_to_process.size())

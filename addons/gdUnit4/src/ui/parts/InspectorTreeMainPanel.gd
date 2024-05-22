@@ -725,6 +725,16 @@ func get_icon_by_file_type(path: String, state: STATE, orphans: bool) -> Texture
 			return ICON_FOLDER
 
 
+func discover_test_suite_added(event: GdUnitEventTestDiscoverTestSuiteAdded) -> void:
+	# Check first if the test suite already exists
+	var item := get_tree_item(event.resource_path(), event.suite_name())
+	if item != null:
+		return
+	# Otherwise create it
+	prints("Discovered test suite added: '%s' on %s" % [event.suite_name(), event.resource_path()])
+	do_add_test_suite(event.suite_dto())
+
+
 func discover_test_added(event: GdUnitEventTestDiscoverTestAdded) -> void:
 	# check if the test already exists
 	var test_name := event.test_case_dto().name()
@@ -764,6 +774,7 @@ func do_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
 	var item := create_tree_item(test_suite)
 	var suite_name := test_suite.name()
 
+	item.set_text(0, suite_name)
 	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_NAME, suite_name)
@@ -925,6 +936,9 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			_discover_hint.visible = false
 			_tree_root.visible = true
 			#_dump_tree_as_json("tree_example_discovered")
+
+		GdUnitEvent.DISCOVER_SUITE_ADDED:
+			discover_test_suite_added(event)
 
 		GdUnitEvent.DISCOVER_TEST_ADDED:
 			discover_test_added(event)

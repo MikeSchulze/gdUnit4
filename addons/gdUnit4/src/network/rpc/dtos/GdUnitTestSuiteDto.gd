@@ -6,6 +6,11 @@ extends GdUnitResourceDto
 var _test_cases_by_name := Dictionary()
 
 
+static func of(test_suite :Node) -> GdUnitTestSuiteDto:
+	var dto := GdUnitTestSuiteDto.new()
+	return dto.deserialize(dto.serialize(test_suite))
+
+
 func serialize(test_suite :Node) -> Dictionary:
 	var serialized := super.serialize(test_suite)
 	var test_cases_ := Array()

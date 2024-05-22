@@ -1,6 +1,6 @@
 extends RefCounted
 
-# contains all tracked test suites where edited since editor start
+# contains all tracked test suites where discovered since editor start
 # key : test suite resource_path
 # value: the list of discovered test case names
 var _discover_cache := {}
@@ -21,6 +21,16 @@ func sync_cache(dto :GdUnitTestSuiteDto) -> void:
 
 func discover(script: Script) -> void:
 	if GdObjects.is_test_suite(script):
+		# a new test suite is discovered
+		if not _discover_cache.has(script.resource_path):
+			var scanner := GdUnitTestSuiteScanner.new()
+			var test_suite := scanner._parse_test_suite(script)
+			var dto :GdUnitTestSuiteDto = GdUnitTestSuiteDto.of(test_suite)
+			GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverTestSuiteAdded.new(script.resource_path, test_suite.get_name(), dto))
+			sync_cache(dto)
+			test_suite.queue_free()
+			return
+
 		var tests_added :Array[String] = []
 		var tests_removed := PackedStringArray()
 		var script_test_cases := extract_test_functions(script)
@@ -55,6 +65,7 @@ func discover(script: Script) -> void:
 				GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverTestAdded.new(script.resource_path, suite_name, dto))
 			# update the cache
 			_discover_cache[script.resource_path] = discovered_test_cases
+			test_suite.queue_free()
 
 
 func extract_test_functions(script :Script) -> PackedStringArray:
