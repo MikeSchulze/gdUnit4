@@ -369,8 +369,11 @@ func test_scan_test_suite_without_tests() -> void:
 	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteWithoutTests.gd")
 
-	assert_that(test_suites).is_empty()
-
+	assert_that(test_suites).has_size(1)
+	assert_that(test_suites[0].get_child_count()).is_equal(0)
+	# finally free all scaned test suites
+	for ts in test_suites:
+		ts.free()
 
 func test_scan_test_suite_exclude_non_test_suites() -> void:
 	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
