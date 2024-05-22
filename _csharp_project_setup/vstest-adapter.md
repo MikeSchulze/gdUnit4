@@ -107,7 +107,10 @@ You need to setup the system environment variable `GODOT_BIN`, the full path to 
 **Do follow this steps to activate the test explorer:**
 
 * Install the Godot Support plugin
-![godot-support](/gdUnit4/assets/images/faq/jetbrains/plugin-godot-support.png)
+  ![godot-support](/gdUnit4/assets/images/faq/jetbrains/plugin-godot-support.png)
+{% include advice.html
+      content="Minimum Version of <b>2024.1.167</b> is required! <a href=\"https://plugins.jetbrains.com/plugin/13882-godot-support\">Checkout for the latest version</a>"
+%}
 * [Optional] Configure the path to your `.runsettings`
 ![runsettings](/gdUnit4/assets/images/faq/jetbrains/setup-test-1.png)
 * Enable the [VSTest adapters](https://www.jetbrains.com/help/rider/Reference__Options__Tools__Unit_Testing__VSTest.html#projects-with-unit-tests){:target="_blank"} in the Rider settings
@@ -196,4 +199,4 @@ The full guide to configure the settings can be found [here](https://learn.micro
 ![select_process](/gdUnit4/assets/images/faq/jetbrains/select-process.png)
 
 ---
-<h4> document version v4.2.4 </h4>
+<h4> document version v4.2.5 </h4>
