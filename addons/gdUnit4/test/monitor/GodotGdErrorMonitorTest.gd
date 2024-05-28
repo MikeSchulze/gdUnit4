@@ -123,3 +123,10 @@ func test_integration_test() -> void:
 		assert_str(reports[1].message()).contains("Test GodotGdErrorMonitor 'push_warning' reporting")
 	else:
 		fail("Expect reporting runtime errors")
+
+	# scan second time should not report the same errors again
+	monitor.start()
+	monitor.stop()
+	await monitor.scan(true)
+	reports = monitor.to_reports()
+	assert_array(reports).is_empty()
