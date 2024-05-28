@@ -95,6 +95,22 @@ func test__parse_argument_as_array_bad_formatted() -> void:
 	)
 
 
+func test_parse_argument_as_array_ends_with_additional_comma() -> void:
+	var test_parameters := """
+			[
+			[true, 'bool'],
+			[42, 'int'],
+			['foo', 'String'],
+		]"""
+	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
+	assert_array(fa.parameter_sets()).contains_exactly([
+		"""[true, 'bool']""",
+		"""[42, 'int']""",
+		"""['foo', 'String']"""
+		]
+	)
+
+
 func test__parse_argument_as_reference() -> void:
 	var test_parameters := "_test_args()"
 
