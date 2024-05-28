@@ -72,7 +72,7 @@ class TcpConnection extends Node:
 
 
 	func _read_next_data_packages(data_package :PackedByteArray) -> PackedStringArray:
-		_readBuffer += data_package.get_string_from_ascii()
+		_readBuffer += data_package.get_string_from_utf8()
 		var json_array := _readBuffer.split(GdUnitServerConstants.JSON_RESPONSE_DELIMITER)
 		# We need to check if the current data is terminated by the delemiter (data packets can be split unspecifically).
 		# If not, store the last part in _readBuffer and complete it on the next data packet that is received

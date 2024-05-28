@@ -53,7 +53,7 @@ func test_receive_packages() -> void:
 
 	# mock send RPCMessage
 	var data := DLM + RPCMessage.of("Test Message").serialize() + DLM
-	var package_data := [0, data.to_ascii_buffer()]
+	var package_data := [0, data.to_utf8_buffer()]
 	do_return(data.length()).on(stream).get_available_bytes()
 	do_return(package_data).on(stream).get_partial_data(data.length())
 

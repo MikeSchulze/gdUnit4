@@ -17,7 +17,6 @@ const CSI_ITALIC = "[3m"
 const CSI_UNDERLINE = "[4m"
 
 # Control Sequence Introducer
-#var csi := PackedByteArray([0x1b]).get_string_from_ascii()
 var _debug_show_color_codes := false
 var _color_mode := COLOR_TABLE
 

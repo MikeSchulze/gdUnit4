@@ -236,12 +236,12 @@ class TokenInnerClass extends Token:
 
 
 	static func _strip_leading_spaces(input :String) -> String:
-		var characters := input.to_ascii_buffer()
+		var characters := input.to_utf8_buffer()
 		while not characters.is_empty():
 			if characters[0] != 0x20:
 				break
 			characters.remove_at(0)
-		return characters.get_string_from_ascii()
+		return characters.get_string_from_utf8()
 
 
 	static func _consumed_bytes(row :String) -> int:

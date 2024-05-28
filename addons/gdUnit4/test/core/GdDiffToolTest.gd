@@ -17,8 +17,8 @@ func test_string_diff_empty() -> void:
 
 func test_string_diff_equals() -> void:
 	var diffs := GdDiffTool.string_diff("Abc", "Abc")
-	var expected_l_diff := "Abc".to_ascii_buffer()
-	var expected_r_diff := "Abc".to_ascii_buffer()
+	var expected_l_diff := "Abc".to_utf8_buffer()
+	var expected_r_diff := "Abc".to_utf8_buffer()
 
 	assert_array(diffs).has_size(2)
 	assert_array(diffs[0]).contains_exactly(expected_l_diff)
@@ -28,7 +28,7 @@ func test_string_diff_equals() -> void:
 func test_string_diff() -> void:
 	# tests the result of string diff function like assert_str("Abc").is_equal("abc")
 	var diffs := GdDiffTool.string_diff("Abc", "abc")
-	var chars := "Aabc".to_ascii_buffer()
+	var chars := "Aabc".to_utf8_buffer()
 	var ord_A := chars[0]
 	var ord_a := chars[1]
 	var ord_b := chars[2]

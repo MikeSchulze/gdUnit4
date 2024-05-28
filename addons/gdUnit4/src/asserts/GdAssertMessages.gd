@@ -35,7 +35,7 @@ static func input_event_as_text(event :InputEvent) -> String:
 
 
 static func _colored_string_div(characters :String) -> String:
-	return colored_array_div(characters.to_ascii_buffer())
+	return colored_array_div(characters.to_utf8_buffer())
 
 
 static func colored_array_div(characters :PackedByteArray) -> String:

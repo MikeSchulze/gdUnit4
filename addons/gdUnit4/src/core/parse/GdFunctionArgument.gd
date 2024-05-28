@@ -78,7 +78,7 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 	var array_end := 0
 	var current_index := 0
 	var output :PackedStringArray = []
-	var buf := input.to_ascii_buffer()
+	var buf := input.to_utf8_buffer()
 	var collected_characters: = PackedByteArray()
 	var matched :bool = false
 
@@ -106,7 +106,7 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 
 		# if array closed than collect the element
 		if matched:
-			var parameters := _fix_comma_space.sub(collected_characters.get_string_from_ascii(), ", ", true)
+			var parameters := _fix_comma_space.sub(collected_characters.get_string_from_utf8(), ", ", true)
 			if not parameters.is_empty():
 				output.append(parameters)
 			collected_characters.clear()
