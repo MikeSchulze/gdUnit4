@@ -202,8 +202,9 @@ func init_tree() -> void:
 	cleanup_tree()
 	_tree.set_hide_root(true)
 	_tree.ensure_cursor_is_visible()
-	_tree.allow_rmb_select = true
-	_tree.columns = 2
+	_tree.set_allow_reselect(true)
+	_tree.set_allow_rmb_select(true)
+	_tree.set_columns(2)
 	_tree.set_column_clip_content(0, true)
 	_tree.set_column_expand_ratio(0, 1)
 	_tree.set_column_custom_minimum_width(0, 240)
