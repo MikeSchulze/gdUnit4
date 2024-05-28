@@ -98,7 +98,7 @@ func process_rpc() -> void:
 func rpc_send(p_rpc :RPC) -> void:
 	if _stream != null:
 		var data := GdUnitServerConstants.JSON_RESPONSE_DELIMITER + p_rpc.serialize() + GdUnitServerConstants.JSON_RESPONSE_DELIMITER
-		_stream.put_data(data.to_ascii_buffer())
+		_stream.put_data(data.to_utf8_buffer())
 
 
 func rpc_receive() -> RPC:
@@ -111,9 +111,9 @@ func rpc_receive() -> RPC:
 			var header := Array(received_data.slice(0, 4))
 			if header == [0, 0, 0, 124]:
 				received_data = received_data.slice(12, available_bytes)
-			var decoded := received_data.get_string_from_ascii()
+			var decoded := received_data.get_string_from_utf8()
 			if decoded == "":
-				#prints("decoded is empty", available_bytes, received_data.get_string_from_ascii())
+				#prints("decoded is empty", available_bytes, received_data.get_string_from_utf8())
 				return null
 			return RPC.deserialize(decoded)
 	return null

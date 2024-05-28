@@ -71,8 +71,8 @@ static func _buildLookup(lb: PackedByteArray, rb: PackedByteArray) -> Array:
 
 
 static func string_diff(left :Variant, right :Variant) -> Array[PackedByteArray]:
-	var lb := PackedByteArray() if left == null else str(left).to_ascii_buffer()
-	var rb := PackedByteArray() if right == null else str(right).to_ascii_buffer()
+	var lb := PackedByteArray() if left == null else str(left).to_utf8_buffer()
+	var rb := PackedByteArray() if right == null else str(right).to_utf8_buffer()
 	var ldiff := Array()
 	var rdiff := Array()
 	var lookup := _buildLookup(lb, rb);
