@@ -72,7 +72,7 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 		return []
 
 	input = _cleanup_leading_spaces.sub(input, "", true)
-	input = input.replace("\n", "").trim_prefix("[").trim_suffix("]").trim_prefix(" ")
+	input = input.replace("\n", "").strip_edges().trim_prefix("[").trim_suffix("]").trim_prefix("]")
 	var single_quote := false
 	var double_quote := false
 	var array_end := 0
