@@ -28,6 +28,7 @@ func to_reports() -> Array[GdUnitReport]:
 	var reports_ :Array[GdUnitReport] = []
 	if _report_enabled:
 		reports_.assign(_entries.map(_to_report))
+	_entries.clear()
 	return reports_
 
 
