@@ -12,6 +12,7 @@ GdUnit4 provides several customizable settings to meet your testing needs. To ac
 ---
 
 ## Common Settings
+
 ![](/gdUnit4/assets/images/settings/settings-common.png){:.centered}
 
 * **Common**
@@ -22,75 +23,88 @@ GdUnit4 provides several customizable settings to meet your testing needs. To ac
    This option enables or disables the GdUnit update notification. If enabled, a notification will appear when starting Godot to inform you about new updates available for installation.
 
 * **Test**
+  * **Test Discovery**<br>
+   This setting configures the auto-discovery of tests. If enabled, it will scan the configured Test Root Folder for available tests at startup.
+
   * **Test Root Folder**<br>
    This setting defines the root folder where automated tests will be generated. By default, tests are usually located parallel to the source code in a folder named 'test'. However, you can customize this location by specifying a different folder path.
-```python
-   res://project/src/folder_a/folder_b/my_class.gd
-   res://project/test/folder_a/folder_b/my_class_test.gd
-```
+   The default root folder is **test**.
+
+      ```python
+      res://project/src/folder_a/folder_b/my_class.gd
+      res://project/test/folder_a/folder_b/my_class_test.gd
+      ```
 
   * **Test Suite Naming Nonvention**<br>
-   Configures how to generate the test-suite file name. 
-   1. *AUTO_DETECT* - generates the file name by source file naming convention.
-   2. *SNAKE_CASE*  - generates the file name in snake case convention.
-   3. *PASCAL_CASE* - generates the file name in pascal case convention.
+      Configures how to generate the test-suite file name.
+
+      1. *AUTO_DETECT* - generates the file name by source file naming convention.
+      2. *SNAKE_CASE*  - generates the file name in snake case convention.
+      3. *PASCAL_CASE* - generates the file name in pascal case convention.
 
   * **Test Timeout Seconds**<br>
-   This setting configures the default timeout for a test case in seconds. If a test case runs longer than the specified timeout, the test will be interrupted and fail. You can override the default timeout on a per-test-case basis by specifying a different timeout using the `timeout` argument.
+      This setting configures the default timeout for a test case in seconds. If a test case runs longer than the specified timeout, the test will be interrupted and fail. You can override the default timeout on a per-test-case basis by specifying a different timeout using the `timeout` argument.
 
 {% tabs settings-timeout %}
 {% tab settings-timeout GdScript %}
+
 ```ruby
    # Configures the test case to fail after a maximum of 2 seconds runtime
    func test_foo(timeout = 2000) -> void:
    ...
 ```
+
 {% endtab %}
 {% tab settings-timeout C# %}
+
 ```cs
    // Configures the test case to fail after a maximum of 2 seconds runtime
    [TestCase(Timeout = 2000)]
    public async Task foo() {
    }
 ```
+
 {% endtab %}
 {% endtabs %}
 
 ---
 
 ## UI Settings
+
 ![](/gdUnit4/assets/images/settings/settings-ui.png){:.centered}
+
 * **Inspector**
-   * **Node Collapse**<br>
+  * **Node Collapse**<br>
       By default, the testsuite node in the Inspector is collapsed after a successful test run. This option controls whether the testsuite node remains collapsed or expanded.
+  * **Tree Sort Mode**<br>
+      This setting controls the tree sorting by name in ascending or descending order, or by test execution time.
+  * **Tree View Mode**<br>
+      This setting controls whether the inspector tree is presented as a flat view or a tree view.
 
 * **ToolBar**
-   * **Run Overall**<br>
+  * **Run Overall**<br>
       This setting controls the visibility of the 'run overall' button in the inspector tool bar. By default, the button is hidden, but you can show or hide it as desired.
 
 ---
 
-
 ## Shortcuts Settings
+
 ![](/gdUnit4/assets/images/settings/settings-shortcuts.png){:.centered}
 
+* **Editor**<br>
+ This section allows you to customize the keyboard shortcuts for the script editor in Godot. You can customize the shortcuts for various actions such as create test, run test, and debug test.
 
- * **Editor**<br>
- This section allows you to customize the keyboard shortcuts for the script editor in Godot. You can customize the shortcuts for various actions such as create test, run test, and debug test. 
-
- * **Filesystem**<br>
+* **Filesystem**<br>
 In this section, you can customize the keyboard shortcuts for the filesystem inspector in Godot. You can customize shortcuts for various actions, such as running tests and debugging tests.
 
-
- * **Inspector**<br>
+* **Inspector**<br>
  In this section, you can customize the keyboard shortcuts for the GdUnit inspector in Godot. You can customize shortcuts for various actions, such as running tests, debugging tests, running overall tests, and stopping the current test run.
-
 
 ---
 
 ## Report Settings
-![](/gdUnit4/assets/images/settings/settings-report.png){:.centered}
 
+![](/gdUnit4/assets/images/settings/settings-report.png){:.centered}
 
 * **Asserts**
   * **Strict Number Type Compare**<br>
@@ -116,15 +130,14 @@ In this section, you can customize the keyboard shortcuts for the filesystem ins
 ---
 
 ## Templates Settings
+
 When creating a new test-case in GdUnit, you can use this template to generate your test-suite. To do this, simply right-click on the desired function you want to test and select 'Create Test' from the context menu. This will generate a new test-case using the default template, which you can customize to suit your testing needs.
 
 ![](/gdUnit4/assets/images/settings/settings-template.png){:.centered}
 
-To personalize your test-suite template in GdUnit, you can use the provided tags to modify it according to your needs.<br> 
+To personalize your test-suite template in GdUnit, you can use the provided tags to modify it according to your needs.<br>
 These tags allow you to add custom placeholders and data fields to your test-suite, making them more informative and easier to manage. To view a list of all the supported tags, simply click on the **Supported Tags** button in the template page.
 ![](/gdUnit4/assets/images/settings/settings-template-editor-tags.png){:.centered}
 
-
-
 ---
-<h4> document version v4.1.0 </h4>
+<h4> document version v4.3.0 </h4>
