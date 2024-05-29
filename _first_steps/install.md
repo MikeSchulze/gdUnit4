@@ -63,4 +63,4 @@ After successfully installing and activating the GdUnit4 plugin, you will find t
 ![](/gdUnit4/assets/images/install/activate-gdunit-step3.png)
 
 ---
-<h4> document version v4.2.5 </h4>
+<h4> document version v4.3.0 </h4>

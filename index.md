@@ -4,10 +4,10 @@ title: About
 nav_order: 1
 ---
 
-# GdUnit4 V4.2.5
+# GdUnit4 V4.3.0
 
 ![GdUnit4](\gdUnit4\assets\images\background.png)
-build on (v4.2.1.stable.official [b09f793f5])
+build on (v4.2.2.stable.official [15073afe3])
 
 ## What is GdUnit4?
 
@@ -26,6 +26,7 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
 
 * Support for writing and executing tests in GdScript or C#
 * Embedded test Inspector in Godot for easy navigation of your test suites
+* Test Discovery, searches for tests at runtime and automatically adds them to the inspector.
 * Convenient interface for running test-suites directly from Godot<br>
   One of the main features of GdUnit4 is the ability to run test-suites directly from the Godot editor using the context menu. You can run test-suites from the FileSystem panel, the ScriptEditor, or the GdUnit Inspector. To do this, simply right-click on the desired test-suite or test-case and select "Run Test(s)" from the context menu. This will run the selected tests and display the results in the GdUnit Inspector.<br>
   You can create new test cases directly from the ScriptEditor by right-clicking on the function you want to test and selecting "Create TestCase" from the context menu.
@@ -52,6 +53,5 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
   * Support for writing tests in C# [gdUnit4.api](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"}
   * Supporting for the Visual Studio Test Platform to run and debug tests [gdunit4.test.adapter](https://github.com/MikeSchulze/gdUnit4Net/tree/master/testadapter/README.md){:target="_blank"}
 
-
 ---
-<h4> document version v4.2.5 </h4>
+<h4> document version v4.3.0 </h4>

@@ -5,11 +5,12 @@ nav_order: 2
 ---
 
 # How to Run Test
+
 Running tests in GdUnit is a straightforward process, and you have several options to choose from:
 
 ### Using the GdUnit Inspector
-The GdUnit Inspector provides various options to run single unit tests or sets of testsuites:
 
+The GdUnit Inspector provides various options to run single unit tests or sets of testsuites:
 
 - **Using the Button Bar**: You can use the buttons available in the GdUnit Inspector's to run tests.<br>
 Refer to the [Using the Button Bar](#button-bar) section for more details.
@@ -21,13 +22,14 @@ Explore the [Using the Inspector Tree](#test-run-overview-tree) section for inst
 Find more information in the [Using the Run Overall Button](#the-run-overall-button) section.
 
 ### Using the Editor Context Menu
+
 The Editor Context Menu provides options to run or debug individual test cases or entire testsuites:
 
 - **Using the Context Menu**: You can right-click on a specific test case or testsuite in the editor and select the appropriate option from the context menu.<br>
 For detailed steps, refer to the [Using the Context Menu](/gdUnit4/first_steps/getting-started/#execute-your-test) section.
 
-
 ### Using the FileSystem Context Menu
+
 The FileSystem Context Menu allows you to run or debug individual testsuites or sets of testsuites by selecting the desired testsuite or folder:
 
 ![FileSystem Context Menu](/gdUnit4/assets/images/inspector/run-test-filesystem.png){:.centered}
@@ -37,9 +39,11 @@ These options provide flexibility in running tests based on your preferences and
 ## The GdUnit Test Inspector/Explorer
 
 ### Definition
+
 The GdUnit inspector provides an overview of the currently executed tests and allows you to navigate them. It allows you to select individual tests and view possible test failures. The integrated status and info bar gives you a quick overview of the last test run.
 
 ![]({{ site.baseimg }}/gdUnit4/assets/images/inspector/inspector.png){:.centered}
+
 - [(1) Button Bar](#button-bar)
 - [(2) Status Bar](#status-bar)
 - [(3) Test Run Overview](#test-run-overview-tree)
@@ -49,6 +53,7 @@ The GdUnit inspector provides an overview of the currently executed tests and al
 ---
 
 ### Button Bar
+
 The button bar contains several buttons that allow you to perform different actions in GdUnit:
 ![]({{ site.baseimg }}/gdUnit4/assets/images/inspector/button-bar.png){:.centered}
 
@@ -56,19 +61,20 @@ The button bar contains several buttons that allow you to perform different acti
 |--- | --- |
 |(1)| Opens the GdUnit documentation page in your browser |
 |(2)| Opens the GdUnit settings window |
-|(3)| (Re)Run the tests in runtime mode |
-|(4)| (Re)Run the tests in debug mode |
-|(5)| Stops the current test run |
-|(6)| Displays the version of GdUnit |
+|(3)| Run Overall tests |
+|(4)| (Re)Run the tests in runtime mode |
+|(5)| (Re)Run the tests in debug mode |
+|(6)| Stops the current test run |
+|(7)| Displays the version of GdUnit |
 
 Note that the keyboard shortcuts for these buttons may vary depending on your specific GdUnit configuration.
 
-{% include advice.html 
+{% include advice.html
 content="When running tests in GdUnit, it is recommended to first run them in debug mode (4) in order to get the line number where the failure occurred in the test report. This is because Godot does not provide stack trace information when running in runtime mode (3), which can result in the failure line not being displayed in the report."
 %}
 
-
 #### The Run Overall Button
+
 The **Run Overall** button provides a convenient way to execute all the tests in your project at once, instead of running them one by one or selecting a custom set of tests. By clicking the "Run Overall" button, you can initiate the execution of all the tests in your project, saving you time and effort.
 ![](/gdUnit4/assets/images/inspector/overall-button.png){:.centered}
 To enable the **Run Overall** button in GdUnit4, you need to adjust the [UI settings](/gdUnit4/first_steps/settings/#ui-settings).<br>
@@ -77,6 +83,7 @@ Once you have enabled the **Run Overall** button, it should be visible in the in
 ---
 
 ### Status Bar
+
 This area gives you information about the current/last test execution, such as the progress and errors/failures found.<br>
 With the arrow buttons, you can navigate back and forth over found failures.<br>
 ![](/gdUnit4/assets/images/inspector/status-bar.png){:.centered}
@@ -88,8 +95,26 @@ With the arrow buttons, you can navigate back and forth over found failures.<br>
 |(3)| Number of test case failures found|
 |(4)| Navigate to previous failure |
 |(5)| Navigate to next failure |
+|(6)| Run discover tests |
+|(7)| Sort the tree |
+|(8)| Change the tree presentation |
 
-{% include advice.html 
+- **Sorting Options**
+
+    The sorting option controls how the test results are displayed in the inspector tree. You can sort the results by:
+
+  - **Name Ascending**: Sorts the test cases alphabetically from A to Z.
+  - **Name Descending**: Sorts the test cases alphabetically from Z to A.
+  - **Test Execution Time**: Sorts the test cases based on the time they took to execute, from longest to shortest.
+
+- **Tree Presentation**
+
+    The tree presentation setting allows you to switch between two views:
+
+  - **Flat View**: Displays all test cases in a single, flat list without any hierarchical structure.
+  - **Tree View**: Displays test cases in a hierarchical structure, reflecting the path of your test files and suites.
+
+{% include advice.html
 content="Whats the difference between errors and failures?<br>
 GdUnit distinguishes between errors and failures. An error is a hard failure such as a test abort or timeout, while a failure is a test error caused by a failed assertion."
 %}
@@ -97,6 +122,7 @@ GdUnit distinguishes between errors and failures. An error is a hard failure suc
 ---
 
 ### Test Run Overview Tree
+
 This area provides an overview of all executed/executing tests and their execution status in real-time. Here, you can navigate through the tests and view the report for each individual test by selecting it. You can also run the currently selected test or test suite again by right-clicking to open a context menu.
 ![](/gdUnit4/assets/images/inspector/test-overview.png){:.centered}
 
@@ -107,6 +133,7 @@ content="Double-clicking on a test in the test run overview allows you to jump d
 ---
 
 ### Failure Report
+
 This area displays the failure report of the currently selected failed test.<br>
 GdUnit generates the failure report based on the used assert, according to the scheme **expected** vs **current** value.
 ![](/gdUnit4/assets/images/inspector/report.png){:.centered}
@@ -114,17 +141,17 @@ GdUnit generates the failure report based on the used assert, according to the s
 ---
 
 ### Info Bar
+
 This section provides you with information about the total duration of the test execution and any orphaned nodes found.<br>
 ![](/gdUnit4/assets/images/inspector/info-bar.png){:.centered}
 
-* **Time**<br>
+- **Time**<br>
     The time taken to execute all tests.
-* **Orphans**<br>
+- **Orphans**<br>
      The number of nodes that were not cleaned up after the execution of the tests. Orphaned nodes can cause memory leaks, and it's essential to clean them up after the execution of the tests.
 {% include advice.html
-content="It's recommended to always check for orphaned nodes after the execution of tests to ensure there are no memory leaks in your game/application." 
+content="It's recommended to always check for orphaned nodes after the execution of tests to ensure there are no memory leaks in your game/application."
 %}
 
-
 ---
-<h4> document version v4.1.0 </h4>
+<h4> document version v4.3.0 </h4>

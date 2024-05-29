@@ -38,6 +38,11 @@ h4 {
     margin-top: 1.25rem;
 }
 
+.site-logo {
+    width: 120%;
+    height: 160px;
+}
+
 img.centered {
     display: block;
     margin-left: auto;
