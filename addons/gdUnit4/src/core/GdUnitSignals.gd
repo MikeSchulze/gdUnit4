@@ -32,3 +32,5 @@ static func dispose() -> void:
 		for connection in signals.get_signal_connection_list(signal_["name"]):
 			connection["signal"].disconnect(connection["callable"])
 	Engine.remove_meta(META_KEY)
+	while signals.get_reference_count() > 0:
+		signals.unreference()
