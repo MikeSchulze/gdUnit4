@@ -24,8 +24,7 @@ static func dispose() -> void:
 			popup.about_to_popup.disconnect(Callable(handler, "on_context_menu_show"))
 		if popup.id_pressed.is_connected(Callable(handler, "on_context_menu_pressed")):
 			popup.id_pressed.disconnect(Callable(handler, "on_context_menu_pressed"))
-		Engine.get_main_loop().root.remove_child(handler)
-		handler.free()
+		GodotVersionFixures.free_fix(handler)
 
 
 func on_context_menu_show(context_menu: PopupMenu, file_tree: Tree) -> void:

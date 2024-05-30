@@ -22,8 +22,7 @@ static func dispose() -> void:
 		var editor := EditorInterface.get_script_editor()
 		if editor.editor_script_changed.is_connected(handler.on_script_changed):
 			editor.editor_script_changed.disconnect(handler.on_script_changed)
-		Engine.get_main_loop().root.remove_child(handler)
-		handler.free()
+		GodotVersionFixures.free_fix(handler)
 
 
 func _input(event: InputEvent) -> void:

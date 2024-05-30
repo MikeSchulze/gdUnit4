@@ -7,7 +7,7 @@ extends RefCounted
 # Is called when the plugin is activated
 # The filesystem popup is connected to the EditorFileSystemContextMenuHandler
 static func register_context_menu(menu: Array[GdUnitContextMenuItem]) -> void:
-	Engine.get_main_loop().root.call_deferred("add_child", EditorFileSystemContextMenuHandler.new(menu))
+	Engine.get_main_loop().root.add_child.call_deferred(EditorFileSystemContextMenuHandler.new(menu))
 
 
 # Unregisteres all registerend context menus and gives the EditorFileSystemContextMenuHandler> free

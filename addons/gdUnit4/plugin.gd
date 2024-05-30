@@ -38,15 +38,14 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	if is_instance_valid(_gd_inspector):
 		remove_control_from_docks(_gd_inspector)
-		_gd_inspector.queue_free()
+		GodotVersionFixures.free_fix(_gd_inspector)
 	if is_instance_valid(_gd_console):
 		remove_control_from_bottom_panel(_gd_console)
-		_gd_console.queue_free()
+		_gd_console.free()
 	if is_instance_valid(_server_node):
 		Engine.get_main_loop().root.remove_child.call_deferred(_server_node)
 		_server_node.queue_free()
 	GdUnitTools.dispose_all.call_deferred()
-	_guard = null
 	prints("Unload GdUnit4 Plugin success")
 
 
