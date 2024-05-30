@@ -15,6 +15,8 @@ func _init(context_menus: Array[GdUnitContextMenuItem]) -> void:
 
 
 static func dispose() -> void:
+	if Engine.get_main_loop().root == null:
+		return
 	var handler: EditorFileSystemContextMenuHandler = Engine.get_main_loop().root.find_child("EditorFileSystemContextMenuHandler*", false, false)
 	if handler:
 		var popup := _menu_popup()
@@ -22,8 +24,7 @@ static func dispose() -> void:
 			popup.about_to_popup.disconnect(Callable(handler, "on_context_menu_show"))
 		if popup.id_pressed.is_connected(Callable(handler, "on_context_menu_pressed")):
 			popup.id_pressed.disconnect(Callable(handler, "on_context_menu_pressed"))
-		Engine.get_main_loop().root.call_deferred("remove_child", handler)
-		handler.queue_free()
+		GodotVersionFixures.free_fix(handler)
 
 
 func on_context_menu_show(context_menu: PopupMenu, file_tree: Tree) -> void:

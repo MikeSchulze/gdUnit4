@@ -23,11 +23,11 @@ func _enter_tree() -> void:
 	_gd_console = load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn").instantiate()
 	add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
 	_server_node = load("res://addons/gdUnit4/src/network/GdUnitServer.tscn").instantiate()
-	Engine.get_main_loop().root.call_deferred("add_child", _server_node)
+	Engine.get_main_loop().root.add_child.call_deferred(_server_node)
 	prints("Loading GdUnit4 Plugin success")
 	if GdUnitSettings.is_update_notification_enabled():
 		var update_tool :Node = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
-		Engine.get_main_loop().root.call_deferred("add_child", update_tool)
+		Engine.get_main_loop().root.add_child.call_deferred(update_tool)
 	if GdUnit4CSharpApiLoader.is_mono_supported():
 		prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
 	# connect to be notified for script changes to be able to discover new tests
@@ -38,14 +38,14 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	if is_instance_valid(_gd_inspector):
 		remove_control_from_docks(_gd_inspector)
-		_gd_inspector.free()
+		GodotVersionFixures.free_fix(_gd_inspector)
 	if is_instance_valid(_gd_console):
 		remove_control_from_bottom_panel(_gd_console)
 		_gd_console.free()
 	if is_instance_valid(_server_node):
-		Engine.get_main_loop().root.remove_child(_server_node)
-		_server_node.free()
-	GdUnitTools.dispose_all()
+		Engine.get_main_loop().root.remove_child.call_deferred(_server_node)
+		_server_node.queue_free()
+	GdUnitTools.dispose_all.call_deferred()
 	prints("Unload GdUnit4 Plugin success")
 
 

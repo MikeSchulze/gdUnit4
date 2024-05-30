@@ -35,10 +35,15 @@ func _notification(what: int) -> void:
 	if what == EditorSettings.NOTIFICATION_EDITOR_SETTINGS_CHANGED:
 		init_colors()
 	if what == NOTIFICATION_PREDELETE:
-		GdUnitSignals.instance().gdunit_event.disconnect(_on_gdunit_event)
-		GdUnitSignals.instance().gdunit_message.disconnect(_on_gdunit_message)
-		GdUnitSignals.instance().gdunit_client_connected.disconnect(_on_gdunit_client_connected)
-		GdUnitSignals.instance().gdunit_client_disconnected.disconnect(_on_gdunit_client_disconnected)
+		var instance := GdUnitSignals.instance()
+		if instance.gdunit_event.is_connected(_on_gdunit_event):
+			instance.gdunit_event.disconnect(_on_gdunit_event)
+		if instance.gdunit_message.is_connected(_on_gdunit_event):
+			instance.gdunit_message.disconnect(_on_gdunit_message)
+		if instance.gdunit_client_connected.is_connected(_on_gdunit_event):
+			instance.gdunit_client_connected.disconnect(_on_gdunit_client_connected)
+		if instance.gdunit_client_disconnected.is_connected(_on_gdunit_event):
+			instance.gdunit_client_disconnected.disconnect(_on_gdunit_client_disconnected)
 
 
 func init_colors() -> void:
