@@ -122,12 +122,15 @@ static func _merge_images(image1: Image, offset1: Vector2i, image2: Image, offse
 
 @warning_ignore("narrowing_conversion")
 static func _merge_images_scaled(image1: Image, offset1: Vector2i, image2: Image, offset2: Vector2i) -> Image:
-	if image1.get_height() != image2.get_height():
-		push_error("invalid height:", image1.get_height(), " vs ", image2.get_height())
-		return null
-	if image1.get_width() != image2.get_width():
-		push_error("invalid width:", image1.get_width(), " vs ", image2.get_width())
-		return null
+	## we disable the check for now because the image size of icons are different on macos and produces an error
+	## see issue https://github.com/MikeSchulze/gdUnit4/issues/486
+	if not OS.get_distribution_name().contains("mac"):
+		if image1.get_height() != image2.get_height():
+			push_error("invalid height:", image1.get_height(), " vs ", image2.get_height())
+			return null
+		if image1.get_width() != image2.get_width():
+			push_error("invalid width:", image1.get_width(), " vs ", image2.get_width())
+			return null
 
 	# Create a new Image for the merged result
 	var merged_image := Image.create(image1.get_width(), image1.get_height(), false, image1.get_format())
