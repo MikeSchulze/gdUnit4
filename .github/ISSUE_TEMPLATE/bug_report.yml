@@ -1,8 +1,8 @@
 name: Bug Report
 description: Report a GdUnit4 bug
-title: "GD-XXX: Describe the issue briefly"
-labels: ["bug"]
-projects: ["projects/5"]
+title: 'GD-XXX: Describe the issue briefly'
+labels: ['bug']
+projects: ['projects/5']
 assignees:
   - MikeSchulze
 
@@ -14,15 +14,16 @@ body:
         - Please search [open](https://github.com/MikeSchulze/gdUnit4/issues?q=is%3Aissue) for existing issues for potential duplicates before filing yours.
         - Verify that you are using a [supported Godot version](https://docs.godotengine.org/en/stable/about/release_policy.html). Please always check if your issue is reproducible in the latest version – it may already have been fixed!
 
-
   - type: dropdown
     id: gdunit-version
     attributes:
       label: The used GdUnit4 version
       description: Which GdUnit4 version are you using?
       options:
-        - 4.3.0 (Pre Release/Master branch)
-        - 4.2.5 (Latest Release)
+        - 4.3.2 (Pre Release/Master branch)
+        - 4.3.1 (Latest Release)
+        - 4.3.0
+        - 4.2.5
         - 4.2.4
         - 4.2.3
         - 4.2.2
@@ -53,7 +54,7 @@ body:
       description: |
         What operating system are you using?
         - Specify the OS version, and when relevant hardware information.
-      placeholder: "Example: macOS Big Sur"
+      placeholder: 'Example: macOS Big Sur'
     validations:
       required: true
 
