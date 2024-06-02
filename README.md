@@ -15,7 +15,9 @@
   <img src="https://img.shields.io/badge/Godot-v4.2.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
 </p>
 
-<p align="center"><a href="https://github.com/MikeSchulze/gdUnit4"><img src="https://github.com/MikeSchulze/gdUnit4/blob/master/assets/gdUnit4-animated.gif" width="100%"/></p><br/>
+<p align="center">
+  <a target="_blank" href="https://www.youtube.com/watch?v=-iqxs3KPvLQ"><img src="https://github.com/MikeSchulze/gdUnit4/blob/master/assets/gdUnit4-animated.gif" width="100%"/>
+</p>
 
 <p align="center">
   <img alt="GitHub branch checks state" src="https://img.shields.io/github/checks-status/MikeSchulze/gdunit4/master"></br>
