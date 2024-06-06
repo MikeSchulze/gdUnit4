@@ -73,12 +73,8 @@ func _init() -> void:
 	register_command(GdUnitCommand.new(CMD_CREATE_TESTCASE, is_not_running, cmd_create_test, GdUnitShortcut.ShortCut.CREATE_TEST))
 	register_command(GdUnitCommand.new(CMD_STOP_TEST_RUN, is_running, cmd_stop.bind(_client_id), GdUnitShortcut.ShortCut.STOP_TEST_RUN))
 
-
-	# do not reschedule inside of test run (called on GdUnitCommandHandlerTest)
-	if Engine.has_meta("GdUnitRunner"):
-		return
-	# schedule discover tests if enabled
-	if GdUnitSettings.is_test_discover_enabled():
+	# schedule discover tests if enabled and running inside the editor
+	if Engine.is_editor_hint() and GdUnitSettings.is_test_discover_enabled():
 		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(5)
 		timer.timeout.connect(cmd_discover_tests)
 

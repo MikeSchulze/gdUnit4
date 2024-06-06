@@ -23,7 +23,9 @@ static func set_event_global_position(event: InputEventMouseMotion, global_posit
 
 # we crash on macOS when using free() inside the plugin _exit_tree
 static func free_fix(instance: Object) -> void:
-	if OS.get_distribution_name().contains("mac"):
+	var distribution_name := OS.get_distribution_name()
+	if distribution_name != "Windows":
+		prints("Using queue_free() hotfix on system:", distribution_name)
 		instance.queue_free()
 	else:
 		instance.free()

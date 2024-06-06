@@ -86,16 +86,16 @@ static func release_timers() -> void:
 	for node :Node in Engine.get_main_loop().root.get_children():
 		if is_instance_valid(node) and node.is_in_group("GdUnitTimers"):
 			if is_instance_valid(node):
-				Engine.get_main_loop().root.remove_child(node)
+				Engine.get_main_loop().root.remove_child.call_deferred(node)
 				node.stop()
-				node.free()
+				node.queue_free()
 
 
 # the finally cleaup unfreed resources and singletons
 static func dispose_all() -> void:
 	release_timers()
-	GdUnitSignals.dispose()
 	GdUnitSingleton.dispose()
+	GdUnitSignals.dispose()
 
 
 # if instance an mock or spy we need manually freeing the self reference

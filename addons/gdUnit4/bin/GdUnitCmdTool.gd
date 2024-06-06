@@ -615,6 +615,7 @@ func _initialize() -> void:
 
 # do not use print statements on _finalize it results in random crashes
 func _finalize() -> void:
+	queue_delete(_cli_runner)
 	if OS.is_stdout_verbose():
 		prints("Finallize ..")
 		prints("-Orphan nodes report-----------------------")

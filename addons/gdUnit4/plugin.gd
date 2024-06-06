@@ -12,6 +12,9 @@ var _guard: GdUnitTestDiscoverGuard
 
 
 func _enter_tree() -> void:
+	if check_running_in_test_env():
+		CmdConsole.new().prints_warning("It was recognized that GdUnit4 is running in a test environment, therefore the GdUnit4 plugin will not be executed!")
+		return
 	if Engine.get_version_info().hex < 0x40200:
 		prints("GdUnit4 plugin requires a minimum of Godot 4.2.x Version!")
 		return
@@ -36,6 +39,8 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
+	if check_running_in_test_env():
+		return
 	if is_instance_valid(_gd_inspector):
 		remove_control_from_docks(_gd_inspector)
 		GodotVersionFixures.free_fix(_gd_inspector)
@@ -47,6 +52,12 @@ func _exit_tree() -> void:
 		_server_node.queue_free()
 	GdUnitTools.dispose_all.call_deferred()
 	prints("Unload GdUnit4 Plugin success")
+
+
+func check_running_in_test_env() -> bool:
+	var args := OS.get_cmdline_args()
+	args.append_array(OS.get_cmdline_user_args())
+	return DisplayServer.get_name() == "headless" or args.has("--selftest") or args.has("--add") or args.has("-a") or args.has("--quit-after") or args.has("--import")
 
 
 func _on_resource_saved(resource :Resource) -> void:
