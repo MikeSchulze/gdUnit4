@@ -553,6 +553,9 @@ func update_test_case(event: GdUnitEvent) -> void:
 
 func create_tree_item(test_suite: GdUnitTestSuiteDto) -> TreeItem:
 	var root_folder := GdUnitSettings.test_root_folder()
+	# we need at least the root path to split up the path into elements
+	if root_folder.is_empty():
+		root_folder = "res://"
 	var path_spliced := ProjectSettings.localize_path(test_suite.path()).split(root_folder)
 	var resource_path := path_spliced[0] + "/" + root_folder
 	var parent := _tree_root
