@@ -1,7 +1,7 @@
 class_name Spell
 extends Node
 
-signal spell_explode
+signal spell_explode(spell: Spell)
 
 const SPELL_LIVE_TIME = 1000
 
@@ -35,5 +35,5 @@ func move(delta :float) -> void:
 	_spell_pos.x += delta
 
 func explode() -> void:
-	emit_signal("spell_explode", self)
+	spell_explode.emit(self)
 

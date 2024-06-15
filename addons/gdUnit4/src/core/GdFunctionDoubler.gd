@@ -39,6 +39,8 @@ const DEFAULT_TYPED_RETURN_VALUES := {
 	TYPE_PACKED_STRING_ARRAY: "PackedStringArray()",
 	TYPE_PACKED_VECTOR2_ARRAY: "PackedVector2Array()",
 	TYPE_PACKED_VECTOR3_ARRAY: "PackedVector3Array()",
+	# since Godot 4.3.beta1 TYPE_PACKED_VECTOR4_ARRAY = 38
+	GdObjects.TYPE_PACKED_VECTOR4_ARRAY: "PackedVector4Array()",
 	TYPE_PACKED_COLOR_ARRAY: "PackedColorArray()",
 	GdObjects.TYPE_VARIANT: "null",
 	GdObjects.TYPE_ENUM: "0"

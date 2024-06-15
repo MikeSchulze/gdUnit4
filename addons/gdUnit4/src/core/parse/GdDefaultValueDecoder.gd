@@ -21,6 +21,7 @@ var _decoders := {
 	TYPE_PACKED_COLOR_ARRAY: _on_type_Array.bind(TYPE_PACKED_COLOR_ARRAY),
 	TYPE_PACKED_VECTOR2_ARRAY: _on_type_Array.bind(TYPE_PACKED_VECTOR2_ARRAY),
 	TYPE_PACKED_VECTOR3_ARRAY: _on_type_Array.bind(TYPE_PACKED_VECTOR3_ARRAY),
+	GdObjects.TYPE_PACKED_VECTOR4_ARRAY: _on_type_Array.bind(GdObjects.TYPE_PACKED_VECTOR4_ARRAY),
 	TYPE_DICTIONARY: _on_type_Dictionary,
 	TYPE_RID: _on_type_RID,
 	TYPE_NODE_PATH: _on_type_NodePath,
@@ -63,7 +64,7 @@ func _on_type_StringName(value :StringName) -> String:
 	return 'StringName("%s")' % value
 
 
-func _on_type_Object(value :Object, type :int) -> String:
+func _on_type_Object(value :Object, _type :int) -> String:
 	return str(value)
 
 
@@ -79,11 +80,11 @@ func _on_type_NodePath(path :NodePath) -> String:
 	return 'NodePath("%s")' % path
 
 
-func _on_type_Callable(cb :Callable) -> String:
+func _on_type_Callable(_cb :Callable) -> String:
 	return 'Callable()'
 
 
-func _on_type_Signal(s :Signal) -> String:
+func _on_type_Signal(_s :Signal) -> String:
 	return 'Signal()'
 
 
@@ -121,6 +122,14 @@ func _on_type_Array(value :Variant, type :int) -> String:
 			if vectors.is_empty():
 				return "PackedVector3Array()"
 			return "PackedVector3Array([%s])" % ", ".join(vectors)
+
+		GdObjects.TYPE_PACKED_VECTOR4_ARRAY:
+			var vectors := PackedStringArray()
+			for vector:Variant in value as Array:
+				vectors.append(_on_type_Vector(vector, TYPE_VECTOR4))
+			if vectors.is_empty():
+				return "PackedVector4Array()"
+			return "PackedVector4Array([%s])" % ", ".join(vectors)
 
 		TYPE_PACKED_STRING_ARRAY:
 			var values := PackedStringArray()

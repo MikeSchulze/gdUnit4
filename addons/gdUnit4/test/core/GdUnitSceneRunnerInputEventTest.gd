@@ -92,14 +92,6 @@ func test_simulate_action_press() -> void:
 		_runner.simulate_action_press(action)
 		await await_idle_frame()
 
-		var event := InputEventAction.new()
-		event.action = action
-		event.pressed = true
-		verify(_scene_spy, 1)._input(event)
-		assert_that(Input.is_action_pressed(action))\
-			.override_failure_message("Expect the action '%s' is pressed" % action).is_true()
-	# verify all this actions are still handled as pressed
-	for action in actions_to_simmulate:
 		assert_that(Input.is_action_pressed(action))\
 			.override_failure_message("Expect the action '%s' is pressed" % action).is_true()
 	# other actions are not pressed

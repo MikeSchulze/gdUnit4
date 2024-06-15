@@ -15,7 +15,7 @@ const COLOR_CYCLE := [Color.ROYAL_BLUE, Color.CHARTREUSE, Color.YELLOW_GREEN]
 var _nullable :Object
 
 func _ready() -> void:
-	connect("panel_color_change", _on_panel_color_changed)
+	panel_color_change.connect(_on_panel_color_changed)
 	# we call this function to verify the _ready is only once called
 	# this is need to verify `add_child` is calling the original implementation only once
 	only_one_time_call()
@@ -35,11 +35,11 @@ func _on_test_pressed(button_id :int) -> void:
 		1: box = _box1
 		2: box = _box2
 		3: box = _box3
-	emit_signal("panel_color_change", box, Color.RED)
+	panel_color_change.emit(box, Color.RED)
 	# special case for button 3 we wait 1s to change to gray
 	if button_id == 3:
 		await get_tree().create_timer(1).timeout
-	emit_signal("panel_color_change", box, Color.GRAY)
+	panel_color_change.emit(box, Color.GRAY)
 
 
 func _on_panel_color_changed(box :ColorRect, color :Color) -> void:
@@ -49,7 +49,7 @@ func _on_panel_color_changed(box :ColorRect, color :Color) -> void:
 func create_timer(timeout :float) -> Timer:
 	var timer :Timer = Timer.new()
 	add_child(timer)
-	timer.connect("timeout",Callable(self,"_on_timeout").bind(timer))
+	timer.timeout.connect(_on_timeout.bind(timer))
 	timer.set_one_shot(true)
 	timer.start(timeout)
 	return timer

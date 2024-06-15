@@ -4,6 +4,10 @@ extends Resource
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
+
+# introduced with Godot 4.3.beta1
+const TYPE_PACKED_VECTOR4_ARRAY = 38 #TYPE_PACKED_VECTOR4_ARRAY
+
 const TYPE_VOID 	= TYPE_MAX + 1000
 const TYPE_VARARG 	= TYPE_MAX + 1001
 const TYPE_VARIANT	= TYPE_MAX + 1002
@@ -59,6 +63,7 @@ const TYPE_AS_STRING_MAPPINGS := {
 	TYPE_PACKED_STRING_ARRAY: "PackedStringArray",
 	TYPE_PACKED_VECTOR2_ARRAY: "PackedVector2Array",
 	TYPE_PACKED_VECTOR3_ARRAY: "PackedVector3Array",
+	TYPE_PACKED_VECTOR4_ARRAY: "PackedVector4Array",
 	TYPE_PACKED_COLOR_ARRAY: "PackedColorArray",
 	TYPE_VOID: "void",
 	TYPE_VARARG: "VarArg",
@@ -359,7 +364,7 @@ static func is_type(value :Variant) -> bool:
 	if is_engine_type(value):
 		return true
 	# is a custom class type
-	if value is GDScript and value.can_instantiate():
+	if value is GDScript and (value as GDScript).can_instantiate():
 		return true
 	return false
 
@@ -434,7 +439,7 @@ static func is_singleton(value :Variant) -> bool:
 static func is_instance(value :Variant) -> bool:
 	if not is_instance_valid(value) or is_native_class(value):
 		return false
-	if is_script(value) and value.get_instance_base_type() == "":
+	if is_script(value) and (value as Script).get_instance_base_type() == "":
 		return true
 	if is_scene(value):
 		return true
@@ -532,7 +537,7 @@ static func extract_class_name(clazz :Variant) -> GdUnitResult:
 		var script := clazz.script as GDScript
 		if script != null:
 			return extract_class_name(script)
-		return GdUnitResult.success(clazz.get_class())
+		return GdUnitResult.success((clazz as Object).get_class())
 
 	# extract name form full qualified class path
 	if clazz is String:

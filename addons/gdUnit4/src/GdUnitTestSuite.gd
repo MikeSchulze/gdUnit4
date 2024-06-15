@@ -10,7 +10,7 @@
 ## [/codeblock]
 ## @tutorial:  https://mikeschulze.github.io/gdUnit4/faq/test-suite/
 
-@icon("res://addons/gdUnit4/src/ui/assets/TestSuite.svg")
+@icon("res://addons/gdUnit4/src/ui/settings/logo.png")
 class_name GdUnitTestSuite
 extends Node
 
