@@ -43,7 +43,7 @@ static func free_instance(instance :Variant, is_stdout_verbose :=false) -> bool:
 		print_verbose("GdUnit4:gc():free instance ", instance)
 	release_double(instance)
 	if instance is RefCounted:
-		instance.notification(Object.NOTIFICATION_PREDELETE)
+		(instance as RefCounted).notification(Object.NOTIFICATION_PREDELETE)
 		return true
 	else:
 		# is instance already freed?

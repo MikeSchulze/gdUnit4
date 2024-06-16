@@ -6,6 +6,7 @@ var class_names :Array[String] = []
 
 const EXCLUDED_CLASSES = [
 	"JavaClass",
+	"GDScript",
 	"_ClassDB",
 	"MainLoop",
 	"JNISingleton",
@@ -15,6 +16,8 @@ const EXCLUDED_CLASSES = [
 	"Tween",
 	"TextServerAdvanced",
 	"InputEventShortcut",
+	"FramebufferCacheRD",
+	"UniformSetCacheRD",
 	# GD-110 - missing enum `Vector3.Axis`
 	"Sprite3D", "AnimatedSprite3D",
 ]
