@@ -6,7 +6,6 @@ const GdUnitTestDiscoverGuard := preload("res://addons/gdUnit4/src/core/discover
 
 
 var _gd_inspector :Node
-var _server_node :Node
 var _gd_console :Node
 var _guard: GdUnitTestDiscoverGuard
 
@@ -25,8 +24,6 @@ func _enter_tree() -> void:
 	# install the GdUnit Console
 	_gd_console = load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn").instantiate()
 	add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
-	_server_node = load("res://addons/gdUnit4/src/network/GdUnitServer.tscn").instantiate()
-	Engine.get_main_loop().root.add_child.call_deferred(_server_node)
 	prints("Loading GdUnit4 Plugin success")
 	if GdUnitSettings.is_update_notification_enabled():
 		var update_tool :Node = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
@@ -47,9 +44,6 @@ func _exit_tree() -> void:
 	if is_instance_valid(_gd_console):
 		remove_control_from_bottom_panel(_gd_console)
 		_gd_console.free()
-	if is_instance_valid(_server_node):
-		Engine.get_main_loop().root.remove_child.call_deferred(_server_node)
-		_server_node.queue_free()
 	GdUnitTools.dispose_all.call_deferred()
 	prints("Unload GdUnit4 Plugin success")
 
