@@ -19,14 +19,16 @@ static func run() -> void:
 
 		# Do sync the main thread before emit the discovered test suites to the inspector
 		await Engine.get_main_loop().process_frame
+		var test_case_count :int = 0
 		for test_suite in _test_suites_to_process:
+			test_case_count += test_suite.get_child_count()
 			var ts_dto := GdUnitTestSuiteDto.of(test_suite)
 			GdUnitSignals.instance().gdunit_add_test_suite.emit(ts_dto)
+			test_suite.free()
 
 		prints("%d test suites discovered." % _test_suites_to_process.size())
-		var test_case_count :int = _test_suites_to_process.reduce(func (accum :int, test_suite :Node) -> int:
-					return accum + test_suite.get_child_count(), 0)
 		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverEnd.new(_test_suites_to_process.size(), test_case_count))
+		_test_suites_to_process.clear()
 	)
 	# wait unblocked to the tread is finished
 	while t.is_alive():
