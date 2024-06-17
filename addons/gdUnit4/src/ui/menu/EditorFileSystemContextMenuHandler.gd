@@ -14,19 +14,6 @@ func _init(context_menus: Array[GdUnitContextMenuItem]) -> void:
 	popup.id_pressed.connect(on_context_menu_pressed.bind(file_tree))
 
 
-func _notification(what: int) -> void:
-	if Engine.get_main_loop().root == null:
-		return
-	##var handler: EditorFileSystemContextMenuHandler = Engine.get_main_loop().root.find_child("EditorFileSystemContextMenuHandler*", false, false)
-	#if handler:
-	#	var popup := _menu_popup()
-	#	if popup.about_to_popup.is_connected(Callable(handler, "on_context_menu_show")):
-	#		popup.about_to_popup.disconnect(Callable(handler, "on_context_menu_show"))
-	#	if popup.id_pressed.is_connected(Callable(handler, "on_context_menu_pressed")):
-	#		popup.id_pressed.disconnect(Callable(handler, "on_context_menu_pressed"))
-	#	GodotVersionFixures.free_fix(handler)
-
-
 func on_context_menu_show(context_menu: PopupMenu, file_tree: Tree) -> void:
 	context_menu.add_separator()
 	var current_index := context_menu.get_item_count()
