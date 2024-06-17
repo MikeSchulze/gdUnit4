@@ -4,8 +4,9 @@ extends EditorPlugin
 const GdUnitTools := preload ("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const GdUnitTestDiscoverGuard := preload ("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd")
 
-var _gd_inspector: Node
-var _gd_console: Node
+
+var _gd_inspector :Node
+var _gd_console :Node
 var _guard: GdUnitTestDiscoverGuard
 
 
