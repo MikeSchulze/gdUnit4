@@ -50,7 +50,7 @@ func _exit_tree() -> void:
 	if is_instance_valid(_server_node):
 		Engine.get_main_loop().root.remove_child.call_deferred(_server_node)
 		_server_node.queue_free()
-	GdUnitTools.dispose_all.call_deferred()
+	GdUnitTools.dispose_all(true)
 	prints("Unload GdUnit4 Plugin success")
 
 
