@@ -1,3 +1,4 @@
+@tool
 extends Control
 
 var _context_menus := Dictionary()
