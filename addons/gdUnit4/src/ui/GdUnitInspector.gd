@@ -2,6 +2,7 @@
 class_name GdUnitInspecor
 extends Panel
 
+const ScriptEditorContextMenuHandler = preload("res://addons/gdUnit4/src/ui/menu/ScriptEditorContextMenuHandler.gd")
 
 var _command_handler := GdUnitCommandHandler.instance()
 
@@ -22,7 +23,6 @@ func _ready() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
-		ScriptEditorControls.unregister_context_menu()
 		EditorFileSystemControls.unregister_context_menu()
 
 
@@ -69,7 +69,7 @@ func add_script_editor_context_menu() -> void:
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Tests", "PlayStart", is_test_suite.bind(true),_command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG)),
 		GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.CREATE_TEST, "Create Test", "New", is_test_suite.bind(false), _command_handler.command(GdUnitCommandHandler.CMD_CREATE_TESTCASE))
 	]
-	ScriptEditorControls.register_context_menu(menu)
+	add_child(ScriptEditorContextMenuHandler.new(menu))
 
 
 func _on_MainPanel_run_testsuite(test_suite_paths: Array, debug: bool) -> void:
