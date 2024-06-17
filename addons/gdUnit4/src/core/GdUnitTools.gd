@@ -27,7 +27,7 @@ static func prints_verbose(message :String) -> void:
 		prints(message)
 
 
-static func free_instance(instance :Variant, call_deferred :bool = false, is_stdout_verbose :=true) -> bool:
+static func free_instance(instance :Variant, use_call_deferred :bool = false, is_stdout_verbose :=true) -> bool:
 	if instance is Array:
 		for element :Variant in instance:
 			free_instance(element)
@@ -52,7 +52,7 @@ static func free_instance(instance :Variant, call_deferred :bool = false, is_std
 		#release_connections(instance)
 		if instance is Timer:
 			instance.stop()
-			if call_deferred:
+			if use_call_deferred:
 				instance.call_deferred("free")
 			else:
 				instance.free()
@@ -61,14 +61,14 @@ static func free_instance(instance :Variant, call_deferred :bool = false, is_std
 		if instance is Node and instance.get_parent() != null:
 			if is_stdout_verbose:
 				print_verbose("GdUnit4:gc():remove node from parent ",  instance.get_parent(), instance)
-			if call_deferred:
+			if use_call_deferred:
 				instance.get_parent().remove_child.call_deferred(instance)
 				#instance.call_deferred("set_owner", null)
 			else:
 				instance.get_parent().remove_child(instance)
 		if is_stdout_verbose:
 			print_verbose("GdUnit4:gc():freeing `free()` the instance ", instance)
-		if call_deferred:
+		if use_call_deferred:
 			instance.call_deferred("free")
 		else:
 			instance.free()
@@ -103,9 +103,9 @@ static func release_timers() -> void:
 
 
 # the finally cleaup unfreed resources and singletons
-static func dispose_all(call_deferred :bool = false) -> void:
+static func dispose_all(use_call_deferred :bool = false) -> void:
 	release_timers()
-	GdUnitSingleton.dispose(call_deferred)
+	GdUnitSingleton.dispose(use_call_deferred)
 	GdUnitSignals.dispose()
 
 

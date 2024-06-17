@@ -102,6 +102,7 @@ func _ready() -> void:
 
 func _notification(what :int) -> void:
 	if what == NOTIFICATION_PREDELETE:
+		prints("GdUnitTcpServer: NOTIFICATION_PREDELETE", self)
 		stop()
 
 
@@ -127,10 +128,12 @@ func start() -> GdUnitResult:
 func stop() -> void:
 	if _server:
 		_server.stop()
+	_server = null
 	for connection in get_children():
 		if connection is TcpConnection:
 			connection.close()
 			remove_child(connection)
+			connection.free()
 
 
 func disconnect_client(client_id :int) -> void:
@@ -156,7 +159,6 @@ func _on_client_disconnected(client_id :int) -> void:
 	for connection in get_children():
 		if connection is TcpConnection and connection.id() == client_id:
 			remove_child(connection)
-
 
 
 func console(_message :String) -> void:
