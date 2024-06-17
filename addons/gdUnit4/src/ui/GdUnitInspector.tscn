@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://mpo5o6d4uybu"]
+[gd_scene load_steps=8 format=3 uid="uid://mpo5o6d4uybu"]
 
 [ext_resource type="PackedScene" uid="uid://dx7xy4dgi3wwb" path="res://addons/gdUnit4/src/ui/parts/InspectorToolBar.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://dva3tonxsxrlk" path="res://addons/gdUnit4/src/ui/parts/InspectorProgressBar.tscn" id="2"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://djp8ait0bxpsc" path="res://addons/gdUnit4/src/ui/parts/InspectorMonitor.tscn" id="4"]
 [ext_resource type="Script" path="res://addons/gdUnit4/src/ui/GdUnitInspector.gd" id="5"]
 [ext_resource type="PackedScene" uid="uid://bqfpidewtpeg0" path="res://addons/gdUnit4/src/ui/parts/InspectorTreePanel.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://addons/gdUnit4/src/network/GdUnitServer.tscn" id="7_721no"]
 
 [node name="GdUnit" type="Panel"]
 use_parent_material = true
@@ -50,6 +51,8 @@ layout_mode = 2
 
 [node name="Monitor" parent="VBoxContainer" instance=ExtResource("4")]
 layout_mode = 2
+
+[node name="event_server" parent="." instance=ExtResource("7_721no")]
 
 [connection signal="failure_next" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="select_next_failure"]
 [connection signal="failure_prevous" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="select_previous_failure"]
