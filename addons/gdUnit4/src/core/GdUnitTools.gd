@@ -27,7 +27,7 @@ static func prints_verbose(message :String) -> void:
 		prints(message)
 
 
-static func free_instance(instance :Variant, use_call_deferred :bool = false, is_stdout_verbose :=true) -> bool:
+static func free_instance(instance :Variant, use_call_deferred :bool = false, is_stdout_verbose := false) -> bool:
 	if instance is Array:
 		for element :Variant in instance:
 			free_instance(element)
