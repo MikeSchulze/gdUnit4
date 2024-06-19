@@ -1,8 +1,8 @@
 @tool
 extends EditorPlugin
 
-const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-const GdUnitTestDiscoverGuard := preload("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd")
+const GdUnitTools := preload ("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+const GdUnitTestDiscoverGuard := preload ("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd")
 
 
 var _gd_inspector :Node
@@ -26,7 +26,7 @@ func _enter_tree() -> void:
 	add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
 	prints("Loading GdUnit4 Plugin success")
 	if GdUnitSettings.is_update_notification_enabled():
-		var update_tool :Node = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
+		var update_tool: Node = load("res://addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn").instantiate()
 		Engine.get_main_loop().root.add_child.call_deferred(update_tool)
 	if GdUnit4CSharpApiLoader.is_mono_supported():
 		prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
@@ -40,11 +40,11 @@ func _exit_tree() -> void:
 		return
 	if is_instance_valid(_gd_inspector):
 		remove_control_from_docks(_gd_inspector)
-		GodotVersionFixures.free_fix(_gd_inspector)
+		_gd_inspector.free()
 	if is_instance_valid(_gd_console):
 		remove_control_from_bottom_panel(_gd_console)
 		_gd_console.free()
-	GdUnitTools.dispose_all.call_deferred()
+	GdUnitTools.dispose_all(true)
 	prints("Unload GdUnit4 Plugin success")
 
 
@@ -54,6 +54,6 @@ func check_running_in_test_env() -> bool:
 	return DisplayServer.get_name() == "headless" or args.has("--selftest") or args.has("--add") or args.has("-a") or args.has("--quit-after") or args.has("--import")
 
 
-func _on_resource_saved(resource :Resource) -> void:
+func _on_resource_saved(resource: Resource) -> void:
 	if resource is Script:
 		_guard.discover(resource)

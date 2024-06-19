@@ -119,8 +119,8 @@ func rpc_receive() -> RPC:
 	return null
 
 
-func console(message :String) -> void:
-	prints("TCP Client:", message)
+func console(_message :String) -> void:
+	#prints("TCP Client:", _message)
 	pass
 
 
