@@ -20,8 +20,9 @@ body:
       label: The used GdUnit4 version
       description: Which GdUnit4 version are you using?
       options:
-        - 4.3.2 (Pre Release/Master branch)
-        - 4.3.1 (Latest Release)
+        - 4.3.3 (Pre Release/Master branch)
+        - 4.3.2 (Latest Release)
+        - 4.3.1
         - 4.3.0
         - 4.2.5
         - 4.2.4
@@ -43,7 +44,7 @@ body:
     attributes:
       label: The used Godot version
       description: Which Godot version are you using?
-      placeholder: v4.2.1.stable.official [b09f793f5]
+      placeholder: v4.2.2.stable.official [15073afe3]
     validations:
       required: true
 
