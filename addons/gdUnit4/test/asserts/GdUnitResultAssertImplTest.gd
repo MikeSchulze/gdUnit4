@@ -117,11 +117,24 @@ func test_is_value() -> void:
 
 
 func test_override_failure_message() -> void:
+	assert_object(assert_result(GdUnitResult.success("")).override_failure_message("error")).is_instanceof(GdUnitResultAssert)
 	assert_failure(func() -> void: assert_result(GdUnitResult.success("")) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
 		.has_message("Custom failure message")
+
+
+func test_append_failure_message() -> void:
+	assert_object(assert_result(GdUnitResult.success("")).append_failure_message("error")).is_instanceof(GdUnitResultAssert)
+	assert_failure(func() -> void: assert_result(GdUnitResult.success("")) \
+			.append_failure_message("custom failure data") \
+			.is_error()) \
+		.is_failed() \
+		.has_message("""
+			Expecting the result must be a ERROR but was SUCCESS.
+			Additional info:
+			 custom failure data""".dedent().trim_prefix("\n"))
 
 
 # tests if an assert fails the 'is_failure' reflects the failure status

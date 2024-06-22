@@ -20,7 +20,7 @@ func _notification(event :int) -> void:
 
 
 func failure_message() -> String:
-	return _base._current_error_message
+	return _base.failure_message()
 
 
 func current_value() -> Variant:
@@ -39,6 +39,11 @@ func report_error(error :String) -> GdUnitStringAssert:
 
 func override_failure_message(message :String) -> GdUnitStringAssert:
 	_base.override_failure_message(message)
+	return self
+
+
+func append_failure_message(message :String) -> GdUnitStringAssert:
+	_base.append_failure_message(message)
 	return self
 
 
