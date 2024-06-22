@@ -8,12 +8,36 @@
 </h2>
 
 ---
-<h1 align="center">Supported Godot Versions</h2>
+<h1 align="center">Supported Godot Versions</h1>
 <p align="center">
   <img src="https://img.shields.io/badge/Godot-v4.2.0-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.2.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.2.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
 </p>
+<h1 align="center">Compatibility Overview</h1>
+<table align="center">
+  <thead>
+    <tr>
+      <th>GdUnit4 Version</th>
+      <th>Minimal required Godot Version</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>v4.3.2+</td><td>v4.2.0, v4.3-beta2</td>
+    </tr>
+    <tr>
+      <td>v4.3.0, v4.3.1</td><td>v4.2.0</td>
+    </tr>
+    <tr>
+      <td>v4.2.1-v4.2.5</td><td>v4.1.0</td>
+    </tr>
+    <tr>
+      <td>v4.2.0 and older</td><td>v4.0</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <p align="center">
   <a target="_blank" href="https://www.youtube.com/watch?v=-iqxs3KPvLQ"><img src="https://github.com/MikeSchulze/gdUnit4/blob/master/assets/gdUnit4-animated.gif" width="100%"/>
