@@ -331,8 +331,22 @@ func test_override_failure_message(_test :String, array :Variant, test_parameter
 	["PackedColorArray", PackedColorArray()] ]
 	) -> void:
 
+	assert_object(assert_array(array).override_failure_message("error")).is_instanceof(GdUnitArrayAssert)
 	assert_failure(func() -> void: assert_array(array) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
 		.has_message("Custom failure message")
+
+
+func test_append_failure_message() -> void:
+	assert_object(assert_array([]).append_failure_message("error")).is_instanceof(GdUnitArrayAssert)
+	assert_failure(func() -> void: assert_array([]) \
+			.append_failure_message("custom failure data") \
+			.is_not_empty()) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 must not be empty
+			Additional info:
+			 custom failure data""".dedent().trim_prefix("\n"))

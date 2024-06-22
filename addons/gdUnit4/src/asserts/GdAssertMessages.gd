@@ -613,3 +613,13 @@ static func format_invalid(value :String) -> String:
 
 static func humanized(value :String) -> String:
 	return value.replace("_", " ")
+
+
+static func build_failure_message(failure :String, additional_failure_message: String, custom_failure_message: String) -> String:
+	var message := failure if custom_failure_message.is_empty() else custom_failure_message
+	if additional_failure_message.is_empty():
+		return message
+	return """
+		%s
+		[color=LIME_GREEN][b]Additional info:[/b][/color]
+		 %s""".dedent().trim_prefix("\n") % [message, additional_failure_message]

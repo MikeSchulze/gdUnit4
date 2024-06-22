@@ -6,8 +6,9 @@ const DEFAULT_TIMEOUT := 2000
 
 
 var _current_value_provider :ValueProvider
-var _current_error_message :String = ""
+var _current_failure_message :String = ""
 var _custom_failure_message :String = ""
+var _additional_failure_message: String = ""
 var _line_number := -1
 var _timeout := DEFAULT_TIMEOUT
 var _interrupted := false
@@ -43,14 +44,14 @@ func report_success() -> GdUnitFuncAssert:
 	return self
 
 
-func report_error(error_message :String) -> GdUnitFuncAssert:
-	_current_error_message = error_message if _custom_failure_message == "" else _custom_failure_message
-	GdAssertReports.report_error(_current_error_message, _line_number)
+func report_error(failure :String) -> GdUnitFuncAssert:
+	_current_failure_message = GdAssertMessages.build_failure_message(failure, _additional_failure_message, _custom_failure_message)
+	GdAssertReports.report_error(_current_failure_message, _line_number)
 	return self
 
 
 func failure_message() -> String:
-	return _current_error_message
+	return _current_failure_message
 
 
 func send_report(report :GdUnitReport)-> void:
@@ -59,6 +60,11 @@ func send_report(report :GdUnitReport)-> void:
 
 func override_failure_message(message :String) -> GdUnitFuncAssert:
 	_custom_failure_message = message
+	return self
+
+
+func append_failure_message(message :String) -> GdUnitFuncAssert:
+	_additional_failure_message = message
 	return self
 
 

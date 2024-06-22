@@ -116,3 +116,15 @@ func test_override_failure_message() -> void:
 		.is_failed() \
 		.has_line(113) \
 		.has_message("Custom failure message")
+
+
+func test_append_failure_message() -> void:
+	assert_object(assert_that(null).append_failure_message("error")).is_instanceof(GdUnitObjectAssert)
+	assert_failure(func() -> void: assert_that(null) \
+			.append_failure_message("custom failure data") \
+			.is_not_null()) \
+		.is_failed() \
+		.has_message("""
+			Expecting: not to be '<null>'
+			Additional info:
+			 custom failure data""".dedent().trim_prefix("\n"))

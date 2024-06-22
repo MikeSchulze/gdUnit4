@@ -36,11 +36,16 @@ func report_error(error :String) -> GdUnitFileAssert:
 
 
 func failure_message() -> String:
-	return _base._current_error_message
+	return _base.failure_message()
 
 
 func override_failure_message(message :String) -> GdUnitFileAssert:
 	_base.override_failure_message(message)
+	return self
+
+
+func append_failure_message(message :String) -> GdUnitFileAssert:
+	_base.append_failure_message(message)
 	return self
 
 

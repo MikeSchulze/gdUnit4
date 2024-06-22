@@ -441,11 +441,28 @@ func test_not_contains_same_keys() -> void:
 
 
 func test_override_failure_message() -> void:
+	assert_object(assert_dict({1:1}).override_failure_message("error")).is_instanceof(GdUnitDictionaryAssert)
 	assert_failure(func() -> void: assert_dict({1:1}) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
 		.has_message("Custom failure message")
+
+
+func test_append_failure_message() -> void:
+	assert_object(assert_dict({1:1}).append_failure_message("error")).is_instanceof(GdUnitDictionaryAssert)
+	assert_failure(func() -> void: assert_dict({1:1}) \
+			.append_failure_message("custom failure data") \
+			.is_empty()) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 must be empty but was
+			 '{
+				1: 1
+			  }'
+			Additional info:
+			 custom failure data""".dedent().trim_prefix("\n"))
 
 
 # tests if an assert fails the 'is_failure' reflects the failure status

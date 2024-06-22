@@ -39,3 +39,11 @@ func test_fail():
 @warning_ignore("untyped_declaration")
 func override_failure_message(message :String):
 	return self
+
+
+## Appends a custom message to the failure message.
+## This can be used to add additional infromations to the generated failure message.
+@warning_ignore("unused_parameter")
+@warning_ignore("untyped_declaration")
+func append_failure_message(message :String):
+	return self

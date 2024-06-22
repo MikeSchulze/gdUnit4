@@ -340,11 +340,27 @@ func test_is_not_between_over_all_types(value :Variant, from :Variant, to :Varia
 
 
 func test_override_failure_message() -> void:
+	assert_object(assert_vector(Vector2.ONE).override_failure_message("error")).is_instanceof(GdUnitVectorAssert)
 	assert_failure(func() -> void: assert_vector(Vector2.ONE) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
 		.has_message("Custom failure message")
+
+
+func test_append_failure_message() -> void:
+	assert_object(assert_vector(Vector2.ONE).append_failure_message("error")).is_instanceof(GdUnitVectorAssert)
+	assert_failure(func() -> void: assert_vector(Vector2.ONE) \
+			.append_failure_message("custom failure data") \
+			.is_equal(Vector2.ZERO)) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 '(0, 0)'
+			 but was
+			 '(1, 1)'
+			Additional info:
+			 custom failure data""".dedent().trim_prefix("\n"))
 
 
 # tests if an assert fails the 'is_failure' reflects the failure status
