@@ -3,7 +3,7 @@ namespace GdUnit4.Tests.Resource
 	using static Assertions;
 
 	[TestSuite]
-	public partial class ExampleTestSuiteA
+	public partial class ExampleTestSuite
 	{
 
 		[TestCase]
