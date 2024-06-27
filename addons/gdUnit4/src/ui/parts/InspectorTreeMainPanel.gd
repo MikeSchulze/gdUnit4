@@ -521,7 +521,7 @@ func show_failed_report(selected_item: TreeItem) -> void:
 
 
 func update_test_suite(event: GdUnitEvent) -> void:
-	var item := get_tree_item(event.resource_path(), event.suite_name())
+	var item := get_tree_item(extract_resource_path(event), event.suite_name())
 	if not item:
 		push_error("Internal Error: Can't find test suite %s" % event.suite_name())
 		return
@@ -537,7 +537,7 @@ func update_test_suite(event: GdUnitEvent) -> void:
 
 
 func update_test_case(event: GdUnitEvent) -> void:
-	var item := get_tree_item(event.resource_path(), event.test_name())
+	var item := get_tree_item(extract_resource_path(event), event.test_name())
 	if not item:
 		push_error("Internal Error: Can't find test case %s:%s" % [event.suite_name(), event.test_name()])
 		return
@@ -552,29 +552,32 @@ func update_test_case(event: GdUnitEvent) -> void:
 
 
 func create_tree_item(test_suite: GdUnitTestSuiteDto) -> TreeItem:
-	var root_folder := GdUnitSettings.test_root_folder()
-	# we need at least the root path to split up the path into elements
-	if root_folder.is_empty():
-		root_folder = "res://"
-	var path_spliced := ProjectSettings.localize_path(test_suite.path()).split(root_folder)
-	var resource_path := path_spliced[0] + "/" + root_folder
 	var parent := _tree_root
+	var test_root_folder := GdUnitSettings.test_root_folder()
+	var resource_path := ProjectSettings.localize_path(test_suite.path())
+	var test_base_path := "res://"
+	var test_relative_path := resource_path
+	if resource_path.contains(test_root_folder):
+		var path_elements := resource_path.split(test_root_folder)
+		test_base_path = path_elements[0] + "/" + test_root_folder
+		test_relative_path = path_elements[1]
+	test_relative_path = test_relative_path.replace("res://", "")
 
 	if _tree_view_mode_flat:
-		var element := path_spliced[1].get_base_dir().trim_prefix("/")
+		var element := test_relative_path.get_base_dir().trim_prefix("/")
 		if element.is_empty():
 			return _tree.create_item(parent)
-		resource_path += "/" + element
-		parent = create_or_find_item(parent, resource_path, element)
+		test_base_path += "/" + element
+		parent = create_or_find_item(parent, test_base_path, element)
 		return _tree.create_item(parent)
 
-	var path_elements := path_spliced[1]
-	var elements := path_elements.split("/")
-	elements.remove_at(0)
+	var elements := test_relative_path.split("/")
+	if elements[0] == "res://" or elements[0] == "":
+		elements.remove_at(0)
 	elements.remove_at(elements.size() - 1)
 	for element in elements:
-		resource_path += "/" + element
-		parent = create_or_find_item(parent, resource_path, element)
+		test_base_path += "/" + element
+		parent = create_or_find_item(parent, test_base_path, element)
 	return _tree.create_item(parent)
 
 
@@ -731,26 +734,27 @@ func get_icon_by_file_type(path: String, state: STATE, orphans: bool) -> Texture
 
 func discover_test_suite_added(event: GdUnitEventTestDiscoverTestSuiteAdded) -> void:
 	# Check first if the test suite already exists
-	var item := get_tree_item(event.resource_path(), event.suite_name())
+	var item := get_tree_item(extract_resource_path(event), event.suite_name())
 	if item != null:
 		return
 	# Otherwise create it
-	prints("Discovered test suite added: '%s' on %s" % [event.suite_name(), event.resource_path()])
+	prints("Discovered test suite added: '%s' on %s" % [event.suite_name(), extract_resource_path(event)])
 	do_add_test_suite(event.suite_dto())
 
 
 func discover_test_added(event: GdUnitEventTestDiscoverTestAdded) -> void:
 	# check if the test already exists
 	var test_name := event.test_case_dto().name()
-	var item := get_tree_item(event.resource_path(), test_name)
+	var resource_path := extract_resource_path(event)
+	var item := get_tree_item(resource_path, test_name)
 	if item != null:
 		return
 
-	item = get_tree_item(event.resource_path(), event.suite_name())
+	item = get_tree_item(resource_path, event.suite_name())
 	if not item:
-		push_error("Internal Error: Can't find test suite %s:%s" % [event.suite_name(), event.resource_path()])
+		push_error("Internal Error: Can't find test suite %s:%s" % [event.suite_name(), resource_path])
 		return
-	prints("Discovered test added: '%s' on %s" % [event.test_name(), event.resource_path()])
+	prints("Discovered test added: '%s' on %s" % [event.test_name(), resource_path])
 	# update test case count
 	var test_count :int = item.get_meta(META_GDUNIT_TOTAL_TESTS)
 	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_count + 1)
@@ -760,10 +764,11 @@ func discover_test_added(event: GdUnitEventTestDiscoverTestAdded) -> void:
 
 
 func discover_test_removed(event: GdUnitEventTestDiscoverTestRemoved) -> void:
-	prints("Discovered test removed: '%s' on %s" % [event.test_name(), event.resource_path()])
-	var item := get_tree_item(event.resource_path(), event.test_name())
+	var resource_path := extract_resource_path(event)
+	prints("Discovered test removed: '%s' on %s" % [event.test_name(), resource_path])
+	var item := get_tree_item(resource_path, event.test_name())
 	if not item:
-		push_error("Internal Error: Can't find test suite %s:%s" % [event.suite_name(), event.resource_path()])
+		push_error("Internal Error: Can't find test suite %s:%s" % [event.suite_name(), resource_path])
 		return
 	# update test case count on test suite
 	var parent := item.get_parent()
@@ -771,7 +776,7 @@ func discover_test_removed(event: GdUnitEventTestDiscoverTestRemoved) -> void:
 	parent.set_meta(META_GDUNIT_TOTAL_TESTS, test_count - 1)
 	init_item_counter(parent)
 	# finally remove the test
-	remove_tree_item(event.resource_path(), event.test_name())
+	remove_tree_item(resource_path, event.test_name())
 
 
 func do_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
@@ -854,6 +859,10 @@ func _to_json(parent :TreeItem) -> Dictionary:
 	item_as_dict["TreeItem"]["childs"] = parent.get_children().map(func(item: TreeItem) -> Dictionary:
 			return _to_json(item))
 	return item_as_dict
+
+
+func extract_resource_path(event: GdUnitEvent) -> String:
+	return ProjectSettings.localize_path(event.resource_path())
 
 
 ################################################################################
