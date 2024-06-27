@@ -46,14 +46,15 @@ static func load_cs_script(resource_path :String, debug_write := false) -> Scrip
 		return null
 	var script :Script = ClassDB.instantiate("CSharpScript")
 	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
-	script.resource_path = GdUnitFileAccess.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".cs")
+	var script_resource_path := resource_path.replace(resource_path.get_extension(), "cs")
 	if debug_write:
-		print_debug("save resource:", script.resource_path)
-		DirAccess.remove_absolute(script.resource_path)
-		var err := ResourceSaver.save(script, script.resource_path)
+		script_resource_path = GdUnitFileAccess.create_temp_dir("test") + "/%s" % script_resource_path.get_file()
+		print_debug("save resource:", script_resource_path)
+		DirAccess.remove_absolute(script_resource_path)
+		var err := ResourceSaver.save(script, script_resource_path)
 		if err != OK:
-			print_debug("Can't save debug resource", script.resource_path, "Error:", error_string(err))
-		script.take_over_path(script.resource_path)
+			print_debug("Can't save debug resource",script_resource_path, "Error:", error_string(err))
+		script.take_over_path(script_resource_path)
 	else:
 		script.take_over_path(resource_path)
 	script.reload()
@@ -63,14 +64,15 @@ static func load_cs_script(resource_path :String, debug_write := false) -> Scrip
 static func load_gd_script(resource_path :String, debug_write := false) -> GDScript:
 	var script := GDScript.new()
 	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
-	script.resource_path = GdUnitFileAccess.create_temp_dir("test") + "/%s" % resource_path.get_file().replace(".resource", ".gd")
+	var script_resource_path := resource_path.replace(resource_path.get_extension(), "gd")
 	if debug_write:
-		print_debug("save resource:", script.resource_path)
-		DirAccess.remove_absolute(script.resource_path)
-		var err := ResourceSaver.save(script, script.resource_path)
+		script_resource_path = GdUnitFileAccess.create_temp_dir("test") + "/%s" % script_resource_path.get_file()
+		print_debug("save resource:", script_resource_path)
+		DirAccess.remove_absolute(script_resource_path)
+		var err := ResourceSaver.save(script, script_resource_path)
 		if err != OK:
-			print_debug("Can't save debug resource", script.resource_path, "Error:", error_string(err))
-		script.take_over_path(script.resource_path)
+			print_debug("Can't save debug resource", script_resource_path, "Error:", error_string(err))
+		script.take_over_path(script_resource_path)
 	else:
 		script.take_over_path(resource_path)
 	script.reload()

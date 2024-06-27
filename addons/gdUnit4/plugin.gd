@@ -56,4 +56,4 @@ func check_running_in_test_env() -> bool:
 
 func _on_resource_saved(resource: Resource) -> void:
 	if resource is Script:
-		_guard.discover(resource)
+		await _guard.discover(resource)

@@ -777,7 +777,7 @@ func discover_test_removed(event: GdUnitEventTestDiscoverTestRemoved) -> void:
 func do_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
 	var item := create_tree_item(test_suite)
 	var suite_name := test_suite.name()
-
+	var resource_path := ProjectSettings.localize_path(test_suite.path())
 	item.set_text(0, suite_name)
 	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
@@ -786,12 +786,12 @@ func do_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
 	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_suite.test_case_count())
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
 	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
-	item.set_meta(META_RESOURCE_PATH, test_suite.path())
+	item.set_meta(META_RESOURCE_PATH, resource_path)
 	item.set_meta(META_LINE_NUMBER, 1)
 	item.collapsed = true
 	set_item_icon_by_state(item)
 	init_item_counter(item)
-	add_tree_item_to_cache(test_suite.path(), suite_name, item)
+	add_tree_item_to_cache(resource_path, suite_name, item)
 	for test_case in test_suite.test_cases():
 		add_test(item, test_case)
 
