@@ -261,11 +261,13 @@ func _on_shortcut_change(input_button: Button, property: GdUnitProperty, reset_b
 	_input_capture.set_custom_minimum_size(_properties_shortcuts.get_size())
 	_input_capture.visible = true
 	_input_capture.show()
+	_properties_shortcuts.visible = false
 	set_process_input(false)
 	_input_capture.reset()
 	var input_event: InputEventKey = await _input_capture.input_completed
 	input_button.text = input_event.as_text()
 	_on_property_text_changed(to_keys(input_event), property, reset_btn)
+	_properties_shortcuts.visible = true
 	set_process_input(true)
 
 
