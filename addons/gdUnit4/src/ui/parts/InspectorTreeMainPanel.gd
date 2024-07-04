@@ -876,7 +876,10 @@ func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: i
 
 func _on_run_pressed(run_debug: bool) -> void:
 	_context_menu.hide()
-	var item := _tree.get_selected()
+	var item: = _tree.get_selected()
+	if item == null:
+		print_rich("[color=GOLDENROD]Abort Testrun, no test suite selected![/color]")
+		return
 	if item.get_meta(META_GDUNIT_TYPE) == GdUnitType.TEST_SUITE or item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER:
 		var resource_path: String = item.get_meta(META_RESOURCE_PATH)
 		run_testsuite.emit([resource_path], run_debug)
