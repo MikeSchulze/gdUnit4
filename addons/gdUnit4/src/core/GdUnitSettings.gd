@@ -90,6 +90,9 @@ enum NAMING_CONVENTIONS {
 }
 
 
+const _VALUE_SET_SEPARATOR = "\f" # ASCII Form-feed character (AKA page break)
+
+
 static func setup() -> void:
 	create_property_if_need(UPDATE_NOTIFICATION_ENABLED, true, "Enables/Disables the update notification checked startup.")
 	create_property_if_need(SERVER_TIMEOUT, DEFAULT_SERVER_TIMEOUT, "Sets the server connection timeout in minutes.")
@@ -148,7 +151,7 @@ static func create_property_if_need(name :String, default :Variant, help :="", v
 		ProjectSettings.set_setting(name, default)
 
 	ProjectSettings.set_initial_value(name, default)
-	help += "" if value_set.is_empty() else " %s" % value_set
+	help = help if value_set.is_empty() else "%s%s%s" % [help, _VALUE_SET_SEPARATOR, value_set]
 	set_help(name, default, help)
 
 
@@ -280,18 +283,26 @@ static func list_settings(category :String) -> Array[GdUnitProperty]:
 			var default :Variant = ProjectSettings.property_get_revert(property_name)
 			var help :String = property["hint_string"]
 			var value_set := extract_value_set_from_help(help)
-			settings.append(GdUnitProperty.new(property_name, property["type"], value, default, help, value_set))
+			settings.append(GdUnitProperty.new(property_name, property["type"], value, default, extract_help_text(help), value_set))
 	return settings
 
 
 static func extract_value_set_from_help(value :String) -> PackedStringArray:
+	var split_value := value.split(_VALUE_SET_SEPARATOR)
+	if not split_value.size() > 1:
+		return PackedStringArray()
+
 	var regex := RegEx.new()
 	regex.compile("\\[(.+)\\]")
-	var matches := regex.search_all(value)
+	var matches := regex.search_all(split_value[1])
 	if matches.is_empty():
 		return PackedStringArray()
-	var values :String =  matches[0].get_string(1)
+	var values: String = matches[0].get_string(1)
 	return values.replacen(" ", "").replacen("\"", "").split(",", false)
+
+
+static func extract_help_text(value :String) -> String:
+	return value.split(_VALUE_SET_SEPARATOR)[0]
 
 
 static func update_property(property :GdUnitProperty) -> Variant:
@@ -353,7 +364,7 @@ static func get_property(name :String) -> GdUnitProperty:
 			var default :Variant = ProjectSettings.property_get_revert(property_name)
 			var help :String = property["hint_string"]
 			var value_set := extract_value_set_from_help(help)
-			return GdUnitProperty.new(property_name, property["type"], value, default, help, value_set)
+			return GdUnitProperty.new(property_name, property["type"], value, default, extract_help_text(help), value_set)
 	return null
 
 

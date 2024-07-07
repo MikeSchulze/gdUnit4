@@ -71,7 +71,7 @@ func test_enum_property() -> void:
 	assert_that(property.default()).is_equal(GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
 	assert_that(property.value()).is_equal(GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
 	assert_that(property.type()).is_equal(TYPE_INT)
-	assert_that(property.help()).is_equal('help ["AUTO_DETECT", "SNAKE_CASE", "PASCAL_CASE"]')
+	assert_that(property.help()).is_equal('help')
 	assert_that(property.value_set()).is_equal(value_set)
 
 
