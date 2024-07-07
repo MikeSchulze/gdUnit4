@@ -608,7 +608,7 @@ func assert_error(current :Callable) -> GdUnitGodotErrorAssert:
 
 
 func assert_not_yet_implemented() -> void:
-	__gdunit_assert().new(null).test_fail()
+	__gdunit_assert().new(null).do_fail()
 
 
 func fail(message :String) -> void:

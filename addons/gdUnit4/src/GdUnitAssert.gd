@@ -30,7 +30,7 @@ func is_not_equal(expected):
 
 
 @warning_ignore("untyped_declaration")
-func test_fail():
+func do_fail():
 	return self
 
 
