@@ -118,6 +118,13 @@ func test_override_failure_message() -> void:
 		.has_message("Custom failure message")
 
 
+func test_assert_not_yet_implemented() -> void:
+	assert_failure(func() -> void: assert_not_yet_implemented()) \
+		.is_failed() \
+		.has_line(122) \
+		.has_message("Test not implemented!")
+
+
 func test_append_failure_message() -> void:
 	assert_object(assert_that(null).append_failure_message("error")).is_instanceof(GdUnitObjectAssert)
 	assert_failure(func() -> void: assert_that(null) \
