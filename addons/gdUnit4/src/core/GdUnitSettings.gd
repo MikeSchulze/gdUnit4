@@ -14,7 +14,7 @@ const SERVER_TIMEOUT = GROUP_COMMON + "/server_connection_timeout_minutes"
 const GROUP_TEST = COMMON_SETTINGS + "/test"
 const TEST_TIMEOUT = GROUP_TEST + "/test_timeout_seconds"
 const TEST_LOOKUP_FOLDER = GROUP_TEST + "/test_lookup_folder"
-const TEST_SITE_NAMING_CONVENTION = GROUP_TEST + "/test_suite_naming_convention"
+const TEST_SUITE_NAMING_CONVENTION = GROUP_TEST + "/test_suite_naming_convention"
 const TEST_DISCOVER_ENABLED = GROUP_TEST + "/test_discovery"
 
 
@@ -81,7 +81,7 @@ const DEFAULT_TEST_TIMEOUT :int = 60*5
 const DEFAULT_TEST_LOOKUP_FOLDER := "test"
 
 # help texts
-const HELP_TEST_LOOKUP_FOLDER := "Sets the subfolder for the search/creation of test suites. (leave empty to use source folder)"
+const HELP_TEST_LOOKUP_FOLDER := "Subfolder where test suites are located (or empty to use source folder directly)"
 
 enum NAMING_CONVENTIONS {
 	AUTO_DETECT,
@@ -94,28 +94,28 @@ const _VALUE_SET_SEPARATOR = "\f" # ASCII Form-feed character (AKA page break)
 
 
 static func setup() -> void:
-	create_property_if_need(UPDATE_NOTIFICATION_ENABLED, true, "Enables/Disables the update notification checked startup.")
-	create_property_if_need(SERVER_TIMEOUT, DEFAULT_SERVER_TIMEOUT, "Sets the server connection timeout in minutes.")
-	create_property_if_need(TEST_TIMEOUT, DEFAULT_TEST_TIMEOUT, "Sets the test case runtime timeout in seconds.")
+	create_property_if_need(UPDATE_NOTIFICATION_ENABLED, true, "Show notification if new gdUnit4 version is found")
+	create_property_if_need(SERVER_TIMEOUT, DEFAULT_SERVER_TIMEOUT, "Server connection timeout in minutes")
+	create_property_if_need(TEST_TIMEOUT, DEFAULT_TEST_TIMEOUT, "Test case runtime timeout in seconds")
 	create_property_if_need(TEST_LOOKUP_FOLDER, DEFAULT_TEST_LOOKUP_FOLDER, HELP_TEST_LOOKUP_FOLDER)
-	create_property_if_need(TEST_SITE_NAMING_CONVENTION, NAMING_CONVENTIONS.AUTO_DETECT, "Sets test-suite genrate script name convention.", NAMING_CONVENTIONS.keys())
-	create_property_if_need(TEST_DISCOVER_ENABLED, false, "Enables/Disables the automatic detection of tests by finding tests in test lookup folders at runtime.")
-	create_property_if_need(REPORT_PUSH_ERRORS, false, "Enables/Disables report of push_error() as failure!")
-	create_property_if_need(REPORT_SCRIPT_ERRORS, true, "Enables/Disables report of script errors as failure!")
-	create_property_if_need(REPORT_ORPHANS, true, "Enables/Disables orphan reporting.")
-	create_property_if_need(REPORT_ASSERT_ERRORS, true, "Enables/Disables error reporting checked asserts.")
-	create_property_if_need(REPORT_ASSERT_WARNINGS, true, "Enables/Disables warning reporting checked asserts")
-	create_property_if_need(REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true, "Enabled/disabled number values will be compared strictly by type. (real vs int)")
+	create_property_if_need(TEST_SUITE_NAMING_CONVENTION, NAMING_CONVENTIONS.AUTO_DETECT, "Naming convention to use when generating testsuites", NAMING_CONVENTIONS.keys())
+	create_property_if_need(TEST_DISCOVER_ENABLED, false, "Automatically detect new tests in test lookup folders at runtime")
+	create_property_if_need(REPORT_PUSH_ERRORS, false, "Report push_error() as failure")
+	create_property_if_need(REPORT_SCRIPT_ERRORS, true, "Report script errors as failure")
+	create_property_if_need(REPORT_ORPHANS, true, "Report orphaned nodes after tests finish")
+	create_property_if_need(REPORT_ASSERT_ERRORS, true, "Report assertion failures as errors")
+	create_property_if_need(REPORT_ASSERT_WARNINGS, true, "Report assertion failures as warnings")
+	create_property_if_need(REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true, "Compare number values strictly by type (real vs int)")
 	# inspector
 	create_property_if_need(INSPECTOR_NODE_COLLAPSE, true,
-		"Enables/Disables that the testsuite node is closed after a successful test run.")
+		"Close testsuite node after a successful test run.")
 	create_property_if_need(INSPECTOR_TREE_VIEW_MODE, GdUnitInspectorTreeConstants.TREE_VIEW_MODE.TREE,
-		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.TREE_VIEW_MODE.keys())
+		"Inspector panel presentation mode", GdUnitInspectorTreeConstants.TREE_VIEW_MODE.keys())
 	create_property_if_need(INSPECTOR_TREE_SORT_MODE, GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED,
-		"Sets the inspector panel presentation.", GdUnitInspectorTreeConstants.SORT_MODE.keys())
+		"Inspector panel sorting mode", GdUnitInspectorTreeConstants.SORT_MODE.keys())
 	create_property_if_need(INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL, false,
-		"Shows/Hides the 'Run overall Tests' button in the inspector toolbar.")
-	create_property_if_need(TEMPLATE_TS_GD, GdUnitTestSuiteTemplate.default_GD_template(), "Defines the test suite template")
+		"Show 'Run overall Tests' button in the inspector toolbar")
+	create_property_if_need(TEMPLATE_TS_GD, GdUnitTestSuiteTemplate.default_GD_template(), "Test suite template to use")
 	create_shortcut_properties_if_need()
 	migrate_properties()
 
@@ -132,17 +132,17 @@ static func migrate_properties() -> void:
 
 static func create_shortcut_properties_if_need() -> void:
 	# inspector
-	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RERUN_TESTS), "Rerun of the last tests performed.")
-	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG), "Rerun of the last tests performed (Debug).")
-	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_OVERALL, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL), "Runs all tests (Debug).")
-	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_STOP, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.STOP_TEST_RUN), "Stops the current test execution.")
+	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RERUN_TESTS), "Rerun the most recently executed tests")
+	create_property_if_need(SHORTCUT_INSPECTOR_RERUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG), "Rerun the most recently executed tests (Debug mode)")
+	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_OVERALL, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL), "Runs all tests (Debug mode)")
+	create_property_if_need(SHORTCUT_INSPECTOR_RUN_TEST_STOP, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.STOP_TEST_RUN), "Stop the current test execution")
 	# script editor
-	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTCASE), "Runs the currently selected test.")
-	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG), "Runs the currently selected test (Debug).")
-	create_property_if_need(SHORTCUT_EDITOR_CREATE_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.CREATE_TEST), "Creates a new test case for the currently selected function.")
+	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTCASE), "Run the currently selected test")
+	create_property_if_need(SHORTCUT_EDITOR_RUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG), "Run the currently selected test (Debug mode).")
+	create_property_if_need(SHORTCUT_EDITOR_CREATE_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.CREATE_TEST), "Create a new test case for the currently selected function")
 	# filesystem
-	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.NONE), "Runs all test suites on the selected folder or file.")
-	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.NONE), "Runs all test suites on the selected folder or file (Debug).")
+	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.NONE), "Run all test suites in the selected folder or file")
+	create_property_if_need(SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG, GdUnitShortcut.default_keys(GdUnitShortcut.ShortCut.NONE), "Run all test suites in the selected folder or file (Debug)")
 
 
 static func create_property_if_need(name :String, default :Variant, help :="", value_set := PackedStringArray()) -> void:
