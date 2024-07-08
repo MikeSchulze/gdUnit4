@@ -513,3 +513,18 @@ func test_is_snake_case() -> void:
 	assert_bool(GdObjects.is_snake_case("myclassname")).is_true()
 	assert_bool(GdObjects.is_snake_case("MyClassName")).is_false()
 	assert_bool(GdObjects.is_snake_case("my_class_nameTest")).is_false()
+
+
+class ObjectWithSceneReferece:
+	var _node: Node
+
+	func _init(node: Node) -> void:
+		_node = node
+
+
+func test_is_equal_on_scene_embedded_script() -> void:
+	var node :Variant = auto_free(load("res://addons/gdUnit4/test/core/resources/scenes/SceneWithEmbeddedScript.tscn").instantiate())
+
+	GdObjects.equals(ObjectWithSceneReferece.new(node), ObjectWithSceneReferece.new(node), false)
+	assert_object(ObjectWithSceneReferece.new(node)).is_equal(ObjectWithSceneReferece.new(node))
+

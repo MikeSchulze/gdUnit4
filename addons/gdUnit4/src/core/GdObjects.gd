@@ -146,7 +146,7 @@ enum COMPARE_MODE {
 
 
 # prototype of better object to dictionary
-static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
+static func obj2dict(obj: Object, hashed_objects := Dictionary()) -> Dictionary:
 	if obj == null:
 		return {}
 	var clazz_name := obj.get_class()
@@ -154,13 +154,20 @@ static func obj2dict(obj :Object, hashed_objects := Dictionary()) -> Dictionary:
 	var clazz_path := ""
 
 	if is_instance_valid(obj) and obj.get_script() != null:
-		var d := inst_to_dict(obj)
-		clazz_path = d["@path"]
-		if d["@subpath"] != NodePath(""):
-			clazz_name = d["@subpath"]
-			dict["@inner_class"] = true
+		var script: Script = obj.get_script()
+		# handle build-in scripts
+		if script.resource_path != null and script.resource_path.contains(".tscn"):
+			var path_elements := script.resource_path.split(".tscn")
+			clazz_name = path_elements[0].get_file()
+			clazz_path = script.resource_path
 		else:
-			clazz_name = clazz_path.get_file().replace(".gd", "")
+			var d := inst_to_dict(obj)
+			clazz_path = d["@path"]
+			if d["@subpath"] != NodePath(""):
+				clazz_name = d["@subpath"]
+				dict["@inner_class"] = true
+			else:
+				clazz_name = clazz_path.get_file().replace(".gd", "")
 	dict["@path"] = clazz_path
 
 	for property in obj.get_property_list():
