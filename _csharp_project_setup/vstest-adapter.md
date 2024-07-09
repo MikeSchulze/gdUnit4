@@ -16,7 +16,7 @@ The project repository can be found here [gdunit4.test.adapter](https://github.c
 |---|---|---|---|---|---|
 |Visual Studio     |✅|✅|✅|✅|✅|🔜|❌|
 |Visual Studio Code|✅|✅|✅|✅|✅|🔜|❌|
-|JetBrains Rider   |✅|✅|[☑️](#test-debug-workaround-for-jetbrains-rider)|✅|✅|🔜|❌|
+|JetBrains Rider version 2024.2 |✅|✅|✅|✅|✅|🔜|❌|
 
 > ✅ - supported<br>
 > ☑️ - supported by a workaround (link)<br>
@@ -32,8 +32,8 @@ Add the following framework reference to your csproj:
 ```cs
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-        <PackageReference Include="gdUnit4.api" Version="4.2.*" />
-        <PackageReference Include="gdUnit4.test.adapter" Version="1.*" />
+        <PackageReference Include="gdUnit4.api" Version="4.3.*" />
+        <PackageReference Include="gdUnit4.test.adapter" Version="2.*" />
     </ItemGroup>
 ```
 
@@ -106,15 +106,17 @@ You need to setup the system environment variable `GODOT_BIN`, the full path to 
 
 **Do follow this steps to activate the test explorer:**
 
-* Install the Godot Support plugin
-  ![godot-support](/gdUnit4/assets/images/faq/jetbrains/plugin-godot-support.png)
 {% include advice.html
-      content="Minimum Version of <b>2024.1.167</b> is required! <a href=\"https://plugins.jetbrains.com/plugin/13882-godot-support\">Checkout for the latest version</a>"
+      content="We recommend to use Rider <b>2024.2</b> or higher to enable test debugging! <a href=\"https://plugins.jetbrains.com/plugin/13882-godot-support\"> Checkout for the latest version</a> <br>
+      For older Rider versions check the <a href=\"/gdUnit4/csharp_project_setup/vstest-adapter/#test-debug-workaround-for-jetbrains-rider-less-version-20242\">workaround</a>."
 %}
+
+* Install the Godot Support plugin
+    ![godot-support](/gdUnit4/assets/images/faq/jetbrains/plugin-godot-support.png)
 * [Optional] Configure the path to your `.runsettings`
-![runsettings](/gdUnit4/assets/images/faq/jetbrains/setup-test-1.png)
+    ![runsettings](/gdUnit4/assets/images/faq/jetbrains/setup-test-1.png)
 * Enable the [VSTest adapters](https://www.jetbrains.com/help/rider/Reference__Options__Tools__Unit_Testing__VSTest.html#projects-with-unit-tests){:target="_blank"} in the Rider settings
-![enable vstest](/gdUnit4/assets/images/faq/jetbrains/setup-test-2.png)
+    ![enable vstest](/gdUnit4/assets/images/faq/jetbrains/setup-test-2.png)
 * Restart JetBrains Rider
 
 > **Note:** There is no need to set the `GODOT_BIN` for Rider.
@@ -177,7 +179,7 @@ The full guide to configure the settings can be found [here](https://learn.micro
 |The test discovery is aborted and not all tests are found|Increase the `<TestSessionTimeout>` in your [RunSettings](#the-test-adapter-settings)|
 |Test Debug workaround for JetBrains Rider|[click here](#test-debug-workaround-for-jetbrains-rider)|
 
-#### Test Debug workaround for JetBrains Rider
+#### Test Debug workaround for JetBrains Rider less version 2024.2
 
 * Paste this code into your test suite to wait until the debugger is connected to the Godot process.
 
@@ -199,4 +201,4 @@ The full guide to configure the settings can be found [here](https://learn.micro
 ![select_process](/gdUnit4/assets/images/faq/jetbrains/select-process.png)
 
 ---
-<h4> document version v4.2.5 </h4>
+<h4> document version v4.3.0 </h4>
