@@ -117,7 +117,7 @@ shadow_offset = Vector2(10, 10)
 [node name="Control" type="Window"]
 disable_3d = true
 gui_embed_subwindows = true
-title = "GdUnitSettings"
+title = "GdUnit4 Settings"
 initial_position = 1
 size = Vector2i(1006, 723)
 visible = false
@@ -157,7 +157,6 @@ offset_right = 590.0
 offset_bottom = 25.0
 size_flags_horizontal = 3
 text = "Enables/disables the update notification "
-clip_text = true
 max_lines_visible = 1
 
 [node name="sub_category" type="Panel" parent="property_template"]
@@ -310,7 +309,6 @@ layout_mode = 2
 [node name="common-content" type="VBoxContainer" parent="Panel/PanelContainer/v/MarginContainer/GridContainer/Properties/Common"]
 unique_name_in_owner = true
 clip_contents = true
-custom_minimum_size = Vector2(1557, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -322,7 +320,6 @@ layout_mode = 2
 [node name="ui-content" type="VBoxContainer" parent="Panel/PanelContainer/v/MarginContainer/GridContainer/Properties/UI"]
 unique_name_in_owner = true
 clip_contents = true
-custom_minimum_size = Vector2(1361, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -334,7 +331,6 @@ layout_mode = 2
 [node name="shortcut-content" type="VBoxContainer" parent="Panel/PanelContainer/v/MarginContainer/GridContainer/Properties/Shortcuts"]
 unique_name_in_owner = true
 clip_contents = true
-custom_minimum_size = Vector2(983, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -346,7 +342,6 @@ layout_mode = 2
 [node name="report-content" type="VBoxContainer" parent="Panel/PanelContainer/v/MarginContainer/GridContainer/Properties/Report"]
 unique_name_in_owner = true
 clip_contents = true
-custom_minimum_size = Vector2(1249, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

@@ -231,7 +231,7 @@ func _validate_argument(fd :GdFunctionDescriptor, test_case :_TestCase) -> void:
 
 # converts given file name by configured naming convention
 static func _to_naming_convention(file_name :String) -> String:
-	var nc :int = GdUnitSettings.get_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, 0)
+	var nc :int = GdUnitSettings.get_setting(GdUnitSettings.TEST_SUITE_NAMING_CONVENTION, 0)
 	match nc:
 		GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT:
 			if GdObjects.is_snake_case(file_name):

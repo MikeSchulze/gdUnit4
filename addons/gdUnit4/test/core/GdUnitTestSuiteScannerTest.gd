@@ -8,7 +8,7 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/core/GdUnitTestSuiteScanner.gd'
 
 func before_test() -> void:
-	ProjectSettings.set_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_SUITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
 	clean_temp_dir()
 
 
@@ -320,17 +320,17 @@ func test_get_test_case_line_number() -> void:
 
 
 func test__to_naming_convention() -> void:
-	ProjectSettings.set_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_SUITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT)
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("MyClass")).is_equal("MyClassTest")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("my_class")).is_equal("my_class_test")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("myclass")).is_equal("myclass_test")
 
-	ProjectSettings.set_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.SNAKE_CASE)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_SUITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.SNAKE_CASE)
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("MyClass")).is_equal("my_class_test")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("my_class")).is_equal("my_class_test")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("myclass")).is_equal("myclass_test")
 
-	ProjectSettings.set_setting(GdUnitSettings.TEST_SITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.PASCAL_CASE)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_SUITE_NAMING_CONVENTION, GdUnitSettings.NAMING_CONVENTIONS.PASCAL_CASE)
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("MyClass")).is_equal("MyClassTest")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("my_class")).is_equal("MyClassTest")
 	assert_str(GdUnitTestSuiteScanner._to_naming_convention("myclass")).is_equal("MyclassTest")
