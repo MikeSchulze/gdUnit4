@@ -81,7 +81,7 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 					continue
 				if functions.has(func_descriptor.name()) or exclude_override_functions.has(func_descriptor.name()):
 					continue
-				doubled_source += func_doubler.double(func_descriptor)
+				doubled_source += func_doubler.double(func_descriptor, instance is CallableDoubler)
 				functions.append(func_descriptor.name())
 			class_descriptor = class_descriptor.parent()
 
@@ -103,7 +103,7 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 			#prints("no virtual func implemented",clazz_name, func_descriptor.name() )
 			continue
 		functions.append(func_descriptor.name())
-		doubled_source.append_array(func_doubler.double(func_descriptor))
+		doubled_source.append_array(func_doubler.double(func_descriptor, instance is CallableDoubler))
 	return doubled_source
 
 

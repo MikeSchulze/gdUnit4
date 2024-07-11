@@ -2,6 +2,11 @@ class_name GdUnitSpyTest
 extends GdUnitTestSuite
 
 
+func before() -> void:
+	# we disable the error reporting to do not spam the logs
+	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_ERRORS, false)
+
+
 func test_spy_instance_id_is_unique() -> void:
 	var m1  :Variant = spy(RefCounted.new())
 	var m2  :Variant = spy(RefCounted.new())
@@ -111,7 +116,7 @@ func test_spy_class_with_custom_formattings() -> void:
 	verify_no_more_interactions(do_spy)
 	assert_failure(func() -> void: verify_no_interactions(do_spy))\
 		.is_failed() \
-		.has_line(112)
+		.has_line(117)
 
 
 func test_spy_copied_class_members() -> void:
@@ -213,7 +218,7 @@ func test_verify_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_node, 1).set_process(true)) \
 		.is_failed() \
-		.has_line(214) \
+		.has_line(219) \
 		.has_message(expected_error)
 
 
@@ -240,7 +245,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(241) \
+		.has_line(246) \
 		.has_message(expected_error)
 
 	reset(spy_instance)
@@ -258,7 +263,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(259) \
+		.has_line(264) \
 		.has_message(expected_error)
 
 
@@ -306,7 +311,7 @@ func test_verify_no_interactions_fails() -> void:
 	# it should fail because we have interactions
 	assert_failure(func() -> void: verify_no_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(307) \
+		.has_line(312) \
 		.has_message(expected_error)
 
 
@@ -361,7 +366,7 @@ func test_verify_no_more_interactions_but_has() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify_no_more_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(362) \
+		.has_line(367) \
 		.has_message(expected_error)
 
 

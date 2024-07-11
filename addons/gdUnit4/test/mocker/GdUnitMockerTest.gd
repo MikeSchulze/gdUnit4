@@ -708,6 +708,8 @@ func test_mock_class_with_inner_classs() -> void:
 	var mock_b := mock(AdvancedTestClass.AtmosphereData) as AdvancedTestClass.AtmosphereData
 	assert_object(mock_b).is_not_null()
 
+
+func test_mock_class_with_inner_classs_() -> void:
 	var mock_c := mock(AdvancedTestClass.Area4D) as AdvancedTestClass.Area4D
 	assert_object(mock_c).is_not_null()
 

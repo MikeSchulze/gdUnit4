@@ -661,6 +661,7 @@ static func default_value_by_type(type :int) -> Variant:
 		TYPE_NODE_PATH: return NodePath()
 		TYPE_RID: return RID()
 		TYPE_OBJECT: return null
+		TYPE_CALLABLE: return Callable()
 		TYPE_ARRAY: return []
 		TYPE_DICTIONARY: return {}
 		TYPE_PACKED_BYTE_ARRAY: return PackedByteArray()

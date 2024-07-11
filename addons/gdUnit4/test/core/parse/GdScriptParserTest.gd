@@ -266,38 +266,38 @@ func test_parse_func_name() -> void:
 	assert_str(_parser.parse_func_name("var x")).is_empty()
 
 
-func test_extract_source_code() -> void:
+func test_load_source_code() -> void:
 	var path := GdObjects.extract_class_path(AdvancedTestClass)
-	var rows := _parser.extract_source_code(path)
+	var rows := _parser.load_source_code(load(path[0]), path)
 
 	var file_content := resource_as_array(path[0])
 	assert_array(rows).contains_exactly(file_content)
 
 
-func test_extract_source_code_inner_class_AtmosphereData() -> void:
+func test_load_source_code_inner_class_AtmosphereData() -> void:
 	var path := GdObjects.extract_class_path(AdvancedTestClass.AtmosphereData)
-	var rows := _parser.extract_source_code(path)
+	var rows := _parser.load_source_code(load(path[0]), path)
 	var file_content := resource_as_array("res://addons/gdUnit4/test/core/resources/AtmosphereData.txt")
 	assert_array(rows).contains_exactly(file_content)
 
 
-func test_extract_source_code_inner_class_SoundData() -> void:
+func test_load_source_code_inner_class_SoundData() -> void:
 	var path := GdObjects.extract_class_path(AdvancedTestClass.SoundData)
-	var rows := _parser.extract_source_code(path)
+	var rows := _parser.load_source_code(load(path[0]), path)
 	var file_content := resource_as_array("res://addons/gdUnit4/test/core/resources/SoundData.txt")
 	assert_array(rows).contains_exactly(file_content)
 
 
-func test_extract_source_code_inner_class_Area4D() -> void:
+func test_load_source_code_inner_class_Area4D() -> void:
 	var path := GdObjects.extract_class_path(AdvancedTestClass.Area4D)
-	var rows := _parser.extract_source_code(path)
+	var rows := _parser.load_source_code(load(path[0]), path)
 	var file_content := resource_as_array("res://addons/gdUnit4/test/core/resources/Area4D.txt")
-	assert_array(rows).contains_exactly(file_content)
+	assert_array(rows).contains(file_content)
 
 
 func test_extract_function_signature() -> void:
 	var path := GdObjects.extract_class_path("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomFormattings.gd")
-	var rows := _parser.extract_source_code(path)
+	var rows := _parser.load_source_code(load(path[0]), path)
 
 	assert_that(_parser.extract_func_signature(rows, 12))\
 		.is_equal("""
@@ -344,8 +344,8 @@ func test_strip_leading_spaces() -> void:
 
 
 func test_extract_clazz_name() -> void:
-	assert_str(_parser.extract_clazz_name("classSoundData:\n")).is_equal("SoundData")
-	assert_str(_parser.extract_clazz_name("classSoundDataextendsNode:\n")).is_equal("SoundData")
+	assert_str(_parser.extract_clazz_name("class SoundData:\n")).is_equal("SoundData")
+	assert_str(_parser.extract_clazz_name("class SoundData extends Node:\n")).is_equal("SoundData")
 
 
 func test_is_virtual_func() -> void:

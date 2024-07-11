@@ -63,13 +63,35 @@ const TEMPLATE_RETURN_VARIANT_VARARG = """
 """
 
 
+const TEMPLATE_CALLABLE_CALL = """
+	var used_arguments := __filter_vargs([$(arguments)])
+
+	if __is_verify_interactions():
+		__verify_interactions(["call", used_arguments])
+		return ${default_return_value}
+	else:
+		# append possible binded values to complete the original argument list
+		var args := used_arguments.duplicate()
+		args.append_array(super.get_bound_arguments())
+		__save_function_interaction(["call", args])
+
+	if __do_call_real_func("call"):
+		return _cb.callv(used_arguments)
+	return ${default_return_value}
+
+"""
+
+
 func _init(push_errors :bool = false) -> void:
 	super._init(push_errors)
 
 
-func get_template(return_type :Variant, is_vararg :bool) -> String:
-	if is_vararg:
-		return TEMPLATE_RETURN_VOID_VARARG if return_type == TYPE_NIL else TEMPLATE_RETURN_VARIANT_VARARG
+func get_template(fd: GdFunctionDescriptor, is_callable: bool) -> String:
+	if is_callable and  fd.name() == "call":
+		return TEMPLATE_CALLABLE_CALL
+	if  fd.is_vararg():
+		return TEMPLATE_RETURN_VOID_VARARG if fd.return_type() == TYPE_NIL else TEMPLATE_RETURN_VARIANT_VARARG
+	var return_type :Variant = fd.return_type()
 	if return_type is StringName:
 		return TEMPLATE_RETURN_VARIANT
 	return TEMPLATE_RETURN_VOID if (return_type == TYPE_NIL or return_type == GdObjects.TYPE_VOID) else TEMPLATE_RETURN_VARIANT
