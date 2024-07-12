@@ -10,7 +10,7 @@ var _value :MyEnumValue
 
 
 # using an enum in the constructor
-func _init(value :MyEnumValue, second_parameter :PackedStringArray) -> void:
+func _init(value :MyEnumValue, _second_parameter :PackedStringArray) -> void:
 	_value = value
 
 

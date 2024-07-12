@@ -3,9 +3,10 @@ extends GdUnitClassDoubler
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const SPY_TEMPLATE :GDScript = preload("res://addons/gdUnit4/src/spy/GdUnitSpyImpl.gd")
+const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
 
 
-static func build(to_spy :Variant, debug_write := false) -> Variant:
+static func build(to_spy: Variant, debug_write := false) -> Variant:
 	if GdObjects.is_singleton(to_spy):
 		push_error("Spy on a Singleton is not allowed! '%s'" % to_spy.get_class())
 		return null
@@ -22,7 +23,12 @@ static func build(to_spy :Variant, debug_write := false) -> Variant:
 	if GdObjects.is_instance_scene(to_spy):
 		return spy_on_scene(to_spy, debug_write)
 
-	var spy := spy_on_script(to_spy, [], debug_write)
+	var excluded_functions := []
+	if to_spy is Callable:
+		to_spy = CallableDoubler.new(to_spy)
+		excluded_functions = CallableDoubler.excluded_functions()
+
+	var spy := spy_on_script(to_spy, excluded_functions, debug_write)
 	if spy == null:
 		return null
 	var spy_instance :Variant = spy.new()
@@ -87,9 +93,6 @@ static func spy_on_scene(scene :Node, debug_write :bool) -> Object:
 	# replace original script whit spy
 	scene.set_script(spy)
 	return register_auto_free(scene)
-
-
-const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
 
 
 static func copy_properties(source :Object, dest :Object) -> void:

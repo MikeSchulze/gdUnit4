@@ -113,14 +113,13 @@ func _init(push_errors :bool = false) -> void:
 
 
 @warning_ignore("unused_parameter")
-func get_template(return_type :Variant, is_vararg :bool) -> String:
-	push_error("Must be implemented!")
+func get_template(return_type: GdFunctionDescriptor, is_callable: bool) -> String:
+	assert(false, "'get_template' must be implemented!")
 	return ""
 
-func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
+func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) -> PackedStringArray:
 	var func_signature := func_descriptor.typeless()
 	var is_static := func_descriptor.is_static()
-	var is_vararg := func_descriptor.is_vararg()
 	var is_coroutine := func_descriptor.is_coroutine()
 	var func_name := func_descriptor.name()
 	var args := func_descriptor.args()
@@ -145,7 +144,7 @@ func double(func_descriptor :GdFunctionDescriptor) -> PackedStringArray:
 	double_src += '@warning_ignore("shadowed_variable")\n'
 	double_src += func_signature
 	# fix to  unix format, this is need when the template is edited under windows than the template is stored with \r\n
-	var func_template := get_template(func_descriptor.return_type(), is_vararg).replace("\r\n", "\n")
+	var func_template := get_template(func_descriptor, is_callable).replace("\r\n", "\n")
 	double_src += func_template\
 		.replace("$(arguments)", ", ".join(arg_names))\
 		.replace("$(varargs)", ", ".join(vararg_names))\

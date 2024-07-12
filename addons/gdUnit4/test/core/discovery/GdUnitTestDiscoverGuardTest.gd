@@ -49,6 +49,7 @@ func test_discover_on_GDScript() -> void:
 	assert_dict(discoverer._discover_cache).contains_key_value("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd", ["test_case1", "test_case2"])
 
 
+@warning_ignore("unused_parameter")
 func test_discover_on_CSharpScript(do_skip := !GdUnit4CSharpApiLoader.is_mono_supported()) -> void:
 	var discoverer :GdUnitTestDiscoverGuard = spy(GdUnitTestDiscoverGuard.new())
 
