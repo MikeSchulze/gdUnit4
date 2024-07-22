@@ -20,22 +20,22 @@ func before_test() -> void:
 	_style = _runner.get_property("style")
 	# inital state
 	assert_that(_status.text).is_equal("0:0")
-	assert_that(_progress.value).is_equal(0)
-	assert_that(_progress.max_value).is_equal(0)
+	assert_that(_progress.value).is_equal(0.000000)
+	assert_that(_progress.max_value).is_equal(0.000000)
 	_runner.invoke("_on_gdunit_event", GdUnitInit.new(10, 42))
 
 
 func test_progress_init() -> void:
 	_runner.invoke("_on_gdunit_event", GdUnitInit.new(10, 230))
-	assert_that(_progress.value).is_equal(0)
-	assert_that(_progress.max_value).is_equal(230)
+	assert_that(_progress.value).is_equal(0.000000)
+	assert_that(_progress.max_value).is_equal(230.000000)
 	assert_that(_status.text).is_equal("0:230")
 	assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
 
 
 func test_progress_success() -> void:
 	_runner.invoke("_on_gdunit_event", GdUnitInit.new(10, 42))
-	var expected_progess_index := 0
+	var expected_progess_index :float = 0
 	# simulate execution of 20 success test runs
 	for index in 20:
 		_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_after("res://test/testA.gd", "TestSuiteA", "test_a%d" % index, {}))
@@ -57,7 +57,7 @@ func test_progress_success() -> void:
 	assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
 
 	# verify the max progress state is not affected
-	assert_that(_progress.max_value).is_equal(42)
+	assert_that(_progress.max_value).is_equal(42.000000)
 
 
 @warning_ignore("unused_parameter")

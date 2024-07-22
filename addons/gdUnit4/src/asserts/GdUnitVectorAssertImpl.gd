@@ -1,10 +1,11 @@
 extends GdUnitVectorAssert
 
 var _base: GdUnitAssert
-var _current_type :int
+var _current_type: int
+var _type_check: bool
 
-
-func _init(current :Variant) -> void:
+func _init(current: Variant, type_check := true) -> void:
+	_type_check = type_check
 	_base = ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
 								ResourceLoader.CACHE_MODE_REUSE).new(current)
 	# save the actual assert instance on the current thread context
@@ -81,15 +82,15 @@ func is_not_null() -> GdUnitVectorAssert:
 	return self
 
 
-func is_equal(expected :Variant) -> GdUnitVectorAssert:
-	if not _validate_is_vector_type(expected):
+func is_equal(expected: Variant) -> GdUnitVectorAssert:
+	if _type_check and not _validate_is_vector_type(expected):
 		return self
 	_base.is_equal(expected)
 	return self
 
 
-func is_not_equal(expected :Variant) -> GdUnitVectorAssert:
-	if not _validate_is_vector_type(expected):
+func is_not_equal(expected: Variant) -> GdUnitVectorAssert:
+	if _type_check and not _validate_is_vector_type(expected):
 		return self
 	_base.is_not_equal(expected)
 	return self

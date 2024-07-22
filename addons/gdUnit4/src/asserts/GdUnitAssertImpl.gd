@@ -15,8 +15,6 @@ func _init(current :Variant) -> void:
 
 
 
-
-
 func failure_message() -> String:
 	return _current_failure_message
 
