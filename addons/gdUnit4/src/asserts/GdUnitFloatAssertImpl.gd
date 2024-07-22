@@ -57,12 +57,12 @@ func is_not_null() -> GdUnitFloatAssert:
 	return self
 
 
-func is_equal(expected :float) -> GdUnitFloatAssert:
+func is_equal(expected :Variant) -> GdUnitFloatAssert:
 	_base.is_equal(expected)
 	return self
 
 
-func is_not_equal(expected :float) -> GdUnitFloatAssert:
+func is_not_equal(expected :Variant) -> GdUnitFloatAssert:
 	_base.is_not_equal(expected)
 	return self
 

@@ -8,7 +8,10 @@ const SUB_COLOR :=  Color(1, 0, 0, .3)
 const ADD_COLOR :=  Color(0, 1, 0, .3)
 
 
-static func format_dict(value :Dictionary) -> String:
+static func format_dict(value :Variant) -> String:
+	if not value is Dictionary:
+		return str(value)
+
 	if value.is_empty():
 		return "{ }"
 	var as_rows := var_to_str(value).split("\n")

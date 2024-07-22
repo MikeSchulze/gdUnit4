@@ -492,13 +492,13 @@ func assert_that(current :Variant) -> GdUnitAssert:
 		TYPE_STRING:
 			return assert_str(current)
 		TYPE_VECTOR2, TYPE_VECTOR2I, TYPE_VECTOR3, TYPE_VECTOR3I, TYPE_VECTOR4, TYPE_VECTOR4I:
-			return assert_vector(current)
+			return assert_vector(current, false)
 		TYPE_DICTIONARY:
 			return assert_dict(current)
 		TYPE_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY,\
 		TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY, TYPE_PACKED_STRING_ARRAY,\
 		TYPE_PACKED_VECTOR2_ARRAY, TYPE_PACKED_VECTOR3_ARRAY, TYPE_PACKED_COLOR_ARRAY:
-			return assert_array(current)
+			return assert_array(current, false)
 		TYPE_OBJECT, TYPE_NIL:
 			return assert_object(current)
 		_:
@@ -531,13 +531,13 @@ func assert_float(current :Variant) -> GdUnitFloatAssert:
 ##     [codeblock]
 ##		assert_vector(Vector2(1.2, 1.000001)).is_equal(Vector2(1.2, 1.000001))
 ##     [/codeblock]
-func assert_vector(current :Variant) -> GdUnitVectorAssert:
-	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitVectorAssertImpl.gd").new(current)
+func assert_vector(current :Variant, type_check := true) -> GdUnitVectorAssert:
+	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitVectorAssertImpl.gd").new(current, type_check)
 
 
 ## An assertion tool to verify arrays.
-func assert_array(current :Variant) -> GdUnitArrayAssert:
-	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd").new(current)
+func assert_array(current :Variant, type_check := true) -> GdUnitArrayAssert:
+	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd").new(current, type_check)
 
 
 ## An assertion tool to verify dictionaries.
