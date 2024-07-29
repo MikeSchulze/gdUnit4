@@ -7,22 +7,24 @@ nav_order: 3
 
 # Mocking / Mocks
 
+{% include advice.html
+content="This Mocking implementation is only available for GDScripts, for C# you can use already existing mocking frameworks like <a href='https://github.com/devlooped/moq' target='_blank'><b>Moq</b></a>"
+%}
+
 ## Definition
+
 A mocked object is a dummy implementation of a class, in which you define the expected output of certain function calls. Mocked objects are configured to perform a specific behavior during testing, and they track all function calls and their parameters to the mocked object.
 
 This type of testing is sometimes referred to as behavior testing. Behavior testing does not check the result of a function call, but instead checks that a function is called with the correct parameters.
 
 For more detailed information about mocks, [read this](https://en.wikipedia.org/wiki/Mock_object)
 
-
-{% include advice.html
-content="Mocking is current only supported for GdScripts."
-%}
 ---
 
 Here an small example to mock the class `TestClass`:
 {% tabs mock-example %}
 {% tab mock-example Example Class %}
+
 ```ruby
     class_name TestClass
     extends Node
@@ -30,8 +32,10 @@ Here an small example to mock the class `TestClass`:
         func message() -> String:
             return "a message"
 ```
+
 {% endtab %}
 {% tab mock-example Mock (RETURN_DEFAULTS) %}
+
 ```ruby
     func test_mock():
         # create a mock for class 'TestClass' by mock mode `RETURN_DEFAULTS` (default)
@@ -46,8 +50,10 @@ Here an small example to mock the class `TestClass`:
         # the next call of `message()` will now return 'custom message'
         assert_str(mock.message()).is_equal("custom message")
 ```
+
 {% endtab %}
 {% tab mock-example Mock (CALL_REAL_FUNC) %}
+
 ```ruby
     func test_mock():
         # create a mock for class 'TestClass' using mode `CALL_REAL_FUNC`
@@ -62,31 +68,40 @@ Here an small example to mock the class `TestClass`:
         # the next call of `message()` will now return 'custom message'
         assert_str(mock.message()).is_equal("custom message")
 ```
+
 {% endtab %}
 {% endtabs %}
 
 ---
 
 ## How to use a Mock
+
+{% include advice.html
+content="Mocking core functions are not possible since Godot has improved the GDScript performance.<br> According to the Godot core developers, overwriting core functions is no longer supported, so there is no way to mock or spy on core functions anymore."
+%}
+
 To mock a class, you only need to use **mock(\<class_name\>)** or **mock(\<resource_path\>)** to create a mocked object instance using the given class name or path. A mocked instance is marked for auto-free, so you don't need to free it manually.
 
 If you want to create a mock by class name, you have to define the class_name in your class. Otherwise, the class must be mocked by resource path.
+
 ```ruby
     # Example class
     class_name TestClass
     extends Node
         ...
 ```
+
 ```ruby
     # Create a mocked instance of the class 'TestClass'
     var mock := mock(TestClass)
     # Or create it by using the full resource path if no `class_name` is defined
     var mock := mock("res://project_name/src/TestClass.gd")
 ```
+
 You can also mock inner classes by using **mock(\<class_name\>)** with some preconditions.
 
-
 ## How and Why to Overwrite Functions
+
 With a mock, you can override a specific function to return custom values. This allows you to simulate a function and return an expected value without calling the actual implementation.
 
 To override a function on your mocked class, use **do_return(\<value\>)** to specify the return value.
@@ -94,10 +109,10 @@ To override a function on your mocked class, use **do_return(\<value\>)** to spe
 <b>Syntax</b>
 `do_return(<value>)` `.on(<mock>)` `.<function([args])>)`
 
-
 1. Mock your class.
 2. Define the return value.
 3. Override the function you want to mock using .on(<mock>) and .function_name([args]).
+
 ```ruby
     # Create the mock
     var node := mock(Node) as Node
@@ -106,6 +121,7 @@ To override a function on your mocked class, use **do_return(\<value\>)** to spe
 ```
 
 Here is an example:
+
 ```ruby
     # Create a mock from class `Node`
     var mocked_node := mock(Node) as Node
@@ -137,6 +153,7 @@ Here is an example:
 ---
 
 ## Verification of Function Calls
+
 A mock keeps track of all the function calls and their arguments. Use **verify()** on the mock to check if a certain function is called and how often it was called.
 
 |Function |Description |
@@ -146,14 +163,15 @@ A mock keeps track of all the function calls and their arguments. Use **verify()
 |[verify_no_more_interactions](/gdUnit4/advanced_testing/mock/#verify_no_more_interactions) | Verifies that the given mock has no unverified interactions.|
 |[reset](/gdUnit4/advanced_testing/mock/#reset) | Resets the saved function call counters on a mock.|
 
-
 * **verify**<br>
     The verify() method is used to verify that a function was called a certain number of times. It takes two arguments: the mock instance and the expected number of times the function should have been called. You can also use argument matchers to verify that specific arguments were passed to the function.
 
     ```ruby
         verify(<mock>, <times>).function(<args>)
     ```
+
     Here's an example:
+
     ```ruby
         var mocked_node :Node = mock(Node)
         
@@ -179,7 +197,9 @@ A mock keeps track of all the function calls and their arguments. Use **verify()
     ```ruby
         verify_no_interactions(<mock>)
     ```
+
     Here's an example:
+
     ```ruby
         var mocked_node := mock(Node) as Node
         
@@ -199,7 +219,9 @@ A mock keeps track of all the function calls and their arguments. Use **verify()
     ```ruby
         verify_no_more_interactions(<mock>)
     ```
+
     Here's an example:
+
     ```ruby
         var mocked_node := mock(Node) as Node
         
@@ -221,18 +243,19 @@ A mock keeps track of all the function calls and their arguments. Use **verify()
         # and that the previous unexpected interaction is detected (the test will fail here)
         verify_no_more_interactions(mocked_node)
     ```
-    In this example, the **verify_no_more_interactions()** method is used to check that no more interactions occur after the initial two interactions. The second call to **set_process(false)** is not expected and thus will result in a failure of the test.
 
+    In this example, the **verify_no_more_interactions()** method is used to check that no more interactions occur after the initial two interactions. The second call to **set_process(false)** is not expected and thus will result in a failure of the test.
 
 * **reset**<br>
     Resets the recorded function interactions of the given mock.<br>
     Sometimes we want to reuse an already created mock for different test scenarios and have to reset the recorded interactions.
 
-
     ```ruby
         reset(<mock>)
     ```
+
     Here's an example:
+
     ```ruby
         var mocked_node :Node = mock(Node)
         
@@ -258,6 +281,7 @@ A mock keeps track of all the function calls and their arguments. Use **verify()
 ---
 
 ## Mock Working Modes
+
 When creating a mock, you can specify the working mode that defines the return value handling of function calls for a mock.<br>
 The available working modes are:
 
@@ -295,8 +319,8 @@ The available working modes are:
     | TYPE_VECTOR2_ARRAY | PackedVector2Array() |
     | TYPE_VECTOR3_ARRAY | PackedVector3Array() |
     | TYPE_COLOR_ARRAY | PackedColorArray() |
-    
-    You can customize these default values by configuring the mock object to return a different value for unconfigured function calls using the<br> 
+
+    You can customize these default values by configuring the mock object to return a different value for unconfigured function calls using the<br>
     `when(<mock>).<function>().thenReturn(<value>)` method.
 
 * **CALL_REAL_FUNC**<br>
@@ -320,6 +344,7 @@ If *RETURN_DEFAULTS* is used, all functions will return [default values](/gdUnit
     assert_str(mock.message()).is_equal("")
 
 ```
+
 {% endtab %}
 {% tab mock-modes CALL_REAL_FUNC %}
 
@@ -339,12 +364,14 @@ Helpful when you only want to mock partial functions of a class.
     # now the function message will return 'custom message'
     assert_str(mock.message()).is_equal("custom message")
 ```
+
 {% endtab %}
 {% tab mock-modes RETURN_DEEP_STUB %}
 ***WORK IN PROGRESS -- NOT SUPPORTED YET!!!***
 
 If *RETURN_DEEP_STUB* is used, all unoverridden function calls return the value provided by the real implementation for a mocked class.
 Use to return a default value for build-in types or a fully mocked value for Object types.
+
 ```ruby
     # build a mock with mode RETURN_DEEP_STUB
     var mock := mock(TestClass, RETURN_DEEP_STUB) as TestClass
@@ -355,16 +382,17 @@ Use to return a default value for build-in types or a fully mocked value for Obj
     # returns a mocked Path value
     assert_object(mock.path()).is_not_null()
 ```
+
 {% endtab %}
 {% endtabs %}
 
 ---
 
 ## Argument Matchers and mocks
+
 Argument matchers allow you to simplify the verification of function calls by verifying function arguments based on their type or class. This is particularly useful when working with mocks because you can use argument matchers to verify function calls without specifying the exact argument values.
 
 For example, instead of verifying that a function was called with a specific boolean argument value, you can use the **any_bool()** argument matcher to verify that the function was called with any boolean value. Here's an example:
-
 
 ```ruby
     var mocked_node :Node = mock(Node)
@@ -377,6 +405,7 @@ For example, instead of verifying that a function was called with a specific boo
     # Verify that the function was called with any boolean value 3 times
     verify(mocked_node, 3).set_process(any_bool())
 ```
+
 For more details on how to use argument matchers, please see the [Argument Matchers](/gdUnit4/advanced_testing/argument_matchers) section.
 
 ---

@@ -7,7 +7,12 @@ nav_order: 4
 
 # Spy
 
+{% include advice.html
+content="This Spy implementation is only available for GDScripts, for C# you can use already existing mocking frameworks like <a href='https://github.com/devlooped/moq' target='_blank'><b>Moq</b></a>"
+%}
+
 ## Definition
+
 A Spy is used to verify a certain behavior during a test and tracks all function calls and their parameters of an instance.
 
 `var to_spy := spy(<instance>)`
@@ -16,12 +21,14 @@ A Spy is used to verify a certain behavior during a test and tracks all function
 
 In contrast to a mock, a spy calls the real implementation. It behaves in the same way as the normal instance.
 
-{% include advice.html
-content="Spy is current only supported for GdScripts."
-%}
 ---
 
 ## How to use a Spy
+
+{% include advice.html
+content="Spy on core functions are not possible since Godot has improved the GDScript performance.<br> According to the Godot core developers, overwriting core functions is no longer supported, so there is no way to spy on core functions anymore."
+%}
+
 To spy on an object, simply use **spy(\<instance\>)**. A spied instance is marked for auto-freeing, so you don't need to free it manually.
 
 ```ruby
@@ -29,6 +36,7 @@ To spy on an object, simply use **spy(\<instance\>)**. A spied instance is marke
 ```
 
 Here a small example to use the spy on a instance of the class 'TestClass':
+
 ```ruby
     class_name TestClass
     extends Node
@@ -50,8 +58,8 @@ Here a small example to use the spy on a instance of the class 'TestClass':
 ```
 
 ## Verification of Function Calls
-A spy keeps track of all function calls and their arguments. Use the **verify()** method on the spy to verify that certain behavior happened at least once or an exact number of times. This way, you can check if a particular function was called and how many times it was called.
 
+A spy keeps track of all function calls and their arguments. Use the **verify()** method on the spy to verify that certain behavior happened at least once or an exact number of times. This way, you can check if a particular function was called and how many times it was called.
 
 |Function |Description |
 |---|---|
@@ -60,14 +68,15 @@ A spy keeps track of all function calls and their arguments. Use the **verify()*
 |[verify_no_more_interactions](/gdUnit4/advanced_testing/spy/#verify_no_more_interactions) | Verifies that the given spy has no unverified interactions.|
 |[reset](/gdUnit4/advanced_testing/spy/#reset) | Resets the saved function call counters on a spy.|
 
-
 * **verify**<br>
     The **verify()** method is used to verify that a function was called a certain number of times. It takes two arguments: the spy instance and the expected number of times the function should have been called. You can also use argument matchers to verify that specific arguments were passed to the function.
 
     ```ruby
         verify(<spy>, <times>).function(<args>)
     ```
+
     Here's an example:
+
     ```ruby
         var spyed_node :Node = spy(Node.new())
         
@@ -93,7 +102,9 @@ A spy keeps track of all function calls and their arguments. Use the **verify()*
     ```ruby
         verify_no_interactions(<spy>)
     ```
+
     Here's an example:
+
     ```ruby
         var spyed_node := spy(Node.new()) as Node
         
@@ -111,11 +122,12 @@ A spy keeps track of all function calls and their arguments. Use the **verify()*
     The **verify_no_more_interactions()** method verifies that all interactions on the spy have been verified.
     If the spy has recorded more interactions than you verified with **verify()**, an error is reported.
 
-
     ```ruby
         verify_no_more_interactions(<spy>)
     ```
+
     Here's an example:
+
     ```ruby
         var spyed_node := spy(Node.new()) as Node
         
@@ -145,7 +157,9 @@ A spy keeps track of all function calls and their arguments. Use the **verify()*
     ```ruby
         reset(<spy>)
     ```
+
     Here's an example:
+
     ```ruby
         var spyed_node :Node = spy(Node.new())
         
@@ -171,10 +185,10 @@ A spy keeps track of all function calls and their arguments. Use the **verify()*
 ---
 
 ## Argument Matchers and spys
+
 Argument matchers allow you to simplify the verification of function calls by verifying function arguments based on their type or class. This is particularly useful when working with spys because you can use argument matchers to verify function calls without specifying the exact argument values.
 
 For example, instead of verifying that a function was called with a specific boolean argument value, you can use the **any_bool()** argument matcher to verify that the function was called with any boolean value. Here's an example:
-
 
 ```ruby
     var spyed_node :Node = spy(Node.new())
@@ -187,6 +201,7 @@ For example, instead of verifying that a function was called with a specific boo
     # Verify that the function was called with any boolean value 3 times
     verify(spyed_node, 3).set_process(any_bool())
 ```
+
 For more details on how to use argument matchers, please see the [Argument Matchers](/gdUnit4/advanced_testing/argument_matchers) section.
 
 ---
