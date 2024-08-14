@@ -28,6 +28,7 @@ var _mouse_button_on_press := []
 var _key_on_press := []
 var _action_on_press := []
 var _curent_mouse_position :Vector2
+var _current_touch_drag_position :Vector2
 
 # time factor settings
 var _time_factor := 1.0
@@ -250,27 +251,95 @@ func simulate_screen_touch_pressed(index :int, double_tap := false) -> GdUnitSce
 
 
 func simulate_screen_touch_press(index :int, double_tap := false) -> GdUnitSceneRunner:
+	# we need to simulate in addition to the touch the mouse events
+	simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
+	# push touch press event at position
 	var event := InputEventScreenTouch.new()
+	event.window_id = scene().get_viewport().get_window_id()
 	event.index = index
 	event.position = get_mouse_position()
 	event.double_tap = double_tap
 	event.pressed = true
-	event.window_id = scene().get_viewport().get_window_id()
-	if ProjectSettings.get_setting("input_devices/pointing/emulate_touch_from_mouse") == true:
-		_mouse_button_on_press.append(index)
-	return _handle_input_event(event)
+	_current_scene.get_viewport().push_input(event)
+	return self
 
 
 func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSceneRunner:
+	# we need to simulate in addition to the touch the mouse events
+	simulate_mouse_button_release(MOUSE_BUTTON_LEFT)
+	# push touch release event at position
 	var event := InputEventScreenTouch.new()
+	event.window_id = scene().get_viewport().get_window_id()
 	event.index = index
 	event.position = get_mouse_position()
 	event.pressed = false
 	event.double_tap = _last_input_event.double_tap if _last_input_event is InputEventScreenTouch else double_tap
+	_current_scene.get_viewport().push_input(event)
+	return self
+
+
+func simulate_screen_touch_drag_begin(index :int, position :Vector2) -> GdUnitSceneRunner:
+	# we need to simulate in addition to the touch the mouse events
+	set_mouse_pos(position)
+	simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
+
+	# start drag by touch it at position
+	var event := InputEventScreenTouch.new()
 	event.window_id = scene().get_viewport().get_window_id()
-	if ProjectSettings.get_setting("input_devices/pointing/emulate_touch_from_mouse") == true:
-		_mouse_button_on_press.erase(index)
-	return _handle_input_event(event)
+	event.index = index
+	event.position = position
+	event.pressed = true
+	_current_touch_drag_position = position
+	_current_scene.get_viewport().push_input(event)
+	return self
+
+
+func simulate_screen_touch_drag_relative(index :int, relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+	return await _do_touch_drag_at(index, _current_touch_drag_position + relative, time, trans_type)
+
+
+func simulate_screen_touch_drag_absolute(index :int, position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+	return await _do_touch_drag_at(index, position, time, trans_type)
+
+
+func simulate_screen_touch_drag_drop(index :int, position: Vector2, drop_position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+	simulate_screen_touch_drag_begin(index, position)
+	return await _do_touch_drag_at(index, drop_position, time, trans_type)
+
+
+func _do_touch_drag_at(index :int, drag_position: Vector2, time: float, trans_type: Tween.TransitionType) -> GdUnitSceneRunner:
+	# start draging
+	var event := InputEventScreenDrag.new()
+	event.window_id = scene().get_viewport().get_window_id()
+	event.index = index
+	event.position = _current_touch_drag_position
+	event.pressure = 1.0
+
+	var tween := _scene_tree().create_tween()
+	tween.tween_property(self, "_current_touch_drag_position", drag_position, time).set_trans(trans_type)
+	tween.play()
+
+	while not _current_touch_drag_position.is_equal_approx(drag_position):
+		# we need to simulate in addition to the drag the mouse move events
+		simulate_mouse_move(event.position)
+		# send touche drag event to new position
+		event.relative = _current_touch_drag_position - event.position
+		event.velocity = event.relative / _scene_tree().root.get_process_delta_time()
+		event.position = _current_touch_drag_position
+		_current_scene.get_viewport().push_input(event)
+		await _scene_tree().process_frame
+
+	# finaly drop it
+	simulate_mouse_move(drag_position)
+	simulate_mouse_button_release(MOUSE_BUTTON_LEFT)
+	var touch_drop_event := InputEventScreenTouch.new()
+	touch_drop_event.window_id = event.window_id
+	touch_drop_event.index = event.index
+	touch_drop_event.position = drag_position
+	touch_drop_event.pressed = false
+	_current_scene.get_viewport().push_input(touch_drop_event)
+	await _scene_tree().process_frame
+	return self
 
 
 func set_time_factor(time_factor := 1.0) -> GdUnitSceneRunner:

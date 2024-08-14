@@ -35,7 +35,10 @@ func _drop_data(_position: Vector2, data :Variant) -> void:
 
 # Virtual method to be implemented by the user. Use this method to process and accept inputs on UI elements. See accept_event().
 func _gui_input(_event :InputEvent) -> void:
-	#prints("Panel _gui_input", _event.as_text())
+	#if _event is InputEventScreenDrag:
+	#	prints(" InputEventScreenDrag", _event.as_text())
+	#if _event is InputEventScreenTouch:
+	#	prints(" InputEventScreenTouch", _event.as_text())
 	#if _event is InputEventMouseButton:
 	#	prints("Panel _gui_input", _event.as_text())
 	pass

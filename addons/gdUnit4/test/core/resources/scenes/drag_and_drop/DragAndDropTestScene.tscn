@@ -40,4 +40,13 @@ offset_bottom = 200.0
 text = "BUTTON"
 metadata/_edit_use_anchors_ = true
 
+[node name="Button2" type="Button" parent="."]
+layout_mode = 0
+offset_left = 593.0
+offset_top = 201.0
+offset_right = 700.0
+offset_bottom = 239.0
+text = "QUIT"
+
 [connection signal="button_down" from="Button" to="." method="_on_Button_button_down"]
+[connection signal="pressed" from="Button2" to="." method="_on_quit_pressed"]
