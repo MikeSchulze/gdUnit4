@@ -44,12 +44,11 @@ static func free_instance(instance :Variant, use_call_deferred :bool = false, is
 	release_double(instance)
 	if instance is RefCounted:
 		(instance as RefCounted).notification(Object.NOTIFICATION_PREDELETE)
+		# If scene runner freed we explicit await all inputs are processed
+		if instance is GdUnitSceneRunnerImpl:
+			await instance.await_input_processed()
 		return true
 	else:
-		# is instance already freed?
-		#if not is_instance_valid(instance) or ClassDB.class_get_property(instance, "new"):
-		#	return false
-		#release_connections(instance)
 		if instance is Timer:
 			instance.stop()
 			if use_call_deferred:
@@ -58,6 +57,7 @@ static func free_instance(instance :Variant, use_call_deferred :bool = false, is
 				instance.free()
 				await Engine.get_main_loop().process_frame
 			return true
+
 		if instance is Node and instance.get_parent() != null:
 			if is_stdout_verbose:
 				print_verbose("GdUnit4:gc():remove node from parent ",  instance.get_parent(), instance)

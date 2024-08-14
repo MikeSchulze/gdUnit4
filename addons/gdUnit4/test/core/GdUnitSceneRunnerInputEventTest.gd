@@ -12,14 +12,17 @@ var _scene_spy :Node
 func before_test() -> void:
 	_scene_spy = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	_runner = scene_runner(_scene_spy)
+	# do handle outstanding events
+	await _runner.await_input_processed()
 	assert_initial_action_state()
 	assert_inital_mouse_state()
 	assert_inital_key_state()
-	# do handle outstanding events
-	Input.flush_buffered_events()
-	await _runner.await_input_processed()
 	# reset to inital state
 	reset(_scene_spy)
+
+
+func after_test() -> void:
+	set_mouse_as_touch_device(false)
 
 
 # asserts to action strings
@@ -53,8 +56,12 @@ func assert_inital_mouse_state() -> void:
 		MOUSE_BUTTON_WHEEL_LEFT,
 		MOUSE_BUTTON_WHEEL_RIGHT,
 		]:
-		assert_that(Input.is_mouse_button_pressed(button)).is_false()
-	assert_that(Input.get_mouse_button_mask()).is_equal(0)
+		assert_that(Input.is_mouse_button_pressed(button))\
+			.override_failure_message("Expecting mouse button %s is not pressed state!" % 1)\
+			.is_false()
+	assert_that(Input.get_mouse_button_mask())\
+		.override_failure_message("Expecting mouse button mask %s is '0'!" % Input.get_mouse_button_mask())\
+		.is_equal(0)
 
 
 func test_reset_to_inital_state_on_release() -> void:
@@ -558,3 +565,129 @@ func test_simulate_mouse_button_press_and_release() -> void:
 		#event.button_mask = 0
 		verify(_scene_spy, 1)._input(event)
 		assert_that(Input.is_mouse_button_pressed(mouse_button)).is_false()
+
+
+func test_simulate_screen_touch_press() -> void:
+	# we need to simmulate the mouse as a touch device
+	set_mouse_as_touch_device(true)
+
+	_runner.set_mouse_pos(Vector2(683, 339))
+	# simulate one finger is touching the screen
+	_runner.simulate_screen_touch_press(1)
+	await await_idle_frame()
+
+	# verify the InputEventScreenTouch is emitted
+	var event := InputEventScreenTouch.new()
+	event.position = Vector2(683, 339)
+	event.pressed = true
+	event.index = 1
+	event.double_tap = false
+	verify(_scene_spy, 1)._input(event)
+	verify(_scene_spy, 1)._on_touch_1_pressed()
+	verify(_scene_spy, 0)._on_touch_1_released()
+
+
+func test_simulate_screen_touch_press_double_click() -> void:
+	# we need to simmulate the mouse as a touch device
+	set_mouse_as_touch_device(true)
+
+	_runner.set_mouse_pos(Vector2(683, 339))
+	# simulate that two fingers have touched the touch screen as a double click
+	_runner.simulate_screen_touch_press(2, true)
+	await await_idle_frame()
+
+	# verify the InputEventScreenTouch is emitted
+	var event := InputEventScreenTouch.new()
+	event.position = Vector2(683, 339)
+	event.pressed = true
+	event.index = 2
+	event.double_tap = true
+	verify(_scene_spy, 1)._input(event)
+	verify(_scene_spy, 1)._on_touch_1_pressed()
+	verify(_scene_spy, 0)._on_touch_1_released()
+
+
+func test_simulate_screen_touch_pressed() -> void:
+	# we need to simmulate the mouse as a touch device
+	set_mouse_as_touch_device(true)
+
+	_runner.set_mouse_pos(Vector2(683, 339))
+	# simulate that a finger has touched the screen
+	_runner.simulate_screen_touch_pressed(1)
+	await await_idle_frame()
+
+	# verify the InputEventScreenTouch is emitted
+	var event := InputEventScreenTouch.new()
+	event.position = Vector2(683, 339)
+	event.pressed = true
+	event.index = 1
+	event.double_tap = false
+	verify(_scene_spy, 1)._input(event)
+	event.pressed = false
+	verify(_scene_spy, 1)._input(event)
+	verify(_scene_spy, 1)._on_touch_1_pressed()
+	verify(_scene_spy, 1)._on_touch_1_released()
+
+
+func test_simulate_screen_touch_pressed_double_click() -> void:
+	# we need to simmulate the mouse as a touch device
+	set_mouse_as_touch_device(true)
+
+	_runner.set_mouse_pos(Vector2(683, 339))
+	# simulate that two fingers have touched the touch screen as a double click
+	_runner.simulate_screen_touch_pressed(2, true)
+	await await_idle_frame()
+
+	# verify the InputEventScreenTouch is emitted
+	var event := InputEventScreenTouch.new()
+	event.position = Vector2(683, 339)
+	event.pressed = true
+	event.index = 2
+	event.double_tap = true
+	verify(_scene_spy, 1)._input(event)
+	event.pressed = false
+	verify(_scene_spy, 1)._input(event)
+	verify(_scene_spy, 1)._on_touch_1_pressed()
+	verify(_scene_spy, 1)._on_touch_1_released()
+
+
+func test_simulate_screen_touch_release() -> void:
+	# we need to simmulate the mouse as a touch device
+	set_mouse_as_touch_device(true)
+
+	_runner.set_mouse_pos(Vector2(683, 339))
+	# simulate that the finger no longer touches the screen
+	_runner.simulate_screen_touch_release(1)
+	await await_idle_frame()
+
+	# verify the InputEventScreenTouch is emitted
+	var event := InputEventScreenTouch.new()
+	event.position = Vector2(683, 339)
+	event.pressed = false
+	event.index = 1
+	event.double_tap = false
+	verify(_scene_spy, 1)._input(event)
+	verify(_scene_spy, 0)._on_touch_1_pressed()
+
+
+func test_simulate_screen_touch_release_double_click() -> void:
+	# we need to simmulate the mouse as a touch device
+	set_mouse_as_touch_device(true)
+
+	_runner.set_mouse_pos(Vector2(683, 339))
+	# simulate that two fingers no longer touches the screen as a double click
+	_runner.simulate_screen_touch_release(2, true)
+	await await_idle_frame()
+
+	# verify the InputEventScreenTouch is emitted
+	var event := InputEventScreenTouch.new()
+	event.position = Vector2(683, 339)
+	event.pressed = false
+	event.index = 2
+	event.double_tap = true
+	verify(_scene_spy, 1)._input(event)
+	verify(_scene_spy, 0)._on_touch_1_pressed()
+
+
+func set_mouse_as_touch_device(enabled := false) -> void:
+	ProjectSettings.set_setting("input_devices/pointing/emulate_touch_from_mouse", enabled)

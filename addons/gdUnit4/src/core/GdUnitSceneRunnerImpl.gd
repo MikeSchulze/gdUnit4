@@ -62,10 +62,13 @@ func _init(p_scene :Variant, p_verbose :bool, p_hide_push_errors := false) -> vo
 		if not p_hide_push_errors:
 			push_error("GdUnitSceneRunner: Scene must be not null!")
 		return
+
 	_scene_tree().root.add_child(_current_scene)
 	# do finally reset all open input events when the scene is removed
 	_scene_tree().root.child_exiting_tree.connect(func f(child :Node) -> void:
 		if child == _current_scene:
+			# we need to disable the processing to avoid input flush buffer errors
+			_current_scene.process_mode = Node.PROCESS_MODE_DISABLED
 			_reset_input_to_default()
 	)
 	_simulate_start_time = LocalTime.now()
@@ -237,6 +240,36 @@ func simulate_mouse_button_release(buttonIndex :MouseButton) -> GdUnitSceneRunne
 	_apply_input_mouse_mask(event)
 	_apply_input_modifiers(event)
 	_mouse_button_on_press.erase(buttonIndex)
+	return _handle_input_event(event)
+
+
+func simulate_screen_touch_pressed(index :int, double_tap := false) -> GdUnitSceneRunner:
+	simulate_screen_touch_press(index, double_tap)
+	simulate_screen_touch_release(index)
+	return self
+
+
+func simulate_screen_touch_press(index :int, double_tap := false) -> GdUnitSceneRunner:
+	var event := InputEventScreenTouch.new()
+	event.index = index
+	event.position = get_mouse_position()
+	event.double_tap = double_tap
+	event.pressed = true
+	event.window_id = scene().get_viewport().get_window_id()
+	if ProjectSettings.get_setting("input_devices/pointing/emulate_touch_from_mouse") == true:
+		_mouse_button_on_press.append(index)
+	return _handle_input_event(event)
+
+
+func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSceneRunner:
+	var event := InputEventScreenTouch.new()
+	event.index = index
+	event.position = get_mouse_position()
+	event.pressed = false
+	event.double_tap = _last_input_event.double_tap if _last_input_event is InputEventScreenTouch else double_tap
+	event.window_id = scene().get_viewport().get_window_id()
+	if ProjectSettings.get_setting("input_devices/pointing/emulate_touch_from_mouse") == true:
+		_mouse_button_on_press.erase(index)
 	return _handle_input_event(event)
 
 
@@ -427,9 +460,11 @@ func _handle_input_event(event :InputEvent) -> GdUnitSceneRunner:
 	if event is InputEventAction:
 		_handle_actions(event)
 
-	Input.flush_buffered_events()
 	var current_scene := scene()
 	if is_instance_valid(current_scene):
+		# do not flush events if node processing disabled otherwise we run into errors at tree removed
+		if _current_scene.process_mode != Node.PROCESS_MODE_DISABLED:
+			Input.flush_buffered_events()
 		__print("	process event %s (%s) <- %s" % [current_scene, _scene_name(), event.as_text()])
 		if(current_scene.has_method("_gui_input")):
 			current_scene._gui_input(event)
@@ -459,7 +494,8 @@ func _reset_input_to_default() -> void:
 			simulate_action_release(action)
 	_action_on_press.clear()
 
-	Input.flush_buffered_events()
+	if is_instance_valid(_current_scene) and _current_scene.process_mode != Node.PROCESS_MODE_DISABLED:
+		Input.flush_buffered_events()
 	_last_input_event = null
 
 
