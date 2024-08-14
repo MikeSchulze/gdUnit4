@@ -46,3 +46,36 @@ func test_assert_that_types() -> void:
 
 func test_unknown_argument_in_test_case(_invalid_arg :int) -> void:
 	fail("This test case should be not executed, it must be skipped.")
+
+
+func test_find_child() -> void:
+	var node_a :Node3D = auto_free(Node3D.new())
+	node_a.set_name("node_a")
+	var node_b :Node3D = auto_free(Node3D.new())
+	node_b.set_name("node_b")
+	var node_c :Node3D = auto_free(Node3D.new())
+	node_c.set_name("node_c")
+	add_child(node_a, true)
+	node_a.add_child(node_b, true)
+	node_b.add_child(node_c, true)
+
+	assert_that(find_child("node_a", true, false)).is_same(node_a)
+	assert_that(find_child("node_b", true, false)).is_same(node_b)
+	assert_that(find_child("node_c", true, false)).is_same(node_c)
+
+
+func test_find_by_path() -> void:
+	var node_a :Node3D = auto_free(Node3D.new())
+	node_a.set_name("node_a")
+	var node_b :Node3D = auto_free(Node3D.new())
+	node_b.set_name("node_b")
+	var node_c :Node3D = auto_free(Node3D.new())
+	node_c.set_name("node_c")
+	add_child(node_a, true)
+	node_a.add_child(node_b, true)
+	node_b.add_child(node_c, true)
+
+	assert_that(get_node(node_a.get_path())).is_same(node_a)
+	assert_that(get_node(node_b.get_path())).is_same(node_b)
+	assert_that(get_node(node_c.get_path())).is_same(node_c)
+
