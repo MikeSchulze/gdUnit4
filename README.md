@@ -4,7 +4,7 @@
   <h1 align="center">GdUnit4 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MikeSchulze/gdunit4" width="14%"> </h1>
 </p>
 <h2 align="center">A Godot Embedded Unit Testing Framework</h2>
-<p align="center">This version of GdUnit4 is based on Godot <strong>v4.2.1.stable.official [b09f793f5]</strong> (master branch)</p>
+<p align="center">This version of GdUnit4 is based on Godot <strong>v4.2.2.stable.official [15073afe3]</strong> (master branch)</p>
 </h2>
 
 ---
@@ -17,24 +17,24 @@
 <h1 align="center">Compatibility Overview</h1>
 <table align="center">
   <thead>
-    <tr>
-      <th>GdUnit4 Version</th>
-      <th>Minimal required Godot Version</th>
-    </tr>
+	<tr>
+	  <th>GdUnit4 Version</th>
+	  <th>Minimal required Godot Version</th>
+	</tr>
   </thead>
   <tbody>
-    <tr>
-      <td>v4.3.2+</td><td>v4.2.0, v4.3-beta2</td>
-    </tr>
-    <tr>
-      <td>v4.3.0, v4.3.1</td><td>v4.2.0</td>
-    </tr>
-    <tr>
-      <td>v4.2.1-v4.2.5</td><td>v4.1.0</td>
-    </tr>
-    <tr>
-      <td>v4.2.0 and older</td><td>v4.0</td>
-    </tr>
+	<tr>
+	  <td>v4.3.2+</td><td>v4.2.0, v4.3.0</td>
+	</tr>
+	<tr>
+	  <td>v4.3.0, v4.3.1</td><td>v4.2.0</td>
+	</tr>
+	<tr>
+	  <td>v4.2.1-v4.2.5</td><td>v4.1.0</td>
+	</tr>
+	<tr>
+	  <td>v4.2.0 and older</td><td>v4.0</td>
+	</tr>
   </tbody>
 </table>
 
@@ -92,8 +92,8 @@ extends GdUnitTestSuite
 
 func test_example():
   assert_str("This is a example message")\
-    .has_length(25)\
-    .starts_with("This is a ex")
+	.has_length(25)\
+	.starts_with("This is a ex")
  ```
 
  ---
