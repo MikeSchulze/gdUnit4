@@ -244,20 +244,21 @@ func simulate_mouse_button_release(buttonIndex :MouseButton) -> GdUnitSceneRunne
 	return _handle_input_event(event)
 
 
-func simulate_screen_touch_pressed(index :int, double_tap := false) -> GdUnitSceneRunner:
-	simulate_screen_touch_press(index, double_tap)
+func simulate_screen_touch_pressed(index :int, position :Vector2, double_tap := false) -> GdUnitSceneRunner:
+	simulate_screen_touch_press(index, position, double_tap)
 	simulate_screen_touch_release(index)
 	return self
 
 
-func simulate_screen_touch_press(index :int, double_tap := false) -> GdUnitSceneRunner:
+func simulate_screen_touch_press(index :int, position :Vector2, double_tap := false) -> GdUnitSceneRunner:
 	# we need to simulate in addition to the touch the mouse events
+	set_mouse_pos(position)
 	simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
 	# push touch press event at position
 	var event := InputEventScreenTouch.new()
 	event.window_id = scene().get_viewport().get_window_id()
 	event.index = index
-	event.position = get_mouse_position()
+	event.position = position
 	event.double_tap = double_tap
 	event.pressed = true
 	_current_scene.get_viewport().push_input(event)
@@ -278,22 +279,6 @@ func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSce
 	return self
 
 
-func simulate_screen_touch_drag_begin(index :int, position :Vector2) -> GdUnitSceneRunner:
-	# we need to simulate in addition to the touch the mouse events
-	set_mouse_pos(position)
-	simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
-
-	# start drag by touch it at position
-	var event := InputEventScreenTouch.new()
-	event.window_id = scene().get_viewport().get_window_id()
-	event.index = index
-	event.position = position
-	event.pressed = true
-	_current_touch_drag_position = position
-	_current_scene.get_viewport().push_input(event)
-	return self
-
-
 func simulate_screen_touch_drag_relative(index :int, relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
 	return await _do_touch_drag_at(index, _current_touch_drag_position + relative, time, trans_type)
 
@@ -303,7 +288,7 @@ func simulate_screen_touch_drag_absolute(index :int, position: Vector2, time: fl
 
 
 func simulate_screen_touch_drag_drop(index :int, position: Vector2, drop_position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
-	simulate_screen_touch_drag_begin(index, position)
+	simulate_screen_touch_press(index, position)
 	return await _do_touch_drag_at(index, drop_position, time, trans_type)
 
 

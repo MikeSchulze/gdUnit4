@@ -133,17 +133,19 @@ func simulate_mouse_button_release(buttonIndex :MouseButton) -> GdUnitSceneRunne
 
 ## Simulates a screen touch is pressed.[br]
 ## [member index] : The touch index in the case of a multi-touch event. One index = one finger.[br]
+## [member position] : The position to touch the screen.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_pressed(index :int, double_tap := false) -> GdUnitSceneRunner:
+func simulate_screen_touch_pressed(index :int, position :Vector2, double_tap := false) -> GdUnitSceneRunner:
 	return self
 
 
 ## Simulates a screen touch is press.[br]
 ## [member index] : The touch index in the case of a multi-touch event. One index = one finger.[br]
+## [member position] : The position to touch the screen.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_press(index :int, double_tap := false) -> GdUnitSceneRunner:
+func simulate_screen_touch_press(index :int, position :Vector2, double_tap := false) -> GdUnitSceneRunner:
 	return self
 
 
@@ -152,14 +154,6 @@ func simulate_screen_touch_press(index :int, double_tap := false) -> GdUnitScene
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
 func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSceneRunner:
-	return self
-
-
-## Starts the simulate of drag&drop at given position.[br]
-## [member index] : The touch index in the case of a multi-touch event. One index = one finger.[br]
-## [member index] : The starting position to drag
-@warning_ignore("unused_parameter")
-func simulate_screen_touch_drag_begin(index :int, position :Vector2) -> GdUnitSceneRunner:
 	return self
 
 

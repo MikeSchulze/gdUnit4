@@ -564,9 +564,8 @@ func test_simulate_mouse_button_press_and_release() -> void:
 
 
 func test_simulate_screen_touch_press() -> void:
-	_runner.set_mouse_pos(Vector2(683, 339))
 	# simulate one finger is touching the screen
-	_runner.simulate_screen_touch_press(1)
+	_runner.simulate_screen_touch_press(1, Vector2(683, 339))
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
@@ -581,9 +580,8 @@ func test_simulate_screen_touch_press() -> void:
 
 
 func test_simulate_screen_touch_press_double_click() -> void:
-	_runner.set_mouse_pos(Vector2(683, 339))
 	# simulate that two fingers have touched the touch screen as a double click
-	_runner.simulate_screen_touch_press(2, true)
+	_runner.simulate_screen_touch_press(2, Vector2(683, 339), true)
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
@@ -598,9 +596,8 @@ func test_simulate_screen_touch_press_double_click() -> void:
 
 
 func test_simulate_screen_touch_pressed() -> void:
-	_runner.set_mouse_pos(Vector2(683, 339))
 	# simulate that a finger has touched the screen
-	_runner.simulate_screen_touch_pressed(1)
+	_runner.simulate_screen_touch_pressed(1, Vector2(683, 339))
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
@@ -617,9 +614,8 @@ func test_simulate_screen_touch_pressed() -> void:
 
 
 func test_simulate_screen_touch_pressed_double_click() -> void:
-	_runner.set_mouse_pos(Vector2(683, 339))
 	# simulate that two fingers have touched the touch screen as a double click
-	_runner.simulate_screen_touch_pressed(2, true)
+	_runner.simulate_screen_touch_pressed(2, Vector2(683, 339), true)
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
@@ -628,7 +624,8 @@ func test_simulate_screen_touch_pressed_double_click() -> void:
 
 
 func test_simulate_screen_touch_release() -> void:
-	_runner.set_mouse_pos(Vector2(683, 339))
+	# setup touch is actual pressing
+	_runner.simulate_screen_touch_press(1, Vector2(683, 339))
 	# simulate that the finger no longer touches the screen
 	_runner.simulate_screen_touch_release(1)
 	await await_idle_frame()
@@ -640,11 +637,12 @@ func test_simulate_screen_touch_release() -> void:
 	event.index = 1
 	event.double_tap = false
 	verify(_scene_spy, 1)._input(event)
-	verify(_scene_spy, 0)._on_touch_1_pressed()
+	verify(_scene_spy, 1)._on_touch_1_released()
 
 
 func test_simulate_screen_touch_release_double_click() -> void:
-	_runner.set_mouse_pos(Vector2(683, 339))
+	# setup touch is actual pressing
+	_runner.simulate_screen_touch_press(2, Vector2(683, 339), true)
 	# simulate that two fingers no longer touches the screen as a double click
 	_runner.simulate_screen_touch_release(2, true)
 	await await_idle_frame()
@@ -656,4 +654,4 @@ func test_simulate_screen_touch_release_double_click() -> void:
 	event.index = 2
 	event.double_tap = true
 	verify(_scene_spy, 1)._input(event)
-	verify(_scene_spy, 0)._on_touch_1_pressed()
+	verify(_scene_spy, 1)._on_touch_1_released()
