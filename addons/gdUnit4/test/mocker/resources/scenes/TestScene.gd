@@ -99,6 +99,7 @@ func _destroy_spell(spell :Spell) -> void:
 func _input(event :InputEvent) -> void:
 	if event.is_action_released("ui_accept"):
 		add_child(create_spell())
+	#prints(event.as_text())
 
 
 func add(a: int, b :int) -> int:
@@ -111,3 +112,7 @@ func _on_touch_1_pressed() -> void:
 
 func _on_touch_1_released() -> void:
 	pass
+
+
+func _on_exit_pressed() -> void:
+	get_tree().quit()

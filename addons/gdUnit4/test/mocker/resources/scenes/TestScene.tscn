@@ -108,8 +108,17 @@ position = Vector2(643, 295)
 texture_normal = ExtResource("2_xgglm")
 texture_pressed = ExtResource("2_xgglm")
 
+[node name="Button" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(200, 80)
+offset_left = 923.0
+offset_top = 529.0
+offset_right = 1123.0
+offset_bottom = 609.0
+text = "Exit"
+
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/test1" to="." method="_on_test_pressed" binds= [1]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/test2" to="." method="_on_test_pressed" binds= [2]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/test3" to="." method="_on_test_pressed" binds= [3]]
 [connection signal="pressed" from="CanvasLayer/Touch1" to="." method="_on_touch_1_pressed"]
 [connection signal="released" from="CanvasLayer/Touch1" to="." method="_on_touch_1_released"]
+[connection signal="pressed" from="CanvasLayer/Button" to="." method="_on_exit_pressed"]

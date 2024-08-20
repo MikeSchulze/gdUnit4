@@ -563,16 +563,20 @@ func test_simulate_mouse_button_press_and_release() -> void:
 		assert_that(Input.is_mouse_button_pressed(mouse_button)).is_false()
 
 
+#####################################################################################################################
+# Tests of simulate touch screen inputs                                                                             #
+#####################################################################################################################
 func test_simulate_screen_touch_press() -> void:
-	# simulate one finger is touching the screen
-	_runner.simulate_screen_touch_press(1, Vector2(683, 339))
+	# simulate pressing the touching screen
+	_runner.simulate_screen_touch_press(0, Vector2(683, 339))
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(683, 339))
 	var event := InputEventScreenTouch.new()
+	event.index = 0
 	event.position = Vector2(683, 339)
 	event.pressed = true
-	event.index = 1
 	event.double_tap = false
 	verify(_scene_spy, 1)._input(event)
 	verify(_scene_spy, 1)._on_touch_1_pressed()
@@ -580,15 +584,16 @@ func test_simulate_screen_touch_press() -> void:
 
 
 func test_simulate_screen_touch_press_double_click() -> void:
-	# simulate that two fingers have touched the touch screen as a double click
-	_runner.simulate_screen_touch_press(2, Vector2(683, 339), true)
+	# simulate pressing the touch screen by a double click
+	_runner.simulate_screen_touch_press(0, Vector2(683, 339), true)
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(683, 339))
 	var event := InputEventScreenTouch.new()
+	event.index = 0
 	event.position = Vector2(683, 339)
 	event.pressed = true
-	event.index = 2
 	event.double_tap = true
 	verify(_scene_spy, 1)._input(event)
 	verify(_scene_spy, 1)._on_touch_1_pressed()
@@ -596,15 +601,16 @@ func test_simulate_screen_touch_press_double_click() -> void:
 
 
 func test_simulate_screen_touch_pressed() -> void:
-	# simulate that a finger has touched the screen
-	_runner.simulate_screen_touch_pressed(1, Vector2(683, 339))
+	# simulate has touched the screen
+	_runner.simulate_screen_touch_pressed(0, Vector2(683, 339))
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(683, 339))
 	var event := InputEventScreenTouch.new()
+	event.index = 0
 	event.position = Vector2(683, 339)
 	event.pressed = true
-	event.index = 1
 	event.double_tap = false
 	verify(_scene_spy, 1)._input(event)
 	event.pressed = false
@@ -614,27 +620,29 @@ func test_simulate_screen_touch_pressed() -> void:
 
 
 func test_simulate_screen_touch_pressed_double_click() -> void:
-	# simulate that two fingers have touched the touch screen as a double click
-	_runner.simulate_screen_touch_pressed(2, Vector2(683, 339), true)
+	# simulate have touched the touch screen by a double click
+	_runner.simulate_screen_touch_pressed(0, Vector2(683, 339), true)
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(683, 339))
 	verify(_scene_spy, 1)._on_touch_1_pressed()
 	verify(_scene_spy, 1)._on_touch_1_released()
 
 
 func test_simulate_screen_touch_release() -> void:
 	# setup touch is actual pressing
-	_runner.simulate_screen_touch_press(1, Vector2(683, 339))
-	# simulate that the finger no longer touches the screen
-	_runner.simulate_screen_touch_release(1)
+	_runner.simulate_screen_touch_press(0, Vector2(683, 339))
+	# simulate no longer touches the screen
+	_runner.simulate_screen_touch_release(0)
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(683, 339))
 	var event := InputEventScreenTouch.new()
+	event.index = 0
 	event.position = Vector2(683, 339)
 	event.pressed = false
-	event.index = 1
 	event.double_tap = false
 	verify(_scene_spy, 1)._input(event)
 	verify(_scene_spy, 1)._on_touch_1_released()
@@ -642,16 +650,126 @@ func test_simulate_screen_touch_release() -> void:
 
 func test_simulate_screen_touch_release_double_click() -> void:
 	# setup touch is actual pressing
-	_runner.simulate_screen_touch_press(2, Vector2(683, 339), true)
-	# simulate that two fingers no longer touches the screen as a double click
-	_runner.simulate_screen_touch_release(2, true)
+	_runner.simulate_screen_touch_press(0, Vector2(683, 339), true)
+	# simulate that no longer touches the screen as a double click
+	_runner.simulate_screen_touch_release(0, true)
 	await await_idle_frame()
 
 	# verify the InputEventScreenTouch is emitted
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(683, 339))
 	var event := InputEventScreenTouch.new()
+	event.index = 0
 	event.position = Vector2(683, 339)
 	event.pressed = false
-	event.index = 2
 	event.double_tap = true
 	verify(_scene_spy, 1)._input(event)
 	verify(_scene_spy, 1)._on_touch_1_released()
+
+
+func test_simulate_screen_touch_get_drag_position() -> void:
+	# press the touch screen by two fingers
+	_runner.simulate_screen_touch_press(0, Vector2(300, 100))
+	_runner.simulate_screen_touch_press(1, Vector2(300, 200))
+
+	# verify the drag position is saved for each index
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(300, 100))
+	assert_that(_runner.get_screen_touch_drag_position(1)).is_equal(Vector2(300, 200))
+
+
+func test_simulate_screen_touch_drag() -> void:
+	_runner.simulate_screen_touch_drag(0, Vector2(300, 100))
+
+	# verify the InputEventScreenTouch is emitted
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(300, 100))
+	var event := InputEventScreenDrag.new()
+	event.index = 0
+	event.position = Vector2(300, 100)
+	event.relative = Vector2.ZERO
+	event.pressure = 1.0
+	verify(_scene_spy, 1)._input(event)
+
+	# drag to next position
+	_runner.simulate_screen_touch_drag(0, Vector2(400, 100))
+
+	# verify the InputEventScreenTouch is emitted
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(400, 100))
+	event.index = 0
+	event.position = Vector2(400, 100)
+	event.relative = Vector2(300, 100) - Vector2(400, 100)
+	event.velocity = event.relative / get_tree().root.get_process_delta_time()
+	event.pressure = 1.0
+	verify(_scene_spy, 1)._input(event)
+
+
+# Simulates a gesture in which two fingers are used as input
+func test_simulate_screen_touch_gesture_press() -> void:
+	# simulate gesture with two fingers is touching the screen
+	# finger one has index=0
+	_runner.simulate_screen_touch_press(0, Vector2(300, 100))
+	# finger one has index=1
+	_runner.simulate_screen_touch_press(1, Vector2(300, 200))
+
+	# verify the InputEventScreenTouch is emitted for finger one
+	var touch_fg1 := InputEventScreenTouch.new()
+	touch_fg1.index = 0
+	touch_fg1.position = Vector2(300, 100)
+	touch_fg1.pressed = true
+	touch_fg1.double_tap = false
+	verify(_scene_spy, 1)._input(touch_fg1)
+
+	# and verify the InputEventScreenTouch is emitted for finger one
+	var touch_fg2 := InputEventScreenTouch.new()
+	touch_fg2.index = 1
+	touch_fg2.position = Vector2(300, 200)
+	touch_fg2.pressed = true
+	touch_fg2.double_tap = false
+	verify(_scene_spy, 1)._input(touch_fg2)
+
+
+# Simulates a gesture in which two fingers are used as input
+func test_simulate_screen_touch_gesture_release() -> void:
+	# setup two fingers are pressing the touch screen
+	# finger one has index=0
+	# finger one has index=1
+	_runner.simulate_screen_touch_press(0, Vector2(300, 100))
+	_runner.simulate_screen_touch_press(1, Vector2(300, 200))
+
+	# simulate gesture with two fingers is untouch the screen
+	_runner.simulate_screen_touch_release(0)
+	_runner.simulate_screen_touch_release(1)
+
+	# verify the InputEventScreenTouch is emitted for finger one
+	var touch_fg1 := InputEventScreenTouch.new()
+	touch_fg1.index = 0
+	touch_fg1.position = Vector2(300, 100)
+	touch_fg1.pressed = false
+	touch_fg1.double_tap = false
+	verify(_scene_spy, 1)._input(touch_fg1)
+
+	# and verify the InputEventScreenTouch is emitted for finger one
+	var touch_fg2 := InputEventScreenTouch.new()
+	touch_fg2.index = 1
+	touch_fg2.position = Vector2(300, 200)
+	touch_fg2.pressed = false
+	touch_fg2.double_tap = false
+	verify(_scene_spy, 1)._input(touch_fg2)
+
+
+# Simulates a gesture in which two fingers are used as input
+func test_simulate_screen_touch_gesture_zoom_out() -> void:
+	# setup two fingers are pressing the touch screen
+	# finger one has index=0
+	# finger one has index=1
+	var finger_one := Vector2(300, 200)
+	var finger_two := Vector2(300, 250)
+	_runner.simulate_screen_touch_press(0, finger_one)
+	_runner.simulate_screen_touch_press(1, finger_two)
+
+	# now simulate gestures by moving the points of contact away from each other
+	for y_pos in range(0, 105, 5):
+		_runner.simulate_screen_touch_drag(0, finger_one - Vector2(0, y_pos))
+		_runner.simulate_screen_touch_drag(1, finger_two + Vector2(0, y_pos))
+
+	# verify final position are correct
+	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(300, 100))
+	assert_that(_runner.get_screen_touch_drag_position(1)).is_equal(Vector2(300, 350))

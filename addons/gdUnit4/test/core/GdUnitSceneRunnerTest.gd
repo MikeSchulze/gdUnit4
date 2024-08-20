@@ -379,7 +379,7 @@ func test_touch_drag_and_drop_relative() -> void:
 	var drag_start := slot_left.global_position + Vector2(50, 50)
 
 	# set inital mouse pos over the left touch button
-	runner.simulate_screen_touch_drag_begin(1, drag_start)
+	runner.simulate_screen_touch_press(0, drag_start)
 	await await_idle_frame()
 	assert_bool(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_true()
 	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_start)
@@ -389,7 +389,7 @@ func test_touch_drag_and_drop_relative() -> void:
 
 	# start drag&drop to right touch button
 	var drag_end := drag_start + Vector2(140, 0)
-	await runner.simulate_screen_touch_drag_relative(1, Vector2(140, 0))
+	await runner.simulate_screen_touch_drag_relative(0, Vector2(140, 0))
 	# verify
 	assert_that(slot_right.texture).is_equal(slot_left.texture)
 	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_end)
@@ -405,7 +405,7 @@ func test_touch_drag_and_drop_absolute() -> void:
 	var drag_start := slot_left.global_position + Vector2(50, 50)
 
 	# set inital mouse pos over the left touch button
-	runner.simulate_screen_touch_drag_begin(1, drag_start)
+	runner.simulate_screen_touch_press(0, drag_start)
 	await await_idle_frame()
 	assert_bool(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_true()
 	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_start)
@@ -415,7 +415,7 @@ func test_touch_drag_and_drop_absolute() -> void:
 
 	# start drag&drop to right touch button
 	var drag_end := Vector2(drag_start.x+140, drag_start.y)
-	await runner.simulate_screen_touch_drag_absolute(1, drag_end)
+	await runner.simulate_screen_touch_drag_absolute(0, drag_end)
 	# verify
 	assert_that(slot_right.texture).is_equal(slot_left.texture)
 	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_end)
@@ -432,7 +432,7 @@ func test_touch_drag_and_drop() -> void:
 
 	# start drag&drop to right touch button
 	var drag_end := Vector2(drag_start.x+140, drag_start.y)
-	await runner.simulate_screen_touch_drag_drop(1, drag_start, drag_end)
+	await runner.simulate_screen_touch_drag_drop(0, drag_start, drag_end)
 	# verify
 	assert_that(slot_right.texture).is_equal(slot_left.texture)
 	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_end)

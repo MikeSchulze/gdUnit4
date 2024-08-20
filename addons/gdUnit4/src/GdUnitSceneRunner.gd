@@ -132,7 +132,7 @@ func simulate_mouse_button_release(buttonIndex :MouseButton) -> GdUnitSceneRunne
 
 
 ## Simulates a screen touch is pressed.[br]
-## [member index] : The touch index in the case of a multi-touch event. One index = one finger.[br]
+## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member position] : The position to touch the screen.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
@@ -141,7 +141,7 @@ func simulate_screen_touch_pressed(index :int, position :Vector2, double_tap := 
 
 
 ## Simulates a screen touch is press.[br]
-## [member index] : The touch index in the case of a multi-touch event. One index = one finger.[br]
+## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member position] : The position to touch the screen.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
@@ -150,7 +150,7 @@ func simulate_screen_touch_press(index :int, position :Vector2, double_tap := fa
 
 
 ## Simulates a screen touch is released.[br]
-## [member index] : The touch index in the case of a multi-touch event. One index = one finger.[br]
+## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
 func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSceneRunner:
@@ -160,6 +160,7 @@ func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSce
 ## Simulates a touch screen drag&drop to the relative coordinates (offset).[br]
 ## [color=yellow]You must use [b]await[/b] to wait until the simulated drag&drop is complete.[/color][br]
 ## [br]
+## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member relative] : The relative position, indicating the drag&drop position offset.[br]
 ## [member time] : The time to move to the relative position in seconds (default is 1 second).[br]
 ## [member trans_type] : Sets the type of transition used (default is TRANS_LINEAR).[br]
@@ -180,6 +181,7 @@ func simulate_screen_touch_drag_relative(index :int, relative: Vector2, time: fl
 ## Simulates a touch screen drop to the absolute coordinates (offset).[br]
 ## [color=yellow]You must use [b]await[/b] to wait until the simulated drop is complete.[/color][br]
 ## [br]
+## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member position] : The final position, indicating the drop position.[br]
 ## [member time] : The time to move to the final position in seconds (default is 1 second).[br]
 ## [member trans_type] : Sets the type of transition used (default is TRANS_LINEAR).[br]
@@ -200,6 +202,7 @@ func simulate_screen_touch_drag_absolute(index :int, position: Vector2, time: fl
 ## Simulates a touch screen drop&drop to the absolute coordinates (offset).[br]
 ## [color=yellow]You must use [b]await[/b] to wait until the simulated drop is complete.[/color][br]
 ## [br]
+## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member position] : The drag start position, indicating the drag position.[br]
 ## [member drop_position] : The drop position, indicating the drop position.[br]
 ## [member time] : The time to move to the final position in seconds (default is 1 second).[br]
@@ -214,6 +217,21 @@ func simulate_screen_touch_drag_absolute(index :int, position: Vector2, time: fl
 func simulate_screen_touch_drag_drop(index :int, position: Vector2, drop_position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
 	return self
+
+
+## Simulates a touch screen drag event to given position.[br]
+## [member index] : The touch index in the case of a multi-touch event.[br]
+## [member position] : The drag start position, indicating the drag position.[br]
+@warning_ignore("unused_parameter")
+func simulate_screen_touch_drag(index :int, position: Vector2) -> GdUnitSceneRunner:
+	return self
+
+
+## Returns the actual position of the touch drag postion by given index
+## [member index] : The touch index in the case of a multi-touch event.[br]
+@warning_ignore("unused_parameter")
+func get_screen_touch_drag_position(index: int) -> Vector2:
+	return Vector2.ZERO
 
 
 ## Sets how fast or slow the scene simulation is processed (clock ticks versus the real).[br]
