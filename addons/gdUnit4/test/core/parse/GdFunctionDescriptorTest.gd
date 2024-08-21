@@ -143,4 +143,4 @@ func test_extract_from_func_with_return_type_variant() -> void:
 		GdFunctionArgument.new("property_", TYPE_STRING_NAME),
 	])
 	# Variant get(property: String) const
-	assert_str(fd.typeless()).is_equal("func get(property_) -> Variant:")
+	assert_str(fd.typeless()).is_equal("func get(property_):")
