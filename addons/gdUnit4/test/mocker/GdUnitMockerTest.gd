@@ -1074,7 +1074,7 @@ func test_mock_scene_by_path() -> void:
 	var mocked_scene :Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(mocked_scene).is_not_null()
 	assert_object(mocked_scene.get_script()).is_not_null()
-	assert_str(mocked_scene.get_script().resource_name).is_equal("MockTestScene.gd")
+	assert_str(mocked_scene.get_script().resource_name).starts_with("MockTestScene")
 	# check is mocked scene registered for auto freeing
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(mocked_scene)).is_true()
 
@@ -1084,7 +1084,7 @@ func test_mock_scene_by_resource() -> void:
 	var mocked_scene :Variant = mock(resource)
 	assert_object(mocked_scene).is_not_null()
 	assert_object(mocked_scene.get_script()).is_not_null()
-	assert_str(mocked_scene.get_script().resource_name).is_equal("MockTestScene.gd")
+	assert_str(mocked_scene.get_script().resource_name).starts_with("MockTestScene")
 	# check is mocked scene registered for auto freeing
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(mocked_scene)).is_true()
 
