@@ -249,7 +249,7 @@ func test_double_virtual_script_function_with_arg() -> void:
 func test_mock_on_script_path_without_class_name() -> void:
 	var instance :Object = load("res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd").new()
 	var script := GdUnitMockBuilder.mock_on_script(instance, "res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd", [], true);
-	assert_that(script.resource_name).is_equal("MockClassWithoutNameA.gd")
+	assert_that(script.resource_name).starts_with("MockClassWithoutNameA")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid
 	assert_int(script.reload()).is_equal(OK)
@@ -259,7 +259,7 @@ func test_mock_on_script_path_with_custom_class_name() -> void:
 	# the class contains a class_name definition
 	var instance :Object = load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomClassName.gd").new()
 	var script := GdUnitMockBuilder.mock_on_script(instance, "res://addons/gdUnit4/test/mocker/resources/ClassWithCustomClassName.gd", [], false);
-	assert_that(script.resource_name).is_equal("MockGdUnitTestCustomClassName.gd")
+	assert_that(script.resource_name).starts_with("MockGdUnitTestCustomClassName")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid
 	assert_int(script.reload()).is_equal(OK)
@@ -267,7 +267,7 @@ func test_mock_on_script_path_with_custom_class_name() -> void:
 
 func test_mock_on_class_with_class_name() -> void:
 	var script := GdUnitMockBuilder.mock_on_script(ClassWithNameA.new(), ClassWithNameA, [], false);
-	assert_that(script.resource_name).is_equal("MockClassWithNameA.gd")
+	assert_that(script.resource_name).starts_with("MockClassWithNameA")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid
 	assert_int(script.reload()).is_equal(OK)
@@ -276,7 +276,7 @@ func test_mock_on_class_with_class_name() -> void:
 func test_mock_on_class_with_custom_class_name() -> void:
 	# the class contains a class_name definition
 	var script := GdUnitMockBuilder.mock_on_script(GdUnit_Test_CustomClassName.new(), GdUnit_Test_CustomClassName, [], false);
-	assert_that(script.resource_name).is_equal("MockGdUnitTestCustomClassName.gd")
+	assert_that(script.resource_name).starts_with("MockGdUnitTestCustomClassName")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid
 	assert_int(script.reload()).is_equal(OK)

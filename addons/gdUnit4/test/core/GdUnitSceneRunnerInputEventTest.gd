@@ -100,6 +100,24 @@ func test_simulate_action_press() -> void:
 			.override_failure_message("Expect the action '%s' is NOT pressed" % action).is_false()
 
 
+func test_simulate_action_release() -> void:
+	# iterate over some example actions
+	var actions_to_simmulate :Array[String] = ["ui_up", "ui_down", "ui_left", "ui_right"]
+	for action in actions_to_simmulate:
+		assert_that(InputMap.has_action(action)).is_true()
+		_runner.simulate_action_press(action)
+		await await_idle_frame()
+		_runner.simulate_action_release(action)
+
+		assert_that(Input.is_action_just_released(action))\
+			.override_failure_message("Expect the action '%s' is released" % action).is_true()
+	# other actions are not pressed
+	for action :String in ["ui_accept", "ui_select", "ui_cancel"]:
+		assert_that(Input.is_action_pressed(action))\
+			.override_failure_message("Expect the action '%s' is NOT pressed" % action).is_false()
+
+
+
 func test_simulate_key_press() -> void:
 	# iterate over some example keys
 	for key :int in [KEY_A, KEY_D, KEY_X, KEY_0]:
@@ -186,9 +204,7 @@ func test_simulate_keypressed_as_action() -> void:
 	assert_bool(Input.is_action_just_released("ui_select", true)).is_false()
 	assert_bool(runner.scene()._player_jump_action_released).is_false()
 
-	# test a key event is trigger action event
-	# simulate press space
-	runner.simulate_key_pressed(KEY_SPACE)
+	await runner.simulate_key_pressed(KEY_SPACE)
 	# it is important do not wait for next frame here, otherwise the input action cache is cleared and can't be use to verify
 	assert_bool(Input.is_action_just_released("player_jump", true)).is_true()
 	assert_bool(Input.is_action_just_released("ui_accept", true)).is_true()

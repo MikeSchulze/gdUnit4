@@ -4,7 +4,7 @@
   <h1 align="center">GdUnit4 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MikeSchulze/gdunit4" width="14%"> </h1>
 </p>
 <h2 align="center">A Godot Embedded Unit Testing Framework</h2>
-<p align="center">This version of GdUnit4 is based on Godot <strong>v4.2.1.stable.official [b09f793f5]</strong> (master branch)</p>
+<p align="center">This version of GdUnit4 is based on Godot <strong>v4.3.stable.mono.official [77dcf97d8]</strong> (master branch)</p>
 </h2>
 
 ---
@@ -13,6 +13,7 @@
   <img src="https://img.shields.io/badge/Godot-v4.2.0-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.2.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.2.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
+  <img src="https://img.shields.io/badge/Godot-v4.3-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
 </p>
 <h1 align="center">Compatibility Overview</h1>
 <table align="center">
@@ -23,6 +24,9 @@
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>v4.4.0+</td><td>v4.2.0, v4.3</td>
+    </tr>
     <tr>
       <td>v4.3.2+</td><td>v4.2.0, v4.3-beta2</td>
     </tr>
@@ -37,7 +41,6 @@
     </tr>
   </tbody>
 </table>
-
 
 <p align="center">
   <a target="_blank" href="https://www.youtube.com/watch?v=-iqxs3KPvLQ"><img src="https://github.com/MikeSchulze/gdUnit4/blob/master/assets/gdUnit4-animated.gif" width="100%"/>
