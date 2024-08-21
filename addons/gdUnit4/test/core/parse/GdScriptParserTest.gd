@@ -374,7 +374,7 @@ func test_parse_func_description() -> void:
 	assert_bool(fd.is_static()).is_false()
 	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_VARIANT)
 	assert_array(fd.args()).is_empty()
-	assert_str(fd.typeless()).is_equal("func foo() -> Variant:")
+	assert_str(fd.typeless()).is_equal("func foo():")
 
 	# static function
 	fd = _parser.parse_func_description("static func foo(arg1 :int, arg2:=false) -> String:", "clazz_name", [""], 22)
@@ -396,7 +396,7 @@ func test_parse_func_description() -> void:
 		GdFunctionArgument.new("arg1", TYPE_INT),
 		GdFunctionArgument.new("arg2", TYPE_BOOL, "false")
 	])
-	assert_str(fd.typeless()).is_equal("static func foo(arg1, arg2=false) -> Variant:")
+	assert_str(fd.typeless()).is_equal("static func foo(arg1, arg2=false):")
 
 
 func test_parse_func_description_return_type_enum() -> void:

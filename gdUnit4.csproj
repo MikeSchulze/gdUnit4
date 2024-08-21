@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.2.2">
+<Project Sdk="Godot.NET.Sdk/4.3.0">
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <LangVersion>11.0</LangVersion>
@@ -11,7 +11,7 @@
   <ItemGroup>
     <!--Required for GdUnit4-->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageReference Include="gdUnit4.api" Version="4.2.*-*" />
-    <PackageReference Include="gdUnit4.test.adapter" Version="1.*" />
+    <PackageReference Include="gdUnit4.api" Version="4.3.*-*" />
+    <PackageReference Include="gdUnit4.test.adapter" Version="2.*" />
   </ItemGroup>
 </Project>

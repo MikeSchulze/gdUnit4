@@ -130,7 +130,7 @@ func test_simulate_scene_inteaction_in_combination_with_spy() -> void:
 	var runner := scene_runner(spy_)
 
 	# simulate a key event to fire a spell
-	runner.simulate_key_pressed(KEY_ENTER)
+	await runner.simulate_key_pressed(KEY_ENTER)
 	verify(spy_).create_spell()
 
 	var spell := runner.find_child("Spell")

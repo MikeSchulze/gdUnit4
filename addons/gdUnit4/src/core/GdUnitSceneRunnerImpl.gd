@@ -116,6 +116,8 @@ func simulate_action_press(action :String) -> GdUnitSceneRunner:
 	var event := InputEventAction.new()
 	event.pressed = true
 	event.action = action
+	if Engine.get_version_info().hex >= 0x40300:
+		event.event_index = InputMap.get_actions().find(action)
 	_action_on_press.append(action)
 	return _handle_input_event(event)
 
@@ -125,12 +127,15 @@ func simulate_action_release(action :String) -> GdUnitSceneRunner:
 	var event := InputEventAction.new()
 	event.pressed = false
 	event.action = action
+	if Engine.get_version_info().hex >= 0x40300:
+		event.event_index = InputMap.get_actions().find(action)
 	_action_on_press.erase(action)
 	return _handle_input_event(event)
 
 
 func simulate_key_pressed(key_code :int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
 	simulate_key_press(key_code, shift_pressed, ctrl_pressed)
+	await _scene_tree().process_frame
 	simulate_key_release(key_code, shift_pressed, ctrl_pressed)
 	return self
 

@@ -46,8 +46,14 @@ func simulate_action_release(action :String) -> GdUnitSceneRunner:
 ## [member key_code] : the key code e.g. [constant KEY_ENTER][br]
 ## [member shift_pressed] : false by default set to true if simmulate shift is press[br]
 ## [member ctrl_pressed] : false by default set to true if simmulate control is press[br]
+## [codeblock]
+##    func test_key_presssed():
+##       var runner = scene_runner("res://scenes/simple_scene.tscn")
+##       await runner.simulate_key_pressed(KEY_SPACE)
+## [/codeblock]
 @warning_ignore("unused_parameter")
 func simulate_key_pressed(key_code :int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
+	await Engine.get_main_loop().process_frame
 	return self
 
 
