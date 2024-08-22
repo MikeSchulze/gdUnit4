@@ -346,9 +346,9 @@ func test_mouse_drag_and_drop() -> void:
 
 	var save_mouse_pos := get_tree().root.get_mouse_position()
 	# set inital mouse pos over the left slot
-	var mouse_pos := slot_left.global_position + Vector2(10, 10)
+	var mouse_pos := slot_left.global_position + Vector2(50, 50)
 	runner.set_mouse_pos(mouse_pos)
-	await await_millis(1000)
+	#await await_millis(1000)
 
 	await await_idle_frame()
 	var event := InputEventMouseMotion.new()
@@ -362,12 +362,81 @@ func test_mouse_drag_and_drop() -> void:
 
 	# start drag&drop to left pannel
 	for i in 20:
-		runner.simulate_mouse_move(mouse_pos + Vector2(i*.5*i, 0))
+		runner.simulate_mouse_move(mouse_pos + Vector2(i*.4*i, 0))
 		await await_millis(40)
 
 	runner.simulate_mouse_button_release(MOUSE_BUTTON_LEFT)
 	await await_idle_frame()
 	assert_that(slot_right.texture).is_equal(slot_left.texture)
+
+
+func test_touch_drag_and_drop_relative() -> void:
+	var spy_scene :Variant = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
+	var runner := scene_runner(spy_scene)
+
+	var slot_left :TextureRect = $"/root/DragAndDropScene/left/TextureRect"
+	var slot_right :TextureRect = $"/root/DragAndDropScene/right/TextureRect"
+	var drag_start := slot_left.global_position + Vector2(50, 50)
+
+	# set inital mouse pos over the left touch button
+	runner.simulate_screen_touch_press(0, drag_start)
+	await await_idle_frame()
+	assert_bool(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_true()
+	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_start)
+
+	# enable only for a small wait to for manual testing
+	#await await_millis(1000)
+
+	# start drag&drop to right touch button
+	var drag_end := drag_start + Vector2(140, 0)
+	await runner.simulate_screen_touch_drag_relative(0, Vector2(140, 0))
+	# verify
+	assert_that(slot_right.texture).is_equal(slot_left.texture)
+	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_end)
+	assert_bool(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_false()
+
+
+func test_touch_drag_and_drop_absolute() -> void:
+	var spy_scene :Variant = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
+	var runner := scene_runner(spy_scene)
+
+	var slot_left :TextureRect = $"/root/DragAndDropScene/left/TextureRect"
+	var slot_right :TextureRect = $"/root/DragAndDropScene/right/TextureRect"
+	var drag_start := slot_left.global_position + Vector2(50, 50)
+
+	# set inital mouse pos over the left touch button
+	runner.simulate_screen_touch_press(0, drag_start)
+	await await_idle_frame()
+	assert_bool(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_true()
+	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_start)
+
+	# enable only for a small wait to for manual testing
+	#await await_millis(1000)
+
+	# start drag&drop to right touch button
+	var drag_end := Vector2(drag_start.x+140, drag_start.y)
+	await runner.simulate_screen_touch_drag_absolute(0, drag_end)
+	# verify
+	assert_that(slot_right.texture).is_equal(slot_left.texture)
+	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_end)
+	assert_bool(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_false()
+
+
+func test_touch_drag_and_drop() -> void:
+	var spy_scene :Variant = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
+	var runner := scene_runner(spy_scene)
+
+	var slot_left :TextureRect = $"/root/DragAndDropScene/left/TextureRect"
+	var slot_right :TextureRect = $"/root/DragAndDropScene/right/TextureRect"
+	var drag_start := slot_left.global_position + Vector2(50, 50)
+
+	# start drag&drop to right touch button
+	var drag_end := Vector2(drag_start.x+140, drag_start.y)
+	await runner.simulate_screen_touch_drag_drop(0, drag_start, drag_end)
+	# verify
+	assert_that(slot_right.texture).is_equal(slot_left.texture)
+	assert_that(get_tree().root.get_mouse_position()).is_equal(drag_end)
+	assert_bool(Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)).is_false()
 
 
 func test_runner_GD_356() -> void:

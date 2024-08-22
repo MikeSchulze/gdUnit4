@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bf24pr1xj60o6"]
+[gd_scene load_steps=3 format=3 uid="uid://bf24pr1xj60o6"]
 
 [ext_resource type="Script" path="res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://btx5kcrsngasl" path="res://addons/gdUnit4/src/core/assets/touch-button.png" id="2_xgglm"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -99,6 +100,25 @@ points = PackedVector2Array(40, 0, 60, 0)
 width = 30.0
 default_color = Color(1, 0.0392157, 0.247059, 1)
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Touch1" type="TouchScreenButton" parent="CanvasLayer"]
+unique_name_in_owner = true
+position = Vector2(643, 295)
+texture_normal = ExtResource("2_xgglm")
+texture_pressed = ExtResource("2_xgglm")
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(200, 80)
+offset_left = 923.0
+offset_top = 529.0
+offset_right = 1123.0
+offset_bottom = 609.0
+text = "Exit"
+
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/test1" to="." method="_on_test_pressed" binds= [1]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/test2" to="." method="_on_test_pressed" binds= [2]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/test3" to="." method="_on_test_pressed" binds= [3]]
+[connection signal="pressed" from="CanvasLayer/Touch1" to="." method="_on_touch_1_pressed"]
+[connection signal="released" from="CanvasLayer/Touch1" to="." method="_on_touch_1_released"]
+[connection signal="pressed" from="CanvasLayer/Button" to="." method="_on_exit_pressed"]

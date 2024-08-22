@@ -28,6 +28,11 @@ var _mouse_button_on_press := []
 var _key_on_press := []
 var _action_on_press := []
 var _curent_mouse_position :Vector2
+# holds the touch position for each touch index
+# { index: int = position: Vector2}
+var _current_touch_position :Dictionary = {}
+# holds the curretn touch drag position
+var _current_touch_drag_position :Vector2 = Vector2.ZERO
 
 # time factor settings
 var _time_factor := 1.0
@@ -62,10 +67,13 @@ func _init(p_scene :Variant, p_verbose :bool, p_hide_push_errors := false) -> vo
 		if not p_hide_push_errors:
 			push_error("GdUnitSceneRunner: Scene must be not null!")
 		return
+
 	_scene_tree().root.add_child(_current_scene)
 	# do finally reset all open input events when the scene is removed
 	_scene_tree().root.child_exiting_tree.connect(func f(child :Node) -> void:
 		if child == _current_scene:
+			# we need to disable the processing to avoid input flush buffer errors
+			_current_scene.process_mode = Node.PROCESS_MODE_DISABLED
 			_reset_input_to_default()
 	)
 	_simulate_start_time = LocalTime.now()
@@ -243,6 +251,128 @@ func simulate_mouse_button_release(buttonIndex :MouseButton) -> GdUnitSceneRunne
 	_apply_input_modifiers(event)
 	_mouse_button_on_press.erase(buttonIndex)
 	return _handle_input_event(event)
+
+
+func simulate_screen_touch_pressed(index :int, position :Vector2, double_tap := false) -> GdUnitSceneRunner:
+	simulate_screen_touch_press(index, position, double_tap)
+	simulate_screen_touch_release(index)
+	return self
+
+
+func simulate_screen_touch_press(index :int, position :Vector2, double_tap := false) -> GdUnitSceneRunner:
+	if is_emulate_mouse_from_touch():
+		# we need to simulate in addition to the touch the mouse events
+		set_mouse_pos(position)
+		simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
+	# push touch press event at position
+	var event := InputEventScreenTouch.new()
+	event.window_id = scene().get_viewport().get_window_id()
+	event.index = index
+	event.position = position
+	event.double_tap = double_tap
+	event.pressed = true
+	_current_scene.get_viewport().push_input(event)
+	# save current drag position by index
+	_current_touch_position[index] = position
+	return self
+
+
+func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSceneRunner:
+	if is_emulate_mouse_from_touch():
+		# we need to simulate in addition to the touch the mouse events
+		simulate_mouse_button_release(MOUSE_BUTTON_LEFT)
+	# push touch release event at position
+	var event := InputEventScreenTouch.new()
+	event.window_id = scene().get_viewport().get_window_id()
+	event.index = index
+	event.position = get_screen_touch_drag_position(index)
+	event.pressed = false
+	event.double_tap = _last_input_event.double_tap if _last_input_event is InputEventScreenTouch else double_tap
+	_current_scene.get_viewport().push_input(event)
+	return self
+
+
+func simulate_screen_touch_drag_relative(index :int, relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+	return await _do_touch_drag_at(index, _current_touch_position[index] + relative, time, trans_type)
+
+
+func simulate_screen_touch_drag_absolute(index :int, position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+	return await _do_touch_drag_at(index, position, time, trans_type)
+
+
+func simulate_screen_touch_drag_drop(index :int, position: Vector2, drop_position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+	simulate_screen_touch_press(index, position)
+	return await _do_touch_drag_at(index, drop_position, time, trans_type)
+
+
+func simulate_screen_touch_drag(index :int, position: Vector2) -> GdUnitSceneRunner:
+	if is_emulate_mouse_from_touch():
+		simulate_mouse_move(position)
+	var event := InputEventScreenDrag.new()
+	event.window_id = scene().get_viewport().get_window_id()
+	event.index = index
+	event.position = position
+	event.relative = _get_screen_touch_drag_position_or_default(index, position) - position
+	event.velocity = event.relative / _scene_tree().root.get_process_delta_time()
+	event.pressure = 1.0
+	_current_touch_position[index] = position
+	_current_scene.get_viewport().push_input(event)
+	return self
+
+
+func get_screen_touch_drag_position(index: int) -> Vector2:
+	if _current_touch_position.has(index):
+		return _current_touch_position[index]
+	push_error("No touch drag position for index '%d' is set!" % index)
+	return Vector2.ZERO
+
+
+func is_emulate_mouse_from_touch() -> bool:
+	return ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch", true)
+
+
+func _get_screen_touch_drag_position_or_default(index: int, default_position: Vector2) -> Vector2:
+	if _current_touch_position.has(index):
+		return _current_touch_position[index]
+	return default_position
+
+
+func _do_touch_drag_at(index :int, drag_position: Vector2, time: float, trans_type: Tween.TransitionType) -> GdUnitSceneRunner:
+	# start draging
+	var event := InputEventScreenDrag.new()
+	event.window_id = scene().get_viewport().get_window_id()
+	event.index = index
+	event.position = get_screen_touch_drag_position(index)
+	event.pressure = 1.0
+	_current_touch_drag_position = event.position
+
+	var tween := _scene_tree().create_tween()
+	tween.tween_property(self, "_current_touch_drag_position", drag_position, time).set_trans(trans_type)
+	tween.play()
+
+	while not _current_touch_drag_position.is_equal_approx(drag_position):
+		if is_emulate_mouse_from_touch():
+			# we need to simulate in addition to the drag the mouse move events
+			simulate_mouse_move(event.position)
+		# send touche drag event to new position
+		event.relative = _current_touch_drag_position - event.position
+		event.velocity = event.relative / _scene_tree().root.get_process_delta_time()
+		event.position = _current_touch_drag_position
+		_current_scene.get_viewport().push_input(event)
+		await _scene_tree().process_frame
+
+	# finaly drop it
+	if is_emulate_mouse_from_touch():
+		simulate_mouse_move(drag_position)
+		simulate_mouse_button_release(MOUSE_BUTTON_LEFT)
+	var touch_drop_event := InputEventScreenTouch.new()
+	touch_drop_event.window_id = event.window_id
+	touch_drop_event.index = event.index
+	touch_drop_event.position = drag_position
+	touch_drop_event.pressed = false
+	_current_scene.get_viewport().push_input(touch_drop_event)
+	await _scene_tree().process_frame
+	return self
 
 
 func set_time_factor(time_factor := 1.0) -> GdUnitSceneRunner:
@@ -432,9 +562,11 @@ func _handle_input_event(event :InputEvent) -> GdUnitSceneRunner:
 	if event is InputEventAction:
 		_handle_actions(event)
 
-	Input.flush_buffered_events()
 	var current_scene := scene()
 	if is_instance_valid(current_scene):
+		# do not flush events if node processing disabled otherwise we run into errors at tree removed
+		if _current_scene.process_mode != Node.PROCESS_MODE_DISABLED:
+			Input.flush_buffered_events()
 		__print("	process event %s (%s) <- %s" % [current_scene, _scene_name(), event.as_text()])
 		if(current_scene.has_method("_gui_input")):
 			current_scene._gui_input(event)
@@ -464,7 +596,8 @@ func _reset_input_to_default() -> void:
 			simulate_action_release(action)
 	_action_on_press.clear()
 
-	Input.flush_buffered_events()
+	if is_instance_valid(_current_scene) and _current_scene.process_mode != Node.PROCESS_MODE_DISABLED:
+		Input.flush_buffered_events()
 	_last_input_event = null
 
 

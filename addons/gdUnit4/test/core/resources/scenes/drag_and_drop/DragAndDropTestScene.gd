@@ -16,3 +16,7 @@ func _gui_input(_event :InputEvent) -> void:
 func _on_Button_button_down() -> void:
 	# print("BUTTON DOWN")
 	pass
+
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()

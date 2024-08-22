@@ -18,10 +18,10 @@
 <h1 align="center">Compatibility Overview</h1>
 <table align="center">
   <thead>
-    <tr>
-      <th>GdUnit4 Version</th>
-      <th>Minimal required Godot Version</th>
-    </tr>
+	<tr>
+	  <th>GdUnit4 Version</th>
+	  <th>Minimal required Godot Version</th>
+	</tr>
   </thead>
   <tbody>
     <tr>
@@ -95,8 +95,8 @@ extends GdUnitTestSuite
 
 func test_example():
   assert_str("This is a example message")\
-    .has_length(25)\
-    .starts_with("This is a ex")
+	.has_length(25)\
+	.starts_with("This is a ex")
  ```
 
  ---

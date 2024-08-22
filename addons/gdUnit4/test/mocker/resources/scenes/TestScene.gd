@@ -14,6 +14,7 @@ const COLOR_CYCLE := [Color.ROYAL_BLUE, Color.CHARTREUSE, Color.YELLOW_GREEN]
 @warning_ignore("unused_private_class_variable")
 var _nullable :Object
 
+
 func _ready() -> void:
 	panel_color_change.connect(_on_panel_color_changed)
 	# we call this function to verify the _ready is only once called
@@ -98,7 +99,20 @@ func _destroy_spell(spell :Spell) -> void:
 func _input(event :InputEvent) -> void:
 	if event.is_action_released("ui_accept"):
 		add_child(create_spell())
+	#prints(event.as_text())
 
 
 func add(a: int, b :int) -> int:
 	return a + b
+
+
+func _on_touch_1_pressed() -> void:
+	pass
+
+
+func _on_touch_1_released() -> void:
+	pass
+
+
+func _on_exit_pressed() -> void:
+	get_tree().quit()
