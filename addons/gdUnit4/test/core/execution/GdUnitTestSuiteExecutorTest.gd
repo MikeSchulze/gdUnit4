@@ -15,14 +15,18 @@ const SKIPPED = true
 const NOT_SKIPPED = false
 
 var _collected_events :Array[GdUnitEvent] = []
-
+var _saved_flack_check :bool
 
 func before() -> void:
 	GdUnitSignals.instance().gdunit_event_debug.connect(_on_gdunit_event_debug)
+	# we run without flaky check
+	_saved_flack_check = GdUnitSettings.get_setting(GdUnitSettings.TEST_FLAKY_CHECK, false)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, false)
 
 
 func after() -> void:
 	GdUnitSignals.instance().gdunit_event_debug.disconnect(_on_gdunit_event_debug)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, _saved_flack_check)
 
 
 func after_test() -> void:
@@ -698,6 +702,18 @@ func test_execute_test_case_is_skipped() -> void:
 			[],
 			[]
 		])
+
+
+
+func test_execute_test_case_is_flaky() -> void:
+	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, true)
+	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestCaseFlaky.resource")
+	# simulate test suite execution
+	var events := await execute(test_suite)
+
+	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, false)
+
+
 
 
 class TestCaseNameExtractor extends GdUnitValueExtractor:

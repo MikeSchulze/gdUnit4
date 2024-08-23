@@ -10,6 +10,9 @@ var _report_collector :GdUnitTestReportCollector
 var _timer :LocalTime
 var _test_case_name: StringName
 var _name :String
+var _test_execution_iteration: int = 0
+var _flaky_test_check := GdUnitSettings.is_test_flaky_check_enabled()
+var _flaky_test_retries := GdUnitSettings.get_flaky_max_retries()
 
 
 var error_monitor : GodotGdErrorMonitor = null:
@@ -86,6 +89,7 @@ static func of_test_case(pe :GdUnitExecutionContext, test_case_name :StringName)
 static func of(pe :GdUnitExecutionContext) -> GdUnitExecutionContext:
 	var context := GdUnitExecutionContext.new(pe._test_case_name, pe)
 	context._test_case_name = pe._test_case_name
+	context._test_execution_iteration = pe._test_execution_iteration
 	context.set_active()
 	return context
 
@@ -119,11 +123,13 @@ func reports() -> Array[GdUnitReport]:
 
 func build_report_statistics(orphans :int, recursive := true) -> Dictionary:
 	return {
+		GdUnitEvent.RETRY_COUNT: _test_execution_iteration,
 		GdUnitEvent.ORPHAN_NODES: orphans,
 		GdUnitEvent.ELAPSED_TIME: _timer.elapsed_since_ms(),
 		GdUnitEvent.FAILED: has_failures(),
 		GdUnitEvent.ERRORS: has_errors(),
 		GdUnitEvent.WARNINGS: has_warnings(),
+		GdUnitEvent.FLAKY: is_flaky(),
 		GdUnitEvent.SKIPPED: has_skipped(),
 		GdUnitEvent.FAILED_COUNT: count_failures(recursive),
 		GdUnitEvent.ERROR_COUNT: count_errors(recursive),
@@ -144,6 +150,14 @@ func has_errors() -> bool:
 func has_warnings() -> bool:
 	return _sub_context.any(func(c :GdUnitExecutionContext) -> bool:
 			return c.has_warnings()) or _report_collector.has_warnings()
+
+
+func is_flaky() -> bool:
+	return count_failures(true) < _sub_context.size()
+
+
+func is_success() -> bool:
+	return count_failures(true) == 0 or is_flaky()
 
 
 func has_skipped() -> bool:
@@ -184,6 +198,10 @@ func count_orphans() -> int:
 
 func sum(accum :int, number :int) -> int:
 	return accum + number
+
+
+func retry_execution() -> bool:
+	return _test_execution_iteration < _flaky_test_retries if _flaky_test_check else _test_execution_iteration < 1
 
 
 func register_auto_free(obj :Variant) -> Variant:

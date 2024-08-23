@@ -141,8 +141,15 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 				print_message("PASSED", Color.LIGHT_GREEN)
 			elif event.is_skipped():
 				print_message("SKIPPED", Color.GOLDENROD)
+			elif event.is_flaky():
+				var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
+				print_message("[wave]FLAKY[/wave] (%d retries)" % retries, Color.YELLOW)
 			elif event.is_error() or event.is_failed():
-				print_message("[wave]FAILED[/wave]", Color.FIREBRICK)
+				var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
+				if retries > 1:
+					print_message("[wave]FAILED[/wave] (%d retries)" % retries, Color.FIREBRICK)
+				else:
+					print_message("[wave]FAILED[/wave]", Color.FIREBRICK)
 			elif event.is_warning():
 				print_message("WARNING", Color.YELLOW)
 			println_message(" %+12s" % LocalTime.elapsed(event.elapsed_time()))

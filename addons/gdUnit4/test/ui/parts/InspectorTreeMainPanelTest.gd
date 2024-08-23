@@ -58,11 +58,14 @@ func mark_as_failure(test_cases :PackedStringArray, parent :TreeItem = _inspecto
 	# mark all test as failed
 	if parent != _inspector._tree_root:
 		_inspector.set_state_succeded(parent)
+
+	var test_event := GdUnitEvent.new().test_after("res://foo.gd", "test_suite", "test_name")
+
 	for item in parent.get_children():
 		mark_as_failure(test_cases, item)
 		if test_cases.has(item.get_text(0)):
-			_inspector.set_state_failed(parent)
-			_inspector.set_state_failed(item)
+			_inspector.set_state_failed(parent, test_event)
+			_inspector.set_state_failed(item, test_event)
 		else:
 			_inspector.set_state_succeded(item)
 

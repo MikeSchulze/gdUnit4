@@ -16,12 +16,23 @@ var _stage_parameterized_test :IGdUnitExecutionStage= GdUnitTestCaseParameterize
 @warning_ignore("redundant_await")
 func _execute(context :GdUnitExecutionContext) -> void:
 	var test_case := context.test_case
-	if test_case.is_parameterized():
-		await _stage_parameterized_test.execute(context)
-	elif test_case.is_fuzzed():
-		await _stage_fuzzer_test.execute(context)
-	else:
-		await _stage_single_test.execute(context)
+
+	while context.retry_execution():
+		context._test_execution_iteration += 1
+		if test_case.is_parameterized():
+			await _stage_parameterized_test.execute(context)
+		elif test_case.is_fuzzed():
+			await _stage_fuzzer_test.execute(context)
+		else:
+			await _stage_single_test.execute(context)
+
+		if context.is_success() or context.test_case.is_skipped():
+			break
+
+
+	# finally free the test instance
+	if is_instance_valid(context.test_case):
+		context.test_case.dispose()
 
 
 func set_debug_mode(debug_mode :bool = false) -> void:

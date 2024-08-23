@@ -25,8 +25,6 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		fire_test_skipped(context)
 	else:
 		fire_test_ended(context)
-	if is_instance_valid(context.test_case):
-		context.test_case.dispose()
 
 
 func set_test_name(test_name :StringName) -> void:
@@ -34,13 +32,14 @@ func set_test_name(test_name :StringName) -> void:
 
 
 func fire_test_ended(context :GdUnitExecutionContext) -> void:
-	var test_suite := context.test_suite
-	var test_name := context._test_case_name if _test_name.is_empty() else _test_name
-	var reports := collect_reports(context)
-	var orphans := collect_orphans(context, reports)
+	if not context.retry_execution() or context.is_flaky():
+		var test_suite := context.test_suite
+		var test_name := context._test_case_name if _test_name.is_empty() else _test_name
+		var reports := collect_reports(context)
+		var orphans := collect_orphans(context, reports)
 
-	fire_event(GdUnitEvent.new()\
-		.test_after(test_suite.get_script().resource_path, test_suite.get_name(), test_name, context.build_report_statistics(orphans), reports))
+		fire_event(GdUnitEvent.new()\
+			.test_after(test_suite.get_script().resource_path, test_suite.get_name(), test_name, context.build_report_statistics(orphans), reports))
 
 
 func collect_orphans(context :GdUnitExecutionContext, reports :Array[GdUnitReport]) -> int:
@@ -57,10 +56,10 @@ func collect_reports(context :GdUnitExecutionContext) -> Array[GdUnitReport]:
 	if test_case.is_interupted() and not test_case.is_expect_interupted() and test_case.report() != null:
 		reports.push_back(test_case.report())
 	# we combine the reports of test_before(), test_after() and test() to be reported by `fire_test_ended`
-	if not context._sub_context.is_empty():
-		reports.append_array(context._sub_context[0].reports())
+	for sub_context in context._sub_context:
+		reports.append_array(sub_context.reports())
 		# needs finally to clean the test reports to avoid counting twice
-		context._sub_context[0].reports().clear()
+		sub_context.reports().clear()
 	return reports
 
 

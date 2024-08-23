@@ -3,6 +3,7 @@ extends Resource
 
 const WARNINGS = "warnings"
 const FAILED = "failed"
+const FLAKY = "flaky"
 const ERRORS = "errors"
 const SKIPPED = "skipped"
 const ELAPSED_TIME = "elapsed_time"
@@ -10,6 +11,7 @@ const ORPHAN_NODES = "orphan_nodes"
 const ERROR_COUNT = "error_count"
 const FAILED_COUNT = "failed_count"
 const SKIPPED_COUNT = "skipped_count"
+const RETRY_COUNT = "retry_count"
 
 enum {
 	INIT,
@@ -133,6 +135,10 @@ func is_failed() -> bool:
 
 func is_error() -> bool:
 	return _statistics.get(ERRORS, false)
+
+
+func is_flaky() -> bool:
+	return _statistics.get(FLAKY, false)
 
 
 func is_skipped() -> bool:

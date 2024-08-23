@@ -23,6 +23,7 @@ const CONTEXT_MENU_EXPAND_ALL = 4
 # gdscript icons
 @onready var ICON_GDSCRIPT_TEST_DEFAULT := GdUnitUiTools.get_icon("GDScript", Color.LIGHT_GRAY)
 @onready var ICON_GDSCRIPT_TEST_SUCCESS := GdUnitUiTools.get_GDScript_icon("StatusSuccess", Color.DARK_GREEN)
+@onready var ICON_GDSCRIPT_TEST_FLAKY := GdUnitUiTools.get_GDScript_icon("GuiChecked", Color.GREEN_YELLOW)
 @onready var ICON_GDSCRIPT_TEST_FAILED := GdUnitUiTools.get_GDScript_icon("StatusError", Color.SKY_BLUE)
 @onready var ICON_GDSCRIPT_TEST_ERROR := GdUnitUiTools.get_GDScript_icon("StatusError", Color.DARK_RED)
 @onready var ICON_GDSCRIPT_TEST_SUCCESS_ORPHAN := GdUnitUiTools.get_GDScript_icon("Unlinked", Color.DARK_GREEN)
@@ -51,6 +52,7 @@ enum STATE {
 	RUNNING,
 	SUCCESS,
 	WARNING,
+	FLAKY,
 	FAILED,
 	ERROR,
 	ABORDED,
@@ -366,6 +368,21 @@ func set_state_succeded(item: TreeItem) -> void:
 	set_item_icon_by_state(item)
 
 
+func set_state_flaky(item: TreeItem, event: GdUnitEvent) -> void:
+	# Do not overwrite higher states
+	if is_state_error(item):
+		return
+	var retry_count := event.statistic(GdUnitEvent.RETRY_COUNT)
+	item.set_meta(META_GDUNIT_STATE, STATE.FLAKY)
+	item.set_text(0, "%s (%s retries)" % [
+		item.get_meta(META_GDUNIT_NAME),
+		retry_count])
+	item.set_custom_color(0, Color.GREEN_YELLOW)
+	item.set_custom_color(1, Color.GREEN_YELLOW)
+	item.collapsed = false
+	set_item_icon_by_state(item)
+
+
 func set_state_skipped(item: TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.SKIPPED)
 	item.set_text(1, "(skipped)")
@@ -387,10 +404,15 @@ func set_state_warnings(item: TreeItem) -> void:
 	set_item_icon_by_state(item)
 
 
-func set_state_failed(item: TreeItem) -> void:
+func set_state_failed(item: TreeItem, event: GdUnitEvent) -> void:
 	# Do not overwrite higher states
 	if is_state_error(item):
 		return
+	var retry_count := event.statistic(GdUnitEvent.RETRY_COUNT)
+	if retry_count > 1:
+		item.set_text(0, "%s (%s retries)" % [
+			item.get_meta(META_GDUNIT_NAME),
+			retry_count])
 	item.set_meta(META_GDUNIT_STATE, STATE.FAILED)
 	item.set_custom_color(0, Color.LIGHT_BLUE)
 	item.set_custom_color(1, Color.LIGHT_BLUE)
@@ -441,8 +463,10 @@ func update_state(item: TreeItem, event: GdUnitEvent, add_reports := true) -> vo
 			set_state_skipped(item)
 		elif event.is_error():
 			set_state_error(item)
+		elif event.is_flaky():
+			set_state_flaky(item, event)
 		elif event.is_failed():
-			set_state_failed(item)
+			set_state_failed(item, event)
 		elif event.is_warning():
 			set_state_warnings(item)
 		if add_reports:
@@ -705,6 +729,8 @@ func get_icon_by_file_type(path: String, state: STATE, orphans: bool) -> Texture
 				return ICON_GDSCRIPT_TEST_FAILED_ORPHAN if orphans else ICON_GDSCRIPT_TEST_FAILED
 			STATE.WARNING:
 				return ICON_GDSCRIPT_TEST_SUCCESS_ORPHAN if orphans else ICON_GDSCRIPT_TEST_DEFAULT
+			STATE.FLAKY:
+				return ICON_GDSCRIPT_TEST_SUCCESS_ORPHAN if orphans else ICON_GDSCRIPT_TEST_FLAKY
 			_:
 				return ICON_GDSCRIPT_TEST_DEFAULT
 	if path.get_extension() == "cs":
