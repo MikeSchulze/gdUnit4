@@ -15,6 +15,7 @@ func _init(
 		failed_count :int = 0,
 		orphan_count :int = 0,
 		is_skipped := false,
+		is_flaky := false,
 		failure_reports :Array[GdUnitReport] = [],
 		p_duration :int = 0) -> void:
 	_resource_path = p_resource_path
@@ -24,6 +25,7 @@ func _init(
 	_failure_count = failed_count
 	_orphan_count = orphan_count
 	_skipped_count = is_skipped
+	_flaky_count = is_flaky
 	_failure_reports = failure_reports
 	_duration = p_duration
 
@@ -55,4 +57,5 @@ func update(report :GdUnitTestCaseReport) -> void:
 	_orphan_count += report.orphan_count()
 	_skipped_count += report.skipped_count()
 	_failure_reports += report._failure_reports
+	_flaky_count += report.flaky_count()
 	_duration += report.duration()

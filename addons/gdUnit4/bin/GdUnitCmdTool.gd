@@ -33,6 +33,7 @@ class CLIRunner:
 	var _headless_mode_ignore := false
 	var _runner_config := GdUnitRunnerConfig.new()
 	var _runner_config_file := ""
+	var _debug_cmd_args: = PackedStringArray()
 	var _console := CmdConsole.new()
 	var _cmd_options := CmdOptions.new([
 			CmdOption.new(
@@ -274,6 +275,12 @@ class CLIRunner:
 		quit(RETURN_SUCCESS)
 
 
+	func get_cmdline_args() -> PackedStringArray:
+		if _debug_cmd_args.is_empty():
+			return OS.get_cmdline_args()
+		return _debug_cmd_args
+
+
 	func init_gd_unit() -> void:
 		_console.prints_color(
 			"""
@@ -284,7 +291,7 @@ class CLIRunner:
 		).new_line()
 
 		var cmd_parser := CmdArgumentParser.new(_cmd_options, "GdUnitCmdTool.gd")
-		var result := cmd_parser.parse(OS.get_cmdline_args())
+		var result := cmd_parser.parse(get_cmdline_args())
 		if result.is_error():
 			show_options()
 			_console.prints_error(result.error_message())
@@ -499,6 +506,7 @@ class CLIRunner:
 					event.failed_count(),
 					event.orphan_nodes(),
 					event.is_skipped(),
+					event.is_flaky(),
 					event.reports(),
 					event.elapsed_time()
 				)

@@ -15,6 +15,7 @@ var _failure_count := 0
 var _error_count := 0
 var _orphan_count := 0
 var _skipped_count := 0
+var _flaky_count := 0
 var _duration := 0
 var _reports :Array[GdUnitReportSummary] = []
 
@@ -75,6 +76,14 @@ func skipped_count() -> int:
 	return count
 
 
+func flaky_count() -> int:
+	var count := _flaky_count
+	for report in _reports:
+		count += report.flaky_count()
+	return count
+
+
+
 func orphan_count() -> int:
 	var count := _orphan_count
 	for report in _reports:
@@ -98,16 +107,18 @@ func add_report(report :GdUnitReportSummary) -> void:
 
 
 func report_state() -> String:
-	return calculate_state(error_count(), failure_count(), orphan_count())
+	return calculate_state(error_count(), failure_count(), orphan_count(), flaky_count())
 
 
 func succes_rate() -> String:
 	return calculate_succes_rate(test_count(), error_count(), failure_count())
 
 
-func calculate_state(p_error_count :int, p_failure_count :int, p_orphan_count :int) -> String:
+func calculate_state(p_error_count :int, p_failure_count :int, p_orphan_count :int, p_flaky_count: int) -> String:
 	if p_error_count > 0:
 		return "error"
+	if p_flaky_count > 0:
+		return "flaky"
 	if p_failure_count > 0:
 		return "failure"
 	if p_orphan_count > 0:

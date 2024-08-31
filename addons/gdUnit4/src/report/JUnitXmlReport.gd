@@ -14,6 +14,7 @@ const ATTR_MESSAGE := "message"
 const ATTR_NAME := "name"
 const ATTR_PACKAGE := "package"
 const ATTR_SKIPPED := "skipped"
+const ATTR_FLAKY := "flaky"
 const ATTR_TESTS := "tests"
 const ATTR_TIME := "time"
 const ATTR_TIMESTAMP := "timestamp"
@@ -46,6 +47,8 @@ func build_junit_report(report :GdUnitReportSummary) -> String:
 		.attribute(ATTR_NAME, "report_%s" % _iteration)\
 		.attribute(ATTR_TESTS, report.test_count())\
 		.attribute(ATTR_FAILURES, report.failure_count())\
+		.attribute(ATTR_SKIPPED, report.skipped_count())\
+		.attribute(ATTR_FLAKY, report.flaky_count())\
 		.attribute(ATTR_TIME, JUnitXmlReport.to_time(report.duration()))\
 		.add_childs(build_test_suites(report))
 	var as_string := test_suites.to_xml()
@@ -68,6 +71,7 @@ func build_test_suites(summary :GdUnitReportSummary) -> Array:
 			.attribute(ATTR_FAILURES, suite_report.failure_count())\
 			.attribute(ATTR_ERRORS, suite_report.error_count())\
 			.attribute(ATTR_SKIPPED, suite_report.skipped_count())\
+			.attribute(ATTR_FLAKY, suite_report.flaky_count())\
 			.attribute(ATTR_TIME, JUnitXmlReport.to_time(suite_report.duration()))\
 			.add_childs(build_test_cases(suite_report)))
 	return test_suites
@@ -88,8 +92,7 @@ func build_test_cases(suite_report :GdUnitTestSuiteReport) -> Array:
 func build_reports(test_report :GdUnitTestCaseReport) -> Array:
 	var failure_reports :Array[XmlElement] = []
 	if test_report.failure_count() or test_report.error_count():
-		for failure in test_report._failure_reports:
-			var report := failure as GdUnitReport
+		for report: GdUnitReport in test_report._failure_reports:
 			if report.is_failure():
 				failure_reports.append( XmlElement.new("failure")\
 					.attribute(ATTR_MESSAGE, "FAILED: %s:%d" % [test_report._resource_path, report.line_number()])\
@@ -101,10 +104,15 @@ func build_reports(test_report :GdUnitTestCaseReport) -> Array:
 					.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
 					.text(convert_rtf_to_text(report.message())))
 	if test_report.skipped_count():
-		for failure in test_report._failure_reports:
-			var report := failure as GdUnitReport
+		for report: GdUnitReport in test_report._failure_reports:
 			failure_reports.append( XmlElement.new("skipped")\
 				.attribute(ATTR_MESSAGE, "SKIPPED: %s:%d" % [test_report._resource_path, report.line_number()]))
+	if test_report.flaky_count():
+		for report: GdUnitReport in test_report._failure_reports:
+			failure_reports.append( XmlElement.new("flaky")\
+					.attribute(ATTR_MESSAGE, "FAILED: %s:%d" % [test_report._resource_path, report.line_number()])\
+					.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
+					.text(convert_rtf_to_text(report.message())))
 	return failure_reports
 
 
