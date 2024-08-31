@@ -15,13 +15,16 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	# unreference last used assert form the test to prevent memory leaks
 	GdUnitThreadManager.get_current_context().set_assert(null)
 	await context.gc()
+	context.build_statistics()
 
 	var reports := context.reports()
 	var orphans := context.count_orphans()
 	if orphans > 0:
 		reports.push_front(GdUnitReport.new() \
 			.create(GdUnitReport.WARN, 1, GdAssertMessages.orphan_detected_on_suite_setup(orphans)))
-	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path, test_suite.get_name(), context.build_report_statistics(orphans, false), reports))
+
+	var s := context.build_report_statistics(orphans, false)
+	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path, test_suite.get_name(), s, reports))
 
 	GdUnitFileAccess.clear_tmp()
 	# Guard that checks if all doubled (spy/mock) objects are released

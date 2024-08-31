@@ -593,6 +593,12 @@ class CLIRunner:
 			_console.print_color("FAILED", Color.FIREBRICK, CmdConsole.BOLD)
 		elif event.orphan_nodes() > 0:
 			_console.print_color("PASSED", Color.GOLDENROD, CmdConsole.BOLD | CmdConsole.UNDERLINE)
+		elif event.is_flaky():
+			var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
+			if retries > 0:
+				_console.print_color("FLAKY (%d retries)" % retries, Color.GREEN_YELLOW, CmdConsole.BOLD | CmdConsole.ITALIC)
+			else:
+				_console.print_color("FLAKY", Color.GREEN_YELLOW, CmdConsole.BOLD | CmdConsole.ITALIC)
 		else:
 			_console.print_color("PASSED", Color.FOREST_GREEN, CmdConsole.BOLD)
 		_console.prints_color(

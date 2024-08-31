@@ -374,9 +374,10 @@ func set_state_flaky(item: TreeItem, event: GdUnitEvent) -> void:
 		return
 	var retry_count := event.statistic(GdUnitEvent.RETRY_COUNT)
 	item.set_meta(META_GDUNIT_STATE, STATE.FLAKY)
-	item.set_text(0, "%s (%s retries)" % [
-		item.get_meta(META_GDUNIT_NAME),
-		retry_count])
+	if retry_count > 1:
+		item.set_text(0, "%s (%s retries)" % [
+			item.get_meta(META_GDUNIT_NAME),
+			retry_count])
 	item.set_custom_color(0, Color.GREEN_YELLOW)
 	item.set_custom_color(1, Color.GREEN_YELLOW)
 	item.collapsed = false
@@ -456,22 +457,22 @@ func update_state(item: TreeItem, event: GdUnitEvent, add_reports := true) -> vo
 	# we do not show the root
 	if item == _tree_root:
 		return
-	if is_state_running(item) and event.is_success():
+
+	if event.is_success() and event.is_flaky():
+		set_state_flaky(item, event)
+	elif event.is_success():
 		set_state_succeded(item)
-	else:
-		if event.is_skipped():
-			set_state_skipped(item)
-		elif event.is_error():
-			set_state_error(item)
-		elif event.is_flaky():
-			set_state_flaky(item, event)
-		elif event.is_failed():
-			set_state_failed(item, event)
-		elif event.is_warning():
-			set_state_warnings(item)
-		if add_reports:
-			for report in event.reports():
-				add_report(item, report)
+	elif event.is_skipped():
+		set_state_skipped(item)
+	elif event.is_error():
+		set_state_error(item)
+	elif event.is_failed():
+		set_state_failed(item, event)
+	elif event.is_warning():
+		set_state_warnings(item)
+	if add_reports:
+		for report in event.reports():
+			add_report(item, report)
 	set_state_orphan(item, event)
 	if is_folder(item):
 		update_state(item.get_parent(), event, false)

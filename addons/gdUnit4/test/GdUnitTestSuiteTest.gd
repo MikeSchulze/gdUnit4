@@ -7,6 +7,7 @@ const __source = 'res://addons/gdUnit4/src/GdUnitTestSuite.gd'
 const GdUnitAssertImpl = preload("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd")
 
 var _events :Array[GdUnitEvent] = []
+var _retry_count := 0
 
 
 func collect_report(event :GdUnitEvent) -> void:
@@ -79,3 +80,10 @@ func test_find_by_path() -> void:
 	assert_that(get_node(node_b.get_path())).is_same(node_b)
 	assert_that(get_node(node_c.get_path())).is_same(node_c)
 
+
+func test_flaky_success() -> void:
+	_retry_count += 1
+	# do fail on first two retries
+	if _retry_count <= 2:
+		fail("failure 1: at retry %d" % _retry_count)
+		fail("failure 2: at retry %d" % _retry_count)

@@ -23,14 +23,14 @@ var _color_mode := COLOR_TABLE
 
 func color(p_color :Color) -> CmdConsole:
 	# using color table 16 - 231 a  6 x 6 x 6 RGB color cube  (16 + R * 36 + G * 6 + B)
-	if _color_mode == COLOR_TABLE:
-		@warning_ignore("integer_division")
-		var c2 := 16 + (int(p_color.r8/42) * 36) + (int(p_color.g8/42) * 6) + int(p_color.b8/42)
-		if _debug_show_color_codes:
-			printraw("%6d" % [c2])
-		printraw("[38;5;%dm" % c2 )
-	else:
-		printraw("[38;2;%d;%d;%dm" % [p_color.r8, p_color.g8, p_color.b8] )
+	#if _color_mode == COLOR_TABLE:
+	#	@warning_ignore("integer_division")
+	#	var c2 := 16 + (int(p_color.r8/42) * 36) + (int(p_color.g8/42) * 6) + int(p_color.b8/42)
+	#	if _debug_show_color_codes:
+	#		printraw("%6d" % [c2])
+	#	printraw("[38;5;%dm" % c2 )
+	#else:
+	printraw("[38;2;%d;%d;%dm" % [p_color.r8, p_color.g8, p_color.b8] )
 	return self
 
 

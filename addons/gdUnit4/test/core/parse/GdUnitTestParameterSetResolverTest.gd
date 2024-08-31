@@ -195,8 +195,6 @@ func test_validate_test_parameter_set() -> void:
 
 
 func assert_is_not_skipped(test_suite :GdUnitTestSuite, test_case :String) -> void:
-	# set actual execution context for this test suite
-	test_suite.__execution_context = GdUnitExecutionContext.new(test_suite.get_name())
 	var test :_TestCase = test_suite.find_child(test_case, true, false)
 	if test.is_parameterized():
 		# to load parameter set and force validate
@@ -207,8 +205,6 @@ func assert_is_not_skipped(test_suite :GdUnitTestSuite, test_case :String) -> vo
 
 
 func assert_is_skipped(test_suite :GdUnitTestSuite, test_case :String) -> GdUnitStringAssert:
-	# set actual execution context for this test suite
-	test_suite.__execution_context = GdUnitExecutionContext.new(test_suite.get_name())
 	var test :_TestCase = test_suite.find_child(test_case, true, false)
 	if test.is_parameterized():
 		# to load parameter set and force validate
@@ -217,6 +213,7 @@ func assert_is_skipped(test_suite :GdUnitTestSuite, test_case :String) -> GdUnit
 		resolver.load_parameter_sets(test, true)
 	assert_that(test.is_skipped()).is_true()
 	return assert_str(test.skip_info())
+
 
 func get_test_case(child_name: String) -> _TestCase:
 	return find_child(child_name, true, false)

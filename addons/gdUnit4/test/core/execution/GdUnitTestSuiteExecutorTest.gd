@@ -12,10 +12,11 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const SUCCEEDED = true
 const FAILED = false
 const SKIPPED = true
+const FLAKY = true
 const NOT_SKIPPED = false
 
-var _collected_events :Array[GdUnitEvent] = []
-var _saved_flack_check :bool
+var _collected_events: Array[GdUnitEvent] = []
+var _saved_flack_check: bool
 
 func before() -> void:
 	GdUnitSignals.instance().gdunit_event_debug.connect(_on_gdunit_event_debug)
@@ -170,7 +171,7 @@ func test_execute_failure_on_stage_after() -> void:
 	assert_event_list(events,\
 		"TestSuiteFailOnStageAfter",\
 		["test_case1", "test_case2"])
-	# we expect the testsuite is failing on stage 'before()' and commits one failure
+	# we expect the testsuite is failing on stage 'after()' and commits one failure
 	# reported finally at TESTSUITE_AFTER event
 	assert_event_counters(events).contains_exactly([
 		tuple(GdUnitEvent.TESTSUITE_BEFORE, 0, 0, 0),
@@ -704,16 +705,74 @@ func test_execute_test_case_is_skipped() -> void:
 		])
 
 
-
 func test_execute_test_case_is_flaky() -> void:
 	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, true)
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestCaseFlaky.resource")
-	# simulate test suite execution
+	# simulate flaky test suite execution
 	var events := await execute(test_suite)
 
-	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, false)
+	assert_array(events).extractv(extr("test_name"), extr("is_flaky"))\
+		.contains([
+		tuple("before", false),
+		tuple("test_success", false),
+		tuple("test_flaky_success", true),
+		tuple("test_flaky_fail", true),
+		tuple("test_paramaterized_flaky", true),
+		tuple("test_fuzzed_flaky_success", true),
+		tuple("test_fuzzed_flaky_fail", true),
+		tuple("after", true),
+	])
 
+	# verify test execution results
+	assert_array(events)\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		tuple(GdUnitEvent.TESTSUITE_BEFORE, "before", true, false, false),
 
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_flaky_success", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_success", true, true, false),
+
+		# expect be fail after 5 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_flaky_fail", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_success", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_success", true, false, false),
+
+		# --test_paramaterized_flaky---------------------------------------------------------------
+		# expect be finaly fail after 5 retries on index:2 and 3 retries on index:4
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky", true, false, false),
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:0 [0, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:0 [0, 1]", true, false, false),
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:1 [1, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:1 [1, 1]", true, false, false),
+		# expect be fail after 5 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:2 [2, 6]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:3 [3, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:3 [3, 1]", true, false, false),
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:4 [4, 3]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", true, true, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky", false, true, true),
+		# -----------------------------------------------------------------------------------------
+
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_fuzzed_flaky_success", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_success", true, true, false),
+
+		# expect be fail after 5 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_fuzzed_flaky_fail", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+
+		# expect finaly state failed and flaky
+		tuple(GdUnitEvent.TESTSUITE_AFTER, "after", false, true, true)
+	])
 
 
 class TestCaseNameExtractor extends GdUnitValueExtractor:

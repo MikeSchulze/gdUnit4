@@ -54,10 +54,6 @@ func failure_message() -> String:
 	return _current_failure_message
 
 
-func send_report(report :GdUnitReport)-> void:
-	GdUnitSignals.instance().gdunit_report.emit(report)
-
-
 func override_failure_message(message :String) -> GdUnitFuncAssert:
 	_custom_failure_message = message
 	return self

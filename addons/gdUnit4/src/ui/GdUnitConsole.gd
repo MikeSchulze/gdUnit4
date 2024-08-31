@@ -120,7 +120,9 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 				println_message("\t" + event._suite_name, _engine_type_color)
 				for report: GdUnitReport in event.reports():
 					println_message("line %s: %s" % [line_number(report), report._message], _text_color, 2)
-			if event.is_success():
+			if event.is_success() and event.is_flaky():
+				print_message("[wave]FLAKY[/wave]", Color.GREEN_YELLOW)
+			elif event.is_success():
 				print_message("[wave]PASSED[/wave]", Color.LIGHT_GREEN)
 			else:
 				print_message("[shake rate=5 level=10][b]FAILED[/b][/shake]", Color.FIREBRICK)
@@ -137,13 +139,14 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 		GdUnitEvent.TESTCASE_AFTER:
 			var reports := event.reports()
 			update_statistics(event)
-			if event.is_success():
+
+			if event.is_flaky() and event.is_success():
+				var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
+				print_message("[wave]FLAKY[/wave] (%d retries)" % retries, Color.GREEN_YELLOW)
+			elif event.is_success():
 				print_message("PASSED", Color.LIGHT_GREEN)
 			elif event.is_skipped():
 				print_message("SKIPPED", Color.GOLDENROD)
-			elif event.is_flaky():
-				var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
-				print_message("[wave]FLAKY[/wave] (%d retries)" % retries, Color.YELLOW)
 			elif event.is_error() or event.is_failed():
 				var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
 				if retries > 1:

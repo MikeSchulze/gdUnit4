@@ -8,10 +8,6 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/core/execution/GdUnitExecutionContext.gd'
 
 
-func add_report(ec :GdUnitExecutionContext, report :GdUnitReport) -> void:
-	ec._report_collector.on_reports(ec.get_instance_id(), report)
-
-
 func assert_statistics(ec :GdUnitExecutionContext) -> void:
 	assert_that(ec.has_failures()).is_false()
 	assert_that(ec.has_errors()).is_false()
@@ -37,10 +33,7 @@ func test_create_context_of_test_suite() -> void:
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
 	var ec := GdUnitExecutionContext.of_test_suite(ts)
 	# verify the current context is not affected by this test itself
-	assert_object(__execution_context).is_not_same(ec)
-
-	# verify the execution context is assigned to the test suite
-	assert_object(ts.__execution_context).is_same(ec)
+	assert_object(GdUnitThreadManager.get_current_context().get_execution_context()).is_not_same(ec)
 
 	# verify execution context is fully initialized
 	assert_that(ec).is_not_null()
@@ -61,11 +54,10 @@ func test_create_context_of_test_case() -> void:
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
 	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
 	# verify the current context is not affected by this test itself
-	assert_object(__execution_context).is_not_same(ec1)
-	assert_object(__execution_context).is_not_same(ec2)
+	var current_ec := GdUnitThreadManager.get_current_context().get_execution_context()
+	assert_object(current_ec).is_not_same(ec1)
+	assert_object(current_ec).is_not_same(ec2)
 
-	# verify current execution contest is assigned to the test suite
-	assert_object(ts.__execution_context).is_same(ec2)
 	# verify execution context is fully initialized
 	assert_that(ec2).is_not_null()
 	assert_object(ec2.test_suite).is_same(ts)
@@ -95,12 +87,11 @@ func test_create_context_of_test() -> void:
 	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
 	var ec3 := GdUnitExecutionContext.of(ec2)
 	# verify the current context is not affected by this test itself
-	assert_object(__execution_context).is_not_same(ec1)
-	assert_object(__execution_context).is_not_same(ec2)
-	assert_object(__execution_context).is_not_same(ec3)
+	var current_ec := GdUnitThreadManager.get_current_context().get_execution_context()
+	assert_object(current_ec).is_not_same(ec1)
+	assert_object(current_ec).is_not_same(ec2)
+	assert_object(current_ec).is_not_same(ec3)
 
-	# verify current execution contest is assigned to the test suite
-	assert_object(ts.__execution_context).is_same(ec3)
 	# verify execution context is fully initialized
 	assert_that(ec3).is_not_null()
 	assert_object(ec3.test_suite).is_same(ts)
@@ -151,17 +142,17 @@ func test_report_collectors() -> void:
 
 	# add reports
 	var failure11 := GdUnitReport.new().create(GdUnitReport.FAILURE, 1, "error_ec11")
-	add_report(ec1, failure11)
+	ec1.add_report(failure11)
 	var failure21 := GdUnitReport.new().create(GdUnitReport.FAILURE, 3, "error_ec21")
 	var failure22 := GdUnitReport.new().create(GdUnitReport.FAILURE, 3, "error_ec22")
-	add_report(ec2, failure21)
-	add_report(ec2, failure22)
+	ec2.add_report(failure21)
+	ec2.add_report(failure22)
 	var failure31 := GdUnitReport.new().create(GdUnitReport.FAILURE, 3, "error_ec31")
 	var failure32 := GdUnitReport.new().create(GdUnitReport.FAILURE, 3, "error_ec32")
 	var failure33 := GdUnitReport.new().create(GdUnitReport.FAILURE, 3, "error_ec33")
-	add_report(ec3, failure31)
-	add_report(ec3, failure32)
-	add_report(ec3, failure33)
+	ec3.add_report(failure31)
+	ec3.add_report(failure32)
+	ec3.add_report(failure33)
 	# verify
 	assert_array(ec1.reports()).contains_exactly([failure11])
 	assert_array(ec2.reports()).contains_exactly([failure21, failure22])
@@ -187,10 +178,10 @@ func test_has_and_count_failures() -> void:
 	assert_that(ec3.count_failures(true)).is_equal(0)
 
 	# add four failure report to test
-	add_report(ec3, GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec31"))
-	add_report(ec3, GdUnitReport.new().create(GdUnitReport.FAILURE, 43, "error_ec32"))
-	add_report(ec3, GdUnitReport.new().create(GdUnitReport.FAILURE, 44, "error_ec33"))
-	add_report(ec3, GdUnitReport.new().create(GdUnitReport.FAILURE, 45, "error_ec34"))
+	ec3.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec31"))
+	ec3.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 43, "error_ec32"))
+	ec3.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 44, "error_ec33"))
+	ec3.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 45, "error_ec34"))
 	# verify
 	assert_that(ec1.has_failures()).is_true()
 	assert_that(ec1.count_failures(true)).is_equal(4)
@@ -200,8 +191,8 @@ func test_has_and_count_failures() -> void:
 	assert_that(ec3.count_failures(true)).is_equal(4)
 
 	# add two failure report to test_case_stage
-	add_report(ec2, GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec21"))
-	add_report(ec2, GdUnitReport.new().create(GdUnitReport.FAILURE, 43, "error_ec22"))
+	ec2.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec21"))
+	ec2.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 43, "error_ec22"))
 	# verify
 	assert_that(ec1.has_failures()).is_true()
 	assert_that(ec1.count_failures(true)).is_equal(6)
@@ -211,7 +202,7 @@ func test_has_and_count_failures() -> void:
 	assert_that(ec3.count_failures(true)).is_equal(4)
 
 	# add one failure report to test_suite_stage
-	add_report(ec1, GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec1"))
+	ec1.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 42, "error_ec1"))
 	# verify
 	assert_that(ec1.has_failures()).is_true()
 	assert_that(ec1.count_failures(true)).is_equal(7)

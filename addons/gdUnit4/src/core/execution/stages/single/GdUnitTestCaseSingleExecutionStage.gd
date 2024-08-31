@@ -9,10 +9,13 @@ var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseSingleTestStage.new()
 
 
 func _execute(context :GdUnitExecutionContext) -> void:
-	await _stage_before.execute(context)
-	if not context.test_case.is_skipped():
-		await _stage_test.execute(GdUnitExecutionContext.of(context))
-	await _stage_after.execute(context)
+	while context.retry_execution():
+		await _stage_before.execute(context)
+		if not context.test_case.is_skipped():
+			await _stage_test.execute(GdUnitExecutionContext.of(context))
+		await _stage_after.execute(context)
+		if context.is_success() or context.test_case.is_skipped():
+			break
 
 
 func set_debug_mode(debug_mode :bool = false) -> void:
