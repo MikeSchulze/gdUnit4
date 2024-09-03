@@ -2,8 +2,8 @@ class_name GdUnitByPathReport
 extends GdUnitReportSummary
 
 
-func _init(path :String, report_summaries :Array[GdUnitReportSummary]) -> void:
-	_resource_path = path
+func _init(p_path :String, report_summaries :Array[GdUnitReportSummary]) -> void:
+	_resource_path = p_path
 	_reports = report_summaries
 
 

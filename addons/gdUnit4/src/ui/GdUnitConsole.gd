@@ -150,7 +150,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			elif event.is_error() or event.is_failed():
 				var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
 				if retries > 1:
-					print_message("[wave]FAILED[/wave] (%d retries)" % retries, Color.FIREBRICK)
+					print_message("[wave]FAILED[/wave] (retry %d)" % retries, Color.FIREBRICK)
 				else:
 					print_message("[wave]FAILED[/wave]", Color.FIREBRICK)
 			elif event.is_warning():

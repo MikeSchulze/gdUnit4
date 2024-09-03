@@ -107,12 +107,6 @@ func build_reports(test_report :GdUnitTestCaseReport) -> Array:
 		for report: GdUnitReport in test_report._failure_reports:
 			failure_reports.append( XmlElement.new("skipped")\
 				.attribute(ATTR_MESSAGE, "SKIPPED: %s:%d" % [test_report._resource_path, report.line_number()]))
-	if test_report.flaky_count():
-		for report: GdUnitReport in test_report._failure_reports:
-			failure_reports.append( XmlElement.new("flaky")\
-					.attribute(ATTR_MESSAGE, "FAILED: %s:%d" % [test_report._resource_path, report.line_number()])\
-					.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
-					.text(convert_rtf_to_text(report.message())))
 	return failure_reports
 
 

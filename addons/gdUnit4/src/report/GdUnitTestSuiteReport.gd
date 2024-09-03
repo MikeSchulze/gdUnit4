@@ -91,6 +91,8 @@ func set_reports(failure_reports :Array[GdUnitReport]) -> void:
 
 
 func update(test_report :GdUnitTestCaseReport) -> void:
-	for report in _reports:
-		if report.name() == test_report.name():
-			report.update(test_report)
+	# we lookup to latest matching report because of flaky tests could be retry the tests
+	# and resultis in multipe report entries with the same name
+	_reports.filter(func (report: GdUnitTestCaseReport) -> bool:
+		return report.name() == test_report.name()
+		).back().update(test_report)

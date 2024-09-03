@@ -11,7 +11,11 @@ func _init(call_stage := true) -> void:
 
 
 func _execute(context :GdUnitExecutionContext) -> void:
+	var test_suite := context.test_suite
+
+	fire_event(GdUnitEvent.new()\
+		.test_before(test_suite.get_script().resource_path, context.get_test_suite_name(), context.get_test_case_name()))
 	if _call_stage:
 		@warning_ignore("redundant_await")
-		await context.test_suite.before_test()
+		await test_suite.before_test()
 	context.error_monitor_start()

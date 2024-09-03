@@ -590,11 +590,12 @@ func load_source_code(script :GDScript, script_path :PackedStringArray) -> Packe
 	for key :String in _script_constants.keys():
 		var value :Variant = _script_constants.get(key)
 		if value is GDScript:
-			var class_path := GdObjects.extract_class_path(value)
-			if class_path.size() > 1:
-				# do not add at twice
-				if not _scanned_inner_classes.has(class_path[1]):
-					_scanned_inner_classes.append(class_path[1])
+			_scanned_inner_classes.append(key)
+			#var class_path := GdObjects.extract_class_path(value)
+			#if class_path.size() > 1:
+			#	# do not add at twice
+			#	if not _scanned_inner_classes.has(class_path[1]):
+			#		_scanned_inner_classes.append(class_path[1])
 
 	var source_code := GdScriptParser.to_unix_format(script.source_code)
 	var source_rows := source_code.split("\n")

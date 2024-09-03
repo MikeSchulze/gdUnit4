@@ -705,9 +705,9 @@ func test_execute_test_case_is_skipped() -> void:
 		])
 
 
-func test_execute_test_case_is_flaky() -> void:
-	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, true)
+func test_execute_test_case_is_flaky_and_failed() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestCaseFlaky.resource")
+	test_suite._run_with_reries = 5
 	# simulate flaky test suite execution
 	var events := await execute(test_suite)
 
@@ -726,53 +726,222 @@ func test_execute_test_case_is_flaky() -> void:
 	# verify test execution results
 	assert_array(events)\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
-		.contains_exactly([
+		.contains([
 		tuple(GdUnitEvent.TESTSUITE_BEFORE, "before", true, false, false),
-
-		# expect be success after 3 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_flaky_success", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_success", true, true, false),
-
-		# expect be fail after 5 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_flaky_fail", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
-
-		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_success", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_success", true, false, false),
-
-		# --test_paramaterized_flaky---------------------------------------------------------------
-		# expect be finaly fail after 5 retries on index:2 and 3 retries on index:4
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky", true, false, false),
-		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:0 [0, 1]", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:0 [0, 1]", true, false, false),
-		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:1 [1, 1]", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:1 [1, 1]", true, false, false),
-		# expect be fail after 5 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:2 [2, 6]", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
-		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:3 [3, 1]", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:3 [3, 1]", true, false, false),
-		# expect be success after 3 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_paramaterized_flaky:4 [4, 3]", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", true, true, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky", false, true, true),
-		# -----------------------------------------------------------------------------------------
-
-		# expect be success after 3 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_fuzzed_flaky_success", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_success", true, true, false),
-
-		# expect be fail after 5 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_BEFORE, "test_fuzzed_flaky_fail", true, false, false),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
-
 		# expect finaly state failed and flaky
 		tuple(GdUnitEvent.TESTSUITE_AFTER, "after", false, true, true)
 	])
+
+	assert_array(filter_by_test_case(events, "test_flaky_success"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_success", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_success", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_success", true, true, false),
+	])
+
+	assert_array(filter_by_test_case(events, "test_flaky_fail"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be fail 5 times and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+	])
+
+	assert_array(filter_by_test_case(events, "test_success"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_success", true, false, false),
+	])
+
+	# --test_paramaterized_flaky---------------------------------------------------------------
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:0 [0, 1]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:0 [0, 1]", true, false, false),
+	])
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:1 [1, 1]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:1 [1, 1]", true, false, false),
+	])
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:2 [2, 6]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be fail after 5 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+	])
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:3 [3, 1]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:3 [3, 1]", true, false, false),
+	])
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:4 [4, 3]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", true, true, false),
+	])
+
+	# and finaly overall state of paremeterized test
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be faild and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky", false, true, true)
+	])
+
+	assert_array(filter_by_test_case(events, "test_fuzzed_flaky_success"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_success", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_success", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_success", true, true, false)
+	])
+
+	assert_array(filter_by_test_case(events, "test_fuzzed_flaky_fail"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be fail after 5 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+	])
+
+
+func test_execute_test_case_is_flaky_and_success() -> void:
+	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestCaseFlaky.resource")
+	test_suite._run_with_reries = 6
+	# simulate flaky test suite execution
+	var events := await execute(test_suite)
+
+	# verify test execution results
+	assert_array(events)\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains([
+		tuple(GdUnitEvent.TESTSUITE_BEFORE, "before", true, false, false),
+		# expect finaly state failed and flaky
+		tuple(GdUnitEvent.TESTSUITE_AFTER, "after", true, true, false)
+	])
+
+	assert_array(filter_by_test_case(events, "test_flaky_success"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_success", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_success", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_success", true, true, false),
+	])
+
+	assert_array(filter_by_test_case(events, "test_flaky_fail"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be fail 5 times and on 6't to be success and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_flaky_fail", true, true, false),
+	])
+
+	assert_array(filter_by_test_case(events, "test_success"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_success", true, false, false),
+	])
+
+	# --test_paramaterized_flaky---------------------------------------------------------------
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:0 [0, 1]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:0 [0, 1]", true, false, false),
+	])
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:1 [1, 1]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:1 [1, 1]", true, false, false),
+	])
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:2 [2, 6]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be fail 5 times and on 6't to be success and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", true, true, false),
+	])
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:3 [3, 1]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success on first run and not flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:3 [3, 1]", true, false, false),
+	])
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:4 [4, 3]"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", true, true, false),
+	])
+	# and finaly overall state of paremeterized test
+	assert_array(filter_by_test_case(events, "test_paramaterized_flaky"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be succed and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky", true, true, false)
+	])
+
+	# -- fuzzed tests ------------------------------------------------------------------------------------------
+	assert_array(filter_by_test_case(events, "test_fuzzed_flaky_success"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be success after 3 retries and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_success", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_success", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_success", true, true, false)
+	])
+
+	assert_array(filter_by_test_case(events, "test_fuzzed_flaky_fail"))\
+		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
+		.contains_exactly([
+		# expect be fail 5 times and on 6't to be success and marked as flaky
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_fuzzed_flaky_fail", true, true, false),
+	])
+
+
+func filter_by_test_case(events:  Array[GdUnitEvent], test_case_name: String) -> Array[GdUnitEvent]:
+	return events.filter(func (event: GdUnitEvent) -> bool:
+		return event.test_name() == test_case_name and event.type() == GdUnitEvent.TESTCASE_AFTER
+	)
 
 
 class TestCaseNameExtractor extends GdUnitValueExtractor:

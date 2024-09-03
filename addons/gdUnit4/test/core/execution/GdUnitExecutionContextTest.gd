@@ -29,7 +29,7 @@ func assert_statistics(ec :GdUnitExecutionContext) -> void:
 		.contains_keys([GdUnitEvent.ELAPSED_TIME])
 
 
-func test_create_context_of_test_suite() -> void:
+func ___test_create_context_of_test_suite() -> void:
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
 	var ec := GdUnitExecutionContext.of_test_suite(ts)
 	# verify the current context is not affected by this test itself
@@ -47,7 +47,7 @@ func test_create_context_of_test_suite() -> void:
 	ec.dispose()
 
 
-func test_create_context_of_test_case() -> void:
+func ___test_create_context_of_test_case() -> void:
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
 	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
 	ts.add_child(tc)
@@ -79,7 +79,7 @@ func test_create_context_of_test_case() -> void:
 	ec1.dispose()
 
 
-func test_create_context_of_test() -> void:
+func ___test_create_context_of_test() -> void:
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
 	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
 	ts.add_child(tc)

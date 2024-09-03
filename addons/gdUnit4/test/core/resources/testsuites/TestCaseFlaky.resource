@@ -17,6 +17,7 @@ var test_retries := {
 
 var _max_retries := 0
 var _flaky_check_enabled :bool
+var _run_with_reries := 5
 
 
 class ValueSetFuzzer extends Fuzzer:
@@ -30,7 +31,7 @@ func before() -> void:
 	_max_retries = GdUnitSettings.get_flaky_max_retries()
 	_flaky_check_enabled = GdUnitSettings.is_test_flaky_check_enabled()
 	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, true)
-	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_MAX_RETRIES, 5)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_MAX_RETRIES, _run_with_reries)
 
 
 func after() -> void:
@@ -43,8 +44,8 @@ func after() -> void:
 		.is_equal(3)
 	retry_count = test_retries["test_flaky_fail"]
 	assert_int(retry_count)\
-		.override_failure_message("Expecting 5 retries for test 'test_flaky_fail'\n but was %d" % retry_count)\
-		.is_equal(5)
+		.override_failure_message("Expecting %d retries for test 'test_flaky_fail'\n but was %d" % [_run_with_reries, retry_count])\
+		.is_equal(_run_with_reries)
 	retry_count = test_retries["test_success"]
 	assert_int(retry_count)\
 		.override_failure_message("Expecting one test iteration to succeed 'test_success'\n but was %d" % retry_count)\
@@ -60,8 +61,8 @@ func after() -> void:
 		.is_equal(1)
 	retry_count = test_retries["test_paramaterized_flaky:2"]
 	assert_int(retry_count)\
-		.override_failure_message("Expecting 5 test iteration to fail 'test_paramaterized_flaky:2'\n but was %d" % retry_count)\
-		.is_equal(5)
+		.override_failure_message("Expecting %d test iteration to fail 'test_paramaterized_flaky:2'\n but was %d" % [_run_with_reries, retry_count])\
+		.is_equal(_run_with_reries)
 	retry_count = test_retries["test_paramaterized_flaky:3"]
 	assert_int(retry_count)\
 		.override_failure_message("Expecting one test iteration to succeed 'test_paramaterized_flaky:3'\n but was %d" % retry_count)\
@@ -77,8 +78,8 @@ func after() -> void:
 		.is_equal(3)
 	retry_count = test_retries["test_fuzzed_flaky_fail"]
 	assert_int(retry_count)\
-		.override_failure_message("Expecting 5 retries for test 'test_fuzzed_flaky_fail'\n but was %d" % retry_count)\
-		.is_equal(5)
+		.override_failure_message("Expecting %d retries for test 'test_fuzzed_flaky_fail'\n but was %d" % [_run_with_reries, retry_count])\
+		.is_equal(_run_with_reries)
 
 
 func test_flaky_success() -> void:
@@ -127,6 +128,7 @@ func test_paramaterized_flaky(test_index: int, expected_retry_count :int, test_p
 			fail("failed at retry %d" % retry_count)
 
 
+@warning_ignore("unused_parameter")
 func test_fuzzed_flaky_success(fuzzer := ValueSetFuzzer.new(), fuzzer_iterations := 5) -> void:
 	var fuzzer_value :int = fuzzer.next_value()
 	if fuzzer_value == 0:
@@ -140,6 +142,7 @@ func test_fuzzed_flaky_success(fuzzer := ValueSetFuzzer.new(), fuzzer_iterations
 		fail("failure 2: failed at retry %d" % retry_count)
 
 
+@warning_ignore("unused_parameter")
 func test_fuzzed_flaky_fail(fuzzer := ValueSetFuzzer.new(), fuzzer_iterations := 5) -> void:
 	var fuzzer_value :int = fuzzer.next_value()
 	if fuzzer_value == 0:

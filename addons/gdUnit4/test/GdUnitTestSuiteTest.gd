@@ -17,6 +17,7 @@ func collect_report(event :GdUnitEvent) -> void:
 func before() -> void:
 	# register to receive test reports
 	GdUnitSignals.instance().gdunit_event.connect(collect_report)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, true)
 
 
 func after() -> void:
@@ -24,6 +25,7 @@ func after() -> void:
 	assert_array(_events).extractv(extr("type"), extr("is_skipped"), extr("test_name"))\
 		.contains([tuple(GdUnitEvent.TESTCASE_AFTER, true, "test_unknown_argument_in_test_case")])
 	GdUnitSignals.instance().gdunit_event.disconnect(collect_report)
+	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, false)
 
 
 func test_assert_that_types() -> void:

@@ -447,8 +447,9 @@ func set_state_orphan(item: TreeItem, event: GdUnitEvent) -> void:
 	if item.has_meta(META_GDUNIT_ORPHAN):
 		orphan_count += item.get_meta(META_GDUNIT_ORPHAN)
 	item.set_meta(META_GDUNIT_ORPHAN, orphan_count)
-	item.set_custom_color(0, Color.YELLOW)
-	item.set_custom_color(1, Color.YELLOW)
+	if item.get_meta(META_GDUNIT_STATE) != STATE.FAILED:
+		item.set_custom_color(0, Color.YELLOW)
+		item.set_custom_color(1, Color.YELLOW)
 	item.set_tooltip_text(0, "Total <%d> orphan nodes detected." % orphan_count)
 	set_item_icon_by_state(item)
 

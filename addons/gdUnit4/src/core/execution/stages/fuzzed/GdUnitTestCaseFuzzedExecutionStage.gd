@@ -9,12 +9,14 @@ var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseFuzzedTestStage.new()
 
 func _execute(context :GdUnitExecutionContext) -> void:
 	while context.retry_execution():
-		await _stage_before.execute(context)
+		var test_context := GdUnitExecutionContext.of(context, context._test_execution_iteration)
+		await _stage_before.execute(test_context)
 		if not context.test_case.is_skipped():
-			await _stage_test.execute(GdUnitExecutionContext.of(context))
-		await _stage_after.execute(context)
-		if context.is_success() or context.test_case.is_skipped():
+			await _stage_test.execute(GdUnitExecutionContext.of(test_context))
+		await _stage_after.execute(test_context)
+		if test_context.is_success() or test_context.test_case.is_skipped():
 			break
+	context.evaluate_test_case_status()
 
 
 func set_debug_mode(debug_mode :bool = false) -> void:

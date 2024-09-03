@@ -12,7 +12,6 @@ var _stage_test: IGdUnitExecutionStage = GdUnitTestCaseParameterSetTestStage.new
 ##  -> test_case( <test_parameters> ) [br]
 func _execute(context: GdUnitExecutionContext) -> void:
 	var test_case := context.test_case
-	var test_suite := context.test_suite
 	var test_parameter_index := test_case.test_parameter_index()
 	var parameter_set_resolver := test_case.parameter_set_resolver()
 	var test_names := parameter_set_resolver.build_test_case_names(test_case)
@@ -31,39 +30,41 @@ func _execute(context: GdUnitExecutionContext) -> void:
 		if parameter_set_resolver.is_parameter_set_static(parameter_set_index):
 			test_case_parameter_set = parameter_sets[parameter_set_index]
 
-		fire_event(GdUnitEvent.new()\
-			.test_before(test_suite.get_script().resource_path, test_suite.get_name(), current_test_case_name))
-
 		var test_context := GdUnitExecutionContext.of(context)
+		test_context._test_case_name = current_test_case_name
+		var has_errors := false
 		while test_context.retry_execution():
-			await _stage_before.execute(test_context)
+			var retry_test_context := GdUnitExecutionContext.of(test_context, test_context._test_execution_iteration)
+
+			retry_test_context._test_case_name = current_test_case_name
+			await _stage_before.execute(retry_test_context)
 			if not test_case.is_interupted():
 				# we need to load paramater set at execution level after the before stage to get the actual variables from the current test
 				if not parameter_set_resolver.is_parameter_set_static(parameter_set_index):
 					test_case_parameter_set = _load_parameter_set(context, parameter_set_index)
-				await _stage_test.execute(GdUnitExecutionContext.of_parameterized_test(test_context, test_case.get_name(), test_case_parameter_set))
-			await _stage_after.execute(test_context)
-			if test_context.is_success() or test_context.test_case.is_skipped():
+				await _stage_test.execute(GdUnitExecutionContext.of_parameterized_test(retry_test_context, current_test_case_name, test_case_parameter_set))
+			await _stage_after.execute(retry_test_context)
+			has_errors = retry_test_context.has_errors()
+			if retry_test_context.is_success() or retry_test_context.test_case.is_skipped() or retry_test_context.test_case.is_interupted():
 				break
 
-		# add report to parent execution context if failed or an error is found
-		if not test_context.is_success():
-			context.reports().append(GdUnitReport.new().create(GdUnitReport.FAILURE, test_case.line_number(), "Test failed at parameterized index %d." % parameter_set_index))
-		if test_context.count_errors(false) > 0:
-			context.reports().append(GdUnitReport.new().create(GdUnitReport.ABORT, test_case.line_number(), "Test aborted at parameterized index %d." % parameter_set_index))
+		var is_success := test_context.evaluate_test_case_status()
+		report_test_failure(context, !is_success, has_errors, parameter_set_index)
 
-		test_context.build_statistics()
-		var reports := test_context.collect_reports()
-		var orphans := test_context.collect_orphans(reports)
-		fire_event(GdUnitEvent.new()\
-			.test_after(test_suite.get_script().resource_path, test_suite.get_name(), current_test_case_name, test_context.build_report_statistics(orphans), reports))
-
-
-		test_context.reports().clear()
 		if test_case.is_interupted():
 			break
+	context.evaluate_test_case_status()
+
 	await context.gc()
-	context.build_statistics()
+
+
+func report_test_failure(test_context: GdUnitExecutionContext, is_failed: bool, has_errors: bool, parameter_set_index: int) -> void:
+	var test_case := test_context.test_case
+
+	if is_failed:
+		test_context.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, test_case.line_number(), "Test failed at parameterized index %d." % parameter_set_index))
+	if has_errors:
+		test_context.add_report(GdUnitReport.new().create(GdUnitReport.ABORT, test_case.line_number(), "Test aborted at parameterized index %d." % parameter_set_index))
 
 
 func _load_parameter_set(context: GdUnitExecutionContext, parameter_set_index: int) -> Array:
