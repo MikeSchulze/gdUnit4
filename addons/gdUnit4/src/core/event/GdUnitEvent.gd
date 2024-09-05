@@ -20,6 +20,7 @@ enum {
 	TESTSUITE_AFTER,
 	TESTCASE_BEFORE,
 	TESTCASE_AFTER,
+	TESTCASE_STATISTICS,
 	DISCOVER_START,
 	DISCOVER_END,
 	DISCOVER_SUITE_ADDED,
@@ -70,6 +71,14 @@ func test_after(p_resource_path :String, p_suite_name :String, p_test_name :Stri
 	_test_name = p_test_name
 	_statistics = p_statistics
 	_reports = p_reports
+	return self
+
+
+func test_statistics(p_suite_name :String, p_test_name :String, p_statistics :Dictionary = {}) -> GdUnitEvent:
+	_event_type = TESTCASE_STATISTICS
+	_suite_name  = p_suite_name
+	_test_name = p_test_name
+	_statistics = p_statistics
 	return self
 
 

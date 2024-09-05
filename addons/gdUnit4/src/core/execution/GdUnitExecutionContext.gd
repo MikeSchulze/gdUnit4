@@ -134,7 +134,9 @@ func reports() -> Array[GdUnitReport]:
 	return _report_collector.reports()
 
 
-func collect_reports() -> Array[GdUnitReport]:
+func collect_reports(recursive: bool) -> Array[GdUnitReport]:
+	if not recursive:
+		return reports()
 	var current_reports := reports()
 	# we combine the reports of test_before(), test_after() and test() to be reported by `fire_test_ended`
 	for sub_context in _sub_context:
@@ -172,15 +174,53 @@ func add_orphan_report_teststage(p_reports :Array[GdUnitReport]) -> int:
 var calculated := false
 var _is_success: bool
 var _is_flaky: bool
+var _has_warnings: bool
+var _has_failures: bool
 var _has_errors: bool
+var _failure_count := 0
+var _orphan_count := 0
+var _error_count := 0
 
-func build_statistics() -> void:
+
+
+func build_reports(recursive := true) -> Array[GdUnitReport]:
+	var collected_reports: Array[GdUnitReport] = collect_reports(recursive)
+	if recursive:
+		_orphan_count = collect_orphans(collected_reports)
+	else:
+		_orphan_count = count_orphans()
+		if _orphan_count > 0:
+			collected_reports.push_front(GdUnitReport.new() \
+				.create(GdUnitReport.WARN, 1, GdAssertMessages.orphan_detected_on_suite_setup(_orphan_count)))
 	_is_success = is_success()
 	_is_flaky = is_flaky()
+	_has_warnings = has_warnings()
 	_has_errors = has_errors()
-	#var has_warnings := has_warnings()
-	#prints(_test_case_name, "success" if _is_success else "failed", "	flaky:", _is_flaky, "	retries:", _test_execution_iteration, "_has_errors", _has_errors)
-	#prints()
+	_error_count = count_errors(recursive)
+	if !_is_success:
+		_has_failures = has_failures()
+		_failure_count = count_failures(recursive)
+	return collected_reports
+
+
+func evaluate_test_retry_status() -> bool:
+	# get last test retry status
+	var last_test_status :GdUnitExecutionContext = _sub_context.back()
+	_is_success = last_test_status.is_success()
+	# if we have more than one sub contexts the test was rerurn and marked as flaky
+	_is_flaky = _sub_context.size() > 1
+	_has_warnings = last_test_status.has_warnings()
+	_has_errors = last_test_status.has_errors()
+	_error_count = last_test_status.count_errors(false)
+	# we not report failures on success tests (could contain failures from retry tests before)
+	if !_is_success:
+		_has_failures = last_test_status.has_failures()
+		_failure_count = last_test_status.count_failures(false)
+	_orphan_count = last_test_status.collect_orphans(collect_reports(false))
+	calculated = true
+	# finally cleanup the retry sub executions
+	_sub_context.clear()
+	return _is_success
 
 
 # Evaluates the actual test case status by validate the sub context contains a success state
@@ -188,41 +228,44 @@ func build_statistics() -> void:
 func evaluate_test_case_status() -> bool:
 	if calculated:
 		return _is_success
-	_is_success = (
-		!has_failures() if _sub_context.is_empty() else _sub_context.any(func (context: GdUnitExecutionContext) -> bool:
-			return context.evaluate_test_case_status()
-			)
-	)
-
+	_is_success = is_success()
 	_is_flaky = is_flaky()
+	_has_warnings = has_warnings()
 	_has_errors = has_errors()
-	#prints(_test_case_name, "success" if _is_success else "failed", "	flaky:", _is_flaky, "	retries:", _test_execution_iteration, "_has_errors", _has_errors)
-	_sub_context.clear()
+	_error_count = count_errors(true)
+	if !_is_success:
+		_has_failures = has_failures()
+		_failure_count = count_failures(true)
+	_orphan_count = collect_orphans(collect_reports(false))
 	calculated = true
+
+	#prints(_test_case_name, "success" if _is_success else "failed", "	flaky:", _is_flaky, "	retries:", _test_execution_iteration, "_has_errors", _has_errors)
+	#_sub_context.clear()
 	return _is_success
 
 
 
-func build_report_statistics(orphans :int, recursive := true) -> Dictionary:
+func build_report_statistics(recursive := true) -> Dictionary:
 
 	return {
 		GdUnitEvent.RETRY_COUNT: _test_execution_iteration,
-		GdUnitEvent.ORPHAN_NODES: orphans,
+		GdUnitEvent.ORPHAN_NODES: _orphan_count,
 		GdUnitEvent.ELAPSED_TIME: _timer.elapsed_since_ms(),
 		GdUnitEvent.FAILED: !_is_success,
-		GdUnitEvent.ERRORS: has_errors(),
-		GdUnitEvent.WARNINGS: has_warnings(),
+		GdUnitEvent.ERRORS: _has_errors,
+		GdUnitEvent.WARNINGS: _has_warnings,
 		GdUnitEvent.FLAKY: _is_flaky,
 		GdUnitEvent.SKIPPED: has_skipped(),
-		GdUnitEvent.FAILED_COUNT: 0 if _is_success else count_failures(recursive),
-		GdUnitEvent.ERROR_COUNT: count_errors(recursive),
+		GdUnitEvent.FAILED_COUNT: _failure_count,
+		GdUnitEvent.ERROR_COUNT: _error_count,
 		GdUnitEvent.SKIPPED_COUNT: count_skipped(recursive)
 	}
 
 
 func has_failures() -> bool:
 	return (
-		_sub_context.any(func(c :GdUnitExecutionContext) -> bool: return c.has_failures())
+		_sub_context.any(func(c :GdUnitExecutionContext) -> bool:
+			return c._has_failures if c.calculated else c.has_failures())
 		or _report_collector.has_failures()
 	)
 
@@ -251,13 +294,33 @@ func is_flaky() -> bool:
 
 
 func is_success() -> bool:
+	if not calculated:
+		_is_success = evaluate_is_success()
+		_is_flaky = is_flaky()
+		_has_errors = has_errors()
+		_has_failures = has_failures()
+		calculated = true
+	return _is_success
+
+
+func is_skipped() -> bool:
+	if test_case != null:
+		return test_case.is_skipped()
+	return false
+
+
+func is_interupted() -> bool:
+	if test_case != null:
+		return test_case.is_interupted()
+	return false
+
+
+func evaluate_is_success() -> bool:
 	if _sub_context.is_empty():
 		return not has_failures()# and not has_errors()
 
 	var failed_context := _sub_context.filter(func(c :GdUnitExecutionContext) -> bool:
-			return !c._is_success if c.calculated else !c.is_success())
-	#var sub_context_has_faild := failed_context.is_empty() or failed_context.size() < _test_execution_iteration
-	calculated = true
+			return !c.is_success())
 	return failed_context.is_empty() and not has_failures()# and not has_errors()
 
 

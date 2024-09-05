@@ -28,8 +28,9 @@ func _execute(context :GdUnitExecutionContext) -> void:
 
 	await context.gc()
 	await context.error_monitor_stop()
-	context.evaluate_test_case_status()
 
+	# finally fire test statistics report
+	fire_event(GdUnitEvent.new().test_statistics(context.get_test_suite_name(), context.get_test_case_name(), context.build_report_statistics(0)))
 
 	# finally free the test instance
 	if is_instance_valid(context.test_case):

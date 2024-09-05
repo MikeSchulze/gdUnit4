@@ -13,7 +13,6 @@ func _init(call_stage := true) -> void:
 
 func _execute(context :GdUnitExecutionContext) -> void:
 	var test_suite := context.test_suite
-	var test_case := context.test_case
 
 	if _call_stage:
 		@warning_ignore("redundant_await")
@@ -23,16 +22,13 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	await context.gc()
 	await context.error_monitor_stop()
 
+	var reports := context.build_reports()
 
-	context.build_statistics()
-
-	if context.test_case.is_skipped():
+	if context.is_skipped():
 		fire_test_skipped(context)
 	else:
-		var reports := context.collect_reports()
-		var orphans := context.collect_orphans(reports)
 		fire_event(GdUnitEvent.new()\
-			.test_after(test_suite.get_script().resource_path, context.get_test_suite_name(), context.get_test_case_name(), context.build_report_statistics(orphans), reports))
+			.test_after(test_suite.get_script().resource_path, context.get_test_suite_name(), context.get_test_case_name(), context.build_report_statistics(), reports))
 
 
 func fire_test_skipped(context :GdUnitExecutionContext) -> void:

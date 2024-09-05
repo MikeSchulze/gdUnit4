@@ -5,6 +5,7 @@ signal failure_next()
 signal failure_prevous()
 signal request_discover_tests()
 
+@warning_ignore("unused_signal")
 signal tree_view_mode_changed(flat :bool)
 
 @onready var _errors := %error_value
@@ -119,7 +120,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			status_changed(0, 0)
 		GdUnitEvent.TESTCASE_BEFORE:
 			pass
-		GdUnitEvent.TESTCASE_AFTER:
+		GdUnitEvent.TESTCASE_STATISTICS:
 			if event.is_error():
 				status_changed(event.error_count(), 0)
 			else:

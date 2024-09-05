@@ -45,16 +45,15 @@ func _execute(context: GdUnitExecutionContext) -> void:
 				await _stage_test.execute(GdUnitExecutionContext.of_parameterized_test(retry_test_context, current_test_case_name, test_case_parameter_set))
 			await _stage_after.execute(retry_test_context)
 			has_errors = retry_test_context.has_errors()
-			if retry_test_context.is_success() or retry_test_context.test_case.is_skipped() or retry_test_context.test_case.is_interupted():
+			if retry_test_context.is_success() or retry_test_context.is_skipped() or retry_test_context.is_interupted():
 				break
 
-		var is_success := test_context.evaluate_test_case_status()
+		var is_success := test_context.evaluate_test_retry_status()
 		report_test_failure(context, !is_success, has_errors, parameter_set_index)
 
 		if test_case.is_interupted():
 			break
 	context.evaluate_test_case_status()
-
 	await context.gc()
 
 

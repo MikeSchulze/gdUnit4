@@ -15,8 +15,9 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		if not test_context.test_case.is_skipped():
 			await _stage_test.execute(GdUnitExecutionContext.of(test_context))
 		await _stage_after.execute(test_context)
-		if test_context.is_success() or test_context.test_case.is_skipped() or test_context.test_case.is_interupted():
+		if test_context.is_success() or test_context.is_skipped() or test_context.is_interupted():
 			break
+	context.evaluate_test_retry_status()
 
 
 func set_debug_mode(debug_mode :bool = false) -> void:
