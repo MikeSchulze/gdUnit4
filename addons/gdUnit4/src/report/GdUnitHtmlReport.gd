@@ -18,10 +18,11 @@ func add_testsuite_report(suite_report :GdUnitTestSuiteReport) -> void:
 
 
 @warning_ignore("shadowed_variable")
-func add_testcase_report(resource_path :String, suite_report :GdUnitTestCaseReport) -> void:
-	for report in _reports:
+func add_testcase(resource_path :String, suite_name :String, test_name: String) -> void:
+	for report:GdUnitTestSuiteReport in _reports:
 		if report.resource_path() == resource_path:
-			report.add_report(suite_report)
+			var test_report := GdUnitTestCaseReport.new(resource_path, suite_name, test_name)
+			report.add_or_create_test_report(test_report)
 
 
 @warning_ignore("shadowed_variable")
@@ -37,20 +38,29 @@ func update_test_suite_report(
 	orphan_count :int,
 	reports :Array = []) -> void:
 
-	for report in _reports:
+	for report:GdUnitTestSuiteReport in _reports:
 		if report.resource_path() == resource_path:
 			report.set_duration(duration)
-			report.set_failed(is_failed, failed_count)
+			if is_failed:
+				report.set_failed(failed_count)
 			report.set_skipped(skipped_count)
 			report.set_orphans(orphan_count)
 			report.set_reports(reports)
 
 
 @warning_ignore("shadowed_variable")
-func update_testcase_report(resource_path :String, test_report :GdUnitTestCaseReport) -> void:
-	for report in _reports:
+func add_testcase_reports(resource_path: String, test_name: String, reports: Array[GdUnitReport]) -> void:
+	for report:GdUnitTestSuiteReport in _reports:
 		if report.resource_path() == resource_path:
-			report.update(test_report)
+			report.add_testcase_reports(test_name, reports)
+
+
+@warning_ignore("shadowed_variable")
+func update_testsuite_counters(resource_path :String, error_count: int, failure_count: int, orphan_count: int,
+	is_skipped: bool, is_flaky: bool, duration: int) -> void:
+	for report:GdUnitTestSuiteReport in _reports:
+		if report.resource_path() == resource_path:
+			report.update_testsuite_counters(error_count, failure_count, orphan_count, is_skipped, is_flaky, duration)
 
 
 func write() -> String:

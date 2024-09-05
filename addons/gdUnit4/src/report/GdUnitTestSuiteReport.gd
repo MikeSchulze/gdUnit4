@@ -74,25 +74,42 @@ func duration() -> int:
 
 
 func set_skipped(skipped :int) -> void:
-	_skipped_count = skipped
+	_skipped_count += skipped
 
 
 func set_orphans(orphans :int) -> void:
 	_orphan_count = orphans
 
 
-func set_failed(failed :bool, count :int) -> void:
-	if failed:
-		_failure_count += count
+func set_failed(count :int) -> void:
+	_failure_count += count
 
 
 func set_reports(failure_reports :Array[GdUnitReport]) -> void:
 	_failure_reports = failure_reports
 
 
-func update(test_report :GdUnitTestCaseReport) -> void:
+func add_or_create_test_report(test_report: GdUnitTestCaseReport) -> void:
+	_reports.append(test_report)
+
+
+func update_testsuite_counters(p_error_count: int, p_failure_count: int, p_orphan_count: int,
+	p_is_skipped: bool, p_is_flaky: bool, p_duration: int) -> void:
+	_error_count += p_error_count
+	_failure_count += p_failure_count
+	_orphan_count += p_orphan_count
+	_skipped_count += p_is_skipped as int
+	_flaky_count += p_is_flaky as int
+	_duration += p_duration
+
+
+func add_testcase_reports(test_name: String, reports: Array[GdUnitReport] ) -> void:
+	if reports.is_empty():
+		return
 	# we lookup to latest matching report because of flaky tests could be retry the tests
 	# and resultis in multipe report entries with the same name
-	_reports.filter(func (report: GdUnitTestCaseReport) -> bool:
-		return report.name() == test_report.name()
-		).back().update(test_report)
+	var test_report:GdUnitTestCaseReport = _reports.filter(func (report: GdUnitTestCaseReport) -> bool:
+		return report.name() == test_name
+		).back()
+	if test_report:
+		test_report.add_testcase_reports(reports)

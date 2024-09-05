@@ -74,8 +74,9 @@ func test_after(p_resource_path :String, p_suite_name :String, p_test_name :Stri
 	return self
 
 
-func test_statistics(p_suite_name :String, p_test_name :String, p_statistics :Dictionary = {}) -> GdUnitEvent:
+func test_statistics(p_resource_path :String, p_suite_name :String, p_test_name :String, p_statistics :Dictionary = {}) -> GdUnitEvent:
 	_event_type = TESTCASE_STATISTICS
+	_resource_path = p_resource_path
 	_suite_name  = p_suite_name
 	_test_name = p_test_name
 	_statistics = p_statistics

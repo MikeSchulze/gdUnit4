@@ -174,6 +174,7 @@ func add_orphan_report_teststage(p_reports :Array[GdUnitReport]) -> int:
 var calculated := false
 var _is_success: bool
 var _is_flaky: bool
+var _is_skipped: bool
 var _has_warnings: bool
 var _has_failures: bool
 var _has_errors: bool
@@ -192,6 +193,7 @@ func build_reports(recursive := true) -> Array[GdUnitReport]:
 		if _orphan_count > 0:
 			collected_reports.push_front(GdUnitReport.new() \
 				.create(GdUnitReport.WARN, 1, GdAssertMessages.orphan_detected_on_suite_setup(_orphan_count)))
+	_is_skipped = is_skipped()
 	_is_success = is_success()
 	_is_flaky = is_flaky()
 	_has_warnings = has_warnings()
@@ -206,9 +208,10 @@ func build_reports(recursive := true) -> Array[GdUnitReport]:
 func evaluate_test_retry_status() -> bool:
 	# get last test retry status
 	var last_test_status :GdUnitExecutionContext = _sub_context.back()
+	_is_skipped = last_test_status.is_skipped()
 	_is_success = last_test_status.is_success()
 	# if we have more than one sub contexts the test was rerurn and marked as flaky
-	_is_flaky = _sub_context.size() > 1
+	_is_flaky = _is_success and _sub_context.size() > 1
 	_has_warnings = last_test_status.has_warnings()
 	_has_errors = last_test_status.has_errors()
 	_error_count = last_test_status.count_errors(false)
@@ -228,6 +231,7 @@ func evaluate_test_retry_status() -> bool:
 func evaluate_test_case_status() -> bool:
 	if calculated:
 		return _is_success
+	_is_skipped = is_skipped()
 	_is_success = is_success()
 	_is_flaky = is_flaky()
 	_has_warnings = has_warnings()
@@ -255,7 +259,7 @@ func build_report_statistics(recursive := true) -> Dictionary:
 		GdUnitEvent.ERRORS: _has_errors,
 		GdUnitEvent.WARNINGS: _has_warnings,
 		GdUnitEvent.FLAKY: _is_flaky,
-		GdUnitEvent.SKIPPED: has_skipped(),
+		GdUnitEvent.SKIPPED: _is_skipped,
 		GdUnitEvent.FAILED_COUNT: _failure_count,
 		GdUnitEvent.ERROR_COUNT: _error_count,
 		GdUnitEvent.SKIPPED_COUNT: count_skipped(recursive)
@@ -304,9 +308,12 @@ func is_success() -> bool:
 
 
 func is_skipped() -> bool:
-	if test_case != null:
-		return test_case.is_skipped()
-	return false
+	return (
+		_sub_context.any(func(c :GdUnitExecutionContext) -> bool:
+			return c._is_skipped if c.calculated else c.is_skipped())
+		or test_case.is_skipped() if test_case != null else false
+	)
+
 
 
 func is_interupted() -> bool:

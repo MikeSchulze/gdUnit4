@@ -58,8 +58,8 @@ func build_junit_report(report :GdUnitReportSummary) -> String:
 
 func build_test_suites(summary :GdUnitReportSummary) -> Array:
 	var test_suites :Array[XmlElement] = []
-	for index in summary.reports().size():
-		var suite_report :GdUnitTestSuiteReport = summary.reports()[index]
+	for index in summary.get_reports().size():
+		var suite_report :GdUnitTestSuiteReport = summary.get_reports()[index]
 		var iso8601_datetime := Time.get_datetime_string_from_unix_time(suite_report.time_stamp())
 		test_suites.append(XmlElement.new("testsuite")\
 			.attribute(ATTR_ID, index)\
@@ -79,8 +79,8 @@ func build_test_suites(summary :GdUnitReportSummary) -> Array:
 
 func build_test_cases(suite_report :GdUnitTestSuiteReport) -> Array:
 	var test_cases :Array[XmlElement] = []
-	for index in suite_report.reports().size():
-		var report :GdUnitTestCaseReport = suite_report.reports()[index]
+	for index in suite_report.get_reports().size():
+		var report :GdUnitTestCaseReport = suite_report.get_reports()[index]
 		test_cases.append( XmlElement.new("testcase")\
 			.attribute(ATTR_NAME, JUnitXmlReport.encode_xml(report.name()))\
 			.attribute(ATTR_CLASSNAME, report.suite_name())\
@@ -89,24 +89,24 @@ func build_test_cases(suite_report :GdUnitTestSuiteReport) -> Array:
 	return test_cases
 
 
-func build_reports(test_report :GdUnitTestCaseReport) -> Array:
+func build_reports(test_report: GdUnitTestCaseReport) -> Array:
 	var failure_reports :Array[XmlElement] = []
-	if test_report.failure_count() or test_report.error_count():
-		for report: GdUnitReport in test_report._failure_reports:
-			if report.is_failure():
-				failure_reports.append( XmlElement.new("failure")\
-					.attribute(ATTR_MESSAGE, "FAILED: %s:%d" % [test_report._resource_path, report.line_number()])\
-					.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
-					.text(convert_rtf_to_text(report.message())))
-			elif report.is_error():
-				failure_reports.append( XmlElement.new("error")\
-					.attribute(ATTR_MESSAGE, "ERROR: %s:%d" % [test_report._resource_path, report.line_number()])\
-					.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
-					.text(convert_rtf_to_text(report.message())))
-	if test_report.skipped_count():
-		for report: GdUnitReport in test_report._failure_reports:
-			failure_reports.append( XmlElement.new("skipped")\
-				.attribute(ATTR_MESSAGE, "SKIPPED: %s:%d" % [test_report._resource_path, report.line_number()]))
+
+	for report: GdUnitReport in test_report.get_test_reports():
+		if report.is_failure():
+			failure_reports.append(XmlElement.new("failure")\
+				.attribute(ATTR_MESSAGE, "FAILED: %s:%d" % [test_report._resource_path, report.line_number()])\
+				.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
+				.text(convert_rtf_to_text(report.message())))
+		elif report.is_error():
+			failure_reports.append(XmlElement.new("error")\
+				.attribute(ATTR_MESSAGE, "ERROR: %s:%d" % [test_report._resource_path, report.line_number()])\
+				.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
+				.text(convert_rtf_to_text(report.message())))
+		elif report.is_skipped():
+			failure_reports.append(XmlElement.new("skipped")\
+				.attribute(ATTR_MESSAGE, "SKIPPED: %s:%d" % [test_report._resource_path, report.line_number()])\
+				.text(convert_rtf_to_text(report.message())))
 	return failure_reports
 
 

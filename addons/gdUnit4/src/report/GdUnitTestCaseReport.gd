@@ -36,7 +36,7 @@ func suite_name() -> String:
 
 func failure_report() -> String:
 	var html_report := ""
-	for report in _failure_reports:
+	for report in get_test_reports():
 		html_report += convert_rtf_to_html(str(report))
 	return html_report
 
@@ -51,11 +51,9 @@ func create_record(_report_dir :String) -> String:
 		.replace(GdUnitHtmlPatterns.FAILURE_REPORT, failure_report())
 
 
-func update(report :GdUnitTestCaseReport) -> void:
-	_error_count += report.error_count()
-	_failure_count += report.failure_count()
-	_orphan_count += report.orphan_count()
-	_skipped_count += report.skipped_count()
-	_failure_reports += report._failure_reports
-	_flaky_count += report.flaky_count()
-	_duration += report.duration()
+func add_testcase_reports(reports: Array[GdUnitReport]) -> void:
+	_failure_reports.append_array(reports)
+
+
+func get_test_reports() -> Array[GdUnitReport]:
+	return _failure_reports

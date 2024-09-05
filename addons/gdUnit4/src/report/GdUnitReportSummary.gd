@@ -83,7 +83,6 @@ func flaky_count() -> int:
 	return count
 
 
-
 func orphan_count() -> int:
 	var count := _orphan_count
 	for report in _reports:
@@ -98,7 +97,7 @@ func duration() -> int:
 	return count
 
 
-func reports() -> Array:
+func get_reports() -> Array:
 	return _reports
 
 
