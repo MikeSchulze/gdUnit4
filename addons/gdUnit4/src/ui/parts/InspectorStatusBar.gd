@@ -10,14 +10,15 @@ signal tree_view_mode_changed(flat :bool)
 
 @onready var _errors := %error_value
 @onready var _failures := %failure_value
-@onready var _button_errors := %btn_errors
-@onready var _button_failures := %btn_failures
 @onready var _button_failure_up := %btn_failure_up
 @onready var _button_failure_down := %btn_failure_down
 @onready var _button_sync := %btn_tree_sync
 @onready var _button_view_mode := %btn_tree_mode
 @onready var _button_sort_mode := %btn_tree_sort
 
+@onready var _icon_errors := %icon_errors
+@onready var _icon_failures := %icon_failures
+@onready var _icon_flaky := %icon_flaky
 
 var total_failed := 0
 var total_errors := 0
@@ -38,8 +39,10 @@ var icon_mappings := {
 func _ready() -> void:
 	_failures.text = "0"
 	_errors.text = "0"
-	_button_errors.icon = GdUnitUiTools.get_icon("StatusError")
-	_button_failures.icon = GdUnitUiTools.get_icon("StatusError", Color.SKY_BLUE)
+	_icon_failures.texture = GdUnitUiTools.get_icon("StatusError", Color.SKY_BLUE)
+	_icon_errors.texture = GdUnitUiTools.get_icon("StatusError")
+	_icon_flaky.texture = GdUnitUiTools.get_icon("CheckBox")
+
 	_button_failure_up.icon = GdUnitUiTools.get_icon("ArrowUp")
 	_button_failure_down.icon = GdUnitUiTools.get_icon("ArrowDown")
 	_button_sync.icon = GdUnitUiTools.get_icon("Loop")
