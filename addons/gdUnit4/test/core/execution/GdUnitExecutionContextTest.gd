@@ -52,7 +52,7 @@ func ___test_create_context_of_test_case() -> void:
 	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
 	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
-	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
+	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
 	# verify the current context is not affected by this test itself
 	var current_ec := GdUnitThreadManager.get_current_context().get_execution_context()
 	assert_object(current_ec).is_not_same(ec1)
@@ -84,7 +84,7 @@ func ___test_create_context_of_test() -> void:
 	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
 	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
-	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
+	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
 	var ec3 := GdUnitExecutionContext.of(ec2)
 	# verify the current context is not affected by this test itself
 	var current_ec := GdUnitThreadManager.get_current_context().get_execution_context()
@@ -137,7 +137,7 @@ func test_report_collectors() -> void:
 	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
 	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
-	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
+	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
 	var ec3 := GdUnitExecutionContext.of(ec2)
 
 	# add reports
@@ -166,7 +166,7 @@ func test_has_and_count_failures() -> void:
 	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
 	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
-	var ec2 := GdUnitExecutionContext.of_test_case(ec1, "test_case1")
+	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
 	var ec3 := GdUnitExecutionContext.of(ec2)
 
 	# precheck

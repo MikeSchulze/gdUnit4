@@ -34,7 +34,6 @@ func _execute(context :GdUnitExecutionContext) -> void:
 func fire_test_skipped(context :GdUnitExecutionContext) -> void:
 	var test_suite := context.test_suite
 	var test_case := context.test_case
-	var test_case_name := context._test_case_name
 	var statistics := {
 		GdUnitEvent.ORPHAN_NODES: 0,
 		GdUnitEvent.ELAPSED_TIME: 0,
@@ -48,4 +47,4 @@ func fire_test_skipped(context :GdUnitExecutionContext) -> void:
 	}
 	var report := GdUnitReport.new().create(GdUnitReport.SKIPPED, test_case.line_number(), GdAssertMessages.test_skipped(test_case.skip_info()))
 	fire_event(GdUnitEvent.new()\
-		.test_after(test_suite.get_script().resource_path, test_suite.get_name(), test_case_name, statistics, [report]))
+		.test_after(test_suite.get_script().resource_path, context.get_test_suite_name(), context.get_test_case_name(), statistics, [report]))

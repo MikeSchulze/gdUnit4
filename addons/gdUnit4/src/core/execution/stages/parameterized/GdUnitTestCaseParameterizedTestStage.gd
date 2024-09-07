@@ -53,7 +53,6 @@ func _execute(context: GdUnitExecutionContext) -> void:
 
 		if test_case.is_interupted():
 			break
-	context.evaluate_test_case_status()
 	await context.gc()
 
 

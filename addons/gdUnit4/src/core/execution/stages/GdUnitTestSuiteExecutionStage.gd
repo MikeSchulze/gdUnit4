@@ -27,7 +27,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 			if not is_instance_valid(test_case):
 				continue
 			context.test_suite.set_active_test_case(test_case.get_name())
-			await _stage_test.execute(GdUnitExecutionContext.of_test_case(context, test_case.get_name()))
+			await _stage_test.execute(GdUnitExecutionContext.of_test_case(context, test_case))
 			# stop on first error or if fail fast is enabled
 			if _fail_fast and not context.is_success():
 				break
