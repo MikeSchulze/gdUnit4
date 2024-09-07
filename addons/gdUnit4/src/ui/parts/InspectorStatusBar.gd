@@ -1,8 +1,12 @@
 @tool
 extends PanelContainer
 
-signal failure_next()
-signal failure_prevous()
+signal select_failure_next()
+signal select_failure_prevous()
+signal select_error_next()
+signal select_error_prevous()
+signal select_flaky_next()
+signal select_flaky_prevous()
 signal request_discover_tests()
 
 @warning_ignore("unused_signal")
@@ -10,6 +14,7 @@ signal tree_view_mode_changed(flat :bool)
 
 @onready var _errors := %error_value
 @onready var _failures := %failure_value
+@onready var _flaky_value := %flaky_value
 @onready var _button_failure_up := %btn_failure_up
 @onready var _button_failure_down := %btn_failure_down
 @onready var _button_sync := %btn_tree_sync
@@ -22,6 +27,7 @@ signal tree_view_mode_changed(flat :bool)
 
 var total_failed := 0
 var total_errors := 0
+var total_flaky := 0
 
 
 var icon_mappings := {
@@ -96,11 +102,13 @@ func normalise(value: String) -> String:
 	return " ".join(parts)
 
 
-func status_changed(errors: int, failed: int) -> void:
+func status_changed(errors: int, failed: int, flaky: int) -> void:
 	total_failed += failed
 	total_errors += errors
+	total_flaky += flaky
 	_failures.text = str(total_failed)
 	_errors.text = str(total_errors)
+	_flaky_value.text = str(total_flaky)
 
 
 func disable_buttons(value :bool) -> void:
@@ -120,29 +128,46 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 		GdUnitEvent.INIT:
 			total_failed = 0
 			total_errors = 0
-			status_changed(0, 0)
+			total_flaky = 0
+			status_changed(0, 0, 0)
 		GdUnitEvent.TESTCASE_BEFORE:
 			pass
 		GdUnitEvent.TESTCASE_STATISTICS:
 			if event.is_error():
-				status_changed(event.error_count(), 0)
+				status_changed(event.error_count(), 0, event.is_flaky())
 			else:
-				status_changed(0, event.failed_count())
+				status_changed(0, event.failed_count(), event.is_flaky())
 		GdUnitEvent.TESTSUITE_BEFORE:
 			pass
 		GdUnitEvent.TESTSUITE_AFTER:
 			if event.is_error():
-				status_changed(event.error_count(), 0)
+				status_changed(event.error_count(), 0, 0)
 			else:
-				status_changed(0, event.failed_count())
+				status_changed(0, event.failed_count(), 0)
+
+
+func _on_btn_error_up_pressed() -> void:
+	select_error_prevous.emit()
+
+
+func _on_btn_error_down_pressed() -> void:
+	select_error_next.emit()
 
 
 func _on_failure_up_pressed() -> void:
-	failure_prevous.emit()
+	select_failure_prevous.emit()
 
 
 func _on_failure_down_pressed() -> void:
-	failure_next.emit()
+	select_failure_next.emit()
+
+
+func _on_btn_flaky_up_pressed() -> void:
+	select_flaky_prevous.emit()
+
+
+func _on_btn_flaky_down_pressed() -> void:
+	select_flaky_next.emit()
 
 
 func _on_tree_sync_pressed() -> void:

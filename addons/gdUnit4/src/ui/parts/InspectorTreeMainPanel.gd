@@ -112,50 +112,54 @@ func _find_by_resource_path(current: TreeItem, resource_path: String) -> TreeIte
 	return null
 
 
-func _find_first_failure(parent := _tree_root, reverse := false) -> TreeItem:
+func _find_first_item_by_state(parent: TreeItem, item_state: STATE, reverse := false) -> TreeItem:
 	var itmes := parent.get_children()
 	if reverse:
 		itmes.reverse()
 	for item in itmes:
-		if is_test_case(item) and (is_state_error(item) or is_state_failed(item)):
+		if is_test_case(item) and (is_item_state(item, item_state)):
 			return item
-		var failure_item := _find_first_failure(item, reverse)
+		var failure_item := _find_first_item_by_state(item, item_state, reverse)
 		if failure_item != null:
 			return failure_item
 	return null
 
 
-func _find_last_failure(parent := _tree_root) -> TreeItem:
-	return _find_first_failure(parent, true)
+func _find_last_item_by_state(parent: TreeItem, item_state: STATE) -> TreeItem:
+	return _find_first_item_by_state(parent, item_state, true)
 
 
-func _find_failure(current :TreeItem, prev := false) -> TreeItem:
+func _find_item_by_state(current: TreeItem, item_state: STATE, prev := false) -> TreeItem:
 	var next := current.get_prev_in_tree() if prev else current.get_next_in_tree()
 	if next == null or next == _tree_root:
 		return null
-	if is_test_case(next) and (is_state_error(next) or is_state_failed(next)):
+	if is_test_case(next) and is_item_state(next, item_state):
 		return next
-	return _find_failure(next, prev)
+	return _find_item_by_state(next, item_state, prev)
+
+
+func is_item_state(item: TreeItem, item_state: STATE) -> bool:
+	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == item_state
 
 
 func is_state_running(item: TreeItem) -> bool:
-	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == STATE.RUNNING
+	return is_item_state(item, STATE.RUNNING)
 
 
 func is_state_success(item: TreeItem) -> bool:
-	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == STATE.SUCCESS
+	return is_item_state(item, STATE.SUCCESS)
 
 
 func is_state_warning(item: TreeItem) -> bool:
-	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == STATE.WARNING
+	return is_item_state(item, STATE.WARNING)
 
 
 func is_state_failed(item: TreeItem) -> bool:
-	return item.has_meta(META_GDUNIT_STATE) and item.get_meta(META_GDUNIT_STATE) == STATE.FAILED
+	return is_item_state(item, STATE.FAILED)
 
 
 func is_state_error(item: TreeItem) -> bool:
-	return item.has_meta(META_GDUNIT_STATE) and (item.get_meta(META_GDUNIT_STATE) == STATE.ERROR or item.get_meta(META_GDUNIT_STATE) == STATE.ABORDED)
+	return is_item_state(item, STATE.ERROR) or is_item_state(item, STATE.ABORDED)
 
 
 func is_item_state_orphan(item: TreeItem) -> bool:
@@ -495,26 +499,26 @@ func abort_running(items:=_tree_root.get_children()) -> void:
 
 
 func select_first_failure() -> TreeItem:
-	return select_item(_find_first_failure())
+	return select_item(_find_first_item_by_state(_tree_root, STATE.FAILED))
 
 
-func select_next_failure() -> TreeItem:
+func _on_select_next_item_by_state(item_state: int) -> TreeItem:
 	var current_selected := _tree.get_selected()
 	# If nothing is selected, the first error is selected or the next one in the vicinity of the current selection is found
-	current_selected = _find_first_failure() if current_selected == null else _find_failure(current_selected)
+	current_selected = _find_first_item_by_state(_tree_root, item_state) if current_selected == null else _find_item_by_state(current_selected, item_state)
 	# If no next failure found, then we try to select first
 	if current_selected == null:
-		current_selected = _find_first_failure()
+		current_selected = _find_first_item_by_state(_tree_root, item_state)
 	return select_item(current_selected)
 
 
-func select_previous_failure() -> TreeItem:
+func _on_select_previous_item_by_state(item_state: int) -> TreeItem:
 	var current_selected := _tree.get_selected()
 	# If nothing is selected, the first error is selected or the next one in the vicinity of the current selection is found
-	current_selected = _find_last_failure() if current_selected == null else _find_failure(current_selected, true)
+	current_selected = _find_last_item_by_state(_tree_root, item_state) if current_selected == null else _find_item_by_state(current_selected, item_state, true)
 	# If no next failure found, then we try to select first last
 	if current_selected == null:
-		current_selected = _find_last_failure()
+		current_selected = _find_last_item_by_state(_tree_root, item_state)
 	return select_item(current_selected)
 
 
@@ -965,6 +969,8 @@ func _on_gdunit_runner_stop(_client_id: int) -> void:
 	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, false)
 	abort_running()
 	sort_tree_items(_tree_root)
+	# wait until the tree redraw
+	await get_tree().process_frame
 	select_first_failure()
 
 

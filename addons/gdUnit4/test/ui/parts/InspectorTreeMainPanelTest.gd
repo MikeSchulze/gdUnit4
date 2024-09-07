@@ -5,6 +5,10 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const InspectorTreeMainPanel := preload('res://addons/gdUnit4/src/ui/parts/InspectorTreeMainPanel.gd')
 
+const FAILED := InspectorTreeMainPanel.STATE.FAILED
+const ERROR := InspectorTreeMainPanel.STATE.ERROR
+const FLAKY := InspectorTreeMainPanel.STATE.FLAKY
+
 var TEST_SUITE_A :String
 var TEST_SUITE_B :String
 var TEST_SUITE_C :String
@@ -21,7 +25,7 @@ func before_test() -> void:
 	for test_suite :Node in setup_test_env():
 		_inspector.do_add_test_suite(toDto(test_suite))
 	# verify no failures are exists
-	assert_array(_inspector.select_next_failure()).is_null()
+	assert_array(_inspector._on_select_next_item_by_state(FAILED)).is_null()
 
 
 func after_test() -> void:
@@ -53,7 +57,7 @@ func find_test_case(resource_path :String, test_case :String) -> TreeItem:
 	return _inspector.get_tree_item(resource_path, test_case)
 
 
-func mark_as_failure(test_cases :PackedStringArray, parent :TreeItem = _inspector._tree_root) -> void:
+func set_test_state(test_cases: PackedStringArray, state: InspectorTreeMainPanel.STATE, parent:TreeItem = _inspector._tree_root) -> void:
 	assert_object(parent).is_not_null()
 	# mark all test as failed
 	if parent != _inspector._tree_root:
@@ -62,10 +66,18 @@ func mark_as_failure(test_cases :PackedStringArray, parent :TreeItem = _inspecto
 	var test_event := GdUnitEvent.new().test_after("res://foo.gd", "test_suite", "test_name")
 
 	for item in parent.get_children():
-		mark_as_failure(test_cases, item)
+		set_test_state(test_cases, state, item)
 		if test_cases.has(item.get_text(0)):
-			_inspector.set_state_failed(parent, test_event)
-			_inspector.set_state_failed(item, test_event)
+			match state:
+				ERROR:
+					_inspector.set_state_error(parent)
+					_inspector.set_state_error(item)
+				FAILED:
+					_inspector.set_state_failed(parent, test_event)
+					_inspector.set_state_failed(item, test_event)
+				FLAKY:
+					_inspector.set_state_flaky(parent, test_event)
+					_inspector.set_state_flaky(item, test_event)
 		else:
 			_inspector.set_state_succeded(item)
 
@@ -82,14 +94,14 @@ func test_select_first_failure() -> void:
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# we have no failures or errors
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	mark_as_failure(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
+	set_test_state(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"], FAILED)
 
 	# select first failure
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_aa")
 
 
@@ -98,13 +110,13 @@ func test_select_last_failure() -> void:
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# we have no failures or errors
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	mark_as_failure(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
+	set_test_state(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"], FAILED)
 	# select last failure
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
 
 
@@ -113,27 +125,27 @@ func test_select_next_failure() -> void:
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# first time select next but no failure exists
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	mark_as_failure(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
+	set_test_state(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"], FAILED)
 
 	# first time select next than select first failure
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_aa")
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ad")
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cb")
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cc")
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
 	# if current last failure selected than select first as next
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_aa")
-	_inspector.select_next_failure()
+	_inspector._on_select_next_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ad")
 
 
@@ -142,27 +154,77 @@ func test_select_previous_failure() -> void:
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# first time select previous but no failure exists
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	mark_as_failure(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"])
+	set_test_state(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"], FAILED)
 
 	# first time select previous than select last failure
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cc")
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cb")
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ad")
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_aa")
 	# if current first failure selected than select last as next
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
-	_inspector.select_previous_failure()
+	_inspector._on_select_previous_item_by_state(FAILED)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cc")
+
+
+func test_select_next_flaky() -> void:
+	# test initial nothing is selected
+	assert_object(_inspector._tree.get_selected()).is_null()
+
+	# try select next but no flaky exists
+	_inspector._on_select_next_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected()).is_null()
+
+	# add flaky tests
+	set_test_state(["test_cb", "test_cc", "test_ce"], FLAKY)
+
+	# first time select next than select first failure
+	_inspector._on_select_next_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cb")
+	_inspector._on_select_next_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cc")
+	_inspector._on_select_next_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
+	# if current last failure selected than select first as next
+	_inspector._on_select_next_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cb")
+	_inspector._on_select_next_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cc")
+
+
+func test_select_previous_flaky() -> void:
+	# test initial nothing is selected
+	assert_object(_inspector._tree.get_selected()).is_null()
+
+	# try select previous but no flaky exists
+	_inspector._on_select_previous_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected()).is_null()
+
+	# add failures
+	set_test_state(["test_cb", "test_cc", "test_ce"], FLAKY)
+
+	# first time select previous than select last failure
+	_inspector._on_select_previous_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
+	_inspector._on_select_previous_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cc")
+	_inspector._on_select_previous_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cb")
+	# if current first failure selected than select last as next
+	_inspector._on_select_previous_item_by_state(FLAKY)
+	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
+	_inspector._on_select_previous_item_by_state(FLAKY)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_cc")
 
 

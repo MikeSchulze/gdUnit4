@@ -54,9 +54,13 @@ layout_mode = 2
 
 [node name="event_server" parent="." instance=ExtResource("7_721no")]
 
-[connection signal="failure_next" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="select_next_failure"]
-[connection signal="failure_prevous" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="select_previous_failure"]
 [connection signal="request_discover_tests" from="VBoxContainer/Header/StatusBar" to="." method="_on_status_bar_request_discover_tests"]
+[connection signal="select_error_next" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="_on_select_next_item_by_state" binds= [6]]
+[connection signal="select_error_prevous" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="_on_select_previous_item_by_state" binds= [6]]
+[connection signal="select_failure_next" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="_on_select_next_item_by_state" binds= [5]]
+[connection signal="select_failure_prevous" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="_on_select_previous_item_by_state" binds= [5]]
+[connection signal="select_flaky_next" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="_on_select_next_item_by_state" binds= [4]]
+[connection signal="select_flaky_prevous" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="_on_select_previous_item_by_state" binds= [4]]
 [connection signal="tree_view_mode_changed" from="VBoxContainer/Header/StatusBar" to="VBoxContainer/MainPanel" method="_on_status_bar_tree_view_mode_changed"]
 [connection signal="run_testcase" from="VBoxContainer/MainPanel" to="." method="_on_MainPanel_run_testcase"]
 [connection signal="run_testsuite" from="VBoxContainer/MainPanel" to="." method="_on_MainPanel_run_testsuite"]
