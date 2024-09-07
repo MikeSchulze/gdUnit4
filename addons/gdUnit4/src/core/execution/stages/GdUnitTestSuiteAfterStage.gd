@@ -16,9 +16,11 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	GdUnitThreadManager.get_current_context().set_assert(null)
 	await context.gc()
 	var reports := context.build_reports(false)
-
-	var s := context.build_report_statistics(false)
-	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path, test_suite.get_name(), s, reports))
+	fire_event(GdUnitEvent.new()\
+		.suite_after(test_suite.get_script().resource_path,\
+			test_suite.get_name(),
+			context.get_execution_statistics(),
+			reports))
 
 	GdUnitFileAccess.clear_tmp()
 	# Guard that checks if all doubled (spy/mock) objects are released

@@ -27,6 +27,7 @@ var _has_errors: bool
 var _failure_count := 0
 var _orphan_count := 0
 var _error_count := 0
+var _skipped_count := 0
 
 
 var error_monitor: GodotGdErrorMonitor = null:
@@ -192,6 +193,7 @@ func build_reports(recursive:= true) -> Array[GdUnitReport]:
 			collected_reports.push_front(GdUnitReport.new() \
 				.create(GdUnitReport.WARN, 1, GdAssertMessages.orphan_detected_on_suite_setup(_orphan_count)))
 	_is_skipped = is_skipped()
+	_skipped_count = count_skipped(recursive)
 	_is_success = is_success()
 	_is_flaky = is_flaky()
 	_has_warnings = has_warnings()
@@ -200,6 +202,7 @@ func build_reports(recursive:= true) -> Array[GdUnitReport]:
 	if !_is_success:
 		_has_failures = has_failures()
 		_failure_count = count_failures(recursive)
+	_is_calculated = true
 	return collected_reports
 
 
@@ -208,6 +211,7 @@ func evaluate_test_retry_status() -> bool:
 	# get latest test execution status
 	var last_test_status :GdUnitExecutionContext = _sub_context.back()
 	_is_skipped = last_test_status.is_skipped()
+	_skipped_count = last_test_status.count_skipped(false)
 	_is_success = last_test_status.is_success()
 	# if success but it have more than one sub contexts the test was rerurn becouse of failures and will be marked as flaky
 	_is_flaky = _is_success and _sub_context.size() > 1
@@ -223,7 +227,7 @@ func evaluate_test_retry_status() -> bool:
 	return _is_success
 
 
-func build_report_statistics(recursive:= true) -> Dictionary:
+func get_execution_statistics() -> Dictionary:
 	return {
 		GdUnitEvent.RETRY_COUNT: _test_execution_iteration,
 		GdUnitEvent.ORPHAN_NODES: _orphan_count,
@@ -235,7 +239,7 @@ func build_report_statistics(recursive:= true) -> Dictionary:
 		GdUnitEvent.SKIPPED: _is_skipped,
 		GdUnitEvent.FAILED_COUNT: _failure_count,
 		GdUnitEvent.ERROR_COUNT: _error_count,
-		GdUnitEvent.SKIPPED_COUNT: count_skipped(recursive)
+		GdUnitEvent.SKIPPED_COUNT: _skipped_count
 	}
 
 
@@ -257,7 +261,8 @@ func has_errors() -> bool:
 
 func has_warnings() -> bool:
 	return (
-		_sub_context.any(func(c :GdUnitExecutionContext) -> bool: return c.has_warnings())
+		_sub_context.any(func(c :GdUnitExecutionContext) -> bool:
+			return c._has_warnings if c._is_calculated else c.has_warnings())
 		or _report_collector.has_warnings()
 	)
 
@@ -271,13 +276,12 @@ func is_flaky() -> bool:
 
 
 func is_success() -> bool:
-	if not _is_calculated:
-		_is_success = evaluate_is_success()
-		_is_flaky = is_flaky()
-		_has_errors = has_errors()
-		_has_failures = has_failures()
-		_is_calculated = true
-	return _is_success
+	if _sub_context.is_empty():
+		return not has_failures()
+
+	var failed_context := _sub_context.filter(func(c :GdUnitExecutionContext) -> bool:
+			return !(c._is_success if c._is_calculated else c.is_success()))
+	return failed_context.is_empty() and not has_failures()
 
 
 func is_skipped() -> bool:
@@ -290,15 +294,6 @@ func is_skipped() -> bool:
 
 func is_interupted() -> bool:
 	return false if test_case == null else test_case.is_interupted()
-
-
-func evaluate_is_success() -> bool:
-	if _sub_context.is_empty():
-		return not has_failures()# and not has_errors()
-
-	var failed_context := _sub_context.filter(func(c :GdUnitExecutionContext) -> bool:
-			return !c.is_success())
-	return failed_context.is_empty() and not has_failures()# and not has_errors()
 
 
 func has_skipped() -> bool:
