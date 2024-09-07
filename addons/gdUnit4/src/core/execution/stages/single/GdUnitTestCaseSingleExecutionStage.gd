@@ -10,7 +10,7 @@ var _stage_test :IGdUnitExecutionStage = GdUnitTestCaseSingleTestStage.new()
 
 func _execute(context :GdUnitExecutionContext) -> void:
 	while context.retry_execution():
-		var test_context := GdUnitExecutionContext.of(context, context._test_execution_iteration)
+		var test_context := GdUnitExecutionContext.of(context)
 		await _stage_before.execute(test_context)
 		if not test_context.is_skipped():
 			await _stage_test.execute(GdUnitExecutionContext.of(test_context))

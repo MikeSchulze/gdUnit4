@@ -82,6 +82,13 @@ func dispose_sub_contexts() -> void:
 	_sub_context.clear()
 
 
+static func of(pe: GdUnitExecutionContext) -> GdUnitExecutionContext:
+	var context := GdUnitExecutionContext.new(pe._test_case_name, pe)
+	context._test_case_name = pe._test_case_name
+	context._test_execution_iteration = pe._test_execution_iteration
+	return context
+
+
 static func of_test_suite(p_test_suite: GdUnitTestSuite) -> GdUnitExecutionContext:
 	assert(p_test_suite, "test_suite is null")
 	var context := GdUnitExecutionContext.new(p_test_suite.get_name())
@@ -100,13 +107,6 @@ static func of_parameterized_test(pe: GdUnitExecutionContext, test_case_name: St
 	var context := GdUnitExecutionContext.new(test_case_name, pe)
 	context._test_case_name = test_case_name
 	context._test_case_parameter_set = test_case_parameter_set
-	return context
-
-
-static func of(pe: GdUnitExecutionContext, execution_iteration: int = 0) -> GdUnitExecutionContext:
-	var context := GdUnitExecutionContext.new(pe._test_case_name, pe)
-	context._test_case_name = pe._test_case_name
-	context._test_execution_iteration = execution_iteration
 	return context
 
 
@@ -294,13 +294,6 @@ func is_skipped() -> bool:
 
 func is_interupted() -> bool:
 	return false if test_case == null else test_case.is_interupted()
-
-
-func has_skipped() -> bool:
-	return (
-		_sub_context.any(func(c :GdUnitExecutionContext) -> bool: return c.has_skipped())
-		or _report_collector.has_skipped()
-	)
 
 
 func count_failures(recursive: bool) -> int:

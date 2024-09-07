@@ -111,8 +111,8 @@ func set_timeout() -> void:
 
 func do_interrupt() -> void:
 	_interupted = true
-	var execution_context: = GdUnitThreadManager.get_current_context().get_execution_context()
 	if not is_expect_interupted():
+		var execution_context:= GdUnitThreadManager.get_current_context().get_execution_context()
 		if is_fuzzed():
 			execution_context.add_report(GdUnitReport.new()\
 				.create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout")))

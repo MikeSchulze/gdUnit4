@@ -34,7 +34,7 @@ func _execute(context: GdUnitExecutionContext) -> void:
 		test_context._test_case_name = current_test_case_name
 		var has_errors := false
 		while test_context.retry_execution():
-			var retry_test_context := GdUnitExecutionContext.of(test_context, test_context._test_execution_iteration)
+			var retry_test_context := GdUnitExecutionContext.of(test_context)
 
 			retry_test_context._test_case_name = current_test_case_name
 			await _stage_before.execute(retry_test_context)
