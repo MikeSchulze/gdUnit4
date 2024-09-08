@@ -46,8 +46,8 @@ func _ready() -> void:
 	_failures.text = "0"
 	_errors.text = "0"
 	_icon_failures.texture = GdUnitUiTools.get_icon("StatusError", Color.SKY_BLUE)
-	_icon_errors.texture = GdUnitUiTools.get_icon("StatusError")
-	_icon_flaky.texture = GdUnitUiTools.get_icon("CheckBox")
+	_icon_errors.texture = GdUnitUiTools.get_icon("StatusError", Color.DARK_RED)
+	_icon_flaky.texture = GdUnitUiTools.get_icon("CheckBox", Color.GREEN_YELLOW)
 
 	_button_failure_up.icon = GdUnitUiTools.get_icon("ArrowUp")
 	_button_failure_down.icon = GdUnitUiTools.get_icon("ArrowDown")
