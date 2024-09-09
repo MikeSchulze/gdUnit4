@@ -40,6 +40,7 @@ ui/inspector/node_collapse=false
 ui/toolbar/run_overall=true
 ui/inspector/tree_sort_mode=1
 report/godot/script_error=false
+settings/test/flaky_check_enable=true
 
 [importer_defaults]
 

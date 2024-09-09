@@ -23,8 +23,6 @@ var __is_skipped := false
 var __skip_reason :String = "Unknow."
 var __active_test_case :String
 var __awaiter := __gdunit_awaiter()
-# holds the actual execution context
-var __execution_context :RefCounted
 
 
 ### We now load all used asserts and tool scripts into the cache according to the principle of "lazy loading"
@@ -100,8 +98,9 @@ func error_as_string(error_number :int) -> String:
 
 ## A litle helper to auto freeing your created objects after test execution
 func auto_free(obj :Variant) -> Variant:
-	if __execution_context != null:
-		return __execution_context.register_auto_free(obj)
+	var execution_context := GdUnitThreadManager.get_current_context().get_execution_context()
+	if execution_context != null:
+		return execution_context.register_auto_free(obj)
 	else:
 		if is_instance_valid(obj):
 			obj.queue_free()
@@ -111,8 +110,9 @@ func auto_free(obj :Variant) -> Variant:
 @warning_ignore("native_method_override")
 func add_child(node :Node, force_readable_name := false, internal := Node.INTERNAL_MODE_DISABLED) -> void:
 	super.add_child(node, force_readable_name, internal)
-	if __execution_context != null:
-		__execution_context.orphan_monitor_start()
+	var execution_context := GdUnitThreadManager.get_current_context().get_execution_context()
+	if execution_context != null:
+		execution_context.orphan_monitor_start()
 
 
 ## Discard the error message triggered by a timeout (interruption).[br]

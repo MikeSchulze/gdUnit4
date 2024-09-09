@@ -169,9 +169,9 @@ func load_parameter_sets(test_case: _TestCase, do_validate := false) -> Array:
 		""".dedent().trim_prefix("\n") % [
 			GdAssertMessages._error("Internal Error"),
 			GdAssertMessages._error("Please report this issue as a bug!")]
-		test_case.get_parent().__execution_context\
-			.reports()\
-			.append(GdUnitReport.new().create(GdUnitReport.INTERUPTED, test_case.line_number(), error))
+		GdUnitThreadManager.get_current_context()\
+			.get_execution_context()\
+			.add_report(GdUnitReport.new().create(GdUnitReport.INTERUPTED, test_case.line_number(), error))
 		test_case.skip(true, error)
 		test_case._interupted = true
 	return parameter_sets

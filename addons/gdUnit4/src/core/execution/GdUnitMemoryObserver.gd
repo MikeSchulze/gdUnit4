@@ -124,6 +124,7 @@ func gc() -> void:
 		var value :Variant = _store.pop_front()
 		tagged_objects.erase(value)
 		await GdUnitTools.free_instance(value, _is_stdout_verbose)
+	assert(_store.is_empty(), "The memory observer has still entries in the store!")
 
 
 ## Checks whether the specified object is registered for automatic release

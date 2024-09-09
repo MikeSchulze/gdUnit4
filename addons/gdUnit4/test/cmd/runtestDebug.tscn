@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbdmsq72qtcyr"]
+
+[sub_resource type="GDScript" id="GDScript_54n73"]
+script/source = "# a small helper to debug the GdUnitCmdTool
+extends Node
+
+const CmdTool := preload(\"res://addons/gdUnit4/bin/GdUnitCmdTool.gd\")
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	#var tool := CmdTool.new()
+
+	var runner := CmdTool.CLIRunner.new()
+	runner._debug_cmd_args = [\"GdUnitCmdTool.gd\", \"--add\", \"res://addons/gdUnit4/test/GdUnitTestSuiteTest.gd\", \"--continue\"]
+	add_child(runner)
+"
+
+[node name="RuntestDebug" type="Node"]
+script = SubResource("GDScript_54n73")

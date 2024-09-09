@@ -16,6 +16,8 @@ const TEST_TIMEOUT = GROUP_TEST + "/test_timeout_seconds"
 const TEST_LOOKUP_FOLDER = GROUP_TEST + "/test_lookup_folder"
 const TEST_SUITE_NAMING_CONVENTION = GROUP_TEST + "/test_suite_naming_convention"
 const TEST_DISCOVER_ENABLED = GROUP_TEST + "/test_discovery"
+const TEST_FLAKY_CHECK = GROUP_TEST + "/flaky_check_enable"
+const TEST_FLAKY_MAX_RETRIES = GROUP_TEST + "/flaky_max_retries"
 
 
 # Report Setiings
@@ -95,11 +97,15 @@ const _VALUE_SET_SEPARATOR = "\f" # ASCII Form-feed character (AKA page break)
 
 static func setup() -> void:
 	create_property_if_need(UPDATE_NOTIFICATION_ENABLED, true, "Show notification if new gdUnit4 version is found")
+	# test settings
 	create_property_if_need(SERVER_TIMEOUT, DEFAULT_SERVER_TIMEOUT, "Server connection timeout in minutes")
 	create_property_if_need(TEST_TIMEOUT, DEFAULT_TEST_TIMEOUT, "Test case runtime timeout in seconds")
 	create_property_if_need(TEST_LOOKUP_FOLDER, DEFAULT_TEST_LOOKUP_FOLDER, HELP_TEST_LOOKUP_FOLDER)
 	create_property_if_need(TEST_SUITE_NAMING_CONVENTION, NAMING_CONVENTIONS.AUTO_DETECT, "Naming convention to use when generating testsuites", NAMING_CONVENTIONS.keys())
 	create_property_if_need(TEST_DISCOVER_ENABLED, false, "Automatically detect new tests in test lookup folders at runtime")
+	create_property_if_need(TEST_FLAKY_CHECK, false, "Rerun tests on failure and mark them as FLAKY")
+	create_property_if_need(TEST_FLAKY_MAX_RETRIES, 3, "Sets the number of retries for rerunning a flaky test")
+	# report settings
 	create_property_if_need(REPORT_PUSH_ERRORS, false, "Report push_error() as failure")
 	create_property_if_need(REPORT_SCRIPT_ERRORS, true, "Report script errors as failure")
 	create_property_if_need(REPORT_ORPHANS, true, "Report orphaned nodes after tests finish")
@@ -262,6 +268,14 @@ static func is_inspector_toolbar_button_show() -> bool:
 
 static func is_test_discover_enabled() -> bool:
 	return get_setting(TEST_DISCOVER_ENABLED, false)
+
+
+static func is_test_flaky_check_enabled() -> bool:
+	return get_setting(TEST_FLAKY_CHECK, false)
+
+
+static func get_flaky_max_retries() -> int:
+	return get_setting(TEST_FLAKY_MAX_RETRIES, 3)
 
 
 static func set_test_discover_enabled(enable :bool) -> void:

@@ -38,7 +38,7 @@ func test_progress_success() -> void:
 	var expected_progess_index :float = 0
 	# simulate execution of 20 success test runs
 	for index in 20:
-		_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_after("res://test/testA.gd", "TestSuiteA", "test_a%d" % index, {}))
+		_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_statistics("res://test/testA.gd", "TestSuiteA", "test_a%d" % index, {}))
 		expected_progess_index += 1
 		assert_that(_progress.value).is_equal(expected_progess_index)
 		assert_that(_status.text).is_equal("%d:42" % expected_progess_index)
@@ -49,7 +49,7 @@ func test_progress_success() -> void:
 		_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_after("res://test/testA.gd", "TestSuiteA", "test_parameterized:%d (params)" % index, {}))
 		assert_that(_progress.value).is_equal(expected_progess_index)
 	# final test end event
-	_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_after("res://test/testA.gd", "TestSuiteA", "test_parameterized", {}))
+	_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_statistics("res://test/testA.gd", "TestSuiteA", "test_parameterized", {}))
 	# we expect only one progress step after a parameterized test has been executed, regardless of the iterations
 	expected_progess_index += 1
 	assert_that(_progress.value).is_equal(expected_progess_index)
@@ -80,5 +80,5 @@ func test_progress_failed(test_name :String, is_failed :bool, is_error :bool, ex
 		GdUnitEvent.SKIPPED_COUNT: 0,
 	}
 
-	_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_after("res://test/testA.gd", "TestSuiteA", test_name, statistics))
+	_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_statistics("res://test/testA.gd", "TestSuiteA", test_name, statistics))
 	assert_that(_style.bg_color).is_equal(expected_color)

@@ -63,3 +63,10 @@ func test_create_multipe_fuzzers() -> void:
 	var b :IntFuzzer = fuzzer_b
 	assert_int(b._from).is_equal(10)
 	assert_int(b._to).is_equal(20)
+
+
+func test_create_fuzzer_with_args() -> void:
+	var fuzzer := GdUnitExpressionRunner.new().to_fuzzer(TestFuzzers, "NestedFuzzerWithArgs.new(100, MAX_VALUE, Vector2.ONE)")
+	assert_that(fuzzer).is_not_null()
+	assert_that(fuzzer is Fuzzer).is_true()
+	assert_bool(fuzzer is TestFuzzers.NestedFuzzerWithArgs).is_true()

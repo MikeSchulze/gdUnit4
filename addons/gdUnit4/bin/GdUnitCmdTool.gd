@@ -33,6 +33,7 @@ class CLIRunner:
 	var _headless_mode_ignore := false
 	var _runner_config := GdUnitRunnerConfig.new()
 	var _runner_config_file := ""
+	var _debug_cmd_args: = PackedStringArray()
 	var _console := CmdConsole.new()
 	var _cmd_options := CmdOptions.new([
 			CmdOption.new(
@@ -274,6 +275,12 @@ class CLIRunner:
 		quit(RETURN_SUCCESS)
 
 
+	func get_cmdline_args() -> PackedStringArray:
+		if _debug_cmd_args.is_empty():
+			return OS.get_cmdline_args()
+		return _debug_cmd_args
+
+
 	func init_gd_unit() -> void:
 		_console.prints_color(
 			"""
@@ -284,7 +291,7 @@ class CLIRunner:
 		).new_line()
 
 		var cmd_parser := CmdArgumentParser.new(_cmd_options, "GdUnitCmdTool.gd")
-		var result := cmd_parser.parse(OS.get_cmdline_args())
+		var result := cmd_parser.parse(get_cmdline_args())
 		if result.is_error():
 			show_options()
 			_console.prints_error(result.error_message())
@@ -443,10 +450,8 @@ class CLIRunner:
 	func _on_gdunit_event(event: GdUnitEvent) -> void:
 		match event.type():
 			GdUnitEvent.INIT:
-				_report = GdUnitHtmlReport.new(_report_dir)
+				_report = GdUnitHtmlReport.new(_report_dir, _report_max)
 			GdUnitEvent.STOP:
-				if _report == null:
-					_report = GdUnitHtmlReport.new(_report_dir)
 				var report_path := _report.write()
 				_report.delete_history(_report_max)
 				JUnitXmlReport.new(_report._report_path, _report.iteration()).write(_report)
@@ -464,45 +469,31 @@ class CLIRunner:
 					Color.CORNFLOWER_BLUE
 				)
 			GdUnitEvent.TESTSUITE_BEFORE:
-				_report.add_testsuite_report(
-					GdUnitTestSuiteReport.new(event.resource_path(), event.suite_name(), event.total_count())
-				)
+				_report.add_testsuite_report(event.resource_path(), event.suite_name(), event.total_count())
 			GdUnitEvent.TESTSUITE_AFTER:
-				_report.update_test_suite_report(
+				_report.add_testsuite_reports(
 					event.resource_path(),
-					event.elapsed_time(),
-					event.is_error(),
-					event.is_failed(),
-					event.is_warning(),
-					event.is_skipped(),
-					event.skipped_count(),
+					event.error_count(),
 					event.failed_count(),
 					event.orphan_nodes(),
+					event.elapsed_time(),
 					event.reports()
 				)
 			GdUnitEvent.TESTCASE_BEFORE:
-				_report.add_testcase_report(
-					event.resource_path(),
-					GdUnitTestCaseReport.new(
-						event.resource_path(),
-						event.suite_name(),
-						event.test_name()
-					)
-				)
+				_report.add_testcase(event.resource_path(), event.suite_name(), event.test_name())
 			GdUnitEvent.TESTCASE_AFTER:
-				var test_report := GdUnitTestCaseReport.new(
-					event.resource_path(),
-					event.suite_name(),
+				_report.set_testcase_counters(event.resource_path(),
 					event.test_name(),
 					event.is_error(),
-					event.is_failed(),
 					event.failed_count(),
 					event.orphan_nodes(),
 					event.is_skipped(),
-					event.reports(),
-					event.elapsed_time()
-				)
-				_report.update_testcase_report(event.resource_path(), test_report)
+					event.is_flaky(),
+					event.elapsed_time())
+				_report.add_testcase_reports(event.resource_path(), event.test_name(), event.reports())
+			GdUnitEvent.TESTCASE_STATISTICS:
+				_report.update_testsuite_counters(event.resource_path(), event.is_error(), event.failed_count(), event.orphan_nodes(),\
+					event.is_skipped(), event.is_flaky(), event.elapsed_time())
 		print_status(event)
 
 
@@ -556,11 +547,12 @@ class CLIRunner:
 				_print_failure_report(event.reports())
 				_print_status(event)
 				_console.prints_color(
-					"Statistics: | %d tests cases | %d error | %d failed | %d skipped | %d orphans |\n"
+					"Statistics: | %d tests cases | %d error | %d failed | %d flaky | %d skipped | %d orphans |\n"
 					% [
 						_report.test_count(),
 						_report.error_count(),
 						_report.failure_count(),
+						_report.flaky_count(),
 						_report.skipped_count(),
 						_report.orphan_count()
 					],
@@ -587,14 +579,22 @@ class CLIRunner:
 
 
 	func _print_status(event: GdUnitEvent) -> void:
-		if event.is_skipped():
+		if event.is_flaky() and event.is_success():
+			var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
+			_console.print_color("FLAKY (%d retries)" % retries, Color.GREEN_YELLOW, CmdConsole.BOLD | CmdConsole.ITALIC)
+		elif event.is_success():
+			_console.print_color("PASSED", Color.FOREST_GREEN, CmdConsole.BOLD)
+		elif event.is_skipped():
 			_console.print_color("SKIPPED", Color.GOLDENROD, CmdConsole.BOLD | CmdConsole.ITALIC)
 		elif event.is_failed() or event.is_error():
-			_console.print_color("FAILED", Color.FIREBRICK, CmdConsole.BOLD)
-		elif event.orphan_nodes() > 0:
-			_console.print_color("PASSED", Color.GOLDENROD, CmdConsole.BOLD | CmdConsole.UNDERLINE)
-		else:
-			_console.print_color("PASSED", Color.FOREST_GREEN, CmdConsole.BOLD)
+			var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
+			if retries > 1:
+				_console.print_color("FAILED (retry %d)" % retries, Color.FIREBRICK, CmdConsole.BOLD)
+			else:
+				_console.print_color("FAILED", Color.FIREBRICK, CmdConsole.BOLD)
+		elif event.is_warning():
+			_console.print_color("WARNING", Color.GOLDENROD, CmdConsole.BOLD | CmdConsole.UNDERLINE)
+
 		_console.prints_color(
 			" %s" % LocalTime.elapsed(event.elapsed_time()), Color.CORNFLOWER_BLUE
 		)

@@ -15,6 +15,17 @@ class NestedFuzzer extends Fuzzer:
 		return MAX_VALUE
 
 
+class NestedFuzzerWithArgs extends Fuzzer:
+
+	var _value: Variant
+
+	func _init(value: int, _max_value := MAX_VALUE, _vec := Vector2.ONE) -> void:
+		_value = value
+
+	func next_value() -> Variant:
+		return _value
+
+
 func min_value() -> int:
 	return MIN_VALUE
 
