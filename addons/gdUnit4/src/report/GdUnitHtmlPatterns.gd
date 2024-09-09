@@ -6,6 +6,7 @@ const TABLE_RECORD_TESTSUITE = """
 									<td><a class="${report_state}" href=${report_link}>${testsuite_name}</a></td>
 									<td>${test_count}</td>
 									<td>${skipped_count}</td>
+									<td>${flaky_count}</td>
 									<td>${failure_count}</td>
 									<td>${orphan_count}</td>
 									<td>${duration}</td>
@@ -18,6 +19,7 @@ const TABLE_RECORD_PATH = """
 									<td><a class="${report_state}" href="${report_link}">${path}</a></td>
 									<td>${test_count}</td>
 									<td>${skipped_count}</td>
+									<td>${flaky_count}</td>
 									<td>${failure_count}</td>
 									<td>${orphan_count}</td>
 									<td>${duration}</td>
@@ -57,6 +59,7 @@ const PATH = "${path}"
 const TESTSUITE_COUNT = "${suite_count}"
 const TESTCASE_COUNT = "${test_count}"
 const FAILURE_COUNT = "${failure_count}"
+const FLAKY_COUNT = "${flaky_count}"
 const SKIPPED_COUNT = "${skipped_count}"
 const ORPHAN_COUNT = "${orphan_count}"
 const DURATION = "${duration}"
@@ -81,6 +84,7 @@ static func build(template :String, report :GdUnitReportSummary, report_link :St
 		.replace(TESTSUITE_COUNT, str(report.suite_count()))\
 		.replace(TESTCASE_COUNT, str(report.test_count()))\
 		.replace(FAILURE_COUNT, str(report.error_count() + report.failure_count()))\
+		.replace(FLAKY_COUNT, str(report.flaky_count()))\
 		.replace(SKIPPED_COUNT, str(report.skipped_count()))\
 		.replace(ORPHAN_COUNT, str(report.orphan_count()))\
 		.replace(DURATION, LocalTime.elapsed(report.duration()))\

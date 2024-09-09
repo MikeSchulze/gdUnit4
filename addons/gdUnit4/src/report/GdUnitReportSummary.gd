@@ -56,45 +56,27 @@ func test_executed_count() -> int:
 
 
 func error_count() -> int:
-	var count := _error_count
-	for report in _reports:
-		count += report.error_count()
-	return count
+	return _error_count
 
 
 func failure_count() -> int:
-	var count := _failure_count
-	for report in _reports:
-		count += report.failure_count()
-	return count
+	return _failure_count
 
 
 func skipped_count() -> int:
-	var count := _skipped_count
-	for report in _reports:
-		count += report.skipped_count()
-	return count
+	return _skipped_count
 
 
 func flaky_count() -> int:
-	var count := _flaky_count
-	for report in _reports:
-		count += report.flaky_count()
-	return count
+	return _flaky_count
 
 
 func orphan_count() -> int:
-	var count := _orphan_count
-	for report in _reports:
-		count += report.orphan_count()
-	return count
+	return _orphan_count
 
 
 func duration() -> int:
-	var count := _duration
-	for report in _reports:
-		count += report.duration()
-	return count
+	return _duration
 
 
 func get_reports() -> Array:
@@ -116,10 +98,10 @@ func succes_rate() -> String:
 func calculate_state(p_error_count :int, p_failure_count :int, p_orphan_count :int, p_flaky_count: int) -> String:
 	if p_error_count > 0:
 		return "error"
-	if p_flaky_count > 0:
-		return "flaky"
 	if p_failure_count > 0:
 		return "failure"
+	if p_flaky_count > 0:
+		return "flaky"
 	if p_orphan_count > 0:
 		return "warning"
 	return "success"

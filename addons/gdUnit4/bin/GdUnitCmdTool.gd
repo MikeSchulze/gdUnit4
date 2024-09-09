@@ -450,10 +450,8 @@ class CLIRunner:
 	func _on_gdunit_event(event: GdUnitEvent) -> void:
 		match event.type():
 			GdUnitEvent.INIT:
-				_report = GdUnitHtmlReport.new(_report_dir)
+				_report = GdUnitHtmlReport.new(_report_dir, _report_max)
 			GdUnitEvent.STOP:
-				if _report == null:
-					_report = GdUnitHtmlReport.new(_report_dir)
 				var report_path := _report.write()
 				_report.delete_history(_report_max)
 				JUnitXmlReport.new(_report._report_path, _report.iteration()).write(_report)
@@ -471,28 +469,28 @@ class CLIRunner:
 					Color.CORNFLOWER_BLUE
 				)
 			GdUnitEvent.TESTSUITE_BEFORE:
-				_report.add_testsuite_report(
-					GdUnitTestSuiteReport.new(event.resource_path(), event.suite_name(), event.total_count())
-				)
+				_report.add_testsuite_report(event.resource_path(), event.suite_name(), event.total_count())
 			GdUnitEvent.TESTSUITE_AFTER:
-				_report.update_test_suite_report(
+				_report.add_testsuite_reports(
 					event.resource_path(),
-					event.elapsed_time(),
-					event.is_error(),
-					event.is_failed(),
-					event.is_warning(),
-					event.is_skipped(),
-					event.skipped_count(),
+					event.error_count(),
 					event.failed_count(),
 					event.orphan_nodes(),
+					event.elapsed_time(),
 					event.reports()
 				)
 			GdUnitEvent.TESTCASE_BEFORE:
 				_report.add_testcase(event.resource_path(), event.suite_name(), event.test_name())
-
 			GdUnitEvent.TESTCASE_AFTER:
+				_report.set_testcase_counters(event.resource_path(),
+					event.test_name(),
+					event.is_error(),
+					event.failed_count(),
+					event.orphan_nodes(),
+					event.is_skipped(),
+					event.is_flaky(),
+					event.elapsed_time())
 				_report.add_testcase_reports(event.resource_path(), event.test_name(), event.reports())
-
 			GdUnitEvent.TESTCASE_STATISTICS:
 				_report.update_testsuite_counters(event.resource_path(), event.is_error(), event.failed_count(), event.orphan_nodes(),\
 					event.is_skipped(), event.is_flaky(), event.elapsed_time())

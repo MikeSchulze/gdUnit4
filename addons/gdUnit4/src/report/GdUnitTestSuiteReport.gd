@@ -1,16 +1,15 @@
 class_name GdUnitTestSuiteReport
 extends GdUnitReportSummary
 
-var _time_stamp :int
-var _failure_reports :Array[GdUnitReport] = []
+var _time_stamp: int
+var _failure_reports: Array[GdUnitReport] = []
 
 
-@warning_ignore("shadowed_variable")
-func _init(resource_path :String, name :String, test_count :int) -> void:
-	_resource_path = resource_path
-	_name = name
+func _init(p_resource_path: String, p_name: String, p_test_count: int) -> void:
+	_resource_path = p_resource_path
+	_name = p_name
+	_test_count = p_test_count
 	_time_stamp = Time.get_unix_time_from_system() as int
-	_test_count = test_count
 
 
 func create_record(report_link :String) -> String:
@@ -101,6 +100,17 @@ func update_testsuite_counters(p_error_count: int, p_failure_count: int, p_orpha
 	_skipped_count += p_is_skipped as int
 	_flaky_count += p_is_flaky as int
 	_duration += p_duration
+
+
+func set_testcase_counters(test_name: String, p_error_count: int, p_failure_count: int, p_orphan_count: int,
+	p_is_skipped: bool, p_is_flaky: bool, p_duration: int) -> void:
+	if _reports.is_empty():
+		return
+	var test_report:GdUnitTestCaseReport = _reports.filter(func (report: GdUnitTestCaseReport) -> bool:
+		return report.name() == test_name
+		).back()
+	if test_report:
+		test_report.set_testcase_counters(p_error_count, p_failure_count, p_orphan_count, p_is_skipped, p_is_flaky, p_duration)
 
 
 func add_testcase_reports(test_name: String, reports: Array[GdUnitReport] ) -> void:

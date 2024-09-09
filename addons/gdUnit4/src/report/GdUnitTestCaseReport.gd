@@ -6,28 +6,10 @@ var _failure_reports :Array[GdUnitReport]
 
 
 @warning_ignore("shadowed_variable")
-func _init(
-		p_resource_path :String,
-		p_suite_name :String,
-		test_name :String,
-		is_error := false,
-		_is_failed := false,
-		failed_count :int = 0,
-		orphan_count :int = 0,
-		is_skipped := false,
-		is_flaky := false,
-		failure_reports :Array[GdUnitReport] = [],
-		p_duration :int = 0) -> void:
+func _init(p_resource_path: String, p_suite_name: String, p_test_name: String) -> void:
 	_resource_path = p_resource_path
 	_suite_name = p_suite_name
-	_name = test_name
-	_error_count = is_error
-	_failure_count = failed_count
-	_orphan_count = orphan_count
-	_skipped_count = is_skipped
-	_flaky_count = is_flaky
-	_failure_reports = failure_reports
-	_duration = p_duration
+	_name = p_test_name
 
 
 func suite_name() -> String:
@@ -53,6 +35,16 @@ func create_record(_report_dir :String) -> String:
 
 func add_testcase_reports(reports: Array[GdUnitReport]) -> void:
 	_failure_reports.append_array(reports)
+
+
+func set_testcase_counters(p_error_count: int, p_failure_count: int, p_orphan_count: int,
+	p_is_skipped: bool, p_is_flaky: bool, p_duration: int) -> void:
+	_error_count = p_error_count
+	_failure_count = p_failure_count
+	_orphan_count = p_orphan_count
+	_skipped_count = p_is_skipped
+	_flaky_count = p_is_flaky as int
+	_duration = p_duration
 
 
 func get_test_reports() -> Array[GdUnitReport]:

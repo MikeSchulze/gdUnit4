@@ -1,4 +1,3 @@
-
 body {
 	margin: 0;
 	padding: 0;
@@ -18,11 +17,11 @@ footer {
 	background-image: linear-gradient(to bottom right, #347bad, #055d9c);
 }
 
-footer a  {
+footer a {
 	padding-left: 5px;
 }
 
-footer p  {
+footer p {
 	padding-left: 10px;
 }
 
@@ -104,7 +103,8 @@ footer p  {
 	text-align: left;
 }
 
-.summary .counter, .percent {
+.summary .counter,
+.percent {
 	width: 300px;
 	font-size: 120%;
 	font-weight: bold;
@@ -118,7 +118,8 @@ footer p  {
 }
 
 /* Style tab links */
-input, section {
+input,
+section {
 	clear: both;
 	padding-top: 0px;
 	padding-bottom: 0px;
@@ -161,11 +162,13 @@ label:hover {
 	text-decoration: underline;
 }
 
-#tab1:checked ~ #content1, #tab2:checked ~ #content2, #tab3:checked ~ #content3 {
+#tab1:checked~#content1,
+#tab2:checked~#content2,
+#tab3:checked~#content3 {
 	display: block;
 }
 
-input:checked + label {
+input:checked+label {
 	height: 14px;
 	border-top: 8px solid #9887c4;
 	border-right: 1px solid #9887c4;
@@ -198,7 +201,8 @@ div.tab table {
 	border-collapse: collapse;
 }
 
-div.tab th, div.tab table {
+div.tab th,
+div.tab table {
 	border-bottom: solid 1px #055d9c;
 }
 
@@ -226,27 +230,38 @@ div.tab td:first-child {
 	text-align: left;
 }
 
-div.tab td.numeric, div.tab {
+div.tab td.numeric,
+div.tab {
 	text-align: right;
 }
 
-div.tab td.report-column, th.report-column {
-	display:none;
+div.tab td.report-column,
+th.report-column {
+	display: none;
 }
 
-div.tab td.success, div.tab a.success {
+div.tab td.success,
+div.tab a.success {
 	color: #03a606;
 }
 
-div.tab td.error, div.tab a.error {
+div.tab td.flaky,
+div.tab a.flaky {
+	color: #adff2f;
+}
+
+div.tab td.error,
+div.tab a.error {
 	color: #bf3600;
 }
 
-div.tab td.failure, div.tab a.failure {
+div.tab td.failure,
+div.tab a.failure {
 	color: #bf3600;
 }
 
-div.tab td.warning, div.tab a.warning {
+div.tab td.warning,
+div.tab a.warning {
 	color: #cca704;
 }
 
@@ -273,7 +288,7 @@ div.tab th {
 
 .border_success {
 	border: solid 3px #03a606;
-	background-image: repeating-linear-gradient(45deg, white, white 20%,  #03a606);
+	background-image: repeating-linear-gradient(45deg, white, white 20%, #03a606);
 }
 
 .border_error {
@@ -297,7 +312,7 @@ div.logging {
 div.logging p {
 	padding: 10px;
 	font: arial;
-	background-color:  #dbf1ff;
+	background-color: #dbf1ff;
 	height: 85%;
 }
 
