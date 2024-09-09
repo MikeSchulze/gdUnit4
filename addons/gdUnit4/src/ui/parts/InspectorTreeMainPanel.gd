@@ -938,20 +938,24 @@ func _on_Tree_item_selected() -> void:
 func _on_Tree_item_activated() -> void:
 	var selected_item := _tree.get_selected()
 	var resource_path: String = selected_item.get_meta(META_RESOURCE_PATH)
-	var line_number: int = selected_item.get_meta(META_LINE_NUMBER)
-	var resource := load(resource_path)
+	if selected_item.has_meta(META_LINE_NUMBER):
+		var line_number: int = selected_item.get_meta(META_LINE_NUMBER)
+		var resource := load(resource_path)
 
-	if selected_item.has_meta(META_GDUNIT_REPORT):
-		var reports := get_item_reports(selected_item)
-		var report_line_number := reports[0].line_number()
-		# if number -1 we use original stored line number of the test case
-		# in non debug mode the line number is not available
-		if report_line_number != -1:
-			line_number = report_line_number
+		if selected_item.has_meta(META_GDUNIT_REPORT):
+			var reports := get_item_reports(selected_item)
+			var report_line_number := reports[0].line_number()
+			# if number -1 we use original stored line number of the test case
+			# in non debug mode the line number is not available
+			if report_line_number != -1:
+				line_number = report_line_number
 
-	EditorInterface.get_file_system_dock().navigate_to_path(resource_path)
-	EditorInterface.edit_resource(resource)
-	EditorInterface.get_script_editor().goto_line(line_number - 1)
+		EditorInterface.get_file_system_dock().navigate_to_path(resource_path)
+		EditorInterface.edit_resource(resource)
+		EditorInterface.get_script_editor().goto_line(line_number - 1)
+	elif selected_item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER:
+		# Toggle collapse if dir
+		selected_item.collapsed = not selected_item.collapsed
 
 
 ################################################################################
