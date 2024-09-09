@@ -11,7 +11,7 @@ func _init(p_path :String, report_summaries :Array[GdUnitReportSummary]) -> void
 static func sort_reports_by_path(report_summaries :Array[GdUnitReportSummary]) -> Dictionary:
 	var by_path := Dictionary()
 	for report in report_summaries:
-		var suite_path :String = report.path()
+		var suite_path :String = ProjectSettings.localize_path(report.path())
 		var suite_report :Array[GdUnitReportSummary] = by_path.get(suite_path, [] as Array[GdUnitReportSummary])
 		suite_report.append(report)
 		by_path[suite_path] = suite_report
@@ -27,6 +27,7 @@ func create_record(report_link :String) -> String:
 
 
 func write(report_dir :String) -> String:
+	calculate_summary()
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/report/template/folder_report.html")
 	var path_report := GdUnitHtmlPatterns.build(template, self, "")
 	path_report = apply_testsuite_reports(report_dir, path_report, _reports)
@@ -41,9 +42,17 @@ func write(report_dir :String) -> String:
 
 func apply_testsuite_reports(report_dir :String, template :String, test_suite_reports :Array[GdUnitReportSummary]) -> String:
 	var table_records := PackedStringArray()
-	for report in test_suite_reports:
-		if report is GdUnitTestSuiteReport:
-			var test_suite_report := report as GdUnitTestSuiteReport
-			var report_link := test_suite_report.output_path(report_dir).replace(report_dir, "..")
-			table_records.append(test_suite_report.create_record(report_link))
+	for report:GdUnitTestSuiteReport in test_suite_reports:
+		var report_link := report.output_path(report_dir).replace(report_dir, "..")
+		table_records.append(report.create_record(report_link))
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTSUITES, "\n".join(table_records))
+
+
+func calculate_summary() -> void:
+	for report:GdUnitTestSuiteReport in get_reports():
+		_error_count += report.error_count()
+		_failure_count += report.failure_count()
+		_orphan_count += report.orphan_count()
+		_skipped_count += report.skipped_count()
+		_flaky_count += report.flaky_count()
+		_duration += report.duration()

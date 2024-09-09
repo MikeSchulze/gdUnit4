@@ -19,8 +19,11 @@ var _flaky_count := 0
 var _duration := 0
 var _reports :Array[GdUnitReportSummary] = []
 
-
 func name() -> String:
+	return _name
+
+
+func name_html_encoded() -> String:
 	return html_encode(_name)
 
 
@@ -53,6 +56,10 @@ func test_count() -> int:
 
 func test_executed_count() -> int:
 	return test_count() - skipped_count()
+
+
+func success_count() -> int:
+	return test_count() - error_count() - failure_count() - flaky_count()
 
 
 func error_count() -> int:
@@ -97,14 +104,14 @@ func succes_rate() -> String:
 
 func calculate_state(p_error_count :int, p_failure_count :int, p_orphan_count :int, p_flaky_count: int) -> String:
 	if p_error_count > 0:
-		return "error"
+		return "ERROR"
 	if p_failure_count > 0:
-		return "failure"
+		return "FAILED"
 	if p_flaky_count > 0:
-		return "flaky"
+		return "FLAKY"
 	if p_orphan_count > 0:
-		return "warning"
-	return "success"
+		return "WARNING"
+	return "PASSED"
 
 
 func calculate_succes_rate(p_test_count :int, p_error_count :int, p_failure_count :int) -> String:
@@ -127,9 +134,4 @@ func html_encode(value :String) -> String:
 
 
 func convert_rtf_to_html(bbcode :String) -> String:
-	var as_text: = GdUnitTools.richtext_normalize(bbcode)
-	var converted := PackedStringArray()
-	var lines := as_text.split("\n")
-	for line in lines:
-		converted.append("<p>%s</p>" % line)
-	return "\n".join(converted)
+	return GdUnitTools.richtext_normalize(bbcode)

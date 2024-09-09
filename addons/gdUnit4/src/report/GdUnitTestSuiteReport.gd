@@ -20,10 +20,6 @@ func output_path(report_dir :String) -> String:
 	return "%s/test_suites/%s.%s.html" % [report_dir, path().replace("/", "."), name()]
 
 
-func path_as_link() -> String:
-	return "../path/%s.html" % path().replace("/", ".")
-
-
 func failure_report() -> String:
 	var html_report := ""
 	for report in _failure_reports:
@@ -33,7 +29,8 @@ func failure_report() -> String:
 
 func test_suite_failure_report() -> String:
 	return GdUnitHtmlPatterns.TABLE_REPORT_TESTSUITE\
-		.replace(GdUnitHtmlPatterns.REPORT_STATE, report_state())\
+		.replace(GdUnitHtmlPatterns.REPORT_STATE, report_state().to_lower())\
+		.replace(GdUnitHtmlPatterns.REPORT_STATE_LABEL, report_state())\
 		.replace(GdUnitHtmlPatterns.ORPHAN_COUNT, str(orphan_count()))\
 		.replace(GdUnitHtmlPatterns.DURATION, LocalTime.elapsed(_duration))\
 		.replace(GdUnitHtmlPatterns.FAILURE_REPORT, failure_report())
@@ -41,8 +38,7 @@ func test_suite_failure_report() -> String:
 
 func write(report_dir :String) -> String:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/report/template/suite_report.html")
-	template = GdUnitHtmlPatterns.build(template, self, "")\
-		.replace(GdUnitHtmlPatterns.BREADCRUMP_PATH_LINK, path_as_link())
+	template = GdUnitHtmlPatterns.build(template, self, "")
 
 	var report_output_path := output_path(report_dir)
 	var test_report_table := PackedStringArray()
