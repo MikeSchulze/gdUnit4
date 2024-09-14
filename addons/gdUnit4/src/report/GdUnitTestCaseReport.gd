@@ -25,7 +25,8 @@ func failure_report() -> String:
 
 func create_record(_report_dir :String) -> String:
 	return GdUnitHtmlPatterns.TABLE_RECORD_TESTCASE\
-		.replace(GdUnitHtmlPatterns.REPORT_STATE, report_state())\
+		.replace(GdUnitHtmlPatterns.REPORT_STATE, report_state().to_lower())\
+		.replace(GdUnitHtmlPatterns.REPORT_STATE_LABEL, report_state())\
 		.replace(GdUnitHtmlPatterns.TESTCASE_NAME, name())\
 		.replace(GdUnitHtmlPatterns.SKIPPED_COUNT, str(skipped_count()))\
 		.replace(GdUnitHtmlPatterns.ORPHAN_COUNT, str(orphan_count()))\
