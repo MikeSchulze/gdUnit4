@@ -18,9 +18,14 @@ func test_assert_method_with_disabled_global_error_report() -> void:
 func do_a_fail() -> void:
 	if OS.is_debug_build():
 		# On debug level we need to simulate the assert log entry, otherwise we stuck on a breakpoint
-		prints("""
-		USER SCRIPT ERROR: Assertion failed: test
-		   at: do_a_fail (res://addons/gdUnit4/test/asserts/GdUnitErrorAssertTest.gd:20)""")
+		if Engine.get_version_info().hex >= 0x40400:
+			prints("""
+			SCRIPT ERROR: Assertion failed: test
+			   at: do_a_fail (res://addons/gdUnit4/test/asserts/GdUnitErrorAssertTest.gd:20)""".dedent())
+		else:
+			prints("""
+			USER SCRIPT ERROR: Assertion failed: test
+			   at: do_a_fail (res://addons/gdUnit4/test/asserts/GdUnitErrorAssertTest.gd:20)""".dedent())
 	else:
 		assert(3 == 1, 'test')
 

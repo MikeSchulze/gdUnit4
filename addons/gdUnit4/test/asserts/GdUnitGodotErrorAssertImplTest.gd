@@ -19,10 +19,16 @@ class GodotErrorTestClass:
 				await Engine.get_main_loop().process_frame
 				if OS.is_debug_build():
 					# do not break the debug session we simmulate a assert by writing the error manually
-					prints("""
-						USER SCRIPT ERROR: Assertion failed: this is an assert error
-						   at: GodotErrorTestClass.test (res://addons/gdUnit4/test/asserts/GdUnitGodotErrorAssertImplTest.gd:18)
-					""".dedent())
+					if Engine.get_version_info().hex >= 0x40400:
+						prints("""
+							SCRIPT ERROR: Assertion failed: this is an assert error
+							   at: GodotErrorTestClass.test (res://addons/gdUnit4/test/asserts/GdUnitGodotErrorAssertImplTest.gd:18)
+						""".dedent())
+					else:
+						prints("""
+							USER SCRIPT ERROR: Assertion failed: this is an assert error
+							   at: GodotErrorTestClass.test (res://addons/gdUnit4/test/asserts/GdUnitGodotErrorAssertImplTest.gd:18)
+						""".dedent())
 				else:
 					assert(false, "this is an assert error" )
 			2: # push_warning
@@ -33,10 +39,16 @@ class GodotErrorTestClass:
 			4: # runtime error
 				if OS.is_debug_build():
 					# do not break the debug session we simmulate a assert by writing the error manually
-					prints("""
-						USER SCRIPT ERROR: Division by zero error in operator '/'.
-						   at: GodotErrorTestClass.test (res://addons/gdUnit4/test/asserts/GdUnitGodotErrorAssertImplTest.gd:32)
-					""".dedent())
+					if Engine.get_version_info().hex >= 0x40400:
+						prints("""
+							SCRIPT ERROR: Division by zero error in operator '/'.
+							   at: GodotErrorTestClass.test (res://addons/gdUnit4/test/asserts/GdUnitGodotErrorAssertImplTest.gd:32)
+						""".dedent())
+					else:
+						prints("""
+							USER SCRIPT ERROR: Division by zero error in operator '/'.
+							   at: GodotErrorTestClass.test (res://addons/gdUnit4/test/asserts/GdUnitGodotErrorAssertImplTest.gd:32)
+						""".dedent())
 				else:
 					var a := 0
 					@warning_ignore("integer_division")
