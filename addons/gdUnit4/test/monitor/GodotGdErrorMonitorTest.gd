@@ -8,13 +8,31 @@ extends GdUnitTestSuite
 const __source = 'res://addons/gdUnit4/src/monitor/GodotGdErrorMonitor.gd'
 
 
-const error_report = """
-	USER ERROR: this is an error
-	   at: push_error (core/variant/variant_utility.cpp:880)
-	"""
-const script_error = """
-	USER SCRIPT ERROR: Trying to call a function on a previously freed instance.
-	   at: GdUnitScriptTypeTest.test_xx (res://addons/gdUnit4/test/GdUnitScriptTypeTest.gd:22)
+const PUSH_WARNING_MESSAGE := """
+USER WARNING: Test GodotGdErrorMonitor 'push_warning' reporting
+   at: push_warning (core/variant/variant_utility.cpp:1120)
+"""
+const PUSH_ERROR_MESSAGE := """
+USER ERROR: this is an error
+   at: push_error (core/variant/variant_utility.cpp:880)
+"""
+const SCRIPT_ERROR_MESSAGE := """
+USER SCRIPT ERROR: Trying to call a function on a previously freed instance.
+   at: GdUnitScriptTypeTest.test_xx (res://addons/gdUnit4/test/GdUnitScriptTypeTest.gd:22)
+"""
+
+# With Godot 4.4 the pattern has changed
+const PUSH_WARNING_MESSAGE_4x4 := """
+WARNING: Test GodotGdErrorMonitor 'push_warning' reporting
+   at: push_warning (core/variant/variant_utility.cpp:1120)
+"""
+const PUSH_ERROR_MESSAGE_4x4 := """
+ERROR: this is an error
+   at: push_error (core/variant/variant_utility.cpp:880)
+"""
+const SCRIPT_ERROR_MESSAGE_4x4 := """
+SCRIPT ERROR: Trying to call a function on a previously freed instance.
+   at: GdUnitScriptTypeTest.test_xx (res://addons/gdUnit4/test/GdUnitScriptTypeTest.gd:22)
 """
 
 
@@ -42,9 +60,34 @@ func write_log(content :String) -> String:
 	return log_file.get_path_absolute()
 
 
+func test_scan_for_push_warnings() -> void:
+	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
+	if Engine.get_version_info().hex >= 0x40400:
+		monitor._godot_log_file = write_log(PUSH_WARNING_MESSAGE_4x4)
+	else:
+		monitor._godot_log_file = write_log(PUSH_WARNING_MESSAGE)
+	monitor._report_enabled = true
+
+	# without forced collect reports
+	await monitor.scan(false)
+	assert_array(monitor.to_reports()).is_empty()
+
+	var entry := ErrorLogEntry.new(ErrorLogEntry.TYPE.PUSH_ERROR, -1,
+		"Test GodotGdErrorMonitor 'push_warning' reporting",
+		"at: push_warning (core/variant/variant_utility.cpp:1120)")
+	var expected_report := GodotGdErrorMonitor._to_report(entry)
+	monitor._eof = 0
+	# do force to collect all warnings/errors
+	await monitor.scan(true)
+	assert_array(monitor.to_reports()).contains_exactly([expected_report])
+
+
 func test_scan_for_push_errors() -> void:
 	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
-	monitor._godot_log_file = write_log(error_report)
+	if Engine.get_version_info().hex >= 0x40400:
+		monitor._godot_log_file = write_log(PUSH_ERROR_MESSAGE_4x4)
+	else:
+		monitor._godot_log_file = write_log(PUSH_ERROR_MESSAGE)
 	monitor._report_enabled = true
 
 	# with disabled push_error reporting
@@ -65,9 +108,11 @@ func test_scan_for_push_errors() -> void:
 
 
 func test_scan_for_script_errors() -> void:
-	var log_file := write_log(script_error)
 	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
-	monitor._godot_log_file = log_file
+	if Engine.get_version_info().hex >= 0x40400:
+		monitor._godot_log_file = write_log(SCRIPT_ERROR_MESSAGE_4x4)
+	else:
+		monitor._godot_log_file = write_log(SCRIPT_ERROR_MESSAGE)
 	monitor._report_enabled = true
 
 	# with disabled push_error reporting
