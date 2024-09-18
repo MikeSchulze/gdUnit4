@@ -10,7 +10,6 @@ const __source = 'res://addons/gdUnit4/src/GdUnitAwaiter.gd'
 signal test_signal_a()
 signal test_signal_b()
 signal test_signal_c(value :String)
-signal test_signal_d(value_a :String, value_b :String)
 
 
 func after_test() -> void:
@@ -38,19 +37,19 @@ func emit_test_signal(signal_name :String, signal_args: Array) -> void:
 
 
 func test_await_signal_on() -> void:
-	install_signal_emitter("test_signal_a")
+	install_signal_emitter(test_signal_a.get_name())
 	await await_signal_on(self, "test_signal_a", [], 100)
 
-	install_signal_emitter("test_signal_b")
+	install_signal_emitter(test_signal_b.get_name())
 	await await_signal_on(self, "test_signal_b", [], 100)
 
-	install_signal_emitter("test_signal_c", [])
+	install_signal_emitter(test_signal_c.get_name(), [])
 	await await_signal_on(self, "test_signal_c", [], 100)
 
-	install_signal_emitter("test_signal_c", ["abc"])
+	install_signal_emitter(test_signal_c.get_name(), ["abc"])
 	await await_signal_on(self, "test_signal_c", ["abc"], 100)
 
-	install_signal_emitter("test_signal_c", ["abc", "eee"])
+	install_signal_emitter(test_signal_c.get_name(), ["abc", "eee"])
 	await await_signal_on(self, "test_signal_c", ["abc", "eee"], 100)
 
 
@@ -71,7 +70,7 @@ func test_await_signal_on_never_emitted_timedout() -> void:
 	(
 		# we  wait for 'test_signal_c("yyy")' which  is never emitted
 		await assert_failure_await(func x() -> void: await await_signal_on(self, "test_signal_c", ["yyy"], 200))
-	).has_line(73)\
+	).has_line(72)\
 	.has_message("await_signal_on(test_signal_c, [\"yyy\"]) timed out after 200ms")
 
 
@@ -79,7 +78,7 @@ func test_await_signal_on_invalid_source_timedout() -> void:
 	(
 		# we  wait for a signal on a already freed instance
 		await assert_failure_await(func x() -> void: await await_signal_on(invalid_node(), "tree_entered", [], 300))
-	).has_line(81).has_message(GdAssertMessages.error_await_signal_on_invalid_instance(null, "tree_entered", []))
+	).has_line(80).has_message(GdAssertMessages.error_await_signal_on_invalid_instance(null, "tree_entered", []))
 
 
 func invalid_node() -> Node:

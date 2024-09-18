@@ -3,13 +3,13 @@ extends GdFunctionDoubler
 
 
 const TEMPLATE_RETURN_VARIANT = """
-	var args :Array = ["$(func_name)", $(arguments)]
+	var args__: Array = ["$(func_name)", $(arguments)]
 
 	if $(instance)__is_verify_interactions():
-		$(instance)__verify_interactions(args)
+		$(instance)__verify_interactions(args__)
 		return ${default_return_value}
 	else:
-		$(instance)__save_function_interaction(args)
+		$(instance)__save_function_interaction(args__)
 
 	if $(instance)__do_call_real_func("$(func_name)"):
 		return $(await)super($(arguments))
@@ -19,13 +19,13 @@ const TEMPLATE_RETURN_VARIANT = """
 
 
 const TEMPLATE_RETURN_VOID = """
-	var args :Array = ["$(func_name)", $(arguments)]
+	var args__: Array = ["$(func_name)", $(arguments)]
 
 	if $(instance)__is_verify_interactions():
-		$(instance)__verify_interactions(args)
+		$(instance)__verify_interactions(args__)
 		return
 	else:
-		$(instance)__save_function_interaction(args)
+		$(instance)__save_function_interaction(args__)
 
 	if $(instance)__do_call_real_func("$(func_name)"):
 		$(await)super($(arguments))
@@ -34,49 +34,49 @@ const TEMPLATE_RETURN_VOID = """
 
 
 const TEMPLATE_RETURN_VOID_VARARG = """
-	var varargs :Array = __filter_vargs([$(varargs)])
-	var args :Array = ["$(func_name)", $(arguments)] + varargs
+	var varargs__: Array = __filter_vargs([$(varargs)])
+	var args__: Array = ["$(func_name)", $(arguments)] + varargs__
 
 	if $(instance)__is_verify_interactions():
-		$(instance)__verify_interactions(args)
+		$(instance)__verify_interactions(args__)
 		return
 	else:
-		$(instance)__save_function_interaction(args)
+		$(instance)__save_function_interaction(args__)
 
-	$(await)$(instance)__call_func("$(func_name)", [$(arguments)] + varargs)
+	$(await)$(instance)__call_func("$(func_name)", [$(arguments)] + varargs__)
 
 """
 
 
 const TEMPLATE_RETURN_VARIANT_VARARG = """
-	var varargs :Array = __filter_vargs([$(varargs)])
-	var args :Array = ["$(func_name)", $(arguments)] + varargs
+	var varargs__: Array = __filter_vargs([$(varargs)])
+	var args__: Array = ["$(func_name)", $(arguments)] + varargs__
 
 	if $(instance)__is_verify_interactions():
-		$(instance)__verify_interactions(args)
+		$(instance)__verify_interactions(args__)
 		return ${default_return_value}
 	else:
-		$(instance)__save_function_interaction(args)
+		$(instance)__save_function_interaction(args__)
 
-	return $(await)$(instance)__call_func("$(func_name)", [$(arguments)] + varargs)
+	return $(await)$(instance)__call_func("$(func_name)", [$(arguments)] + varargs__)
 
 """
 
 
 const TEMPLATE_CALLABLE_CALL = """
-	var used_arguments := __filter_vargs([$(arguments)])
+	var used_arguments__ := __filter_vargs([$(arguments)])
 
 	if __is_verify_interactions():
-		__verify_interactions(["call", used_arguments])
+		__verify_interactions(["call", used_arguments__])
 		return ${default_return_value}
 	else:
 		# append possible binded values to complete the original argument list
-		var args := used_arguments.duplicate()
-		args.append_array(super.get_bound_arguments())
-		__save_function_interaction(["call", args])
+		var args__ := used_arguments__.duplicate()
+		args__.append_array(super.get_bound_arguments())
+		__save_function_interaction(["call", args__])
 
 	if __do_call_real_func("call"):
-		return _cb.callv(used_arguments)
+		return _cb.callv(used_arguments__)
 	return ${default_return_value}
 
 """

@@ -103,7 +103,7 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 	var script := ResourceLoader.load(resource_path)
 	if not GdObjects.is_test_suite(script):
 		return null
-	return _parse_test_suite(ResourceLoader.load(resource_path))
+	return _parse_test_suite(script)
 
 
 static func _is_script_format_supported(resource_path :String) -> bool:
@@ -127,25 +127,13 @@ func _parse_test_suite(script :Script) -> GdUnitTestSuite:
 	# add test cases to test suite and parse test case line nummber
 	var test_case_names := _extract_test_case_names(script)
 	_parse_and_add_test_cases(test_suite, script, test_case_names)
-	# not all test case parsed?
-	# we have to scan the base class to
-	if not test_case_names.is_empty():
-		var base_script :GDScript = test_suite.get_script().get_base_script()
-		while base_script is GDScript:
-			# do not parse testsuite itself
-			if base_script.resource_path.find("GdUnitTestSuite") == -1:
-				_parse_and_add_test_cases(test_suite, base_script, test_case_names)
-			base_script = base_script.get_base_script()
 	return test_suite
 
 
 func _extract_test_case_names(script :GDScript) -> PackedStringArray:
-	var names := PackedStringArray()
-	for method in script.get_script_method_list():
-		var funcName :String = method["name"]
-		if funcName.begins_with("test"):
-			names.append(funcName)
-	return names
+	return script.get_script_method_list()\
+		.map(func(descriptor: Dictionary) -> String: return descriptor["name"])\
+		.filter(func(func_name: String) -> bool: return func_name.begins_with("test"))
 
 
 static func parse_test_suite_name(script :Script) -> String:
@@ -198,7 +186,7 @@ func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunct
 				Fuzzer.ARGUMENT_SEED:
 					seed_value = arg.default()
 	# create new test
-	test.configure(fd.name(), fd.line_number(), script.resource_path, timeout, fuzzers, iterations, seed_value)
+	test.configure(fd.name(), fd.line_number(), fd.source_path(), timeout, fuzzers, iterations, seed_value)
 	test.set_function_descriptor(fd)
 	test.skip(is_skipped, skip_reason)
 	_validate_argument(fd, test)
@@ -209,8 +197,8 @@ func _parse_and_add_test_cases(test_suite :Node, script :GDScript, test_case_nam
 	var test_cases_to_find := Array(test_case_names)
 	var functions_to_scan := test_case_names.duplicate()
 	functions_to_scan.append("before")
-	var source := _script_parser.load_source_code(script, [script.resource_path])
-	var function_descriptors := _script_parser.parse_functions(source, "", [script.resource_path], functions_to_scan)
+
+	var function_descriptors := _script_parser.get_function_descriptors(script, functions_to_scan)
 	for fd in function_descriptors:
 		if fd.name() == "before":
 			_handle_test_suite_arguments(test_suite, script, fd)
@@ -296,16 +284,15 @@ static func create_test_suite(test_suite_path :String, source_path :String) -> G
 static func get_test_case_line_number(resource_path :String, func_name :String) -> int:
 	var file := FileAccess.open(resource_path, FileAccess.READ)
 	if file != null:
-		var script_parser := GdScriptParser.new()
 		var line_number := 0
 		while not file.eof_reached():
-			var row := GdScriptParser.clean_up_row(file.get_line())
+			var row := file.get_line()
 			line_number += 1
 			# ignore comments and empty lines and not test functions
-			if row.begins_with("#") || row.length() == 0 || row.find("functest") == -1:
+			if row.begins_with("#") || row.length() == 0 || row.find("func test_") == -1:
 				continue
 			# abort if test case name found
-			if script_parser.parse_func_name(row) == "test_" + func_name:
+			if row.find("func") != -1 and row.find("test_" + func_name) != -1:
 				return line_number
 	return -1
 

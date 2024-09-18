@@ -24,13 +24,11 @@ func test_extract_from_func_without_return_type() -> void:
 	assert_bool(fd.is_static()).is_false()
 	assert_bool(fd.is_engine()).is_true()
 	assert_bool(fd.is_vararg()).is_false()
-	assert_int(fd.return_type()).is_equal(TYPE_NIL)
+	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_VOID)
 	assert_array(fd.args()).contains_exactly([
-		GdFunctionArgument.new("sibling_", GdObjects.TYPE_NODE),
-		GdFunctionArgument.new("force_readable_name_", TYPE_BOOL, "false")
+		GdFunctionArgument.new("sibling", GdObjects.TYPE_NODE),
+		GdFunctionArgument.new("force_readable_name", TYPE_BOOL, "false")
 	])
-	# void add_sibling(node: Node, child_node: Node, legible_unique_name: bool = false)
-	assert_str(fd.typeless()).is_equal("func add_sibling(sibling_, force_readable_name_=false) -> void:")
 
 
 func test_extract_from_func_with_return_type() -> void:
@@ -44,12 +42,10 @@ func test_extract_from_func_with_return_type() -> void:
 	assert_bool(fd.is_vararg()).is_false()
 	assert_int(fd.return_type()).is_equal(TYPE_OBJECT)
 	assert_array(fd.args()).contains_exactly([
-		GdFunctionArgument.new("pattern_", TYPE_STRING),
-		GdFunctionArgument.new("recursive_", TYPE_BOOL, "true"),
-		GdFunctionArgument.new("owned_", TYPE_BOOL, "true"),
+		GdFunctionArgument.new("pattern", TYPE_STRING),
+		GdFunctionArgument.new("recursive", TYPE_BOOL, "true"),
+		GdFunctionArgument.new("owned", TYPE_BOOL, "true"),
 	])
-	# Node find_child(mask: String, recursive: bool = true, owned: bool = true) const
-	assert_str(fd.typeless()).is_equal("func find_child(pattern_, recursive_=true, owned_=true) -> Node:")
 
 
 func test_extract_from_func_with_vararg() -> void:
@@ -62,20 +58,19 @@ func test_extract_from_func_with_vararg() -> void:
 	assert_bool(fd.is_engine()).is_true()
 	assert_bool(fd.is_vararg()).is_true()
 	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_ENUM)
-	assert_array(fd.args()).contains_exactly([GdFunctionArgument.new("signal_", TYPE_STRING_NAME)])
+	assert_array(fd.args()).contains_exactly([GdFunctionArgument.new("signal", TYPE_STRING_NAME)])
 	assert_array(fd.varargs()).contains_exactly([
-		GdFunctionArgument.new("vararg0_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg1_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg2_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg3_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg4_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg5_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg6_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg7_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg8_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg9_", GdObjects.TYPE_VARARG, "\"%s\"" % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
+		GdFunctionArgument.new("vararg0_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg1_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg2_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg3_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg4_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg5_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg6_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg7_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg8_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
+		GdFunctionArgument.new("vararg9_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
 	])
-	assert_str(fd.typeless()).is_equal("func emit_signal(signal_, vararg0_=\"__null__\", vararg1_=\"__null__\", vararg2_=\"__null__\", vararg3_=\"__null__\", vararg4_=\"__null__\", vararg5_=\"__null__\", vararg6_=\"__null__\", vararg7_=\"__null__\", vararg8_=\"__null__\", vararg9_=\"__null__\") -> Error:")
 
 
 func test_extract_from_descriptor_is_virtual_func() -> void:
@@ -86,10 +81,8 @@ func test_extract_from_descriptor_is_virtual_func() -> void:
 	assert_bool(fd.is_static()).is_false()
 	assert_bool(fd.is_engine()).is_true()
 	assert_bool(fd.is_vararg()).is_false()
-	assert_int(fd.return_type()).is_equal(TYPE_NIL)
+	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_VOID)
 	assert_array(fd.args()).is_empty()
-	# void _enter_tree() virtual
-	assert_str(fd.typeless()).is_equal("func _enter_tree() -> void:")
 
 
 func test_extract_from_descriptor_is_virtual_func_full_check() -> void:
@@ -147,7 +140,17 @@ func test_extract_from_func_with_return_type_variant() -> void:
 	assert_bool(fd.is_vararg()).is_false()
 	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_VARIANT)
 	assert_array(fd.args()).contains_exactly([
-		GdFunctionArgument.new("property_", TYPE_STRING_NAME),
+		GdFunctionArgument.new("property", TYPE_STRING_NAME),
 	])
-	# Variant get(property: String) const
-	assert_str(fd.typeless()).is_equal("func get(property_):")
+
+
+@warning_ignore("unused_parameter")
+func test_extract_return_type(info: String, expected: int, descriptor: Dictionary, test_parameters := [
+	['return_undefined', GdObjects.TYPE_VARIANT, { "name": "", "class_name": &"", "type": 0, "hint": 0, "hint_string": "", "usage": 131072 }],
+	['return_variant', GdObjects.TYPE_VARIANT, { "name": "", "class_name": &"", "type": 0, "hint": 0, "hint_string": "", "usage": 131072 }],
+	['return_int', TYPE_INT, { "name": "", "class_name": &"", "type": 2, "hint": 0, "hint_string": "", "usage": 0 }],
+	['return_string', TYPE_STRING, { "name": "", "class_name": &"", "type": 4, "hint": 0, "hint_string": "", "usage": 0 }],
+	['return_void', GdObjects.TYPE_VOID, { "name": "", "class_name": &"", "type": 0, "hint": 0, "hint_string": "", "usage": 6 }]
+]) -> void:
+	var return_type := GdFunctionDescriptor._extract_return_type(descriptor)
+	assert_that(return_type).is_equal(expected)

@@ -40,6 +40,12 @@ var _expected_tests := {
 		[{"key_a":"value_a"}, '{"key_a":"value_a"}'],
 		[{"key_b":"value_b"}, '{"key_b":"value_b"}']
 	],
+	"test_parameterized_untyped_array" : [
+		[[42]]
+	],
+	"test_parameterized_typed_array" : [
+		[[42]]
+	],
 	"test_with_dynamic_paramater_resolving" : [
 		["test_a"],
 		["test_b"],
@@ -193,6 +199,24 @@ func test_dictionary_div_number_types(
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, false)
 	assert_that(value).is_equal(expected)
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_STRICT_NUMBER_TYPE_COMPARE, true)
+
+
+@warning_ignore("unused_parameter")
+func test_parameterized_untyped_array(items: Array, test_parameters := [
+		[[42]]
+	]
+) -> void:
+	collect_test_call("test_parameterized_untyped_array", [items])
+	assert_array(items).contains_exactly([42])
+
+
+@warning_ignore("unused_parameter")
+func test_parameterized_typed_array(items: Array[int], test_parameters := [
+		[[42]]
+	]
+) -> void:
+	collect_test_call("test_parameterized_typed_array", [items])
+	assert_array(items).contains_exactly([42])
 
 
 @warning_ignore("unused_parameter")

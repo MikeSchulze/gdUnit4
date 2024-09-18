@@ -8,17 +8,16 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 # introduced with Godot 4.3.beta1
 const TYPE_PACKED_VECTOR4_ARRAY = 38 #TYPE_PACKED_VECTOR4_ARRAY
 
-const TYPE_VOID 	= TYPE_MAX + 1000
-const TYPE_VARARG 	= TYPE_MAX + 1001
-const TYPE_VARIANT	= TYPE_MAX + 1002
-const TYPE_FUNC 	= TYPE_MAX + 1003
-const TYPE_FUZZER 	= TYPE_MAX + 1004
-
-const TYPE_NODE 	= TYPE_MAX + 2001
+const TYPE_VOID 	= 1000
+const TYPE_VARARG 	= 1001
+const TYPE_VARIANT	= 1002
+const TYPE_FUNC 	= 1003
+const TYPE_FUZZER 	= 1004
 # missing Godot types
-const TYPE_CONTROL	= TYPE_MAX + 2002
-const TYPE_CANVAS	= TYPE_MAX + 2003
-const TYPE_ENUM		= TYPE_MAX + 2004
+const TYPE_NODE 	= 2001
+const TYPE_CONTROL	= 2002
+const TYPE_CANVAS	= 2003
+const TYPE_ENUM		= 2004
 
 
 # used as default value for varargs
@@ -325,6 +324,8 @@ static func is_snake_case(value :String) -> bool:
 
 
 static func type_as_string(type :int) -> String:
+	if type < TYPE_MAX:
+		return type_string(type)
 	return TYPE_AS_STRING_MAPPINGS.get(type, "Variant")
 
 

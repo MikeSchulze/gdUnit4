@@ -174,7 +174,24 @@ func load_parameter_sets(test_case: _TestCase, do_validate := false) -> Array:
 			.add_report(GdUnitReport.new().create(GdUnitReport.INTERUPTED, test_case.line_number(), error))
 		test_case.skip(true, error)
 		test_case._interupted = true
+	fixure_typed_parameters(parameter_sets, _fd.args())
 	return parameter_sets
+
+
+func fixure_typed_parameters(parameter_sets: Array, arg_descriptors: Array[GdFunctionArgument]) -> Array:
+	for parameter_set_index in parameter_sets.size():
+		var parameter_set: Array = parameter_sets[parameter_set_index]
+		# run over all function arguments
+		for parameter_index in parameter_set.size():
+			var parameter :Variant = parameter_set[parameter_index]
+			var arg_descriptor: GdFunctionArgument = arg_descriptors[parameter_index]
+			if parameter is Array:
+				var as_array: Array = parameter
+				# we need to convert the untyped array to the expected typed version
+				if arg_descriptor.is_typed_array():
+					parameter_set[parameter_index] = Array(as_array, arg_descriptor.type_hint(), "", null)
+	return parameter_sets
+
 
 
 static func copy_properties(source: Object, dest: Object) -> void:
