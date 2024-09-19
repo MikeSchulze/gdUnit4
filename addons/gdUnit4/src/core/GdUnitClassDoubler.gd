@@ -74,16 +74,14 @@ static func double_functions(instance :Object, clazz_name :String, clazz_path :P
 			push_error(result.error_message())
 			return PackedStringArray()
 		var class_descriptor :GdClassDescriptor = result.value()
-		while class_descriptor != null:
-			for func_descriptor in class_descriptor.functions():
-				if instance != null and not instance.has_method(func_descriptor.name()):
-					#prints("no virtual func implemented",clazz_name, func_descriptor.name() )
-					continue
-				if functions.has(func_descriptor.name()) or exclude_override_functions.has(func_descriptor.name()):
-					continue
-				doubled_source += func_doubler.double(func_descriptor, instance is CallableDoubler)
-				functions.append(func_descriptor.name())
-			class_descriptor = class_descriptor.parent()
+		for func_descriptor in class_descriptor.functions():
+			if instance != null and not instance.has_method(func_descriptor.name()):
+				#prints("no virtual func implemented",clazz_name, func_descriptor.name() )
+				continue
+			if functions.has(func_descriptor.name()) or exclude_override_functions.has(func_descriptor.name()):
+				continue
+			doubled_source += func_doubler.double(func_descriptor, instance is CallableDoubler)
+			functions.append(func_descriptor.name())
 
 	# double regular class functions
 	var clazz_functions := GdObjects.extract_class_functions(clazz_name, clazz_path)

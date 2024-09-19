@@ -6,7 +6,7 @@ enum MyEnumValue {
 	TWO = 20
 }
 
-var _value :MyEnumValue
+var _value :MyEnumValue = MyEnumValue.ONE
 
 
 # using an enum in the constructor
