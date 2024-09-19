@@ -70,6 +70,7 @@ const META_GDUNIT_ORPHAN := "gdUnit_orphan"
 const META_GDUNIT_EXECUTION_TIME := "gdUnit_execution_time"
 const META_RESOURCE_PATH := "resource_path"
 const META_LINE_NUMBER := "line_number"
+const META_SCRIPT_PATH := "script_path"
 const META_TEST_PARAM_INDEX := "test_param_index"
 
 var _tree_root: TreeItem
@@ -848,6 +849,7 @@ func add_test(parent: TreeItem, test_case: GdUnitTestCaseDto) -> void:
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
 	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
 	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_case_names.size())
+	item.set_meta(META_SCRIPT_PATH, test_case.script_path())
 	item.set_meta(META_LINE_NUMBER, test_case.line_number())
 	item.set_meta(META_TEST_PARAM_INDEX, -1)
 	set_item_icon_by_state(item)
@@ -870,6 +872,7 @@ func add_test_cases(parent: TreeItem, test_case_names: PackedStringArray) -> voi
 		item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_CASE_PARAMETERIZED)
 		item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
 		item.set_meta(META_RESOURCE_PATH, resource_path)
+		item.set_meta(META_SCRIPT_PATH, parent.get_meta(META_SCRIPT_PATH))
 		item.set_meta(META_LINE_NUMBER, parent.get_meta(META_LINE_NUMBER))
 		item.set_meta(META_TEST_PARAM_INDEX, index)
 		set_item_icon_by_state(item)
@@ -937,10 +940,13 @@ func _on_Tree_item_selected() -> void:
 # Opens the test suite
 func _on_Tree_item_activated() -> void:
 	var selected_item := _tree.get_selected()
-	var resource_path: String = selected_item.get_meta(META_RESOURCE_PATH)
-	if selected_item.has_meta(META_LINE_NUMBER):
+	if selected_item != null and selected_item.has_meta(META_LINE_NUMBER):
+		var script_path: String = (
+			selected_item.get_meta(META_RESOURCE_PATH) if is_test_suite(selected_item)
+			else selected_item.get_meta(META_SCRIPT_PATH)
+		)
 		var line_number: int = selected_item.get_meta(META_LINE_NUMBER)
-		var resource := load(resource_path)
+		var resource := load(script_path)
 
 		if selected_item.has_meta(META_GDUNIT_REPORT):
 			var reports := get_item_reports(selected_item)
@@ -950,9 +956,8 @@ func _on_Tree_item_activated() -> void:
 			if report_line_number != -1:
 				line_number = report_line_number
 
-		EditorInterface.get_file_system_dock().navigate_to_path(resource_path)
-		EditorInterface.edit_resource(resource)
-		EditorInterface.get_script_editor().goto_line(line_number - 1)
+		EditorInterface.get_file_system_dock().navigate_to_path(script_path)
+		EditorInterface.edit_script(resource, line_number)
 	elif selected_item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER:
 		# Toggle collapse if dir
 		selected_item.collapsed = not selected_item.collapsed
