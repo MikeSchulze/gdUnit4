@@ -233,7 +233,7 @@ func test_simulate_set_mouse_pos() -> void:
 	# save current global mouse pos
 	var gmp := _runner.get_global_mouse_position()
 	# set mouse to pos 100, 100
-	_runner.set_mouse_pos(Vector2(100, 100))
+	_runner.set_mouse_position(Vector2(100, 100))
 	await await_idle_frame()
 	var event := InputEventMouseMotion.new()
 	event.position = Vector2(100, 100)
@@ -242,7 +242,7 @@ func test_simulate_set_mouse_pos() -> void:
 
 	# set mouse to pos 800, 400
 	gmp = _runner.get_global_mouse_position()
-	_runner.set_mouse_pos(Vector2(800, 400))
+	_runner.set_mouse_position(Vector2(800, 400))
 	await await_idle_frame()
 	event = InputEventMouseMotion.new()
 	event.position = Vector2(800, 400)
@@ -252,7 +252,7 @@ func test_simulate_set_mouse_pos() -> void:
 	# and again back to 100,100
 	reset(_scene_spy)
 	gmp = _runner.get_global_mouse_position()
-	_runner.set_mouse_pos(Vector2(100, 100))
+	_runner.set_mouse_position(Vector2(100, 100))
 	await await_idle_frame()
 	event = InputEventMouseMotion.new()
 	event.position = Vector2(100, 100)
@@ -274,7 +274,7 @@ func test_simulate_set_mouse_pos_with_modifiers() -> void:
 			# simulate press shift, set mouse pos and final press mouse button
 			var gmp := _runner.get_global_mouse_position()
 			_runner.simulate_key_press(modifier)
-			_runner.set_mouse_pos(Vector2.ZERO)
+			_runner.set_mouse_position(Vector2.ZERO)
 			_runner.simulate_mouse_button_press(mouse_button)
 			await await_idle_frame()
 
@@ -295,7 +295,7 @@ func test_simulate_set_mouse_pos_with_modifiers() -> void:
 
 
 func test_simulate_mouse_move() -> void:
-	_runner.set_mouse_pos(Vector2(10, 10))
+	_runner.set_mouse_position(Vector2(10, 10))
 	var gmp := _runner.get_global_mouse_position()
 	_runner.simulate_mouse_move(Vector2(400, 100))
 	await await_idle_frame()
@@ -320,7 +320,7 @@ func test_simulate_mouse_move() -> void:
 
 func test_simulate_mouse_move_relative() -> void:
 	#OS.window_minimized = false
-	_runner.set_mouse_pos(Vector2(10, 10))
+	_runner.set_mouse_position(Vector2(10, 10))
 	await await_idle_frame()
 	assert_that(_runner.get_mouse_position()).is_equal(Vector2(10, 10))
 
@@ -337,7 +337,7 @@ func test_simulate_mouse_move_relative() -> void:
 
 func test_simulate_mouse_move_absolute() -> void:
 	#OS.window_minimized = false
-	_runner.set_mouse_pos(Vector2(10, 10))
+	_runner.set_mouse_position(Vector2(10, 10))
 	await await_idle_frame()
 	assert_that(_runner.get_mouse_position()).is_equal(Vector2(10, 10))
 

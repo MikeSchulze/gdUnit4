@@ -1,44 +1,30 @@
-## The scene runner for GdUnit to simmulate scene interactions
+## The Scene Runner is a tool used for simulating interactions on a scene.
+## With this tool, you can simulate input events such as keyboard or mouse input and/or simulate scene processing over a certain number of frames.
+## This tool is typically used for integration testing a scene.
 class_name GdUnitSceneRunner
 extends RefCounted
 
 const NO_ARG = GdUnitConstants.NO_ARG
 
 
-## Sets the mouse cursor to given position relative to the viewport.
-@warning_ignore("unused_parameter")
-func set_mouse_pos(pos :Vector2) -> GdUnitSceneRunner:
-	return self
-
-
-## Gets the current mouse position of the current viewport
-func get_mouse_position() -> Vector2:
-	return Vector2.ZERO
-
-
-## Gets the current global mouse position of the current window
-func get_global_mouse_position() -> Vector2:
-	return Vector2.ZERO
-
-
 ## Simulates that an action has been pressed.[br]
 ## [member action] : the action e.g. [code]"ui_up"[/code][br]
 @warning_ignore("unused_parameter")
-func simulate_action_pressed(action :String) -> GdUnitSceneRunner:
+func simulate_action_pressed(action: String) -> GdUnitSceneRunner:
 	return self
 
 
 ## Simulates that an action is pressed.[br]
 ## [member action] : the action e.g. [code]"ui_up"[/code][br]
 @warning_ignore("unused_parameter")
-func simulate_action_press(action :String) -> GdUnitSceneRunner:
+func simulate_action_press(action: String) -> GdUnitSceneRunner:
 	return self
 
 
 ## Simulates that an action has been released.[br]
 ## [member action] : the action e.g. [code]"ui_up"[/code][br]
 @warning_ignore("unused_parameter")
-func simulate_action_release(action :String) -> GdUnitSceneRunner:
+func simulate_action_release(action: String) -> GdUnitSceneRunner:
 	return self
 
 
@@ -52,7 +38,7 @@ func simulate_action_release(action :String) -> GdUnitSceneRunner:
 ##       await runner.simulate_key_pressed(KEY_SPACE)
 ## [/codeblock]
 @warning_ignore("unused_parameter")
-func simulate_key_pressed(key_code :int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
+func simulate_key_pressed(key_code: int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
 	return self
 
@@ -62,7 +48,7 @@ func simulate_key_pressed(key_code :int, shift_pressed := false, ctrl_pressed :=
 ## [member shift_pressed] : false by default set to true if simmulate shift is press[br]
 ## [member ctrl_pressed] : false by default set to true if simmulate control is press[br]
 @warning_ignore("unused_parameter")
-func simulate_key_press(key_code :int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
+func simulate_key_press(key_code: int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
 	return self
 
 
@@ -71,14 +57,38 @@ func simulate_key_press(key_code :int, shift_pressed := false, ctrl_pressed := f
 ## [member shift_pressed] : false by default set to true if simmulate shift is press[br]
 ## [member ctrl_pressed] : false by default set to true if simmulate control is press[br]
 @warning_ignore("unused_parameter")
-func simulate_key_release(key_code :int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
+func simulate_key_release(key_code: int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner:
 	return self
 
 
-## Simulates a mouse moved to final position.[br]
-## [member pos] : The final mouse position
+## Sets the mouse cursor to given position relative to the viewport.
+## @deprecated: Use [set_mouse_position] instead.
 @warning_ignore("unused_parameter")
-func simulate_mouse_move(pos :Vector2) -> GdUnitSceneRunner:
+func set_mouse_pos(position: Vector2) -> GdUnitSceneRunner:
+	return self
+
+
+## Sets the mouse position to the specified vector, provided in pixels and relative to an origin at the upper left corner of the currently focused Window Manager game window.[br]
+## [member position] : The absolute position in pixels as Vector2
+@warning_ignore("unused_parameter")
+func set_mouse_position(position: Vector2) -> GdUnitSceneRunner:
+	return self
+
+
+## Returns the mouse's position in this Viewport using the coordinate system of this Viewport.
+func get_mouse_position() -> Vector2:
+	return Vector2.ZERO
+
+
+## Gets the current global mouse position of the current window
+func get_global_mouse_position() -> Vector2:
+	return Vector2.ZERO
+
+
+## Simulates a mouse moved to final position.[br]
+## [member position] : The final mouse position
+@warning_ignore("unused_parameter")
+func simulate_mouse_move(position: Vector2) -> GdUnitSceneRunner:
 	return self
 
 
@@ -117,23 +127,25 @@ func simulate_mouse_move_absolute(position: Vector2, time: float = 1.0, trans_ty
 
 
 ## Simulates a mouse button pressed.[br]
-## [member buttonIndex] : The mouse button identifier, one of the [enum MouseButton] or button wheel constants.
+## [member button_index] : The mouse button identifier, one of the [enum MouseButton] or button wheel constants.
+## [member double_click] : Set to true to simulate a double-click
 @warning_ignore("unused_parameter")
-func simulate_mouse_button_pressed(buttonIndex :MouseButton, double_click := false) -> GdUnitSceneRunner:
+func simulate_mouse_button_pressed(button_index: MouseButton, double_click := false) -> GdUnitSceneRunner:
 	return self
 
 
 ## Simulates a mouse button press (holding)[br]
-## [member buttonIndex] : The mouse button identifier, one of the [enum MouseButton] or button wheel constants.
+## [member button_index] : The mouse button identifier, one of the [enum MouseButton] or button wheel constants.
+## [member double_click] : Set to true to simulate a double-click
 @warning_ignore("unused_parameter")
-func simulate_mouse_button_press(buttonIndex :MouseButton, double_click := false) -> GdUnitSceneRunner:
+func simulate_mouse_button_press(button_index: MouseButton, double_click := false) -> GdUnitSceneRunner:
 	return self
 
 
 ## Simulates a mouse button released.[br]
-## [member buttonIndex] : The mouse button identifier, one of the [enum MouseButton] or button wheel constants.
+## [member button_index] : The mouse button identifier, one of the [enum MouseButton] or button wheel constants.
 @warning_ignore("unused_parameter")
-func simulate_mouse_button_release(buttonIndex :MouseButton) -> GdUnitSceneRunner:
+func simulate_mouse_button_release(button_index: MouseButton) -> GdUnitSceneRunner:
 	return self
 
 
@@ -142,7 +154,7 @@ func simulate_mouse_button_release(buttonIndex :MouseButton) -> GdUnitSceneRunne
 ## [member position] : The position to touch the screen.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_pressed(index :int, position :Vector2, double_tap := false) -> GdUnitSceneRunner:
+func simulate_screen_touch_pressed(index: int, position: Vector2, double_tap := false) -> GdUnitSceneRunner:
 	return self
 
 
@@ -151,7 +163,7 @@ func simulate_screen_touch_pressed(index :int, position :Vector2, double_tap := 
 ## [member position] : The position to touch the screen.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_press(index :int, position :Vector2, double_tap := false) -> GdUnitSceneRunner:
+func simulate_screen_touch_press(index: int, position: Vector2, double_tap := false) -> GdUnitSceneRunner:
 	return self
 
 
@@ -159,7 +171,7 @@ func simulate_screen_touch_press(index :int, position :Vector2, double_tap := fa
 ## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSceneRunner:
+func simulate_screen_touch_release(index: int, double_tap := false) -> GdUnitSceneRunner:
 	return self
 
 
@@ -179,7 +191,7 @@ func simulate_screen_touch_release(index :int, double_tap := false) -> GdUnitSce
 ##       await runner.simulate_screen_touch_drag_relative(1, Vector2(100,0))
 ## [/codeblock]
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_drag_relative(index :int, relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+func simulate_screen_touch_drag_relative(index: int, relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
 	return self
 
@@ -200,7 +212,7 @@ func simulate_screen_touch_drag_relative(index :int, relative: Vector2, time: fl
 ##       await runner.simulate_screen_touch_drag_absolute(1, Vector2(100,50))
 ## [/codeblock]
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_drag_absolute(index :int, position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+func simulate_screen_touch_drag_absolute(index: int, position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
 	return self
 
@@ -220,7 +232,7 @@ func simulate_screen_touch_drag_absolute(index :int, position: Vector2, time: fl
 ##       await runner.simulate_screen_touch_drag_drop(1, Vector2(50, 50), Vector2(100,50))
 ## [/codeblock]
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_drag_drop(index :int, position: Vector2, drop_position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
+func simulate_screen_touch_drag_drop(index: int, position: Vector2, drop_position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
 	return self
 
@@ -229,7 +241,7 @@ func simulate_screen_touch_drag_drop(index :int, position: Vector2, drop_positio
 ## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member position] : The drag start position, indicating the drag position.[br]
 @warning_ignore("unused_parameter")
-func simulate_screen_touch_drag(index :int, position: Vector2) -> GdUnitSceneRunner:
+func simulate_screen_touch_drag(index: int, position: Vector2) -> GdUnitSceneRunner:
 	return self
 
 
@@ -244,7 +256,7 @@ func get_screen_touch_drag_position(index: int) -> Vector2:
 ## It defaults to 1.0. A value of 2.0 means the game moves twice as fast as real life,
 ## whilst a value of 0.5 means the game moves at half the regular speed.
 @warning_ignore("unused_parameter")
-func set_time_factor(time_factor := 1.0) -> GdUnitSceneRunner:
+func set_time_factor(time_factor: float = 1.0) -> GdUnitSceneRunner:
 	return self
 
 
@@ -252,7 +264,7 @@ func set_time_factor(time_factor := 1.0) -> GdUnitSceneRunner:
 ## [member frames] : amount of frames to process[br]
 ## [member delta_milli] : the time delta between a frame in milliseconds
 @warning_ignore("unused_parameter")
-func simulate_frames(frames: int, delta_milli :int = -1) -> GdUnitSceneRunner:
+func simulate_frames(frames: int, delta_milli: int = -1) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
 	return self
 
@@ -262,17 +274,17 @@ func simulate_frames(frames: int, delta_milli :int = -1) -> GdUnitSceneRunner:
 ## [member args] : optional signal arguments to be matched for stop[br]
 @warning_ignore("unused_parameter")
 func simulate_until_signal(
-	signal_name :String,
-	arg0 :Variant = NO_ARG,
-	arg1 :Variant = NO_ARG,
-	arg2 :Variant = NO_ARG,
-	arg3 :Variant = NO_ARG,
-	arg4 :Variant = NO_ARG,
-	arg5 :Variant = NO_ARG,
-	arg6 :Variant = NO_ARG,
-	arg7 :Variant = NO_ARG,
-	arg8 :Variant = NO_ARG,
-	arg9 :Variant = NO_ARG) -> GdUnitSceneRunner:
+	signal_name: String,
+	arg0: Variant = NO_ARG,
+	arg1: Variant = NO_ARG,
+	arg2: Variant = NO_ARG,
+	arg3: Variant = NO_ARG,
+	arg4: Variant = NO_ARG,
+	arg5: Variant = NO_ARG,
+	arg6: Variant = NO_ARG,
+	arg7: Variant = NO_ARG,
+	arg8: Variant = NO_ARG,
+	arg9: Variant = NO_ARG) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
 	return self
 
@@ -283,18 +295,18 @@ func simulate_until_signal(
 ## [member args] : optional signal arguments to be matched for stop
 @warning_ignore("unused_parameter")
 func simulate_until_object_signal(
-	source :Object,
-	signal_name :String,
-	arg0 :Variant = NO_ARG,
-	arg1 :Variant = NO_ARG,
-	arg2 :Variant = NO_ARG,
-	arg3 :Variant = NO_ARG,
-	arg4 :Variant = NO_ARG,
-	arg5 :Variant = NO_ARG,
-	arg6 :Variant = NO_ARG,
-	arg7 :Variant = NO_ARG,
-	arg8 :Variant = NO_ARG,
-	arg9 :Variant = NO_ARG) -> GdUnitSceneRunner:
+	source: Object,
+	signal_name: String,
+	arg0: Variant = NO_ARG,
+	arg1: Variant = NO_ARG,
+	arg2: Variant = NO_ARG,
+	arg3: Variant = NO_ARG,
+	arg4: Variant = NO_ARG,
+	arg5: Variant = NO_ARG,
+	arg6: Variant = NO_ARG,
+	arg7: Variant = NO_ARG,
+	arg8: Variant = NO_ARG,
+	arg9: Variant = NO_ARG) -> GdUnitSceneRunner:
 	await Engine.get_main_loop().process_frame
 	return self
 
@@ -310,7 +322,7 @@ func await_input_processed() -> void:
 ## Waits for the function return value until specified timeout or fails.[br]
 ## [member args] : optional function arguments
 @warning_ignore("unused_parameter")
-func await_func(func_name :String, args := []) -> GdUnitFuncAssert:
+func await_func(func_name: String, args := []) -> GdUnitFuncAssert:
 	return null
 
 
@@ -318,7 +330,7 @@ func await_func(func_name :String, args := []) -> GdUnitFuncAssert:
 ## [member source : the object where implements the function[br]
 ## [member args] : optional function arguments
 @warning_ignore("unused_parameter")
-func await_func_on(source :Object, func_name :String, args := []) -> GdUnitFuncAssert:
+func await_func_on(source: Object, func_name: String, args := []) -> GdUnitFuncAssert:
 	return null
 
 
@@ -327,7 +339,7 @@ func await_func_on(source :Object, func_name :String, args := []) -> GdUnitFuncA
 ## [member args] : the expected signal arguments as an array[br]
 ## [member timeout] : the timeout in ms, default is set to 2000ms
 @warning_ignore("unused_parameter")
-func await_signal(signal_name :String, args := [], timeout := 2000 ) -> void:
+func await_signal(signal_name: String, args := [], timeout := 2000 ) -> void:
 	await Engine.get_main_loop().process_frame
 	pass
 
@@ -338,7 +350,7 @@ func await_signal(signal_name :String, args := [], timeout := 2000 ) -> void:
 ## [member args] : the expected signal arguments as an array[br]
 ## [member timeout] : the timeout in ms, default is set to 2000ms
 @warning_ignore("unused_parameter")
-func await_signal_on(source :Object, signal_name :String, args := [], timeout := 2000 ) -> void:
+func await_signal_on(source: Object, signal_name: String, args := [], timeout := 2000 ) -> void:
 	pass
 
 
@@ -351,7 +363,7 @@ func maximize_view() -> GdUnitSceneRunner:
 ## [member name] : name of property[br]
 ## [member return] : the value of the property
 @warning_ignore("unused_parameter")
-func get_property(name :String) -> Variant:
+func get_property(name: String) -> Variant:
 	return null
 
 ## Set the  value <value> of the property with the name <name>.[br]
@@ -359,7 +371,7 @@ func get_property(name :String) -> Variant:
 ## [member value] : value of property[br]
 ## [member return] : true|false depending on valid property name.
 @warning_ignore("unused_parameter")
-func set_property(name :String, value :Variant) -> bool:
+func set_property(name: String, value: Variant) -> bool:
 	return false
 
 
@@ -369,17 +381,17 @@ func set_property(name :String, value :Variant) -> bool:
 ## [member return] : the function result
 @warning_ignore("unused_parameter")
 func invoke(
-	name :String,
-	arg0 :Variant = NO_ARG,
-	arg1 :Variant = NO_ARG,
-	arg2 :Variant = NO_ARG,
-	arg3 :Variant = NO_ARG,
-	arg4 :Variant = NO_ARG,
-	arg5 :Variant = NO_ARG,
-	arg6 :Variant = NO_ARG,
-	arg7 :Variant = NO_ARG,
-	arg8 :Variant = NO_ARG,
-	arg9 :Variant = NO_ARG) -> Variant:
+	name: String,
+	arg0: Variant = NO_ARG,
+	arg1: Variant = NO_ARG,
+	arg2: Variant = NO_ARG,
+	arg3: Variant = NO_ARG,
+	arg4: Variant = NO_ARG,
+	arg5: Variant = NO_ARG,
+	arg6: Variant = NO_ARG,
+	arg7: Variant = NO_ARG,
+	arg8: Variant = NO_ARG,
+	arg9: Variant = NO_ARG) -> Variant:
 	return null
 
 
@@ -388,7 +400,7 @@ func invoke(
 ## [member recursive] : enables/disables seraching recursive[br]
 ## [member return] : the node if find otherwise null
 @warning_ignore("unused_parameter")
-func find_child(name :String, recursive :bool = true, owned :bool = false) -> Node:
+func find_child(name: String, recursive: bool = true, owned: bool = false) -> Node:
 	return null
 
 
