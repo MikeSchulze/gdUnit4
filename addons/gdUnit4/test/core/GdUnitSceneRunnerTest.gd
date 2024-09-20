@@ -143,7 +143,7 @@ func test_simulate_scene_interact_with_buttons() -> void:
 	var runner := scene_runner(spyed_scene)
 	# test button 1 interaction
 	await await_millis(1000)
-	runner.set_mouse_pos(Vector2(60, 20))
+	runner.set_mouse_position(Vector2(60, 20))
 	runner.simulate_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	await await_idle_frame()
 	verify(spyed_scene)._on_panel_color_changed(spyed_scene._box1, Color.RED)
@@ -154,7 +154,7 @@ func test_simulate_scene_interact_with_buttons() -> void:
 	# test button 2 interaction
 	reset(spyed_scene)
 	await await_millis(1000)
-	runner.set_mouse_pos(Vector2(160, 20))
+	runner.set_mouse_position(Vector2(160, 20))
 	runner.simulate_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	await await_idle_frame()
 	verify(spyed_scene, 0)._on_panel_color_changed(spyed_scene._box1, any_color())
@@ -165,7 +165,7 @@ func test_simulate_scene_interact_with_buttons() -> void:
 	# test button 3 interaction (is changed after 1s to gray)
 	reset(spyed_scene)
 	await await_millis(1000)
-	runner.set_mouse_pos(Vector2(260, 20))
+	runner.set_mouse_position(Vector2(260, 20))
 	runner.simulate_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	await await_idle_frame()
 	verify(spyed_scene, 0)._on_panel_color_changed(spyed_scene._box1, any_color())
@@ -347,7 +347,7 @@ func test_mouse_drag_and_drop() -> void:
 	var save_mouse_pos := get_tree().root.get_mouse_position()
 	# set inital mouse pos over the left slot
 	var mouse_pos := slot_left.global_position + Vector2(50, 50)
-	runner.set_mouse_pos(mouse_pos)
+	runner.set_mouse_position(mouse_pos)
 	#await await_millis(1000)
 
 	await await_idle_frame()
