@@ -1,7 +1,7 @@
 ---
 layout: default
 title: How To Skip Tests
-nav_order: 3
+nav_order: 5
 ---
 
 # How to Skip Tests in GdUnit4
@@ -16,19 +16,23 @@ Here's an example of skipping an individual test case:
 
 {% tabs faq-test-skip_test %}
 {% tab faq-test-skip_test GdScript %}
+
 ```gdscript
 @warning_ignore('unused_parameter')
 func test_case1(do_skip=true):
     ...
 ```
+
 {% endtab %}
 {% tab faq-test-skip_test C# %}
+
 ```cs
 [TestCase(DoSkip = true)]
 public void Case1()
 {
    ...
 ```
+
 {% endtab %}
 {% endtabs %}
 
@@ -42,18 +46,22 @@ Here's an example of skipping an entire test suite:
 
 {% tabs faq-test-skip %}
 {% tab faq-test-skip GdScript %}
+
 ```gdscript
 @warning_ignore('unused_parameter')
 func before(do_skip=true):
     # Test hook code here
 ```
+
 {% endtab %}
 {% tab faq-test-skip C# %}
+
 ```cs
 [Before(DoSkip = true)]
 public void Before()
 {
 ```
+
 {% endtab %}
 {% endtabs %}
 
@@ -65,24 +73,27 @@ You can provide a custom skip reason using the `skip_reason` parameter. This rea
 
 {% tabs faq-test-skip-reason %}
 {% tab faq-test-skip-reason GdScript %}
+
 ```gdscript
 @warning_ignore('unused_parameter')
 func test_case1(do_skip=true, skip_reason="Test case under development"):
     # Test case code here
 ```
+
 {% endtab %}
 {% tab faq-test-skip-reason C# %}
+
 ```cs
 [TestCase(DoSkip = true, SkipReason="Test case under development")]
 public void Case1()
 {
    ...
 ```
+
 {% endtab %}
 {% endtabs %}
 
 In this example, the test `test_case1` will be skipped with the reason "Test case under development."
-
 
 ## Skipping with Conditional Expressions
 
@@ -92,24 +103,27 @@ Here's an example of using a conditional expression to skip a test case:
 
 {% tabs faq-test-skip-expression %}
 {% tab faq-test-skip-expression GdScript %}
+
 ```gdscript
 @warning_ignore('unused_parameter')
 func test_case1(do_skip=Engine.get_version_info().hex < 0x40100):
     # Test case code here
 ```
+
 {% endtab %}
 {% tab faq-test-skip-expression C# %}
+
 ```cs
 [TestCase(DoSkip = Engine.get_version_info().hex < 0x40100)]
 public void Case1()
 {
    ...
 ```
+
 {% endtab %}
 {% endtabs %}
 
 In this example, the test `test_case1` will be skipped for all Godot version before 4.1.x the expression is evaluates at runtime.
-
 
 ## Conclusion
 
