@@ -309,7 +309,7 @@ func test_simulate_mouse_move() -> void:
 	# move mouse to next pos
 	gmp = _runner.get_global_mouse_position()
 	_runner.simulate_mouse_move(Vector2(55, 42))
-	await _runner.await_input_processed()
+	await await_idle_frame()
 
 	event = InputEventMouseMotion.new()
 	event.position = Vector2(55, 42)
