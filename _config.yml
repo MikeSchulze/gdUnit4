@@ -14,35 +14,35 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 color_scheme: light
-logo: "/assets/images/logo.png"
+logo: '/assets/images/logo.png'
 title: GdUnit4
 
 aux_links:
-  "GdUnit4 on GitHub":
-    - "//github.com/MikeSchulze/gdUnit4"
+  'GdUnit4 on GitHub':
+    - '//github.com/MikeSchulze/gdUnit4'
 aux_links_new_tab: true
 
-footer_content: "Copyright &copy; 2021-2024 Mike Schulze. Distributed by an <a href=\"https://github.com/MikeSchulze/gdUnit4/blob/master/LICENSE\">MIT license.</a>"
+footer_content: 'Copyright &copy; 2021-2024 Mike Schulze. Distributed by an <a href="https://github.com/MikeSchulze/gdUnit4/blob/master/LICENSE">MIT license.</a>'
 
 # Define Jekyll collections
 collections:
   first_steps:
-    permalink: "/:collection/:path/"
+    permalink: '/:collection/:path/'
     output: true
   csharp_project_setup:
-    permalink: "/:collection/:path/"
+    permalink: '/:collection/:path/'
     output: true
   testing:
-    permalink: "/:collection/:path/"
+    permalink: '/:collection/:path/'
     output: true
   advanced_testing:
-    permalink: "/:collection/:path/"
+    permalink: '/:collection/:path/'
     output: true
   tutorials:
-    permalink: "/:collection/:path/"
+    permalink: '/:collection/:path/'
     output: true
   faq:
-    permalink: "/:collection/:path/"
+    permalink: '/:collection/:path/'
     output: true
 
 just_the_docs:
@@ -58,15 +58,14 @@ just_the_docs:
     faq:
       name: FAQ
 
-
 # Google Analytics Tracking (optional)
 #ga_tracking: UA-0000000-00
 #ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true by default)
 
-email: mikeschulze.lpz@kabelmail.com
-baseurl: "/gdUnit4" # the subpath of your site, e.g. /blog
+email: mikeschulze.lpz@gmail.com
+baseurl: '/gdUnit4' # the subpath of your site, e.g. /blog
 # url: "http://GdUnit4.com" # the base hostname & protocol for your site, e.g. http://example.com
-github_username:  MikeSchulze
+github_username: MikeSchulze
 
 # Build settings
 safe: false
@@ -75,7 +74,6 @@ theme: just-the-docs
 #remote_theme: pmarsceill/just-the-docs
 plugins:
   - jekyll-tabs
-
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.

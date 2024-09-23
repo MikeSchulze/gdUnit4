@@ -23,6 +23,12 @@ GdUnit4 provides several customizable settings to meet your testing needs. To ac
    This option enables or disables the GdUnit update notification. If enabled, a notification will appear when starting Godot to inform you about new updates available for installation.
 
 * **Test**
+  * **Flaky Test**<br>
+    With this setting, you can activate or deactivate the detection of faulty tests and automatically run the test again if it fails.
+  
+  * **Flaky Max Retries**<br>
+    This setting is used to configure the number of retries that a test should perform if it fails.
+
   * **Test Discovery**<br>
    This setting configures the auto-discovery of tests. If enabled, it will scan the configured Test Root Folder for available tests at startup.
 
@@ -140,4 +146,4 @@ These tags allow you to add custom placeholders and data fields to your test-sui
 ![](/gdUnit4/assets/images/settings/settings-template-editor-tags.png){:.centered}
 
 ---
-<h4> document version v4.3.0 </h4>
+<h4> document version v4.4.0 </h4>

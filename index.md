@@ -2,9 +2,10 @@
 layout: default
 title: About
 nav_order: 1
+has_toc: false
 ---
 
-# GdUnit4 V4.3.0
+# GdUnit4 V4.4.0
 
 ![GdUnit4](\gdUnit4\assets\images\background.png)
 build on (v4.2.2.stable.official [15073afe3])
@@ -24,34 +25,36 @@ GdUnit4 is a powerful tool that supports Test-Driven Development ([TDD](https://
 
 ## Main Features
 
-* Support for writing and executing tests in GdScript or C#
-* Embedded test Inspector in Godot for easy navigation of your test suites
-* Test Discovery, searches for tests at runtime and automatically adds them to the inspector.
-* Convenient interface for running test-suites directly from Godot<br>
+* **Writing And Executing Tests** in GdScript or C#
+* **Embedded Test Inspector** in Godot for easy navigation of your test suites
+* **Test Discovery**, searches for tests at runtime and automatically adds them to the inspector.
+* **Convenient Interface** for running test-suites directly from Godot<br>
   One of the main features of GdUnit4 is the ability to run test-suites directly from the Godot editor using the context menu. You can run test-suites from the FileSystem panel, the ScriptEditor, or the GdUnit Inspector. To do this, simply right-click on the desired test-suite or test-case and select "Run Test(s)" from the context menu. This will run the selected tests and display the results in the GdUnit Inspector.<br>
   You can create new test cases directly from the ScriptEditor by right-clicking on the function you want to test and selecting "Create TestCase" from the context menu.
-* Fluent syntax for writing test cases that's easy to read and understand
-* Configurable template for generating new test-suites when creating test-cases
-* Wide range of assertion methods for verifying the behavior and output of your code
-* Argument matchers for verifying that a function call was made with the expected arguments
-* Test Fuzzing support for generating random inputs to test edge cases and boundary conditions
-* Parameterized Tests (Test Cases) for testing functions with multiple sets of inputs and expected outputs
-* Mocking classes to simulate behavior and define output for specific functions
-* Spy feature for verifying that a function was called with the expected parameters
-* Mocking or spying on scenes to simulate behavior and verify that certain functions were called
-* Scene runner for simulating different kinds of inputs and actions, such as mouse clicks and keyboard inputs<br>
+* **Fluent Syntax** for writing test cases that's easy to read and understand
+* **Configurable Template** for generating new test-suites when creating test-cases
+* **Wide range of Assertions** for verifying the behavior and output of your code
+* **Argument matchers** for verifying that a function call was made with the expected arguments
+* **Test Fuzzing** for generating random inputs to explore edge cases and boundary conditions
+* **Parameterized Tests** for validating functions with multiple sets of inputs and expected outputs
+* **Mocking** classes to simulate behavior and define output for specific functions
+* **Spy** feature for verifying that a function was called with the expected parameters
+* **Mocking and Spying on Scenes** to simulate behavior and verify that certain functions were called
+* **Scene Runner** for simulating different kinds of inputs and actions, such as mouse clicks and keyboard inputs<br>
   For example, you can simulate mouse clicks and keyboard inputs by calling the appropriate methods on the runner instance. Additionally, you can wait for a specific signal to be emitted by the scene, or you can wait for a specific function to return a certain value.
-* Automatic update notifier to install the latest version of GdUnit from GitHub
-* Command line tool for running tests outside of Godot editor
-* CI - Continuous Integration support
+* **Automatic Update Notifier** to install the latest version of GdUnit from GitHub
+* **Commandline Tool** for running tests outside of Godot editor
+* **Flaky Test Handling and Detection**<br>
+  Detects flaky tests by rerunning tests that fail. This feature helps identify non-deterministic or intermittent failures in your test suite. Configure the number of retries and mark flaky tests in the test results.
+* **Continuous Integration Support**
   * Command line tool for running tests outside of Godot editor
   * Generates HTML report
   * Generates JUnit XML report
-
-* Public marketplace GitHub action to use in your own CI workflow [gdunit4-action](https://github.com/marketplace/actions/gdunit4-test-runner-action){:target="_blank"}
-* [GdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net/blob/master/README.md){:target="_blank"} the C# API
+* **GitHub Action Integration**<br>
+  A public marketplace action for integrating GdUnit4 into your CI workflow [gdunit4-action](https://github.com/marketplace/actions/gdunit4-test-runner-action){:target="_blank"}
+* **GdUnit4Net** the C# API
   * Support for writing tests in C# [gdUnit4.api](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"}
   * Supporting for the Visual Studio Test Platform to run and debug tests [gdunit4.test.adapter](https://github.com/MikeSchulze/gdUnit4Net/tree/master/testadapter/README.md){:target="_blank"}
 
 ---
-<h4> document version v4.3.0 </h4>
+<h4> document version v4.4.0 </h4>
