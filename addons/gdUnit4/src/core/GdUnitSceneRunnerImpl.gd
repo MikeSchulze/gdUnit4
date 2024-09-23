@@ -97,8 +97,6 @@ func _notification(what: int) -> void:
 				_current_scene.free()
 		_is_disposed = true
 		_current_scene = null
-		# we hide the scene/main window after runner is finished
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 
 
 func _scene_tree() -> SceneTree:
@@ -448,7 +446,6 @@ func await_signal_on(source: Object, signal_name: String, args := [], timeout :=
 	await _awaiter.await_signal_on(source, signal_name, args, timeout)
 
 
-# maximizes the window to bring the scene visible
 func maximize_view() -> GdUnitSceneRunner:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	DisplayServer.window_move_to_foreground()
