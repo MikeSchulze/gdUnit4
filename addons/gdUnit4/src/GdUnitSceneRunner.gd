@@ -158,7 +158,7 @@ func simulate_screen_touch_pressed(index: int, position: Vector2, double_tap := 
 	return self
 
 
-## Simulates a screen touch is press.[br]
+## Simulates a screen touch press without releasing it immediately, effectively simulating a "hold" action.[br]
 ## [member index] : The touch index in the case of a multi-touch event.[br]
 ## [member position] : The position to touch the screen.[br]
 ## [member double_tap] : If true, the touch's state is a double tab.
@@ -175,7 +175,7 @@ func simulate_screen_touch_release(index: int, double_tap := false) -> GdUnitSce
 	return self
 
 
-## Simulates a touch screen drag&drop to the relative coordinates (offset).[br]
+## Simulates a touch drag and drop event to a relative position.[br]
 ## [color=yellow]You must use [b]await[/b] to wait until the simulated drag&drop is complete.[/color][br]
 ## [br]
 ## [member index] : The touch index in the case of a multi-touch event.[br]
@@ -217,7 +217,8 @@ func simulate_screen_touch_drag_absolute(index: int, position: Vector2, time: fl
 	return self
 
 
-## Simulates a touch screen drop&drop to the absolute coordinates (offset).[br]
+## Simulates a complete drag and drop event from one position to another.[br]
+## This is ideal for testing complex drag-and-drop scenarios that require a specific start and end position.[br]
 ## [color=yellow]You must use [b]await[/b] to wait until the simulated drop is complete.[/color][br]
 ## [br]
 ## [member index] : The touch index in the case of a multi-touch event.[br]
@@ -245,7 +246,7 @@ func simulate_screen_touch_drag(index: int, position: Vector2) -> GdUnitSceneRun
 	return self
 
 
-## Returns the actual position of the touch drag postion by given index
+## Returns the actual position of the touchscreen drag position by given index.
 ## [member index] : The touch index in the case of a multi-touch event.[br]
 @warning_ignore("unused_parameter")
 func get_screen_touch_drag_position(index: int) -> Vector2:
@@ -255,6 +256,13 @@ func get_screen_touch_drag_position(index: int) -> Vector2:
 ## Sets how fast or slow the scene simulation is processed (clock ticks versus the real).[br]
 ## It defaults to 1.0. A value of 2.0 means the game moves twice as fast as real life,
 ## whilst a value of 0.5 means the game moves at half the regular speed.
+
+
+## Sets the time factor for the scene simulation.
+## [member time_factor] : A float representing the simulation speed.[br]
+## - Default is 1.0, meaning the simulation runs at normal speed.[br]
+## - A value of 2.0 means the simulation runs twice as fast as real time.[br]
+## - A value of 0.5 means the simulation runs at half the regular speed.[br]
 @warning_ignore("unused_parameter")
 func set_time_factor(time_factor: float = 1.0) -> GdUnitSceneRunner:
 	return self
@@ -311,7 +319,18 @@ func simulate_until_object_signal(
 	return self
 
 
-### Waits for all input events are processed
+## Waits for all input events to be processed by flushing any buffered input events
+## and then awaiting a full cycle of both the process and physics frames.[br]
+## [br]
+## This is typically used to ensure that any simulated or queued inputs are fully
+## processed before proceeding with the next steps in the scene.[br]
+## It's essential for reliable input simulation or when synchronizing logic based
+## on inputs.[br]
+##
+## Usage Example:
+## [codeblock]
+## 	await await_input_processed()  # Ensure all inputs are processed before continuing
+## [/codeblock]
 func await_input_processed() -> void:
 	if scene() != null and scene().process_mode != Node.PROCESS_MODE_DISABLED:
 		Input.flush_buffered_events()
@@ -319,42 +338,68 @@ func await_input_processed() -> void:
 	await Engine.get_main_loop().physics_frame
 
 
-## Waits for the function return value until specified timeout or fails.[br]
-## [member args] : optional function arguments
+## The await_func function pauses execution until a specified function in the scene returns a value.[br]
+## It returns a [GdUnitFuncAssert], which provides a suite of assertion methods to verify the returned value.[br]
+## [member func_name] : The name of the function to wait for.[br]
+## [member args] : Optional function arguments
+## [br]
+## Usage Example:
+## [codeblock]
+## 	# Waits for 'calculate_score' function and verifies the result is equal to 100.
+## 	await_func("calculate_score").is_equal(100)
+## [/codeblock]
 @warning_ignore("unused_parameter")
 func await_func(func_name: String, args := []) -> GdUnitFuncAssert:
 	return null
 
 
-## Waits for the function return value of specified source until specified timeout or fails.[br]
-## [member source : the object where implements the function[br]
+
+## The await_func_on function extends the functionality of await_func by allowing you to specify a source node within the scene.[br]
+## It waits for a specified function on that node to return a value and returns a [GdUnitFuncAssert] object for assertions.[br]
+## [member source] : The object where implements the function.[br]
+## [member func_name] : The name of the function to wait for.[br]
 ## [member args] : optional function arguments
+## [br]
+## Usage Example:
+## [codeblock]
+## 	# Waits for 'calculate_score' function and verifies the result is equal to 100.
+## 	var my_instance := ScoreCalculator.new()
+## 	await_func(my_instance, "calculate_score").is_equal(100)
+## [/codeblock]
 @warning_ignore("unused_parameter")
 func await_func_on(source: Object, func_name: String, args := []) -> GdUnitFuncAssert:
 	return null
 
 
-## Waits for given signal is emited by the scene until a specified timeout to fail.[br]
-## [member signal_name] : signal name[br]
-## [member args] : the expected signal arguments as an array[br]
-## [member timeout] : the timeout in ms, default is set to 2000ms
+## Waits for the specified signal to be emitted by the scene. If the signal is not emitted within the given timeout, the operation fails.[br]
+## [member signal_name] : The name of the signal to wait for[br]
+## [member args] : The signal arguments as an array[br]
+## [member timeout] : The maximum duration (in milliseconds) to wait for the signal to be emitted before failing
 @warning_ignore("unused_parameter")
 func await_signal(signal_name: String, args := [], timeout := 2000 ) -> void:
 	await Engine.get_main_loop().process_frame
 	pass
 
 
-## Waits for given signal is emited by the <source> until a specified timeout to fail.[br]
+## Waits for the specified signal to be emitted by a particular source node. If the signal is not emitted within the given timeout, the operation fails.[br]
 ## [member source] : the object from which the signal is emitted[br]
-## [member signal_name] : signal name[br]
-## [member args] : the expected signal arguments as an array[br]
-## [member timeout] : the timeout in ms, default is set to 2000ms
+## [member signal_name] : The name of the signal to wait for[br]
+## [member args] : The signal arguments as an array[br]
+## [member timeout] : tThe maximum duration (in milliseconds) to wait for the signal to be emitted before failing
 @warning_ignore("unused_parameter")
 func await_signal_on(source: Object, signal_name: String, args := [], timeout := 2000 ) -> void:
 	pass
 
 
-## maximizes the window to bring the scene visible
+## Restores the scene window to a windowed mode and brings it to the foreground.[br]
+## This ensures that the scene is visible and active during testing, making it easier to observe and interact with.
+func move_window_to_foreground() -> GdUnitSceneRunner:
+	return self
+
+
+## Restores the scene window to a windowed mode and brings it to the foreground.[br]
+## This ensures that the scene is visible and active during testing, making it easier to observe and interact with.
+## @deprecated: Use [move_window_to_foreground] instead.
 func maximize_view() -> GdUnitSceneRunner:
 	return self
 
