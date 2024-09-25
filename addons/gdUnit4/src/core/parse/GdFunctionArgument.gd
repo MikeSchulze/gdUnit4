@@ -68,6 +68,10 @@ func value_as_string() -> String:
 	return ""
 
 
+func plain_value() -> String:
+	return _default_value
+
+
 func type() -> int:
 	return _type
 

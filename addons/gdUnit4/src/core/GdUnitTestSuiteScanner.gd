@@ -144,7 +144,7 @@ func _handle_test_suite_arguments(test_suite :Node, script :GDScript, fd :GdFunc
 	for arg in fd.args():
 		match arg.name():
 			_TestCase.ARGUMENT_SKIP:
-				var result :Variant = _expression_runner.execute(script, arg.value_as_string())
+				var result :Variant = _expression_runner.execute(script, arg.plain_value())
 				if result is bool:
 					test_suite.__is_skipped = result
 				else:
