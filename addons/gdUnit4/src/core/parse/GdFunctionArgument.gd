@@ -13,17 +13,17 @@ static var _fix_comma_space: RegEx
 var _name: String
 var _type: int
 var _type_hint: int
-var _default_value: String
+var _default_value: Variant
 var _parameter_sets: PackedStringArray = []
 
 
-func _init(p_name: String, p_type: int, value: String = UNDEFINED, p_type_hint: int = TYPE_NIL) -> void:
+func _init(p_name: String, p_type: int, value: Variant = UNDEFINED, p_type_hint: int = TYPE_NIL) -> void:
 	_init_static_variables()
 	_name = p_name
 	_type = p_type
 	_type_hint = p_type_hint
-	if p_name == ARG_PARAMETERIZED_TEST:
-		_parameter_sets = _parse_parameter_set(value)
+	if value != null and p_name == ARG_PARAMETERIZED_TEST:
+		_parameter_sets = _parse_parameter_set(value as String)
 	_default_value = value
 	# is argument a fuzzer?
 	if _type == TYPE_OBJECT and _fuzzer_regex.search(_name):
@@ -64,7 +64,7 @@ func _extract_value_type(value: String) -> int:
 
 func value_as_string() -> String:
 	if has_default():
-		return _default_value
+		return GdDefaultValueDecoder.decode_typed(_type, _default_value)
 	return ""
 
 

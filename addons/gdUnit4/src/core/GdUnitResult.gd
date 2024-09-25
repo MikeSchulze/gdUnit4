@@ -8,7 +8,7 @@ enum {
 	EMPTY
 }
 
-var _state :Variant
+var _state: int
 var _warn_message := ""
 var _error_message := ""
 var _value :Variant = null

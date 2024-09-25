@@ -198,9 +198,9 @@ static func equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool = false,
 	return _equals(obj_a, obj_b, case_sensitive, compare_mode, [], 0)
 
 
-static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false, compare_mode :COMPARE_MODE = COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
-	var a := obj_a.duplicate()
-	var b := obj_b.duplicate()
+static func equals_sorted(obj_a :Variant, obj_b :Variant, case_sensitive :bool = false, compare_mode :COMPARE_MODE = COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
+	var a: Variant = obj_a.duplicate()
+	var b: Variant = obj_b.duplicate()
 	a.sort()
 	b.sort()
 	return equals(a, b, case_sensitive, compare_mode)

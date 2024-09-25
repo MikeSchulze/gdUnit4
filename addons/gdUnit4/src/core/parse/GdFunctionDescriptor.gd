@@ -96,7 +96,7 @@ func is_private() -> bool:
 	return name().begins_with("_") and not is_virtual()
 
 
-func return_type() -> Variant:
+func return_type() -> int:
 	return _return_type
 
 
@@ -154,13 +154,13 @@ static func extract_from(descriptor :Dictionary, is_engine_ := true) -> GdFuncti
 
 
 	return GdFunctionDescriptor.new(
-		descriptor["name"],
+		descriptor["name"] as String,
 		-1,
 		is_virtual_,
 		is_static_,
 		is_engine_,
 		_extract_return_type(return_descriptor),
-		return_descriptor["class_name"],
+		return_descriptor["class_name"] as String,
 		_extract_args(descriptor),
 		_build_varargs(is_vararg_)
 	)
@@ -212,11 +212,8 @@ static func _extract_args(descriptor :Dictionary) -> Array[GdFunctionArgument]:
 		var arg_type := _argument_type(arg)
 		var arg_type_hint := _argument_hint(arg)
 		#var arg_class: StringName = arg["class_name"]
-		var arg_default :Variant = GdFunctionArgument.UNDEFINED
-		if not defaults.is_empty():
-			var default_value :Variant = defaults.pop_back()
-			arg_default = GdDefaultValueDecoder.decode_typed(arg_type, default_value)
-		args_.push_front(GdFunctionArgument.new(arg_name, arg_type, arg_default, arg_type_hint))
+		var default_value: Variant = GdFunctionArgument.UNDEFINED if defaults.is_empty() else defaults.pop_back()
+		args_.push_front(GdFunctionArgument.new(arg_name, arg_type, default_value, arg_type_hint))
 	return args_
 
 

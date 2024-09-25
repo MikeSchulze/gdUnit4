@@ -98,7 +98,7 @@ static func _nerror(number :Variant) -> String:
 static func _colored_value(value :Variant) -> String:
 	match typeof(value):
 		TYPE_STRING, TYPE_STRING_NAME:
-			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _colored_string_div(value)]
+			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, _colored_string_div(str(value))]
 		TYPE_INT:
 			return "'[color=%s]%d[/color]'" % [VALUE_COLOR, value]
 		TYPE_FLOAT:
@@ -109,7 +109,7 @@ static func _colored_value(value :Variant) -> String:
 			if value == null:
 				return "'[color=%s]<null>[/color]'" % [VALUE_COLOR]
 			if value is InputEvent:
-				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, input_event_as_text(value)]
+				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, input_event_as_text(value as InputEvent)]
 			if value.has_method("_to_string"):
 				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, str(value)]
 			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
@@ -364,7 +364,7 @@ static func error_has_length(current :Variant, expected: int, compare_operator :
 
 # - ArrayAssert specific messgaes ---------------------------------------------------
 
-static func error_arr_contains(current :Variant, expected :Array, not_expect :Array, not_found :Array, by_reference :bool) -> String:
+static func error_arr_contains(current: Variant, expected: Variant, not_expect: Variant, not_found: Variant, by_reference: bool) -> String:
 	var failure_message := "Expecting contains SAME elements:" if by_reference else "Expecting contains elements:"
 	var error := "%s\n %s\n do contains (in any order)\n %s" % [
 					_error(failure_message), _colored_value(current), _colored_value(expected)]
@@ -377,16 +377,16 @@ static func error_arr_contains(current :Variant, expected :Array, not_expect :Ar
 
 
 static func error_arr_contains_exactly(
-	current :Variant,
-	expected :Variant,
-	not_expect :Variant,
-	not_found :Variant, compare_mode :GdObjects.COMPARE_MODE) -> String:
+	current: Variant,
+	expected: Variant,
+	not_expect: Variant,
+	not_found: Variant, compare_mode: GdObjects.COMPARE_MODE) -> String:
 	var failure_message := (
 		"Expecting contains exactly elements:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST
 		else "Expecting contains SAME exactly elements:"
 	)
 	if not_expect.is_empty() and not_found.is_empty():
-		var diff := _find_first_diff(current, expected)
+		var diff := _find_first_diff(current as Array, expected as Array)
 		return "%s\n %s\n do contains (in same order)\n %s\n but has different order %s"  % [
 					_error(failure_message), _colored_value(current), _colored_value(expected), diff]
 
@@ -401,11 +401,11 @@ static func error_arr_contains_exactly(
 
 
 static func error_arr_contains_exactly_in_any_order(
-	current :Variant,
-	expected :Array,
-	not_expect :Array,
-	not_found :Array,
-	compare_mode :GdObjects.COMPARE_MODE) -> String:
+	current: Variant,
+	expected: Variant,
+	not_expect: Variant,
+	not_found: Variant,
+	compare_mode: GdObjects.COMPARE_MODE) -> String:
 
 	var failure_message := (
 		"Expecting contains exactly elements:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST
@@ -421,7 +421,7 @@ static func error_arr_contains_exactly_in_any_order(
 	return error
 
 
-static func error_arr_not_contains(current :Array, expected :Array, found :Array, compare_mode :GdObjects.COMPARE_MODE) -> String:
+static func error_arr_not_contains(current: Variant, expected: Variant, found: Variant, compare_mode: GdObjects.COMPARE_MODE) -> String:
 	var failure_message := "Expecting:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST else "Expecting SAME:"
 	var error := "%s\n %s\n do not contains\n %s" % [
 					_error(failure_message), _colored_value(current), _colored_value(expected)]
@@ -545,18 +545,18 @@ static func result_message(result :GdUnitResult) -> String:
 # - Spy|Mock specific errors ----------------------------------------------------
 static func error_no_more_interactions(summary :Dictionary) -> String:
 	var interactions := PackedStringArray()
-	for args :Variant in summary.keys():
+	for args :Array in summary.keys():
 		var times :int = summary[args]
 		interactions.append(_format_arguments(args, times))
 	return "%s\n%s\n%s" % [_error("Expecting no more interactions!"), _error("But found interactions on:"), "\n".join(interactions)]
 
 
-static func error_validate_interactions(current_interactions :Dictionary, expected_interactions :Dictionary) -> String:
+static func error_validate_interactions(current_interactions: Dictionary, expected_interactions: Dictionary) -> String:
 	var interactions := PackedStringArray()
-	for args :Variant in current_interactions.keys():
-		var times :int = current_interactions[args]
+	for args: Array in current_interactions.keys():
+		var times: int = current_interactions[args]
 		interactions.append(_format_arguments(args, times))
-	var expected_interaction := _format_arguments(expected_interactions.keys()[0], expected_interactions.values()[0])
+	var expected_interaction := _format_arguments(expected_interactions.keys()[0] as Array, expected_interactions.values()[0] as int)
 	return "%s\n%s\n%s\n%s" % [
 			_error("Expecting interaction on:"), expected_interaction, _error("But found interactions on:"), "\n".join(interactions)]
 
@@ -578,7 +578,7 @@ static func _to_typed_args(args :Array) -> PackedStringArray:
 
 static func _format_arg(arg :Variant) -> String:
 	if arg is InputEvent:
-		return input_event_as_text(arg)
+		return input_event_as_text(arg as InputEvent)
 	return str(arg)
 
 
