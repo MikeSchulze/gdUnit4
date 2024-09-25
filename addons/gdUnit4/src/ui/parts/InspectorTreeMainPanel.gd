@@ -946,7 +946,7 @@ func _on_Tree_item_activated() -> void:
 			else selected_item.get_meta(META_SCRIPT_PATH)
 		)
 		var line_number: int = selected_item.get_meta(META_LINE_NUMBER)
-		var resource := load(script_path)
+		var resource: Script = load(script_path)
 
 		if selected_item.has_meta(META_GDUNIT_REPORT):
 			var reports := get_item_reports(selected_item)
@@ -997,13 +997,13 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			#_dump_tree_as_json("tree_example_discovered")
 
 		GdUnitEvent.DISCOVER_SUITE_ADDED:
-			discover_test_suite_added(event)
+			discover_test_suite_added(event as GdUnitEventTestDiscoverTestSuiteAdded)
 
 		GdUnitEvent.DISCOVER_TEST_ADDED:
-			discover_test_added(event)
+			discover_test_added(event as GdUnitEventTestDiscoverTestAdded)
 
 		GdUnitEvent.DISCOVER_TEST_REMOVED:
-			discover_test_removed(event)
+			discover_test_removed(event as GdUnitEventTestDiscoverTestRemoved)
 
 		GdUnitEvent.INIT:
 			if not GdUnitSettings.is_test_discover_enabled():

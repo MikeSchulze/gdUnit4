@@ -35,7 +35,7 @@ func test_discover_on_GDScript() -> void:
 		emitted_events.append(event)
 	)
 
-	var script := load("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
+	var script :GDScript = load("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
 	assert_that(script).is_not_null()
 	if script == null:
 		return

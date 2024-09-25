@@ -113,7 +113,7 @@ static func _is_script_format_supported(resource_path :String) -> bool:
 	return GdUnit4CSharpApiLoader.is_csharp_file(resource_path)
 
 
-func _parse_test_suite(script: GDScript) -> GdUnitTestSuite:
+func _parse_test_suite(script: Script) -> GdUnitTestSuite:
 	if not GdObjects.is_test_suite(script):
 		return null
 
@@ -125,8 +125,8 @@ func _parse_test_suite(script: GDScript) -> GdUnitTestSuite:
 	var test_suite :GdUnitTestSuite = script.new()
 	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
 	# add test cases to test suite and parse test case line nummber
-	var test_case_names := _extract_test_case_names(script)
-	_parse_and_add_test_cases(test_suite, script, test_case_names)
+	var test_case_names := _extract_test_case_names(script as GDScript)
+	_parse_and_add_test_cases(test_suite, script as GDScript, test_case_names)
 	return test_suite
 
 
@@ -174,13 +174,13 @@ func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunct
 				_TestCase.ARGUMENT_TIMEOUT:
 					timeout = arg.default()
 				_TestCase.ARGUMENT_SKIP:
-					var result :Variant = _expression_runner.execute(script, arg.value_as_string())
+					var result :Variant = _expression_runner.execute(script, arg.plain_value())
 					if result is bool:
 						is_skipped = result
 					else:
-						push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.value_as_string())
+						push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.plain_value())
 				_TestCase.ARGUMENT_SKIP_REASON:
-					skip_reason = arg.value_as_string()
+					skip_reason = arg.plain_value()
 				Fuzzer.ARGUMENT_ITERATIONS:
 					iterations = arg.default()
 				Fuzzer.ARGUMENT_SEED:
