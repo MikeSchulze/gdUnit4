@@ -84,17 +84,18 @@ func is_script() -> GdUnitFileAssert:
 	return report_success()
 
 
-func contains_exactly(expected_rows :Array) -> GdUnitFileAssert:
+func contains_exactly(expected_rows: Array) -> GdUnitFileAssert:
 	var current := current_value()
 	if FileAccess.open(current, FileAccess.READ) == null:
 		return report_error("Can't acces the file '%s'! Error code %s" % [current, FileAccess.get_open_error()])
 
-	var script := load(current)
+	var script: GDScript = load(current)
 	if script is GDScript:
-		var instance :Variant = script.new()
-		var source_code := GdScriptParser.to_unix_format(instance.get_script().source_code)
-		GdUnitTools.free_instance(instance)
+		var source_code := GdScriptParser.to_unix_format(script.source_code)
 		var rows := Array(source_code.split("\n"))
-		ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd", "GDScript",
-							ResourceLoader.CACHE_MODE_REUSE).new(rows).contains_exactly(expected_rows)
+		ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd",
+				"GDScript",
+				ResourceLoader.CACHE_MODE_REUSE)\
+			.new(rows)\
+			.contains_exactly(expected_rows)
 	return self

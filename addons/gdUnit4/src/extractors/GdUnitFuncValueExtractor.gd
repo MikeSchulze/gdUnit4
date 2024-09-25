@@ -27,13 +27,13 @@ func args() -> Array:
 #
 # if the value not a Object or not accesible be `func_name` the value is converted to `"n.a."`
 # expecing null values
-func extract_value(value :Variant) -> Variant:
+func extract_value(value: Variant) -> Variant:
 	if value == null:
 		return null
 	for func_name in func_names():
 		if GdArrayTools.is_array_type(value):
 			var values := Array()
-			for element :Variant in Array(value):
+			for element: Variant in (value as Array):
 				values.append(_call_func(element, func_name))
 			value = values
 		else:
@@ -55,7 +55,7 @@ func _call_func(value :Variant, func_name :String) -> Variant:
 	if is_instance_valid(value):
 		# extract from function
 		if value.has_method(func_name):
-			var extract := Callable(value, func_name)
+			var extract := Callable(value as Object, func_name)
 			if extract.is_valid():
 				return value.call(func_name) if args().is_empty() else value.callv(func_name, args())
 		else:

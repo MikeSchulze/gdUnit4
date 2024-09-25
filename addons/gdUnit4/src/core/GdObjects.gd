@@ -361,7 +361,10 @@ static func _is_type_equivalent(type_a :int, type_b :int) -> bool:
 static func is_engine_type(value :Variant) -> bool:
 	if value is GDScript or value is ScriptExtension:
 		return false
-	return value.is_class("GDScriptNativeClass")
+	var obj: Object = value
+	if is_instance_valid(obj) and obj.has_method("is_class"):
+		return obj.is_class("GDScriptNativeClass")
+	return false
 
 
 static func is_type(value :Variant) -> bool:
@@ -554,8 +557,8 @@ static func extract_class_name(clazz :Variant) -> GdUnitResult:
 		var clazz_name := clazz as String
 		if ClassDB.class_exists(clazz_name):
 			return GdUnitResult.success(clazz_name)
-		var source_sript :Script = load(clazz_name)
-		clazz_name = load("res://addons/gdUnit4/src/core/parse/GdScriptParser.gd").new().get_class_name(source_sript)
+		var source_script :GDScript = load(clazz_name)
+		clazz_name = load("res://addons/gdUnit4/src/core/parse/GdScriptParser.gd").new().get_class_name(source_script)
 		return GdUnitResult.success(to_pascal_case(clazz_name))
 
 	if is_primitive_type(clazz):

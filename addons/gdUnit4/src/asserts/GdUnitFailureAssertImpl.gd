@@ -42,12 +42,12 @@ func _on_test_failed(value :bool) -> void:
 
 
 @warning_ignore("unused_parameter")
-func is_equal(_expected :GdUnitAssert) -> GdUnitFailureAssert:
+func is_equal(_expected: Variant) -> GdUnitFailureAssert:
 	return _report_error("Not implemented")
 
 
 @warning_ignore("unused_parameter")
-func is_not_equal(_expected :GdUnitAssert) -> GdUnitFailureAssert:
+func is_not_equal(_expected: Variant) -> GdUnitFailureAssert:
 	return _report_error("Not implemented")
 
 

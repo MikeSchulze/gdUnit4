@@ -39,7 +39,7 @@ func test_assert_failure_on_invalid_cb() -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_assert_failure_on_assert(test_name :String, assert_type :Variant, value :Variant, test_parameters := [
+func test_assert_failure_on_assert(test_name :String, assert_type :Object, value :Variant, test_parameters := [
 	["GdUnitBoolAssert", GdUnitBoolAssert, true],
 	["GdUnitStringAssert", GdUnitStringAssert, "value"],
 	["GdUnitIntAssert", GdUnitIntAssert, 42],

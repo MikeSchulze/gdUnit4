@@ -59,12 +59,12 @@ func is_not_null() -> GdUnitBoolAssert:
 	return self
 
 
-func is_equal(expected :Variant) -> GdUnitBoolAssert:
+func is_equal(expected: Variant) -> GdUnitBoolAssert:
 	_base.is_equal(expected)
 	return self
 
 
-func is_not_equal(expected :Variant) -> GdUnitBoolAssert:
+func is_not_equal(expected: Variant) -> GdUnitBoolAssert:
 	_base.is_not_equal(expected)
 	return self
 
