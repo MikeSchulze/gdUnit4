@@ -97,7 +97,7 @@ static func serialize(result :GdUnitResult) -> Dictionary:
 
 static func deserialize(config :Dictionary) -> GdUnitResult:
 	var result := GdUnitResult.new()
-	result._value = str_to_var(config.get("value", ""))
+	result._value = str_to_var(config.get("value", "") as String)
 	result._warn_message = config.get("warn_msg", null)
 	result._error_message = config.get("err_msg", null)
 	result._state = config.get("state")

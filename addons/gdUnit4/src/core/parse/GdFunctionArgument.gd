@@ -3,7 +3,7 @@ extends RefCounted
 
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-const UNDEFINED :Variant = "<-NO_ARG->"
+const UNDEFINED: String = "<-NO_ARG->"
 const ARG_PARAMETERIZED_TEST := "test_parameters"
 
 static var _fuzzer_regex: RegEx
@@ -13,11 +13,11 @@ static var _fix_comma_space: RegEx
 var _name: String
 var _type: int
 var _type_hint: int
-var _default_value :Variant
-var _parameter_sets :PackedStringArray = []
+var _default_value: String
+var _parameter_sets: PackedStringArray = []
 
 
-func _init(p_name: String, p_type: int, value: Variant = UNDEFINED, p_type_hint: int = TYPE_NIL) -> void:
+func _init(p_name: String, p_type: int, value: String = UNDEFINED, p_type_hint: int = TYPE_NIL) -> void:
 	_init_static_variables()
 	_name = p_name
 	_type = p_type
@@ -45,7 +45,7 @@ func default() -> Variant:
 	return GodotVersionFixures.convert(_default_value, _type)
 
 
-func set_value(value: Variant) -> void:
+func set_value(value: String) -> void:
 	if _type == TYPE_NIL or _type == GdObjects.TYPE_VARIANT:
 		_type = _extract_value_type(value)
 	if _name == ARG_PARAMETERIZED_TEST:
@@ -64,7 +64,7 @@ func _extract_value_type(value: String) -> int:
 
 func value_as_string() -> String:
 	if has_default():
-		return str(_default_value)
+		return _default_value
 	return ""
 
 
@@ -106,7 +106,7 @@ func _to_string() -> String:
 	if _type_hint != TYPE_NIL:
 		s += "[%s]" % GdObjects.type_as_string(_type_hint)
 	if _default_value != UNDEFINED:
-		s += "=" + str(_default_value)
+		s += "=" + _default_value
 	return s
 
 
