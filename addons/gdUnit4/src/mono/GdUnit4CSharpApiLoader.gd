@@ -30,7 +30,7 @@ static func create_test_suite(source_path :String, line_number :int, test_suite_
 		return  GdUnitResult.error("Can't create test suite. No C# support found.")
 	var result := instance().CreateTestSuite(source_path, line_number, test_suite_path) as Dictionary
 	if result.has("error"):
-		return GdUnitResult.error(result.get("error"))
+		return GdUnitResult.error(result.get("error") as String)
 	return  GdUnitResult.success(result)
 
 

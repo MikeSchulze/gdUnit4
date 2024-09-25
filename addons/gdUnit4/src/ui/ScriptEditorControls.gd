@@ -76,7 +76,7 @@ static func close_open_editor_scripts() -> void:
 # The script is openend in the current editor and selected in the file system dock.
 # The line and column on which to open the script can also be specified.
 # The script will be open with the user-configured editor for the script's language which may be an external editor.
-static func edit_script(script_path: String, line_number:=-1) -> void:
+static func edit_script(script_path: String, line_number := -1) -> void:
 	var file_system := EditorInterface.get_resource_filesystem()
 	file_system.update_file(script_path)
 	var file_system_dock := EditorInterface.get_file_system_dock()

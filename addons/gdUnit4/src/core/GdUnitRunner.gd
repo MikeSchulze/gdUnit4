@@ -79,7 +79,7 @@ func _process(_delta :float) -> void:
 					_cs_executor.Execute(test_suite)
 					await _cs_executor.ExecutionCompleted
 				else:
-					await _executor.execute(test_suite)
+					await _executor.execute(test_suite as GdUnitTestSuite)
 				set_process(true)
 		STOP:
 			_state = EXIT

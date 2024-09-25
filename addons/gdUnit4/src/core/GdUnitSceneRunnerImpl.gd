@@ -46,7 +46,7 @@ func _init(p_scene: Variant, p_verbose: bool, p_hide_push_errors := false) -> vo
 	set_time_factor(1)
 	# handle scene loading by resource path
 	if typeof(p_scene) == TYPE_STRING:
-		if !ResourceLoader.exists(p_scene):
+		if !ResourceLoader.exists(p_scene as String):
 			if not p_hide_push_errors:
 				push_error("GdUnitSceneRunner: Can't load scene by given resource path: '%s'. The resource does not exists." % p_scene)
 			return
@@ -54,7 +54,7 @@ func _init(p_scene: Variant, p_verbose: bool, p_hide_push_errors := false) -> vo
 			if not p_hide_push_errors:
 				push_error("GdUnitSceneRunner: The given resource: '%s'. is not a scene." % p_scene)
 			return
-		_current_scene = load(p_scene).instantiate()
+		_current_scene = load(p_scene as String).instantiate()
 		_scene_auto_free = true
 	else:
 		# verify we have a node instance
@@ -295,7 +295,7 @@ func simulate_screen_touch_release(index: int, double_tap := false) -> GdUnitSce
 
 
 func simulate_screen_touch_drag_relative(index: int, relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
-	return await _do_touch_drag_at(index, _current_touch_position[index] + relative, time, trans_type)
+	return await _do_touch_drag_at(index, _current_touch_position[index] as Vector2 + relative, time, trans_type)
 
 
 func simulate_screen_touch_drag_absolute(index: int, position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
@@ -557,11 +557,11 @@ func _handle_actions(event: InputEventAction) -> bool:
 # for handling read https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html?highlight=inputevent#how-does-it-work
 func _handle_input_event(event: InputEvent) -> GdUnitSceneRunner:
 	if event is InputEventMouse:
-		Input.warp_mouse(event.position)
+		Input.warp_mouse(event.position as Vector2)
 	Input.parse_input_event(event)
 
 	if event is InputEventAction:
-		_handle_actions(event)
+		_handle_actions(event as InputEventAction)
 
 	var current_scene := scene()
 	if is_instance_valid(current_scene):

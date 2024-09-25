@@ -41,7 +41,7 @@ static func free_instance(instance :Variant, use_call_deferred :bool = false, is
 		return false
 	if is_stdout_verbose:
 		print_verbose("GdUnit4:gc():free instance ", instance)
-	release_double(instance)
+	release_double(instance as Object)
 	if instance is RefCounted:
 		(instance as RefCounted).notification(Object.NOTIFICATION_PREDELETE)
 		# If scene runner freed we explicit await all inputs are processed

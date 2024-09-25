@@ -17,7 +17,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	await context.gc()
 	var reports := context.build_reports(false)
 	fire_event(GdUnitEvent.new()\
-		.suite_after(test_suite.get_script().resource_path,\
+		.suite_after(test_suite.get_script().resource_path as String,\
 			test_suite.get_name(),
 			context.get_execution_statistics(),
 			reports))

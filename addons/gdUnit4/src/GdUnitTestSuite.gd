@@ -154,7 +154,7 @@ func resource_as_string(resource_path :String) -> String:
 
 ## Reads a resource by given path <resource_path> and return Variand translated by str_to_var
 func resource_as_var(resource_path :String) -> Variant:
-	return str_to_var(__gdunit_file_access().resource_as_string(resource_path))
+	return str_to_var(__gdunit_file_access().resource_as_string(resource_path) as String)
 
 
 ## clears the debuger error list[br]

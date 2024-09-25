@@ -119,7 +119,7 @@ func init_shortcuts() -> void:
 		register_shortcut(shortcut, inputEvent)
 
 
-func create_shortcut_input_even(key_codes : PackedInt32Array) -> InputEventKey:
+func create_shortcut_input_even(key_codes: PackedInt32Array) -> InputEventKey:
 	var inputEvent :InputEventKey = InputEventKey.new()
 	inputEvent.pressed = true
 	for key_code in key_codes:
@@ -204,7 +204,7 @@ func cmd_run(debug :bool) -> void:
 	if _is_running:
 		return
 	# save current selected excution config
-	var result := _runner_config.set_server_port(Engine.get_meta("gdunit_server_port")).save_config()
+	var result := _runner_config.set_server_port(Engine.get_meta("gdunit_server_port") as int).save_config()
 	if result.is_error():
 		push_error(result.error_message())
 		return
@@ -260,7 +260,7 @@ func cmd_create_test() -> void:
 		push_error("Failed to create test case: %s" % result.error_message())
 		return
 	var info := result.value() as Dictionary
-	ScriptEditorControls.edit_script(info.get("path"), info.get("line"))
+	ScriptEditorControls.edit_script(info.get("path") as String, info.get("line") as int)
 
 
 func cmd_discover_tests() -> void:
@@ -339,7 +339,7 @@ func _on_run_overall_pressed(_debug := false) -> void:
 func _on_settings_changed(property :GdUnitProperty) -> void:
 	if SETTINGS_SHORTCUT_MAPPING.has(property.name()):
 		var shortcut :GdUnitShortcut.ShortCut = SETTINGS_SHORTCUT_MAPPING.get(property.name())
-		var input_event := create_shortcut_input_even(property.value())
+		var input_event := create_shortcut_input_even(property.value() as PackedInt32Array)
 		prints("Shortcut changed: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[shortcut], input_event.as_text()])
 		register_shortcut(shortcut, input_event)
 	if property.name() == GdUnitSettings.TEST_DISCOVER_ENABLED:
