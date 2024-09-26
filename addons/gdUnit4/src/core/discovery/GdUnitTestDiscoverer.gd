@@ -9,6 +9,7 @@ static func run() -> void:
 
 	# We run the test discovery in an extra thread so that the main thread is not blocked
 	var t:= Thread.new()
+	@warning_ignore("return_value_discarded")
 	t.start(func () -> void:
 		var test_suite_directories :PackedStringArray = GdUnitCommandHandler.scan_test_directorys("res://" , GdUnitSettings.test_root_folder(), [])
 		var scanner := GdUnitTestSuiteScanner.new()

@@ -5,13 +5,14 @@ const GdUnitTools := preload ("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const GdUnitTestDiscoverGuard := preload ("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd")
 
 
-var _gd_inspector :Node
-var _gd_console :Node
+var _gd_inspector: Control
+var _gd_console: Control
 var _guard: GdUnitTestDiscoverGuard
 
 
 func _enter_tree() -> void:
 	if check_running_in_test_env():
+		@warning_ignore("return_value_discarded")
 		CmdConsole.new().prints_warning("It was recognized that GdUnit4 is running in a test environment, therefore the GdUnit4 plugin will not be executed!")
 		return
 	if Engine.get_version_info().hex < 0x40200:
@@ -23,6 +24,7 @@ func _enter_tree() -> void:
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, _gd_inspector)
 	# install the GdUnit Console
 	_gd_console = load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn").instantiate()
+	@warning_ignore("return_value_discarded")
 	add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
 	prints("Loading GdUnit4 Plugin success")
 	if GdUnitSettings.is_update_notification_enabled():
@@ -32,6 +34,7 @@ func _enter_tree() -> void:
 		prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
 	# connect to be notified for script changes to be able to discover new tests
 	_guard = GdUnitTestDiscoverGuard.new()
+	@warning_ignore("return_value_discarded")
 	resource_saved.connect(_on_resource_saved)
 
 
@@ -56,4 +59,4 @@ func check_running_in_test_env() -> bool:
 
 func _on_resource_saved(resource: Resource) -> void:
 	if resource is Script:
-		await _guard.discover(resource)
+		await _guard.discover(resource as Script)

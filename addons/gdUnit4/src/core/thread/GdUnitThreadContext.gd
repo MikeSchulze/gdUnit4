@@ -29,9 +29,8 @@ func dispose() -> void:
 	_thread = null
 
 
-func set_assert(value :GdUnitAssert) -> GdUnitThreadContext:
+func set_assert(value :GdUnitAssert) -> void:
 	_assert = value
-	return self
 
 
 func get_assert() -> GdUnitAssert:

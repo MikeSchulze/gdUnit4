@@ -42,7 +42,9 @@ static func load_template(template :String, class_info :Dictionary, instance :Ob
 		.replace("${source_class}", class_info.get("class_name") as String)
 	var lines := GdScriptParser.to_unix_format(source_code).split("\n")
 	# replace template class_name with Doubled<class> name and extends form source class
+	@warning_ignore("return_value_discarded")
 	lines.insert(0, "class_name Doubled%s" % class_info.get("class_name").replace(".", "_"))
+	@warning_ignore("return_value_discarded")
 	lines.insert(1, extends_clazz(class_info))
 	# append Object interactions stuff
 	lines.append_array(GdScriptParser.to_unix_format(DOUBLER_TEMPLATE.source_code).split("\n"))

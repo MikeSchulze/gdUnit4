@@ -22,6 +22,7 @@ func _init(instance :Object, func_name :String, args := Array()) -> void:
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	# verify at first the function name exists
 	if not instance.has_method(func_name):
+		@warning_ignore("return_value_discarded")
 		report_error("The function '%s' do not exists checked instance '%s'." % [func_name, instance])
 		_interrupted = true
 	else:
@@ -122,6 +123,7 @@ func _validate_callback(predicate :Callable, expected :Variant = null) -> void:
 	timer.set_name("gdunit_funcassert_interrupt_timer_%d" % timer.get_instance_id())
 	Engine.get_main_loop().root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
+	@warning_ignore("return_value_discarded")
 	timer.timeout.connect(func do_interrupt() -> void:
 		_interrupted = true
 		, CONNECT_DEFERRED)
@@ -146,8 +148,15 @@ func _validate_callback(predicate :Callable, expected :Variant = null) -> void:
 		# https://github.com/godotengine/godot/issues/73052
 		#var predicate_name = predicate.get_method()
 		var predicate_name :String = str(predicate).split('::')[1]
-		report_error(GdAssertMessages.error_interrupted(predicate_name.strip_edges().trim_prefix("cb_"), expected, LocalTime.elapsed(_timeout)))
+		@warning_ignore("return_value_discarded")
+		report_error(GdAssertMessages.error_interrupted(
+			predicate_name.strip_edges().trim_prefix("cb_"),
+			expected,
+			LocalTime.elapsed(_timeout)
+			)
+		)
 	else:
+		@warning_ignore("return_value_discarded")
 		report_success()
 	_sleep_timer.free()
 	timer.free()

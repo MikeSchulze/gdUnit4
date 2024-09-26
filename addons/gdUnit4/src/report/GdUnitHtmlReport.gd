@@ -13,6 +13,7 @@ func _init(report_path :String, max_reports: int) -> void:
 	else:
 		_iteration = 1
 	_report_path = "%s/%s%d" % [report_path, REPORT_DIR_PREFIX, _iteration]
+	@warning_ignore("return_value_discarded")
 	DirAccess.make_dir_recursive_absolute(_report_path)
 
 
@@ -107,6 +108,7 @@ func write() -> String:
 	# write report
 	var index_file := "%s/index.html" % _report_path
 	FileAccess.open(index_file, FileAccess.WRITE).store_string(to_write)
+	@warning_ignore("return_value_discarded")
 	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/report/template/css/", _report_path + "/css")
 	return index_file
 
@@ -123,8 +125,9 @@ func apply_path_reports(report_dir :String, template :String, report_summaries :
 	paths.append_array(path_report_mapping.keys())
 	paths.sort()
 	for report_path in paths:
-		var report := GdUnitByPathReport.new(report_path, path_report_mapping.get(report_path))
+		var report := GdUnitByPathReport.new(report_path, path_report_mapping.get(report_path) as Array[GdUnitReportSummary])
 		var report_link :String = report.write(report_dir).replace(report_dir, ".")
+		@warning_ignore("return_value_discarded")
 		table_records.append(report.create_record(report_link))
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_PATHS, "\n".join(table_records))
 
@@ -133,7 +136,8 @@ func apply_testsuite_reports(report_dir :String, template :String, test_suite_re
 	var table_records := PackedStringArray()
 	for report in test_suite_reports:
 		var report_link :String = report.write(report_dir).replace(report_dir, ".")
-		table_records.append(report.create_record(report_link))
+		@warning_ignore("return_value_discarded")
+		table_records.append(report.create_record(report_link) as String)
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTSUITES, "\n".join(table_records))
 
 

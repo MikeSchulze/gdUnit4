@@ -102,6 +102,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 		TYPE_PACKED_COLOR_ARRAY:
 			var colors := PackedStringArray()
 			for color in value as PackedColorArray:
+				@warning_ignore("return_value_discarded")
 				colors.append(_on_type_Color(color))
 			if colors.is_empty():
 				return "PackedColorArray()"
@@ -110,6 +111,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 		TYPE_PACKED_VECTOR2_ARRAY:
 			var vectors := PackedStringArray()
 			for vector in value as PackedVector2Array:
+				@warning_ignore("return_value_discarded")
 				vectors.append(_on_type_Vector(vector, TYPE_VECTOR2))
 			if vectors.is_empty():
 				return "PackedVector2Array()"
@@ -118,6 +120,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 		TYPE_PACKED_VECTOR3_ARRAY:
 			var vectors := PackedStringArray()
 			for vector in value as PackedVector3Array:
+				@warning_ignore("return_value_discarded")
 				vectors.append(_on_type_Vector(vector, TYPE_VECTOR3))
 			if vectors.is_empty():
 				return "PackedVector3Array()"
@@ -126,6 +129,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 		GdObjects.TYPE_PACKED_VECTOR4_ARRAY:
 			var vectors := PackedStringArray()
 			for vector:Variant in value as Array:
+				@warning_ignore("return_value_discarded")
 				vectors.append(_on_type_Vector(vector, TYPE_VECTOR4))
 			if vectors.is_empty():
 				return "PackedVector4Array()"
@@ -134,6 +138,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 		TYPE_PACKED_STRING_ARRAY:
 			var values := PackedStringArray()
 			for v in value as PackedStringArray:
+				@warning_ignore("return_value_discarded")
 				values.append('"%s"' % v)
 			if values.is_empty():
 				return "PackedStringArray()"
@@ -146,6 +151,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 		TYPE_PACKED_INT64_ARRAY:
 			var vectors := PackedStringArray()
 			for vector :Variant in value as Array:
+				@warning_ignore("return_value_discarded")
 				vectors.append(str(vector))
 			if vectors.is_empty():
 				return GdObjects.type_as_string(type) + "()"

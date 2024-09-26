@@ -50,6 +50,7 @@ static func instance() -> GdUnitCommandHandler:
 	return GdUnitSingleton.instance("GdUnitCommandHandler", func() -> GdUnitCommandHandler: return GdUnitCommandHandler.new())
 
 
+@warning_ignore("return_value_discarded")
 func _init() -> void:
 	assert_shortcut_mappings(SETTINGS_SHORTCUT_MAPPING)
 
@@ -58,6 +59,7 @@ func _init() -> void:
 	GdUnitSignals.instance().gdunit_client_disconnected.connect(_on_client_disconnected)
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
 	# preload previous test execution
+	@warning_ignore("return_value_discarded")
 	_runner_config.load_config()
 
 	init_shortcuts()
@@ -76,6 +78,7 @@ func _init() -> void:
 	# schedule discover tests if enabled and running inside the editor
 	if Engine.is_editor_hint() and GdUnitSettings.is_test_discover_enabled():
 		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(5)
+		@warning_ignore("return_value_discarded")
 		timer.timeout.connect(cmd_discover_tests)
 
 
@@ -239,6 +242,7 @@ func cmd_editor_run_test(debug :bool) -> void:
 	var cursor_line := active_base_editor().get_caret_line()
 	#run test case?
 	var regex := RegEx.new()
+	@warning_ignore("return_value_discarded")
 	regex.compile("(^func[ ,\t])(test_[a-zA-Z0-9_]*)")
 	var result := regex.search(active_base_editor().get_line(cursor_line))
 	if result:
@@ -276,8 +280,10 @@ static func scan_test_directorys(base_directory :String, test_directory: String,
 		if GdUnitTestSuiteScanner.exclude_scan_directories.has(current_directory):
 			continue
 		if match_test_directory(directory, test_directory):
+			@warning_ignore("return_value_discarded")
 			test_suite_paths.append(current_directory)
 		else:
+			@warning_ignore("return_value_discarded")
 			scan_test_directorys(current_directory, test_directory, test_suite_paths)
 	return test_suite_paths
 
@@ -344,6 +350,7 @@ func _on_settings_changed(property :GdUnitProperty) -> void:
 		register_shortcut(shortcut, input_event)
 	if property.name() == GdUnitSettings.TEST_DISCOVER_ENABLED:
 		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(3)
+		@warning_ignore("return_value_discarded")
 		timer.timeout.connect(cmd_discover_tests)
 
 

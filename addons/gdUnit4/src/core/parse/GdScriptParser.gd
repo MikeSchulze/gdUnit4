@@ -258,6 +258,7 @@ class TokenInnerClass extends Token:
 
 	func parse(source_rows :PackedStringArray, offset :int) -> void:
 		# add class signature
+		@warning_ignore("return_value_discarded")
 		_content.append(source_rows[offset])
 		# parse class content
 		for row_index in range(offset+1, source_rows.size()):
@@ -270,8 +271,10 @@ class TokenInnerClass extends Token:
 					source_row = source_row.trim_prefix("\t")
 				# refomat invalid empty lines
 				if source_row.dedent().is_empty():
+					@warning_ignore("return_value_discarded")
 					_content.append("")
 				else:
+					@warning_ignore("return_value_discarded")
 					_content.append(source_row)
 				continue
 			break
@@ -599,6 +602,7 @@ func _enrich_function_descriptor(script: GDScript, fds: Array[GdFunctionDescript
 				).pop_front()
 				if fd != null:
 					# add as enriched function to exclude from next iteration (could be inherited)
+					@warning_ignore("return_value_discarded")
 					enriched_functions.append(fd.name())
 					var func_signature := extract_func_signature(rows, rowIndex)
 					var func_arguments := _parse_function_arguments(func_signature)
@@ -654,6 +658,7 @@ func _prescan_script(script: GDScript) -> void:
 	for key :String in _script_constants.keys():
 		var value :Variant = _script_constants.get(key)
 		if value is GDScript:
+			@warning_ignore("return_value_discarded")
 			_scanned_inner_classes.append(key)
 
 

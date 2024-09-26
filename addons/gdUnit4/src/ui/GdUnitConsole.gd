@@ -21,6 +21,7 @@ var _summary := {
 }
 
 
+@warning_ignore("return_value_discarded")
 func _ready() -> void:
 	init_colors()
 	GdUnitFonts.init_fonts(output)

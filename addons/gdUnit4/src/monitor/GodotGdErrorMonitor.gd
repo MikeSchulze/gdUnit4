@@ -57,6 +57,7 @@ func _collect_log_entries(force_collect_reports: bool) -> Array[ErrorLogEntry]:
 	file.seek(_eof)
 	var records := PackedStringArray()
 	while not file.eof_reached():
+		@warning_ignore("return_value_discarded")
 		records.append(file.get_line())
 	file.seek_end(0)
 	_eof = file.get_length()

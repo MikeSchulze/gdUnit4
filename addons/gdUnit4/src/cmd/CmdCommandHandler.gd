@@ -57,14 +57,17 @@ func _validate() -> GdUnitResult:
 			if _command_cbs[cmd_name][CB_SINGLE_ARG]
 			else _command_cbs[cmd_name][CB_MULTI_ARGS])
 		if cb != NO_CB and not cb.is_valid():
+			@warning_ignore("return_value_discarded")
 			errors.append("Invalid function reference for command '%s', Check the function reference!" % cmd_name)
 		if _cmd_options.get_option(cmd_name) == null:
+			@warning_ignore("return_value_discarded")
 			errors.append("The command '%s' is unknown, verify your CmdOptions!" % cmd_name)
 		# verify for multiple registered command callbacks
 		if _enhanced_fr_test and cb != NO_CB:
 			var cb_method: = cb.get_method()
 			if registered_cbs.has(cb_method):
 				var already_registered_cmd :String = registered_cbs[cb_method]
+				@warning_ignore("return_value_discarded")
 				errors.append("The function reference '%s' already registerd for command '%s'!" % [cb_method, already_registered_cmd])
 			else:
 				registered_cbs[cb_method] = cmd_name

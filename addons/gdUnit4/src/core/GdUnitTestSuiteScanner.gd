@@ -30,8 +30,10 @@ func prescan_testsuite_classes() -> void:
 		var base_class :String = script_meta["base"]
 		var resource_path :String = script_meta["path"]
 		if base_class == "GdUnitTestSuite":
+			@warning_ignore("return_value_discarded")
 			_included_resources.append(resource_path)
 		elif ClassDB.class_exists(base_class):
+			@warning_ignore("return_value_discarded")
 			_excluded_resources.append(resource_path)
 
 
@@ -54,6 +56,7 @@ func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[N
 	if exclude_scan_directories.has(dir.get_current_dir()):
 		return collected_suites
 	prints("Scanning for test suites in:", dir.get_current_dir())
+	@warning_ignore("return_value_discarded")
 	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	var file_name := dir.get_next()
 	while file_name != "":
@@ -61,6 +64,7 @@ func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[N
 		if dir.current_is_dir():
 			var sub_dir := DirAccess.open(resource_path)
 			if sub_dir != null:
+				@warning_ignore("return_value_discarded")
 				_scan_test_suites(sub_dir, collected_suites)
 		else:
 			var time := LocalTime.now()
@@ -186,6 +190,7 @@ func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunct
 				Fuzzer.ARGUMENT_SEED:
 					seed_value = arg.default()
 	# create new test
+	@warning_ignore("return_value_discarded")
 	test.configure(fd.name(), fd.line_number(), fd.source_path(), timeout, fuzzers, iterations, seed_value)
 	test.set_function_descriptor(fd)
 	test.skip(is_skipped, skip_reason)
@@ -196,6 +201,7 @@ func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunct
 func _parse_and_add_test_cases(test_suite :Node, script :GDScript, test_case_names :PackedStringArray) -> void:
 	var test_cases_to_find := Array(test_case_names)
 	var functions_to_scan := test_case_names.duplicate()
+	@warning_ignore("return_value_discarded")
 	functions_to_scan.append("before")
 
 	var function_descriptors := _script_parser.get_function_descriptors(script, functions_to_scan)

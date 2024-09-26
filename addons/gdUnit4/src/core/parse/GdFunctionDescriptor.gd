@@ -128,8 +128,10 @@ func varargs() -> Array[GdFunctionArgument]:
 func typed_args() -> String:
 	var collect := PackedStringArray()
 	for arg in args():
+		@warning_ignore("return_value_discarded")
 		collect.push_back(arg._to_string())
 	for arg in varargs():
+		@warning_ignore("return_value_discarded")
 		collect.push_back(arg._to_string())
 	return ", ".join(collect)
 

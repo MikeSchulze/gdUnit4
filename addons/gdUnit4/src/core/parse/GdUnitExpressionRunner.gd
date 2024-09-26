@@ -34,6 +34,7 @@ func execute(src_script: GDScript, value: Variant) -> Variant:
 		.replace("${clazz_path}", resource_path)\
 		.replace("$expression", expression)
 	#script.take_over_path(resource_path)
+	@warning_ignore("return_value_discarded")
 	script.reload(true)
 	var runner :Variant = script.new()
 	if runner.has_method("queue_free"):

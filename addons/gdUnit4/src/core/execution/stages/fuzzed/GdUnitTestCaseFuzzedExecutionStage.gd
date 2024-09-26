@@ -16,6 +16,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		await _stage_after.execute(test_context)
 		if test_context.is_success() or test_context.is_skipped() or test_context.is_interupted():
 			break
+	@warning_ignore("return_value_discarded")
 	context.evaluate_test_retry_status()
 
 

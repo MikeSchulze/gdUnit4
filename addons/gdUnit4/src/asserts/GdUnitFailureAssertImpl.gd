@@ -15,6 +15,7 @@ func execute_and_await(assertion :Callable, do_await := true) -> GdUnitFailureAs
 	_set_do_expect_fail(true)
 	var thread_context := GdUnitThreadManager.get_current_context()
 	thread_context.set_assert(null)
+	@warning_ignore("return_value_discarded")
 	GdUnitSignals.instance().gdunit_set_test_failed.connect(_on_test_failed)
 	# execute the given assertion as callable
 	if do_await:
@@ -33,6 +34,7 @@ func execute_and_await(assertion :Callable, do_await := true) -> GdUnitFailureAs
 
 
 func execute(assertion :Callable) -> GdUnitFailureAssert:
+	@warning_ignore("return_value_discarded")
 	execute_and_await(assertion, false)
 	return self
 
@@ -79,13 +81,14 @@ func has_line(expected :int) -> GdUnitFailureAssert:
 
 
 func has_message(expected :String) -> GdUnitFailureAssert:
+	@warning_ignore("return_value_discarded")
 	is_failed()
 	var expected_error := GdUnitTools.normalize_text(GdUnitTools.richtext_normalize(expected))
 	var current_error := GdUnitTools.normalize_text(GdUnitTools.richtext_normalize(_failure_message))
 	if current_error != expected_error:
 		var diffs := GdDiffTool.string_diff(current_error, expected_error)
 		var current := GdAssertMessages.colored_array_div(diffs[1])
-		_report_error(GdAssertMessages.error_not_same_error(current, expected_error))
+		return _report_error(GdAssertMessages.error_not_same_error(current, expected_error))
 	return self
 
 
@@ -95,7 +98,7 @@ func contains_message(expected :String) -> GdUnitFailureAssert:
 	if not current_error.contains(expected_error):
 		var diffs := GdDiffTool.string_diff(current_error, expected_error)
 		var current := GdAssertMessages.colored_array_div(diffs[1])
-		_report_error(GdAssertMessages.error_not_same_error(current, expected_error))
+		return _report_error(GdAssertMessages.error_not_same_error(current, expected_error))
 	return self
 
 
@@ -105,7 +108,7 @@ func starts_with_message(expected :String) -> GdUnitFailureAssert:
 	if current_error.find(expected_error) != 0:
 		var diffs := GdDiffTool.string_diff(current_error, expected_error)
 		var current := GdAssertMessages.colored_array_div(diffs[1])
-		_report_error(GdAssertMessages.error_not_same_error(current, expected_error))
+		return _report_error(GdAssertMessages.error_not_same_error(current, expected_error))
 	return self
 
 

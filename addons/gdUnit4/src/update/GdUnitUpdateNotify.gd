@@ -21,6 +21,7 @@ var _download_zip_url :String
 func _ready() -> void:
 	_update_button.disabled = true
 	_md_reader.set_http_client(_update_client)
+	@warning_ignore("return_value_discarded")
 	GdUnitFonts.init_fonts(_content)
 	await request_releases()
 
@@ -132,6 +133,7 @@ func progressBar(p_progress :int) -> void:
 	printraw("scan [%-50s] %-3d%%\r" % ["".lpad(int(p_progress/2.0), "#").rpad(50, "-"), p_progress])
 
 
+@warning_ignore("return_value_discarded")
 func _on_update_pressed() -> void:
 	_update_button.set_disabled(true)
 	# close all opend scripts before start the update
@@ -163,6 +165,7 @@ func _on_cancel_pressed() -> void:
 func _on_content_meta_clicked(meta :String) -> void:
 	var properties :Variant = str_to_var(meta)
 	if properties.has("url"):
+		@warning_ignore("return_value_discarded")
 		OS.shell_open(properties.get("url"))
 
 

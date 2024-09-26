@@ -50,6 +50,7 @@ func message_h4(message :String, color :Color) -> void:
 	_progress_content.append_text("[font_size=16]%s[/font_size]" % _colored(message, color))
 
 
+@warning_ignore("return_value_discarded")
 func run_update() -> void:
 	get_cancel_button().disabled = true
 	get_ok_button().disabled = true
@@ -92,6 +93,7 @@ func restart_godot() -> void:
 	EditorInterface.restart_editor(true)
 
 
+@warning_ignore("return_value_discarded")
 func enable_gdUnit() -> void:
 	var enabled_plugins := PackedStringArray()
 	if ProjectSettings.has_setting("editor_plugins/enabled"):
@@ -110,6 +112,7 @@ const GDUNIT_TEMP := "user://tmp"
 
 func temp_dir() -> String:
 	if not DirAccess.dir_exists_absolute(GDUNIT_TEMP):
+		@warning_ignore("return_value_discarded")
 		DirAccess.make_dir_recursive_absolute(GDUNIT_TEMP)
 	return GDUNIT_TEMP
 
@@ -118,6 +121,7 @@ func create_temp_dir(folder_name :String) -> String:
 	var new_folder := temp_dir() + "/" + folder_name
 	delete_directory(new_folder)
 	if not DirAccess.dir_exists_absolute(new_folder):
+		@warning_ignore("return_value_discarded")
 		DirAccess.make_dir_recursive_absolute(new_folder)
 	return new_folder
 
@@ -125,6 +129,7 @@ func create_temp_dir(folder_name :String) -> String:
 func delete_directory(path :String, only_content := false) -> void:
 	var dir := DirAccess.open(path)
 	if dir != null:
+		@warning_ignore("return_value_discarded")
 		dir.list_dir_begin()
 		var file_name := "."
 		while file_name != "":
@@ -159,6 +164,7 @@ func copy_directory(from_dir :String, to_dir :String) -> bool:
 	var source_dir := DirAccess.open(from_dir)
 	var dest_dir := DirAccess.open(to_dir)
 	if source_dir != null:
+		@warning_ignore("return_value_discarded")
 		source_dir.list_dir_begin()
 		var next := "."
 
@@ -169,6 +175,7 @@ func copy_directory(from_dir :String, to_dir :String) -> bool:
 			var source := source_dir.get_current_dir() + "/" + next
 			var dest := dest_dir.get_current_dir() + "/" + next
 			if source_dir.current_is_dir():
+				@warning_ignore("return_value_discarded")
 				copy_directory(source + "/", dest)
 				continue
 			var err := source_dir.copy(source, dest)
@@ -195,10 +202,12 @@ func extract_zip(zip_package :String, dest_path :String) -> Variant:
 	for zip_entry in zip_entries:
 		var new_file_path: String = dest_path + "/" + zip_entry.replace(archive_path, "")
 		if zip_entry.ends_with("/"):
+			@warning_ignore("return_value_discarded")
 			DirAccess.make_dir_recursive_absolute(new_file_path)
 			continue
 		var file: FileAccess = FileAccess.open(new_file_path, FileAccess.WRITE)
 		file.store_buffer(zip.read_file(zip_entry))
+	@warning_ignore("return_value_discarded")
 	zip.close()
 	return dest_path
 

@@ -304,6 +304,7 @@ static func to_pascal_case(value :String) -> String:
 	return value.capitalize().replace(" ", "")
 
 
+@warning_ignore("return_value_discarded")
 static func to_snake_case(value :String) -> String:
 	var result := PackedStringArray()
 	for ch in value:
@@ -498,6 +499,7 @@ static func create_instance(clazz :Variant) -> GdUnitResult:
 	return GdUnitResult.error("Can't create instance for class '%s'." % clazz)
 
 
+@warning_ignore("return_value_discarded")
 static func extract_class_path(clazz :Variant) -> PackedStringArray:
 	var clazz_path := PackedStringArray()
 	if clazz is String:
@@ -575,6 +577,7 @@ static func extract_class_name(clazz :Variant) -> GdUnitResult:
 	if instance == null:
 		return GdUnitResult.error("Can't create a instance for class '%s'" % clazz)
 	var result := extract_class_name(instance)
+	@warning_ignore("return_value_discarded")
 	GdUnitTools.free_instance(instance)
 	return result
 
@@ -590,6 +593,7 @@ static func extract_inner_clazz_names(clazz_name :String, script_path :PackedStr
 		var value :Variant = map.get(key)
 		if value is GDScript:
 			var class_path := extract_class_path(value)
+			@warning_ignore("return_value_discarded")
 			inner_classes.append(class_path[1])
 	return inner_classes
 

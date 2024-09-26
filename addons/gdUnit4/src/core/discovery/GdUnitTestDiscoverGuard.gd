@@ -8,6 +8,7 @@ var _discover_cache := {}
 
 func _init() -> void:
 	# Register for discovery events to sync the cache
+	@warning_ignore("return_value_discarded")
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(sync_cache)
 
 
@@ -45,6 +46,7 @@ func discover(script: Script) -> void:
 		var tests_removed := PackedStringArray()
 		for test_case in discovered_test_cases:
 			if not script_test_cases.has(test_case):
+				@warning_ignore("return_value_discarded")
 				tests_removed.append(test_case)
 		# second detect new added tests
 		var tests_added :Array[String] = []

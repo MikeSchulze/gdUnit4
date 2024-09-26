@@ -54,6 +54,7 @@ func unregister_emitter(emitter :Object) -> void:
 			var signal_name :String = signal_def["name"]
 			if emitter.is_connected(signal_name, _on_signal_emmited):
 				emitter.disconnect(signal_name, _on_signal_emmited.bind(emitter, signal_name))
+		@warning_ignore("return_value_discarded")
 		_collected_signals.erase(emitter)
 
 

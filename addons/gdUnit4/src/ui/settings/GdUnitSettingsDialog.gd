@@ -27,6 +27,7 @@ func _ready() -> void:
 		GdUnitSettings.setup()
 	GdUnit4Version.init_version_label(_version_label)
 	_font_size = GdUnitFonts.init_fonts(_version_label)
+	@warning_ignore("return_value_discarded")
 	about_to_popup.connect(_do_setup_properties)
 
 
@@ -90,6 +91,7 @@ func setup_properties(properties_parent: Node, property_category: String) -> voi
 		var input: Node = _create_input_element(property, reset_btn)
 		inputs.append(input)
 		grid.add_child(input)
+		@warning_ignore("return_value_discarded")
 		reset_btn.pressed.connect(_on_btn_property_reset_pressed.bind(property, input, reset_btn))
 		# property help text
 		var info: Node = _properties_template.get_child(2).duplicate()
@@ -106,6 +108,7 @@ func setup_properties(properties_parent: Node, property_category: String) -> voi
 	properties_parent.custom_minimum_size.x = min_size_overall
 
 
+@warning_ignore("return_value_discarded")
 func _create_input_element(property: GdUnitProperty, reset_btn: Button) -> Node:
 	if property.is_selectable_value():
 		var options := OptionButton.new()
@@ -149,6 +152,7 @@ func to_shortcut(keys: PackedInt32Array) -> String:
 	return input_event.as_text()
 
 
+@warning_ignore("return_value_discarded")
 func to_keys(input_event: InputEventKey) -> PackedInt32Array:
 	var keys := PackedInt32Array()
 	if input_event.ctrl_pressed:
@@ -214,10 +218,12 @@ func rescan(update_scripts:=false) -> void:
 
 
 func _on_btn_report_bug_pressed() -> void:
+	@warning_ignore("return_value_discarded")
 	OS.shell_open("https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=bug&projects=projects%2F5&template=bug_report.yml&title=GD-XXX%3A+Describe+the+issue+briefly")
 
 
 func _on_btn_request_feature_pressed() -> void:
+	@warning_ignore("return_value_discarded")
 	OS.shell_open("https://github.com/MikeSchulze/gdUnit4/issues/new?assignees=MikeSchulze&labels=enhancement&projects=&template=feature_request.md&title=")
 
 

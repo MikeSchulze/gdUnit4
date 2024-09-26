@@ -61,6 +61,7 @@ static func mock_on_scene(scene :PackedScene, debug_write :bool) -> Variant:
 	if scene_instance.get_script() == null:
 		if push_errors:
 			push_error("Can't create a mockable instance for a scene without script '%s'" % scene.resource_path)
+		@warning_ignore("return_value_discarded")
 		GdUnitTools.free_instance(scene_instance)
 		return null
 
@@ -99,7 +100,9 @@ static func mock_on_script(instance :Object, clazz :Variant, function_excludes :
 	mock.resource_path = "%s/%s"  % [GdUnitFileAccess.create_temp_dir("mock"), mock.resource_name]
 
 	if debug_write:
+		@warning_ignore("return_value_discarded")
 		DirAccess.remove_absolute(mock.resource_path)
+		@warning_ignore("return_value_discarded")
 		ResourceSaver.save(mock, mock.resource_path)
 	var error := mock.reload(true)
 	if error != OK:

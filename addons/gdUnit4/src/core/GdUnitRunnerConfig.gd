@@ -38,6 +38,7 @@ func server_port() -> int:
 	return _config.get(SERVER_PORT, -1)
 
 
+@warning_ignore("return_value_discarded")
 func self_test() -> GdUnitRunnerConfig:
 	add_test_suite("res://addons/gdUnit4/test/")
 	add_test_suite("res://addons/gdUnit4/mono/test/")
@@ -52,6 +53,7 @@ func add_test_suite(p_resource_path :String) -> GdUnitRunnerConfig:
 
 func add_test_suites(resource_paths :PackedStringArray) -> GdUnitRunnerConfig:
 	for resource_path_ in resource_paths:
+		@warning_ignore("return_value_discarded")
 		add_test_suite(resource_path_)
 	return self
 
@@ -60,8 +62,10 @@ func add_test_case(p_resource_path :String, test_name :StringName, test_param_in
 	var to_execute_ := to_execute()
 	var test_cases :PackedStringArray = to_execute_.get(p_resource_path, PackedStringArray())
 	if test_param_index != -1:
+		@warning_ignore("return_value_discarded")
 		test_cases.append("%s:%d" % [test_name, test_param_index])
 	else:
+		@warning_ignore("return_value_discarded")
 		test_cases.append(test_name)
 	to_execute_[p_resource_path] = test_cases
 	return self
@@ -77,13 +81,17 @@ func skip_test_suite(value :StringName) -> GdUnitRunnerConfig:
 		parts.remove_at(0)
 	parts[0] = GdUnitFileAccess.make_qualified_path(parts[0])
 	match parts.size():
-		1: skipped()[parts[0]] = PackedStringArray()
-		2: skip_test_case(parts[0], parts[1])
+		1:
+			skipped()[parts[0]] = PackedStringArray()
+		2:
+			@warning_ignore("return_value_discarded")
+			skip_test_case(parts[0], parts[1])
 	return self
 
 
 func skip_test_suites(resource_paths :PackedStringArray) -> GdUnitRunnerConfig:
 	for resource_path_ in resource_paths:
+		@warning_ignore("return_value_discarded")
 		skip_test_suite(resource_path_)
 	return self
 
@@ -91,6 +99,7 @@ func skip_test_suites(resource_paths :PackedStringArray) -> GdUnitRunnerConfig:
 func skip_test_case(p_resource_path :String, test_name :StringName) -> GdUnitRunnerConfig:
 	var to_ignore := skipped()
 	var test_cases :PackedStringArray = to_ignore.get(p_resource_path, PackedStringArray())
+	@warning_ignore("return_value_discarded")
 	test_cases.append(test_name)
 	to_ignore[p_resource_path] = test_cases
 	return self
