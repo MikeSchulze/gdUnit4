@@ -68,7 +68,6 @@ const DEFAULT_ENUM_RETURN_VALUES = {
 	"PropertyHint" : "PROPERTY_HINT_NONE",
 	"Variant.Type" : "TYPE_NIL",
 }
-const DEFAULT_DISABLE_WARNINGS := "'shadowed_variable', 'untyped_declaration', 'unsafe_call_argument'"
 
 var _push_errors :String
 
@@ -135,7 +134,7 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 		var constructor := "func _init(%s) -> void:\n	super(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
 
-	var double_src := '@warning_ignore(%s)\n' % DEFAULT_DISABLE_WARNINGS
+	var double_src := "@warning_ignore('shadowed_variable', 'untyped_declaration', 'unsafe_call_argument')\n"
 	if func_descriptor.is_engine():
 		double_src += '@warning_ignore("native_method_override")\n'
 	if func_descriptor.return_type() == GdObjects.TYPE_ENUM:
