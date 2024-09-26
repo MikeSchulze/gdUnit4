@@ -10,29 +10,33 @@ static func build(to_spy: Variant, debug_write := false) -> Variant:
 	if GdObjects.is_singleton(to_spy):
 		push_error("Spy on a Singleton is not allowed! '%s'" % to_spy.get_class())
 		return null
+
 	# if resource path load it before
 	if GdObjects.is_scene_resource_path(to_spy):
-		if not FileAccess.file_exists(to_spy):
-			push_error("Can't build spy on scene '%s'! The given resource not exists!" % to_spy)
+		var scene_resource_path :String = to_spy
+		if not FileAccess.file_exists(scene_resource_path):
+			push_error("Can't build spy on scene '%s'! The given resource not exists!" % scene_resource_path)
 			return null
-		to_spy = load(to_spy)
+		var scene_to_spy := load(scene_resource_path) as PackedScene
+		return spy_on_scene(scene_to_spy.instantiate() as Node, debug_write)
 	# spy checked PackedScene
 	if GdObjects.is_scene(to_spy):
-		return spy_on_scene(to_spy.instantiate(), debug_write)
+		var scene_to_spy := to_spy as PackedScene
+		return spy_on_scene(scene_to_spy.instantiate() as Node, debug_write)
 	# spy checked a scene instance
 	if GdObjects.is_instance_scene(to_spy):
-		return spy_on_scene(to_spy, debug_write)
+		return spy_on_scene(to_spy as Node, debug_write)
 
 	var excluded_functions := []
 	if to_spy is Callable:
-		to_spy = CallableDoubler.new(to_spy)
+		to_spy = CallableDoubler.new(to_spy as Callable)
 		excluded_functions = CallableDoubler.excluded_functions()
 
 	var spy := spy_on_script(to_spy, excluded_functions, debug_write)
 	if spy == null:
 		return null
-	var spy_instance :Variant = spy.new()
-	copy_properties(to_spy, spy_instance)
+	var spy_instance :Object = spy.new()
+	copy_properties(to_spy as Object, spy_instance)
 	GdUnitObjectInteractions.reset(spy_instance)
 	spy_instance.__set_singleton(to_spy)
 	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
@@ -61,8 +65,8 @@ static func spy_on_script(instance :Variant, function_excludes :PackedStringArra
 		if GdUnitSettings.is_verbose_assert_errors():
 			push_error("Can't build spy for class type '%s'! Using an instance instead e.g. 'spy(<instance>)'" % [clazz_name])
 		return null
-	var lines := load_template(SPY_TEMPLATE.source_code, class_info, instance)
-	lines += double_functions(instance, clazz_name, clazz_path, GdUnitSpyFunctionDoubler.new(), function_excludes)
+	var lines := load_template(SPY_TEMPLATE.source_code, class_info, instance as Object)
+	lines += double_functions(instance as Object, clazz_name, clazz_path, GdUnitSpyFunctionDoubler.new(), function_excludes)
 
 	var spy := GDScript.new()
 	spy.source_code = "\n".join(lines)

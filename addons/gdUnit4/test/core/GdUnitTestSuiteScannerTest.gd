@@ -255,7 +255,7 @@ func test_parse_and_add_test_cases() -> void:
 		"test_multiline_arguments_a",
 		"test_multiline_arguments_b",
 		"test_multiline_arguments_c"])
-	scanner._parse_and_add_test_cases(test_suite, test_suite.get_script(), test_case_names)
+	scanner._parse_and_add_test_cases(test_suite, test_suite.get_script() as GDScript, test_case_names)
 	assert_array(test_suite.get_children())\
 		.extractv(extr("get_name"), extr("timeout"), extr("fuzzer_arguments"), extr("iterations"))\
 		.contains_exactly([

@@ -72,9 +72,9 @@ func add_test_case(p_resource_path :String, test_name :StringName, test_param_in
 # '/path/path', res://path/path', 'res://path/path/testsuite.gd' or 'testsuite'
 # 'res://path/path/testsuite.gd:test_case' or 'testsuite:test_case'
 func skip_test_suite(value :StringName) -> GdUnitRunnerConfig:
-	var parts :Array =  GdUnitFileAccess.make_qualified_path(value).rsplit(":")
+	var parts: PackedStringArray = GdUnitFileAccess.make_qualified_path(value).rsplit(":")
 	if parts[0] == "res":
-		parts.pop_front()
+		parts.remove_at(0)
 	parts[0] = GdUnitFileAccess.make_qualified_path(parts[0])
 	match parts.size():
 		1: skipped()[parts[0]] = PackedStringArray()
@@ -140,8 +140,8 @@ func fix_value_types() -> void:
 	# fix float value to int json stores all numbers as float
 	var server_port_ :int = _config.get(SERVER_PORT, -1)
 	_config[SERVER_PORT] = server_port_
-	convert_Array_to_PackedStringArray(_config[INCLUDED])
-	convert_Array_to_PackedStringArray(_config[SKIPPED])
+	convert_Array_to_PackedStringArray(_config[INCLUDED] as Dictionary)
+	convert_Array_to_PackedStringArray(_config[SKIPPED] as Dictionary)
 
 
 func convert_Array_to_PackedStringArray(data :Dictionary) -> void:

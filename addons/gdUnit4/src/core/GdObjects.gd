@@ -184,7 +184,7 @@ static func obj2dict(obj: Object, hashed_objects := Dictionary()) -> Dictionary:
 					dict[property_name] = str(property_value)
 					continue
 				hashed_objects[obj] = true
-				dict[property_name] = obj2dict(property_value, hashed_objects)
+				dict[property_name] = obj2dict(property_value as Object, hashed_objects)
 			else:
 				dict[property_name] = property_value
 	if obj.has_method("get_children"):
@@ -198,9 +198,9 @@ static func equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool = false,
 	return _equals(obj_a, obj_b, case_sensitive, compare_mode, [], 0)
 
 
-static func equals_sorted(obj_a :Array, obj_b :Array, case_sensitive :bool = false, compare_mode :COMPARE_MODE = COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
-	var a := obj_a.duplicate()
-	var b := obj_b.duplicate()
+static func equals_sorted(obj_a :Variant, obj_b :Variant, case_sensitive :bool = false, compare_mode :COMPARE_MODE = COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
+	var a: Variant = obj_a.duplicate()
+	var b: Variant = obj_b.duplicate()
 	a.sort()
 	b.sort()
 	return equals(a, b, case_sensitive, compare_mode)
@@ -245,8 +245,8 @@ static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compar
 					return false
 				if obj_a.get_class() != obj_b.get_class():
 					return false
-				var a := obj2dict(obj_a)
-				var b := obj2dict(obj_b)
+				var a := obj2dict(obj_a as Object)
+				var b := obj2dict(obj_b as Object)
 				return _equals(a, b, case_sensitive, compare_mode, deep_stack, stack_depth)
 			return obj_a == obj_b
 
@@ -358,10 +358,13 @@ static func _is_type_equivalent(type_a :int, type_b :int) -> bool:
 		or type_a == type_b)
 
 
-static func is_engine_type(value :Object) -> bool:
+static func is_engine_type(value :Variant) -> bool:
 	if value is GDScript or value is ScriptExtension:
 		return false
-	return value.is_class("GDScriptNativeClass")
+	var obj: Object = value
+	if is_instance_valid(obj) and obj.has_method("is_class"):
+		return obj.is_class("GDScriptNativeClass")
+	return false
 
 
 static func is_type(value :Variant) -> bool:
@@ -476,28 +479,29 @@ static func create_instance(clazz :Variant) -> GdUnitResult:
 				return GdUnitResult.success(clazz)
 			return GdUnitResult.success(clazz.new())
 		TYPE_STRING:
-			if ClassDB.class_exists(clazz):
-				if Engine.has_singleton(clazz):
-					return GdUnitResult.error("Not allowed to create a instance for singelton '%s'." % clazz)
-				if not ClassDB.can_instantiate(clazz):
-					return  GdUnitResult.error("Can't instance Engine class '%s'." % clazz)
-				return GdUnitResult.success(ClassDB.instantiate(clazz))
+			var clazz_name := clazz as String
+			if ClassDB.class_exists(clazz_name):
+				if Engine.has_singleton(clazz_name):
+					return GdUnitResult.error("Not allowed to create a instance for singelton '%s'." % clazz_name)
+				if not ClassDB.can_instantiate(clazz_name):
+					return  GdUnitResult.error("Can't instance Engine class '%s'." % clazz_name)
+				return GdUnitResult.success(ClassDB.instantiate(clazz_name))
 			else:
-				var clazz_path :String = extract_class_path(clazz)[0]
+				var clazz_path :String = extract_class_path(clazz_name)[0]
 				if not FileAccess.file_exists(clazz_path):
-					return GdUnitResult.error("Class '%s' not found." % clazz)
+					return GdUnitResult.error("Class '%s' not found." % clazz_name)
 				var script := load(clazz_path)
 				if script != null:
 					return GdUnitResult.success(script.new())
 				else:
-					return GdUnitResult.error("Can't create instance for '%s'." % clazz)
+					return GdUnitResult.error("Can't create instance for '%s'." % clazz_name)
 	return GdUnitResult.error("Can't create instance for class '%s'." % clazz)
 
 
 static func extract_class_path(clazz :Variant) -> PackedStringArray:
 	var clazz_path := PackedStringArray()
 	if clazz is String:
-		clazz_path.append(clazz)
+		clazz_path.append(clazz as String)
 		return clazz_path
 	if is_instance(clazz):
 		# is instance a script instance?
@@ -507,15 +511,16 @@ static func extract_class_path(clazz :Variant) -> PackedStringArray:
 		return clazz_path
 
 	if clazz is GDScript:
-		if not clazz.resource_path.is_empty():
-			clazz_path.append(clazz.resource_path)
+		var script := clazz as GDScript
+		if not script.resource_path.is_empty():
+			clazz_path.append(script.resource_path)
 			return clazz_path
 		# if not found we go the expensive way and extract the path form the script by creating an instance
-		var arg_list := build_function_default_arguments(clazz, "_init")
-		var instance :Variant = clazz.callv("new", arg_list)
+		var arg_list := build_function_default_arguments(script, "_init")
+		var instance: Object = script.callv("new", arg_list)
 		var clazz_info := inst_to_dict(instance)
 		GdUnitTools.free_instance(instance)
-		clazz_path.append(clazz_info["@path"])
+		clazz_path.append(clazz_info["@path"] as String)
 		if clazz_info.has("@subpath"):
 			var sub_path :String = clazz_info["@subpath"]
 			if not sub_path.is_empty():
@@ -549,10 +554,11 @@ static func extract_class_name(clazz :Variant) -> GdUnitResult:
 
 	# extract name form full qualified class path
 	if clazz is String:
-		if ClassDB.class_exists(clazz):
-			return GdUnitResult.success(clazz)
-		var source_sript :Script = load(clazz)
-		var clazz_name :String = load("res://addons/gdUnit4/src/core/parse/GdScriptParser.gd").new().get_class_name(source_sript)
+		var clazz_name := clazz as String
+		if ClassDB.class_exists(clazz_name):
+			return GdUnitResult.success(clazz_name)
+		var source_script :GDScript = load(clazz_name)
+		clazz_name = load("res://addons/gdUnit4/src/core/parse/GdScriptParser.gd").new().get_class_name(source_script)
 		return GdUnitResult.success(to_pascal_case(clazz_name))
 
 	if is_primitive_type(clazz):

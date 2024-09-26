@@ -24,6 +24,7 @@ default_bus_layout=""
 file_logging/enable_file_logging=true
 gdscript/warnings/exclude_addons=false
 gdscript/warnings/untyped_declaration=2
+gdscript/warnings/unsafe_call_argument=1
 
 [dotnet]
 

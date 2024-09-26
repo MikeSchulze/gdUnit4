@@ -39,7 +39,7 @@ static func load_template(template :String, class_info :Dictionary, instance :Ob
 	# store instance id
 	var source_code := template\
 		.replace("${instance_id}", "%s%d" % [DOUBLER_INSTANCE_ID_PREFIX, abs(instance.get_instance_id())])\
-		.replace("${source_class}", class_info.get("class_name"))
+		.replace("${source_class}", class_info.get("class_name") as String)
 	var lines := GdScriptParser.to_unix_format(source_code).split("\n")
 	# replace template class_name with Doubled<class> name and extends form source class
 	lines.insert(0, "class_name Doubled%s" % class_info.get("class_name").replace(".", "_"))

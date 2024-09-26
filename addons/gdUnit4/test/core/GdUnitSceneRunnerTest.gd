@@ -125,7 +125,7 @@ func test_simulate_scene_inteaction_by_press_enter(timeout := 2000) -> void:
 
 # mock on a runner and spy on created spell
 func test_simulate_scene_inteaction_in_combination_with_spy() -> void:
-	var spy_ :Variant = spy(load_test_scene())
+	var spy_: Object = spy(load_test_scene())
 	# create a runner runner
 	var runner := scene_runner(spy_)
 
@@ -443,7 +443,7 @@ func test_runner_GD_356() -> void:
 	# to avoid reporting the expected push_error as test failure we disable it
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_PUSH_ERRORS, false)
 	var runner := scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
-	var player :Variant = runner.invoke("find_child", "Player", true, false)
+	var player: Object = runner.invoke("find_child", "Player", true, false)
 	assert_that(player).is_not_null()
 	await assert_func(player, "is_on_floor").wait_until(500).is_true()
 	assert_that(runner.scene()).is_not_null()

@@ -64,11 +64,11 @@ func _on_type_StringName(value :StringName) -> String:
 	return 'StringName("%s")' % value
 
 
-func _on_type_Object(value :Object, _type :int) -> String:
+func _on_type_Object(value: Variant, _type: int) -> String:
 	return str(value)
 
 
-func _on_type_Color(color :Color) -> String:
+func _on_type_Color(color: Color) -> String:
 	if color == Color.BLACK:
 		return "Color()"
 	return "Color%s" % color
@@ -255,7 +255,7 @@ static func decode(value :Variant) -> String:
 static func decode_typed(type :int, value :Variant) -> String:
 	if value == null:
 		return "null"
-	var decoder :Callable = instance("GdUnitDefaultValueDecoders", func() -> GdDefaultValueDecoder: return GdDefaultValueDecoder.new()).get_decoder(type)
+	var decoder: Callable = instance("GdUnitDefaultValueDecoders", func() -> GdDefaultValueDecoder: return GdDefaultValueDecoder.new()).get_decoder(type)
 	if decoder == null:
 		push_error("No value decoder registered for type '%d'! Please open a Bug issue at 'https://github.com/MikeSchulze/gdUnit4/issues/new/choose'." % type)
 		return "null"

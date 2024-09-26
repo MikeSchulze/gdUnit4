@@ -470,15 +470,15 @@ class ClassWithSignal:
 
 	func foo(arg :int) -> void:
 		if arg == 0:
-			emit_signal("test_signal_a", "aa")
+			emit_signal(test_signal_a.get_name(), "aa")
 		else:
-			emit_signal("test_signal_b", "bb", true)
+			emit_signal(test_signal_b.get_name(), "bb", true)
 
 	func bar(arg :int) -> bool:
 		if arg == 0:
-			emit_signal("test_signal_a", "aa")
+			emit_signal(test_signal_a.get_name(), "aa")
 		else:
-			emit_signal("test_signal_b", "bb", true)
+			emit_signal(test_signal_b.get_name(), "bb", true)
 		return true
 
 
@@ -488,23 +488,23 @@ func _test_spy_verify_emit_signal() -> void:
 	assert_that(spy_instance).is_not_null()
 
 	spy_instance.foo(0)
-	verify(spy_instance, 1).emit_signal("test_signal_a", "aa")
-	verify(spy_instance, 0).emit_signal("test_signal_b", "bb", true)
+	verify(spy_instance, 1).emit_signal(spy_instance.test_signal_a.get_name(), "aa")
+	verify(spy_instance, 0).emit_signal(spy_instance.test_signal_b.get_name(), "bb", true)
 	reset(spy_instance)
 
 	spy_instance.foo(1)
-	verify(spy_instance, 0).emit_signal("test_signal_a", "aa")
-	verify(spy_instance, 1).emit_signal("test_signal_b", "bb", true)
+	verify(spy_instance, 0).emit_signal(spy_instance.test_signal_a.get_name(), "aa")
+	verify(spy_instance, 1).emit_signal(spy_instance.test_signal_b.get_name(), "bb", true)
 	reset(spy_instance)
 
 	spy_instance.bar(0)
-	verify(spy_instance, 1).emit_signal("test_signal_a", "aa")
-	verify(spy_instance, 0).emit_signal("test_signal_b", "bb", true)
+	verify(spy_instance, 1).emit_signal(spy_instance.test_signal_a.get_name(), "aa")
+	verify(spy_instance, 0).emit_signal(spy_instance.test_signal_b.get_name(), "bb", true)
 	reset(spy_instance)
 
 	spy_instance.bar(1)
-	verify(spy_instance, 0).emit_signal("test_signal_a", "aa")
-	verify(spy_instance, 1).emit_signal("test_signal_b", "bb", true)
+	verify(spy_instance, 0).emit_signal(spy_instance.test_signal_a.get_name(), "aa")
+	verify(spy_instance, 1).emit_signal(spy_instance.test_signal_b.get_name(), "bb", true)
 
 
 func test_spy_func_with_default_build_in_type() -> void:
@@ -589,7 +589,7 @@ func test_spy_scene_initalize() -> void:
 	assert_object(spy_scene).is_not_null()
 
 	# Add as child to a scene tree to trigger _ready to initalize all variables
-	add_child(spy_scene)
+	add_child(spy_scene as Node)
 	# ensure _ready is recoreded and onyl once called
 	verify(spy_scene, 1)._ready()
 	verify(spy_scene, 1).only_one_time_call()
@@ -598,7 +598,7 @@ func test_spy_scene_initalize() -> void:
 	assert_object(spy_scene._box3).is_not_null()
 
 	# check signals are connected
-	assert_bool(spy_scene.is_connected("panel_color_change",Callable(spy_scene,"_on_panel_color_changed")))
+	assert_bool(spy_scene.is_connected("panel_color_change", Callable(spy_scene as Node, "_on_panel_color_changed")))
 
 	# check exports
 	assert_str(spy_scene._initial_color.to_html()).is_equal(Color.RED.to_html())
@@ -619,7 +619,7 @@ func test_spy_ready_called_once() -> void:
 	var spy_node :Variant = spy(auto_free(CustomNode.new()))
 
 	# Add as child to a scene tree to trigger _ready to initalize all variables
-	add_child(spy_node)
+	add_child(spy_node as Node)
 
 	# ensure _ready is recoreded and onyl once called
 	verify(spy_node, 1)._ready()

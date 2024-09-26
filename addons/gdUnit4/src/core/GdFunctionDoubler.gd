@@ -117,6 +117,7 @@ func get_template(return_type: GdFunctionDescriptor, is_callable: bool) -> Strin
 	assert(false, "'get_template' must be implemented!")
 	return ""
 
+
 func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) -> PackedStringArray:
 	var is_static := func_descriptor.is_static()
 	var is_coroutine := func_descriptor.is_coroutine()
@@ -133,13 +134,12 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 		var constructor := "func _init(%s) -> void:\n	super(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
 
-	var double_src := '@warning_ignore("untyped_declaration")\n' if Engine.get_version_info().hex >= 0x40200 else '\n'
+	var double_src := "@warning_ignore('shadowed_variable', 'untyped_declaration', 'unsafe_call_argument')\n"
 	if func_descriptor.is_engine():
 		double_src += '@warning_ignore("native_method_override")\n'
 	if func_descriptor.return_type() == GdObjects.TYPE_ENUM:
 		double_src += '@warning_ignore("int_as_enum_without_match")\n'
 		double_src += '@warning_ignore("int_as_enum_without_cast")\n'
-	double_src += '@warning_ignore("shadowed_variable")\n'
 	double_src += GdFunctionDoubler.extract_func_signature(func_descriptor)
 	# fix to  unix format, this is need when the template is edited under windows than the template is stored with \r\n
 	var func_template := get_template(func_descriptor, is_callable).replace("\r\n", "\n")

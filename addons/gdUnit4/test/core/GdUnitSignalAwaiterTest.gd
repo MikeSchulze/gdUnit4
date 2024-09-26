@@ -17,8 +17,8 @@ class Monster extends Node:
 
 	func _process(_delta :float) -> void:
 		_pos += 0.2
-		emit_signal("move", _pos)
-		emit_signal("slide", _pos, 1 , 2)
+		emit_signal(move.get_name(), _pos)
+		emit_signal(slide.get_name(), _pos, 1 , 2)
 
 
 func test_on_signal_with_single_arg() -> void:

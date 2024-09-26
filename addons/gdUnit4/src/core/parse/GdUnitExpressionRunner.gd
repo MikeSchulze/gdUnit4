@@ -12,17 +12,21 @@ func __run_expression() -> Variant:
 var constructor_args_regex := RegEx.create_from_string("new\\((?<args>.*)\\)")
 
 
-func execute(src_script: GDScript, expression: String) -> Variant:
+func execute(src_script: GDScript, value: Variant) -> Variant:
+	if typeof(value) != TYPE_STRING:
+		return value
+
+	var expression := value as String
 	var parameter_map := src_script.get_script_constant_map()
-	for key:String in parameter_map.keys():
-		var value:Variant = parameter_map[key]
+	for key: String in parameter_map.keys():
+		var parameter_value: Variant = parameter_map[key]
 		# check we need to construct from inner class
 		# we need to use the original class instance from the script_constant_map otherwise we run into a runtime error
-		if expression.begins_with(key + ".new") and value is GDScript:
+		if expression.begins_with(key + ".new") and parameter_value is GDScript:
 			var args := build_constructor_arguments(parameter_map, expression.substr(expression.find("new")))
 			if args.is_empty():
-				return value.new()
-			return value.callv("new", args)
+				return parameter_value.new()
+			return parameter_value.callv("new", args)
 
 	var script := GDScript.new()
 	var resource_path := "res://addons/gdUnit4/src/Fuzzers.gd" if src_script.resource_path.is_empty() else src_script.resource_path

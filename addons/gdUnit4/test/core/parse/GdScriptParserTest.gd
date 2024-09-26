@@ -250,21 +250,21 @@ func test_parse_func_name() -> void:
 
 func test_load_source_code_inner_class_AtmosphereData() -> void:
 	var base_class := AdvancedTestClass.new()
-	var rows := _parser._load_inner_class(base_class.get_script(), "AtmosphereData")
+	var rows := _parser._load_inner_class(base_class.get_script() as GDScript, "AtmosphereData")
 	var file_content := resource_as_string("res://addons/gdUnit4/test/core/resources/AtmosphereData.txt")
 	assert_that(rows).is_equal(file_content)
 
 
 func test_load_source_code_inner_class_SoundData() -> void:
 	var base_class := AdvancedTestClass.new()
-	var rows := _parser._load_inner_class(base_class.get_script(), "SoundData")
+	var rows := _parser._load_inner_class(base_class.get_script() as GDScript, "SoundData")
 	var file_content := resource_as_string("res://addons/gdUnit4/test/core/resources/SoundData.txt")
 	assert_that(rows).is_equal(file_content)
 
 
 func test_load_source_code_inner_class_Area4D() -> void:
 	var base_class := AdvancedTestClass.new()
-	var rows := _parser._load_inner_class(base_class.get_script(), "Area4D")
+	var rows := _parser._load_inner_class(base_class.get_script() as GDScript, "Area4D")
 	var file_content := resource_as_string("res://addons/gdUnit4/test/core/resources/Area4D.txt")
 	assert_that(rows).is_equal(file_content)
 
@@ -346,19 +346,19 @@ func test_parse_func_description() -> void:
 	assert_that(fds[1])\
 		.is_equal(GdFunctionDescriptor.create_static("foo1", script.resource_path, 8, TYPE_STRING, [
 			GdFunctionArgument.new("arg1", TYPE_INT),
-			GdFunctionArgument.new("arg2", TYPE_BOOL, "false")
+			GdFunctionArgument.new("arg2", TYPE_BOOL, false)
 		]))
 
 	# static function without return type
 	assert_that(fds[2])\
 		.is_equal(GdFunctionDescriptor.create_static("foo2", script.resource_path, 12, GdObjects.TYPE_VOID, [
 			GdFunctionArgument.new("arg1", TYPE_INT),
-			GdFunctionArgument.new("arg2", TYPE_BOOL, "true")
+			GdFunctionArgument.new("arg2", TYPE_BOOL, true)
 		]))
 
 
 func test_get_function_descriptors_return_type_enum() -> void:
-	var script := load("res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd")
+	var script: GDScript = load("res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd")
 	var fds := _parser.get_function_descriptors(script, ["get_enum"])
 
 	assert_that(fds[0])\
@@ -369,7 +369,7 @@ func test_get_function_descriptors_return_type_enum() -> void:
 
 
 func test_parse_func_description_return_type_internal_class_enum() -> void:
-	var script := load("res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd")
+	var script: GDScript = load("res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd")
 	var fds := _parser.get_function_descriptors(script, ["get_inner_class_enum"])
 
 	assert_that(fds[0])\
@@ -380,7 +380,7 @@ func test_parse_func_description_return_type_internal_class_enum() -> void:
 
 
 func test_parse_func_description_return_type_external_class_enum() -> void:
-	var script := load("res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd")
+	var script: GDScript = load("res://addons/gdUnit4/test/mocker/resources/ClassWithEnumReturnTypes.gd")
 	var fds := _parser.get_function_descriptors(script, ["get_external_class_enum"])
 
 	assert_that(fds[0])\
@@ -409,29 +409,29 @@ func test_parse_class_inherits() -> void:
 			GdFunctionDescriptor.create("foo_void", "res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd", 10, GdObjects.TYPE_VOID),
 			GdFunctionDescriptor.create("bar", "res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd", 13, TYPE_STRING, [
 				GdFunctionArgument.new("arg1", TYPE_INT),
-				GdFunctionArgument.new("arg2", TYPE_INT, "23"),
-				GdFunctionArgument.new("name", TYPE_STRING, '"test"'),
+				GdFunctionArgument.new("arg2", TYPE_INT, 23),
+				GdFunctionArgument.new("name", TYPE_STRING, "test"),
 			]),
 			GdFunctionDescriptor.create("foo5", "res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd", 17, GdObjects.TYPE_VOID),
 		])
 
 
 func test_get_class_name_pascal_case() -> void:
-	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithClassName.gd")))\
+	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithClassName.gd") as GDScript))\
 		.is_equal("PascalCaseWithClassName")
-	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithoutClassName.gd")))\
+	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithoutClassName.gd") as GDScript))\
 		.is_equal("PascalCaseWithoutClassName")
 
 
 func test_get_class_name_snake_case() -> void:
-	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_with_class_name.gd")))\
+	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_with_class_name.gd") as GDScript))\
 		.is_equal("SnakeCaseWithClassName")
-	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_without_class_name.gd")))\
+	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_without_class_name.gd") as GDScript))\
 		.is_equal("SnakeCaseWithoutClassName")
 
 
 func test_get_class_with_extends_in_same_line() -> void:
-	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/extends_on_same_line.gd")))\
+	assert_str(_parser.get_class_name(load("res://addons/gdUnit4/test/core/resources/naming_conventions/extends_on_same_line.gd") as GDScript))\
 		.is_equal("ClassNameExtendsInSameLine")
 
 
@@ -452,7 +452,7 @@ func test_is_func_end() -> void:
 func test_extract_func_signature_multiline() -> void:
 	var source_code := """
 
-		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
+		func test_parameterized(a: int, b :int, c :int, expected :int, test_parameters = [
 			[1, 2, 3, 6],
 			[3, 4, 5, 11],
 			[6, 7, 8, 21] ]):
@@ -463,7 +463,7 @@ func test_extract_func_signature_multiline() -> void:
 	var fs := _parser.extract_func_signature(source_code, 0)
 
 	assert_that(fs).is_equal("""
-		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
+		func test_parameterized(a: int, b :int, c :int, expected :int, test_parameters = [
 			[1, 2, 3, 6],
 			[3, 4, 5, 11],
 			[6, 7, 8, 21] ]):"""
@@ -475,7 +475,7 @@ func test_extract_func_signature_multiline() -> void:
 func test_parse_func_description_paramized_test() -> void:
 	var script := build_tmp_script("""
 		@warning_ignore("unused_parameter")
-		func test_parameterized(a: int, b: int, c: int, expected: int, parameters := [[1,2,3,6],[3,4,5,11],[6,7,8,21]]) -> Variant:
+		func test_parameterized(a: int, b: int, c: int, expected: int, test_parameters := [[1,2,3,6],[3,4,5,11],[6,7,8,21]]) -> Variant:
 			return null
 	""")
 	var fds := GdScriptParser.new().get_function_descriptors(script, ["test_parameterized"])
@@ -485,13 +485,13 @@ func test_parse_func_description_paramized_test() -> void:
 		GdFunctionArgument.new("b", TYPE_INT),
 		GdFunctionArgument.new("c", TYPE_INT),
 		GdFunctionArgument.new("expected", TYPE_INT),
-		GdFunctionArgument.new("parameters", TYPE_ARRAY, "[[1,2,3,6],[3,4,5,11],[6,7,8,21]]"),
+		GdFunctionArgument.new("test_parameters", TYPE_ARRAY, "[[1,2,3,6],[3,4,5,11],[6,7,8,21]]"),
 	]))
 
 
 func test_parse_func_description_paramized_test_with_comments() -> void:
 	var source_code := """
-		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
+		func test_parameterized(a: int, b :int, c :int, expected :int, test_parameters = [
 			# before data set
 			[1, 2, 3, 6], # after data set
 			# between data sets
@@ -506,7 +506,7 @@ func test_parse_func_description_paramized_test_with_comments() -> void:
 	var fs := _parser.extract_func_signature(source_code, 0)
 
 	assert_that(fs).is_equal("""
-		func test_parameterized(a: int, b :int, c :int, expected :int, parameters = [
+		func test_parameterized(a: int, b :int, c :int, expected :int, test_parameters = [
 			[1, 2, 3, 6],
 			[3, 4, 5, 11],
 			[6, 7, 'string #ABCD', 21],
@@ -548,5 +548,5 @@ func test_parse_func_descriptor_with_fuzzers() -> void:
 		# untyped arg is TYPE_VARIANT
 		GdFunctionArgument.new("fuzzer_iterations", GdObjects.TYPE_VARIANT, "234"),
 		# typed is TYPE_INT
-		GdFunctionArgument.new("fuzzer_seed", TYPE_INT, "100")
+		GdFunctionArgument.new("fuzzer_seed", TYPE_INT, 100)
 	]))

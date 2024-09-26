@@ -44,11 +44,11 @@ func set_value(p_value :Variant) -> void:
 		TYPE_STRING:
 			_value = str(p_value)
 		TYPE_BOOL:
-			_value = bool(p_value)
+			_value = p_value as bool
 		TYPE_INT:
-			_value = int(p_value)
+			_value = p_value as int
 		TYPE_FLOAT:
-			_value = float(p_value)
+			_value = p_value as float
 		_:
 			_value = p_value
 

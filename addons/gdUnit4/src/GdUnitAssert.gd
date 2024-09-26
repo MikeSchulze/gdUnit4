@@ -18,14 +18,14 @@ func is_not_null():
 ## Verifies that the current value is equal to expected one.
 @warning_ignore("unused_parameter")
 @warning_ignore("untyped_declaration")
-func is_equal(expected):
+func is_equal(expected: Variant):
 	return self
 
 
 ## Verifies that the current value is not equal to expected one.
 @warning_ignore("unused_parameter")
 @warning_ignore("untyped_declaration")
-func is_not_equal(expected):
+func is_not_equal(expected: Variant):
 	return self
 
 

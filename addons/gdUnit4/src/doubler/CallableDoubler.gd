@@ -70,7 +70,7 @@ func bind(arg0=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 	arg8=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 	arg9=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE) -> Callable:
 	# save
-	var bind_values = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
+	var bind_values: Array = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
 	_cb = _cb.bindv(bind_values)
 	return _cb
 

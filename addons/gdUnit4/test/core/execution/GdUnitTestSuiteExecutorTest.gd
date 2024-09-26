@@ -106,11 +106,11 @@ func assert_event_reports(events :Array[GdUnitEvent], expected_reports :Array) -
 		var expected :Array = expected_reports[event_index] if expected_reports.size() > event_index else []
 		if expected.is_empty():
 			for m in current.size():
-				assert_str(flating_message(current[m].message())).is_empty()
+				assert_str(flating_message(current[m].message() as String)).is_empty()
 
 		for m in expected.size():
 			if m < current.size():
-				assert_str(flating_message(current[m].message())).is_equal(expected[m])
+				assert_str(flating_message(current[m].message() as String)).is_equal(expected[m])
 			else:
 				assert_str("<N/A>").is_equal(expected[m])
 
@@ -742,7 +742,7 @@ func test_execute_test_suite_is_skipped() -> void:
 			["""
 				Entire test-suite is skipped!
 				  Tests skipped: '2'
-				  Reason: '"do not run this"'
+				  Reason: 'do not run this'
 				""".dedent().trim_prefix("\n")]
 		])
 
@@ -766,7 +766,7 @@ func test_execute_test_case_is_skipped() -> void:
 			[],
 			["""
 				This test is skipped!
-				  Reason: '"do not run this"'
+				  Reason: 'do not run this'
 				""".dedent().trim_prefix("\n")],
 			[],
 			[],
@@ -1017,5 +1017,5 @@ class TestCaseNameExtractor extends GdUnitValueExtractor:
 	var r := RegEx.create_from_string("^.*:\\d")
 
 	func extract_value(value :Variant) -> String:
-		var m := r.search(value.test_name())
+		var m := r.search(value.test_name() as String)
 		return m.get_string(0) if m != null else value.test_name()

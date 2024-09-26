@@ -44,7 +44,7 @@ static func unregister(p_singleton :String, use_call_deferred :bool = false) -> 
 
 static func dispose(use_call_deferred :bool = false) -> void:
 	# use a copy because unregister is modify the singletons array
-	var singletons := PackedStringArray(Engine.get_meta(MEATA_KEY, PackedStringArray()))
+	var singletons: PackedStringArray = Engine.get_meta(MEATA_KEY, PackedStringArray())
 	GdUnitTools.prints_verbose("----------------------------------------------------------------")
 	GdUnitTools.prints_verbose("Cleanup singletons %s" % singletons)
 	for singleton in singletons:

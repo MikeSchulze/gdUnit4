@@ -91,7 +91,7 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 		return null
 	# Check in the global class cache whether the GdUnitTestSuite class has been extended.
 	if _included_resources.has(resource_path):
-		return _parse_test_suite(ResourceLoader.load(resource_path))
+		return _parse_test_suite(ResourceLoader.load(resource_path) as GDScript)
 
 	# Otherwise we need to scan manual, we need to exclude classes where direct extends form Godot classes
 	# the resource loader can fail to load e.g. plugin classes with do preload other scripts
@@ -100,7 +100,7 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 	if extends_from.is_empty() or ClassDB.class_exists(extends_from):
 		return null
 	# Finally, we need to load the class to determine it is a test suite
-	var script := ResourceLoader.load(resource_path)
+	var script: GDScript = ResourceLoader.load(resource_path)
 	if not GdObjects.is_test_suite(script):
 		return null
 	return _parse_test_suite(script)
@@ -113,7 +113,7 @@ static func _is_script_format_supported(resource_path :String) -> bool:
 	return GdUnit4CSharpApiLoader.is_csharp_file(resource_path)
 
 
-func _parse_test_suite(script :Script) -> GdUnitTestSuite:
+func _parse_test_suite(script: Script) -> GdUnitTestSuite:
 	if not GdObjects.is_test_suite(script):
 		return null
 
@@ -125,8 +125,8 @@ func _parse_test_suite(script :Script) -> GdUnitTestSuite:
 	var test_suite :GdUnitTestSuite = script.new()
 	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
 	# add test cases to test suite and parse test case line nummber
-	var test_case_names := _extract_test_case_names(script)
-	_parse_and_add_test_cases(test_suite, script, test_case_names)
+	var test_case_names := _extract_test_case_names(script as GDScript)
+	_parse_and_add_test_cases(test_suite, script as GDScript, test_case_names)
 	return test_suite
 
 
@@ -144,13 +144,13 @@ func _handle_test_suite_arguments(test_suite :Node, script :GDScript, fd :GdFunc
 	for arg in fd.args():
 		match arg.name():
 			_TestCase.ARGUMENT_SKIP:
-				var result :Variant = _expression_runner.execute(script, arg.value_as_string())
+				var result :Variant = _expression_runner.execute(script, arg.plain_value())
 				if result is bool:
 					test_suite.__is_skipped = result
 				else:
-					push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.value_as_string())
+					push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.plain_value())
 			_TestCase.ARGUMENT_SKIP_REASON:
-				test_suite.__skip_reason = arg.value_as_string()
+				test_suite.__skip_reason = arg.plain_value()
 			_:
 				push_error("Unsuported argument `%s` found on before() at '%s'!" % [arg.name(), script.resource_path])
 
@@ -164,7 +164,7 @@ func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunct
 	var fuzzers :Array[GdFunctionArgument] = []
 	var test := _TestCase.new()
 
-	for arg in fd.args():
+	for arg: GdFunctionArgument in fd.args():
 		# verify argument is allowed
 		# is test using fuzzers?
 		if arg.type() == GdObjects.TYPE_FUZZER:
@@ -174,13 +174,13 @@ func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunct
 				_TestCase.ARGUMENT_TIMEOUT:
 					timeout = arg.default()
 				_TestCase.ARGUMENT_SKIP:
-					var result :Variant = _expression_runner.execute(script, arg.value_as_string())
+					var result :Variant = _expression_runner.execute(script, arg.plain_value())
 					if result is bool:
 						is_skipped = result
 					else:
-						push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.value_as_string())
+						push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.plain_value())
 				_TestCase.ARGUMENT_SKIP_REASON:
-					skip_reason = arg.value_as_string()
+					skip_reason = arg.plain_value()
 				Fuzzer.ARGUMENT_ITERATIONS:
 					iterations = arg.default()
 				Fuzzer.ARGUMENT_SEED:

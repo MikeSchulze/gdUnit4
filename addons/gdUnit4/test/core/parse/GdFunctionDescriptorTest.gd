@@ -27,7 +27,7 @@ func test_extract_from_func_without_return_type() -> void:
 	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_VOID)
 	assert_array(fd.args()).contains_exactly([
 		GdFunctionArgument.new("sibling", GdObjects.TYPE_NODE),
-		GdFunctionArgument.new("force_readable_name", TYPE_BOOL, "false")
+		GdFunctionArgument.new("force_readable_name", TYPE_BOOL, false)
 	])
 
 
@@ -43,8 +43,8 @@ func test_extract_from_func_with_return_type() -> void:
 	assert_int(fd.return_type()).is_equal(TYPE_OBJECT)
 	assert_array(fd.args()).contains_exactly([
 		GdFunctionArgument.new("pattern", TYPE_STRING),
-		GdFunctionArgument.new("recursive", TYPE_BOOL, "true"),
-		GdFunctionArgument.new("owned", TYPE_BOOL, "true"),
+		GdFunctionArgument.new("recursive", TYPE_BOOL, true),
+		GdFunctionArgument.new("owned", TYPE_BOOL, true),
 	])
 
 

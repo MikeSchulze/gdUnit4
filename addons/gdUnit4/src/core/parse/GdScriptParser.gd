@@ -611,7 +611,7 @@ func _enrich_function_descriptor(script: GDScript, fds: Array[GdFunctionDescript
 					if fd.return_type() == TYPE_OBJECT and fd._return_class in ["", "Resource", "RefCounted"]:
 						token = parse_return_token(func_signature)
 						if token != TOKEN_NOT_MATCH and token.type() == TYPE_OBJECT:
-							fd._return_class = _patch_inner_class_names(token.value(), "")
+							fd._return_class = _patch_inner_class_names(token.value() as String, "")
 		# if the script ihnerits we need to scan this also
 		script_to_scan = script_to_scan.get_base_script()
 

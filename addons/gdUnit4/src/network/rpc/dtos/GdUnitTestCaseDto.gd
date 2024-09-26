@@ -25,7 +25,7 @@ func serialize(test_case :Node) -> Dictionary:
 	return serialized
 
 
-func deserialize(data :Dictionary) -> GdUnitResourceDto:
+func deserialize(data :Dictionary) -> GdUnitTestCaseDto:
 	super.deserialize(data)
 	_line_number = data.get("line_number", -1)
 	_script_path = data.get("script_path", data.get("resource_path", ""))

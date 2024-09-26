@@ -1,8 +1,9 @@
 ---
 name: Refactoring
 about: Create a refactoring issue to improve code base of GdUnit4
-title: ''
-labels: refactoring
+title: 'GD-XXX: Describe the refactoring briefly'
+labels: ['refactoring']
+projects: ['GdUnit4']
 assignees: MikeSchulze
 
 ---
@@ -12,7 +13,6 @@ assignees: MikeSchulze
 
 **Describe Why**
 <!-- A clear and concise description why the refactoring is need.-->
-
 
 **Dev hints**
 <!-- Add some dev nodes here.-->
