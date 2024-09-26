@@ -137,7 +137,10 @@ func _contains_exactly(expected: Variant, compare_mode: GdObjects.COMPARE_MODE) 
 	if GdObjects.equals_sorted(current_value, expected, false, compare_mode):
 		return report_error(GdAssertMessages.error_arr_contains_exactly(current_value, expected, [], [], compare_mode))
 	# find the difference
-	var diffs := _array_div(compare_mode, current_value as Array[Variant], expected as Array[Variant], GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST)
+	var diffs := _array_div(compare_mode,
+		current_value as Array[Variant],
+		expected as Array[Variant],
+		GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST)
 	var not_expect := diffs[0] as Array[Variant]
 	var not_found := diffs[1] as Array[Variant]
 	return report_error(GdAssertMessages.error_arr_contains_exactly(current_value, expected, not_expect, not_found, compare_mode))
