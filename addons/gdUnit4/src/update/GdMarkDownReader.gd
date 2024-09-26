@@ -151,24 +151,24 @@ func to_bbcode(input :String) -> String:
 		if bb_replace is Callable:
 			input = await bb_replace.call(regex_, input)
 		else:
-			input = regex_.sub(input, bb_replace, true)
+			input = regex_.sub(input, bb_replace as String, true)
 	return input + "\n"
 
 
-func process_tables(input :String) -> String:
-	var bbcode := Array()
-	var lines := Array(input.split("\n"))
+func process_tables(input: String) -> String:
+	var bbcode := PackedStringArray()
+	var lines: Array[String] = Array(input.split("\n") as Array, TYPE_STRING, "", null)
 	while not lines.is_empty():
 		if is_table(lines[0]):
 			bbcode.append_array(parse_table(lines))
 			continue
-		bbcode.append(lines.pop_front())
-	return "\n".join(PackedStringArray(bbcode))
+		bbcode.append(lines.pop_front() as String)
+	return "\n".join(bbcode)
 
 
 class Table:
-	var _columns :int
-	var _rows := Array()
+	var _columns: int
+	var _rows: Array[Row] = []
 
 	class Row:
 		var _cells := PackedStringArray()

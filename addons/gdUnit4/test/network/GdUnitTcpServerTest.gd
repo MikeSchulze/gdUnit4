@@ -67,10 +67,10 @@ func test_receive_packages() -> void:
 # TODO refactor out and provide as public interface to can be reuse on other tests
 class TestGdUnitSignalCollector:
 	var _signalCollector :GdUnitSignalCollector
-	var _emitter :Variant
+	var _emitter: Object
 
 
-	func _init(emitter :Variant) -> void:
+	func _init(emitter: Object) -> void:
 		_emitter = emitter
 		_signalCollector = GdUnitSignalCollector.new()
 		_signalCollector.register_emitter(emitter)
@@ -85,5 +85,5 @@ class TestGdUnitSignalCollector:
 			_signalCollector.unregister_emitter(_emitter)
 
 
-func signal_collector(instance :Variant) -> TestGdUnitSignalCollector:
+func signal_collector(instance: Object) -> TestGdUnitSignalCollector:
 	return TestGdUnitSignalCollector.new(instance)

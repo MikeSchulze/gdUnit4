@@ -4,7 +4,8 @@ extends Node
 
 signal client_connected(client_id :int)
 signal client_disconnected(client_id :int)
-signal rpc_data(rpc_data :RPC)
+@warning_ignore("unused_signal")
+signal rpc_data(rpc_data: RPC)
 
 var _server :TCPServer
 

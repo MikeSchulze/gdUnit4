@@ -72,9 +72,9 @@ func add_test_case(p_resource_path :String, test_name :StringName, test_param_in
 # '/path/path', res://path/path', 'res://path/path/testsuite.gd' or 'testsuite'
 # 'res://path/path/testsuite.gd:test_case' or 'testsuite:test_case'
 func skip_test_suite(value :StringName) -> GdUnitRunnerConfig:
-	var parts :Array[String] =  GdUnitFileAccess.make_qualified_path(value).rsplit(":")
+	var parts: PackedStringArray = GdUnitFileAccess.make_qualified_path(value).rsplit(":")
 	if parts[0] == "res":
-		parts.pop_front()
+		parts.remove_at(0)
 	parts[0] = GdUnitFileAccess.make_qualified_path(parts[0])
 	match parts.size():
 		1: skipped()[parts[0]] = PackedStringArray()

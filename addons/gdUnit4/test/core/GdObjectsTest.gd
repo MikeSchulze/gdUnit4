@@ -523,8 +523,7 @@ class ObjectWithSceneReferece:
 
 
 func test_is_equal_on_scene_embedded_script() -> void:
-	var node :Variant = auto_free(load("res://addons/gdUnit4/test/core/resources/scenes/SceneWithEmbeddedScript.tscn").instantiate())
+	var node: Node = auto_free(load("res://addons/gdUnit4/test/core/resources/scenes/SceneWithEmbeddedScript.tscn").instantiate())
 
 	GdObjects.equals(ObjectWithSceneReferece.new(node), ObjectWithSceneReferece.new(node), false)
 	assert_object(ObjectWithSceneReferece.new(node)).is_equal(ObjectWithSceneReferece.new(node))
-

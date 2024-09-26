@@ -148,9 +148,9 @@ func _handle_test_suite_arguments(test_suite :Node, script :GDScript, fd :GdFunc
 				if result is bool:
 					test_suite.__is_skipped = result
 				else:
-					push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.value_as_string())
+					push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.plain_value())
 			_TestCase.ARGUMENT_SKIP_REASON:
-				test_suite.__skip_reason = arg.value_as_string()
+				test_suite.__skip_reason = arg.plain_value()
 			_:
 				push_error("Unsuported argument `%s` found on before() at '%s'!" % [arg.name(), script.resource_path])
 
@@ -164,7 +164,7 @@ func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunct
 	var fuzzers :Array[GdFunctionArgument] = []
 	var test := _TestCase.new()
 
-	for arg in fd.args():
+	for arg: GdFunctionArgument in fd.args():
 		# verify argument is allowed
 		# is test using fuzzers?
 		if arg.type() == GdObjects.TYPE_FUZZER:

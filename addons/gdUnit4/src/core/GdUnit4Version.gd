@@ -28,7 +28,7 @@ static func parse(value :String) -> GdUnit4Version:
 static func current() -> GdUnit4Version:
 	var config := ConfigFile.new()
 	config.load('addons/gdUnit4/plugin.cfg')
-	return parse(config.get_value('plugin', 'version'))
+	return parse(config.get_value('plugin', 'version') as String)
 
 
 func equals(other :GdUnit4Version) -> bool:

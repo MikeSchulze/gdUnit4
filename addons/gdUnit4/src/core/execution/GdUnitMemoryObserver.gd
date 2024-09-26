@@ -128,5 +128,5 @@ func gc() -> void:
 
 
 ## Checks whether the specified object is registered for automatic release
-static func is_marked_auto_free(obj :Object) -> bool:
+static func is_marked_auto_free(obj: Variant) -> bool:
 	return Engine.get_meta(TAG_AUTO_FREE, []).has(obj)

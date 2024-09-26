@@ -36,7 +36,7 @@ func assert_tests(test_suite :Script) -> GdUnitArrayAssert:
 
 
 func test_create_gd_success() -> void:
-	var source := load(_example_source_gd)
+	var source: GDScript = load(_example_source_gd)
 
 	# create initial test suite based checked function selected by line 9
 	var result := GdUnitTestSuiteBuilder.create(source, 9)
@@ -45,7 +45,7 @@ func test_create_gd_success() -> void:
 	var info := result.value() as Dictionary
 	assert_str(info.get("path")).is_equal("user://tmp/test/examples/test_person_test.gd")
 	assert_int(info.get("line")).is_equal(11)
-	assert_tests(load(info.get("path"))).contains_exactly(["test_first_name"])
+	assert_tests(load(info.get("path") as String) as Script).contains_exactly(["test_first_name"])
 
 	# create additional test checked existing suite based checked function selected by line 15
 	result = GdUnitTestSuiteBuilder.create(source, 15)
@@ -54,11 +54,11 @@ func test_create_gd_success() -> void:
 	info = result.value() as Dictionary
 	assert_str(info.get("path")).is_equal("user://tmp/test/examples/test_person_test.gd")
 	assert_int(info.get("line")).is_equal(16)
-	assert_tests(load(info.get("path"))).contains_exactly_in_any_order(["test_first_name", "test_fully_name"])
+	assert_tests(load(info.get("path") as String) as Script).contains_exactly_in_any_order(["test_first_name", "test_fully_name"])
 
 
 func test_create_gd_fail() -> void:
-	var source := load(_example_source_gd)
+	var source: GDScript = load(_example_source_gd)
 
 	# attempt to create an initial test suite based checked the function selected in line 8, which has no function definition
 	var result := GdUnitTestSuiteBuilder.create(source, 8)

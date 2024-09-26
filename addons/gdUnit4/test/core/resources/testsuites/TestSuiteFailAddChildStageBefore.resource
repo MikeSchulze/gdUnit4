@@ -2,7 +2,7 @@
 extends GdUnitTestSuite
 
 func before() -> void:
-	add_child(auto_free(Node.new()))
+	add_child(auto_free(Node.new()) as Node)
 
 func test_case1() -> void:
 	assert_str("test_case1").is_equal("test_case1")

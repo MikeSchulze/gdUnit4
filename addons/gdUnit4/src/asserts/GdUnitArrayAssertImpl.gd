@@ -131,7 +131,7 @@ func _contains_exactly(expected: Variant, compare_mode: GdObjects.COMPARE_MODE) 
 	if current_value == null:
 		return report_error(GdAssertMessages.error_arr_contains_exactly(null, expected, [], expected, compare_mode))
 	# has same content in same order
-	if GdObjects.equals(current_value, expected, false, compare_mode):
+	if GdObjects.equals(current_value as Array, expected as Array, false, compare_mode):
 		return report_success()
 	# check has same elements but in different order
 	if GdObjects.equals_sorted(current_value, expected, false, compare_mode):

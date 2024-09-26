@@ -64,11 +64,11 @@ func _on_type_StringName(value :StringName) -> String:
 	return 'StringName("%s")' % value
 
 
-func _on_type_Object(value :Object, _type :int) -> String:
+func _on_type_Object(value: Variant, _type: int) -> String:
 	return str(value)
 
 
-func _on_type_Color(color :Color) -> String:
+func _on_type_Color(color: Color) -> String:
 	if color == Color.BLACK:
 		return "Color()"
 	return "Color%s" % color

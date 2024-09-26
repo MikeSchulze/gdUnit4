@@ -20,9 +20,8 @@ func test_double_return_typed_function_without_arg() -> void:
 	# String get_class() const
 	var fd := get_function_description("Object", "get_class")
 	var expected := [
-		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
 		'@warning_ignore("native_method_override")',
-		'@warning_ignore("shadowed_variable")',
 		'func get_class() -> String:',
 		'	var args__: Array = ["get_class", ]',
 		'',
@@ -48,9 +47,8 @@ func test_double_return_typed_function_with_args() -> void:
 	# bool is_connected(signal: String, callable_: Callable)) const
 	var fd := get_function_description("Object", "is_connected")
 	var expected := [
-		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
 		'@warning_ignore("native_method_override")',
-		'@warning_ignore("shadowed_variable")',
 		'func is_connected(signal_, callable_) -> bool:',
 		'	var args__: Array = ["is_connected", signal_, callable_]',
 		'',
@@ -77,9 +75,8 @@ func test_double_return_untyped_function_with_args() -> void:
 	# void disconnect(signal: StringName, callable: Callable)
 	var fd := get_function_description("Object", "disconnect")
 	var expected := [
-		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
 		'@warning_ignore("native_method_override")',
-		'@warning_ignore("shadowed_variable")',
 		'func disconnect(signal_, callable_) -> void:',
 		'	var args__: Array = ["disconnect", signal_, callable_]',
 		'',
@@ -105,11 +102,10 @@ func test_double_int_function_with_varargs() -> void:
 	# Error emit_signal(signal: StringName, ...) vararg
 	var fd := get_function_description("Object", "emit_signal")
 	var expected := [
-		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("int_as_enum_without_match")',
 		'@warning_ignore("int_as_enum_without_cast")',
-		'@warning_ignore("shadowed_variable")',
 		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:',
 		'	var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args__: Array = ["emit_signal", signal_] + varargs__',
@@ -152,8 +148,7 @@ func test_double_untyped_function_with_varargs() -> void:
 		[GdFunctionArgument.new("signal", TYPE_SIGNAL)],
 		GdFunctionDescriptor._build_varargs(true))
 	var expected := [
-		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
-		'@warning_ignore("shadowed_variable")',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
 		'func emit_custom(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:',
 		'	var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args__: Array = ["emit_custom", signal_] + varargs__',
@@ -194,9 +189,8 @@ func test_double_virtual_script_function_without_arg() -> void:
 	# void _ready() virtual
 	var fd := get_function_description("Node", "_ready")
 	var expected := [
-		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
 		'@warning_ignore("native_method_override")',
-		'@warning_ignore("shadowed_variable")',
 		'func _ready() -> void:',
 		'	var args__: Array = ["_ready", ]',
 		'',
@@ -223,9 +217,8 @@ func test_double_virtual_script_function_with_arg() -> void:
 	# void _input(event: InputEvent) virtual
 	var fd := get_function_description("Node", "_input")
 	var expected := [
-		'@warning_ignore("untyped_declaration")' if Engine.get_version_info().hex >= 0x40200 else '',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
 		'@warning_ignore("native_method_override")',
-		'@warning_ignore("shadowed_variable")',
 		'func _input(event_) -> void:',
 		'	var args__: Array = ["_input", event_]',
 		'',

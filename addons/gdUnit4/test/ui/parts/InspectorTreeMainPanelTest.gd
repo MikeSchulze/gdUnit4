@@ -440,7 +440,7 @@ func rebuild_tree_from_resource(resource: String) -> TreeItem:
 	var dict :Dictionary = JSON.parse_string(json.get_as_text())
 	var tree :Tree = auto_free(Tree.new())
 	var root := tree.create_item()
-	create_tree_item_form_dict(root, dict["TreeItem"])
+	create_tree_item_form_dict(root, dict["TreeItem"] as Dictionary)
 	return root
 
 
@@ -452,7 +452,7 @@ func create_tree_item_form_dict(item: TreeItem, data: Dictionary) -> TreeItem:
 
 			"TreeItem":
 				var next := item.create_child()
-				return create_tree_item_form_dict(next, data[key])
+				return create_tree_item_form_dict(next, data[key] as Dictionary)
 
 			"childs":
 				var childs_data :Array = data[key]

@@ -46,11 +46,20 @@ func default() -> Variant:
 
 
 func set_value(value: String) -> void:
-	if _type == TYPE_NIL or _type == GdObjects.TYPE_VARIANT:
-		_type = _extract_value_type(value)
+	# we onle need to apply default values for Objects, all others are provided by the method descriptor
+	if _type == GdObjects.TYPE_FUZZER:
+		_default_value = value
+		return
 	if _name == ARG_PARAMETERIZED_TEST:
 		_parameter_sets = _parse_parameter_set(value)
-	_default_value = value
+		_default_value = value
+		return
+
+	if _type == TYPE_NIL or _type == GdObjects.TYPE_VARIANT:
+		_type = _extract_value_type(value)
+		_default_value = value
+	if _default_value == null:
+		_default_value = value
 
 
 func _extract_value_type(value: String) -> int:
@@ -68,7 +77,7 @@ func value_as_string() -> String:
 	return ""
 
 
-func plain_value() -> String:
+func plain_value() -> Variant:
 	return _default_value
 
 
@@ -109,8 +118,8 @@ func _to_string() -> String:
 		s += ":" + GdObjects.type_as_string(_type)
 	if _type_hint != TYPE_NIL:
 		s += "[%s]" % GdObjects.type_as_string(_type_hint)
-	if _default_value != UNDEFINED:
-		s += "=" + _default_value
+	if typeof(_default_value) != TYPE_STRING:
+		s += "=" + value_as_string()
 	return s
 
 

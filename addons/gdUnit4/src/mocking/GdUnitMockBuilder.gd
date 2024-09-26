@@ -25,7 +25,7 @@ static func build(clazz :Variant, mock_mode :String, debug_write := false) -> Va
 		instance.free()
 	if mock == null:
 		return null
-	var mock_instance :Variant = mock.new()
+	var mock_instance: Variant = mock.new()
 	mock_instance.__set_script(mock)
 	mock_instance.__set_singleton()
 	mock_instance.__set_mode(mock_mode)
@@ -50,7 +50,7 @@ static func create_instance(clazz: Variant) -> Object:
 	return null
 
 
-static func mock_on_scene(scene :PackedScene, debug_write :bool) -> Object:
+static func mock_on_scene(scene :PackedScene, debug_write :bool) -> Variant:
 	var push_errors := is_push_errors()
 	if not scene.can_instantiate():
 		if push_errors:

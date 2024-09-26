@@ -44,7 +44,7 @@ func write(report_dir :String) -> String:
 	var test_report_table := PackedStringArray()
 	if not _failure_reports.is_empty():
 		test_report_table.append(test_suite_failure_report())
-	for test_report in _reports:
+	for test_report: GdUnitTestCaseReport in _reports:
 		test_report_table.append(test_report.create_record(report_output_path))
 
 	template = template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTCASES, "\n".join(test_report_table))
