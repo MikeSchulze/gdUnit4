@@ -2,7 +2,8 @@
 name: Task
 about: A small task to implement
 title: ''
-labels: ''
+labels: ['task']
+projects: ['GdUnit4']
 assignees: MikeSchulze
 
 ---

@@ -1,8 +1,9 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ''
-labels: enhancement
+title: 'GD-XXX: Describe the feature briefly'
+labels: ['enhancement']
+projects: ['GdUnit4']
 assignees: MikeSchulze
 
 ---

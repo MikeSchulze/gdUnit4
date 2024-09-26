@@ -2,7 +2,7 @@ name: Bug Report
 description: Report a GdUnit4 bug
 title: 'GD-XXX: Describe the issue briefly'
 labels: ['bug']
-projects: ['projects/5']
+projects: ['GdUnit4']
 assignees:
   - MikeSchulze
 
@@ -20,8 +20,9 @@ body:
       label: The used GdUnit4 version
       description: Which GdUnit4 version are you using?
       options:
-        - 4.4.0 (Pre Release/Master branch)
-        - 4.3.4 (Latest Release)
+        - 4.4.1 (Pre Release/Master branch)
+        - 4.4.0 (Latest Release)
+        - 4.3.4
         - 4.3.3
         - 4.3.2
         - 4.3.1
@@ -92,7 +93,7 @@ body:
 
         If the issue involves code, please include relevant snippets below:
 
-        ```gdscript
+        ```gd
         # Sample code demonstrating the issue
         func reproduce_issue():
             # Your code here
