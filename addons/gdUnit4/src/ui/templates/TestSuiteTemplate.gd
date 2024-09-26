@@ -83,6 +83,7 @@ func get_editor_color(property_name: String, default: Color) -> Color:
 
 func setup_fonts() -> void:
 	if _template_editor:
+		@warning_ignore("return_value_discarded")
 		GdUnitFonts.init_fonts(_template_editor)
 		var font_size := GdUnitFonts.init_fonts(_tags_editor)
 		_title_bar.size.y = font_size + 16

@@ -179,6 +179,7 @@ func is_folder(item: TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_TYPE) and item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER
 
 
+@warning_ignore("return_value_discarded")
 func _ready() -> void:
 	_context_menu.set_item_icon(CONTEXT_MENU_RUN_ID, GdUnitUiTools.get_icon("Play"))
 	_context_menu.set_item_icon(CONTEXT_MENU_DEBUG_ID, GdUnitUiTools.get_icon("PlayStart"))
@@ -362,6 +363,7 @@ func set_state_running(item: TreeItem) -> void:
 	if parent != _tree_root:
 		set_state_running(parent)
 	# force scrolling to current test case
+	@warning_ignore("return_value_discarded")
 	select_item(item)
 
 
@@ -529,6 +531,7 @@ func select_first_orphan() -> void:
 			for item in parent.get_children():
 				if is_item_state_orphan(item):
 					parent.set_collapsed(false)
+					@warning_ignore("return_value_discarded")
 					select_item(item)
 					return
 
@@ -809,6 +812,7 @@ func discover_test_removed(event: GdUnitEventTestDiscoverTestRemoved) -> void:
 	parent.set_meta(META_GDUNIT_TOTAL_TESTS, test_count - 1)
 	init_item_counter(parent)
 	# finally remove the test
+	@warning_ignore("return_value_discarded")
 	remove_tree_item(resource_path, event.test_name())
 
 
@@ -980,6 +984,7 @@ func _on_gdunit_runner_stop(_client_id: int) -> void:
 	sort_tree_items(_tree_root)
 	# wait until the tree redraw
 	await get_tree().process_frame
+	@warning_ignore("return_value_discarded")
 	select_first_failure()
 
 

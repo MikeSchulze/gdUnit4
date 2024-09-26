@@ -51,6 +51,7 @@ func _process(_delta :float) -> void:
 			set_process(false)
 			# wait until client is connected to server
 			for retry in 10:
+				@warning_ignore("return_value_discarded")
 				_stream.poll()
 				console("wait to connect ..")
 				if _stream.get_status() == StreamPeerTCP.STATUS_CONNECTING:
@@ -98,6 +99,7 @@ func process_rpc() -> void:
 func rpc_send(p_rpc :RPC) -> void:
 	if _stream != null:
 		var data := GdUnitServerConstants.JSON_RESPONSE_DELIMITER + p_rpc.serialize() + GdUnitServerConstants.JSON_RESPONSE_DELIMITER
+		@warning_ignore("return_value_discarded")
 		_stream.put_data(data.to_utf8_buffer())
 
 

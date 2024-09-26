@@ -7,6 +7,7 @@ extends ProgressBar
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	style.bg_color = Color.DARK_GREEN
 	bar.value = 0

@@ -37,6 +37,7 @@ static func build(to_spy: Variant, debug_write := false) -> Variant:
 		return null
 	var spy_instance :Object = spy.new()
 	copy_properties(to_spy as Object, spy_instance)
+	@warning_ignore("return_value_discarded")
 	GdUnitObjectInteractions.reset(spy_instance)
 	spy_instance.__set_singleton(to_spy)
 	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
@@ -74,7 +75,9 @@ static func spy_on_script(instance :Variant, function_excludes :PackedStringArra
 	spy.resource_path = GdUnitFileAccess.create_temp_dir("spy") + "/Spy%s_%d.gd" % [clazz_name, Time.get_ticks_msec()]
 
 	if debug_write:
+		@warning_ignore("return_value_discarded")
 		DirAccess.remove_absolute(spy.resource_path)
+		@warning_ignore("return_value_discarded")
 		ResourceSaver.save(spy, spy.resource_path)
 	var error := spy.reload(true)
 	if error != OK:

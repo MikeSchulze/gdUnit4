@@ -23,6 +23,7 @@ const SETTINGS_SHORTCUT_MAPPING := {
 }
 
 
+@warning_ignore("return_value_discarded")
 func _ready() -> void:
 	GdUnit4Version.init_version_label(_version_label)
 	var command_handler := GdUnitCommandHandler.instance()
@@ -53,6 +54,7 @@ func init_shortcuts(command_handler: GdUnitCommandHandler) -> void:
 	_button_run_debug.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG)
 	_button_stop.shortcut = command_handler.get_shortcut(GdUnitShortcut.ShortCut.STOP_TEST_RUN)
 	# register for shortcut changes
+	@warning_ignore("return_value_discarded")
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed.bind(command_handler))
 
 
@@ -87,6 +89,7 @@ func _on_gdunit_settings_changed(_property: GdUnitProperty) -> void:
 
 
 func _on_wiki_pressed() -> void:
+	@warning_ignore("return_value_discarded")
 	OS.shell_open("https://mikeschulze.github.io/gdUnit4/")
 
 

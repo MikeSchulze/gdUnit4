@@ -26,6 +26,7 @@ func serialize(test_case :Node) -> Dictionary:
 
 
 func deserialize(data :Dictionary) -> GdUnitTestCaseDto:
+	@warning_ignore("return_value_discarded")
 	super.deserialize(data)
 	_line_number = data.get("line_number", -1)
 	_script_path = data.get("script_path", data.get("resource_path", ""))

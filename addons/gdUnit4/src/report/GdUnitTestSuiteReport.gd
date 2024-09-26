@@ -43,14 +43,17 @@ func write(report_dir :String) -> String:
 	var report_output_path := output_path(report_dir)
 	var test_report_table := PackedStringArray()
 	if not _failure_reports.is_empty():
+		@warning_ignore("return_value_discarded")
 		test_report_table.append(test_suite_failure_report())
 	for test_report: GdUnitTestCaseReport in _reports:
+		@warning_ignore("return_value_discarded")
 		test_report_table.append(test_report.create_record(report_output_path))
 
 	template = template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTCASES, "\n".join(test_report_table))
 
 	var dir := report_output_path.get_base_dir()
 	if not DirAccess.dir_exists_absolute(dir):
+		@warning_ignore("return_value_discarded")
 		DirAccess.make_dir_recursive_absolute(dir)
 	FileAccess.open(report_output_path, FileAccess.WRITE).store_string(template)
 	return report_output_path

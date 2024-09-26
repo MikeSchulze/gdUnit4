@@ -10,7 +10,9 @@ func _init(context_menus: Array[GdUnitContextMenuItem]) -> void:
 		_context_menus[menu.id] = menu
 	var popup := _menu_popup()
 	var file_tree := _file_tree()
+	@warning_ignore("return_value_discarded")
 	popup.about_to_popup.connect(on_context_menu_show.bind(popup, file_tree))
+	@warning_ignore("return_value_discarded")
 	popup.id_pressed.connect(on_context_menu_pressed.bind(file_tree))
 
 
@@ -48,12 +50,14 @@ func collect_testsuites(_menu_item: GdUnitContextMenuItem, file_tree: Tree) -> P
 		var file_type := file_system.get_file_type(resource_path)
 		var is_dir := DirAccess.dir_exists_absolute(resource_path)
 		if is_dir:
+			@warning_ignore("return_value_discarded")
 			selected_test_suites.append(resource_path)
 		elif is_dir or file_type == "GDScript" or file_type == "CSharpScript":
 			# find a performant way to check if the selected item a testsuite
 			#var resource := ResourceLoader.load(resource_path, "GDScript", ResourceLoader.CACHE_MODE_REUSE)
 			#prints("loaded", resource)
 			#if resource is GDScript and menu_item.is_visible(resource):
+			@warning_ignore("return_value_discarded")
 			selected_test_suites.append(resource_path)
 		selected_item = file_tree.get_next_selected(selected_item)
 	return selected_test_suites

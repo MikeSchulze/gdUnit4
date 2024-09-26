@@ -59,6 +59,7 @@ func scroll_area(from :int, to :int) -> CmdConsole:
 	return self
 
 
+@warning_ignore("return_value_discarded")
 func progress_bar(p_progress :int, p_color :Color = Color.POWDER_BLUE) -> CmdConsole:
 	if p_progress < 0:
 		p_progress = 0
@@ -123,6 +124,7 @@ func print_color(p_message :String, p_color :Color, p_flags := 0) -> CmdConsole:
 		.end_color()
 
 
+@warning_ignore("return_value_discarded")
 func print_color_table() -> void:
 	prints_color("Color Table 6x6x6", Color.ANTIQUE_WHITE)
 	_debug_show_color_codes = true

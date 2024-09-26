@@ -9,6 +9,7 @@ func _init(current :Variant) -> void:
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if current != null and typeof(current) != TYPE_STRING and typeof(current) != TYPE_STRING_NAME:
+		@warning_ignore("return_value_discarded")
 		report_error("GdUnitStringAssert inital error, unexpected type <%s>" % GdObjects.typeof_as_string(current))
 
 
@@ -38,21 +39,25 @@ func report_error(error :String) -> GdUnitStringAssert:
 
 
 func override_failure_message(message :String) -> GdUnitStringAssert:
+	@warning_ignore("return_value_discarded")
 	_base.override_failure_message(message)
 	return self
 
 
 func append_failure_message(message :String) -> GdUnitStringAssert:
+	@warning_ignore("return_value_discarded")
 	_base.append_failure_message(message)
 	return self
 
 
 func is_null() -> GdUnitStringAssert:
+	@warning_ignore("return_value_discarded")
 	_base.is_null()
 	return self
 
 
 func is_not_null() -> GdUnitStringAssert:
+	@warning_ignore("return_value_discarded")
 	_base.is_not_null()
 	return self
 

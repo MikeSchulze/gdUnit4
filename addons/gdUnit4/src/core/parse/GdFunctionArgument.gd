@@ -141,6 +141,7 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 	for c in buf:
 		current_index += 1
 		matched = current_index == buf.size()
+		@warning_ignore("return_value_discarded")
 		collected_characters.push_back(c)
 
 		match c:
@@ -164,6 +165,7 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 		if matched:
 			var parameters := _fix_comma_space.sub(collected_characters.get_string_from_utf8(), ", ", true)
 			if not parameters.is_empty():
+				@warning_ignore("return_value_discarded")
 				output.append(parameters)
 			collected_characters.clear()
 			matched = false

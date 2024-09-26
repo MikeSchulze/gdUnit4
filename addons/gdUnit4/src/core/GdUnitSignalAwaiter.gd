@@ -41,12 +41,14 @@ func elapsed_time() -> float:
 
 func on_signal(source :Object, signal_name :String, expected_signal_args :Array) -> Variant:
 	# register checked signal to wait for
+	@warning_ignore("return_value_discarded")
 	source.connect(signal_name, _on_signal_emmited)
 	# install timeout timer
 	var timer := Timer.new()
 	Engine.get_main_loop().root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
 	timer.set_one_shot(true)
+	@warning_ignore("return_value_discarded")
 	timer.timeout.connect(_do_interrupt, CONNECT_DEFERRED)
 	timer.start(_timeout_millis * 0.001 * Engine.get_time_scale())
 

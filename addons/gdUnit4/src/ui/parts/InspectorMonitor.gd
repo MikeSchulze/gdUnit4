@@ -16,6 +16,7 @@ var total_orphans := 0
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	_time.text = ""
 	_orphans.text = "0"

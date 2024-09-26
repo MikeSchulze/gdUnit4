@@ -54,7 +54,7 @@ static func debug_observe(name :String, obj :Object, indent :int = 0) -> void:
 		prints(name, obj, obj.get_class(), obj.get_name())
 
 
-static func guard_instance(obj :Object) -> Object:
+static func guard_instance(obj :Object) -> void:
 	if not _is_instance_guard_enabled():
 		return
 	var tag := TAG_OBSERVE_INSTANCE + str(abs(obj.get_instance_id()))
@@ -62,7 +62,6 @@ static func guard_instance(obj :Object) -> Object:
 		return
 	debug_observe("Gard on instance", obj)
 	Engine.set_meta(tag, obj)
-	return obj
 
 
 static func unguard_instance(obj :Object, verbose := true) -> void:

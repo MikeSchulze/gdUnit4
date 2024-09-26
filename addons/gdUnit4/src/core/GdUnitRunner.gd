@@ -36,7 +36,9 @@ func _ready() -> void:
 		push_error(config_result.error_message())
 		_state = EXIT
 		return
+	@warning_ignore("return_value_discarded")
 	_client.connect("connection_failed", _on_connection_failed)
+	@warning_ignore("return_value_discarded")
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	var result := _client.start("127.0.0.1", _config.server_port())
 	if result.is_error():

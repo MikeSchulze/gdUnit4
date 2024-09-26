@@ -35,6 +35,7 @@ func write(report_dir :String) -> String:
 	var output_path := "%s/path/%s.html" % [report_dir, path().replace("/", ".")]
 	var dir := output_path.get_base_dir()
 	if not DirAccess.dir_exists_absolute(dir):
+		@warning_ignore("return_value_discarded")
 		DirAccess.make_dir_recursive_absolute(dir)
 	FileAccess.open(output_path, FileAccess.WRITE).store_string(path_report)
 	return output_path
@@ -44,6 +45,7 @@ func apply_testsuite_reports(report_dir :String, template :String, test_suite_re
 	var table_records := PackedStringArray()
 	for report:GdUnitTestSuiteReport in test_suite_reports:
 		var report_link := report.output_path(report_dir).replace(report_dir, "..")
+		@warning_ignore("return_value_discarded")
 		table_records.append(report.create_record(report_link))
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTSUITES, "\n".join(table_records))
 

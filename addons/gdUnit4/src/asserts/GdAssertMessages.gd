@@ -54,9 +54,11 @@ static func colored_array_div(characters :PackedByteArray) -> String:
 		match character:
 			GdDiffTool.DIV_ADD:
 				index += 1
+				@warning_ignore("return_value_discarded")
 				additional_chars.append(characters[index])
 			GdDiffTool.DIV_SUB:
 				index += 1
+				@warning_ignore("return_value_discarded")
 				missing_chars.append(characters[index])
 			_:
 				if not missing_chars.is_empty():
@@ -65,6 +67,7 @@ static func colored_array_div(characters :PackedByteArray) -> String:
 				if not additional_chars.is_empty():
 					result.append_array(format_chars(additional_chars, ADD_COLOR))
 					additional_chars = PackedByteArray()
+				@warning_ignore("return_value_discarded")
 				result.append(character)
 		index += 1
 
@@ -547,6 +550,7 @@ static func error_no_more_interactions(summary :Dictionary) -> String:
 	var interactions := PackedStringArray()
 	for args :Array in summary.keys():
 		var times :int = summary[args]
+		@warning_ignore("return_value_discarded")
 		interactions.append(_format_arguments(args, times))
 	return "%s\n%s\n%s" % [_error("Expecting no more interactions!"), _error("But found interactions on:"), "\n".join(interactions)]
 
@@ -555,6 +559,7 @@ static func error_validate_interactions(current_interactions: Dictionary, expect
 	var interactions := PackedStringArray()
 	for args: Array in current_interactions.keys():
 		var times: int = current_interactions[args]
+		@warning_ignore("return_value_discarded")
 		interactions.append(_format_arguments(args, times))
 	var expected_interaction := _format_arguments(expected_interactions.keys()[0] as Array, expected_interactions.values()[0] as int)
 	return "%s\n%s\n%s\n%s" % [
@@ -572,6 +577,7 @@ static func _format_arguments(args :Array, times :int) -> String:
 static func _to_typed_args(args :Array) -> PackedStringArray:
 	var typed := PackedStringArray()
 	for arg :Variant in args:
+		@warning_ignore("return_value_discarded")
 		typed.append(_format_arg(arg) + " :" + GdObjects.type_as_string(typeof(arg)))
 	return typed
 

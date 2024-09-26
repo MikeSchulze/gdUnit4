@@ -75,7 +75,7 @@ func _process(_delta: float) -> bool:
 	if result.is_error():
 		write_report(result.error_message(), godot_log_file)
 		return true
-	write_report(result.value(), godot_log_file)
+	write_report(result.value() as String, godot_log_file)
 	return true
 
 

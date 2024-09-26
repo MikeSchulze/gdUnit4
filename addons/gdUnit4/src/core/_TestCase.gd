@@ -102,6 +102,7 @@ func set_timeout() -> void:
 	_timer = Timer.new()
 	add_child(_timer)
 	_timer.set_name("gdunit_test_case_timer_%d" % _timer.get_instance_id())
+	@warning_ignore("return_value_discarded")
 	_timer.timeout.connect(do_interrupt, CONNECT_DEFERRED)
 	_timer.set_one_shot(true)
 	_timer.set_wait_time(time)
@@ -124,6 +125,7 @@ func do_interrupt() -> void:
 
 func _set_failure_handler() -> void:
 	if not GdUnitSignals.instance().gdunit_set_test_failed.is_connected(_failure_received):
+		@warning_ignore("return_value_discarded")
 		GdUnitSignals.instance().gdunit_set_test_failed.connect(_failure_received)
 
 

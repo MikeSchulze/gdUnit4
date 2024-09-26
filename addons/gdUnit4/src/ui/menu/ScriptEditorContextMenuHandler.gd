@@ -10,6 +10,7 @@ func _init(context_menus: Array[GdUnitContextMenuItem]) -> void:
 	for menu in context_menus:
 		_context_menus[menu.id] = menu
 	_editor = EditorInterface.get_script_editor()
+	@warning_ignore("return_value_discarded")
 	_editor.editor_script_changed.connect(on_script_changed)
 	on_script_changed(active_script())
 

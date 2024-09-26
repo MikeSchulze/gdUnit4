@@ -184,6 +184,7 @@ static func is_update_notification_enabled() -> bool:
 
 static func set_update_notification(enable :bool) -> void:
 	ProjectSettings.set_setting(UPDATE_NOTIFICATION_ENABLED, enable)
+	@warning_ignore("return_value_discarded")
 	ProjectSettings.save()
 
 
@@ -194,6 +195,7 @@ static func get_log_path() -> String:
 static func set_log_path(path :String) -> void:
 	ProjectSettings.set_setting(STDOUT_ENABLE_TO_FILE, true)
 	ProjectSettings.set_setting(STDOUT_WITE_TO_FILE, path)
+	@warning_ignore("return_value_discarded")
 	ProjectSettings.save()
 
 
@@ -303,6 +305,7 @@ static func extract_value_set_from_help(value :String) -> PackedStringArray:
 		return PackedStringArray()
 
 	var regex := RegEx.new()
+	@warning_ignore("return_value_discarded")
 	regex.compile("\\[(.+)\\]")
 	var matches := regex.search_all(split_value[1])
 	if matches.is_empty():
@@ -397,8 +400,10 @@ static func migrate_property(old_property :String, new_property :String, default
 
 
 static func dump_to_tmp() -> void:
+	@warning_ignore("return_value_discarded")
 	ProjectSettings.save_custom("user://project_settings.godot")
 
 
 static func restore_dump_from_tmp() -> void:
+	@warning_ignore("return_value_discarded")
 	DirAccess.copy_absolute("user://project_settings.godot", "res://project.godot")

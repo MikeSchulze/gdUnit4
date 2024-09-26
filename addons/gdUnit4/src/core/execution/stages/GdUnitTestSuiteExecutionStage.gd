@@ -19,6 +19,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 	if context.test_suite.__is_skipped:
 		await fire_test_suite_skipped(context)
 	else:
+		@warning_ignore("return_value_discarded")
 		GdUnitMemoryObserver.guard_instance(context.test_suite.__awaiter)
 		await _stage_before.execute(context)
 		for test_case_index in context.test_suite.get_child_count():
@@ -56,6 +57,7 @@ func clone_test_suite(test_suite :GdUnitTestSuite) -> GdUnitTestSuite:
 		test_suite.remove_child(child)
 		_test_suite.add_child(child)
 	parent.add_child(_test_suite)
+	@warning_ignore("return_value_discarded")
 	GdUnitMemoryObserver.guard_instance(_test_suite.__awaiter)
 	# finally free current test suite instance
 	test_suite.free()

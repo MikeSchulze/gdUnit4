@@ -96,6 +96,7 @@ class TcpConnection extends Node:
 		pass
 
 
+@warning_ignore("return_value_discarded")
 func _ready() -> void:
 	_server = TCPServer.new()
 	client_connected.connect(_on_client_connected)

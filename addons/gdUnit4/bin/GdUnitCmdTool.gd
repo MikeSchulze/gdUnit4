@@ -304,7 +304,7 @@ class CLIRunner:
 			return
 		# build runner config by given commands
 		var commands :Array[CmdCommand] = []
-		commands.append_array(result.value())
+		commands.append_array(result.value() as Array)
 		result = (
 			CmdCommandHandler.new(_cmd_options)
 				.register_cb("-help", Callable(self, "show_help"))

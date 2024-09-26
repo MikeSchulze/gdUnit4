@@ -11,6 +11,7 @@ func _init(current: Variant, type_check := true) -> void:
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if not _validate_value_type(current):
+		@warning_ignore("return_value_discarded")
 		report_error("GdUnitVectorAssert error, the type <%s> is not supported." % GdObjects.typeof_as_string(current))
 	_current_type = typeof(current)
 
@@ -40,6 +41,7 @@ func _validate_is_vector_type(value :Variant) -> bool:
 	var type := typeof(value)
 	if type == _current_type or _current_type == TYPE_NIL:
 		return true
+	@warning_ignore("return_value_discarded")
 	report_error(GdAssertMessages.error_is_wrong_type(_current_type, type))
 	return false
 
@@ -63,21 +65,25 @@ func failure_message() -> String:
 
 
 func override_failure_message(message :String) -> GdUnitVectorAssert:
+	@warning_ignore("return_value_discarded")
 	_base.override_failure_message(message)
 	return self
 
 
 func append_failure_message(message :String) -> GdUnitVectorAssert:
+	@warning_ignore("return_value_discarded")
 	_base.append_failure_message(message)
 	return self
 
 
 func is_null() -> GdUnitVectorAssert:
+	@warning_ignore("return_value_discarded")
 	_base.is_null()
 	return self
 
 
 func is_not_null() -> GdUnitVectorAssert:
+	@warning_ignore("return_value_discarded")
 	_base.is_not_null()
 	return self
 
@@ -85,6 +91,7 @@ func is_not_null() -> GdUnitVectorAssert:
 func is_equal(expected: Variant) -> GdUnitVectorAssert:
 	if _type_check and not _validate_is_vector_type(expected):
 		return self
+	@warning_ignore("return_value_discarded")
 	_base.is_equal(expected)
 	return self
 
@@ -92,6 +99,7 @@ func is_equal(expected: Variant) -> GdUnitVectorAssert:
 func is_not_equal(expected: Variant) -> GdUnitVectorAssert:
 	if _type_check and not _validate_is_vector_type(expected):
 		return self
+	@warning_ignore("return_value_discarded")
 	_base.is_not_equal(expected)
 	return self
 

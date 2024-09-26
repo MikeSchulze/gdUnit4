@@ -97,6 +97,7 @@ func build_test_case_names(test_case: _TestCase) -> PackedStringArray:
 		for parameter_set_index in parameter_sets.size():
 			var parameter_set := parameter_sets[parameter_set_index]
 			_static_sets_by_index[parameter_set_index] = _is_static_parameter_set(parameter_set, property_names)
+			@warning_ignore("return_value_discarded")
 			_test_case_names_cache.append(GdUnitTestParameterSetResolver._build_test_case_name(test_case, parameter_set, parameter_set_index))
 			parameter_set_index += 1
 	return _test_case_names_cache
@@ -121,6 +122,7 @@ func _extract_test_names_by_reflection(test_case: _TestCase) -> PackedStringArra
 	var parameter_sets := load_parameter_sets(test_case)
 	var test_case_names: PackedStringArray = []
 	for index in parameter_sets.size():
+		@warning_ignore("return_value_discarded")
 		test_case_names.append(GdUnitTestParameterSetResolver._build_test_case_name(test_case, str(parameter_sets[index]), index))
 	return test_case_names
 
@@ -174,6 +176,7 @@ func load_parameter_sets(test_case: _TestCase, do_validate := false) -> Array:
 			.add_report(GdUnitReport.new().create(GdUnitReport.INTERUPTED, test_case.line_number(), error))
 		test_case.skip(true, error)
 		test_case._interupted = true
+	@warning_ignore("return_value_discarded")
 	fixure_typed_parameters(parameter_sets, _fd.args())
 	return parameter_sets
 

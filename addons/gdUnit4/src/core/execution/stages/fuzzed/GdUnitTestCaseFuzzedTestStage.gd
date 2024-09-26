@@ -15,6 +15,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 
 	# guard on fuzzers
 	for fuzzer in fuzzers:
+		@warning_ignore("return_value_discarded")
 		GdUnitMemoryObserver.guard_instance(fuzzer)
 
 	for iteration in test_case.iterations():

@@ -82,6 +82,7 @@ static func get_enum_default(value :String) -> Variant:
 		return %s.values()[0]
 
 	""".dedent() % value
+	@warning_ignore("return_value_discarded")
 	script.reload()
 	return script.new().call("get_enum_default")
 
@@ -161,6 +162,7 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 func extract_arg_names(argument_signatures: Array[GdFunctionArgument], add_suffix := false) -> PackedStringArray:
 	var arg_names := PackedStringArray()
 	for arg in argument_signatures:
+		@warning_ignore("return_value_discarded")
 		arg_names.append(arg._name + ("_" if add_suffix else ""))
 	return arg_names
 
@@ -171,8 +173,10 @@ static func extract_constructor_args(args :Array[GdFunctionArgument]) -> PackedS
 		var arg_name := arg._name + "_"
 		var default_value := get_default(arg)
 		if default_value == "null":
+			@warning_ignore("return_value_discarded")
 			constructor_args.append(arg_name + ":Variant=" + default_value)
 		else:
+			@warning_ignore("return_value_discarded")
 			constructor_args.append(arg_name + ":=" + default_value)
 	return constructor_args
 
@@ -192,10 +196,13 @@ static func typeless_args(descriptor: GdFunctionDescriptor) -> String:
 	var collect := PackedStringArray()
 	for arg in descriptor.args():
 		if arg.has_default():
+			@warning_ignore("return_value_discarded")
 			collect.push_back(arg.name() + "_" + "=" + arg.value_as_string())
 		else:
+			@warning_ignore("return_value_discarded")
 			collect.push_back(arg.name() + "_")
 	for arg in descriptor.varargs():
+		@warning_ignore("return_value_discarded")
 		collect.push_back(arg.name() + "=" + arg.value_as_string())
 	return ", ".join(collect)
 

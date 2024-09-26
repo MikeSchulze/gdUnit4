@@ -11,6 +11,7 @@ var _command_handler := GdUnitCommandHandler.instance()
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		_getEditorThemes()
+	@warning_ignore("return_value_discarded")
 	GdUnitCommandHandler.instance().gdunit_runner_start.connect(func() -> void:
 		var control :Control = get_parent_control()
 		# if the tab is floating we dont need to set as current
