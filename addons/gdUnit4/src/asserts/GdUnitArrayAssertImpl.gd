@@ -132,7 +132,7 @@ func _contains_exactly(expected: Variant, compare_mode: GdObjects.COMPARE_MODE) 
 	if _is_equal(current_value, expected, false, compare_mode):
 		return report_success()
 	# check has same elements but in different order
-	if GdObjects.equals_sorted(current_value, expected, false, compare_mode):
+	if _is_equals_sorted(current_value, expected, false, compare_mode):
 		return report_error(GdAssertMessages.error_arr_contains_exactly(current_value, expected, [], [], compare_mode))
 	# find the difference
 	var diffs := _array_div(compare_mode,
@@ -375,3 +375,11 @@ func _is_equal(left: Variant, right: Variant, case_sensitive := false, compare_m
 		case_sensitive,
 		compare_mode
 	)
+
+
+func _is_equals_sorted(left: Variant, right: Variant, case_sensitive := false, compare_mode := GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
+	return GdObjects.equals_sorted(
+		(left as Array) if GdArrayTools.is_array_type(left) else left,
+		(right as Array) if GdArrayTools.is_array_type(right) else right,
+		case_sensitive,
+		compare_mode)
