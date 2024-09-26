@@ -370,8 +370,8 @@ func extractv(
 @warning_ignore("incompatible_ternary")
 func _is_equal(left: Variant, right: Variant, case_sensitive := false, compare_mode := GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
 	return GdObjects.equals(
-		null if left==null else (left as Array),
-		null if right==null else (right as Array),
+		(left as Array) if GdArrayTools.is_array_type(left) else left,
+		(right as Array) if GdArrayTools.is_array_type(right) else right,
 		case_sensitive,
 		compare_mode
 	)
