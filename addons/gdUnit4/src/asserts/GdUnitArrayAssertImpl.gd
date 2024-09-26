@@ -66,13 +66,11 @@ func max_length(left :Variant, right :Variant) -> int:
 func _toPackedStringArray(value :Variant) -> PackedStringArray:
 	if GdArrayTools.is_array_type(value):
 		return PackedStringArray(value as Array)
-	var v := PackedStringArray()
-	v.append(str(value))
-	return v
+	return PackedStringArray([str(value)])
 
 
 func _array_equals_div(current: Variant, expected: Variant, case_sensitive: bool = false) -> Array:
-	var current_value := PackedStringArray(current as Array)
+	var current_value := _toPackedStringArray(current)
 	var expected_value := _toPackedStringArray(expected)
 	var index_report := Array()
 	for index in current_value.size():
@@ -95,7 +93,7 @@ func _array_equals_div(current: Variant, expected: Variant, case_sensitive: bool
 	return [current_value, expected_value, index_report]
 
 
-func _array_div(compare_mode :GdObjects.COMPARE_MODE, left :Array[Variant], right :Array[Variant], _same_order := false) -> Array[Variant]:
+func _array_div(compare_mode: GdObjects.COMPARE_MODE, left: Array[Variant], right: Array[Variant], _same_order := false) -> Array[Variant]:
 	var not_expect := left.duplicate(true)
 	var not_found := right.duplicate(true)
 	for index_c in left.size():
@@ -116,7 +114,7 @@ func _contains(expected: Variant, compare_mode: GdObjects.COMPARE_MODE) -> GdUni
 	var current_value :Variant = get_current_value()
 	if current_value == null:
 		return report_error(GdAssertMessages.error_arr_contains(current_value, expected, [], expected, by_reference))
-	var diffs := _array_div(compare_mode, current_value as Array, expected as Array)
+	var diffs := _array_div(compare_mode, current_value as Array[Variant], expected as Array[Variant])
 	#var not_expect := diffs[0] as Array
 	var not_found := diffs[1] as Array
 	if not not_found.is_empty():
@@ -131,7 +129,7 @@ func _contains_exactly(expected: Variant, compare_mode: GdObjects.COMPARE_MODE) 
 	if current_value == null:
 		return report_error(GdAssertMessages.error_arr_contains_exactly(null, expected, [], expected, compare_mode))
 	# has same content in same order
-	if GdObjects.equals(current_value as Array, expected as Array, false, compare_mode):
+	if _is_equal(current_value, expected, false, compare_mode):
 		return report_success()
 	# check has same elements but in different order
 	if GdObjects.equals_sorted(current_value, expected, false, compare_mode):
@@ -192,7 +190,7 @@ func is_equal(expected: Variant) -> GdUnitArrayAssert:
 	var current_value: Variant = get_current_value()
 	if current_value == null and expected != null:
 		return report_error(GdAssertMessages.error_equal(null, expected))
-	if not GdObjects.equals(current_value, expected):
+	if not _is_equal(current_value, expected):
 		var diff := _array_equals_div(current_value, expected)
 		var expected_as_list := GdArrayTools.as_string(diff[0], false)
 		var current_as_list := GdArrayTools.as_string(diff[1], false)
@@ -208,8 +206,8 @@ func is_equal_ignoring_case(expected: Variant) -> GdUnitArrayAssert:
 	var current_value: Variant = get_current_value()
 	if current_value == null and expected != null:
 		return report_error(GdAssertMessages.error_equal(null, GdArrayTools.as_string(expected)))
-	if not GdObjects.equals(current_value, expected, true):
-		var diff := _array_equals_div(current_value, expected, true)
+	if not _is_equal(current_value, expected, true):
+		var diff := _array_equals_div(current_value as Array[Variant], expected as Array[Variant], true)
 		var expected_as_list := GdArrayTools.as_string(diff[0])
 		var current_as_list := GdArrayTools.as_string(diff[1])
 		var index_report: Array = diff[2]
@@ -220,8 +218,8 @@ func is_equal_ignoring_case(expected: Variant) -> GdUnitArrayAssert:
 func is_not_equal(expected :Variant) -> GdUnitArrayAssert:
 	if not _validate_value_type(expected):
 		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
-	var current_value :Variant = get_current_value()
-	if GdObjects.equals(current_value, expected):
+	var current_value: Variant = get_current_value()
+	if _is_equal(current_value, expected):
 		return report_error(GdAssertMessages.error_not_equal(current_value, expected))
 	return report_success()
 
@@ -230,7 +228,7 @@ func is_not_equal_ignoring_case(expected :Variant) -> GdUnitArrayAssert:
 	if not _validate_value_type(expected):
 		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_value :Variant = get_current_value()
-	if GdObjects.equals(current_value, expected, true):
+	if _is_equal(current_value, expected, true):
 		var c := GdArrayTools.as_string(current_value)
 		var e := GdArrayTools.as_string(expected)
 		return report_error(GdAssertMessages.error_not_equal_case_insensetiv(c, e))
@@ -367,3 +365,13 @@ func extractv(
 				extracted_elements.append(ev[0])
 		_current_value_provider = DefaultValueProvider.new(extracted_elements)
 	return self
+
+
+@warning_ignore("incompatible_ternary")
+func _is_equal(left: Variant, right: Variant, case_sensitive := false, compare_mode := GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
+	return GdObjects.equals(
+		null if left==null else (left as Array),
+		null if right==null else (right as Array),
+		case_sensitive,
+		compare_mode
+	)
