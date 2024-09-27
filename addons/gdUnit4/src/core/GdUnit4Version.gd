@@ -51,9 +51,9 @@ static func init_version_label(label :Control) -> void:
 	config.load('addons/gdUnit4/plugin.cfg')
 	var version :String = config.get_value('plugin', 'version')
 	if label is RichTextLabel:
-		label.text = VERSION_PATTERN.replace('${version}', version)
+		(label as RichTextLabel).text = VERSION_PATTERN.replace('${version}', version)
 	else:
-		label.text = "gdUnit4 " + version
+		(label as Label).text = "gdUnit4 " + version
 
 
 func _to_string() -> String:

@@ -56,7 +56,7 @@ static func free_instance(instance :Variant, use_call_deferred :bool = false, is
 				instance.call_deferred("free")
 			else:
 				instance.free()
-				await Engine.get_main_loop().process_frame
+				await (Engine.get_main_loop() as SceneTree).process_frame
 			return true
 
 		if instance is Node and instance.get_parent() != null:
@@ -93,12 +93,13 @@ static func _release_connections(instance :Object) -> void:
 
 static func release_timers() -> void:
 	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
-	if Engine.get_main_loop().root == null:
+	var scene_tree := Engine.get_main_loop() as SceneTree
+	if scene_tree.root == null:
 		return
-	for node :Node in Engine.get_main_loop().root.get_children():
+	for node :Node in scene_tree.root.get_children():
 		if is_instance_valid(node) and node.is_in_group("GdUnitTimers"):
 			if is_instance_valid(node):
-				Engine.get_main_loop().root.remove_child.call_deferred(node)
+				scene_tree.root.remove_child.call_deferred(node)
 				node.stop()
 				node.queue_free()
 

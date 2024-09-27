@@ -85,7 +85,7 @@ func dispose() -> void:
 func _execute_test_case(name: String, test_parameter: Array) -> void:
 	# needs at least on await otherwise it breaks the awaiting chain
 	await get_parent().callv(name, test_parameter)
-	await Engine.get_main_loop().process_frame
+	await (Engine.get_main_loop() as SceneTree).process_frame
 	completed.emit()
 
 

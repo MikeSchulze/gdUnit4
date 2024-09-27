@@ -82,7 +82,8 @@ func extract_test_functions(test_suite :Node) -> PackedStringArray:
 func rebuild_project(script: Script) -> void:
 	var class_path := ProjectSettings.globalize_path(script.resource_path)
 	print_rich("[color=CORNFLOWER_BLUE]GdUnitTestDiscoverGuard: CSharpScript change detected on: '%s' [/color]" % class_path)
-	await Engine.get_main_loop().process_frame
+	var scene_tree := Engine.get_main_loop() as SceneTree
+	await scene_tree.process_frame
 
 	var output := []
 	var exit_code := OS.execute("dotnet", ["--version"], output)
@@ -97,4 +98,4 @@ func rebuild_project(script: Script) -> void:
 	print_rich("[color=CORNFLOWER_BLUE]GdUnitTestDiscoverGuard:[/color] [color=DEEP_SKY_BLUE]Rebuild the project ... [/color]")
 	for out:Variant in output:
 		print_rich("[color=DEEP_SKY_BLUE] 		%s" % out.strip_edges())
-	await Engine.get_main_loop().process_frame
+	await scene_tree.process_frame

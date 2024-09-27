@@ -79,6 +79,7 @@ func _process(_delta :float) -> void:
 				var test_suite :Node = _test_suites_to_process.pop_front()
 				if _cs_executor != null and _cs_executor.IsExecutable(test_suite):
 					_cs_executor.Execute(test_suite)
+					@warning_ignore("unsafe_property_access")
 					await _cs_executor.ExecutionCompleted
 				else:
 					await _executor.execute(test_suite as GdUnitTestSuite)

@@ -15,7 +15,7 @@ var _style :StyleBoxFlat
 
 func before_test() -> void:
 	_runner = scene_runner('res://addons/gdUnit4/src/ui/parts/InspectorProgressBar.tscn')
-	_progress = _runner.get_property("bar")
+	_progress = _runner.scene()
 	_status = _runner.get_property("status")
 	_style = _runner.get_property("style")
 	# inital state

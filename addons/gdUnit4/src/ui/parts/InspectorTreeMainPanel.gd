@@ -14,8 +14,8 @@ const CONTEXT_MENU_EXPAND_ALL = 4
 @onready var _report_list: Node = $report/ScrollContainer/list
 @onready var _report_template: RichTextLabel = $report/report_template
 @onready var _context_menu: PopupMenu = $contextMenu
-@onready var _discover_hint := %discover_hint
-@onready var _spinner := %spinner
+@onready var _discover_hint: Control = %discover_hint
+@onready var _spinner: Button = %spinner
 
 # loading tree icons
 @onready var ICON_SPINNER := GdUnitUiTools.get_spinner()

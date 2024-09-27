@@ -91,7 +91,7 @@ func _wail_until_signal(signal_name :String, expected_args :Array, expect_not_em
 	_signal_collector.register_emitter(_emitter)
 	var time_scale := Engine.get_time_scale()
 	var timer := Timer.new()
-	Engine.get_main_loop().root.add_child(timer)
+	(Engine.get_main_loop() as SceneTree).root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
 	timer.set_one_shot(true)
 	@warning_ignore("return_value_discarded")
@@ -99,7 +99,7 @@ func _wail_until_signal(signal_name :String, expected_args :Array, expect_not_em
 	timer.start((_timeout/1000.0)*time_scale)
 	var is_signal_emitted := false
 	while not _interrupted and not is_signal_emitted:
-		await Engine.get_main_loop().process_frame
+		await (Engine.get_main_loop() as SceneTree).process_frame
 		if is_instance_valid(_emitter):
 			is_signal_emitted = _signal_collector.match(_emitter, signal_name, expected_args)
 			if is_signal_emitted and expect_not_emitted:

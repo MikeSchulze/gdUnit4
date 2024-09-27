@@ -96,14 +96,14 @@ class TestIterativeValueProvider:
 
 	func has_type(type :int, _recursive :bool = true) -> int:
 		_current_itteration += 1
-		#await Engine.get_main_loop().idle_frame
+		#await (Engine.get_main_loop() as SceneTree).idle_frame
 		if type == _current_itteration:
 			return _final_value
 		return _inital_value
 
 	func await_value() -> int:
 		_current_itteration += 1
-		await Engine.get_main_loop().process_frame
+		await (Engine.get_main_loop() as SceneTree).process_frame
 		prints("yielded_value", _current_itteration)
 		if _current_itteration >= _max_iterations:
 			return _final_value

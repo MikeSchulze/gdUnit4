@@ -184,7 +184,7 @@ func set_mouse_position(pos: Vector2) -> GdUnitSceneRunner:
 
 func get_mouse_position() -> Vector2:
 	if _last_input_event is InputEventMouse:
-		return _last_input_event.position
+		return (_last_input_event as InputEventMouse).position
 	var current_scene := scene()
 	if current_scene != null:
 		return current_scene.get_viewport().get_mouse_position()
@@ -192,7 +192,7 @@ func get_mouse_position() -> Vector2:
 
 
 func get_global_mouse_position() -> Vector2:
-	return Engine.get_main_loop().root.get_mouse_position()
+	return (Engine.get_main_loop() as SceneTree).root.get_mouse_position()
 
 
 func simulate_mouse_move(position: Vector2) -> GdUnitSceneRunner:
@@ -299,7 +299,7 @@ func simulate_screen_touch_release(index: int, double_tap := false) -> GdUnitSce
 	event.index = index
 	event.position = get_screen_touch_drag_position(index)
 	event.pressed = false
-	event.double_tap = _last_input_event.double_tap if _last_input_event is InputEventScreenTouch else double_tap
+	event.double_tap = (_last_input_event as InputEventScreenTouch).double_tap if _last_input_event is InputEventScreenTouch else double_tap
 	_current_scene.get_viewport().push_input(event)
 	return self
 
@@ -528,10 +528,12 @@ func __deactivate_time_factor() -> void:
 # copy over current active modifiers
 func _apply_input_modifiers(event: InputEvent) -> void:
 	if _last_input_event is InputEventWithModifiers and event is InputEventWithModifiers:
-		event.meta_pressed = event.meta_pressed or _last_input_event.meta_pressed
-		event.alt_pressed = event.alt_pressed or _last_input_event.alt_pressed
-		event.shift_pressed = event.shift_pressed or _last_input_event.shift_pressed
-		event.ctrl_pressed = event.ctrl_pressed or _last_input_event.ctrl_pressed
+		var last_input_event := _last_input_event as InputEventWithModifiers
+		var _event := event as InputEventWithModifiers
+		_event.meta_pressed = _event.meta_pressed or last_input_event.meta_pressed
+		_event.alt_pressed = _event.alt_pressed or last_input_event.alt_pressed
+		_event.shift_pressed = _event.shift_pressed or last_input_event.shift_pressed
+		_event.ctrl_pressed = _event.ctrl_pressed or last_input_event.ctrl_pressed
 		# this line results into reset the control_pressed state!!!
 		#event.command_or_control_autoremap = event.command_or_control_autoremap or _last_input_event.command_or_control_autoremap
 
@@ -540,19 +542,20 @@ func _apply_input_modifiers(event: InputEvent) -> void:
 func _apply_input_mouse_mask(event: InputEvent) -> void:
 	# first apply last mask
 	if _last_input_event is InputEventMouse and event is InputEventMouse:
-		event.button_mask |= _last_input_event.button_mask
+		(event as InputEventMouse).button_mask |= (_last_input_event as InputEventMouse).button_mask
 	if event is InputEventMouseButton:
-		var button_mask :int = MAP_MOUSE_BUTTON_MASKS.get(event.get_button_index(), 0)
-		if event.is_pressed():
-			event.button_mask |= button_mask
+		var _event := event as InputEventMouseButton
+		var button_mask :int = MAP_MOUSE_BUTTON_MASKS.get(_event.get_button_index(), 0)
+		if _event.is_pressed():
+			_event.button_mask |= button_mask
 		else:
-			event.button_mask ^= button_mask
+			_event.button_mask ^= button_mask
 
 
 # copy over last mouse position if need
 func _apply_input_mouse_position(event: InputEvent) -> void:
 	if _last_input_event is InputEventMouse and event is InputEventMouseButton:
-		event.position = _last_input_event.position
+		(event as InputEventMouseButton).position = (_last_input_event as InputEventMouse).position
 
 
 ## handle input action via Input modifieres
@@ -571,7 +574,7 @@ func _handle_actions(event: InputEventAction) -> bool:
 @warning_ignore("return_value_discarded")
 func _handle_input_event(event: InputEvent) -> GdUnitSceneRunner:
 	if event is InputEventMouse:
-		Input.warp_mouse(event.position as Vector2)
+		Input.warp_mouse((event as InputEventMouse).position as Vector2)
 	Input.parse_input_event(event)
 
 	if event is InputEventAction:

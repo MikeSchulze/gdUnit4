@@ -16,7 +16,7 @@ class GodotErrorTestClass:
 				@warning_ignore("assert_always_true")
 				assert(true, "no error" )
 			1: # failing assert
-				await Engine.get_main_loop().process_frame
+				await (Engine.get_main_loop() as SceneTree).process_frame
 				if OS.is_debug_build():
 					# do not break the debug session we simmulate a assert by writing the error manually
 					if Engine.get_version_info().hex >= 0x40400:

@@ -776,6 +776,7 @@ func test_execute_test_case_is_skipped() -> void:
 
 func test_execute_test_case_is_flaky_and_failed() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestCaseFlaky.resource")
+	@warning_ignore("unsafe_property_access")
 	test_suite._run_with_reries = 5
 	# simulate flaky test suite execution
 	var events := await execute(test_suite)
@@ -897,6 +898,7 @@ func test_execute_test_case_is_flaky_and_failed() -> void:
 
 func test_execute_test_case_is_flaky_and_success() -> void:
 	var test_suite := _load("res://addons/gdUnit4/test/core/resources/testsuites/TestCaseFlaky.resource")
+	@warning_ignore("unsafe_property_access")
 	test_suite._run_with_reries = 6
 	# simulate flaky test suite execution
 	var events := await execute(test_suite)

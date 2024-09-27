@@ -44,8 +44,9 @@ func on_signal(source :Object, signal_name :String, expected_signal_args :Array)
 	@warning_ignore("return_value_discarded")
 	source.connect(signal_name, _on_signal_emmited)
 	# install timeout timer
+	var scene_tree := Engine.get_main_loop() as SceneTree
 	var timer := Timer.new()
-	Engine.get_main_loop().root.add_child(timer)
+	scene_tree.root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
 	timer.set_one_shot(true)
 	@warning_ignore("return_value_discarded")
@@ -63,11 +64,11 @@ func on_signal(source :Object, signal_name :String, expected_signal_args :Array)
 			value = [value]
 		if expected_signal_args.size() == 0 or GdObjects.equals(value, expected_signal_args):
 			break
-		await Engine.get_main_loop().process_frame
+		await scene_tree.process_frame
 
 	source.disconnect(signal_name, _on_signal_emmited)
 	_time_left = timer.time_left
-	await Engine.get_main_loop().process_frame
+	await scene_tree.process_frame
 	if value is Array and value.size() == 1:
 		return value[0]
 	return value

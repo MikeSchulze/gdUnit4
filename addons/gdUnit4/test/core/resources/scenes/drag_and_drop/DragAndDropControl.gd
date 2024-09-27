@@ -8,7 +8,7 @@ extends PanelContainer
 func _get_drag_data(_position: Vector2) -> Variant:
 	var x :TextureRect = $TextureRect
 	var data: = {texture = x.texture}
-	var drag_texture := x.duplicate()
+	var drag_texture :TextureRect = x.duplicate()
 	drag_texture.size = x.size
 	drag_texture.position = x.global_position * -0.2
 
@@ -30,7 +30,7 @@ func _can_drop_data(_position: Vector2, data :Variant) -> bool:
 func _drop_data(_position: Vector2, data :Variant) -> void:
 	var drag_texture :Texture = data["texture"]
 	if drag_texture != null:
-		$TextureRect.texture = drag_texture
+		($TextureRect as TextureRect).texture = drag_texture
 
 
 # Virtual method to be implemented by the user. Use this method to process and accept inputs on UI elements. See accept_event().

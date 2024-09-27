@@ -126,7 +126,7 @@ func _parse_test_suite(script: Script) -> GdUnitTestSuite:
 		return GdUnit4CSharpApiLoader.parse_test_suite(script.resource_path)
 
 	# Do pares as GDScript
-	var test_suite :GdUnitTestSuite = script.new()
+	var test_suite: GdUnitTestSuite = script.new()
 	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
 	# add test cases to test suite and parse test case line nummber
 	var test_case_names := _extract_test_case_names(script as GDScript)
@@ -144,11 +144,11 @@ static func parse_test_suite_name(script :Script) -> String:
 	return script.resource_path.get_file().replace(".gd", "")
 
 
-func _handle_test_suite_arguments(test_suite :Node, script :GDScript, fd :GdFunctionDescriptor) -> void:
+func _handle_test_suite_arguments(test_suite: GdUnitTestSuite, script: GDScript, fd: GdFunctionDescriptor) -> void:
 	for arg in fd.args():
 		match arg.name():
 			_TestCase.ARGUMENT_SKIP:
-				var result :Variant = _expression_runner.execute(script, arg.plain_value())
+				var result: Variant = _expression_runner.execute(script, arg.plain_value())
 				if result is bool:
 					test_suite.__is_skipped = result
 				else:
@@ -159,13 +159,13 @@ func _handle_test_suite_arguments(test_suite :Node, script :GDScript, fd :GdFunc
 				push_error("Unsuported argument `%s` found on before() at '%s'!" % [arg.name(), script.resource_path])
 
 
-func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunctionDescriptor) -> void:
+func _handle_test_case_arguments(test_suite: GdUnitTestSuite, script: GDScript, fd: GdFunctionDescriptor) -> void:
 	var timeout := _TestCase.DEFAULT_TIMEOUT
 	var iterations := Fuzzer.ITERATION_DEFAULT_COUNT
 	var seed_value := -1
 	var is_skipped := false
 	var skip_reason := "Unknown."
-	var fuzzers :Array[GdFunctionArgument] = []
+	var fuzzers: Array[GdFunctionArgument] = []
 	var test := _TestCase.new()
 
 	for arg: GdFunctionArgument in fd.args():
@@ -198,7 +198,7 @@ func _handle_test_case_arguments(test_suite :Node, script :GDScript, fd :GdFunct
 	test_suite.add_child(test)
 
 
-func _parse_and_add_test_cases(test_suite :Node, script :GDScript, test_case_names :PackedStringArray) -> void:
+func _parse_and_add_test_cases(test_suite: GdUnitTestSuite, script: GDScript, test_case_names: PackedStringArray) -> void:
 	var test_cases_to_find := Array(test_case_names)
 	var functions_to_scan := test_case_names.duplicate()
 	@warning_ignore("return_value_discarded")

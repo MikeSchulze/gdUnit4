@@ -19,7 +19,7 @@ func _init(context_menus: Array[GdUnitContextMenuItem]) -> void:
 func on_context_menu_show(context_menu: PopupMenu, file_tree: Tree) -> void:
 	context_menu.add_separator()
 	var current_index := context_menu.get_item_count()
-	var selected_test_suites := collect_testsuites(_context_menus.values()[0], file_tree)
+	var selected_test_suites := collect_testsuites(_context_menus.values()[0] as GdUnitContextMenuItem, file_tree)
 
 	for menu_id: int in _context_menus.keys():
 		var menu_item: GdUnitContextMenuItem = _context_menus[menu_id]

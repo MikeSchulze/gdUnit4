@@ -30,8 +30,8 @@ func register_emitter(emitter :Object) -> void:
 			return
 		_collected_signals[emitter] = Dictionary()
 		# connect to 'tree_exiting' of the emitter to finally release all acquired resources/connections.
-		if emitter is Node and !emitter.tree_exiting.is_connected(unregister_emitter):
-			emitter.tree_exiting.connect(unregister_emitter.bind(emitter))
+		if emitter is Node and !(emitter as Node).tree_exiting.is_connected(unregister_emitter):
+			(emitter as Node).tree_exiting.connect(unregister_emitter.bind(emitter))
 		# connect to all signals of the emitter we want to collect
 		for signal_def in emitter.get_signal_list():
 			var signal_name :String = signal_def["name"]
