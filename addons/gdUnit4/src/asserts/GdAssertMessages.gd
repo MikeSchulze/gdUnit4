@@ -12,7 +12,7 @@ static func format_dict(value :Variant) -> String:
 	if not value is Dictionary:
 		return str(value)
 
-	if value.is_empty():
+	if (value as Dictionary).is_empty():
 		return "{ }"
 	var as_rows := var_to_str(value).split("\n")
 	for index in range( 1, as_rows.size()-1):
@@ -120,9 +120,9 @@ static func _colored_value(value :Variant) -> String:
 				return "'[color=%s]<null>[/color]'" % [VALUE_COLOR]
 			if value is InputEvent:
 				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, input_event_as_text(value as InputEvent)]
-			if value.has_method("_to_string"):
+			if (value as Object).has_method("_to_string"):
 				return "[color=%s]<%s>[/color]" % [VALUE_COLOR, str(value)]
-			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, value.get_class()]
+			return "[color=%s]<%s>[/color]" % [VALUE_COLOR, (value as Object).get_class()]
 		TYPE_DICTIONARY:
 			return "'[color=%s]%s[/color]'" % [VALUE_COLOR, format_dict(value)]
 		_:
@@ -349,6 +349,7 @@ static func error_ends_with(current :Variant, expected :Variant) -> String:
 
 
 static func error_has_length(current :Variant, expected: int, compare_operator :int) -> String:
+	@warning_ignore("unsafe_method_access")
 	var current_length :Variant = current.length() if current != null else null
 	match compare_operator:
 		Comparator.EQUAL:
@@ -378,10 +379,10 @@ static func error_arr_contains(current: Variant, expected: Variant, not_expect: 
 	var failure_message := "Expecting contains SAME elements:" if by_reference else "Expecting contains elements:"
 	var error := "%s\n %s\n do contains (in any order)\n %s" % [
 					_error(failure_message), _colored_value(current), _colored_value(expected)]
-	if not not_expect.is_empty():
+	if not (not_expect as Array).is_empty():
 		error += "\nbut some elements where not expected:\n %s" % _colored_value(not_expect)
-	if not not_found.is_empty():
-		var prefix := "but" if not_expect.is_empty() else "and"
+	if not (not_found as Array).is_empty():
+		var prefix := "but" if (not_expect as Array).is_empty() else "and"
 		error += "\n%s could not find elements:\n %s" % [prefix, _colored_value(not_found)]
 	return error
 
@@ -395,17 +396,17 @@ static func error_arr_contains_exactly(
 		"Expecting contains exactly elements:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST
 		else "Expecting contains SAME exactly elements:"
 	)
-	if not_expect.is_empty() and not_found.is_empty():
+	if (not_expect as Array).is_empty() and (not_found as Array).is_empty():
 		var diff := _find_first_diff(current as Array, expected as Array)
 		return "%s\n %s\n do contains (in same order)\n %s\n but has different order %s"  % [
 					_error(failure_message), _colored_value(current), _colored_value(expected), diff]
 
 	var error := "%s\n %s\n do contains (in same order)\n %s" % [
 					_error(failure_message), _colored_value(current), _colored_value(expected)]
-	if not not_expect.is_empty():
+	if not (not_expect as Array).is_empty():
 		error += "\nbut some elements where not expected:\n %s" % _colored_value(not_expect)
-	if not not_found.is_empty():
-		var prefix := "but" if not_expect.is_empty() else "and"
+	if not (not_found as Array).is_empty():
+		var prefix := "but" if (not_expect as Array).is_empty() else "and"
 		error += "\n%s could not find elements:\n %s" % [prefix, _colored_value(not_found)]
 	return error
 
@@ -423,10 +424,10 @@ static func error_arr_contains_exactly_in_any_order(
 	)
 	var error := "%s\n %s\n do contains exactly (in any order)\n %s" % [
 					_error(failure_message), _colored_value(current), _colored_value(expected)]
-	if not not_expect.is_empty():
+	if not (not_expect as Array).is_empty():
 		error += "\nbut some elements where not expected:\n %s" % _colored_value(not_expect)
-	if not not_found.is_empty():
-		var prefix := "but" if not_expect.is_empty() else "and"
+	if not (not_found as Array).is_empty():
+		var prefix := "but" if (not_expect as Array).is_empty() else "and"
 		error += "\n%s could not find elements:\n %s" % [prefix, _colored_value(not_found)]
 	return error
 
@@ -435,7 +436,7 @@ static func error_arr_not_contains(current: Variant, expected: Variant, found: V
 	var failure_message := "Expecting:" if compare_mode == GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST else "Expecting SAME:"
 	var error := "%s\n %s\n do not contains\n %s" % [
 					_error(failure_message), _colored_value(current), _colored_value(expected)]
-	if not found.is_empty():
+	if not (found as Array).is_empty():
 		error += "\n but found elements:\n %s" % _colored_value(found)
 	return error
 
@@ -605,6 +606,7 @@ static func _find_first_diff(left :Array, right :Array) -> String:
 
 
 static func error_has_size(current :Variant, expected: int) -> String:
+	@warning_ignore("unsafe_method_access")
 	var current_size :Variant = null if current == null else current.size()
 	return "%s\n %s\n but was\n %s" % [_error("Expecting size:"), _colored_value(expected), _colored_value(current_size)]
 

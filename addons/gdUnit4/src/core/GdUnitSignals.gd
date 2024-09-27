@@ -37,6 +37,8 @@ static func dispose() -> void:
 	# cleanup connected signals
 	for signal_ in signals.get_signal_list():
 		for connection in signals.get_signal_connection_list(signal_["name"] as StringName):
-			connection["signal"].disconnect(connection["callable"])
+			var _signal := connection["signal"] as Signal
+			var _callable := connection["callable"] as Callable
+			_signal.disconnect(_callable)
 	signals = null
 	Engine.remove_meta(META_KEY)

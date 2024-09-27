@@ -247,9 +247,13 @@ func _on_type_Basis(basis :Basis) -> String:
 
 static func decode(value :Variant) -> String:
 	var type := typeof(value)
-	if GdArrayTools.is_type_array(type) and value.is_empty():
+	if GdArrayTools.is_type_array(type) and (value as Array).is_empty():
 		return "<empty>"
-	var decoder :Callable = instance("GdUnitDefaultValueDecoders", func() -> GdDefaultValueDecoder: return GdDefaultValueDecoder.new()).get_decoder(type)
+	var decoder :Callable = (
+			instance("GdUnitDefaultValueDecoders",
+				func() -> GdDefaultValueDecoder: return GdDefaultValueDecoder.new()
+				) as GdDefaultValueDecoder
+		).get_decoder(type)
 	if decoder == null:
 		push_error("No value decoder registered for type '%d'! Please open a Bug issue at 'https://github.com/MikeSchulze/gdUnit4/issues/new/choose'." % type)
 		return "null"
@@ -261,7 +265,11 @@ static func decode(value :Variant) -> String:
 static func decode_typed(type :int, value :Variant) -> String:
 	if value == null:
 		return "null"
-	var decoder: Callable = instance("GdUnitDefaultValueDecoders", func() -> GdDefaultValueDecoder: return GdDefaultValueDecoder.new()).get_decoder(type)
+	var decoder: Callable = (
+			instance("GdUnitDefaultValueDecoders",
+				func() -> GdDefaultValueDecoder: return GdDefaultValueDecoder.new()
+				) as GdDefaultValueDecoder
+			).get_decoder(type)
 	if decoder == null:
 		push_error("No value decoder registered for type '%d'! Please open a Bug issue at 'https://github.com/MikeSchulze/gdUnit4/issues/new/choose'." % type)
 		return "null"

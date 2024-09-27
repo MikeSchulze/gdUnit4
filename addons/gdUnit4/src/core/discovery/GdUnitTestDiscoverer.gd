@@ -5,7 +5,7 @@ extends RefCounted
 static func run() -> void:
 	prints("Running test discovery ..")
 	GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverStart.new())
-	await Engine.get_main_loop().create_timer(.5).timeout
+	await (Engine.get_main_loop() as SceneTree).create_timer(.5).timeout
 
 	# We run the test discovery in an extra thread so that the main thread is not blocked
 	var t:= Thread.new()

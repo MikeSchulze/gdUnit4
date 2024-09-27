@@ -126,7 +126,7 @@ func _parse_test_suite(script: Script) -> GdUnitTestSuite:
 		return GdUnit4CSharpApiLoader.parse_test_suite(script.resource_path)
 
 	# Do pares as GDScript
-	var test_suite: GdUnitTestSuite = script.new()
+	var test_suite: GdUnitTestSuite = (script as GDScript).new()
 	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
 	# add test cases to test suite and parse test case line nummber
 	var test_case_names := _extract_test_case_names(script as GDScript)

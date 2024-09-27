@@ -87,6 +87,7 @@ static func edit_script(script_path: String, line_number := -1) -> void:
 
 
 static func _menu_popup() -> PopupMenu:
+	@warning_ignore("unsafe_method_access")
 	return EditorInterface.get_script_editor().get_child(0).get_child(0).get_child(0).get_popup()
 
 

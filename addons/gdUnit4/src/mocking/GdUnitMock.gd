@@ -22,8 +22,9 @@ func _init(value: Variant) -> void:
 ## 		do_return(false).on(myMock).is_selected()
 ## 	[/codeblock]
 func on(obj: Variant) -> Variant:
-	if not GdUnitMock._is_mock_or_spy( obj, "__do_return"):
+	if not GdUnitMock._is_mock_or_spy(obj, "__do_return"):
 		return obj
+	@warning_ignore("unsafe_method_access")
 	return obj.__do_return(_value)
 
 
@@ -34,7 +35,7 @@ func checked(obj :Object) -> Object:
 
 
 static func _is_mock_or_spy(obj: Variant, func_sig: String) -> bool:
-	if obj is GDScript and not obj.get_script().has_script_method(func_sig):
+	if obj is Object and not (obj as Object).has_method(func_sig):
 		push_error("Error: You try to use a non mock or spy!")
 		return false
 	return true
