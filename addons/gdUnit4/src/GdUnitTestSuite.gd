@@ -99,12 +99,9 @@ func error_as_string(error_number :int) -> String:
 ## A litle helper to auto freeing your created objects after test execution
 func auto_free(obj :Variant) -> Variant:
 	var execution_context := GdUnitThreadManager.get_current_context().get_execution_context()
-	if execution_context != null:
-		return execution_context.register_auto_free(obj)
-	else:
-		if is_instance_valid(obj):
-			obj.queue_free()
-		return obj
+
+	assert(execution_context != null, "INTERNAL ERROR: The current execution_context is null! Please report this as bug.")
+	return execution_context.register_auto_free(obj)
 
 
 @warning_ignore("native_method_override")
@@ -119,6 +116,7 @@ func add_child(node :Node, force_readable_name := false, internal := Node.INTERN
 ## By default, an interrupted test is reported as an error.[br]
 ## This function allows you to change the message to Success when an interrupted error is reported.
 func discard_error_interupted_by_timeout() -> void:
+	@warning_ignore("unsafe_method_access")
 	__gdunit_tools().register_expect_interupted_by_timeout(self, __active_test_case)
 
 
@@ -126,12 +124,14 @@ func discard_error_interupted_by_timeout() -> void:
 ## Useful for storing data during test execution. [br]
 ## The directory is automatically deleted after test suite execution
 func create_temp_dir(relative_path :String) -> String:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_file_access().create_temp_dir(relative_path)
 
 
 ## Deletes the temporary base directory[br]
 ## Is called automatically after each execution of the test suite
 func clean_temp_dir() -> void:
+	@warning_ignore("unsafe_method_access")
 	__gdunit_file_access().clear_tmp()
 
 
@@ -139,28 +139,26 @@ func clean_temp_dir() -> void:
 ## with given name <file_name> and given file <mode> (default = File.WRITE)[br]
 ## If success the returned File is automatically closed after the execution of the test suite
 func create_temp_file(relative_path :String, file_name :String, mode := FileAccess.WRITE) -> FileAccess:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_file_access().create_temp_file(relative_path, file_name, mode)
 
 
 ## Reads a resource by given path <resource_path> into a PackedStringArray.
 func resource_as_array(resource_path :String) -> PackedStringArray:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_file_access().resource_as_array(resource_path)
 
 
 ## Reads a resource by given path <resource_path> and returned the content as String.
 func resource_as_string(resource_path :String) -> String:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_file_access().resource_as_string(resource_path)
 
 
 ## Reads a resource by given path <resource_path> and return Variand translated by str_to_var
 func resource_as_var(resource_path :String) -> Variant:
+	@warning_ignore("unsafe_method_access")
 	return str_to_var(__gdunit_file_access().resource_as_string(resource_path) as String)
-
-
-## clears the debuger error list[br]
-## PROTOTYPE!!!! Don't use it for now
-func clear_push_errors() -> void:
-	__gdunit_tools().clear_push_errors()
 
 
 ## Waits for given signal is emited by the <source> until a specified timeout to fail[br]
@@ -169,11 +167,13 @@ func clear_push_errors() -> void:
 ## args: the expected signal arguments as an array[br]
 ## timeout: the timeout in ms, default is set to 2000ms
 func await_signal_on(source :Object, signal_name :String, args :Array = [], timeout :int = 2000) -> Variant:
+	@warning_ignore("unsafe_method_access")
 	return await __awaiter.await_signal_on(source, signal_name, args, timeout)
 
 
 ## Waits until the next idle frame
 func await_idle_frame() -> void:
+	@warning_ignore("unsafe_method_access")
 	await __awaiter.await_idle_frame()
 
 
@@ -185,6 +185,7 @@ func await_idle_frame() -> void:
 ## [/codeblock][br]
 ## use this waiter and not `await get_tree().create_timer().timeout to prevent errors when a test case is timed out
 func await_millis(timeout :int) -> void:
+	@warning_ignore("unsafe_method_access")
 	await __awaiter.await_millis(timeout)
 
 
@@ -216,11 +217,13 @@ const RETURN_DEEP_STUB = GdUnitMock.RETURN_DEEP_STUB
 
 ## Creates a mock for given class name
 func mock(clazz :Variant, mock_mode := RETURN_DEFAULTS) -> Variant:
+	@warning_ignore("unsafe_method_access")
 	return __lazy_load("res://addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd").build(clazz, mock_mode)
 
 
 ## Creates a spy checked given object instance
 func spy(instance :Variant) -> Variant:
+	@warning_ignore("unsafe_method_access")
 	return __lazy_load("res://addons/gdUnit4/src/spy/GdUnitSpyBuilder.gd").build(instance)
 
 
@@ -236,21 +239,25 @@ func do_return(value :Variant) -> GdUnitMock:
 
 ## Verifies certain behavior happened at least once or exact number of times
 func verify(obj :Variant, times := 1) -> Variant:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_object_interactions().verify(obj, times)
 
 
 ## Verifies no interactions is happen checked this mock or spy
 func verify_no_interactions(obj :Variant) -> GdUnitAssert:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_object_interactions().verify_no_interactions(obj)
 
 
 ## Verifies the given mock or spy has any unverified interaction.
 func verify_no_more_interactions(obj :Variant) -> GdUnitAssert:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_object_interactions().verify_no_more_interactions(obj)
 
 
 ## Resets the saved function call counters checked a mock or spy
 func reset(obj :Variant) -> void:
+	@warning_ignore("unsafe_method_access")
 	__gdunit_object_interactions().reset(obj)
 
 
@@ -267,6 +274,7 @@ func reset(obj :Variant) -> void:
 ##		await assert_signal(emitter).is_emitted('my_signal')
 ##	[/codeblock]
 func monitor_signals(source :Object, _auto_free := true) -> Object:
+	@warning_ignore("unsafe_method_access")
 	__lazy_load("res://addons/gdUnit4/src/core/thread/GdUnitThreadManager.gd")\
 		.get_current_context()\
 		.get_signal_collector()\
@@ -277,36 +285,43 @@ func monitor_signals(source :Object, _auto_free := true) -> Object:
 # === Argument matchers ========================================================
 ## Argument matcher to match any argument
 func any() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().any()
 
 
 ## Argument matcher to match any boolean value
 func any_bool() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_BOOL)
 
 
 ## Argument matcher to match any integer value
 func any_int() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_INT)
 
 
 ## Argument matcher to match any float value
 func any_float() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_FLOAT)
 
 
 ## Argument matcher to match any string value
 func any_string() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_STRING)
 
 
 ## Argument matcher to match any Color value
 func any_color() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_COLOR)
 
 
 ## Argument matcher to match any Vector typed value
 func any_vector() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_types([
 		TYPE_VECTOR2,
 		TYPE_VECTOR2I,
@@ -319,141 +334,169 @@ func any_vector() -> GdUnitArgumentMatcher:
 
 ## Argument matcher to match any Vector2 value
 func any_vector2() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_VECTOR2)
 
 
 ## Argument matcher to match any Vector2i value
 func any_vector2i() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_VECTOR2I)
 
 
 ## Argument matcher to match any Vector3 value
 func any_vector3() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_VECTOR3)
 
 
 ## Argument matcher to match any Vector3i value
 func any_vector3i() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_VECTOR3I)
 
 
 ## Argument matcher to match any Vector4 value
 func any_vector4() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_VECTOR4)
 
 
 ## Argument matcher to match any Vector3i value
 func any_vector4i() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_VECTOR4I)
 
 
 ## Argument matcher to match any Rect2 value
 func any_rect2() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_RECT2)
 
 
 ## Argument matcher to match any Plane value
 func any_plane() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PLANE)
 
 
 ## Argument matcher to match any Quaternion value
 func any_quat() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_QUATERNION)
 
 
 ## Argument matcher to match any AABB value
 func any_aabb() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_AABB)
 
 
 ## Argument matcher to match any Basis value
 func any_basis() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_BASIS)
 
 
 ## Argument matcher to match any Transform2D value
 func any_transform_2d() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_TRANSFORM2D)
 
 
 ## Argument matcher to match any Transform3D value
 func any_transform_3d() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_TRANSFORM3D)
 
 
 ## Argument matcher to match any NodePath value
 func any_node_path() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_NODE_PATH)
 
 
 ## Argument matcher to match any RID value
 func any_rid() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_RID)
 
 
 ## Argument matcher to match any Object value
 func any_object() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_OBJECT)
 
 
 ## Argument matcher to match any Dictionary value
 func any_dictionary() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_DICTIONARY)
 
 
 ## Argument matcher to match any Array value
 func any_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_ARRAY)
 
 
 ## Argument matcher to match any PackedByteArray value
 func any_packed_byte_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_BYTE_ARRAY)
 
 
 ## Argument matcher to match any PackedInt32Array value
 func any_packed_int32_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_INT32_ARRAY)
 
 
 ## Argument matcher to match any PackedInt64Array value
 func any_packed_int64_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_INT64_ARRAY)
 
 
 ## Argument matcher to match any PackedFloat32Array value
 func any_packed_float32_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_FLOAT32_ARRAY)
 
 
 ## Argument matcher to match any PackedFloat64Array value
 func any_packed_float64_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_FLOAT64_ARRAY)
 
 
 ## Argument matcher to match any PackedStringArray value
 func any_packed_string_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_STRING_ARRAY)
 
 
 ## Argument matcher to match any PackedVector2Array value
 func any_packed_vector2_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_VECTOR2_ARRAY)
 
 
 ## Argument matcher to match any PackedVector3Array value
 func any_packed_vector3_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_VECTOR3_ARRAY)
 
 
 ## Argument matcher to match any PackedColorArray value
 func any_packed_color_array() -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().by_type(TYPE_PACKED_COLOR_ARRAY)
 
 
 ## Argument matcher to match any instance of given class
 func any_class(clazz :Object) -> GdUnitArgumentMatcher:
+	@warning_ignore("unsafe_method_access")
 	return __gdunit_argument_matchers().any_class(clazz)
 
 
@@ -577,6 +620,7 @@ func assert_signal(instance :Object) -> GdUnitSignalAssert:
 ##		    .has_message("Expecting:\n 'true'\n not equal to\n 'true'")
 ##     [/codeblock]
 func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
+	@warning_ignore("unsafe_method_access")
 	return __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitFailureAssertImpl.gd").new().execute(assertion)
 
 
@@ -588,6 +632,7 @@ func assert_failure(assertion :Callable) -> GdUnitFailureAssert:
 ##		    .has_message("Expecting:\n 'true'\n not equal to\n 'true'")
 ##     [/codeblock]
 func assert_failure_await(assertion :Callable) -> GdUnitFailureAssert:
+	@warning_ignore("unsafe_method_access")
 	return await __lazy_load("res://addons/gdUnit4/src/asserts/GdUnitFailureAssertImpl.gd").new().execute_and_await(assertion)
 
 
@@ -608,10 +653,12 @@ func assert_error(current :Callable) -> GdUnitGodotErrorAssert:
 
 
 func assert_not_yet_implemented() -> void:
+	@warning_ignore("unsafe_method_access")
 	__gdunit_assert().new(null).do_fail()
 
 
 func fail(message :String) -> void:
+	@warning_ignore("unsafe_method_access")
 	__gdunit_assert().new(null).report_error(message)
 
 

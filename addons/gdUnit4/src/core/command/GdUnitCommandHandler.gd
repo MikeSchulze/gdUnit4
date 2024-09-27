@@ -77,7 +77,7 @@ func _init() -> void:
 
 	# schedule discover tests if enabled and running inside the editor
 	if Engine.is_editor_hint() and GdUnitSettings.is_test_discover_enabled():
-		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(5)
+		var timer :SceneTreeTimer = (Engine.get_main_loop() as SceneTree).create_timer(5)
 		@warning_ignore("return_value_discarded")
 		timer.timeout.connect(cmd_discover_tests)
 
@@ -349,7 +349,7 @@ func _on_settings_changed(property :GdUnitProperty) -> void:
 		prints("Shortcut changed: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[shortcut], input_event.as_text()])
 		register_shortcut(shortcut, input_event)
 	if property.name() == GdUnitSettings.TEST_DISCOVER_ENABLED:
-		var timer :SceneTreeTimer = Engine.get_main_loop().create_timer(3)
+		var timer :SceneTreeTimer = (Engine.get_main_loop() as SceneTree).create_timer(3)
 		@warning_ignore("return_value_discarded")
 		timer.timeout.connect(cmd_discover_tests)
 

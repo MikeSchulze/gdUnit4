@@ -69,7 +69,7 @@ func dispose_timers(test_suite :GdUnitTestSuite) -> void:
 	GdUnitTools.release_timers()
 	for child in test_suite.get_children():
 		if child is Timer:
-			child.stop()
+			(child as Timer).stop()
 			test_suite.remove_child(child)
 			child.free()
 

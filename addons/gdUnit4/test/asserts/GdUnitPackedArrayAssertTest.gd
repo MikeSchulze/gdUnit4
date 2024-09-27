@@ -61,7 +61,7 @@ func test_is_not_null(_test :String, array :Variant, test_parameters := [
 		.has_message("Expecting: not to be '<null>'")
 
 
-@warning_ignore("unused_parameter")
+@warning_ignore("unused_parameter", "unsafe_method_access", "unsafe_call_argument")
 func test_is_equal(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
@@ -94,7 +94,7 @@ func test_is_equal(_test :String, array :Variant, test_parameters := [
 			.replace("$value", str(array[2]) ) % [GdArrayTools.as_string(other, false), GdArrayTools.as_string(array, false)])
 
 
-@warning_ignore("unused_parameter")
+@warning_ignore("unused_parameter", "unsafe_method_access")
 func test_is_not_equal(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
@@ -123,7 +123,7 @@ func test_is_not_equal(_test :String, array :Variant, test_parameters := [
 			.trim_prefix("\n") % [GdDefaultValueDecoder.decode(array), GdDefaultValueDecoder.decode(array)])
 
 
-@warning_ignore("unused_parameter")
+@warning_ignore("unused_parameter", "unsafe_method_access")
 func test_is_empty(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
@@ -151,7 +151,7 @@ func test_is_empty(_test :String, array :Variant, test_parameters := [
 			.trim_prefix("\n") % GdDefaultValueDecoder.decode(array))
 
 
-@warning_ignore("unused_parameter")
+@warning_ignore("unused_parameter", "unsafe_method_access")
 func test_is_not_empty(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
@@ -174,7 +174,7 @@ func test_is_not_empty(_test :String, array :Variant, test_parameters := [
 		.has_message("Expecting:\n must not be empty")
 
 
-@warning_ignore("unused_parameter")
+@warning_ignore("unused_parameter", "unsafe_method_access")
 func test_is_same(value :Variant, test_parameters := [
 	[[0]],
 	[PackedByteArray([0])],
@@ -201,7 +201,7 @@ func test_is_same(value :Variant, test_parameters := [
 			.trim_prefix("\n") % [v, v])
 
 
-@warning_ignore("unused_parameter")
+@warning_ignore("unused_parameter", "unsafe_method_access")
 func test_is_not_same(value :Variant, test_parameters := [
 	[[0]],
 	[PackedByteArray([0])],
@@ -221,7 +221,7 @@ func test_is_not_same(value :Variant, test_parameters := [
 		.has_message("Expecting not same:\n '%s'" % GdDefaultValueDecoder.decode(value))
 
 
-@warning_ignore("unused_parameter")
+@warning_ignore("unused_parameter", "unsafe_method_access")
 func test_has_size(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],
@@ -281,7 +281,7 @@ func test_contains(_test :String, array :Variant, test_parameters := [
 		)
 
 
-@warning_ignore("unused_parameter")
+@warning_ignore("unused_parameter", "unsafe_method_access")
 func test_contains_exactly(_test :String, array :Variant, test_parameters := [
 	["Array", Array([1, 2, 3, 4, 5])],
 	["PackedByteArray", PackedByteArray([1, 2, 3, 4, 5])],

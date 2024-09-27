@@ -84,6 +84,7 @@ static func get_enum_default(value :String) -> Variant:
 	""".dedent() % value
 	@warning_ignore("return_value_discarded")
 	script.reload()
+	@warning_ignore("unsafe_method_access")
 	return script.new().call("get_enum_default")
 
 
