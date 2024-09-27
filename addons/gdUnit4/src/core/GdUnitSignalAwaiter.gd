@@ -69,7 +69,7 @@ func on_signal(source :Object, signal_name :String, expected_signal_args :Array)
 	source.disconnect(signal_name, _on_signal_emmited)
 	_time_left = timer.time_left
 	await scene_tree.process_frame
-	if value is Array and value.size() == 1:
+	if value is Array and (value as Array).size() == 1:
 		return value[0]
 	return value
 

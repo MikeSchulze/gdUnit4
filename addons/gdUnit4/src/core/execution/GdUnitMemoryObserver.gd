@@ -41,6 +41,7 @@ static func _is_instance_guard_enabled() -> bool:
 	return false
 
 
+@warning_ignore("unsafe_method_access")
 static func debug_observe(name :String, obj :Object, indent :int = 0) -> void:
 	if not _show_debug:
 		return
@@ -89,7 +90,7 @@ static func gc_guarded_instance(name :String, instance :Object) -> void:
 		#	if base_script:
 		#		base_script.unreference()
 		debug_observe(name, instance)
-		instance.unreference()
+		(instance as RefCounted).unreference()
 		await (Engine.get_main_loop() as SceneTree).process_frame
 
 
@@ -128,4 +129,4 @@ func gc() -> void:
 
 ## Checks whether the specified object is registered for automatic release
 static func is_marked_auto_free(obj: Variant) -> bool:
-	return Engine.get_meta(TAG_AUTO_FREE, []).has(obj)
+	return (Engine.get_meta(TAG_AUTO_FREE, []) as Array).has(obj)
