@@ -27,13 +27,13 @@ func _input(event: InputEvent) -> void:
 
 
 func has_editor_focus() -> bool:
-	return Engine.get_main_loop().root.gui_get_focus_owner() == active_base_editor()
+	return (Engine.get_main_loop() as SceneTree).root.gui_get_focus_owner() == active_base_editor()
 
 
 func on_script_changed(script: Script) -> void:
 	if script is Script:
 		var popups: Array[Node] = GdObjects.find_nodes_by_class(active_editor(), "PopupMenu", true)
-		for popup in popups:
+		for popup: PopupMenu in popups:
 			if not popup.about_to_popup.is_connected(on_context_menu_show):
 				popup.about_to_popup.connect(on_context_menu_show.bind(script, popup))
 			if not popup.id_pressed.is_connected(on_context_menu_pressed):

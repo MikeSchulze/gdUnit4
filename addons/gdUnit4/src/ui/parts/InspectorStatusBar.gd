@@ -12,18 +12,18 @@ signal request_discover_tests()
 @warning_ignore("unused_signal")
 signal tree_view_mode_changed(flat :bool)
 
-@onready var _errors := %error_value
-@onready var _failures := %failure_value
-@onready var _flaky_value := %flaky_value
-@onready var _button_failure_up := %btn_failure_up
-@onready var _button_failure_down := %btn_failure_down
-@onready var _button_sync := %btn_tree_sync
-@onready var _button_view_mode := %btn_tree_mode
-@onready var _button_sort_mode := %btn_tree_sort
+@onready var _errors: Label = %error_value
+@onready var _failures: Label = %failure_value
+@onready var _flaky_value: Label = %flaky_value
+@onready var _button_failure_up: Button = %btn_failure_up
+@onready var _button_failure_down: Button = %btn_failure_down
+@onready var _button_sync: Button = %btn_tree_sync
+@onready var _button_view_mode: Button = %btn_tree_mode
+@onready var _button_sort_mode: Button = %btn_tree_sort
 
-@onready var _icon_errors := %icon_errors
-@onready var _icon_failures := %icon_failures
-@onready var _icon_flaky := %icon_flaky
+@onready var _icon_errors: TextureRect = %icon_errors
+@onready var _icon_failures: TextureRect = %icon_failures
+@onready var _icon_flaky: TextureRect = %icon_flaky
 
 var total_failed := 0
 var total_errors := 0

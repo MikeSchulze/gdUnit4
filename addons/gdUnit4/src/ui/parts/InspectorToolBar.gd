@@ -5,13 +5,13 @@ signal run_overall_pressed(debug: bool)
 signal run_pressed(debug: bool)
 signal stop_pressed()
 
-@onready var _version_label := %version
-@onready var _button_wiki := %help
-@onready var _tool_button := %tool
-@onready var _button_run_overall := %run_overall
-@onready var _button_run := %run
-@onready var _button_run_debug := %debug
-@onready var _button_stop := %stop
+@onready var _version_label: Control = %version
+@onready var _button_wiki: Button = %help
+@onready var _tool_button: Button = %tool
+@onready var _button_run_overall: Button = %run_overall
+@onready var _button_run: Button = %run
+@onready var _button_run_debug: Button = %debug
+@onready var _button_stop: Button = %stop
 @onready var settings_dlg := preload("res://addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.tscn").instantiate()
 
 

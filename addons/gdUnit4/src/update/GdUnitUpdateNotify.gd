@@ -92,7 +92,7 @@ func show_update() -> void:
 
 func extract_latest_version(response :GdUnitUpdateClient.HttpResponse) -> GdUnit4Version:
 	var body :Array = response.response()
-	return GdUnit4Version.parse(body[0]["name"])
+	return GdUnit4Version.parse(body[0]["name"] as String)
 
 
 func extract_zip_url(response :GdUnitUpdateClient.HttpResponse) -> String:
@@ -104,7 +104,7 @@ func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version
 	await get_tree().process_frame
 	var result := ""
 	for release :Dictionary in response.response():
-		if GdUnit4Version.parse(release["tag_name"]).equals(current_version):
+		if GdUnit4Version.parse(release["tag_name"] as String).equals(current_version):
 			break
 		var release_description :String = release["body"]
 		result += await _md_reader.to_bbcode(release_description)
@@ -120,8 +120,8 @@ func rescan() -> void:
 		while fs.is_scanning():
 			if OS.is_stdout_verbose():
 				progressBar(fs.get_scanning_progress() * 100 as int)
-			await Engine.get_main_loop().process_frame
-		await Engine.get_main_loop().process_frame
+			await get_tree().process_frame
+		await get_tree().process_frame
 	await get_tree().create_timer(1).timeout
 
 
@@ -148,9 +148,9 @@ func _on_update_pressed() -> void:
 	var dest := FileAccess.open("res://addons/.gdunit_update/GdUnitUpdate.tscn", FileAccess.WRITE)
 	dest.store_string(content)
 	hide()
-	var update :Variant = load("res://addons/.gdunit_update/GdUnitUpdate.tscn").instantiate()
+	var update: Node = load("res://addons/.gdunit_update/GdUnitUpdate.tscn").instantiate()
 	update.setup(_update_client, _download_zip_url)
-	Engine.get_main_loop().root.add_child(update)
+	(Engine.get_main_loop() as SceneTree).root.add_child(update)
 	update.popup_centered()
 
 
@@ -166,13 +166,13 @@ func _on_content_meta_clicked(meta :String) -> void:
 	var properties :Variant = str_to_var(meta)
 	if properties.has("url"):
 		@warning_ignore("return_value_discarded")
-		OS.shell_open(properties.get("url"))
+		OS.shell_open(properties.get("url") as String)
 
 
 func _on_content_meta_hover_started(meta :String) -> void:
 	var properties :Variant = str_to_var(meta)
 	if properties.has("tool_tip"):
-		_content.set_tooltip_text(properties.get("tool_tip"))
+		_content.set_tooltip_text(properties.get("tool_tip") as String)
 
 
 @warning_ignore("unused_parameter")

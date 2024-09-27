@@ -6,10 +6,10 @@ signal jump_to_orphan_nodes()
 @onready var ICON_GREEN := GdUnitUiTools.get_icon("Unlinked", Color.WEB_GREEN)
 @onready var ICON_RED := GdUnitUiTools.get_color_animated_icon("Unlinked", Color.YELLOW, Color.ORANGE_RED)
 
-@onready var _button_time := %btn_time
-@onready var _time := %time_value
-@onready var _orphans := %orphan_value
-@onready var _orphan_button := %btn_orphan
+@onready var _button_time: Button = %btn_time
+@onready var _time: Label = %time_value
+@onready var _orphans: Label = %orphan_value
+@onready var _orphan_button: Button = %btn_orphan
 
 var total_elapsed_time := 0
 var total_orphans := 0

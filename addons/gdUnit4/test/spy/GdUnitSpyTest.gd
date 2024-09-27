@@ -219,7 +219,7 @@ func test_verify_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_node, 1).set_process(true)) \
 		.is_failed() \
-		.has_line(219) \
+		.has_line(220) \
 		.has_message(expected_error)
 
 
@@ -246,7 +246,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(246) \
+		.has_line(247) \
 		.has_message(expected_error)
 
 	reset(spy_instance)
@@ -264,7 +264,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(264) \
+		.has_line(265) \
 		.has_message(expected_error)
 
 
@@ -312,7 +312,7 @@ func test_verify_no_interactions_fails() -> void:
 	# it should fail because we have interactions
 	assert_failure(func() -> void: verify_no_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(312) \
+		.has_line(313) \
 		.has_message(expected_error)
 
 
@@ -367,7 +367,7 @@ func test_verify_no_more_interactions_but_has() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify_no_more_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(367) \
+		.has_line(368) \
 		.has_message(expected_error)
 
 
