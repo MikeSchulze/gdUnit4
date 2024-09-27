@@ -4,7 +4,7 @@ extends Control
 
 func _ready() -> void:
 	# set initial drag texture
-	$left/TextureRect.texture = texture
+	($left/TextureRect as TextureRect).texture = texture
 
 
 # Virtual method to be implemented by the user. Use this method to process and accept inputs on UI elements. See accept_event().

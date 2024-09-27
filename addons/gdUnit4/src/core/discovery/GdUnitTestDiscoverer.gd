@@ -19,7 +19,7 @@ static func run() -> void:
 			_test_suites_to_process.append_array(scanner.scan(test_suite_dir))
 
 		# Do sync the main thread before emit the discovered test suites to the inspector
-		await Engine.get_main_loop().process_frame
+		await (Engine.get_main_loop() as SceneTree).process_frame
 		var test_case_count :int = 0
 		for test_suite in _test_suites_to_process:
 			test_case_count += test_suite.get_child_count()
@@ -33,6 +33,6 @@ static func run() -> void:
 	)
 	# wait unblocked to the tread is finished
 	while t.is_alive():
-		await Engine.get_main_loop().process_frame
+		await (Engine.get_main_loop() as SceneTree).process_frame
 	# needs finally to wait for finish
 	await t.wait_to_finish()

@@ -77,7 +77,7 @@ static func unguard_instance(obj :Object, verbose := true) -> void:
 static func gc_guarded_instance(name :String, instance :Object) -> void:
 	if not _is_instance_guard_enabled():
 		return
-	await Engine.get_main_loop().process_frame
+	await (Engine.get_main_loop() as SceneTree).process_frame
 	unguard_instance(instance, false)
 	if is_instance_valid(instance) and instance is RefCounted:
 		# finally do this very hacky stuff
@@ -90,7 +90,7 @@ static func gc_guarded_instance(name :String, instance :Object) -> void:
 		#		base_script.unreference()
 		debug_observe(name, instance)
 		instance.unreference()
-		await Engine.get_main_loop().process_frame
+		await (Engine.get_main_loop() as SceneTree).process_frame
 
 
 static func gc_on_guarded_instances() -> void:
@@ -115,7 +115,7 @@ func gc() -> void:
 	if _store.is_empty():
 		return
 	# give engine time to free objects to process objects marked by queue_free()
-	await Engine.get_main_loop().process_frame
+	await (Engine.get_main_loop() as SceneTree).process_frame
 	if _is_stdout_verbose:
 		print_verbose("GdUnit4:gc():running", " freeing %d objects .." % _store.size())
 	var tagged_objects := Engine.get_meta(TAG_AUTO_FREE, []) as Array

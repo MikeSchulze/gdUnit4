@@ -244,7 +244,11 @@ func test_parse_and_add_test_cases() -> void:
 	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
 	# fake a test suite
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
-	test_suite.set_script( load("res://addons/gdUnit4/test/core/resources/test_script_with_arguments.gd"))
+	var source_code := FileAccess.get_file_as_string("res://addons/gdUnit4/test/core/resources/test_script_with_arguments.gd")
+	var script := GDScript.new()
+	script.source_code = source_code.replace("extends Node", "extends GdUnitTestSuite")
+	script.reload()
+	test_suite.set_script(script)
 
 	var test_case_names := PackedStringArray([
 		"test_no_args",
@@ -255,7 +259,7 @@ func test_parse_and_add_test_cases() -> void:
 		"test_multiline_arguments_a",
 		"test_multiline_arguments_b",
 		"test_multiline_arguments_c"])
-	scanner._parse_and_add_test_cases(test_suite, test_suite.get_script() as GDScript, test_case_names)
+	scanner._parse_and_add_test_cases(test_suite, script, test_case_names)
 	assert_array(test_suite.get_children())\
 		.extractv(extr("get_name"), extr("timeout"), extr("fuzzer_arguments"), extr("iterations"))\
 		.contains_exactly([
@@ -315,7 +319,7 @@ func test_scan_by_inheritance_class_path() -> void:
 
 
 func test_get_test_case_line_number() -> void:
-	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "get_test_case_line_number")).is_equal(317)
+	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "get_test_case_line_number")).is_equal(321)
 	assert_int(GdUnitTestSuiteScanner.get_test_case_line_number("res://addons/gdUnit4/test/core/GdUnitTestSuiteScannerTest.gd", "unknown")).is_equal(-1)
 
 

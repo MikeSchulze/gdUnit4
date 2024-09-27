@@ -119,6 +119,7 @@ func test_spy_class_with_custom_formattings() -> void:
 		.has_line(117)
 
 
+@warning_ignore("unsafe_property_access")
 func test_spy_copied_class_members() -> void:
 	var instance :Object = auto_free(load("res://addons/gdUnit4/test/mocker/resources/TestPersion.gd").new("user-x", "street", 56616))
 	assert_that(instance._name).is_equal("user-x")

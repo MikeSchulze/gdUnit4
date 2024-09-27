@@ -25,15 +25,22 @@ static func format_dict(value :Variant) -> String:
 static func input_event_as_text(event :InputEvent) -> String:
 	var text := ""
 	if event is InputEventKey:
+		var key_event := event as InputEventKey
 		text += "InputEventKey : key='%s', pressed=%s, keycode=%d, physical_keycode=%s" % [
-					event.as_text(), event.pressed, event.keycode, event.physical_keycode]
+					event.as_text(), key_event.pressed, key_event.keycode, key_event.physical_keycode]
 	else:
 		text += event.as_text()
 	if event is InputEventMouse:
-		text += ", global_position %s" % event.global_position
+		var mouse_event := event as InputEventMouse
+		text += ", global_position %s" % mouse_event.global_position
 	if event is InputEventWithModifiers:
+		var mouse_event := event as InputEventWithModifiers
 		text += ", shift=%s, alt=%s, control=%s, meta=%s, command=%s" % [
-					event.shift_pressed, event.alt_pressed, event.ctrl_pressed, event.meta_pressed, event.command_or_control_autoremap]
+					mouse_event.shift_pressed,
+					mouse_event.alt_pressed,
+					mouse_event.ctrl_pressed,
+					mouse_event.meta_pressed,
+					mouse_event.command_or_control_autoremap]
 	return text
 
 

@@ -257,19 +257,22 @@ func test_simulate_until_object_signal(timeout := 2000) -> void:
 
 
 func test_runner_by_null_instance() -> void:
-	var runner := scene_runner(null)
+	var runner :GdUnitSceneRunnerImpl = scene_runner(null)
 	assert_object(runner._current_scene).is_null()
 
 
 func test_runner_by_invalid_resource_path() -> void:
 	# not existing scene
+	@warning_ignore("unsafe_property_access")
 	assert_object(scene_runner("res://test_scene.tscn")._current_scene).is_null()
 	# not a path to a scene
+	@warning_ignore("unsafe_property_access")
 	assert_object(scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.gd")._current_scene).is_null()
 
 
 func test_runner_by_invalid_uid_path() -> void:
 	# not existing scene
+	@warning_ignore("unsafe_property_access")
 	assert_object(scene_runner("uid://invalid_uid")._current_scene).is_null()
 
 
@@ -318,7 +321,7 @@ func test_runner_by_resource_path() -> void:
 
 func test_runner_by_invalid_scene_instance() -> void:
 	var scene := RefCounted.new()
-	var runner := scene_runner(scene)
+	var runner: GdUnitSceneRunnerImpl = scene_runner(scene)
 	assert_object(runner._current_scene).is_null()
 
 

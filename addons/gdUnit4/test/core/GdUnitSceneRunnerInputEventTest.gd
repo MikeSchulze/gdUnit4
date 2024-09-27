@@ -191,6 +191,7 @@ func test_simulate_many_keys_press() -> void:
 	assert_that(Input.is_physical_key_pressed(KEY_Z)).is_true()
 
 
+@warning_ignore("unsafe_property_access")
 func test_simulate_keypressed_as_action() -> void:
 	# add custom action `player_jump` for key 'Space' is pressed
 	var event := InputEventKey.new()
