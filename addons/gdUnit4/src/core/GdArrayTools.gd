@@ -28,10 +28,11 @@ static func is_type_array(type :int) -> bool:
 
 ## Filters an array by given value[br]
 ## If the given value not an array it returns null, will remove all occurence of given value.
-static func filter_value(array: Array[Variant], value: Variant) -> Array[Variant]:
-	#if not is_array_type(array):
-	#	return null
-	var filtered_array: Array[Variant] = array.duplicate()
+@warning_ignore("unsafe_method_access")
+static func filter_value(array: Variant, value: Variant) -> Variant:
+	if not is_array_type(array):
+		return null
+	var filtered_array: Variant = array.duplicate()
 	var index :int = filtered_array.find(value)
 	while index != -1:
 		filtered_array.remove_at(index)
@@ -72,11 +73,11 @@ static func scan_typed(array :Array) -> int:
 ##		# will result in PackedString(["a", "b"])
 ##		GdArrayTools.as_string(PackedColorArray(Color.RED, COLOR.GREEN))
 ## 	[/codeblock]
-static func as_string(elements: Array[Variant], encode_value := true) -> String:
+static func as_string(elements: Variant, encode_value := true) -> String:
 	var delemiter := ", "
 	if elements == null:
 		return "<null>"
-	if elements.is_empty():
+	if (elements as Array).is_empty():
 		return "<empty>"
 	var prefix := _typeof_as_string(elements) if encode_value else ""
 	var formatted := ""

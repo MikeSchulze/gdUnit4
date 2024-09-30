@@ -343,7 +343,7 @@ func extractv(
 	extr7: GdUnitValueExtractor = null,
 	extr8: GdUnitValueExtractor = null,
 	extr9: GdUnitValueExtractor = null) -> GdUnitArrayAssert:
-	var extractors := GdArrayTools.filter_value([extr0, extr1, extr2, extr3, extr4, extr5, extr6, extr7, extr8, extr9], null)
+	var extractors: Variant = GdArrayTools.filter_value([extr0, extr1, extr2, extr3, extr4, extr5, extr6, extr7, extr8, extr9], null)
 	var extracted_elements := Array()
 	var current: Variant = get_current_value()
 	if current == null:
@@ -362,10 +362,10 @@ func extractv(
 				GdUnitTuple.NO_ARG,
 				GdUnitTuple.NO_ARG
 			]
-			for index: int in extractors.size():
+			for index: int in (extractors as Array).size():
 				var extractor: GdUnitValueExtractor = extractors[index]
 				ev[index] = extractor.extract_value(element)
-			if extractors.size() > 1:
+			if (extractors as Array).size() > 1:
 				extracted_elements.append(GdUnitTuple.new(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], ev[9]))
 			else:
 				extracted_elements.append(ev[0])
