@@ -6,8 +6,8 @@ var _base: GdUnitAssert
 
 
 func _init(current :Variant) -> void:
-	_base = ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
-								ResourceLoader.CACHE_MODE_REUSE).new(current)
+	_base = (ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
+								ResourceLoader.CACHE_MODE_REUSE) as GDScript).new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if not GdUnitAssertions.validate_value_type(current, TYPE_STRING):
@@ -23,20 +23,24 @@ func _notification(event :int) -> void:
 
 
 func current_value() -> String:
+	@warning_ignore("unsafe_method_access")
 	return _base.current_value() as String
 
 
 func report_success() -> GdUnitFileAssert:
+	@warning_ignore("unsafe_method_access")
 	_base.report_success()
 	return self
 
 
 func report_error(error :String) -> GdUnitFileAssert:
+	@warning_ignore("unsafe_method_access")
 	_base.report_error(error)
 	return self
 
 
 func failure_message() -> String:
+	@warning_ignore("unsafe_method_access")
 	return _base.failure_message()
 
 
@@ -98,9 +102,9 @@ func contains_exactly(expected_rows: Array) -> GdUnitFileAssert:
 	if script is GDScript:
 		var source_code := GdScriptParser.to_unix_format(script.source_code)
 		var rows := Array(source_code.split("\n"))
-		ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd",
+		(ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd",
 				"GDScript",
-				ResourceLoader.CACHE_MODE_REUSE)\
+				ResourceLoader.CACHE_MODE_REUSE) as GDScript)\
 			.new(rows)\
 			.contains_exactly(expected_rows)
 	return self

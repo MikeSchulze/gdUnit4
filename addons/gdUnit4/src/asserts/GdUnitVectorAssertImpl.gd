@@ -6,8 +6,8 @@ var _type_check: bool
 
 func _init(current: Variant, type_check := true) -> void:
 	_type_check = type_check
-	_base = ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
-								ResourceLoader.CACHE_MODE_REUSE).new(current)
+	_base = (ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
+								ResourceLoader.CACHE_MODE_REUSE) as GDScript).new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if not _validate_value_type(current):
@@ -47,20 +47,24 @@ func _validate_is_vector_type(value :Variant) -> bool:
 
 
 func current_value() -> Variant:
+	@warning_ignore("unsafe_method_access")
 	return _base.current_value()
 
 
 func report_success() -> GdUnitVectorAssert:
+	@warning_ignore("unsafe_method_access")
 	_base.report_success()
 	return self
 
 
 func report_error(error :String) -> GdUnitVectorAssert:
+	@warning_ignore("unsafe_method_access")
 	_base.report_error(error)
 	return self
 
 
 func failure_message() -> String:
+	@warning_ignore("unsafe_method_access")
 	return _base.failure_message()
 
 
