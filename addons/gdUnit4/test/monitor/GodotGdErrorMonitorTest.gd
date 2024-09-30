@@ -91,11 +91,13 @@ func test_scan_for_push_errors() -> void:
 	monitor._report_enabled = true
 
 	# with disabled push_error reporting
+	@warning_ignore("unsafe_method_access")
 	do_return(false).on(monitor)._is_report_push_errors()
 	await monitor.scan()
 	assert_array(monitor.to_reports()).is_empty()
 
 	# with enabled push_error reporting
+	@warning_ignore("unsafe_method_access")
 	do_return(true).on(monitor)._is_report_push_errors()
 
 	var entry := ErrorLogEntry.new(ErrorLogEntry.TYPE.PUSH_ERROR, -1,
@@ -116,11 +118,13 @@ func test_scan_for_script_errors() -> void:
 	monitor._report_enabled = true
 
 	# with disabled push_error reporting
+	@warning_ignore("unsafe_method_access")
 	do_return(false).on(monitor)._is_report_script_errors()
 	await monitor.scan()
 	assert_array(monitor.to_reports()).is_empty()
 
 	# with enabled push_error reporting
+	@warning_ignore("unsafe_method_access")
 	do_return(true).on(monitor)._is_report_script_errors()
 
 	var entry := ErrorLogEntry.new(ErrorLogEntry.TYPE.PUSH_ERROR, 22,

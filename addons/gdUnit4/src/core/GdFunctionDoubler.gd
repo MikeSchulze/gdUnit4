@@ -136,7 +136,7 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 		var constructor := "func _init(%s) -> void:\n	super(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
 
-	var double_src := "@warning_ignore('shadowed_variable', 'untyped_declaration', 'unsafe_call_argument')\n"
+	var double_src := "@warning_ignore('shadowed_variable', 'untyped_declaration', 'unsafe_call_argument', 'unsafe_method_access')\n"
 	if func_descriptor.is_engine():
 		double_src += '@warning_ignore("native_method_override")\n'
 	if func_descriptor.return_type() == GdObjects.TYPE_ENUM:

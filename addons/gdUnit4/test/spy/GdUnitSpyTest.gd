@@ -7,6 +7,7 @@ func before() -> void:
 	ProjectSettings.set_setting(GdUnitSettings.REPORT_ASSERT_ERRORS, false)
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_instance_id_is_unique() -> void:
 	var m1  :Variant = spy(RefCounted.new())
 	var m2  :Variant = spy(RefCounted.new())
@@ -21,6 +22,7 @@ func test_cant_spy_is_not_a_instance() -> void:
 	assert_object(spy_node).is_null()
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_on_Node() -> void:
 	var instance :Node = auto_free(Node.new())
 	var spy_node :Variant = spy(instance)
@@ -48,6 +50,7 @@ func test_spy_on_Node() -> void:
 	verify(spy_node, 2).set_process(false)
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_source_with_class_name_by_resource_path() -> void:
 	var instance :Object = auto_free(load('res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd').new())
 	var m :Variant = spy(instance)
@@ -57,6 +60,7 @@ func test_spy_source_with_class_name_by_resource_path() -> void:
 		.contains("extends 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'")
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_source_with_class_name_by_class() -> void:
 	var m :Variant = spy(auto_free(Munderwood_Pathing_World.new()))
 	var head :String = m.get_script().source_code.substr(0, 200)
@@ -65,6 +69,7 @@ func test_spy_source_with_class_name_by_class() -> void:
 		.contains("extends 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'")
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_extends_godot_class() -> void:
 	var m :Variant = spy(auto_free(World3D.new()))
 	var head :String = m.get_script().source_code.substr(0, 200)
@@ -73,6 +78,7 @@ func test_spy_extends_godot_class() -> void:
 		.contains("extends World3D")
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_on_custom_class() -> void:
 	var instance :AdvancedTestClass = auto_free(AdvancedTestClass.new())
 	var spy_instance :Variant = spy(instance)
@@ -108,6 +114,7 @@ func test_spy_on_custom_class() -> void:
 
 
 # GD-291 https://github.com/MikeSchulze/gdUnit4/issues/291
+@warning_ignore("unsafe_method_access")
 func test_spy_class_with_custom_formattings() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomFormattings.gd")
 	var do_spy :Variant = spy(auto_free(resource.new("test")))
@@ -116,10 +123,11 @@ func test_spy_class_with_custom_formattings() -> void:
 	verify_no_more_interactions(do_spy)
 	assert_failure(func() -> void: verify_no_interactions(do_spy))\
 		.is_failed() \
-		.has_line(117)
+		.has_line(124)
 
 
 @warning_ignore("unsafe_property_access")
+@warning_ignore("unsafe_method_access")
 func test_spy_copied_class_members() -> void:
 	var instance :Object = auto_free(load("res://addons/gdUnit4/test/mocker/resources/TestPersion.gd").new("user-x", "street", 56616))
 	assert_that(instance._name).is_equal("user-x")
@@ -142,6 +150,7 @@ func test_spy_copied_class_members() -> void:
 	assert_that(spy_instance._value).is_equal(2048)
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_copied_class_members_on_node() -> void:
 	var node :Node = auto_free(Node.new())
 	# checked a fresh node the name is empty and results into a error when copied at spy
@@ -154,6 +163,7 @@ func test_spy_copied_class_members_on_node() -> void:
 	assert_that(spy(node).name).is_equal("foo")
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_on_inner_class() -> void:
 	var instance :AdvancedTestClass.AtmosphereData = auto_free(AdvancedTestClass.AtmosphereData.new())
 	var spy_instance :AdvancedTestClass.AtmosphereData = spy(instance)
@@ -172,6 +182,7 @@ func test_spy_on_inner_class() -> void:
 	verify(spy_instance, 1).set_data(AdvancedTestClass.AtmosphereData.SMOKY, 1.3)
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_on_singleton() -> void:
 	await assert_error(func () -> void:
 							var spy_node_ :Variant = spy(Input)
@@ -179,6 +190,7 @@ func test_spy_on_singleton() -> void:
 							await await_idle_frame()).is_push_error("Spy on a Singleton is not allowed! 'Input'")
 
 
+@warning_ignore("unsafe_method_access")
 func test_example_verify() -> void:
 	var instance :Node = auto_free(Node.new())
 	var spy_node :Variant = spy(instance)
@@ -199,6 +211,7 @@ func test_example_verify() -> void:
 	verify(spy_node, 3).set_process(any_bool())
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_fail() -> void:
 	var instance :Node = auto_free(Node.new())
 	var spy_node :Variant = spy(instance)
@@ -219,10 +232,11 @@ func test_verify_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_node, 1).set_process(true)) \
 		.is_failed() \
-		.has_line(220) \
+		.has_line(233) \
 		.has_message(expected_error)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_func_interaction_wiht_PoolStringArray() -> void:
 	var spy_instance :ClassWithPoolStringArrayFunc = spy(ClassWithPoolStringArrayFunc.new())
 
@@ -232,6 +246,7 @@ func test_verify_func_interaction_wiht_PoolStringArray() -> void:
 	verify_no_more_interactions(spy_instance)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_func_interaction_wiht_PackedStringArray_fail() -> void:
 	var spy_instance :ClassWithPoolStringArrayFunc = spy(ClassWithPoolStringArrayFunc.new())
 
@@ -246,7 +261,7 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(247) \
+		.has_line(262) \
 		.has_message(expected_error)
 
 	reset(spy_instance)
@@ -264,10 +279,11 @@ func test_verify_func_interaction_wiht_PackedStringArray_fail() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify(spy_instance, 1).set_values([])) \
 		.is_failed() \
-		.has_line(265) \
+		.has_line(280) \
 		.has_message(expected_error)
 
 
+@warning_ignore("unsafe_method_access")
 func test_reset() -> void:
 	var instance :Node = auto_free(Node.new())
 	var spy_node :Variant = spy(instance)
@@ -286,6 +302,7 @@ func test_reset() -> void:
 	verify_no_interactions(spy_node)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_no_interactions() -> void:
 	var instance :Node = auto_free(Node.new())
 	var spy_node :Variant = spy(instance)
@@ -294,6 +311,7 @@ func test_verify_no_interactions() -> void:
 	verify_no_interactions(spy_node)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_no_interactions_fails() -> void:
 	var instance :Node = auto_free(Node.new())
 	var spy_node :Variant = spy(instance)
@@ -312,10 +330,11 @@ func test_verify_no_interactions_fails() -> void:
 	# it should fail because we have interactions
 	assert_failure(func() -> void: verify_no_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(313) \
+		.has_line(331) \
 		.has_message(expected_error)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_no_more_interactions() -> void:
 	var instance :Node = auto_free(Node.new())
 	var spy_node :Variant = spy(instance)
@@ -334,6 +353,7 @@ func test_verify_no_more_interactions() -> void:
 	verify_no_more_interactions(spy_node)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_no_more_interactions_but_has() -> void:
 	var instance :Node = auto_free(Node.new())
 	var spy_node :Variant = spy(instance)
@@ -367,7 +387,7 @@ func test_verify_no_more_interactions_but_has() -> void:
 			.dedent().trim_prefix("\n")
 	assert_failure(func() -> void: verify_no_more_interactions(spy_node)) \
 		.is_failed() \
-		.has_line(368) \
+		.has_line(388) \
 		.has_message(expected_error)
 
 
@@ -385,6 +405,7 @@ func test_create_spy_static_func_untyped() -> void:
 	assert_object(instance).is_not_null()
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_snake_case_named_class_by_resource_path() -> void:
 	var instance_a :Object = load("res://addons/gdUnit4/test/mocker/resources/snake_case.gd").new()
 	var spy_a :Variant = spy(instance_a)
@@ -403,6 +424,7 @@ func test_spy_snake_case_named_class_by_resource_path() -> void:
 	verify_no_more_interactions(spy_b)
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_snake_case_named_class_by_class() -> void:
 	var do_spy :Variant = spy(snake_case_class_name.new())
 	assert_object(do_spy).is_not_null()
@@ -426,6 +448,7 @@ const Issue = preload("res://addons/gdUnit4/test/resources/issues/gd-166/issue.g
 const Type = preload("res://addons/gdUnit4/test/resources/issues/gd-166/types.gd")
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_preload_class_GD_166() -> void:
 	var instance :Object = auto_free(Issue.new())
 	var spy_instance :Variant = spy(instance)
@@ -442,6 +465,7 @@ func _emit_ready(a :String, b :String, c :Variant = null) -> void:
 
 
 # https://github.com/MikeSchulze/gdUnit4/issues/38
+@warning_ignore("unsafe_method_access")
 func test_spy_Node_use_real_func_vararg() -> void:
 	# setup
 	var instance := Node.new()
@@ -484,6 +508,7 @@ class ClassWithSignal:
 
 
 # https://github.com/MikeSchulze/gdUnit4/issues/14
+@warning_ignore("unsafe_method_access")
 func _test_spy_verify_emit_signal() -> void:
 	var spy_instance :Variant = spy(ClassWithSignal.new())
 	assert_that(spy_instance).is_not_null()
@@ -508,6 +533,7 @@ func _test_spy_verify_emit_signal() -> void:
 	verify(spy_instance, 1).emit_signal(spy_instance.test_signal_b.get_name(), "bb", true)
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_func_with_default_build_in_type() -> void:
 	var spy_instance :ClassWithDefaultBuildIntTypes = spy(ClassWithDefaultBuildIntTypes.new())
 	assert_object(spy_instance).is_not_null()
@@ -526,6 +552,7 @@ func test_spy_func_with_default_build_in_type() -> void:
 	verify_no_more_interactions(spy_instance)
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_scene_by_resource_path() -> void:
 	var spy_scene :Variant = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(spy_scene)\
@@ -537,6 +564,7 @@ func test_spy_scene_by_resource_path() -> void:
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_on_PackedScene() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var original_script :Script = resource.get_script()
@@ -557,6 +585,7 @@ func test_spy_on_PackedScene() -> void:
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_scene_by_instance() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var instance :Control = resource.instantiate()
@@ -576,6 +605,7 @@ func test_spy_scene_by_instance() -> void:
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(spy_scene)).is_true()
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_scene_by_path_fail_has_no_script_attached() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestSceneWithoutScript.tscn")
 	var instance :Control = auto_free(resource.instantiate())
@@ -585,6 +615,7 @@ func test_spy_scene_by_path_fail_has_no_script_attached() -> void:
 	assert_object(spy_scene).is_null()
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_scene_initalize() -> void:
 	var spy_scene :Variant = spy("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(spy_scene).is_not_null()
@@ -616,6 +647,7 @@ class CustomNode extends Node:
 		pass
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_ready_called_once() -> void:
 	var spy_node :Variant = spy(auto_free(CustomNode.new()))
 
@@ -627,6 +659,7 @@ func test_spy_ready_called_once() -> void:
 	verify(spy_node, 1).only_one_time_call()
 
 
+@warning_ignore("unsafe_method_access")
 func test_spy_with_enum_in_constructor() -> void:
 	# this test uses a class with an enum in the constructor
 	var unit := ClassWithEnumConstructor.new(ClassWithEnumConstructor.MyEnumValue.TWO, [])
