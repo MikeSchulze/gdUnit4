@@ -106,9 +106,9 @@ class CLIRunner:
 	func _ready() -> void:
 		_state = INIT
 		_report_dir = GdUnitFileAccess.current_dir() + "reports"
-		_executor = load("res://addons/gdUnit4/src/core/execution/GdUnitTestSuiteExecutor.gd").new()
+		_executor = GdUnitTestSuiteExecutor.new()
 		# stop checked first test failure to fail fast
-		_executor.fail_fast(true)
+		(_executor as GdUnitTestSuiteExecutor).fail_fast(true)
 		if GdUnit4CSharpApiLoader.is_mono_supported():
 			prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
 			_cs_executor = GdUnit4CSharpApiLoader.create_executor(self)
@@ -137,10 +137,13 @@ class CLIRunner:
 					set_process(false)
 					# process next test suite
 					var test_suite := _test_suites_to_process.pop_front() as Node
+					@warning_ignore("unsafe_method_access")
 					if _cs_executor != null and _cs_executor.IsExecutable(test_suite):
+						@warning_ignore("unsafe_method_access")
 						_cs_executor.Execute(test_suite)
 						await _cs_executor.ExecutionCompleted
 					else:
+						@warning_ignore("unsafe_method_access")
 						await _executor.execute(test_suite)
 					set_process(true)
 			STOP:
@@ -186,6 +189,7 @@ class CLIRunner:
 			"Disabled fail fast!",
 			Color.DEEP_SKY_BLUE
 		)
+		@warning_ignore("unsafe_method_access")
 		_executor.fail_fast(false)
 
 
@@ -419,7 +423,9 @@ class CLIRunner:
 				# if no tests skipped test the complete suite is skipped
 				if skipped_tests.is_empty():
 					_console.prints_warning("Mark test suite '%s' as skipped!" % suite_to_skip)
+					@warning_ignore("unsafe_property_access")
 					test_suite.__is_skipped = true
+					@warning_ignore("unsafe_property_access")
 					test_suite.__skip_reason = skip_reason
 				else:
 					# skip tests

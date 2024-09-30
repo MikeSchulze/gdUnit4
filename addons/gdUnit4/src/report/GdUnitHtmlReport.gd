@@ -132,9 +132,9 @@ func apply_path_reports(report_dir :String, template :String, report_summaries :
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_PATHS, "\n".join(table_records))
 
 
-func apply_testsuite_reports(report_dir :String, template :String, test_suite_reports :Array[GdUnitReportSummary]) -> String:
+func apply_testsuite_reports(report_dir: String, template: String, test_suite_reports: Array[GdUnitReportSummary]) -> String:
 	var table_records := PackedStringArray()
-	for report in test_suite_reports:
+	for report: GdUnitTestSuiteReport in test_suite_reports:
 		var report_link :String = report.write(report_dir).replace(report_dir, ".")
 		@warning_ignore("return_value_discarded")
 		table_records.append(report.create_record(report_link) as String)

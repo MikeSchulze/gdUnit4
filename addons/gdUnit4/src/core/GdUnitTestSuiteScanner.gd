@@ -95,7 +95,7 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 		return null
 	# Check in the global class cache whether the GdUnitTestSuite class has been extended.
 	if _included_resources.has(resource_path):
-		return _parse_test_suite(ResourceLoader.load(resource_path) as GDScript)
+		return _parse_test_suite(load_with_disabled_warnings(resource_path))
 
 	# Otherwise we need to scan manual, we need to exclude classes where direct extends form Godot classes
 	# the resource loader can fail to load e.g. plugin classes with do preload other scripts
@@ -104,10 +104,25 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 	if extends_from.is_empty() or ClassDB.class_exists(extends_from):
 		return null
 	# Finally, we need to load the class to determine it is a test suite
-	var script: GDScript = ResourceLoader.load(resource_path)
+	var script := load_with_disabled_warnings(resource_path)
 	if not GdObjects.is_test_suite(script):
 		return null
 	return _parse_test_suite(script)
+
+
+# We load the test suites with disabled unsafe_method_access to avoid spamming loading errors
+# `unsafe_method_access` will happen when using `assert_that`
+func load_with_disabled_warnings(resource_path: String) -> GDScript:
+	# grap current level
+	var unsafe_method_access: Variant = ProjectSettings.get_setting("debug/gdscript/warnings/unsafe_method_access")
+
+	# disable and load the script
+	ProjectSettings.set_setting("debug/gdscript/warnings/unsafe_method_access", 0)
+	var script: GDScript = ResourceLoader.load(resource_path)
+
+	# restore
+	ProjectSettings.set_setting("debug/gdscript/warnings/unsafe_method_access", unsafe_method_access)
+	return script
 
 
 static func _is_script_format_supported(resource_path :String) -> bool:
