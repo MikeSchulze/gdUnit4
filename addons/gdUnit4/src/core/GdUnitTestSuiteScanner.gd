@@ -112,7 +112,7 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 
 # We load the test suites with disabled unsafe_method_access to avoid spamming loading errors
 # `unsafe_method_access` will happen when using `assert_that`
-func load_with_disabled_warnings(resource_path: String) -> GDScript:
+static func load_with_disabled_warnings(resource_path: String) -> GDScript:
 	# grap current level
 	var unsafe_method_access: Variant = ProjectSettings.get_setting("debug/gdscript/warnings/unsafe_method_access")
 
@@ -336,7 +336,7 @@ func get_extends_classname(resource_path :String) -> String:
 
 
 static func add_test_case(resource_path :String, func_name :String)  -> GdUnitResult:
-	var script := load(resource_path) as GDScript
+	var script := load_with_disabled_warnings(resource_path)
 	# count all exiting lines and add two as space to add new test case
 	var line_number := count_lines(script) + 2
 	var func_body := TEST_FUNC_TEMPLATE.replace("${func_name}", func_name)
@@ -363,7 +363,7 @@ static func test_suite_exists(test_suite_path :String) -> bool:
 static func test_case_exists(test_suite_path :String, func_name :String) -> bool:
 	if not test_suite_exists(test_suite_path):
 		return false
-	var script := ResourceLoader.load(test_suite_path) as GDScript
+	var script := load_with_disabled_warnings(test_suite_path)
 	for f in script.get_script_method_list():
 		if f["name"] == "test_" + func_name:
 			return true
