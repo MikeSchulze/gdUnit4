@@ -4,7 +4,6 @@ extends GdUnitTestSuite
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/GdUnitTestSuite.gd'
-const GdUnitAssertImpl = preload("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd")
 
 var _events :Array[GdUnitEvent] = []
 var _retry_count := 0
@@ -62,9 +61,9 @@ func test_find_child() -> void:
 	node_a.add_child(node_b, true)
 	node_b.add_child(node_c, true)
 
-	assert_that(find_child("node_a", true, false)).is_same(node_a)
-	assert_that(find_child("node_b", true, false)).is_same(node_b)
-	assert_that(find_child("node_c", true, false)).is_same(node_c)
+	assert_object(find_child("node_a", true, false)).is_same(node_a)
+	assert_object(find_child("node_b", true, false)).is_same(node_b)
+	assert_object(find_child("node_c", true, false)).is_same(node_c)
 
 
 func test_find_by_path() -> void:
@@ -78,9 +77,9 @@ func test_find_by_path() -> void:
 	node_a.add_child(node_b, true)
 	node_b.add_child(node_c, true)
 
-	assert_that(get_node(node_a.get_path())).is_same(node_a)
-	assert_that(get_node(node_b.get_path())).is_same(node_b)
-	assert_that(get_node(node_c.get_path())).is_same(node_c)
+	assert_object(get_node(node_a.get_path())).is_same(node_a)
+	assert_object(get_node(node_b.get_path())).is_same(node_b)
+	assert_object(get_node(node_c.get_path())).is_same(node_c)
 
 
 func test_flaky_success() -> void:

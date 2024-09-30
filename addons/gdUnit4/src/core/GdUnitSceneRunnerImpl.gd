@@ -3,7 +3,7 @@ class_name GdUnitSceneRunnerImpl
 extends GdUnitSceneRunner
 
 
-var GdUnitFuncAssertImpl := ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitFuncAssertImpl.gd", "GDScript", ResourceLoader.CACHE_MODE_REUSE)
+var GdUnitFuncAssertImpl: GDScript = ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitFuncAssertImpl.gd", "GDScript", ResourceLoader.CACHE_MODE_REUSE)
 
 
 # mapping of mouse buttons and his masks
@@ -55,7 +55,7 @@ func _init(p_scene: Variant, p_verbose: bool, p_hide_push_errors := false) -> vo
 			if not p_hide_push_errors:
 				push_error("GdUnitSceneRunner: The given resource: '%s'. is not a scene." % p_scene)
 			return
-		_current_scene = load(p_scene as String).instantiate()
+		_current_scene = (load(p_scene as String) as PackedScene).instantiate()
 		_scene_auto_free = true
 	else:
 		# verify we have a node instance
@@ -118,6 +118,7 @@ func simulate_action_press(action: String) -> GdUnitSceneRunner:
 	event.pressed = true
 	event.action = action
 	if Engine.get_version_info().hex >= 0x40300:
+		@warning_ignore("unsafe_property_access")
 		event.event_index = InputMap.get_actions().find(action)
 	_action_on_press.append(action)
 	return _handle_input_event(event)
@@ -129,6 +130,7 @@ func simulate_action_release(action: String) -> GdUnitSceneRunner:
 	event.pressed = false
 	event.action = action
 	if Engine.get_version_info().hex >= 0x40300:
+		@warning_ignore("unsafe_property_access")
 		event.event_index = InputMap.get_actions().find(action)
 	_action_on_press.erase(action)
 	return _handle_input_event(event)
@@ -277,7 +279,7 @@ func simulate_screen_touch_press(index: int, position: Vector2, double_tap := fa
 		simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
 	# push touch press event at position
 	var event := InputEventScreenTouch.new()
-	event.window_id = scene().get_viewport().get_window_id()
+	event.window_id = scene().get_window().get_window_id()
 	event.index = index
 	event.position = position
 	event.double_tap = double_tap
@@ -295,7 +297,7 @@ func simulate_screen_touch_release(index: int, double_tap := false) -> GdUnitSce
 		simulate_mouse_button_release(MOUSE_BUTTON_LEFT)
 	# push touch release event at position
 	var event := InputEventScreenTouch.new()
-	event.window_id = scene().get_viewport().get_window_id()
+	event.window_id = scene().get_window().get_window_id()
 	event.index = index
 	event.position = get_screen_touch_drag_position(index)
 	event.pressed = false
@@ -323,7 +325,7 @@ func simulate_screen_touch_drag(index: int, position: Vector2) -> GdUnitSceneRun
 	if is_emulate_mouse_from_touch():
 		simulate_mouse_move(position)
 	var event := InputEventScreenDrag.new()
-	event.window_id = scene().get_viewport().get_window_id()
+	event.window_id = scene().get_window().get_window_id()
 	event.index = index
 	event.position = position
 	event.relative = _get_screen_touch_drag_position_or_default(index, position) - position
@@ -355,7 +357,7 @@ func _get_screen_touch_drag_position_or_default(index: int, default_position: Ve
 func _do_touch_drag_at(index: int, drag_position: Vector2, time: float, trans_type: Tween.TransitionType) -> GdUnitSceneRunner:
 	# start draging
 	var event := InputEventScreenDrag.new()
-	event.window_id = scene().get_viewport().get_window_id()
+	event.window_id = scene().get_window().get_window_id()
 	event.index = index
 	event.position = get_screen_touch_drag_position(index)
 	event.pressure = 1.0
@@ -587,7 +589,7 @@ func _handle_input_event(event: InputEvent) -> GdUnitSceneRunner:
 			Input.flush_buffered_events()
 		__print("	process event %s (%s) <- %s" % [current_scene, _scene_name(), event.as_text()])
 		if(current_scene.has_method("_gui_input")):
-			current_scene._gui_input(event)
+			(current_scene as Control)._gui_input(event)
 		if(current_scene.has_method("_unhandled_input")):
 			current_scene._unhandled_input(event)
 		current_scene.get_viewport().set_input_as_handled()

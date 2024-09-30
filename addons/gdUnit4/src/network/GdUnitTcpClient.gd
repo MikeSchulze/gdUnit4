@@ -72,7 +72,7 @@ func _process(_delta :float) -> void:
 					await get_tree().create_timer(0.500).timeout
 					rpc_ = rpc_receive()
 				set_process(true)
-				_client_id = rpc_.client_id()
+				_client_id = (rpc_ as RPCClientConnect).client_id()
 				console("Connected to Server: %d" % _client_id)
 				connection_succeeded.emit("Connect to TCP Server %s:%d success." % [_host, _port])
 				_connected = true

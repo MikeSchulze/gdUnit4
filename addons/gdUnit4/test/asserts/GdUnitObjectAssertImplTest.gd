@@ -76,6 +76,7 @@ func test_is_not_null() -> void:
 		.has_message("Expecting: not to be '<null>'")
 
 
+@warning_ignore("unsafe_method_access")
 func test_is_same() -> void:
 	var obj1 :Variant = auto_free(Node.new())
 	var obj2 :Variant = obj1
@@ -98,6 +99,7 @@ func test_is_same() -> void:
 		.is_failed()
 
 
+@warning_ignore("unsafe_method_access")
 func test_is_not_same() -> void:
 	var obj1 :Variant = auto_free(Node.new())
 	var obj2 :Variant = obj1
@@ -147,6 +149,7 @@ func test_must_fail_has_invlalid_type() -> void:
 
 func test_override_failure_message() -> void:
 	assert_object(assert_object(auto_free(Node.new())).override_failure_message("error")).is_instanceof(GdUnitObjectAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_object(auto_free(Node.new())) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
@@ -156,6 +159,7 @@ func test_override_failure_message() -> void:
 
 func test_append_failure_message() -> void:
 	assert_object(assert_object(auto_free(Node.new())).append_failure_message("error")).is_instanceof(GdUnitObjectAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_object(auto_free(Node.new())) \
 			.append_failure_message("custom failure data") \
 			.is_null()) \

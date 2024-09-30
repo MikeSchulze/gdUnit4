@@ -347,7 +347,7 @@ func tokenize_inner_class(source_code: String, current: int, token: Token) -> To
 	return TokenInnerClass.new(clazz_name)
 
 
-func parse_return_token(input: String) -> Token:
+func parse_return_token(input: String) -> Variable:
 	var index := input.rfind(TOKEN_FUNCTION_RETURN_TYPE._token)
 	if index == -1:
 		return TOKEN_NOT_MATCH
@@ -421,12 +421,12 @@ func _parse_function_arguments(input: String) -> Dictionary:
 		if token is FuzzerToken:
 			var arg_value := _parse_end_function(input.substr(current_index), true)
 			current_index += arg_value.length()
-			var arg_name :String = token.name()
+			var arg_name :String = (token as FuzzerToken).name()
 			arguments[arg_name] = arg_value.lstrip(" ")
 			continue
 		# is value argument
 		if in_function and token.is_variable():
-			var arg_name: String = token.plain_value()
+			var arg_name: String = (token as Variable).plain_value()
 			var arg_value: String = GdFunctionArgument.UNDEFINED
 			# parse type and default value
 			while current_index < len(input):
@@ -519,6 +519,7 @@ func _parse_end_function(input: String, remove_trailing_char := false) -> String
 	return input.substr(0, current_index)
 
 
+@warning_ignore("unsafe_method_access")
 func extract_inner_class(source_rows: PackedStringArray, clazz_name :String) -> PackedStringArray:
 	for row_index in source_rows.size():
 		var input := source_rows[row_index]
@@ -557,7 +558,7 @@ func get_class_name(script :GDScript) -> String:
 			token = next_token(input, current_index)
 			current_index += token._consumed
 			token = tokenize_value(input, current_index, token)
-			return token.value()
+			return (token as Variable).value()
 	# if no class_name found extract from file name
 	return GdObjects.to_pascal_case(script.resource_path.get_basename().get_file())
 
@@ -608,14 +609,14 @@ func _enrich_function_descriptor(script: GDScript, fds: Array[GdFunctionDescript
 					var func_arguments := _parse_function_arguments(func_signature)
 					# enrich missing default values
 					for arg_name: String in func_arguments.keys():
-						fd.set_argument_value(arg_name, func_arguments[arg_name])
+						fd.set_argument_value(arg_name, func_arguments[arg_name] as String)
 					fd.enrich_file_info(script_to_scan.resource_path, rowIndex + 1)
 					fd._is_coroutine = is_func_coroutine(rows, rowIndex)
 					# enrich return class name if not set
 					if fd.return_type() == TYPE_OBJECT and fd._return_class in ["", "Resource", "RefCounted"]:
-						token = parse_return_token(func_signature)
-						if token != TOKEN_NOT_MATCH and token.type() == TYPE_OBJECT:
-							fd._return_class = _patch_inner_class_names(token.value() as String, "")
+						var var_token := parse_return_token(func_signature)
+						if var_token != TOKEN_NOT_MATCH and var_token.type() == TYPE_OBJECT:
+							fd._return_class = _patch_inner_class_names(var_token.value() as String, "")
 		# if the script ihnerits we need to scan this also
 		script_to_scan = script_to_scan.get_base_script()
 

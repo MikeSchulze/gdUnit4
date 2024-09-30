@@ -7,7 +7,7 @@ const DIV_ADD :int = 214
 const DIV_SUB :int = 215
 
 
-static func _diff(lb: PackedByteArray, rb: PackedByteArray, lookup: Array, ldiff: Array, rdiff: Array) -> void:
+static func _diff(lb: PackedByteArray, rb: PackedByteArray, lookup: Array[Array], ldiff: Array, rdiff: Array) -> void:
 	var loffset := lb.size()
 	var roffset := rb.size()
 
@@ -39,8 +39,8 @@ static func _diff(lb: PackedByteArray, rb: PackedByteArray, lookup: Array, ldiff
 
 
 # lookup[i][j] stores the length of LCS of substring X[0..i-1], Y[0..j-1]
-static func _createLookUp(lb: PackedByteArray, rb: PackedByteArray) -> Array:
-	var lookup := Array()
+static func _createLookUp(lb: PackedByteArray, rb: PackedByteArray) -> Array[Array]:
+	var lookup: Array[Array] = []
 	@warning_ignore("return_value_discarded")
 	lookup.resize(lb.size() + 1)
 	for i in lookup.size():
@@ -51,7 +51,7 @@ static func _createLookUp(lb: PackedByteArray, rb: PackedByteArray) -> Array:
 	return lookup
 
 
-static func _buildLookup(lb: PackedByteArray, rb: PackedByteArray) -> Array:
+static func _buildLookup(lb: PackedByteArray, rb: PackedByteArray) -> Array[Array]:
 	var lookup := _createLookUp(lb, rb)
 	# first column of the lookup table will be all 0
 	for i in lookup.size():

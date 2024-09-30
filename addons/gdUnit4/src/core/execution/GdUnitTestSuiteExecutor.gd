@@ -5,7 +5,7 @@ class_name GdUnitTestSuiteExecutor
 # preload all asserts here
 @warning_ignore("unused_private_class_variable")
 var _assertions := GdUnitAssertions.new()
-var _executeStage :IGdUnitExecutionStage = GdUnitTestSuiteExecutionStage.new()
+var _executeStage := GdUnitTestSuiteExecutionStage.new()
 
 
 func _init(debug_mode :bool = false) -> void:

@@ -21,6 +21,7 @@ func test_mock_instance_id_is_unique() -> void:
 	var m1: Variant = mock(RefCounted)
 	var m2: Variant = mock(RefCounted)
 	# test the internal instance id is unique
+	@warning_ignore("unsafe_method_access")
 	assert_that(m1.__instance_id()).is_not_equal(m2.__instance_id())
 	assert_object(m1).is_not_same(m2)
 
@@ -33,21 +34,25 @@ func test_is_mockable_godot_classes() -> void:
 		# unregistered classes in ClassDB
 		# protected classes (name starts with underscore)
 		var is_mockable :bool = not Engine.has_singleton(clazz_name) and ClassDB.can_instantiate(clazz_name) and clazz_name.find("_") != 0
+		@warning_ignore("unsafe_method_access")
 		assert_that(GdUnitMockBuilder.is_mockable(clazz_name)) \
 			.override_failure_message("Class '%s' expect mockable %s" % [clazz_name, is_mockable]) \
 			.is_equal(is_mockable)
 
 
+@warning_ignore("unsafe_method_access")
 func test_is_mockable_by_class_type() -> void:
 	assert_that(GdUnitMockBuilder.is_mockable(Node)).is_true()
 	assert_that(GdUnitMockBuilder.is_mockable(CSGBox3D)).is_true()
 
 
+@warning_ignore("unsafe_method_access")
 func test_is_mockable_custom_class_type() -> void:
 	assert_that(GdUnitMockBuilder.is_mockable(CustomResourceTestClass)).is_true()
 	assert_that(GdUnitMockBuilder.is_mockable(CustomNodeTestClass)).is_true()
 
 
+@warning_ignore("unsafe_method_access")
 func test_is_mockable_by_script_path() -> void:
 	assert_that(GdUnitMockBuilder.is_mockable(resource_path + "CustomResourceTestClass.gd")).is_true()
 	assert_that(GdUnitMockBuilder.is_mockable(resource_path + "CustomNodeTestClass.gd")).is_true()
@@ -55,6 +60,7 @@ func test_is_mockable_by_script_path() -> void:
 	assert_that(GdUnitMockBuilder.is_mockable(resource_path + "capsuleshape2d.tres")).is_false()
 
 
+@warning_ignore("unsafe_method_access")
 func test_is_mockable__overriden_func_get_class() -> void:
 	# test with class type
 	assert_that(GdUnitMockBuilder.is_mockable(OverridenGetClassTestClass))\
@@ -72,6 +78,7 @@ func test_mock_godot_class_fullcheck(fuzzer := GodotClassNameFuzzer.new(), fuzze
 	# try to create a mock
 	if GdUnitMockBuilder.is_mockable(clazz_name):
 		var m: Variant = mock(clazz_name, CALL_REAL_FUNC)
+		@warning_ignore("unsafe_method_access")
 		assert_that(m)\
 			.override_failure_message("The class %s should be mockable" % clazz_name)\
 			.is_not_null()
@@ -101,6 +108,7 @@ func test_mock_special_classes() -> void:
 	assert_that(m).is_not_null()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_Node() -> void:
 	var mocked_node: Variant = mock(Node)
 	assert_that(mocked_node).is_not_null()
@@ -129,6 +137,7 @@ func test_mock_Node() -> void:
 	assert_that(mocked_node.get_child_count()).is_equal(24)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_source_with_class_name_by_resource_path() -> void:
 	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
 	var m: Variant = mock(resource_path_)
@@ -138,6 +147,7 @@ func test_mock_source_with_class_name_by_resource_path() -> void:
 		.contains("extends '%s'" % resource_path_)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_source_with_class_name_by_class() -> void:
 	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
 	var m: Variant = mock(Munderwood_Pathing_World)
@@ -147,6 +157,7 @@ func test_mock_source_with_class_name_by_class() -> void:
 		.contains("extends '%s'" % resource_path_)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_extends_godot_class() -> void:
 	var m: Variant = mock(World3D)
 	var head :String = m.get_script().source_code.substr(0, 200)
@@ -160,6 +171,7 @@ func _emit_ready(a :String, b :String, c :Variant = null) -> void:
 	_test_signal_args = [a, b, c]
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_Node_func_vararg() -> void:
 	# setup
 	var mocked_node: Variant = mock(Node)
@@ -177,6 +189,7 @@ func test_mock_Node_func_vararg() -> void:
 	assert_that(mocked_node.rpc("test", "arg1", "argX", 42)).is_equal(ERR_CANT_CREATE)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_Node_func_vararg_call_real_func() -> void:
 	# setup
 	var mocked_node: Variant = mock(Node, CALL_REAL_FUNC)
@@ -219,6 +232,7 @@ class ClassWithSignal:
 		return true
 
 
+@warning_ignore("unsafe_method_access")
 func _test_mock_verify_emit_signal() -> void:
 	var mocked_node: Variant = mock(ClassWithSignal, CALL_REAL_FUNC)
 	assert_that(mocked_node).is_not_null()
@@ -243,6 +257,7 @@ func _test_mock_verify_emit_signal() -> void:
 	verify(mocked_node, 1).emit_signal("test_signal_b", "bb", true)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_by_class_name() -> void:
 	var m: Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
@@ -265,6 +280,7 @@ func test_mock_custom_class_by_class_name() -> void:
 	assert_that(m.bar(2)).is_equal("arg_2")
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_by_resource_path() -> void:
 	var m: Variant = mock("res://addons/gdUnit4/test/mocker/resources/CustomResourceTestClass.gd")
 	assert_that(m).is_not_null()
@@ -287,6 +303,7 @@ func test_mock_custom_class_by_resource_path() -> void:
 	assert_that(m.bar(2)).is_equal("arg_2")
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_foo_use_real_func() -> void:
 	var m: Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -298,6 +315,7 @@ func test_mock_custom_class_func_foo_use_real_func() -> void:
 	assert_that(m.foo()).is_equal("overridden value")
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_void_func() -> void:
 	var m: Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
@@ -309,6 +327,7 @@ func test_mock_custom_class_void_func() -> void:
 	assert_that(m.foo_void()).is_null()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_void_func_real_func() -> void:
 	var m: Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -320,6 +339,7 @@ func test_mock_custom_class_void_func_real_func() -> void:
 	assert_that(m.foo_void()).is_null()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_foo_call_times() -> void:
 	var m: Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
@@ -333,6 +353,7 @@ func test_mock_custom_class_func_foo_call_times() -> void:
 	verify(m, 4).foo()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_foo_call_times_real_func() -> void:
 	var m: Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -346,6 +367,7 @@ func test_mock_custom_class_func_foo_call_times_real_func() -> void:
 	verify(m, 4).foo()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_foo_full_test() -> void:
 	var m: Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
@@ -358,6 +380,7 @@ func test_mock_custom_class_func_foo_full_test() -> void:
 	verify(m, 2).foo()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_foo_full_test_real_func() -> void:
 	var m: Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -370,6 +393,7 @@ func test_mock_custom_class_func_foo_full_test_real_func() -> void:
 	verify(m, 2).foo()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_bar() -> void:
 	var m: Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
@@ -391,6 +415,7 @@ func test_mock_custom_class_func_bar() -> void:
 	verify(m, 0).bar(23)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_bar_real_func() -> void:
 	var m: Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -416,6 +441,7 @@ func test_mock_custom_class_func_bar_real_func() -> void:
 	verify(m, 1).bar(10, 20, "other")
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_return_type_enum() -> void:
 	var m: Variant = mock(ClassWithEnumReturnTypes)
 	assert_that(m).is_not_null()
@@ -437,6 +463,7 @@ func test_mock_custom_class_func_return_type_enum() -> void:
 	assert_that(m2.get_enum()).is_equal(ClassWithEnumReturnTypes.TEST_ENUM.BAR)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_return_type_internal_class_enum() -> void:
 	var m: Variant = mock(ClassWithEnumReturnTypes)
 	assert_that(m).is_not_null()
@@ -458,6 +485,7 @@ func test_mock_custom_class_func_return_type_internal_class_enum() -> void:
 	assert_that(m2.get_inner_class_enum()).is_equal(ClassWithEnumReturnTypes.InnerClass.TEST_ENUM.BAR)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_func_return_type_external_class_enum() -> void:
 	var m: Variant = mock(ClassWithEnumReturnTypes)
 	assert_that(m).is_not_null()
@@ -479,6 +507,7 @@ func test_mock_custom_class_func_return_type_external_class_enum() -> void:
 	assert_that(m2.get_external_class_enum()).is_equal(CustomEnums.TEST_ENUM.BAR)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_extends_Node() -> void:
 	var m: Variant = mock(CustomNodeTestClass)
 	assert_that(m).is_not_null()
@@ -496,6 +525,7 @@ func test_mock_custom_class_extends_Node() -> void:
 	verify(m, 2).get_children()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_extends_Node_real_func() -> void:
 	var m: Variant = mock(CustomNodeTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -517,6 +547,7 @@ func test_mock_custom_class_extends_Node_real_func() -> void:
 	verify(m, 2).get_children()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_extends_other_custom_class() -> void:
 	var m: Variant = mock(CustomClassExtendsCustomClass)
 	assert_that(mock).is_not_null()
@@ -546,6 +577,7 @@ func test_mock_custom_class_extends_other_custom_class() -> void:
 	assert_that(m.bar2()).is_equal("abc3")
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_extends_other_custom_class_call_real_func() -> void:
 	var m: Variant = mock(CustomClassExtendsCustomClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -575,6 +607,7 @@ func test_mock_custom_class_extends_other_custom_class_call_real_func() -> void:
 	assert_that(m.bar2()).is_equal("abc3")
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_static_func() -> void:
 	var m: Variant = mock(CustomNodeTestClass)
 	assert_that(m).is_not_null()
@@ -594,6 +627,7 @@ func test_mock_static_func() -> void:
 	verify(m, 3).static_test_void()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_static_func_real_func() -> void:
 	var m: Variant = mock(CustomNodeTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -613,6 +647,7 @@ func test_mock_static_func_real_func() -> void:
 	verify(m, 3).static_test_void()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_assert_has_no_side_affect() -> void:
 	var m: Variant = mock(CustomNodeTestClass)
 	assert_that(m).is_not_null()
@@ -632,6 +667,7 @@ func test_mock_custom_class_assert_has_no_side_affect() -> void:
 	node.free()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_custom_class_assert_has_no_side_affect_real_func() -> void:
 	var m: Variant = mock(CustomNodeTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
@@ -651,6 +687,7 @@ func test_mock_custom_class_assert_has_no_side_affect_real_func() -> void:
 
 # This test verifies a function is calling other internally functions
 # to collect the access times and the override return value is working as expected
+@warning_ignore("unsafe_method_access")
 func test_mock_advanced_func_path() -> void:
 	var m: Variant = mock(AdvancedTestClass, CALL_REAL_FUNC)
 	# initial nothing is called
@@ -690,6 +727,7 @@ func test_mock_advanced_func_path() -> void:
 	verify(m, 1).c()
 
 
+@warning_ignore("unsafe_method_access")
 func _test_mock_godot_class_calls_sub_function() -> void:
 	var m: Variant = mock(MeshInstance3D, CALL_REAL_FUNC)
 	verify(m, 0)._mesh_changed()
@@ -698,6 +736,7 @@ func _test_mock_godot_class_calls_sub_function() -> void:
 	verify(m, 1)._mesh_changed()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_class_with_inner_classs() -> void:
 	var mock_advanced: Variant = mock(AdvancedTestClass)
 	assert_that(mock_advanced).is_not_null()
@@ -714,6 +753,7 @@ func test_mock_class_with_inner_classs_() -> void:
 	assert_object(mock_c).is_not_null()
 
 
+@warning_ignore("unsafe_method_access")
 func test_do_return() -> void:
 	var mocked_node: Variant = mock(Node)
 
@@ -741,6 +781,7 @@ func test_do_return() -> void:
 	assert_object(node1).is_instanceof(Area3D)
 
 
+@warning_ignore("unsafe_method_access")
 func test_matching_is_sorted() -> void:
 	var mocked_node: Variant = mock(Node)
 	do_return(null).on(mocked_node).get_child(any(), false)
@@ -762,6 +803,7 @@ func test_matching_is_sorted() -> void:
 	assert_object(first_arguments[4]).is_instanceof(GdUnitArgumentMatcher)
 
 
+@warning_ignore("unsafe_method_access")
 func test_do_return_with_matchers() -> void:
 	var mocked_node: Variant = mock(Node)
 	var childN :Node = auto_free(Node2D.new())
@@ -793,6 +835,7 @@ func test_do_return_with_matchers() -> void:
 	assert_that(mocked_node.get_child(10)).is_same(child10)
 
 
+@warning_ignore("unsafe_method_access")
 func test_example_verify() -> void:
 	var mocked_node: Variant = mock(Node)
 
@@ -812,6 +855,7 @@ func test_example_verify() -> void:
 	verify(mocked_node, 3).set_process(any_bool())
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_fail() -> void:
 	var mocked_node: Variant = mock(Node)
 
@@ -834,6 +878,7 @@ func test_verify_fail() -> void:
 		.has_message(expected_error)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_func_interaction_wiht_PoolStringArray() -> void:
 	var mocked: Variant = mock(ClassWithPoolStringArrayFunc)
 
@@ -843,6 +888,7 @@ func test_verify_func_interaction_wiht_PoolStringArray() -> void:
 	verify_no_more_interactions(mocked)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_func_interaction_wiht_PoolStringArray_fail() -> void:
 	var mocked: Variant = mock(ClassWithPoolStringArrayFunc)
 
@@ -877,6 +923,7 @@ func test_verify_func_interaction_wiht_PoolStringArray_fail() -> void:
 		.has_message(expected_error)
 
 
+@warning_ignore("unsafe_method_access")
 func test_reset() -> void:
 	var mocked_node: Variant = mock(Node)
 
@@ -901,6 +948,7 @@ func test_verify_no_interactions() -> void:
 	verify_no_interactions(mocked_node)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_no_interactions_fails() -> void:
 	var mocked_node: Variant = mock(Node)
 
@@ -921,6 +969,7 @@ func test_verify_no_interactions_fails() -> void:
 		.has_message(expected_error)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_no_more_interactions() -> void:
 	var mocked_node: Variant = mock(Node)
 
@@ -938,6 +987,7 @@ func test_verify_no_more_interactions() -> void:
 	verify_no_more_interactions(mocked_node)
 
 
+@warning_ignore("unsafe_method_access")
 func test_verify_no_more_interactions_but_has() -> void:
 	var mocked_node: Variant = mock(Node)
 
@@ -973,6 +1023,7 @@ func test_verify_no_more_interactions_but_has() -> void:
 		.has_message(expected_error)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_snake_case_named_class_by_resource_path() -> void:
 	var mock_a: Variant = mock("res://addons/gdUnit4/test/mocker/resources/snake_case.gd")
 	assert_object(mock_a).is_not_null()
@@ -989,6 +1040,7 @@ func test_mock_snake_case_named_class_by_resource_path() -> void:
 	verify_no_more_interactions(mock_b)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_snake_case_named_godot_class_by_name() -> void:
 	# try checked Godot class
 	var mocked_tcp_server: Variant = mock("TCPServer")
@@ -1001,6 +1053,7 @@ func test_mock_snake_case_named_godot_class_by_name() -> void:
 	verify_no_more_interactions(mocked_tcp_server)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_snake_case_named_class_by_class() -> void:
 	var m: Variant = mock(snake_case_class_name)
 	assert_object(m).is_not_null()
@@ -1020,6 +1073,7 @@ func test_mock_snake_case_named_class_by_class() -> void:
 	verify_no_more_interactions(mocked_tcp_server)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_func_with_default_build_in_type() -> void:
 	var m: Variant = mock(ClassWithDefaultBuildIntTypes)
 	assert_object(m).is_not_null()
@@ -1038,6 +1092,7 @@ func test_mock_func_with_default_build_in_type() -> void:
 	verify_no_more_interactions(m)
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_virtual_function_is_not_called_twice() -> void:
 	# this test verifies the special handling of virtual functions by Godot
 	# virtual functions are handeld in a special way
@@ -1070,6 +1125,7 @@ func test_mock_virtual_function_is_not_called_twice() -> void:
 	assert_that(m._x).is_equal("ui_accept")
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_scene_by_path() -> void:
 	var mocked_scene: Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(mocked_scene).is_not_null()
@@ -1079,6 +1135,7 @@ func test_mock_scene_by_path() -> void:
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(mocked_scene)).is_true()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_scene_by_resource() -> void:
 	var resource: Object = load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var mocked_scene: Variant = mock(resource)
@@ -1089,6 +1146,7 @@ func test_mock_scene_by_resource() -> void:
 	assert_bool(GdUnitMemoryObserver.is_marked_auto_free(mocked_scene)).is_true()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_scene_by_instance() -> void:
 	var resource := load("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	var instance :Control = auto_free(resource.instantiate())
@@ -1102,6 +1160,7 @@ func test_mock_scene_by_path_fail_has_no_script_attached() -> void:
 	assert_object(mocked_scene).is_null()
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_scene_variables_is_set() -> void:
 	var mocked_scene: Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(mocked_scene).is_not_null()
@@ -1119,6 +1178,7 @@ func test_mock_scene_variables_is_set() -> void:
 	assert_str(mocked_scene._initial_color.to_html()).is_equal(Color.RED.to_html())
 
 
+@warning_ignore("unsafe_method_access")
 func test_mock_scene_execute_func_yielded() -> void:
 	var mocked_scene: Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(mocked_scene).is_not_null()

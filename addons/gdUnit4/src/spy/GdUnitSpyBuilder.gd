@@ -8,7 +8,7 @@ const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
 
 static func build(to_spy: Variant, debug_write := false) -> Variant:
 	if GdObjects.is_singleton(to_spy):
-		push_error("Spy on a Singleton is not allowed! '%s'" % to_spy.get_class())
+		push_error("Spy on a Singleton is not allowed! '%s'" % (to_spy as Object).get_class())
 		return null
 
 	# if resource path load it before
@@ -39,8 +39,10 @@ static func build(to_spy: Variant, debug_write := false) -> Variant:
 	copy_properties(to_spy as Object, spy_instance)
 	@warning_ignore("return_value_discarded")
 	GdUnitObjectInteractions.reset(spy_instance)
+	@warning_ignore("unsafe_method_access")
 	spy_instance.__set_singleton(to_spy)
 	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
+	@warning_ignore("unsafe_method_access")
 	spy_instance.__exclude_method_call([ "_input", "_gui_input", "_input_event", "_unhandled_input"])
 	return register_auto_free(spy_instance)
 
@@ -57,7 +59,7 @@ static func get_class_info(clazz :Variant) -> Dictionary:
 static func spy_on_script(instance :Variant, function_excludes :PackedStringArray, debug_write :bool) -> GDScript:
 	if GdArrayTools.is_array_type(instance):
 		if GdUnitSettings.is_verbose_assert_errors():
-			push_error("Can't build spy checked type '%s'! Spy checked Container Built-In Type not supported!" % instance.get_class())
+			push_error("Can't build spy checked type '%s'! Spy checked Container Built-In Type not supported!" % type_string(typeof(instance)))
 		return null
 	var class_info := get_class_info(instance)
 	var clazz_name :String = class_info.get("class_name")
@@ -92,7 +94,7 @@ static func spy_on_scene(scene :Node, debug_write :bool) -> Object:
 			push_error("Can't create a spy checked a scene without script '%s'" % scene.get_scene_file_path())
 		return null
 	# buils spy checked original script
-	var scene_script :Object = scene.get_script().new()
+	var scene_script :Object = (scene.get_script() as GDScript).new()
 	var spy := spy_on_script(scene_script, GdUnitClassDoubler.EXLCUDE_SCENE_FUNCTIONS, debug_write)
 	scene_script.free()
 	if spy == null:

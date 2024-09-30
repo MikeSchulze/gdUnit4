@@ -1,7 +1,8 @@
+class_name GdUnitArrayAssertImpl
 extends GdUnitArrayAssert
 
 
-var _base: GdUnitAssert
+var _base: GdUnitAssertImpl
 var _current_value_provider: ValueProvider
 var _type_check: bool
 
@@ -9,8 +10,7 @@ var _type_check: bool
 func _init(current: Variant, type_check := true) -> void:
 	_type_check = type_check
 	_current_value_provider = DefaultValueProvider.new(current)
-	_base = ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
-								ResourceLoader.CACHE_MODE_REUSE).new(current)
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if not _validate_value_type(current):
@@ -40,13 +40,11 @@ func failure_message() -> String:
 
 
 func override_failure_message(message: String) -> GdUnitArrayAssert:
-	@warning_ignore("return_value_discarded")
 	_base.override_failure_message(message)
 	return self
 
 
 func append_failure_message(message: String) -> GdUnitArrayAssert:
-	@warning_ignore("return_value_discarded")
 	_base.append_failure_message(message)
 	return self
 
@@ -72,7 +70,7 @@ func _toPackedStringArray(value: Variant) -> PackedStringArray:
 	return PackedStringArray([str(value)])
 
 
-func _array_equals_div(current: Variant, expected: Variant, case_sensitive: bool = false) -> Array:
+func _array_equals_div(current: Variant, expected: Variant, case_sensitive: bool = false) -> Array[Array]:
 	var current_value := _toPackedStringArray(current)
 	var expected_value := _toPackedStringArray(expected)
 	var index_report := Array()
@@ -89,7 +87,7 @@ func _array_equals_div(current: Variant, expected: Variant, case_sensitive: bool
 			current_value[index] = GdAssertMessages.format_invalid(c)
 			index_report.push_back({"index": index, "current": c, "expected": "<N/A>"})
 
-	for index in range(current.size(), expected_value.size()):
+	for index in range(current_value.size(), expected_value.size()):
 		var value := expected_value[index]
 		expected_value[index] = GdAssertMessages.format_invalid(value)
 		index_report.push_back({"index": index, "current": "<N/A>", "expected": value})
@@ -170,7 +168,7 @@ func _not_contains(expected: Variant, compare_mode: GdObjects.COMPARE_MODE) -> G
 		return report_error(GdAssertMessages.error_arr_contains_exactly_in_any_order(current_value, expected, [], expected, compare_mode))
 	var diffs := _array_div(compare_mode, current_value as Array[Variant], expected as Array[Variant])
 	var found := diffs[0] as Array
-	if found.size() == current_value.size():
+	if found.size() == (current_value as Array).size():
 		return report_success()
 	var diffs2 := _array_div(compare_mode, expected as Array[Variant], diffs[1] as Array[Variant])
 	return report_error(GdAssertMessages.error_arr_not_contains(current_value, expected, diffs2[0], compare_mode))
@@ -210,7 +208,7 @@ func is_equal_ignoring_case(expected: Variant) -> GdUnitArrayAssert:
 		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_value: Variant = get_current_value()
 	if current_value == null and expected != null:
-		return report_error(GdAssertMessages.error_equal(null, GdArrayTools.as_string(expected)))
+		return report_error(GdAssertMessages.error_equal(null, GdArrayTools.as_string(expected as Array)))
 	if not _is_equal(current_value, expected, true):
 		var diff := _array_equals_div(current_value as Array[Variant], expected as Array[Variant], true)
 		var expected_as_list := GdArrayTools.as_string(diff[0])
@@ -234,22 +232,22 @@ func is_not_equal_ignoring_case(expected: Variant) -> GdUnitArrayAssert:
 		return report_error("ERROR: expected value: <%s>\n is not a Array Type!" % GdObjects.typeof_as_string(expected))
 	var current_value: Variant = get_current_value()
 	if _is_equal(current_value, expected, true):
-		var c := GdArrayTools.as_string(current_value)
-		var e := GdArrayTools.as_string(expected)
+		var c := GdArrayTools.as_string(current_value as Array)
+		var e := GdArrayTools.as_string(expected as Array)
 		return report_error(GdAssertMessages.error_not_equal_case_insensetiv(c, e))
 	return report_success()
 
 
 func is_empty() -> GdUnitArrayAssert:
 	var current_value: Variant = get_current_value()
-	if current_value == null or current_value.size() > 0:
+	if current_value == null or (current_value as Array).size() > 0:
 		return report_error(GdAssertMessages.error_is_empty(current_value))
 	return report_success()
 
 
 func is_not_empty() -> GdUnitArrayAssert:
 	var current_value: Variant = get_current_value()
-	if current_value != null and current_value.size() == 0:
+	if current_value != null and (current_value as Array).size() == 0:
 		return report_error(GdAssertMessages.error_is_not_empty())
 	return report_success()
 
@@ -277,7 +275,7 @@ func is_not_same(expected: Variant) -> GdUnitArrayAssert:
 
 func has_size(expected: int) -> GdUnitArrayAssert:
 	var current_value: Variant = get_current_value()
-	if current_value == null or current_value.size() != expected:
+	if current_value == null or (current_value as Array).size() != expected:
 		return report_error(GdAssertMessages.error_has_size(current_value, expected))
 	return report_success()
 
@@ -315,14 +313,15 @@ func not_contains_same(expected: Variant) -> GdUnitArrayAssert:
 
 
 func is_instanceof(expected: Variant) -> GdUnitAssert:
+	@warning_ignore("unsafe_method_access")
 	_base.is_instanceof(expected)
 	return self
 
 
 func extract(func_name: String, args := Array()) -> GdUnitArrayAssert:
 	var extracted_elements := Array()
-	var extractor: GdUnitValueExtractor = ResourceLoader.load("res://addons/gdUnit4/src/extractors/GdUnitFuncValueExtractor.gd",
-		"GDScript", ResourceLoader.CACHE_MODE_REUSE).new(func_name, args)
+
+	var extractor := GdUnitFuncValueExtractor.new(func_name, args)
 	var current: Variant = get_current_value()
 	if current == null:
 		_current_value_provider = DefaultValueProvider.new(null)
@@ -363,10 +362,10 @@ func extractv(
 				GdUnitTuple.NO_ARG,
 				GdUnitTuple.NO_ARG
 			]
-			for index: int in extractors.size():
+			for index: int in (extractors as Array).size():
 				var extractor: GdUnitValueExtractor = extractors[index]
 				ev[index] = extractor.extract_value(element)
-			if extractors.size() > 1:
+			if (extractors as Array).size() > 1:
 				extracted_elements.append(GdUnitTuple.new(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], ev[9]))
 			else:
 				extracted_elements.append(ev[0])
@@ -396,7 +395,7 @@ func _is_equals_sorted(
 	compare_mode := GdObjects.COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
 
 	return GdObjects.equals_sorted(
-		(left as Array) if GdArrayTools.is_array_type(left) else left,
-		(right as Array) if GdArrayTools.is_array_type(right) else right,
+		left as Array,
+		right as Array,
 		case_sensitive,
 		compare_mode)

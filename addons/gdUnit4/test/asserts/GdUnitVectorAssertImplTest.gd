@@ -45,7 +45,7 @@ func test_is_null(value :Variant, test_parameters := _test_seta) -> void:
 	else:
 		assert_failure(func() -> void: assert_vector(value).is_null()) \
 			.is_failed() \
-			.starts_with_message("Expecting: '<null>' but was '%s'" % value)
+			.starts_with_message("Expecting: '<null>' but was '%s'" % str(value))
 
 
 @warning_ignore("unused_parameter")
@@ -341,6 +341,7 @@ func test_is_not_between_over_all_types(value :Variant, from :Variant, to :Varia
 
 func test_override_failure_message() -> void:
 	assert_object(assert_vector(Vector2.ONE).override_failure_message("error")).is_instanceof(GdUnitVectorAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_vector(Vector2.ONE) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
@@ -350,6 +351,7 @@ func test_override_failure_message() -> void:
 
 func test_append_failure_message() -> void:
 	assert_object(assert_vector(Vector2.ONE).append_failure_message("error")).is_instanceof(GdUnitVectorAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_vector(Vector2.ONE) \
 			.append_failure_message("custom failure data") \
 			.is_equal(Vector2.ZERO)) \

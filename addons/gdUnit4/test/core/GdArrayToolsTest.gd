@@ -44,7 +44,7 @@ func test_as_string(_test :String, value :Variant, expected :String, test_parame
 
 func test_as_string_simple_format() -> void:
 	var value := PackedStringArray(["a", "b"])
-	prints(GdArrayTools.as_string(value, false))
+
 	assert_that(GdArrayTools.as_string(value, false)).is_equal('[a, b]')
 
 
@@ -88,6 +88,7 @@ func test_is_array_type(_test :String, value :Variant, expected :bool, test_para
 	assert_that(GdArrayTools.is_array_type(value)).is_equal(expected)
 
 
+@warning_ignore("unsafe_method_access")
 func test_is_type_array() -> void:
 	for type :int in [TYPE_NIL, TYPE_MAX]:
 		if type in [TYPE_ARRAY, TYPE_PACKED_COLOR_ARRAY]:

@@ -187,8 +187,11 @@ static func obj2dict(obj: Object, hashed_objects := Dictionary()) -> Dictionary:
 				dict[property_name] = obj2dict(property_value as Object, hashed_objects)
 			else:
 				dict[property_name] = property_value
-	if obj.has_method("get_children"):
-		var childrens :Array = obj.get_children()
+	if obj is Node:
+		var childrens :Array = (obj as Node).get_children()
+		dict["childrens"] = childrens.map(func (child :Object) -> Dictionary: return obj2dict(child, hashed_objects))
+	if obj is TreeItem:
+		var childrens :Array = (obj as TreeItem).get_children()
 		dict["childrens"] = childrens.map(func (child :Object) -> Dictionary: return obj2dict(child, hashed_objects))
 
 	return {"%s" % clazz_name : dict}
@@ -198,14 +201,15 @@ static func equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool = false,
 	return _equals(obj_a, obj_b, case_sensitive, compare_mode, [], 0)
 
 
-static func equals_sorted(obj_a :Variant, obj_b :Variant, case_sensitive :bool = false, compare_mode :COMPARE_MODE = COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
-	var a: Variant = obj_a.duplicate()
-	var b: Variant = obj_b.duplicate()
+static func equals_sorted(obj_a: Array[Variant], obj_b: Array[Variant], case_sensitive: bool = false, compare_mode: COMPARE_MODE = COMPARE_MODE.PARAMETER_DEEP_TEST) -> bool:
+	var a: Array[Variant] = obj_a.duplicate()
+	var b: Array[Variant] = obj_b.duplicate()
 	a.sort()
 	b.sort()
 	return equals(a, b, case_sensitive, compare_mode)
 
 
+@warning_ignore("unsafe_method_access")
 static func _equals(obj_a :Variant, obj_b :Variant, case_sensitive :bool, compare_mode :COMPARE_MODE, deep_stack :Array, stack_depth :int ) -> bool:
 	var type_a := typeof(obj_a)
 	var type_b := typeof(obj_b)
@@ -389,7 +393,7 @@ static func _is_same(left :Variant, right :Variant) -> bool:
 	if left_type != right_type:
 		return false
 	if left_type == TYPE_OBJECT and right_type == TYPE_OBJECT:
-		return left.get_instance_id() == right.get_instance_id()
+		return (left as Object).get_instance_id() == (right as Object).get_instance_id()
 	return equals(left, right)
 
 
@@ -414,7 +418,7 @@ static func is_scene(value :Variant) -> bool:
 
 
 static func is_scene_resource_path(value :Variant) -> bool:
-	return value is String and value.ends_with(".tscn")
+	return value is String and (value as String).ends_with(".tscn")
 
 
 static func is_gd_script(script :Script) -> bool:
@@ -439,11 +443,11 @@ static func is_gd_testsuite(script :Script) -> bool:
 	return false
 
 
-static func is_singleton(value :Variant) -> bool:
+static func is_singleton(value: Variant) -> bool:
 	if not is_instance_valid(value) or is_native_class(value):
 		return false
 	for name in Engine.get_singleton_list():
-		if value.is_class(name):
+		if (value as Object).is_class(name):
 			return true
 	return false
 
@@ -455,7 +459,7 @@ static func is_instance(value :Variant) -> bool:
 		return true
 	if is_scene(value):
 		return true
-	return not value.has_method('new') and not value.has_method('instance')
+	return not (value as Object).has_method('new') and not (value as Object).has_method('instance')
 
 
 # only object form type Node and attached filename
@@ -469,7 +473,7 @@ static func is_instance_scene(instance :Variant) -> bool:
 static func can_be_instantiate(obj :Variant) -> bool:
 	if not obj or is_engine_type(obj):
 		return false
-	return obj.has_method("new")
+	return (obj as Object).has_method("new")
 
 
 static func create_instance(clazz :Variant) -> GdUnitResult:
@@ -478,6 +482,7 @@ static func create_instance(clazz :Variant) -> GdUnitResult:
 			# test is given clazz already an instance
 			if is_instance(clazz):
 				return GdUnitResult.success(clazz)
+			@warning_ignore("unsafe_method_access")
 			return GdUnitResult.success(clazz.new())
 		TYPE_STRING:
 			var clazz_name := clazz as String
@@ -491,12 +496,12 @@ static func create_instance(clazz :Variant) -> GdUnitResult:
 				var clazz_path :String = extract_class_path(clazz_name)[0]
 				if not FileAccess.file_exists(clazz_path):
 					return GdUnitResult.error("Class '%s' not found." % clazz_name)
-				var script := load(clazz_path)
+				var script: GDScript = load(clazz_path)
 				if script != null:
 					return GdUnitResult.success(script.new())
 				else:
 					return GdUnitResult.error("Can't create instance for '%s'." % clazz_name)
-	return GdUnitResult.error("Can't create instance for class '%s'." % clazz)
+	return GdUnitResult.error("Can't create instance for class '%s'." % str(clazz))
 
 
 @warning_ignore("return_value_discarded")
@@ -560,22 +565,23 @@ static func extract_class_name(clazz :Variant) -> GdUnitResult:
 		if ClassDB.class_exists(clazz_name):
 			return GdUnitResult.success(clazz_name)
 		var source_script :GDScript = load(clazz_name)
-		clazz_name = load("res://addons/gdUnit4/src/core/parse/GdScriptParser.gd").new().get_class_name(source_script)
+		clazz_name = GdScriptParser.new().get_class_name(source_script)
 		return GdUnitResult.success(to_pascal_case(clazz_name))
 
 	if is_primitive_type(clazz):
 		return GdUnitResult.error("Can't extract class name for an primitive '%s'" % type_as_string(typeof(clazz)))
 
 	if is_script(clazz):
-		if clazz.resource_path.is_empty():
+		if (clazz as Script).resource_path.is_empty():
 			var class_path := extract_class_name_from_class_path(extract_class_path(clazz))
 			return GdUnitResult.success(class_path);
 		return extract_class_name(clazz.resource_path)
 
 	# need to create an instance for a class typ the extract the class name
+	@warning_ignore("unsafe_method_access")
 	var instance :Variant = clazz.new()
 	if instance == null:
-		return GdUnitResult.error("Can't create a instance for class '%s'" % clazz)
+		return GdUnitResult.error("Can't create a instance for class '%s'" % str(clazz))
 	var result := extract_class_name(instance)
 	@warning_ignore("return_value_discarded")
 	GdUnitTools.free_instance(instance)

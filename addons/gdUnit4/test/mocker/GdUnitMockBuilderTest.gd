@@ -20,7 +20,7 @@ func test_double_return_typed_function_without_arg() -> void:
 	# String get_class() const
 	var fd := get_function_description("Object", "get_class")
 	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\', \'unsafe_method_access\')',
 		'@warning_ignore("native_method_override")',
 		'func get_class() -> String:',
 		'	var args__: Array = ["get_class", ]',
@@ -47,7 +47,7 @@ func test_double_return_typed_function_with_args() -> void:
 	# bool is_connected(signal: String, callable_: Callable)) const
 	var fd := get_function_description("Object", "is_connected")
 	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\', \'unsafe_method_access\')',
 		'@warning_ignore("native_method_override")',
 		'func is_connected(signal_, callable_) -> bool:',
 		'	var args__: Array = ["is_connected", signal_, callable_]',
@@ -75,7 +75,7 @@ func test_double_return_untyped_function_with_args() -> void:
 	# void disconnect(signal: StringName, callable: Callable)
 	var fd := get_function_description("Object", "disconnect")
 	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\', \'unsafe_method_access\')',
 		'@warning_ignore("native_method_override")',
 		'func disconnect(signal_, callable_) -> void:',
 		'	var args__: Array = ["disconnect", signal_, callable_]',
@@ -102,7 +102,7 @@ func test_double_int_function_with_varargs() -> void:
 	# Error emit_signal(signal: StringName, ...) vararg
 	var fd := get_function_description("Object", "emit_signal")
 	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\', \'unsafe_method_access\')',
 		'@warning_ignore("native_method_override")',
 		'@warning_ignore("int_as_enum_without_match")',
 		'@warning_ignore("int_as_enum_without_cast")',
@@ -148,7 +148,7 @@ func test_double_untyped_function_with_varargs() -> void:
 		[GdFunctionArgument.new("signal", TYPE_SIGNAL)],
 		GdFunctionDescriptor._build_varargs(true))
 	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\', \'unsafe_method_access\')',
 		'func emit_custom(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:',
 		'	var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
 		'	var args__: Array = ["emit_custom", signal_] + varargs__',
@@ -189,7 +189,7 @@ func test_double_virtual_script_function_without_arg() -> void:
 	# void _ready() virtual
 	var fd := get_function_description("Node", "_ready")
 	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\', \'unsafe_method_access\')',
 		'@warning_ignore("native_method_override")',
 		'func _ready() -> void:',
 		'	var args__: Array = ["_ready", ]',
@@ -217,7 +217,7 @@ func test_double_virtual_script_function_with_arg() -> void:
 	# void _input(event: InputEvent) virtual
 	var fd := get_function_description("Node", "_input")
 	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\')',
+		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\', \'unsafe_call_argument\', \'unsafe_method_access\')',
 		'@warning_ignore("native_method_override")',
 		'func _input(event_) -> void:',
 		'	var args__: Array = ["_input", event_]',
@@ -240,9 +240,9 @@ func test_double_virtual_script_function_with_arg() -> void:
 
 
 func test_mock_on_script_path_without_class_name() -> void:
-	var instance :Object = load("res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd").new()
+	var instance :Object = (load("res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd") as GDScript).new()
 	var script := GdUnitMockBuilder.mock_on_script(instance, "res://addons/gdUnit4/test/mocker/resources/ClassWithoutNameA.gd", [], true);
-	assert_that(script.resource_name).starts_with("MockClassWithoutNameA")
+	assert_str(script.resource_name).starts_with("MockClassWithoutNameA")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid
 	assert_int(script.reload()).is_equal(OK)
@@ -250,9 +250,9 @@ func test_mock_on_script_path_without_class_name() -> void:
 
 func test_mock_on_script_path_with_custom_class_name() -> void:
 	# the class contains a class_name definition
-	var instance :Object = load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomClassName.gd").new()
+	var instance :Object = (load("res://addons/gdUnit4/test/mocker/resources/ClassWithCustomClassName.gd") as GDScript).new()
 	var script := GdUnitMockBuilder.mock_on_script(instance, "res://addons/gdUnit4/test/mocker/resources/ClassWithCustomClassName.gd", [], false);
-	assert_that(script.resource_name).starts_with("MockGdUnitTestCustomClassName")
+	assert_str(script.resource_name).starts_with("MockGdUnitTestCustomClassName")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid
 	assert_int(script.reload()).is_equal(OK)
@@ -260,7 +260,7 @@ func test_mock_on_script_path_with_custom_class_name() -> void:
 
 func test_mock_on_class_with_class_name() -> void:
 	var script := GdUnitMockBuilder.mock_on_script(ClassWithNameA.new(), ClassWithNameA, [], false);
-	assert_that(script.resource_name).starts_with("MockClassWithNameA")
+	assert_str(script.resource_name).starts_with("MockClassWithNameA")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid
 	assert_int(script.reload()).is_equal(OK)
@@ -269,7 +269,7 @@ func test_mock_on_class_with_class_name() -> void:
 func test_mock_on_class_with_custom_class_name() -> void:
 	# the class contains a class_name definition
 	var script := GdUnitMockBuilder.mock_on_script(GdUnit_Test_CustomClassName.new(), GdUnit_Test_CustomClassName, [], false);
-	assert_that(script.resource_name).starts_with("MockGdUnitTestCustomClassName")
+	assert_str(script.resource_name).starts_with("MockGdUnitTestCustomClassName")
 	assert_that(script.get_instance_base_type()).is_equal("Resource")
 	# finally check the mocked script is valid
 	assert_int(script.reload()).is_equal(OK)

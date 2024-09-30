@@ -114,6 +114,7 @@ func test_override_failure_message() -> void:
 	).has_message("Custom failure message")
 
 
+@warning_ignore("unsafe_method_access")
 func test_append_failure_message() -> void:
 	assert_object(assert_signal(signal_emitter).append_failure_message("error")).is_instanceof(GdUnitSignalAssert)
 	(
@@ -175,6 +176,7 @@ class MyEmitter extends Node:
 		my_signal_b.emit("foo")
 
 
+@warning_ignore("unsafe_method_access")
 func test_monitor_signals() -> void:
 	# start to watch on the emitter to collect all emitted signals
 	var emitter_a := monitor_signals(MyEmitter.new())

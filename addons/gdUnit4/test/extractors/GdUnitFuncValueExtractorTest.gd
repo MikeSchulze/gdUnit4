@@ -4,7 +4,6 @@ extends GdUnitTestSuite
 
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/extractors/GdUnitFuncValueExtractor.gd'
-const GdUnitFuncValueExtractor = preload("res://addons/gdUnit4/src/extractors/GdUnitFuncValueExtractor.gd")
 
 
 class TestNode extends Resource:

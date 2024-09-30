@@ -29,6 +29,7 @@ func execute_and_await(assertion :Callable, do_await := true) -> GdUnitFailureAs
 		_is_failed = true
 		_failure_message = "Invalid Callable! It must be a callable of 'GdUnitAssert'"
 		return self
+	@warning_ignore("unsafe_method_access")
 	_failure_message = current_assert.failure_message()
 	return self
 

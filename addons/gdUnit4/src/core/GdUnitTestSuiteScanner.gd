@@ -95,7 +95,7 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 		return null
 	# Check in the global class cache whether the GdUnitTestSuite class has been extended.
 	if _included_resources.has(resource_path):
-		return _parse_test_suite(ResourceLoader.load(resource_path) as GDScript)
+		return _parse_test_suite(GdUnitTestSuiteScanner.load_with_disabled_warnings(resource_path))
 
 	# Otherwise we need to scan manual, we need to exclude classes where direct extends form Godot classes
 	# the resource loader can fail to load e.g. plugin classes with do preload other scripts
@@ -104,10 +104,25 @@ func _parse_is_test_suite(resource_path :String) -> Node:
 	if extends_from.is_empty() or ClassDB.class_exists(extends_from):
 		return null
 	# Finally, we need to load the class to determine it is a test suite
-	var script: GDScript = ResourceLoader.load(resource_path)
+	var script := GdUnitTestSuiteScanner.load_with_disabled_warnings(resource_path)
 	if not GdObjects.is_test_suite(script):
 		return null
 	return _parse_test_suite(script)
+
+
+# We load the test suites with disabled unsafe_method_access to avoid spamming loading errors
+# `unsafe_method_access` will happen when using `assert_that`
+static func load_with_disabled_warnings(resource_path: String) -> GDScript:
+	# grap current level
+	var unsafe_method_access: Variant = ProjectSettings.get_setting("debug/gdscript/warnings/unsafe_method_access")
+
+	# disable and load the script
+	ProjectSettings.set_setting("debug/gdscript/warnings/unsafe_method_access", 0)
+	var script: GDScript = ResourceLoader.load(resource_path)
+
+	# restore
+	ProjectSettings.set_setting("debug/gdscript/warnings/unsafe_method_access", unsafe_method_access)
+	return script
 
 
 static func _is_script_format_supported(resource_path :String) -> bool:
@@ -126,7 +141,7 @@ func _parse_test_suite(script: Script) -> GdUnitTestSuite:
 		return GdUnit4CSharpApiLoader.parse_test_suite(script.resource_path)
 
 	# Do pares as GDScript
-	var test_suite: GdUnitTestSuite = script.new()
+	var test_suite: GdUnitTestSuite = (script as GDScript).new()
 	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
 	# add test cases to test suite and parse test case line nummber
 	var test_case_names := _extract_test_case_names(script as GDScript)
@@ -321,7 +336,7 @@ func get_extends_classname(resource_path :String) -> String:
 
 
 static func add_test_case(resource_path :String, func_name :String)  -> GdUnitResult:
-	var script := load(resource_path) as GDScript
+	var script := load_with_disabled_warnings(resource_path)
 	# count all exiting lines and add two as space to add new test case
 	var line_number := count_lines(script) + 2
 	var func_body := TEST_FUNC_TEMPLATE.replace("${func_name}", func_name)
@@ -348,7 +363,7 @@ static func test_suite_exists(test_suite_path :String) -> bool:
 static func test_case_exists(test_suite_path :String, func_name :String) -> bool:
 	if not test_suite_exists(test_suite_path):
 		return false
-	var script := ResourceLoader.load(test_suite_path) as GDScript
+	var script := load_with_disabled_warnings(test_suite_path)
 	for f in script.get_script_method_list():
 		if f["name"] == "test_" + func_name:
 			return true

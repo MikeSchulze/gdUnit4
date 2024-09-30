@@ -6,6 +6,7 @@ var _script_path: String
 var _test_case_names :PackedStringArray = []
 
 
+@warning_ignore("unsafe_method_access")
 func serialize(test_case :Node) -> Dictionary:
 	var serialized := super.serialize(test_case)
 	if test_case.has_method("line_number"):

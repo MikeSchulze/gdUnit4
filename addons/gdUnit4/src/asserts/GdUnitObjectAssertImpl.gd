@@ -1,11 +1,10 @@
 extends GdUnitObjectAssert
 
-var _base :GdUnitAssert
+var _base: GdUnitAssertImpl
 
 
 func _init(current :Variant) -> void:
-	_base = ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
-								ResourceLoader.CACHE_MODE_REUSE).new(current)
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if (current != null
@@ -107,7 +106,7 @@ func is_not_instanceof(type :Variant) -> GdUnitObjectAssert:
 	if is_instance_of(current, type):
 		var result: = GdObjects.extract_class_name(type)
 		if result.is_success():
-			return report_error("Expected not be a instance of <%s>" % result.value())
+			return report_error("Expected not be a instance of <%s>" % str(result.value()))
 
 		push_error("Internal ERROR: %s" % result.error_message())
 		return self

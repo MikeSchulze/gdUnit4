@@ -86,14 +86,14 @@ func test_resolve_test_suite_path__path_not_contains_src_folder() -> void:
 func test_test_suite_exists() -> void:
 	var path_exists := "res://addons/gdUnit4/test/resources/core/GeneratedPersonTest.gd"
 	var path_not_exists := "res://addons/gdUnit4/test/resources/core/FamilyTest.gd"
-	assert_that(GdUnitTestSuiteScanner.test_suite_exists(path_exists)).is_true()
-	assert_that(GdUnitTestSuiteScanner.test_suite_exists(path_not_exists)).is_false()
+	assert_bool(GdUnitTestSuiteScanner.test_suite_exists(path_exists)).is_true()
+	assert_bool(GdUnitTestSuiteScanner.test_suite_exists(path_not_exists)).is_false()
 
 
 func test_test_case_exists() -> void:
 	var test_suite_path := "res://addons/gdUnit4/test/resources/core/GeneratedPersonTest.gd"
-	assert_that(GdUnitTestSuiteScanner.test_case_exists(test_suite_path, "name")).is_true()
-	assert_that(GdUnitTestSuiteScanner.test_case_exists(test_suite_path, "last_name")).is_false()
+	assert_bool(GdUnitTestSuiteScanner.test_case_exists(test_suite_path, "name")).is_true()
+	assert_bool(GdUnitTestSuiteScanner.test_case_exists(test_suite_path, "last_name")).is_false()
 
 
 func test_create_test_suite_pascal_case_path() -> void:
@@ -102,7 +102,7 @@ func test_create_test_suite_pascal_case_path() -> void:
 	var source_path := "res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithClassName.gd"
 	var suite_path := temp_dir + "/test/MyClassTest1.gd"
 	var result := GdUnitTestSuiteScanner.create_test_suite(suite_path, source_path)
-	assert_that(result.is_success()).is_true()
+	assert_bool(result.is_success()).is_true()
 	assert_str(result.value()).is_equal(suite_path)
 	assert_file(result.value()).exists()\
 		.is_file()\
@@ -121,7 +121,7 @@ func test_create_test_suite_pascal_case_path() -> void:
 	source_path = "res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithoutClassName.gd"
 	suite_path = temp_dir + "/test/MyClassTest2.gd"
 	result = GdUnitTestSuiteScanner.create_test_suite(suite_path, source_path)
-	assert_that(result.is_success()).is_true()
+	assert_bool(result.is_success()).is_true()
 	assert_str(result.value()).is_equal(suite_path)
 	assert_file(result.value()).exists()\
 		.is_file()\
@@ -144,7 +144,7 @@ func test_create_test_suite_snake_case_path() -> void:
 	var source_path :="res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_with_class_name.gd"
 	var suite_path := temp_dir + "/test/my_class_test1.gd"
 	var result := GdUnitTestSuiteScanner.create_test_suite(suite_path, source_path)
-	assert_that(result.is_success()).is_true()
+	assert_bool(result.is_success()).is_true()
 	assert_str(result.value()).is_equal(suite_path)
 	assert_file(result.value()).exists()\
 		.is_file()\
@@ -163,7 +163,7 @@ func test_create_test_suite_snake_case_path() -> void:
 	source_path ="res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_without_class_name.gd"
 	suite_path = temp_dir + "/test/my_class_test2.gd"
 	result = GdUnitTestSuiteScanner.create_test_suite(suite_path, source_path)
-	assert_that(result.is_success()).is_true()
+	assert_bool(result.is_success()).is_true()
 	assert_str(result.value()).is_equal(suite_path)
 	assert_file(result.value()).exists()\
 		.is_file()\
@@ -187,7 +187,7 @@ func test_create_test_case() -> void:
 	# generate new test suite with test 'test_last_name()'
 	var test_suite_path := tmp_path + "/test/PersonTest.gd"
 	var result := GdUnitTestSuiteScanner.create_test_case(test_suite_path, "last_name", source_path)
-	assert_that(result.is_success()).is_true()
+	assert_bool(result.is_success()).is_true()
 	var info :Dictionary = result.value()
 	assert_int(info.get("line")).is_equal(11)
 	assert_file(info.get("path")).exists()\
@@ -210,7 +210,7 @@ func test_create_test_case() -> void:
 			""])
 	# try to add again
 	result = GdUnitTestSuiteScanner.create_test_case(test_suite_path, "last_name", source_path)
-	assert_that(result.is_success()).is_true()
+	assert_bool(result.is_success()).is_true()
 	assert_that(result.value()).is_equal({"line" : 16, "path": test_suite_path})
 
 
@@ -373,7 +373,7 @@ func test_scan_test_suite_without_tests() -> void:
 	var scanner :GdUnitTestSuiteScanner = GdUnitTestSuiteScanner.new()
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteWithoutTests.gd")
 
-	assert_that(test_suites).has_size(1)
+	assert_array(test_suites).has_size(1)
 	assert_that(test_suites[0].get_child_count()).is_equal(0)
 	# finally free all scaned test suites
 	for ts in test_suites:
@@ -384,4 +384,4 @@ func test_scan_test_suite_exclude_non_test_suites() -> void:
 	var test_suites := scanner.scan("res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/plugin/")
 
 	# we expect the scanner do not break on scanning plugin classes
-	assert_that(test_suites).is_empty()
+	assert_array(test_suites).is_empty()

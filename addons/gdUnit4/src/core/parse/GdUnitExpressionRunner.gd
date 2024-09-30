@@ -23,10 +23,11 @@ func execute(src_script: GDScript, value: Variant) -> Variant:
 		# check we need to construct from inner class
 		# we need to use the original class instance from the script_constant_map otherwise we run into a runtime error
 		if expression.begins_with(key + ".new") and parameter_value is GDScript:
+			var object := parameter_value as GDScript
 			var args := build_constructor_arguments(parameter_map, expression.substr(expression.find("new")))
 			if args.is_empty():
-				return parameter_value.new()
-			return parameter_value.callv("new", args)
+				return object.new()
+			return object.callv("new", args)
 
 	var script := GDScript.new()
 	var resource_path := "res://addons/gdUnit4/src/Fuzzers.gd" if src_script.resource_path.is_empty() else src_script.resource_path
@@ -36,9 +37,10 @@ func execute(src_script: GDScript, value: Variant) -> Variant:
 	#script.take_over_path(resource_path)
 	@warning_ignore("return_value_discarded")
 	script.reload(true)
-	var runner :Variant = script.new()
-	if runner.has_method("queue_free"):
-		runner.queue_free()
+	var runner: Variant = script.new()
+	if (runner as Object).has_method("queue_free"):
+		(runner as Node).queue_free()
+	@warning_ignore("unsafe_method_access")
 	return runner.__run_expression()
 
 

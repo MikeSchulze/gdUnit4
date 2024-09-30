@@ -25,6 +25,7 @@ file_logging/enable_file_logging=true
 gdscript/warnings/exclude_addons=false
 gdscript/warnings/untyped_declaration=2
 gdscript/warnings/unsafe_property_access=1
+gdscript/warnings/unsafe_method_access=1
 gdscript/warnings/unsafe_call_argument=1
 
 [dotnet]
@@ -37,12 +38,12 @@ enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
 [gdunit4]
 
-settings/common/update_notification_enabled=false
 ui/inspector/node_collapse=false
 ui/toolbar/run_overall=true
 ui/inspector/tree_sort_mode=1
 report/godot/script_error=false
 settings/test/flaky_check_enable=true
+settings/common/update_notification_enabled=false
 
 [importer_defaults]
 

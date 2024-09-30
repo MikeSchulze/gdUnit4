@@ -215,6 +215,7 @@ func test_must_fail_has_invlalid_type() -> void:
 
 func test_override_failure_message() -> void:
 	assert_object(assert_float(3.14).override_failure_message("error")).is_instanceof(GdUnitFloatAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_float(3.14) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
@@ -224,6 +225,7 @@ func test_override_failure_message() -> void:
 
 func test_append_failure_message() -> void:
 	assert_object(assert_float(3.14).append_failure_message("error")).is_instanceof(GdUnitFloatAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_float(3.14) \
 			.append_failure_message("custom failure data") \
 			.is_zero()) \

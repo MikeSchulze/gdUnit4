@@ -45,7 +45,7 @@ func validate(input_value_set: Array) -> String:
 	for input_values :Variant in input_value_set:
 		var parameter_set_index := input_value_set.find(input_values)
 		if input_values is Array:
-			var current_arg_count :int = input_values.size()
+			var current_arg_count :int = (input_values as Array).size()
 			if current_arg_count != expected_arg_count:
 				return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	The test case requires [%d] input parameters, but the set contains [%d]" % [parameter_set_index, expected_arg_count, current_arg_count]
 			var error := GdUnitTestParameterSetResolver.validate_parameter_types(input_arguments, input_values as Array, parameter_set_index)
@@ -153,7 +153,7 @@ func load_parameter_sets(test_case: _TestCase, do_validate := false) -> Array:
 		return []
 	var instance :Object = script.new()
 	GdUnitTestParameterSetResolver.copy_properties(test_case.get_parent(), instance)
-	instance.queue_free()
+	(instance as Node).queue_free()
 	var parameter_sets: Array = instance.call("__extract_test_parameters")
 	if not do_validate:
 		return parameter_sets
