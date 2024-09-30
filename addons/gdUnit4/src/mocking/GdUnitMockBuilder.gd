@@ -9,6 +9,7 @@ static func is_push_errors() -> bool:
 	return GdUnitSettings.is_report_push_errors()
 
 
+@warning_ignore("unsafe_method_access")
 static func build(clazz :Variant, mock_mode :String, debug_write := false) -> Variant:
 	var push_errors := is_push_errors()
 	if not is_mockable(clazz, push_errors):
@@ -32,6 +33,7 @@ static func build(clazz :Variant, mock_mode :String, debug_write := false) -> Va
 	return register_auto_free(mock_instance)
 
 
+@warning_ignore("unsafe_method_access")
 static func create_instance(clazz: Variant) -> Object:
 	if typeof(clazz) == TYPE_OBJECT and  (clazz as Object).is_class("GDScriptNativeClass"):
 		return clazz.new()
@@ -50,6 +52,7 @@ static func create_instance(clazz: Variant) -> Object:
 	return null
 
 
+@warning_ignore("unsafe_method_access")
 static func mock_on_scene(scene :PackedScene, debug_write :bool) -> Variant:
 	var push_errors := is_push_errors()
 	if not scene.can_instantiate():

@@ -63,11 +63,12 @@ func test_get_line_number_multiline() -> void:
 		.has_message("Expecting:\n '42'\n but was\n '10'")
 
 
+@warning_ignore("unsafe_method_access")
 func test_get_line_number_verify() -> void:
 	var obj :Variant = mock(RefCounted)
 	assert_failure(func() -> void: verify(obj, 1).get_reference_count()) \
 		.is_failed() \
-		.has_line(68) \
+		.has_line(69) \
 		.has_message("Expecting interaction on:\n	'get_reference_count()'	1 time's\nBut found interactions on:\n")
 
 
@@ -76,7 +77,7 @@ func test_is_null() -> void:
 
 	assert_failure(func() -> void: assert_that(Color.RED).is_null()) \
 		.is_failed() \
-		.has_line(77) \
+		.has_line(78) \
 		.starts_with_message("Expecting: '<null>' but was 'Color(1, 0, 0, 1)'")
 
 
@@ -85,7 +86,7 @@ func test_is_not_null() -> void:
 
 	assert_failure(func() -> void: assert_that(null).is_not_null()) \
 		.is_failed() \
-		.has_line(86) \
+		.has_line(87) \
 		.has_message("Expecting: not to be '<null>'")
 
 
@@ -95,7 +96,7 @@ func test_is_equal() -> void:
 
 	assert_failure(func() -> void: assert_that(Color.RED).is_equal(Color.GREEN)) \
 		.is_failed() \
-		.has_line(96) \
+		.has_line(97) \
 		.has_message("Expecting:\n 'Color(0, 1, 0, 1)'\n but was\n 'Color(1, 0, 0, 1)'")
 
 
@@ -105,28 +106,30 @@ func test_is_not_equal() -> void:
 
 	assert_failure(func() -> void: assert_that(Color.RED).is_not_equal(Color.RED)) \
 		.is_failed() \
-		.has_line(106) \
+		.has_line(107) \
 		.has_message("Expecting:\n 'Color(1, 0, 0, 1)'\n not equal to\n 'Color(1, 0, 0, 1)'")
 
 
 func test_override_failure_message() -> void:
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_that(Color.RED) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
-		.has_line(113) \
+		.has_line(115) \
 		.has_message("Custom failure message")
 
 
 func test_assert_not_yet_implemented() -> void:
 	assert_failure(func() -> void: assert_not_yet_implemented()) \
 		.is_failed() \
-		.has_line(122) \
+		.has_line(124) \
 		.has_message("Test not implemented!")
 
 
 func test_append_failure_message() -> void:
 	assert_object(assert_that(null).append_failure_message("error")).is_instanceof(GdUnitObjectAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_that(null) \
 			.append_failure_message("custom failure data") \
 			.is_not_null()) \

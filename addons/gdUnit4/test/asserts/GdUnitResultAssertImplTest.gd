@@ -118,6 +118,7 @@ func test_is_value() -> void:
 
 func test_override_failure_message() -> void:
 	assert_object(assert_result(GdUnitResult.success("")).override_failure_message("error")).is_instanceof(GdUnitResultAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_result(GdUnitResult.success("")) \
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
@@ -127,6 +128,7 @@ func test_override_failure_message() -> void:
 
 func test_append_failure_message() -> void:
 	assert_object(assert_result(GdUnitResult.success("")).append_failure_message("error")).is_instanceof(GdUnitResultAssert)
+	@warning_ignore("unsafe_method_access")
 	assert_failure(func() -> void: assert_result(GdUnitResult.success("")) \
 			.append_failure_message("custom failure data") \
 			.is_error()) \

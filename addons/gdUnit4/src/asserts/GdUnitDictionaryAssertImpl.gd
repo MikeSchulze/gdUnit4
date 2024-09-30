@@ -1,11 +1,10 @@
 extends GdUnitDictionaryAssert
 
-var _base :GdUnitAssert
+var _base: GdUnitAssertImpl
 
 
 func _init(current :Variant) -> void:
-	_base = (ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
-								ResourceLoader.CACHE_MODE_REUSE) as GDScript).new(current)
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if not GdUnitAssertions.validate_value_type(current, TYPE_DICTIONARY):
@@ -21,19 +20,16 @@ func _notification(event :int) -> void:
 
 
 func report_success() -> GdUnitDictionaryAssert:
-	@warning_ignore("unsafe_method_access")
 	_base.report_success()
 	return self
 
 
 func report_error(error :String) -> GdUnitDictionaryAssert:
-	@warning_ignore("unsafe_method_access")
 	_base.report_error(error)
 	return self
 
 
 func failure_message() -> String:
-	@warning_ignore("unsafe_method_access")
 	return _base.failure_message()
 
 
@@ -50,7 +46,6 @@ func append_failure_message(message :String) -> GdUnitDictionaryAssert:
 
 
 func current_value() -> Variant:
-	@warning_ignore("unsafe_method_access")
 	return _base.current_value()
 
 

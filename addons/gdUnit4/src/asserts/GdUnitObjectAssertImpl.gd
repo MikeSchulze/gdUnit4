@@ -1,11 +1,10 @@
 extends GdUnitObjectAssert
 
-var _base :GdUnitAssert
+var _base: GdUnitAssertImpl
 
 
 func _init(current :Variant) -> void:
-	_base = (ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
-								ResourceLoader.CACHE_MODE_REUSE) as GDScript).new(current)
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if (current != null
@@ -25,24 +24,20 @@ func _notification(event :int) -> void:
 
 
 func current_value() -> Variant:
-	@warning_ignore("unsafe_method_access")
 	return _base.current_value()
 
 
 func report_success() -> GdUnitObjectAssert:
-	@warning_ignore("unsafe_method_access")
 	_base.report_success()
 	return self
 
 
 func report_error(error :String) -> GdUnitObjectAssert:
-	@warning_ignore("unsafe_method_access")
 	_base.report_error(error)
 	return self
 
 
 func failure_message() -> String:
-	@warning_ignore("unsafe_method_access")
 	return _base.failure_message()
 
 

@@ -331,6 +331,7 @@ func test_override_failure_message() -> void:
 	).has_message("Custom failure message")
 
 
+@warning_ignore("unsafe_method_access")
 func test_append_failure_message() -> void:
 	assert_object(assert_func(RefCounted.new(), "get_reference_count").append_failure_message("error")).is_instanceof(GdUnitFuncAssert)
 	(

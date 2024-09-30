@@ -1,7 +1,8 @@
+class_name GdUnitArrayAssertImpl
 extends GdUnitArrayAssert
 
 
-var _base: GdUnitAssert
+var _base: GdUnitAssertImpl
 var _current_value_provider: ValueProvider
 var _type_check: bool
 
@@ -9,8 +10,7 @@ var _type_check: bool
 func _init(current: Variant, type_check := true) -> void:
 	_type_check = type_check
 	_current_value_provider = DefaultValueProvider.new(current)
-	_base = (ResourceLoader.load("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd", "GDScript",
-								ResourceLoader.CACHE_MODE_REUSE) as GDScript).new(current)
+	_base = GdUnitAssertImpl.new(current)
 	# save the actual assert instance on the current thread context
 	GdUnitThreadManager.get_current_context().set_assert(self)
 	if not _validate_value_type(current):
@@ -26,30 +26,25 @@ func _notification(event: int) -> void:
 
 
 func report_success() -> GdUnitArrayAssert:
-	@warning_ignore("unsafe_method_access")
 	_base.report_success()
 	return self
 
 
 func report_error(error: String) -> GdUnitArrayAssert:
-	@warning_ignore("unsafe_method_access")
 	_base.report_error(error)
 	return self
 
 
 func failure_message() -> String:
-	@warning_ignore("unsafe_method_access")
 	return _base.failure_message()
 
 
 func override_failure_message(message: String) -> GdUnitArrayAssert:
-	@warning_ignore("return_value_discarded")
 	_base.override_failure_message(message)
 	return self
 
 
 func append_failure_message(message: String) -> GdUnitArrayAssert:
-	@warning_ignore("return_value_discarded")
 	_base.append_failure_message(message)
 	return self
 
@@ -325,9 +320,8 @@ func is_instanceof(expected: Variant) -> GdUnitAssert:
 
 func extract(func_name: String, args := Array()) -> GdUnitArrayAssert:
 	var extracted_elements := Array()
-	@warning_ignore("unsafe_method_access")
-	var extractor: GdUnitValueExtractor = ResourceLoader.load("res://addons/gdUnit4/src/extractors/GdUnitFuncValueExtractor.gd",
-		"GDScript", ResourceLoader.CACHE_MODE_REUSE).new(func_name, args)
+
+	var extractor := GdUnitFuncValueExtractor.new(func_name, args)
 	var current: Variant = get_current_value()
 	if current == null:
 		_current_value_provider = DefaultValueProvider.new(null)

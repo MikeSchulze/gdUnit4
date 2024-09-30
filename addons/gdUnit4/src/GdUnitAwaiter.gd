@@ -1,8 +1,6 @@
 class_name GdUnitAwaiter
 extends RefCounted
 
-const GdUnitAssertImpl = preload("res://addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd")
-
 
 # Waits for a specified signal in an interval of 50ms sent from the <source>, and terminates with an error after the specified timeout has elapsed.
 # source: the object from which the signal is emitted
