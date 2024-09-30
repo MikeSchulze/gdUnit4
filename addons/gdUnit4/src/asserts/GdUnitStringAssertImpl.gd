@@ -161,23 +161,23 @@ func has_length(expected :int, comparator := Comparator.EQUAL) -> GdUnitStringAs
 	var current :Variant = current_value()
 	if current == null:
 		return report_error(GdAssertMessages.error_has_length(current, expected, comparator))
-	var _current: String = current
+	var str_current: String = current
 	match comparator:
 		Comparator.EQUAL:
-			if _current.length() != expected:
-				return report_error(GdAssertMessages.error_has_length(_current, expected, comparator))
+			if str_current.length() != expected:
+				return report_error(GdAssertMessages.error_has_length(str_current, expected, comparator))
 		Comparator.LESS_THAN:
-			if _current.length() >= expected:
-				return report_error(GdAssertMessages.error_has_length(_current, expected, comparator))
+			if str_current.length() >= expected:
+				return report_error(GdAssertMessages.error_has_length(str_current, expected, comparator))
 		Comparator.LESS_EQUAL:
-			if _current.length() > expected:
-				return report_error(GdAssertMessages.error_has_length(_current, expected, comparator))
+			if str_current.length() > expected:
+				return report_error(GdAssertMessages.error_has_length(str_current, expected, comparator))
 		Comparator.GREATER_THAN:
-			if _current.length() <= expected:
-				return report_error(GdAssertMessages.error_has_length(_current, expected, comparator))
+			if str_current.length() <= expected:
+				return report_error(GdAssertMessages.error_has_length(str_current, expected, comparator))
 		Comparator.GREATER_EQUAL:
-			if _current.length() < expected:
-				return report_error(GdAssertMessages.error_has_length(_current, expected, comparator))
+			if str_current.length() < expected:
+				return report_error(GdAssertMessages.error_has_length(str_current, expected, comparator))
 		_:
 			return report_error("Comparator '%d' not implemented!" % comparator)
 	return report_success()

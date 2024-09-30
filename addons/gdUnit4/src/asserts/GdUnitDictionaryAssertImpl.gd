@@ -142,12 +142,12 @@ func _contains_key_value(key :Variant, value :Variant, compare_mode :GdObjects.C
 	var expected := [key]
 	if current == null:
 		return report_error(GdAssertMessages.error_is_not_null())
-	var _current: Dictionary = current
-	var keys_not_found :Array = expected.filter(_filter_by_key.bind(_current.keys(), compare_mode))
+	var dict_current: Dictionary = current
+	var keys_not_found :Array = expected.filter(_filter_by_key.bind(dict_current.keys(), compare_mode))
 	if not keys_not_found.is_empty():
-		return report_error(GdAssertMessages.error_contains_keys(_current.keys() as Array, expected, keys_not_found, compare_mode))
-	if not GdObjects.equals(_current[key], value, false, compare_mode):
-		return report_error(GdAssertMessages.error_contains_key_value(key, value, _current[key], compare_mode))
+		return report_error(GdAssertMessages.error_contains_keys(dict_current.keys() as Array, expected, keys_not_found, compare_mode))
+	if not GdObjects.equals(dict_current[key], value, false, compare_mode):
+		return report_error(GdAssertMessages.error_contains_key_value(key, value, dict_current[key], compare_mode))
 	return report_success()
 
 
@@ -155,10 +155,10 @@ func _not_contains_keys(expected :Array, compare_mode :GdObjects.COMPARE_MODE) -
 	var current :Variant = current_value()
 	if current == null:
 		return report_error(GdAssertMessages.error_is_not_null())
-	var _current: Dictionary = current
-	var keys_found :Array = _current.keys().filter(_filter_by_key.bind(expected, compare_mode, true))
+	var dict_current: Dictionary = current
+	var keys_found :Array = dict_current.keys().filter(_filter_by_key.bind(expected, compare_mode, true))
 	if not keys_found.is_empty():
-		return report_error(GdAssertMessages.error_not_contains_keys(_current.keys() as Array, expected, keys_found, compare_mode))
+		return report_error(GdAssertMessages.error_not_contains_keys(dict_current.keys() as Array, expected, keys_found, compare_mode))
 	return report_success()
 
 
