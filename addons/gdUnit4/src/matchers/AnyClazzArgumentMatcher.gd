@@ -12,6 +12,7 @@ func is_match(value :Variant) -> bool:
 	if typeof(value) != TYPE_OBJECT:
 		return false
 	if is_instance_valid(value) and GdObjects.is_script(_clazz):
+		@warning_ignore("unsafe_cast")
 		return (value as Object).get_script() == _clazz
 	return is_instance_of(value, _clazz)
 

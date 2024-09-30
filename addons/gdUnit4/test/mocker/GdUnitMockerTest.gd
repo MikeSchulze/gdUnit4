@@ -104,7 +104,7 @@ func test_mock_fail() -> void:
 
 
 func test_mock_special_classes() -> void:
-	var m: Variant = mock("JavaClass") as JavaClass
+	var m: JavaClass = mock("JavaClass")
 	assert_that(m).is_not_null()
 
 
@@ -1112,6 +1112,7 @@ func test_mock_virtual_function_is_not_called_twice() -> void:
 	assert_that(m._x).is_equal("_init")
 
 	# add_child calls internally by "default" _ready() where is a virtual function
+	@warning_ignore("unsafe_cast")
 	add_child(m as Node)
 
 	# verify _ready func is only once called
@@ -1166,12 +1167,14 @@ func test_mock_scene_variables_is_set() -> void:
 	assert_object(mocked_scene).is_not_null()
 
 	# Add as child to a node to trigger _ready to initalize all variables
+	@warning_ignore("unsafe_cast")
 	add_child(mocked_scene as Node)
 	assert_object(mocked_scene._box1).is_not_null()
 	assert_object(mocked_scene._box2).is_not_null()
 	assert_object(mocked_scene._box3).is_not_null()
 
 	# check signals are connected
+	@warning_ignore("unsafe_cast")
 	assert_bool(mocked_scene.is_connected("panel_color_change", Callable(mocked_scene as Object, "_on_panel_color_changed")))
 
 	# check exports
@@ -1182,6 +1185,7 @@ func test_mock_scene_variables_is_set() -> void:
 func test_mock_scene_execute_func_yielded() -> void:
 	var mocked_scene: Variant = mock("res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.tscn")
 	assert_object(mocked_scene).is_not_null()
+	@warning_ignore("unsafe_cast")
 	add_child(mocked_scene as Node)
 	# execute the 'color_cycle' func where emits three signals
 	# using yield to wait for function is completed

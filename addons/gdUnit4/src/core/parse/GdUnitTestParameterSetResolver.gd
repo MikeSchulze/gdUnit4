@@ -45,10 +45,11 @@ func validate(input_value_set: Array) -> String:
 	for input_values :Variant in input_value_set:
 		var parameter_set_index := input_value_set.find(input_values)
 		if input_values is Array:
-			var current_arg_count :int = (input_values as Array).size()
+			var arr_values: Array = input_values
+			var current_arg_count := arr_values.size()
 			if current_arg_count != expected_arg_count:
 				return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	The test case requires [%d] input parameters, but the set contains [%d]" % [parameter_set_index, expected_arg_count, current_arg_count]
-			var error := GdUnitTestParameterSetResolver.validate_parameter_types(input_arguments, input_values as Array, parameter_set_index)
+			var error := GdUnitTestParameterSetResolver.validate_parameter_types(input_arguments, arr_values, parameter_set_index)
 			if not error.is_empty():
 				return error
 		else:

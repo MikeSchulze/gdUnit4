@@ -31,7 +31,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 
 	# finally fire test statistics report
 	fire_event(GdUnitEvent.new()\
-		.test_statistics(context.test_suite.get_script().resource_path as String,
+		.test_statistics(context.get_test_suite_path(),
 			context.get_test_suite_name(),
 			context.get_test_case_name(),
 			context.get_execution_statistics()))

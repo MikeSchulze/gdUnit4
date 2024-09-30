@@ -22,6 +22,7 @@ func _get_drag_data(_position: Vector2) -> Variant:
 
 # Godot calls this method to test if data from a control's get_drag_data() can be dropped at position. position is local to this control.
 func _can_drop_data(_position: Vector2, data :Variant) -> bool:
+	@warning_ignore("unsafe_method_access")
 	return typeof(data) == TYPE_DICTIONARY and data.has("texture")
 
 

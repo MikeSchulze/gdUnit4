@@ -38,13 +38,13 @@ func test_create_test_suite() -> void:
 	var result := GdUnitFileAccess.copy_file("res://addons/gdUnit4/test/resources/core/sources/TestPerson.cs", temp)
 	assert_result(result).is_success()
 
-	var example_source_cs := result.value() as String
+	var example_source_cs := result.value_as_string()
 	var source := load(example_source_cs)
 	var test_suite_path := GdUnitTestSuiteScanner.resolve_test_suite_path(source.resource_path, "test")
 	result = GdUnit4CSharpApiLoader.create_test_suite(source.resource_path, 18, test_suite_path)
 
 	assert_result(result).is_success()
-	var info := result.value() as Dictionary
+	var info: Dictionary = result.value()
 	assert_str(info.get("path")).is_equal("user://tmp/test/examples/TestPersonTest.cs")
 	assert_int(info.get("line")).is_equal(16)
 
@@ -52,7 +52,7 @@ func test_create_test_suite() -> void:
 func test_parse_test_suite() -> void:
 	var test_suite := GdUnit4CSharpApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4CSharpApiTest.cs")
 	assert_that(test_suite).is_not_null()
-	assert_that(test_suite.get("IsCsTestSuite")).is_true()
+	assert_bool(test_suite.get("IsCsTestSuite")).is_true()
 	test_suite.free()
 
 
@@ -66,6 +66,7 @@ func test_executor() -> void:
 	assert_that(executor).is_not_null()
 
 	var test_suite := GdUnit4CSharpApiLoader.parse_test_suite("res://addons/gdUnit4/test/mono/GdUnit4CSharpApiTest.cs")
-	assert_that(executor.IsExecutable(test_suite)).is_true()
+	@warning_ignore("unsafe_method_access")
+	assert_bool(executor.IsExecutable(test_suite)).is_true()
 
 	test_suite.free()

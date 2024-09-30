@@ -33,8 +33,8 @@ func before() -> void:
 
 func after() -> void:
 	for test_case :String in _test_values_expected.keys():
-		var current := _test_values_current[test_case] as TestCaseStatistics
-		var expected := _test_values_expected[test_case] as TestCaseStatistics
+		var current: TestCaseStatistics = _test_values_current[test_case]
+		var expected: TestCaseStatistics = _test_values_expected[test_case]
 		assert_int(current._test_before_calls)\
 			.override_failure_message("Expect before_test called %s times but is %s for test case %s" % [expected._test_before_calls, current._test_before_calls, test_case])\
 			.is_equal(expected._test_before_calls)
@@ -44,12 +44,12 @@ func after() -> void:
 
 
 func before_test() -> void:
-	var current := _test_values_current[__active_test_case] as TestCaseStatistics
+	var current: TestCaseStatistics = _test_values_current[__active_test_case]
 	current._test_before_calls +=1
 
 
 func after_test() -> void:
-	var current := _test_values_current[__active_test_case] as TestCaseStatistics
+	var current: TestCaseStatistics = _test_values_current[__active_test_case]
 	current._test_after_calls +=1
 
 

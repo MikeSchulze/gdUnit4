@@ -9,7 +9,7 @@ static func is_push_errors() -> bool:
 	return GdUnitSettings.is_report_push_errors()
 
 
-@warning_ignore("unsafe_method_access")
+@warning_ignore("unsafe_method_access", "unsafe_cast")
 static func build(clazz :Variant, mock_mode :String, debug_write := false) -> Variant:
 	var push_errors := is_push_errors()
 	if not is_mockable(clazz, push_errors):
@@ -33,7 +33,7 @@ static func build(clazz :Variant, mock_mode :String, debug_write := false) -> Va
 	return register_auto_free(mock_instance)
 
 
-@warning_ignore("unsafe_method_access")
+@warning_ignore("unsafe_method_access", "unsafe_cast")
 static func create_instance(clazz: Variant) -> Object:
 	if typeof(clazz) == TYPE_OBJECT and  (clazz as Object).is_class("GDScriptNativeClass"):
 		return clazz.new()
@@ -137,7 +137,7 @@ static func is_mockable(clazz :Variant, push_errors :bool=false) -> bool:
 			return false
 		return true
 	# verify by class name checked registered classes
-	var clazz_name := clazz as String
+	var clazz_name: String = clazz
 	if ClassDB.class_exists(clazz_name):
 		if Engine.has_singleton(clazz_name):
 			if push_errors:

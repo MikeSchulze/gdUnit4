@@ -125,7 +125,8 @@ func apply_path_reports(report_dir :String, template :String, report_summaries :
 	paths.append_array(path_report_mapping.keys())
 	paths.sort()
 	for report_path in paths:
-		var report := GdUnitByPathReport.new(report_path, path_report_mapping.get(report_path) as Array[GdUnitReportSummary])
+		var reports: Array[GdUnitReportSummary] = path_report_mapping.get(report_path)
+		var report := GdUnitByPathReport.new(report_path, reports)
 		var report_link :String = report.write(report_dir).replace(report_dir, ".")
 		@warning_ignore("return_value_discarded")
 		table_records.append(report.create_record(report_link))

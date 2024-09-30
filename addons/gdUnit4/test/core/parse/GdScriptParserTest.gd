@@ -250,6 +250,7 @@ func test_parse_func_name() -> void:
 
 func test_load_source_code_inner_class_AtmosphereData() -> void:
 	var base_class := AdvancedTestClass.new()
+	@warning_ignore("unsafe_cast")
 	var rows := _parser._load_inner_class(base_class.get_script() as GDScript, "AtmosphereData")
 	var file_content := resource_as_string("res://addons/gdUnit4/test/core/resources/AtmosphereData.txt")
 	assert_that(rows).is_equal(file_content)
@@ -257,6 +258,7 @@ func test_load_source_code_inner_class_AtmosphereData() -> void:
 
 func test_load_source_code_inner_class_SoundData() -> void:
 	var base_class := AdvancedTestClass.new()
+	@warning_ignore("unsafe_cast")
 	var rows := _parser._load_inner_class(base_class.get_script() as GDScript, "SoundData")
 	var file_content := resource_as_string("res://addons/gdUnit4/test/core/resources/SoundData.txt")
 	assert_that(rows).is_equal(file_content)
@@ -264,6 +266,7 @@ func test_load_source_code_inner_class_SoundData() -> void:
 
 func test_load_source_code_inner_class_Area4D() -> void:
 	var base_class := AdvancedTestClass.new()
+	@warning_ignore("unsafe_cast")
 	var rows := _parser._load_inner_class(base_class.get_script() as GDScript, "Area4D")
 	var file_content := resource_as_string("res://addons/gdUnit4/test/core/resources/Area4D.txt")
 	assert_that(rows).is_equal(file_content)

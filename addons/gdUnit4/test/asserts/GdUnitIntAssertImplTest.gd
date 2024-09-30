@@ -175,7 +175,7 @@ func test_is_not_in() -> void:
 
 
 func test_is_between(fuzzer := Fuzzers.rangei(-20, 20)) -> void:
-	var value := fuzzer.next_value() as int
+	var value: int = fuzzer.next_value()
 	assert_int(value).is_between(-20, 20)
 
 

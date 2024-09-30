@@ -30,6 +30,7 @@ static func current() -> GdUnit4Version:
 	var config := ConfigFile.new()
 	@warning_ignore("return_value_discarded")
 	config.load('addons/gdUnit4/plugin.cfg')
+	@warning_ignore("unsafe_cast")
 	return parse(config.get_value('plugin', 'version') as String)
 
 

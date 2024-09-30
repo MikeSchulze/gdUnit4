@@ -47,6 +47,7 @@ func create_fuzzers(test_suite :GdUnitTestSuite, test_case :_TestCase) -> Array[
 	test_case.generate_seed()
 	var fuzzers :Array[Fuzzer] = []
 	for fuzzer_arg in test_case.fuzzer_arguments():
+		@warning_ignore("unsafe_cast")
 		var fuzzer := _expression_runner.to_fuzzer(test_suite.get_script() as GDScript, fuzzer_arg.plain_value() as String)
 		fuzzer._iteration_index = 0
 		fuzzer._iteration_limit = test_case.iterations()

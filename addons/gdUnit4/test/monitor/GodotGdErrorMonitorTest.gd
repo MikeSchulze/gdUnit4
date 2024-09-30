@@ -61,7 +61,7 @@ func write_log(content :String) -> String:
 
 
 func test_scan_for_push_warnings() -> void:
-	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
+	var monitor: GodotGdErrorMonitor = mock(GodotGdErrorMonitor, CALL_REAL_FUNC)
 	if Engine.get_version_info().hex >= 0x40400:
 		monitor._godot_log_file = write_log(PUSH_WARNING_MESSAGE_4x4)
 	else:
@@ -83,7 +83,7 @@ func test_scan_for_push_warnings() -> void:
 
 
 func test_scan_for_push_errors() -> void:
-	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
+	var monitor: GodotGdErrorMonitor = mock(GodotGdErrorMonitor, CALL_REAL_FUNC)
 	if Engine.get_version_info().hex >= 0x40400:
 		monitor._godot_log_file = write_log(PUSH_ERROR_MESSAGE_4x4)
 	else:
@@ -110,7 +110,7 @@ func test_scan_for_push_errors() -> void:
 
 
 func test_scan_for_script_errors() -> void:
-	var monitor := mock(GodotGdErrorMonitor, CALL_REAL_FUNC) as GodotGdErrorMonitor
+	var monitor: GodotGdErrorMonitor = mock(GodotGdErrorMonitor, CALL_REAL_FUNC)
 	if Engine.get_version_info().hex >= 0x40400:
 		monitor._godot_log_file = write_log(SCRIPT_ERROR_MESSAGE_4x4)
 	else:

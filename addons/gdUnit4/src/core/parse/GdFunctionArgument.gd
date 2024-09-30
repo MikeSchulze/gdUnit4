@@ -23,7 +23,7 @@ func _init(p_name: String, p_type: int, value: Variant = UNDEFINED, p_type_hint:
 	_type = p_type
 	_type_hint = p_type_hint
 	if value != null and p_name == ARG_PARAMETERIZED_TEST:
-		_parameter_sets = _parse_parameter_set(value as String)
+		_parameter_sets = _parse_parameter_set(str(value))
 	_default_value = value
 	# is argument a fuzzer?
 	if _type == TYPE_OBJECT and _fuzzer_regex.search(_name):

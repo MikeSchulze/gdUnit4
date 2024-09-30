@@ -40,6 +40,7 @@ static func reset(interaction_object :Object) -> Object:
 
 
 static func _is_mock_or_spy(interaction_object :Object, mock_function_signature :String) -> bool:
+	@warning_ignore("unsafe_cast")
 	if interaction_object is GDScript and not (interaction_object.get_script() as GDScript).has_method(mock_function_signature):
 		push_error("Error: You try to use a non mock or spy!")
 		return false

@@ -34,6 +34,7 @@ func extract_value(value: Variant) -> Variant:
 	for func_name in func_names():
 		if GdArrayTools.is_array_type(value):
 			var values := Array()
+			@warning_ignore("unsafe_cast")
 			for element: Variant in (value as Array):
 				values.append(_call_func(element, func_name))
 			value = values
@@ -51,6 +52,7 @@ func _call_func(value :Variant, func_name :String) -> Variant:
 	# for array types we need to call explicit by function name, using funcref is only supported for Objects
 	# TODO extend to all array functions
 	if GdArrayTools.is_array_type(value) and func_name == "empty":
+		@warning_ignore("unsafe_cast")
 		return (value as Array).is_empty()
 
 	if is_instance_valid(value):

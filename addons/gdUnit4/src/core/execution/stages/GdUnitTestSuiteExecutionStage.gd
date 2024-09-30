@@ -88,7 +88,7 @@ func fire_test_suite_skipped(context :GdUnitExecutionContext) -> void:
 	var test_suite := context.test_suite
 	var skip_count := test_suite.get_child_count()
 	fire_event(GdUnitEvent.new()\
-		.suite_before(test_suite.get_script().resource_path as String, test_suite.get_name(), skip_count))
+		.suite_before(context.get_test_suite_path(), test_suite.get_name(), skip_count))
 	var statistics := {
 		GdUnitEvent.ORPHAN_NODES: 0,
 		GdUnitEvent.ELAPSED_TIME: 0,
@@ -101,7 +101,7 @@ func fire_test_suite_skipped(context :GdUnitExecutionContext) -> void:
 		GdUnitEvent.SKIPPED: true
 	}
 	var report := GdUnitReport.new().create(GdUnitReport.SKIPPED, -1, GdAssertMessages.test_suite_skipped(test_suite.__skip_reason, skip_count))
-	fire_event(GdUnitEvent.new().suite_after(test_suite.get_script().resource_path as String, test_suite.get_name(), statistics, [report]))
+	fire_event(GdUnitEvent.new().suite_after(context.get_test_suite_path(), test_suite.get_name(), statistics, [report]))
 	await (Engine.get_main_loop() as SceneTree).process_frame
 
 

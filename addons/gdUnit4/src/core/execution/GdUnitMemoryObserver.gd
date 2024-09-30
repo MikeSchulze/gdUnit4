@@ -18,6 +18,7 @@ func register_auto_free(obj :Variant) -> Variant:
 	if not is_instance_valid(obj):
 		return obj
 	# do not register on GDScriptNativeClass
+	@warning_ignore("unsafe_cast")
 	if typeof(obj) == TYPE_OBJECT and (obj as Object).is_class("GDScriptNativeClass") :
 		return obj
 	#if obj is GDScript or obj is ScriptExtension:
@@ -106,7 +107,7 @@ static func gc_on_guarded_instances() -> void:
 
 # store the object into global store aswell to be verified by 'is_marked_auto_free'
 func _tag_object(obj :Variant) -> void:
-	var tagged_object := Engine.get_meta(TAG_AUTO_FREE, []) as Array
+	var tagged_object: Array = Engine.get_meta(TAG_AUTO_FREE, [])
 	tagged_object.append(obj)
 	Engine.set_meta(TAG_AUTO_FREE, tagged_object)
 
@@ -119,7 +120,7 @@ func gc() -> void:
 	await (Engine.get_main_loop() as SceneTree).process_frame
 	if _is_stdout_verbose:
 		print_verbose("GdUnit4:gc():running", " freeing %d objects .." % _store.size())
-	var tagged_objects := Engine.get_meta(TAG_AUTO_FREE, []) as Array
+	var tagged_objects: Array = Engine.get_meta(TAG_AUTO_FREE, [])
 	while not _store.is_empty():
 		var value :Variant = _store.pop_front()
 		tagged_objects.erase(value)
@@ -129,4 +130,5 @@ func gc() -> void:
 
 ## Checks whether the specified object is registered for automatic release
 static func is_marked_auto_free(obj: Variant) -> bool:
-	return (Engine.get_meta(TAG_AUTO_FREE, []) as Array).has(obj)
+	var tagged_objects: Array = Engine.get_meta(TAG_AUTO_FREE, [])
+	return tagged_objects.has(obj)

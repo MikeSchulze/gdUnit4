@@ -151,8 +151,10 @@ func to_bbcode(input :String) -> String:
 		var regex_ :RegEx = pattern[0]
 		var bb_replace :Variant = pattern[1]
 		if bb_replace is Callable:
+			@warning_ignore("unsafe_method_access")
 			input = await bb_replace.call(regex_, input)
 		else:
+			@warning_ignore("unsafe_cast")
 			input = regex_.sub(input, bb_replace as String, true)
 	return input + "\n"
 
@@ -164,7 +166,7 @@ func process_tables(input: String) -> String:
 		if is_table(lines[0]):
 			bbcode.append_array(parse_table(lines))
 			continue
-		@warning_ignore("return_value_discarded")
+		@warning_ignore("return_value_discarded", "unsafe_cast")
 		bbcode.append(lines.pop_front() as String)
 	return "\n".join(bbcode)
 
