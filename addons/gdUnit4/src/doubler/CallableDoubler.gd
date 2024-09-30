@@ -162,8 +162,8 @@ func rpc(arg0=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 	arg8=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 	arg9=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE) -> void:
 
-	var args = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
-	match (args as Array).size():
+	var args: Array = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
+	match args.size():
 		0: _cb.rpc(0)
 		1: _cb.rpc(args[0])
 		2: _cb.rpc(args[0], args[1])
@@ -190,8 +190,8 @@ func rpc_id(peer_id: int,
 	arg8=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 	arg9=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE) -> void:
 
-	var args = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
-	match (args as Array).size():
+	var args: Array = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
+	match args.size():
 		0: _cb.rpc_id(peer_id)
 		1: _cb.rpc_id(peer_id, args[0])
 		2: _cb.rpc_id(peer_id, args[0], args[1])

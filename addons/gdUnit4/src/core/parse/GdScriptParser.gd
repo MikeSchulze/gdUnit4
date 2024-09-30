@@ -609,14 +609,15 @@ func _enrich_function_descriptor(script: GDScript, fds: Array[GdFunctionDescript
 					var func_arguments := _parse_function_arguments(func_signature)
 					# enrich missing default values
 					for arg_name: String in func_arguments.keys():
-						fd.set_argument_value(arg_name, func_arguments[arg_name] as String)
+						var func_argument: String = func_arguments[arg_name]
+						fd.set_argument_value(arg_name, func_argument)
 					fd.enrich_file_info(script_to_scan.resource_path, rowIndex + 1)
 					fd._is_coroutine = is_func_coroutine(rows, rowIndex)
 					# enrich return class name if not set
 					if fd.return_type() == TYPE_OBJECT and fd._return_class in ["", "Resource", "RefCounted"]:
 						var var_token := parse_return_token(func_signature)
 						if var_token != TOKEN_NOT_MATCH and var_token.type() == TYPE_OBJECT:
-							fd._return_class = _patch_inner_class_names(var_token.value() as String, "")
+							fd._return_class = _patch_inner_class_names(var_token.plain_value(), "")
 		# if the script ihnerits we need to scan this also
 		script_to_scan = script_to_scan.get_base_script()
 

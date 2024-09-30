@@ -621,6 +621,7 @@ func test_spy_scene_initalize() -> void:
 	assert_object(spy_scene).is_not_null()
 
 	# Add as child to a scene tree to trigger _ready to initalize all variables
+	@warning_ignore("unsafe_cast")
 	add_child(spy_scene as Node)
 	# ensure _ready is recoreded and onyl once called
 	verify(spy_scene, 1)._ready()
@@ -630,6 +631,7 @@ func test_spy_scene_initalize() -> void:
 	assert_object(spy_scene._box3).is_not_null()
 
 	# check signals are connected
+	@warning_ignore("unsafe_cast")
 	assert_bool(spy_scene.is_connected("panel_color_change", Callable(spy_scene as Node, "_on_panel_color_changed")))
 
 	# check exports
@@ -652,6 +654,7 @@ func test_spy_ready_called_once() -> void:
 	var spy_node :Variant = spy(auto_free(CustomNode.new()))
 
 	# Add as child to a scene tree to trigger _ready to initalize all variables
+	@warning_ignore("unsafe_cast")
 	add_child(spy_node as Node)
 
 	# ensure _ready is recoreded and onyl once called

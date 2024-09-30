@@ -37,13 +37,14 @@ static func check_leaked_instances() -> void:
 # class_info = { "class_name": <>, "class_path" : <>}
 static func load_template(template :String, class_info :Dictionary, instance :Object) -> PackedStringArray:
 	# store instance id
+	var clazz_name: String = class_info.get("class_name")
 	var source_code := template\
 		.replace("${instance_id}", "%s%d" % [DOUBLER_INSTANCE_ID_PREFIX, abs(instance.get_instance_id())])\
-		.replace("${source_class}", class_info.get("class_name") as String)
+		.replace("${source_class}", clazz_name)
 	var lines := GdScriptParser.to_unix_format(source_code).split("\n")
 	# replace template class_name with Doubled<class> name and extends form source class
 	@warning_ignore("return_value_discarded")
-	lines.insert(0, "class_name Doubled%s" % (class_info.get("class_name") as String).replace(".", "_"))
+	lines.insert(0, "class_name Doubled%s" % clazz_name.replace(".", "_"))
 	@warning_ignore("return_value_discarded")
 	lines.insert(1, extends_clazz(class_info))
 	# append Object interactions stuff

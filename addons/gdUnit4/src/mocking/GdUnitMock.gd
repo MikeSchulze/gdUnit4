@@ -35,7 +35,11 @@ func checked(obj :Object) -> Object:
 
 
 static func _is_mock_or_spy(obj: Variant, func_sig: String) -> bool:
-	if obj is Object and not (obj as Object).has_method(func_sig):
+	if obj is Object and not as_object(obj).has_method(func_sig):
 		push_error("Error: You try to use a non mock or spy!")
 		return false
 	return true
+
+
+static func as_object(value: Variant) -> Object:
+	return value

@@ -53,7 +53,7 @@ func _register_thread(thread :Thread, thread_id :int) -> void:
 
 
 func _unregister_thread(thread_id :int) -> void:
-	var context := _thread_context_by_id.get(thread_id) as GdUnitThreadContext
+	var context: GdUnitThreadContext = _thread_context_by_id.get(thread_id)
 	if context:
 		@warning_ignore("return_value_discarded")
 		_thread_context_by_id.erase(thread_id)

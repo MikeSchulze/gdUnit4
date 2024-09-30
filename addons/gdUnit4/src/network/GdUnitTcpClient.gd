@@ -108,7 +108,7 @@ func rpc_receive() -> RPC:
 		while _stream.get_available_bytes() > 0:
 			var available_bytes := _stream.get_available_bytes()
 			var data := _stream.get_data(available_bytes)
-			var received_data := data[1] as PackedByteArray
+			var received_data: PackedByteArray = data[1]
 			# data send by Godot has this magic header of 12 bytes
 			var header := Array(received_data.slice(0, 4))
 			if header == [0, 0, 0, 124]:

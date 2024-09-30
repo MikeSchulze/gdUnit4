@@ -110,6 +110,10 @@ static func of_parameterized_test(pe: GdUnitExecutionContext, test_case_name: St
 	return context
 
 
+func get_test_suite_path() -> String:
+	return test_suite.get_script().resource_path
+
+
 func get_test_suite_name() -> StringName:
 	return test_suite.get_name()
 

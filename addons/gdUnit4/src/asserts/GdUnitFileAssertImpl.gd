@@ -22,7 +22,7 @@ func _notification(event :int) -> void:
 
 
 func current_value() -> String:
-	return _base.current_value() as String
+	return _base.current_value()
 
 
 func report_success() -> GdUnitFileAssert:

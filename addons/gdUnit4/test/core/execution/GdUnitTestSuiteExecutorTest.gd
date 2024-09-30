@@ -97,6 +97,7 @@ func assert_event_states(events :Array[GdUnitEvent]) -> GdUnitArrayAssert:
 	return assert_array(_events).extractv(extr("test_name"), extr("is_success"), extr("is_skipped"), extr("is_warning"), extr("is_failed"), extr("is_error"))
 
 
+@warning_ignore("unsafe_method_access", "unsafe_cast")
 func assert_event_reports(events :Array[GdUnitEvent], expected_reports :Array) -> void:
 	var _events := events.filter(func(event: GdUnitEvent) -> bool:
 		return event.type() != GdUnitEvent.TESTCASE_STATISTICS
@@ -1018,6 +1019,7 @@ func filter_by_test_case(events:  Array[GdUnitEvent], test_case_name: String) ->
 class TestCaseNameExtractor extends GdUnitValueExtractor:
 	var r := RegEx.create_from_string("^.*:\\d")
 
+	@warning_ignore("unsafe_method_access", "unsafe_cast")
 	func extract_value(value :Variant) -> String:
 		var m := r.search(value.test_name() as String)
 		return m.get_string(0) if m != null else value.test_name()

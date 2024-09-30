@@ -98,6 +98,7 @@ func execute(commands :Array[CmdCommand]) -> GdUnitResult:
 				# we need to find the method and determin the arguments to call the right function
 				for m in cb_m.get_object().get_method_list():
 					if m["name"] == cb_m.get_method():
+						@warning_ignore("unsafe_cast")
 						if (m["args"] as Array).size() > 1:
 							cb_m.callv(arguments)
 							break

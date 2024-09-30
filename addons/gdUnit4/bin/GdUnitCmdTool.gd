@@ -108,6 +108,7 @@ class CLIRunner:
 		_report_dir = GdUnitFileAccess.current_dir() + "reports"
 		_executor = GdUnitTestSuiteExecutor.new()
 		# stop checked first test failure to fail fast
+		@warning_ignore("unsafe_cast")
 		(_executor as GdUnitTestSuiteExecutor).fail_fast(true)
 		if GdUnit4CSharpApiLoader.is_mono_supported():
 			prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
@@ -137,7 +138,7 @@ class CLIRunner:
 				else:
 					set_process(false)
 					# process next test suite
-					var test_suite := _test_suites_to_process.pop_front() as Node
+					var test_suite: Node = _test_suites_to_process.pop_front()
 
 					if _cs_executor != null and _cs_executor.IsExecutable(test_suite):
 						_cs_executor.Execute(test_suite)
@@ -307,6 +308,7 @@ class CLIRunner:
 			return
 		# build runner config by given commands
 		var commands :Array[CmdCommand] = []
+		@warning_ignore("unsafe_cast")
 		commands.append_array(result.value() as Array)
 		result = (
 			CmdCommandHandler.new(_cmd_options)

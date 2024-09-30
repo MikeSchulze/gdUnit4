@@ -47,6 +47,7 @@ func _init(p_scene: Variant, p_verbose: bool, p_hide_push_errors := false) -> vo
 	set_time_factor(1)
 	# handle scene loading by resource path
 	if typeof(p_scene) == TYPE_STRING:
+		@warning_ignore("unsafe_cast")
 		if !ResourceLoader.exists(p_scene as String):
 			if not p_hide_push_errors:
 				push_error("GdUnitSceneRunner: Can't load scene by given resource path: '%s'. The resource does not exists." % p_scene)
@@ -55,6 +56,7 @@ func _init(p_scene: Variant, p_verbose: bool, p_hide_push_errors := false) -> vo
 			if not p_hide_push_errors:
 				push_error("GdUnitSceneRunner: The given resource: '%s'. is not a scene." % p_scene)
 			return
+		@warning_ignore("unsafe_cast")
 		_current_scene = (load(p_scene as String) as PackedScene).instantiate()
 		_scene_auto_free = true
 	else:
@@ -307,7 +309,8 @@ func simulate_screen_touch_release(index: int, double_tap := false) -> GdUnitSce
 
 
 func simulate_screen_touch_drag_relative(index: int, relative: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:
-	return await _do_touch_drag_at(index, _current_touch_position[index] as Vector2 + relative, time, trans_type)
+	var current_position: Vector2 = _current_touch_position[index]
+	return await _do_touch_drag_at(index, current_position + relative, time, trans_type)
 
 
 func simulate_screen_touch_drag_absolute(index: int, position: Vector2, time: float = 1.0, trans_type: Tween.TransitionType = Tween.TRANS_LINEAR) -> GdUnitSceneRunner:

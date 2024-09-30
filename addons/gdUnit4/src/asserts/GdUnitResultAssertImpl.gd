@@ -24,7 +24,7 @@ func validate_value_type(value :Variant) -> bool:
 
 
 func current_value() -> GdUnitResult:
-	return _base.current_value() as GdUnitResult
+	return _base.current_value()
 
 
 func report_success() -> GdUnitResultAssert:

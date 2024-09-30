@@ -122,6 +122,7 @@ func is_not_negative() -> GdUnitFloatAssert:
 
 func is_zero() -> GdUnitFloatAssert:
 	var current :Variant = current_value()
+	@warning_ignore("unsafe_cast")
 	if current == null or not is_equal_approx(0.00000000, current as float):
 		return report_error(GdAssertMessages.error_is_zero(current))
 	return report_success()
@@ -129,6 +130,7 @@ func is_zero() -> GdUnitFloatAssert:
 
 func is_not_zero() -> GdUnitFloatAssert:
 	var current :Variant = current_value()
+	@warning_ignore("unsafe_cast")
 	if current == null or is_equal_approx(0.00000000, current as float):
 		return report_error(GdAssertMessages.error_is_not_zero())
 	return report_success()

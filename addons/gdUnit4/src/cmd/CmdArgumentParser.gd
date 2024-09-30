@@ -48,7 +48,8 @@ func _parse_cmd_arguments(option: CmdOption, args: Array) -> int:
 		if not option.is_argument_optional() and args.is_empty():
 			return -1
 		if _is_next_value_argument(args):
-			command.add_argument(args.pop_front() as String)
+			var value: String = args.pop_front()
+			command.add_argument(value)
 		elif not option.is_argument_optional():
 			return -1
 	_parsed_commands[command_name] = command

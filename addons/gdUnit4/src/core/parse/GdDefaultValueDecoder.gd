@@ -101,7 +101,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 
 		TYPE_PACKED_COLOR_ARRAY:
 			var colors := PackedStringArray()
-			for color in value as PackedColorArray:
+			for color: Color in value:
 				@warning_ignore("return_value_discarded")
 				colors.append(_on_type_Color(color))
 			if colors.is_empty():
@@ -110,7 +110,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 
 		TYPE_PACKED_VECTOR2_ARRAY:
 			var vectors := PackedStringArray()
-			for vector in value as PackedVector2Array:
+			for vector: Vector2 in value:
 				@warning_ignore("return_value_discarded")
 				vectors.append(_on_type_Vector(vector, TYPE_VECTOR2))
 			if vectors.is_empty():
@@ -119,7 +119,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 
 		TYPE_PACKED_VECTOR3_ARRAY:
 			var vectors := PackedStringArray()
-			for vector in value as PackedVector3Array:
+			for vector: Vector3 in value:
 				@warning_ignore("return_value_discarded")
 				vectors.append(_on_type_Vector(vector, TYPE_VECTOR3))
 			if vectors.is_empty():
@@ -128,7 +128,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 
 		GdObjects.TYPE_PACKED_VECTOR4_ARRAY:
 			var vectors := PackedStringArray()
-			for vector:Variant in value as Array:
+			for vector: Vector4 in value:
 				@warning_ignore("return_value_discarded")
 				vectors.append(_on_type_Vector(vector, TYPE_VECTOR4))
 			if vectors.is_empty():
@@ -137,7 +137,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 
 		TYPE_PACKED_STRING_ARRAY:
 			var values := PackedStringArray()
-			for v in value as PackedStringArray:
+			for v: String in value:
 				@warning_ignore("return_value_discarded")
 				values.append('"%s"' % v)
 			if values.is_empty():
@@ -150,7 +150,7 @@ func _on_type_Array(value :Variant, type :int) -> String:
 		TYPE_PACKED_INT32_ARRAY,\
 		TYPE_PACKED_INT64_ARRAY:
 			var vectors := PackedStringArray()
-			for vector :Variant in value as Array:
+			for vector :Variant in value:
 				@warning_ignore("return_value_discarded")
 				vectors.append(str(vector))
 			if vectors.is_empty():
@@ -245,6 +245,7 @@ func _on_type_Basis(basis :Basis) -> String:
 	return "Basis(Vector3%s, Vector3%s, Vector3%s)" % [basis.x, basis.y, basis.z]
 
 
+@warning_ignore("unsafe_cast")
 static func decode(value :Variant) -> String:
 	var type := typeof(value)
 	if GdArrayTools.is_type_array(type) and (value as Array).is_empty():
@@ -262,6 +263,7 @@ static func decode(value :Variant) -> String:
 	return decoder.call(value)
 
 
+@warning_ignore("unsafe_cast")
 static func decode_typed(type :int, value :Variant) -> String:
 	if value == null:
 		return "null"

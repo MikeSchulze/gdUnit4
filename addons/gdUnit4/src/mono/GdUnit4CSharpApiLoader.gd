@@ -31,9 +31,9 @@ static func create_test_suite(source_path :String, line_number :int, test_suite_
 	if not GdUnit4CSharpApiLoader.is_mono_supported():
 		return  GdUnitResult.error("Can't create test suite. No C# support found.")
 	@warning_ignore("unsafe_method_access")
-	var result := instance().CreateTestSuite(source_path, line_number, test_suite_path) as Dictionary
+	var result: Dictionary = instance().CreateTestSuite(source_path, line_number, test_suite_path)
 	if result.has("error"):
-		return GdUnitResult.error(result.get("error") as String)
+		return GdUnitResult.error(str(result.get("error")))
 	return  GdUnitResult.success(result)
 
 

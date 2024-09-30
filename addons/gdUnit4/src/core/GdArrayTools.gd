@@ -77,6 +77,7 @@ static func as_string(elements: Variant, encode_value := true) -> String:
 	var delemiter := ", "
 	if elements == null:
 		return "<null>"
+	@warning_ignore("unsafe_cast")
 	if (elements as Array).is_empty():
 		return "<empty>"
 	var prefix := _typeof_as_string(elements) if encode_value else ""

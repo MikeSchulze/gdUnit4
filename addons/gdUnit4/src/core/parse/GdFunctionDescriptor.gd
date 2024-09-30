@@ -106,6 +106,7 @@ func return_type_as_string() -> String:
 	return GdObjects.type_as_string(return_type())
 
 
+@warning_ignore("unsafe_cast")
 func set_argument_value(arg_name: String, value: String) -> void:
 	(
 		_args.filter(func(arg: GdFunctionArgument) -> bool: return arg.name() == arg_name)\
@@ -149,21 +150,22 @@ func _to_string() -> String:
 
 # extract function description given by Object.get_method_list()
 static func extract_from(descriptor :Dictionary, is_engine_ := true) -> GdFunctionDescriptor:
-	var function_flags :int = descriptor["flags"]
+	var func_name: String = descriptor["name"]
+	var function_flags: int = descriptor["flags"]
 	var return_descriptor: Dictionary = descriptor["return"]
-	var is_virtual_ :bool = function_flags & METHOD_FLAG_VIRTUAL
-	var is_static_ :bool = function_flags & METHOD_FLAG_STATIC
-	var is_vararg_ :bool = function_flags & METHOD_FLAG_VARARG
-
+	var clazz_name: String = return_descriptor["class_name"]
+	var is_virtual_: bool = function_flags & METHOD_FLAG_VIRTUAL
+	var is_static_: bool = function_flags & METHOD_FLAG_STATIC
+	var is_vararg_: bool = function_flags & METHOD_FLAG_VARARG
 
 	return GdFunctionDescriptor.new(
-		descriptor["name"] as String,
+		func_name,
 		-1,
 		is_virtual_,
 		is_static_,
 		is_engine_,
 		_extract_return_type(return_descriptor),
-		return_descriptor["class_name"] as String,
+		clazz_name,
 		_extract_args(descriptor),
 		_build_varargs(is_vararg_)
 	)
@@ -232,7 +234,7 @@ static func _build_varargs(p_is_vararg :bool) -> Array[GdFunctionArgument]:
 
 
 static func _argument_name(arg :Dictionary) -> String:
-	return arg["name"] as String
+	return arg["name"]
 
 
 static func _argument_type(arg :Dictionary) -> int:

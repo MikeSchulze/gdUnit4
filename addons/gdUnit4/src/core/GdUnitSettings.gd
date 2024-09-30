@@ -339,7 +339,7 @@ static func reset_property(property :GdUnitProperty) -> void:
 static func validate_property_value(property :GdUnitProperty) -> Variant:
 	match property.name():
 		TEST_LOOKUP_FOLDER:
-			return validate_lookup_folder(property.value() as String)
+			return validate_lookup_folder(property.value_as_string())
 		_: return null
 
 

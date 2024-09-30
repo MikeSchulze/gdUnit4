@@ -138,13 +138,14 @@ func load_config(path :String = CONFIG_FILE) -> GdUnitResult:
 		var error := test_json_conv.parse(content)
 		if error != OK:
 			return GdUnitResult.error("The runner configuration '%s' is invalid! The format is changed please delete it manually and start a new test run." % path)
-		_config = test_json_conv.get_data() as Dictionary
+		_config = test_json_conv.get_data()
 		if not _config.has(VERSION):
 			return GdUnitResult.error("The runner configuration '%s' is invalid! The format is changed please delete it manually and start a new test run." % path)
 		fix_value_types()
 	return GdUnitResult.success(path)
 
 
+@warning_ignore("unsafe_cast")
 func fix_value_types() -> void:
 	# fix float value to int json stores all numbers as float
 	var server_port_ :int = _config.get(SERVER_PORT, -1)

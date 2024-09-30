@@ -17,6 +17,7 @@ var _inspector :InspectorTreeMainPanel
 
 
 func before_test() -> void:
+	@warning_ignore("unsafe_method_access")
 	_inspector = load("res://addons/gdUnit4/src/ui/parts/InspectorTreePanel.tscn").instantiate()
 	add_child(_inspector)
 	_inspector.init_tree()
@@ -440,7 +441,8 @@ func rebuild_tree_from_resource(resource: String) -> TreeItem:
 	var dict :Dictionary = JSON.parse_string(json.get_as_text())
 	var tree :Tree = auto_free(Tree.new())
 	var root := tree.create_item()
-	create_tree_item_form_dict(root, dict["TreeItem"] as Dictionary)
+	var items: Dictionary = dict["TreeItem"]
+	create_tree_item_form_dict(root, items)
 	return root
 
 
@@ -448,10 +450,12 @@ func create_tree_item_form_dict(item: TreeItem, data: Dictionary) -> TreeItem:
 	for key:String in data.keys():
 		match key:
 			"collapsed":
+				@warning_ignore("unsafe_cast")
 				item.collapsed = data[key] as bool
 
 			"TreeItem":
 				var next := item.create_child()
+				@warning_ignore("unsafe_cast")
 				return create_tree_item_form_dict(next, data[key] as Dictionary)
 
 			"childs":

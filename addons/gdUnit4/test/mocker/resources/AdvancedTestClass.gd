@@ -43,10 +43,12 @@ class Area4D extends Resource:
 	func get_sound() -> SoundData:
 		# sounds are optional
 		if _meta.has(SOUND):
+			@warning_ignore("unsafe_cast")
 			return _meta[SOUND] as SoundData
 		return null
 
 	func get_atmoshere() -> AtmosphereData:
+		@warning_ignore("unsafe_cast")
 		return _meta[ATMOSPHERE] as AtmosphereData
 
 var _areas : = {}
