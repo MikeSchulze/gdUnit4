@@ -501,7 +501,7 @@ static func create_instance(clazz :Variant) -> GdUnitResult:
 					return GdUnitResult.success(script.new())
 				else:
 					return GdUnitResult.error("Can't create instance for '%s'." % clazz_name)
-	return GdUnitResult.error("Can't create instance for class '%s'." % clazz)
+	return GdUnitResult.error("Can't create instance for class '%s'." % str(clazz))
 
 
 @warning_ignore("return_value_discarded")
@@ -581,7 +581,7 @@ static func extract_class_name(clazz :Variant) -> GdUnitResult:
 	@warning_ignore("unsafe_method_access")
 	var instance :Variant = clazz.new()
 	if instance == null:
-		return GdUnitResult.error("Can't create a instance for class '%s'" % clazz)
+		return GdUnitResult.error("Can't create a instance for class '%s'" % str(clazz))
 	var result := extract_class_name(instance)
 	@warning_ignore("return_value_discarded")
 	GdUnitTools.free_instance(instance)

@@ -38,8 +38,7 @@ func execute(src_script: GDScript, value: Variant) -> Variant:
 	@warning_ignore("return_value_discarded")
 	script.reload(true)
 	var runner: Variant = script.new()
-	@warning_ignore("unsafe_method_access")
-	if runner.has_method("queue_free"):
+	if (runner as Object).has_method("queue_free"):
 		(runner as Node).queue_free()
 	@warning_ignore("unsafe_method_access")
 	return runner.__run_expression()

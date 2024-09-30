@@ -106,7 +106,7 @@ func is_not_instanceof(type :Variant) -> GdUnitObjectAssert:
 	if is_instance_of(current, type):
 		var result: = GdObjects.extract_class_name(type)
 		if result.is_success():
-			return report_error("Expected not be a instance of <%s>" % result.value())
+			return report_error("Expected not be a instance of <%s>" % str(result.value()))
 
 		push_error("Internal ERROR: %s" % result.error_message())
 		return self

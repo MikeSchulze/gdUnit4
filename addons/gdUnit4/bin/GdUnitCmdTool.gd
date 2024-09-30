@@ -124,6 +124,7 @@ class CLIRunner:
 			prints("Finallize .. done")
 
 
+	@warning_ignore("unsafe_method_access")
 	func _process(_delta :float) -> void:
 		match _state:
 			INIT:
@@ -137,13 +138,11 @@ class CLIRunner:
 					set_process(false)
 					# process next test suite
 					var test_suite := _test_suites_to_process.pop_front() as Node
-					@warning_ignore("unsafe_method_access")
+
 					if _cs_executor != null and _cs_executor.IsExecutable(test_suite):
-						@warning_ignore("unsafe_method_access")
 						_cs_executor.Execute(test_suite)
 						await _cs_executor.ExecutionCompleted
 					else:
-						@warning_ignore("unsafe_method_access")
 						await _executor.execute(test_suite)
 					set_process(true)
 			STOP:
@@ -204,13 +203,13 @@ class CLIRunner:
 
 	func show_version() -> void:
 		_console.prints_color(
-			"Godot %s" % Engine.get_version_info().get("string"),
+			"Godot %s" % Engine.get_version_info().get("string") as String,
 			Color.DARK_SALMON
 		)
 		var config := ConfigFile.new()
 		config.load("addons/gdUnit4/plugin.cfg")
 		_console.prints_color(
-			"GdUnit4 %s" % config.get_value("plugin", "version"),
+			"GdUnit4 %s" % config.get_value("plugin", "version") as String,
 			Color.DARK_SALMON
 		)
 		quit(RETURN_SUCCESS)

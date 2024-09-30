@@ -45,7 +45,7 @@ func test_is_null(value :Variant, test_parameters := _test_seta) -> void:
 	else:
 		assert_failure(func() -> void: assert_vector(value).is_null()) \
 			.is_failed() \
-			.starts_with_message("Expecting: '<null>' but was '%s'" % value)
+			.starts_with_message("Expecting: '<null>' but was '%s'" % str(value))
 
 
 @warning_ignore("unused_parameter")

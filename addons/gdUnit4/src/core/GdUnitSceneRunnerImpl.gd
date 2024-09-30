@@ -118,6 +118,7 @@ func simulate_action_press(action: String) -> GdUnitSceneRunner:
 	event.pressed = true
 	event.action = action
 	if Engine.get_version_info().hex >= 0x40300:
+		@warning_ignore("unsafe_property_access")
 		event.event_index = InputMap.get_actions().find(action)
 	_action_on_press.append(action)
 	return _handle_input_event(event)
@@ -129,6 +130,7 @@ func simulate_action_release(action: String) -> GdUnitSceneRunner:
 	event.pressed = false
 	event.action = action
 	if Engine.get_version_info().hex >= 0x40300:
+		@warning_ignore("unsafe_property_access")
 		event.event_index = InputMap.get_actions().find(action)
 	_action_on_press.erase(action)
 	return _handle_input_event(event)
