@@ -46,7 +46,7 @@ func after() -> void:
 		.is_equal(1)
 	
 	for test_case :String in _metrics.keys():
-		var statistics := _metrics[test_case] as TestCaseStatistics
+		var statistics: TestCaseStatistics = _metrics[test_case]
 		assert_int(statistics._testcase_before_called)\
 			.override_failure_message("Expect before_test called %s times but is %s for test case %s" % [statistics._expected_calls, statistics._testcase_before_called, test_case])\
 			.is_equal(statistics._expected_calls)
