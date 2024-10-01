@@ -62,6 +62,11 @@ static func load_cs_script(resource_path :String, debug_write := false) -> Scrip
 
 
 static func load_gd_script(resource_path :String, debug_write := false) -> GDScript:
+		# grap current level
+	var unsafe_method_access: Variant = ProjectSettings.get_setting("debug/gdscript/warnings/unsafe_method_access")
+	# disable and load the script
+	ProjectSettings.set_setting("debug/gdscript/warnings/unsafe_method_access", 0)
+
 	var script := GDScript.new()
 	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
 	var script_resource_path := resource_path.replace(resource_path.get_extension(), "gd")
@@ -78,4 +83,6 @@ static func load_gd_script(resource_path :String, debug_write := false) -> GDScr
 	var error := script.reload()
 	if error != OK:
 		push_error("Errors on loading script %s. Error: %s" % [resource_path, error_string(error)])
+	ProjectSettings.set_setting("debug/gdscript/warnings/unsafe_method_access", unsafe_method_access)
 	return script
+	#@warning_ignore("unsafe_cast")

@@ -2,6 +2,7 @@
 extends GdUnitTestSuite
 
 func before() -> void:
+	@warning_ignore("unsafe_cast")
 	add_child(auto_free(Node.new()) as Node)
 
 func test_case1() -> void:
