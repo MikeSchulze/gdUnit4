@@ -28,7 +28,9 @@ jobs:
           lfs: true
 
       - name: Setup GDLint
-        uses: Scony/godot-gdscript-toolkit@4.3.1
+        uses: Scony/godot-gdscript-toolkit@master
+        with:
+          version: 4.3.1
 
       - name: Run GDLint
         id: run-gdlint
