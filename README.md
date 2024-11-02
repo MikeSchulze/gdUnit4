@@ -177,3 +177,5 @@ We value your input and appreciate your contributions to make GdUnit4 even bette
 [<img src="https://avatars.githubusercontent.com/u/822035?v=4)" alt="bitbrain" width="125"/>](https://github.com/bitbrain) miguel a.k. bitbrain
 [<img src="https://avatars.githubusercontent.com/u/2313134?v=4" alt="sebastianhutter" width="125"/>](https://github.com/sebastianhutter) Sebastian Hutter
 [<img src="https://avatars.githubusercontent.com/u/836370?v=4" alt="rafaelGuerreiro" width="125"/>](https://github.com/rafaelGuerreiro) Rafael Guerreiro
+[<img src="https://avatars.githubusercontent.com/u/58704291?v=4" alt="greenpixels" width="125"/>](https://github.com/greenpixels) Sven Teigler
+
