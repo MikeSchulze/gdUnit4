@@ -93,6 +93,14 @@ static func as_string(elements: Variant, encode_value := true) -> String:
 	return prefix + "[" + formatted + "]"
 
 
+static func has_same_content(current: Array, other: Array) -> bool:
+	if current.size() != other.size(): return false
+	for element: Variant in current:
+		if not other.has(element): return false
+		if current.count(element) != other.count(element): return false
+	return true
+
+
 static func _typeof_as_string(value :Variant) -> String:
 	var type := typeof(value)
 	# for untyped array we retun empty string

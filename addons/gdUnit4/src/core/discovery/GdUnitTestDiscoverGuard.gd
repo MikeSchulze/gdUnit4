@@ -1,9 +1,35 @@
 extends RefCounted
 
+
+# Caches all test indices for parameterized tests
+class TestCaseIndicesCache:
+	var _cache := {}
+
+	func _key(resource_path: String, test_name: String) -> StringName:
+		return &"%s_%s" % [resource_path, test_name]
+
+
+	func contains_test_case(resource_path: String, test_name: String) -> bool:
+		return _cache.has(_key(resource_path, test_name))
+
+
+	func validate(resource_path: String, test_name: String, indices: PackedStringArray) -> bool:
+		var cached_indicies: PackedStringArray = _cache[_key(resource_path, test_name)]
+		return GdArrayTools.has_same_content(cached_indicies, indices)
+
+
+	func sync(resource_path: String, test_name: String, indices: PackedStringArray) -> void:
+		if indices.is_empty():
+			_cache[_key(resource_path, test_name)] = []
+		else:
+			_cache[_key(resource_path, test_name)] = indices
+
 # contains all tracked test suites where discovered since editor start
 # key : test suite resource_path
 # value: the list of discovered test case names
 var _discover_cache := {}
+
+var discovered_test_case_indices_cache := TestCaseIndicesCache.new()
 
 
 func _init() -> void:
@@ -12,11 +38,12 @@ func _init() -> void:
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(sync_cache)
 
 
-func sync_cache(dto :GdUnitTestSuiteDto) -> void:
+func sync_cache(dto: GdUnitTestSuiteDto) -> void:
 	var resource_path := ProjectSettings.localize_path(dto.path())
-	var discovered_test_cases :Array[String] = []
+	var discovered_test_cases: Array[String] = []
 	for test_case in dto.test_cases():
 		discovered_test_cases.append(test_case.name())
+		discovered_test_case_indices_cache.sync(resource_path, test_case.name(), test_case.test_case_names())
 	_discover_cache[resource_path] = discovered_test_cases
 
 
@@ -54,6 +81,19 @@ func discover(script: Script) -> void:
 			if not discovered_test_cases.has(test_case):
 				tests_added.append(test_case)
 
+		# We need to scan for parameterized test because of possible test data changes
+		# For more details look at https://github.com/MikeSchulze/gdUnit4/issues/592
+		for test_case_name in script_test_cases:
+			if discovered_test_case_indices_cache.contains_test_case(script_path, test_case_name):
+				var test_case: _TestCase = test_suite.find_child(test_case_name, false, false)
+				var test_indices := test_case.test_case_names()
+				if not discovered_test_case_indices_cache.validate(script_path, test_case_name, test_indices):
+					if !tests_removed.has(test_case_name):
+						tests_removed.append(test_case_name)
+					if !tests_added.has(test_case_name):
+						tests_added.append(test_case_name)
+					discovered_test_case_indices_cache.sync(script_path, test_case_name, test_indices)
+
 		# finally notify changes to the inspector
 		if not tests_removed.is_empty() or not tests_added.is_empty():
 			# emit deleted tests
@@ -68,6 +108,10 @@ func discover(script: Script) -> void:
 				var dto := GdUnitTestCaseDto.new()
 				dto = dto.deserialize(dto.serialize(test_case))
 				GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverTestAdded.new(script_path, suite_name, dto))
+				# if the parameterized test fresh added we need to sync the cache
+				if not discovered_test_case_indices_cache.contains_test_case(script_path, test_name):
+					discovered_test_case_indices_cache.sync(script_path, test_name, dto.test_case_names())
+
 			# update the cache
 			_discover_cache[script_path] = discovered_test_cases
 			test_suite.queue_free()
@@ -75,7 +119,14 @@ func discover(script: Script) -> void:
 
 func extract_test_functions(test_suite :Node) -> PackedStringArray:
 	return test_suite.get_children()\
+		.filter(func(child: Node) -> bool: return is_instance_of(child, _TestCase))\
 		.map(func (child: Node) -> String: return child.get_name())
+
+
+func is_paramaterized_test(test_suite :Node, test_case_name: String) -> bool:
+	return test_suite.get_children()\
+		.filter(func(child: Node) -> bool: return child.name == test_case_name)\
+		.any(func (test: _TestCase) -> bool: return test.is_parameterized())
 
 
 # do rebuild the entire project, there is actual no way to enforce the Godot engine itself to do this
