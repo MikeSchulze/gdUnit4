@@ -367,7 +367,7 @@ func get_function_descriptors(script: GDScript, included_functions: PackedString
 		var func_name: String = method_descriptor["name"]
 		if included_functions.is_empty() or func_name in included_functions:
 			# exclude type set/geters
-			if func_name in ["@type_setter", "@type_getter"]:
+			if is_getter_or_setter(func_name):
 				continue
 			if not fds.any(func(fd: GdFunctionDescriptor) -> bool: return fd.name() == func_name):
 				fds.append(GdFunctionDescriptor.extract_from(method_descriptor, false))
@@ -377,6 +377,10 @@ func get_function_descriptors(script: GDScript, included_functions: PackedString
 	_prescan_script(script)
 	_enrich_function_descriptor(script, fds)
 	return fds
+
+
+func is_getter_or_setter(func_name: String) -> bool:
+	return func_name.begins_with("@") and (func_name.ends_with("getter") or func_name.ends_with("setter"))
 
 
 func _parse_function_arguments(input: String) -> Dictionary:
