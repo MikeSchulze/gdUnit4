@@ -753,6 +753,26 @@ func test_mock_class_with_inner_classs_() -> void:
 	assert_object(mock_c).is_not_null()
 
 
+func test_mock_class_with_property_getter_and_setter() -> void:
+	var c :Variant = mock(ClassWithParameterGetterSetter)
+
+	# inital value
+	assert_int(c._session_count).is_equal(42)
+
+	# overwrite it by 10
+	c._session_count = 10
+
+	# verify the paramater is set to 10
+	assert_int(c._session_count).is_equal(10)
+	# verify the method still returns the default value
+	assert_int(c.session_count()).is_equal(0)
+
+	# mock the function to return a cutom value
+	do_return(23).on(c).session_count()
+	# verify the method now returns the new value
+	assert_int(c.session_count()).is_equal(23)
+
+
 @warning_ignore("unsafe_method_access")
 func test_do_return() -> void:
 	var mocked_node: Variant = mock(Node)
