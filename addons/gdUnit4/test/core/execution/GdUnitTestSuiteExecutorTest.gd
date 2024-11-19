@@ -735,14 +735,28 @@ func test_execute_test_suite_is_skipped() -> void:
 	# the entire test-suite is skipped
 	assert_event_states(events).contains_exactly([
 		tuple("before", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case1", false, SKIPPED, false, false, false),
+		tuple("test_case2", SUCCEEDED, NOT_SKIPPED, false, false, false),
+		tuple("test_case2", false, SKIPPED, false, false, false),
 		tuple("after", FAILED, SKIPPED, false, false, false),
 	])
 	assert_event_reports(events, [
 			[],
+			[],
+			["""
+				This test is skipped!
+				  Reason: 'Skipped from the entire test suite'
+				""".dedent().trim_prefix("\n")],
+			[],
+			["""
+				This test is skipped!
+				  Reason: 'Skipped from the entire test suite'
+				""".dedent().trim_prefix("\n")],
 			# must fail after three iterations
 			["""
-				Entire test-suite is skipped!
-				  Tests skipped: '2'
+				The Entire test-suite is skipped!
+				  Skipped '2' tests
 				  Reason: 'do not run this'
 				""".dedent().trim_prefix("\n")]
 		])

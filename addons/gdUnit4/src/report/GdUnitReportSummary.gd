@@ -59,7 +59,7 @@ func test_executed_count() -> int:
 
 
 func success_count() -> int:
-	return test_count() - error_count() - failure_count() - flaky_count()
+	return test_count() - error_count() - failure_count() - flaky_count() - skipped_count()
 
 
 func error_count() -> int:
@@ -95,14 +95,16 @@ func add_report(report :GdUnitReportSummary) -> void:
 
 
 func report_state() -> String:
-	return calculate_state(error_count(), failure_count(), orphan_count(), flaky_count())
+	return calculate_state(error_count(), failure_count(), orphan_count(), flaky_count(), skipped_count())
 
 
 func succes_rate() -> String:
 	return calculate_succes_rate(test_count(), error_count(), failure_count())
 
 
-func calculate_state(p_error_count :int, p_failure_count :int, p_orphan_count :int, p_flaky_count: int) -> String:
+func calculate_state(p_error_count :int, p_failure_count :int, p_orphan_count :int, p_flaky_count: int, p_skipped_count: int) -> String:
+	if p_skipped_count > 0:
+		return "SKIPPED"
 	if p_error_count > 0:
 		return "ERROR"
 	if p_failure_count > 0:

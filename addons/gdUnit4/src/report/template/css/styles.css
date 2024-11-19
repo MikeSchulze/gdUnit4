@@ -330,6 +330,10 @@ th.report-column {
 	transition: width 0.3s ease;
 }
 
+.status-skipped {
+	background-color: #888888;
+}
+
 .status-passed {
 	background-color: #63bb38;
 }
