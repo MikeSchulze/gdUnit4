@@ -192,11 +192,12 @@ static func resource_as_string(resource_path :String) -> String:
 
 
 static func make_qualified_path(path :String) -> String:
-	if not path.begins_with("res://"):
-		if path.begins_with("//"):
-			return path.replace("//", "res://")
-		if path.begins_with("/"):
-			return "res:/" + path
+	if path.begins_with("res://"):
+		return path
+	if path.begins_with("//"):
+		return path.replace("//", "res://")
+	if path.begins_with("/"):
+		return "res:/" + path
 	return path
 
 

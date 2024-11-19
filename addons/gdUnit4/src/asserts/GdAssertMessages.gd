@@ -179,10 +179,10 @@ static func test_timeout(timeout :int) -> String:
 static func test_suite_skipped(hint :String, skip_count :int) -> String:
 	return """
 		%s
-		  Tests skipped: %s
+		  Skipped %s tests
 		  Reason: %s
 		""".dedent().trim_prefix("\n")\
-		% [_error("Entire test-suite is skipped!"), _colored_value(skip_count), _colored_value(hint)]
+		% [_error("The Entire test-suite is skipped!"), _colored_value(skip_count), _colored_value(hint)]
 
 
 static func test_skipped(hint :String) -> String:

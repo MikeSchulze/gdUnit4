@@ -123,10 +123,14 @@ func test_skip_test_suite() -> void:
 	# add two more
 	config.skip_test_suite("res://foo2")
 	config.skip_test_suite("res://bar/foo1")
+	config.skip_test_suite("res://bar/foo2/")
+	config.skip_test_suite("bar/foo3/")
 	assert_dict(config.skipped())\
 		.contains_key_value("res://foo1", PackedStringArray())\
 		.contains_key_value("res://foo2", PackedStringArray())\
-		.contains_key_value("res://bar/foo1", PackedStringArray())
+		.contains_key_value("res://bar/foo1", PackedStringArray())\
+		.contains_key_value("res://bar/foo2/", PackedStringArray())\
+		.contains_key_value("bar/foo3/", PackedStringArray())
 
 
 func test_skip_test_suite_and_test_case() -> void:

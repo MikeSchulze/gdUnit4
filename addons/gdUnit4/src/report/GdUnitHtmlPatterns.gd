@@ -13,6 +13,7 @@ const TABLE_RECORD_TESTSUITE = """
 									<td>${duration}</td>
 									<td>
 										<div class="status-bar">
+											<div class="status-bar-column status-skipped" style="width: ${skipped-percent};"></div>
 											<div class="status-bar-column status-passed" style="width: ${passed-percent};"></div>
 											<div class="status-bar-column status-flaky" style="width: ${flaky-percent};"></div>
 											<div class="status-bar-column status-error" style="width: ${error-percent};"></div>
@@ -35,6 +36,7 @@ const TABLE_RECORD_PATH = """
 									<td>${duration}</td>
 									<td>
 										<div class="status-bar">
+											<div class="status-bar-column status-skipped" style="width: ${passed-skipped};"></div>
 											<div class="status-bar-column status-passed" style="width: ${passed-percent};"></div>
 											<div class="status-bar-column status-flaky" style="width: ${flaky-percent};"></div>
 											<div class="status-bar-column status-error" style="width: ${error-percent};"></div>
@@ -95,6 +97,8 @@ const DURATION = "${duration}"
 const FAILURE_REPORT = "${failure-report}"
 const SUCCESS_PERCENT = "${success_percent}"
 
+
+const QUICK_STATE_SKIPPED = "${skipped-percent}"
 const QUICK_STATE_PASSED = "${passed-percent}"
 const QUICK_STATE_FLAKY = "${flaky-percent}"
 const QUICK_STATE_ERROR = "${error-percent}"
@@ -128,6 +132,7 @@ static func build(template: String, report: GdUnitReportSummary, report_link: St
 		.replace(SUCCESS_PERCENT, report.calculate_succes_rate(report.test_count(), report.error_count(), report.failure_count()))\
 		.replace(REPORT_STATE, report.report_state().to_lower())\
 		.replace(REPORT_STATE_LABEL, report.report_state())\
+		.replace(QUICK_STATE_SKIPPED, calculate_percentage(report.test_count(), report.skipped_count()))\
 		.replace(QUICK_STATE_PASSED, calculate_percentage(report.test_count(), report.success_count()))\
 		.replace(QUICK_STATE_FLAKY, calculate_percentage(report.test_count(), report.flaky_count()))\
 		.replace(QUICK_STATE_ERROR, calculate_percentage(report.test_count(), report.error_count()))\

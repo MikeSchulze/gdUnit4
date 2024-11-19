@@ -12,7 +12,8 @@ func _ready() -> void:
 	#var tool := CmdTool.new()
 
 	var runner := CmdTool.CLIRunner.new()
-	runner._debug_cmd_args = [\"GdUnitCmdTool.gd\", \"--add\", \"res://addons/gdUnit4/test/asserts\", \"--continue\", \"-rc\", \"1\"]
+	runner._debug_cmd_args = [\"GdUnitCmdTool.gd\", \"--add\", \"res://addons/gdUnit4/test/cmd\", \"-i\", \"CmdArgumentParserTest\", \"--continue\", \"-rc\", \"1\"]
+
 	add_child(runner)
 
 

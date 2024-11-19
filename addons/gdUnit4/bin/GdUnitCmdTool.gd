@@ -397,7 +397,7 @@ class CLIRunner:
 		var skipped := config.skipped()
 		if skipped.is_empty():
 			return
-		_console.prints_warning("Found excluded test suite's configured at '%s'" % _runner_config_file)
+
 		for test_suite in test_suites:
 			# skipp c# testsuites for now
 			if test_suite.get_script() == null:
@@ -407,23 +407,23 @@ class CLIRunner:
 
 	# Dictionary[String, PackedStringArray]
 	func skip_suite(test_suite: Node, skipped: Dictionary) -> void:
-		var skipped_suites :Array[String] = skipped.keys()
+		var skipped_suites :Array = skipped.keys()
 		var suite_name := test_suite.get_name()
 		var test_suite_path: String = (
 			test_suite.get_meta("ResourcePath") if test_suite.get_script() == null
 			else test_suite.get_script().resource_path
 		)
-		for suite_to_skip in skipped_suites:
+		for suite_to_skip: String in skipped_suites:
 			# if suite skipped by path or name
 			if (
 				suite_to_skip == test_suite_path
 				or (suite_to_skip.is_valid_filename() and suite_to_skip == suite_name)
 			):
-				var skipped_tests: Array[String] = skipped.get(suite_to_skip)
-				var skip_reason := "Excluded by config '%s'" % _runner_config_file
+				var skipped_tests: PackedStringArray = skipped.get(suite_to_skip)
+				var skip_reason := "Excluded by configuration"
 				# if no tests skipped test the complete suite is skipped
 				if skipped_tests.is_empty():
-					_console.prints_warning("Mark test suite '%s' as skipped!" % suite_to_skip)
+					_console.prints_warning("Mark the entire test suite '%s' as skipped!" % test_suite_path)
 					@warning_ignore("unsafe_property_access")
 					test_suite.__is_skipped = true
 					@warning_ignore("unsafe_property_access")
