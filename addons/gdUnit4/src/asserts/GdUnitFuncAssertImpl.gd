@@ -29,15 +29,19 @@ func _init(instance :Object, func_name :String, args := Array()) -> void:
 		_current_value_provider = CallBackValueProvider.new(instance, func_name, args)
 
 
-func _notification(_what :int) -> void:
-	if is_instance_valid(_current_value_provider):
-		_current_value_provider.dispose()
-		_current_value_provider = null
-	if is_instance_valid(_sleep_timer):
-		(Engine.get_main_loop() as SceneTree).root.remove_child(_sleep_timer)
-		_sleep_timer.stop()
-		_sleep_timer.free()
-		_sleep_timer = null
+func _notification(what :int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		_interrupted = true
+		var main_node :Node = (Engine.get_main_loop() as SceneTree).root
+		if is_instance_valid(_current_value_provider):
+			_current_value_provider.dispose()
+			_current_value_provider = null
+		if is_instance_valid(_sleep_timer):
+			_sleep_timer.set_wait_time(0.0001)
+			_sleep_timer.stop()
+			main_node.remove_child(_sleep_timer)
+			_sleep_timer.free()
+			_sleep_timer = null
 
 
 func report_success() -> GdUnitFuncAssert:
@@ -114,6 +118,10 @@ func cb_is_equal(c :Variant, e :Variant) -> bool: return GdObjects.equals(c,e)
 func cb_is_not_equal(c :Variant, e :Variant) -> bool: return not GdObjects.equals(c, e)
 
 
+func do_interrupt() -> void:
+	_interrupted = true
+
+
 func _validate_callback(predicate :Callable, expected :Variant = null) -> void:
 	if _interrupted:
 		return
@@ -125,9 +133,7 @@ func _validate_callback(predicate :Callable, expected :Variant = null) -> void:
 	scene_tree.root.add_child(timer)
 	timer.add_to_group("GdUnitTimers")
 	@warning_ignore("return_value_discarded")
-	timer.timeout.connect(func do_interrupt() -> void:
-		_interrupted = true
-		, CONNECT_DEFERRED)
+	timer.timeout.connect(do_interrupt, CONNECT_DEFERRED)
 	timer.set_one_shot(true)
 	timer.start((_timeout/1000.0)*time_scale)
 	_sleep_timer = Timer.new()

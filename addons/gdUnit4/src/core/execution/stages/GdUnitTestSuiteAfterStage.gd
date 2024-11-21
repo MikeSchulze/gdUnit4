@@ -12,8 +12,6 @@ func _execute(context :GdUnitExecutionContext) -> void:
 
 	@warning_ignore("redundant_await")
 	await test_suite.after()
-	# unreference last used assert form the test to prevent memory leaks
-	GdUnitThreadManager.get_current_context().set_assert(null)
 	await context.gc()
 	var reports := context.build_reports(false)
 	fire_event(GdUnitEvent.new()\
