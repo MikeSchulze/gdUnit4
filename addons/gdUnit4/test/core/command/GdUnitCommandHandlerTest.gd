@@ -15,8 +15,7 @@ func before() -> void:
 
 
 func after() -> void:
-	_handler._notification(NOTIFICATION_PREDELETE)
-	_handler = null
+	_handler.free()
 
 
 @warning_ignore('unused_parameter')
