@@ -22,6 +22,14 @@ func _init(emitter :Object) -> void:
 	GdAssertReports.reset_last_error_line_number()
 
 
+func _notification(what :int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		_interrupted = true
+		if is_instance_valid(_emitter):
+			_signal_collector.unregister_emitter(_emitter)
+		_emitter = null
+
+
 func report_success() -> GdUnitAssert:
 	GdAssertReports.report_success()
 	return self

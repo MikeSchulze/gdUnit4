@@ -348,5 +348,7 @@ func register_auto_free(obj: Variant) -> Variant:
 
 ## Runs the gdunit garbage collector to free registered object
 func gc() -> void:
+	# unreference last used assert form the test to prevent memory leaks
+	GdUnitThreadManager.get_current_context().clear_assert()
 	await _memory_observer.gc()
 	orphan_monitor_stop()
