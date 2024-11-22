@@ -20,7 +20,6 @@ offset_left = 250.0
 offset_top = 240.0
 offset_right = 355.0
 offset_bottom = 345.0
-auto_translate = false
 localize_numeral_system = false
 metadata/_edit_use_anchors_ = true
 

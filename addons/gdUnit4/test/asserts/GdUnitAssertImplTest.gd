@@ -78,7 +78,9 @@ func test_is_null() -> void:
 	assert_failure(func() -> void: assert_that(Color.RED).is_null()) \
 		.is_failed() \
 		.has_line(78) \
-		.starts_with_message("Expecting: '<null>' but was 'Color(1, 0, 0, 1)'")
+		.starts_with_message("Expecting: '<null>' but was 'Color$v0'"
+			.replace("$v0", str(Color.RED))
+		)
 
 
 func test_is_not_null() -> void:
@@ -86,7 +88,7 @@ func test_is_not_null() -> void:
 
 	assert_failure(func() -> void: assert_that(null).is_not_null()) \
 		.is_failed() \
-		.has_line(87) \
+		.has_line(89) \
 		.has_message("Expecting: not to be '<null>'")
 
 
@@ -96,8 +98,11 @@ func test_is_equal() -> void:
 
 	assert_failure(func() -> void: assert_that(Color.RED).is_equal(Color.GREEN)) \
 		.is_failed() \
-		.has_line(97) \
-		.has_message("Expecting:\n 'Color(0, 1, 0, 1)'\n but was\n 'Color(1, 0, 0, 1)'")
+		.has_line(99) \
+		.has_message("Expecting:\n 'Color$v0'\n but was\n 'Color$v1'"
+			.replace("$v0", str(Color.GREEN))
+			.replace("$v1", str(Color.RED))
+		)
 
 
 func test_is_not_equal() -> void:
@@ -106,8 +111,11 @@ func test_is_not_equal() -> void:
 
 	assert_failure(func() -> void: assert_that(Color.RED).is_not_equal(Color.RED)) \
 		.is_failed() \
-		.has_line(107) \
-		.has_message("Expecting:\n 'Color(1, 0, 0, 1)'\n not equal to\n 'Color(1, 0, 0, 1)'")
+		.has_line(112) \
+		.has_message("Expecting:\n 'Color$v0'\n not equal to\n 'Color$v1'"
+			.replace("$v0", str(Color.RED))
+			.replace("$v1", str(Color.RED))
+		)
 
 
 func test_override_failure_message() -> void:
@@ -116,14 +124,14 @@ func test_override_failure_message() -> void:
 			.override_failure_message("Custom failure message") \
 			.is_null()) \
 		.is_failed() \
-		.has_line(115) \
+		.has_line(123) \
 		.has_message("Custom failure message")
 
 
 func test_assert_not_yet_implemented() -> void:
 	assert_failure(func() -> void: assert_not_yet_implemented()) \
 		.is_failed() \
-		.has_line(124) \
+		.has_line(132) \
 		.has_message("Test not implemented!")
 
 

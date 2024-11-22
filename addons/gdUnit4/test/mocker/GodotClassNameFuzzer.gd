@@ -19,7 +19,10 @@ const EXCLUDED_CLASSES = [
 	"FramebufferCacheRD",
 	"UniformSetCacheRD",
 	# GD-110 - missing enum `Vector3.Axis`
-	"Sprite3D", "AnimatedSprite3D",
+	"Sprite3D", "AnimatedSprite3D", "LookAtModifier3D",
+	# Godot-4-4_dev5 unknown classes
+	"AnimationNodeStartState",
+	"AnimationNodeEndState"
 ]
 
 

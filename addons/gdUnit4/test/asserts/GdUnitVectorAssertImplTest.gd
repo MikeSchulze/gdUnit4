@@ -67,11 +67,16 @@ func test_is_equal() -> void:
 	# is not equal
 	assert_failure(func() -> void: assert_vector(Vector2.ONE).is_equal(Vector2(1.2, 1.000001))) \
 		.is_failed() \
-		.has_message("Expecting:\n '(1.2, 1.000001)'\n but was\n '(1, 1)'")
+		.has_message("Expecting:\n '$v0'\n but was\n '$v1'"
+			.replace("$v0", str(Vector2(1.2, 1.000001)))
+			.replace("$v1", str(Vector2.ONE))
+			)
 	# is null
 	assert_failure(func() -> void: assert_vector(null).is_equal(Vector2(1.2, 1.000001))) \
 		.is_failed() \
-		.has_message("Expecting:\n '(1.2, 1.000001)'\n but was\n '<null>'")
+		.has_message("Expecting:\n '$v0'\n but was\n '<null>'"
+			.replace("$v0", str(Vector2(1.2, 1.000001)))
+		)
 	# comparing different vector types
 	assert_failure(func() -> void: assert_vector(Vector2.ONE).is_equal(Vector3.ONE)) \
 		.is_failed() \
@@ -108,15 +113,34 @@ func test_is_equal_approx() -> void:
 	assert_vector(Vector2(0.996, 0.996)).is_equal_approx(Vector2.ONE, Vector2(0.004, 0.004))
 	assert_vector(Vector2(1.004, 1.004)).is_equal_approx(Vector2.ONE, Vector2(0.004, 0.004))
 
+	var current := Vector2(1.005, 1)
+	var approx_min := Vector2.ONE - Vector2(0.004, 0.004)
+	var approx_max := Vector2.ONE + Vector2(0.004, 0.004)
 	assert_failure(func() -> void: assert_vector(Vector2(1.005, 1)).is_equal_approx(Vector2.ONE, Vector2(0.004, 0.004))) \
 		.is_failed() \
-		.has_message("Expecting:\n '(1.005, 1)'\n in range between\n '(0.996, 0.996)' <> '(1.004, 1.004)'")
-	assert_failure(func() -> void: assert_vector(Vector2(1, 0.995)).is_equal_approx(Vector2.ONE, Vector2(0, 0.004))) \
+		.has_message("Expecting:\n '$v0'\n in range between\n '$v1' <> '$v2'"
+			.replace("$v0", str(current))
+			.replace("$v1", str(approx_min))
+			.replace("$v2", str(approx_max))
+		)
+
+	current = Vector2(1, 0.995)
+	approx_min = Vector2.ONE - Vector2(0, 0.004)
+	approx_max = Vector2.ONE + Vector2(0, 0.004)
+	assert_failure(func() -> void: assert_vector(current).is_equal_approx(Vector2.ONE, Vector2(0, 0.004))) \
 		.is_failed() \
-		.has_message("Expecting:\n '(1, 0.995)'\n in range between\n '(1, 0.996)' <> '(1, 1.004)'")
+		.has_message("Expecting:\n '$v0'\n in range between\n '$v1' <> '$v2'"
+			.replace("$v0", str(current))
+			.replace("$v1", str(approx_min))
+			.replace("$v2", str(approx_max))
+		)
+
 	assert_failure(func() -> void: assert_vector(null).is_equal_approx(Vector2.ONE, Vector2(0, 0.004))) \
 		.is_failed() \
-		.has_message("Expecting:\n '<null>'\n in range between\n '(1, 0.996)' <> '(1, 1.004)'")
+		.has_message("Expecting:\n '<null>'\n in range between\n '$v1' <> '$v2'"
+			.replace("$v1", str(approx_min))
+			.replace("$v2", str(approx_max))
+		)
 	assert_failure(func() -> void: assert_vector(Vector2(1.2, 1.000001)).is_equal_approx(Vector3.ONE, Vector3(1.2, 1.000001, 1.0))) \
 		.is_failed() \
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
@@ -129,14 +153,16 @@ func test_is_equal_approx() -> void:
 			 '(0.87843, 0.105881)' <> '(0.878432, 0.105883)'"""
 			.dedent().trim_prefix("\n")
 		)
-	assert_failure(func() -> void: assert_vector(Vector3(0.0, 0.878431, 0.505882)).is_equal_approx(Vector3(0.0, 0.878431, 0.105882), Vector3(0.000001, 0.000001, 0.000001))) \
+	var currentV3 := Vector3(0.0, 0.878431, 0.505882)
+	assert_failure(func() -> void: assert_vector(currentV3).is_equal_approx(Vector3(0.0, 0.878431, 0.105882), Vector3(0.000001, 0.000001, 0.000001))) \
 		.is_failed() \
 		.has_message("""
 			Expecting:
-			 '(0, 0.878431, 0.505882)'
+			 '$v0'
 			 in range between
 			 '(-0.000001, 0.87843, 0.105881)' <> '(0.000001, 0.878432, 0.105883)'"""
 			.dedent().trim_prefix("\n")
+			.replace("$v0", str(currentV3))
 		)
 
 
@@ -158,7 +184,10 @@ func test_is_less() -> void:
 
 	assert_failure(func() -> void: assert_vector(Vector2.ONE).is_less(Vector2.ONE)) \
 		.is_failed() \
-		.has_message("Expecting to be less than:\n '(1, 1)' but was '(1, 1)'")
+		.has_message("Expecting to be less than:\n '$v0' but was '$v1'"
+			.replace("$v0", str(Vector2.ONE))
+			.replace("$v1", str(Vector2.ONE))
+		)
 	assert_failure(func() -> void: assert_vector(Vector2(1.2, 1.000001)).is_less(Vector2(1.2, 1.000001))) \
 		.is_failed() \
 		.has_message("Expecting to be less than:\n '(1.2, 1.000001)' but was '(1.2, 1.000001)'")
@@ -189,7 +218,10 @@ func test_is_less_equal() -> void:
 
 	assert_failure(func() -> void: assert_vector(Vector2.ONE).is_less_equal(Vector2.ZERO)) \
 		.is_failed() \
-		.has_message("Expecting to be less than or equal:\n '(0, 0)' but was '(1, 1)'")
+		.has_message("Expecting to be less than or equal:\n '$v0' but was '$v1'"
+			.replace("$v0", str(Vector2.ZERO))
+			.replace("$v1", str(Vector2.ONE))
+		)
 	assert_failure(func() -> void: assert_vector(Vector2(1.2, 1.000002)).is_less_equal(Vector2(1.2, 1.000001))) \
 		.is_failed() \
 		.has_message("Expecting to be less than or equal:\n '(1.2, 1.000001)' but was '(1.2, 1.000002)'")
@@ -225,7 +257,10 @@ func test_is_greater() -> void:
 
 	assert_failure(func() -> void: assert_vector(Vector2.ZERO).is_greater(Vector2.ONE)) \
 		.is_failed() \
-		.has_message("Expecting to be greater than:\n '(1, 1)' but was '(0, 0)'")
+		.has_message("Expecting to be greater than:\n '$v0' but was '$v1'"
+			.replace("$v0", str(Vector2.ONE))
+			.replace("$v1", str(Vector2.ZERO))
+		)
 	assert_failure(func() -> void: assert_vector(Vector2(1.2, 1.000001)).is_greater(Vector2(1.2, 1.000001))) \
 		.is_failed() \
 		.has_message("Expecting to be greater than:\n '(1.2, 1.000001)' but was '(1.2, 1.000001)'")
@@ -257,7 +292,10 @@ func test_is_greater_equal() -> void:
 
 	assert_failure(func() -> void: assert_vector(Vector2.ZERO).is_greater_equal(Vector2.ONE)) \
 		.is_failed() \
-		.has_message("Expecting to be greater than or equal:\n '(1, 1)' but was '(0, 0)'")
+		.has_message("Expecting to be greater than or equal:\n '$v0' but was '$v1'"
+			.replace("$v0", str(Vector2.ONE))
+			.replace("$v1", str(Vector2.ZERO))
+		)
 	assert_failure(func() -> void: assert_vector(Vector2(1.2, 1.000002)).is_greater_equal(Vector2(1.2, 1.000003))) \
 		.is_failed() \
 		.has_message("Expecting to be greater than or equal:\n '(1.2, 1.000003)' but was '(1.2, 1.000002)'")
@@ -287,17 +325,28 @@ func test_is_greater_equal_over_all_types(value :Variant, expected :Variant, tes
 	assert_vector(value).is_greater_equal(expected)
 
 
-func test_is_between(fuzzer := Fuzzers.rangev2(Vector2.ZERO, Vector2.ONE)) -> void:
+@warning_ignore("unused_parameter")
+func test_is_between(fuzzer := Fuzzers.rangev2(Vector2.ZERO, Vector2.ONE), fuzzer_iterations := 200) -> void:
 	var value :Vector2 = fuzzer.next_value()
 	assert_vector(value).is_between(Vector2.ZERO, Vector2.ONE)
 
-	assert_failure(func() -> void: assert_vector(Vector2(1, 1.00001)).is_between(Vector2.ZERO, Vector2.ONE)) \
+
+func test_is_between_failed() -> void:
+	var current := Vector2(1, 1.00001)
+	assert_failure(func() -> void: assert_vector(current).is_between(Vector2.ZERO, Vector2.ONE)) \
 		.is_failed() \
-		.has_message("Expecting:\n '(1, 1.00001)'\n in range between\n '(0, 0)' <> '(1, 1)'")
+		.has_message("Expecting:\n '$v0'\n in range between\n '$v1' <> '$v2'"
+			.replace("$v0", str(current))
+			.replace("$v1", str(Vector2.ZERO))
+			.replace("$v2", str(Vector2.ONE))
+		)
 	assert_failure(func() -> void: assert_vector(null).is_between(Vector2.ZERO, Vector2.ONE)) \
 		.is_failed() \
-		.has_message("Expecting:\n '<null>'\n in range between\n '(0, 0)' <> '(1, 1)'")
-	assert_failure(func() -> void: assert_vector(Vector2(1, 1.00001)).is_between(Vector2.ZERO, Vector3.ONE)) \
+		.has_message("Expecting:\n '<null>'\n in range between\n '$v0' <> '$v1'"
+			.replace("$v0", str(Vector2.ZERO))
+			.replace("$v1", str(Vector2.ONE))
+		)
+	assert_failure(func() -> void: assert_vector(current).is_between(Vector2.ZERO, Vector3.ONE)) \
 		.is_failed() \
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
 
@@ -314,14 +363,19 @@ func test_is_between_over_all_types(value :Variant, from :Variant, to :Variant, 
 	assert_vector(value).is_between(from, to)
 
 
-func test_is_not_between(fuzzer := Fuzzers.rangev2(Vector2.ONE, Vector2.ONE*2)) -> void:
+@warning_ignore("unused_parameter")
+func test_is_not_between(fuzzer := Fuzzers.rangev2(Vector2.ONE, Vector2.ONE*2), fuzzer_iterations := 200) -> void:
 	var value :Vector2 = fuzzer.next_value()
 	assert_vector(null).is_not_between(Vector2.ZERO, Vector2.ONE)
 	assert_vector(value).is_not_between(Vector2.ZERO, Vector2.ONE)
 
 	assert_failure(func() -> void: assert_vector(Vector2.ONE).is_not_between(Vector2.ZERO, Vector2.ONE)) \
 		.is_failed() \
-		.has_message("Expecting:\n '(1, 1)'\n not in range between\n '(0, 0)' <> '(1, 1)'")
+		.has_message("Expecting:\n '$v0'\n not in range between\n '$v1' <> '$v2'"
+			.replace("$v0", str(Vector2.ONE))
+			.replace("$v1", str(Vector2.ZERO))
+			.replace("$v2", str(Vector2.ONE))
+		)
 	assert_failure(func() -> void: assert_vector(Vector2.ONE).is_not_between(Vector3.ZERO, Vector2.ONE)) \
 		.is_failed() \
 		.has_message("Unexpected type comparison:\n Expecting type 'Vector2' but is 'Vector3'")
@@ -358,11 +412,15 @@ func test_append_failure_message() -> void:
 		.is_failed() \
 		.has_message("""
 			Expecting:
-			 '(0, 0)'
+			 '$v0'
 			 but was
-			 '(1, 1)'
+			 '$v1'
 			Additional info:
-			 custom failure data""".dedent().trim_prefix("\n"))
+			 custom failure data"""
+			.dedent()
+			.trim_prefix("\n")
+			.replace("$v0", str(Vector2.ZERO))
+			.replace("$v1", str(Vector2.ONE)))
 
 
 # tests if an assert fails the 'is_failure' reflects the failure status

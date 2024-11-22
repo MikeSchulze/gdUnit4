@@ -1,6 +1,6 @@
 extends Control
 
-@onready var texture := preload("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/icon.png")
+@onready var texture := preload("res://addons/gdUnit4/test/core/resources/scenes/icon.png")
 
 func _ready() -> void:
 	# set initial drag texture
