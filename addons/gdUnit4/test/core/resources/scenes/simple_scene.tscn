@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cn8ucy2rheu0f"]
 
-[ext_resource type="Script" uid="uid://0gs5nlsj2qau" path="res://addons/gdUnit4/test/core/resources/scenes/simple_scene.gd" id="2"]
+[ext_resource type="Script" path="res://addons/gdUnit4/test/core/resources/scenes/simple_scene.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://mdg54o4ynxsl" path="res://addons/gdUnit4/test/core/resources/scenes/icon.png" id="2_jtr47"]
 
 [node name="Node2D" type="Node2D"]

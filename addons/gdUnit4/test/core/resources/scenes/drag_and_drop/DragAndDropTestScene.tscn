@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://skueh3d5qn46"]
 
-[ext_resource type="Script" uid="uid://boo30d0lb55vk" path="res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.gd" id="1"]
+[ext_resource type="Script" path="res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://ca2rr3dan4vvw" path="res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropControl.tscn" id="2_u5ccv"]
 
 [node name="DragAndDropScene" type="Control"]
@@ -15,7 +15,6 @@ size_flags_vertical = 3
 script = ExtResource("1")
 
 [node name="left" parent="." instance=ExtResource("2_u5ccv")]
-auto_translate_mode = 2
 layout_mode = 0
 offset_left = 250.0
 offset_top = 240.0
