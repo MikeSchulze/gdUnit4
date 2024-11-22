@@ -42,5 +42,5 @@ func test_on_signal_fail() -> void:
 	add_child(monster)
 	(
 		await assert_failure_await( func x() -> void: await await_signal_on(monster, "move", [4.0]))
-	).has_message("await_signal_on(move, [4]) timed out after 2000ms")
+	).has_message("await_signal_on(move, [$v0]) timed out after 2000ms".replace("$v0", str(4.0)))
 	remove_child(monster)

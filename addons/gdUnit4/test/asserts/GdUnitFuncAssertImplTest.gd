@@ -286,7 +286,9 @@ func test_timer_yielded_function() -> void:
 	# failure case
 	(
 		await assert_failure_await(func() -> void: await assert_func(self, "timed_function", []).wait_until(100).is_equal(Color.RED))
-	).has_message("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 100ms")
+	).has_message("Expected: is equal 'Color$v0' but timed out after 100ms"
+		.replace("$v0", str(Color.RED))
+	)
 
 
 func test_timer_yielded_function_timeout() -> void:
@@ -310,7 +312,9 @@ func test_idle_frame_yielded_function() -> void:
 	await assert_func(self, "yielded_function").is_equal(Color.BLACK)
 	(
 		await assert_failure_await(func() -> void: await assert_func(self, "yielded_function", []).wait_until(500).is_equal(Color.RED))
-	).has_message("Expected: is equal 'Color(1, 0, 0, 1)' but timed out after 500ms")
+	).has_message("Expected: is equal 'Color$v0' but timed out after 500ms"
+		.replace("$v0", str(Color.RED))
+	)
 
 
 func test_has_failure_message() -> void:
