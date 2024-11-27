@@ -106,15 +106,15 @@ func load_test_suits() -> Array[Node]:
 	var _scanner := GdUnitTestSuiteScanner.new()
 	for resource_path :String in to_execute.keys():
 		var selected_tests :PackedStringArray = to_execute.get(resource_path)
-		var scaned_suites := _scanner.scan(resource_path)
-		_filter_test_case(scaned_suites, selected_tests)
-		test_suites += scaned_suites
+		var scanned_suites := _scanner.scan(resource_path)
+		_filter_test_case(scanned_suites, selected_tests)
+		test_suites += scanned_suites
 	return test_suites
 
 
 func gdUnitInit() -> void:
 	#enable_manuall_polling()
-	send_message("Scaned %d test suites" % _test_suites_to_process.size())
+	send_message("Scanned %d test suites" % _test_suites_to_process.size())
 	var total_count := _collect_test_case_count(_test_suites_to_process)
 	_on_gdunit_event(GdUnitInit.new(_test_suites_to_process.size(), total_count))
 	if not GdUnitSettings.is_test_discover_enabled():
