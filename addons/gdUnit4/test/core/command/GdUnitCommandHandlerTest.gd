@@ -51,19 +51,19 @@ func _test__check_test_run_stopped_manually() -> void:
 	verify(inspector, 1).cmd_stop(inspector._client_id)
 
 
-func test_scan_test_directorys() -> void:
-	assert_array(GdUnitCommandHandler.scan_test_directorys("res://", "test", [])).contains_exactly([
+func test_scan_test_directories() -> void:
+	assert_array(GdUnitCommandHandler.scan_test_directories("res://", "test", [])).contains_exactly([
 		"res://addons/gdUnit4/test"
 	])
 	# for root folders
-	assert_array(GdUnitCommandHandler.scan_test_directorys("res://", "", [])).contains_exactly([
+	assert_array(GdUnitCommandHandler.scan_test_directories("res://", "", [])).contains_exactly([
 		"res://addons", "res://assets", "res://gdUnit3-examples"
 	])
-	assert_array(GdUnitCommandHandler.scan_test_directorys("res://", "/", [])).contains_exactly([
+	assert_array(GdUnitCommandHandler.scan_test_directories("res://", "/", [])).contains_exactly([
 		"res://addons", "res://assets", "res://gdUnit3-examples"
 	])
-	assert_array(GdUnitCommandHandler.scan_test_directorys("res://", "res://", [])).contains_exactly([
+	assert_array(GdUnitCommandHandler.scan_test_directories("res://", "res://", [])).contains_exactly([
 		"res://addons", "res://assets", "res://gdUnit3-examples"
 	])
 	# a test folder not exists
-	assert_array(GdUnitCommandHandler.scan_test_directorys("res://", "notest", [])).is_empty()
+	assert_array(GdUnitCommandHandler.scan_test_directories("res://", "notest", [])).is_empty()
