@@ -274,14 +274,14 @@ func cmd_discover_tests() -> void:
 	await GdUnitTestDiscoverer.run()
 
 static func scan_all_test_directories() -> PackedStringArray:
-	var root :String = GdUnitSettings.test_root_folder()
-	var base_directory :String = "res://"
+	var root: String = GdUnitSettings.test_root_folder()
+	var base_directory := "res://"
 	# If the test root folder is configured as blank, "/", or "res://", use the root folder as described in the settings panel
 	if root.is_empty() or root == "/" or root == base_directory:
 		return [base_directory]
 	return scan_test_directories(base_directory, root, [])
 
-static func scan_test_directories(base_directory :String, test_directory: String, test_suite_paths :PackedStringArray) -> PackedStringArray:
+static func scan_test_directories(base_directory: String, test_directory: String, test_suite_paths: PackedStringArray) -> PackedStringArray:
 	print_verbose("Scannning for test directory '%s' at %s" % [test_directory, base_directory])
 	for directory in DirAccess.get_directories_at(base_directory):
 		if directory.begins_with("."):
