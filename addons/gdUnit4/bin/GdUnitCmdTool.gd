@@ -376,9 +376,9 @@ class CLIRunner:
 		var ts_scanner := GdUnitTestSuiteScanner.new()
 		for as_resource_path in to_execute.keys() as Array[String]:
 			var selected_tests: PackedStringArray = to_execute.get(as_resource_path)
-			var scaned_suites := ts_scanner.scan(as_resource_path)
-			skip_test_case(scaned_suites, selected_tests)
-			test_suites_to_process.append_array(scaned_suites)
+			var scanned_suites := ts_scanner.scan(as_resource_path)
+			skip_test_case(scanned_suites, selected_tests)
+			test_suites_to_process.append_array(scanned_suites)
 		skip_suites(test_suites_to_process, config)
 		return test_suites_to_process
 

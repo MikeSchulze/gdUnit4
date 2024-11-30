@@ -298,7 +298,7 @@ func test_scan_by_inheritance_class_name() -> void:
 		.contains_same_exactly_in_any_order([&"test_foo2", &"test_foo1"])
 	assert_array(test_suites[2].get_children()).extract("name")\
 		.contains_same_exactly_in_any_order([&"test_foo3", &"test_foo2", &"test_foo1"])
-	# finally free all scaned test suites
+	# finally free all scanned test suites
 	for ts in test_suites:
 		ts.free()
 
@@ -313,7 +313,7 @@ func test_scan_by_inheritance_class_path() -> void:
 			tuple("ExtendedTest","res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_path/ExtendedTest.gd", [&"test_foo2", &"test_foo1"]),
 			tuple("ExtendsExtendedTest", "res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_path/ExtendsExtendedTest.gd", [&"test_foo3", &"test_foo2", &"test_foo1"])
 		])
-	# finally free all scaned test suites
+	# finally free all scanned test suites
 	for ts in test_suites:
 		ts.free()
 
@@ -375,7 +375,7 @@ func test_scan_test_suite_without_tests() -> void:
 
 	assert_array(test_suites).has_size(1)
 	assert_that(test_suites[0].get_child_count()).is_equal(0)
-	# finally free all scaned test suites
+	# finally free all scanned test suites
 	for ts in test_suites:
 		ts.free()
 
