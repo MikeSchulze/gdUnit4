@@ -156,12 +156,12 @@ func test_skip_test_suite_and_test_case() -> void:
 func test_skip_test_case() -> void:
 	var config := GdUnitRunnerConfig.new()
 
-	config.skip_test_case("res://foo1.gd", "testcaseA")
+	config._skip_test_case("res://foo1.gd", "testcaseA")
 	assert_dict(config.skipped()).contains_key_value("res://foo1.gd", PackedStringArray(["testcaseA"]))
 	# add two more
 	config.skip_test_suite("res://foo2/skippedTestsuite.gd")
-	config.skip_test_case("res://foo1.gd", "testcaseB")
-	config.skip_test_case("res://foo2.gd", "testcaseX")
+	config._skip_test_case("res://foo1.gd", "testcaseB")
+	config._skip_test_case("res://foo2.gd", "testcaseX")
 	assert_dict(config.skipped())\
 		.contains_key_value("res://foo2/skippedTestsuite.gd", PackedStringArray())\
 		.contains_key_value("res://foo1.gd", PackedStringArray(["testcaseA", "testcaseB"]))\
