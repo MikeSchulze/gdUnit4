@@ -70,34 +70,20 @@ func test_scan_test_directories() -> void:
 
 
 func test_scan_all_test_directories() -> void:
-	var original_test_root_folder := GdUnitSettings.test_root_folder()
-	var test_root_folder_property := GdUnitSettings.get_property(GdUnitSettings.TEST_LOOKUP_FOLDER)
-
-	# Test when test_root_folder is blank
-	test_root_folder_property.set_value("")
-	GdUnitSettings.update_property(test_root_folder_property)
-	assert_array(GdUnitCommandHandler.scan_all_test_directories()).contains_exactly(["res://"])
+	# Test when test_root_folder is empty
+	assert_array(GdUnitCommandHandler.scan_all_test_directories("", true)).contains_exactly(["res://"])
 
 	# Test when test_root_folder is "/"
-	test_root_folder_property.set_value("/")
-	GdUnitSettings.update_property(test_root_folder_property)
-	assert_array(GdUnitCommandHandler.scan_all_test_directories()).contains_exactly(["res://"])
+	assert_array(GdUnitCommandHandler.scan_all_test_directories("/")).contains_exactly(["res://"])
 
 	# Test when test_root_folder is "res://"
-	test_root_folder_property.set_value("res://")
-	GdUnitSettings.update_property(test_root_folder_property)
-	assert_array(GdUnitCommandHandler.scan_all_test_directories()).contains_exactly(["res://"])
+	assert_array(GdUnitCommandHandler.scan_all_test_directories("res://")).contains_exactly(["res://"])
 
 	# Test when test_root_folder is set to a specific folder
-	test_root_folder_property.set_value("test")
-	GdUnitSettings.update_property(test_root_folder_property)
-	assert_array(GdUnitCommandHandler.scan_all_test_directories()).contains_exactly(["res://addons/gdUnit4/test"])
+	assert_array(GdUnitCommandHandler.scan_all_test_directories("test")).contains_exactly(["res://addons/gdUnit4/test"])
 
 	# Test when test_root_folder is set to something which doesn't exist
-	test_root_folder_property.set_value("notest")
-	GdUnitSettings.update_property(test_root_folder_property)
-	assert_array(GdUnitCommandHandler.scan_all_test_directories()).is_empty()
+	assert_array(GdUnitCommandHandler.scan_all_test_directories("notest")).is_empty()
 
-	# Restore the original test_root_folder
-	test_root_folder_property.set_value(original_test_root_folder)
-	GdUnitSettings.update_property(test_root_folder_property)
+	# Test when test_root_folder is not passed, retreiving the paarmeter from settings (default is "test")
+	assert_array(GdUnitCommandHandler.scan_all_test_directories()).contains_exactly(["res://addons/gdUnit4/test"])
