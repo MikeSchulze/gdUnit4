@@ -93,10 +93,11 @@ func test_decode_Transforms(variant_type :int, value :Variant, expected :String,
 	[TYPE_TRANSFORM3D, Transform3D(Vector3(1,2,3), Vector3(4,5,6), Vector3(7,8,9), Vector3.ONE),
 		"Transform3D(Vector3"+str(Vector3(1, 2, 3))+", Vector3"+str(Vector3(4, 5, 6))
 		+", Vector3"+str(Vector3(7, 8, 9))+", Vector3"+str(Vector3(1, 1, 1))+")"],
-	[TYPE_PROJECTION, Projection(),
-		"Projection(Vector4(1, 0, 0, 0), Vector4(0, 1, 0, 0), Vector4(0, 0, 1, 0), Vector4(0, 0, 0, 1))"],
+	[TYPE_PROJECTION, Projection(), "Projection(Vector4%s, Vector4%s, Vector4%s, Vector4%s)"
+		 % [Vector4(1, 0, 0, 0), Vector4(0, 1, 0, 0), Vector4(0, 0, 1, 0), Vector4(0, 0, 0, 1)]],
 	[TYPE_PROJECTION, Projection(Vector4.ONE, Vector4.ONE*2, Vector4.ONE*3, Vector4.ZERO),
-		"Projection(Vector4(1, 1, 1, 1), Vector4(2, 2, 2, 2), Vector4(3, 3, 3, 3), Vector4(0, 0, 0, 0))"]
+		"Projection(Vector4%s, Vector4%s, Vector4%s, Vector4%s)" %
+		[Vector4.ONE, Vector4.ONE*2, Vector4.ONE*3, Vector4.ZERO]]
 	]) -> void:
 	assert_that(GdDefaultValueDecoder.decode_typed(variant_type, value)).is_equal(expected)
 	_tested_types[variant_type] = 1
