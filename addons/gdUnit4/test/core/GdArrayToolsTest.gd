@@ -25,7 +25,7 @@ func test_as_string(_test :String, value :Variant, expected :String, test_parame
 	['ArrayVector2i', Array([Vector2i.ZERO, Vector2i.LEFT]) as Array[Vector2i], '[Vector2i(), Vector2i'+str(Vector2i(-1, 0))+']'],
 	['ArrayVector3', Array([Vector3.ZERO, Vector3.LEFT]) as Array[Vector3], '[Vector3(), Vector3'+str(Vector3(-1, 0, 0))+']'],
 	['ArrayVector3i', Array([Vector3i.ZERO, Vector3i.LEFT]) as Array[Vector3i], '[Vector3i(), Vector3i'+str(Vector3i(-1, 0, 0))+']'],
-	['ArrayVector4', Array([Vector4.ZERO, Vector4.ONE]) as Array[Vector4], '[Vector4(), Vector4(1, 1, 1, 1)]'],
+	['ArrayVector4', Array([Vector4.ZERO, Vector4.ONE]) as Array[Vector4], '[Vector4(), Vector4%s]' % Vector4(1, 1, 1, 1)],
 	['ArrayVector4i', Array([Vector4i.ZERO, Vector4i.ONE]) as Array[Vector4i], '[Vector4i(), Vector4i(1, 1, 1, 1)]'],
 	['ArrayColor', Array([Color.RED, Color.GREEN]) as Array[Color], '[Color'+str(Color(1, 0, 0, 1))+', Color'+str(Color(0, 1, 0, 1))+']'],
 	['PackedByteArray', PackedByteArray([1, 2]), 'PackedByteArray[1, 2]'],
