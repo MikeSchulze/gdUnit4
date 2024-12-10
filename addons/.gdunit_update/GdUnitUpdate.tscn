@@ -1,21 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://2eahgaw88y6q"]
+[gd_scene load_steps=4 format=3 uid="uid://2eahgaw88y6q"]
 
-[ext_resource type="Script" uid="uid://dj7jhsfanwaxl" path="res://addons/gdUnit4/src/update/GdUnitUpdate.gd" id="1"]
+[ext_resource type="Script" uid="uid://dj7jhsfanwaxl" path="res://addons/.gdunit_update/GdUnitUpdate.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://cwxuep3lbnu3p" path="res://addons/gdUnit4/src/update/assets/progress-background.png" id="2_q6rkd"]
 
-[sub_resource type="Gradient" id="Gradient_wilsr"]
-colors = PackedColorArray(0.151276, 0.151276, 0.151276, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_45cww"]
-gradient = SubResource("Gradient_wilsr")
-fill_to = Vector2(0.75641, 0)
-
-[sub_resource type="Gradient" id="Gradient_i0qp8"]
-colors = PackedColorArray(1, 1, 1, 1, 0.20871, 0.20871, 0.20871, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_wilsr"]
-gradient = SubResource("Gradient_i0qp8")
-fill_from = Vector2(0.794872, 0)
-fill_to = Vector2(0, 0)
+[sub_resource type="AtlasTexture" id="AtlasTexture_wilsr"]
 
 [node name="GdUnitUpdate" type="MarginContainer"]
 clip_contents = true
@@ -72,8 +60,9 @@ value = 1.0
 rounded = true
 allow_greater = true
 nine_patch_stretch = true
-texture_under = SubResource("GradientTexture2D_45cww")
-texture_progress = SubResource("GradientTexture2D_wilsr")
+texture_under = SubResource("AtlasTexture_wilsr")
+texture_progress = ExtResource("2_q6rkd")
+texture_progress_offset = Vector2(0, 2)
 tint_under = Color(0.0235294, 0.145098, 0.168627, 1)
 tint_progress = Color(0.288912, 0.233442, 0.533772, 1)
 
@@ -87,14 +76,11 @@ theme_override_constants/separation = 10
 alignment = 2
 
 [node name="update" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 text = "Update"
 
 [node name="cancel" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 text = "Cancel"
 
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/update" to="." method="_on_update_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/cancel" to="." method="_on_cancel_pressed"]

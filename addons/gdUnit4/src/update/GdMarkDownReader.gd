@@ -333,9 +333,9 @@ func _process_external_image_resources(input :String) -> String:
 				if OS.is_stdout_verbose():
 					prints("download image:", image_url)
 				var response := await _client.request_image(image_url)
-				if response.code() == 200:
+				if response.status() == 200:
 					var image := Image.new()
-					var error := image.load_png_from_buffer(response.body())
+					var error := image.load_png_from_buffer(response.get_body())
 					if error != OK:
 						prints("Error creating image from response", error)
 					# replace characters where format characters
