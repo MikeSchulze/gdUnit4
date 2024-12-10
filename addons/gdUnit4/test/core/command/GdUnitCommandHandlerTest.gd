@@ -71,7 +71,7 @@ func test_scan_test_directories() -> void:
 
 func test_scan_all_test_directories() -> void:
 	# Test when test_root_folder is empty
-	assert_array(GdUnitCommandHandler.scan_all_test_directories("", true)).contains_exactly(["res://"])
+	assert_array(GdUnitCommandHandler.scan_all_test_directories("")).contains_exactly(["res://"])
 
 	# Test when test_root_folder is "/"
 	assert_array(GdUnitCommandHandler.scan_all_test_directories("/")).contains_exactly(["res://"])
@@ -84,6 +84,3 @@ func test_scan_all_test_directories() -> void:
 
 	# Test when test_root_folder is set to something which doesn't exist
 	assert_array(GdUnitCommandHandler.scan_all_test_directories("notest")).is_empty()
-
-	# Test when test_root_folder is not passed, retreiving the paarmeter from settings (default is "test")
-	assert_array(GdUnitCommandHandler.scan_all_test_directories()).contains_exactly(["res://addons/gdUnit4/test"])

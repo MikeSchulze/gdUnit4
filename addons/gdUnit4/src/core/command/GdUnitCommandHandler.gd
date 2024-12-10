@@ -191,8 +191,8 @@ func cmd_run_test_case(test_suite_resource_path: String, test_case: String, test
 	cmd_run(debug)
 
 
-func cmd_run_overall(debug :bool) -> void:
-	var test_suite_paths :PackedStringArray = GdUnitCommandHandler.scan_all_test_directories()
+func cmd_run_overall(debug: bool) -> void:
+	var test_suite_paths: PackedStringArray = GdUnitCommandHandler.scan_all_test_directories(GdUnitSettings.test_root_folder())
 	var result := _runner_config.clear()\
 		.add_test_suites(test_suite_paths)\
 		.save_config()
@@ -273,12 +273,7 @@ func cmd_create_test() -> void:
 func cmd_discover_tests() -> void:
 	await GdUnitTestDiscoverer.run()
 
-static func scan_all_test_directories(override_root: String = "", force_override: bool = false) -> PackedStringArray:
-	var root: String
-	if override_root == "" and not force_override:
-		root = GdUnitSettings.test_root_folder()
-	else:
-		root = override_root
+static func scan_all_test_directories(root: String) -> PackedStringArray:
 	var base_directory := "res://"
 	# If the test root folder is configured as blank, "/", or "res://", use the root folder as described in the settings panel
 	if root.is_empty() or root == "/" or root == base_directory:
