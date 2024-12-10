@@ -65,7 +65,7 @@ func _process(_delta :float) -> void:
 			if _client.is_client_connected():
 				var time := LocalTime.now()
 				prints("Scan for test suites.")
-				_test_suites_to_process = load_test_suits()
+				_test_suites_to_process = load_test_suites()
 				prints("Scanning of %d test suites took" % _test_suites_to_process.size(), time.elapsed_since())
 				gdUnitInit()
 				_state = RUN
@@ -95,7 +95,7 @@ func _process(_delta :float) -> void:
 			get_tree().quit(0)
 
 
-func load_test_suits() -> Array[Node]:
+func load_test_suites() -> Array[Node]:
 	var to_execute := _config.to_execute()
 	if to_execute.is_empty():
 		prints("No tests selected to execute!")
