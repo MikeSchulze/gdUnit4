@@ -192,7 +192,7 @@ func cmd_run_test_case(test_suite_resource_path: String, test_case: String, test
 
 
 func cmd_run_overall(debug: bool) -> void:
-	var test_suite_paths: PackedStringArray = GdUnitCommandHandler.scan_test_directorys("res://" , GdUnitSettings.test_root_folder(), [])
+	var test_suite_paths: PackedStringArray = GdUnitCommandHandler.scan_all_test_directories(GdUnitSettings.test_root_folder())
 	var result := _runner_config.clear()\
 		.add_test_suites(test_suite_paths)\
 		.save_config()
@@ -273,8 +273,14 @@ func cmd_create_test() -> void:
 func cmd_discover_tests() -> void:
 	await GdUnitTestDiscoverer.run()
 
+static func scan_all_test_directories(root: String) -> PackedStringArray:
+	var base_directory := "res://"
+	# If the test root folder is configured as blank, "/", or "res://", use the root folder as described in the settings panel
+	if root.is_empty() or root == "/" or root == base_directory:
+		return [base_directory]
+	return scan_test_directories(base_directory, root, [])
 
-static func scan_test_directorys(base_directory: String, test_directory: String, test_suite_paths: PackedStringArray) -> PackedStringArray:
+static func scan_test_directories(base_directory: String, test_directory: String, test_suite_paths: PackedStringArray) -> PackedStringArray:
 	print_verbose("Scannning for test directory '%s' at %s" % [test_directory, base_directory])
 	for directory in DirAccess.get_directories_at(base_directory):
 		if directory.begins_with("."):
@@ -287,7 +293,7 @@ static func scan_test_directorys(base_directory: String, test_directory: String,
 			test_suite_paths.append(current_directory)
 		else:
 			@warning_ignore("return_value_discarded")
-			scan_test_directorys(current_directory, test_directory, test_suite_paths)
+			scan_test_directories(current_directory, test_directory, test_suite_paths)
 	return test_suite_paths
 
 
