@@ -1,23 +1,29 @@
+@tool
 extends RefCounted
 
 const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
 
-const FONT_H1 := 32
-const FONT_H2 := 28
-const FONT_H3 := 24
-const FONT_H4 := 20
-const FONT_H5 := 16
+const FONT_H1 := 22
+const FONT_H2 := 20
+const FONT_H3 := 18
+const FONT_H4 := 16
+const FONT_H5 := 14
 const FONT_H6 := 12
 
-const HORIZONTAL_RULE := "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]\n"
-const HEADER_RULE := "[font_size=%d]$1[/font_size]\n"
-const HEADER_CENTERED_RULE := "[font_size=%d][center]$1[/center][/font_size]\n"
+const HORIZONTAL_RULE := "[img=4000x2]res://addons/gdUnit4/src/update/assets/horizontal-line2.png[/img]"
+const HEADER_RULE := "[font_size=%d]$1[/font_size]"
+const HEADER_CENTERED_RULE := "[font_size=%d][center]$1[/center][/font_size]"
 
 const image_download_folder := "res://addons/gdUnit4/tmp-update/"
 
 const exclude_font_size := "\b(?!(?:(font_size))\b)"
 
+var regex_comment := regex("(?m)^<!--.*-->$")
+
 var md_replace_patterns := [
+	# comments
+	[regex("(?m)^\\n?\\s*<!--[\\s\\S]*?-->\\s*\\n?"), ""],
+
 	# horizontal rules
 	[regex("(?m)^[ ]{0,3}---$"), HORIZONTAL_RULE],
 	[regex("(?m)^[ ]{0,3}___$"), HORIZONTAL_RULE],
@@ -50,14 +56,16 @@ var md_replace_patterns := [
 	#[regex("(\\*)"), "xxx$1xxx"],
 
 	# extract/compile image references
-	[regex("!\\[(.*?)\\]\\[(.*?)\\]"), Callable(self, "process_image_references")],
+	[regex("!\\[(.*?)\\]\\[(.*?)\\]"), process_image_references],
 	# extract images with path and optional tool tip
-	[regex("!\\[(.*?)\\]\\((.*?)(( )+(.*?))?\\)"), Callable(self, "process_image")],
+	[regex("!\\[(.*?)\\]\\((.*?)(( )+(.*?))?\\)"), process_image],
 
 	# links
 	[regex("([!]|)\\[(.+)\\]\\(([^ ]+?)\\)"),  "[url={\"url\":\"$3\"}]$2[/url]"],
 	# links with tool tip
 	[regex("([!]|)\\[(.+)\\]\\(([^ ]+?)( \"(.+)\")?\\)"),  "[url={\"url\":\"$3\", \"tool_tip\":\"$5\"}]$2[/url]"],
+	# links to pull request
+	[regex("(https://.*/?/(\\S+))"), '[url={"url":"$1", "tool_tip":"$1"}]#$2[/url]'],
 
 	# embeded text
 	[regex("(?m)^[ ]{0,3}>(.*?)$"), "[img=50x14]res://addons/gdUnit4/src/update/assets/embedded.png[/img][i]$1[/i]"],
@@ -80,17 +88,22 @@ var md_replace_patterns := [
 	[regex("~(.*?)~"), "[s]$1[/s]"],
 
 	# handling lists
-	# using an image for dots as workaroud because list is not supported checked Godot 3.x
+	# using an image for dots
 	[regex("(?m)^[ ]{0,1}[*\\-+] (.*)$"), list_replace(0)],
 	[regex("(?m)^[ ]{2,3}[*\\-+] (.*)$"), list_replace(1)],
 	[regex("(?m)^[ ]{4,5}[*\\-+] (.*)$"), list_replace(2)],
 	[regex("(?m)^[ ]{6,7}[*\\-+] (.*)$"), list_replace(3)],
 	[regex("(?m)^[ ]{8,9}[*\\-+] (.*)$"), list_replace(4)],
 
-	# code blocks, code blocks looks not like code blocks in richtext
-	[regex("```(javascript|python|shell|gdscript)([\\s\\S]*?\n)```"), code_block("$2", true)],
+	# code
 	[regex("``([\\s\\S]*?)``"), code_block("$1")],
 	[regex("`([\\s\\S]*?)`{1,2}"), code_block("$1")],
+]
+
+var code_block__patterns := [
+	# code blocks, code blocks looks not like code blocks in richtext
+	[regex("```(javascript|python|shell|gdscript|gd)([\\s\\S]*?\n)```"), code_block("$2", true)],
+
 ]
 
 var _img_replace_regex := RegEx.new()
@@ -99,7 +112,7 @@ var _on_table_tag := false
 var _client :GdUnitUpdateClient
 
 
-func regex(pattern :String) -> RegEx:
+static func regex(pattern :String) -> RegEx:
 	var regex_ := RegEx.new()
 	var err := regex_.compile(pattern)
 	if err != OK:
@@ -136,15 +149,17 @@ func list_replace(indent :int) -> String:
 
 
 func code_block(replace :String, border :bool = false) -> String:
-	var cb := "[code][color=aqua][font_size=16]%s[/font_size][/color][/code]" % replace
+	#Color.DARK_SLATE_GRAY
 	if border:
-		return "[img=1400x14]res://addons/gdUnit4/src/update/assets/border_top.png[/img]"\
-			+ "[indent]" + cb + "[/indent]"\
-			+ "[img=1400x14]res://addons/gdUnit4/src/update/assets/border_bottom.png[/img]\n"
-	return cb
+		return """
+			[img=1400x14]res://addons/gdUnit4/src/update/assets/border_top.png[/img]
+			[indent][color=GRAY][font_size=16]%s[/font_size][/color][/indent]
+			[img=1400x14]res://addons/gdUnit4/src/update/assets/border_bottom.png[/img]
+			""".dedent() % replace
+	return "[code][bgcolor=DARK_SLATE_GRAY][color=GRAY][font_size=16]%s[/font_size][/color][/bgcolor][/code]" % replace
 
 
-func to_bbcode(input :String) -> String:
+func convert_text(input :String) -> String:
 	input = process_tables(input)
 
 	for pattern :Array in md_replace_patterns:
@@ -157,6 +172,39 @@ func to_bbcode(input :String) -> String:
 			@warning_ignore("unsafe_cast")
 			input = regex_.sub(input, bb_replace as String, true)
 	return input + "\n"
+
+
+func convert_code_block(input :String) -> String:
+	for pattern :Array in code_block__patterns:
+		var regex_ :RegEx = pattern[0]
+		var bb_replace :Variant = pattern[1]
+		if bb_replace is Callable:
+			@warning_ignore("unsafe_method_access")
+			input = await bb_replace.call(regex_, input)
+		else:
+			@warning_ignore("unsafe_cast")
+			input = regex_.sub(input, bb_replace as String, true)
+	return input + "\n"
+
+
+func to_bbcode(input: String) -> String:
+	var re := regex("(?m)```[\\s\\S]*?```")
+	var current_pos := 0
+	var as_bbcode := ""
+
+	# we split by code blocks to handle this blocks customized
+	for result in re.search_all(input):
+		# Add text before code block
+		if result.get_start() > current_pos:
+			as_bbcode += await convert_text(input.substr(current_pos, result.get_start() - current_pos))
+		# Add code block
+		as_bbcode += await convert_code_block(result.get_string())
+		current_pos = result.get_end()
+
+	# Add remaining text after last code block
+	if current_pos < input.length():
+		as_bbcode += await convert_text(input.substr(current_pos))
+	return as_bbcode
 
 
 func process_tables(input: String) -> String:
@@ -273,6 +321,8 @@ func extract_cells(line :String, bold := false) -> String:
 
 
 func process_image_references(p_regex :RegEx, p_input :String) -> String:
+	#return p_input
+
 	# exists references?
 	var matches := p_regex.search_all(p_input)
 	if matches.is_empty():
@@ -303,6 +353,7 @@ func process_image_references(p_regex :RegEx, p_input :String) -> String:
 
 @warning_ignore("return_value_discarded")
 func process_image(p_regex :RegEx, p_input :String) -> String:
+	#return p_input
 	var to_replace := PackedStringArray()
 	var tool_tips :=  PackedStringArray()
 	# find all matches

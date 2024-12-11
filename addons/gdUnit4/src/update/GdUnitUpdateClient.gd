@@ -21,7 +21,6 @@ class HttpResponse:
 		if _http_status != 200:
 			return _body.get_string_from_utf8()
 
-
 		var test_json_conv := JSON.new()
 		@warning_ignore("return_value_discarded")
 		var error := test_json_conv.parse(_body.get_string_from_utf8())

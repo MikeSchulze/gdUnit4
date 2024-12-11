@@ -12,7 +12,7 @@ const GDUNIT_TEMP := "user://tmp"
 @onready var _spinner_img := GdUnitUiTools.get_spinner()
 
 
-var _debug_mode := true
+var _debug_mode := false
 var _update_client :GdUnitUpdateClient
 var _download_url :String
 

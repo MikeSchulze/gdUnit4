@@ -17,43 +17,44 @@ const GdUnitUpdateProgress = preload("res://addons/gdUnit4/src/update/GdUnitUpda
 var _debug_mode := false
 var _patcher := GdUnitPatcher.new()
 var _current_version := GdUnit4Version.current()
-var _download_zip_url := ""
 
 
 func _ready() -> void:
 	_update_button.set_disabled(false)
 	_md_reader.set_http_client(_update_client)
 	@warning_ignore("return_value_discarded")
-	GdUnitFonts.init_fonts(_content)
+	#GdUnitFonts.init_fonts(_content)
 	_update_progress.set_visible(false)
 	_update_progress.hidden.connect(func() -> void:
 		_update_button.set_disabled(false)
 	)
 
 
-func request_releases() -> void:
+func request_releases() -> bool:
 	if _debug_mode:
 		_update_progress._debug_mode = _debug_mode
-		_header.text = "A new version 'v4.1.0_debug' is available"
-		_download_zip_url = "invalid"
+		_header.text = "A new version 'v4.4.4' is available"
 		_update_button.set_disabled(false)
-		return
+		return true
 
 	var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_latest_version()
 	if response.status() != 200:
 		_header.text = "Update information cannot be retrieved from GitHub!"
 		message_h4("\n\nError: %s" % response.response(), Color.INDIAN_RED)
-		return
+		return false
 	var latest_version := _update_client.extract_latest_version(response)
 	# if same version exit here no update need
 	if latest_version.is_greater(_current_version):
 		_patcher.scan(_current_version)
 		_header.text = "A new version '%s' is available" % latest_version
-		_download_zip_url = extract_zip_url(response)
+		var download_zip_url := extract_zip_url(response)
+		_update_progress.setup(_update_client, download_zip_url)
 		_update_button.set_disabled(false)
+		return true
 	else:
 		_header.text = "No update is available."
 		_update_button.set_disabled(true)
+		return false
 
 
 func _colored(message_: String, color: Color) -> String:
@@ -83,7 +84,8 @@ func show_update() -> void:
 		_update_button.set_disabled(true)
 		return
 
-	await request_releases()
+	if not await request_releases():
+		return
 	_update_button.set_disabled(true)
 
 	prints("Scan for GdUnit4 Update ...")
@@ -92,8 +94,8 @@ func show_update() -> void:
 
 	var content: String
 	if _debug_mode:
-		await get_tree().create_timer(2).timeout
-		var template := FileAccess.open("res://addons/gdUnit4/test/update/resources/markdown.txt", FileAccess.READ).get_as_text()
+		await get_tree().create_timer(.2).timeout
+		var template := FileAccess.open("res://addons/gdUnit4/test/update/resources/http_response_releases.txt", FileAccess.READ).get_as_text()
 		content = await _md_reader.to_bbcode(template)
 	else:
 		var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_releases()
@@ -120,9 +122,13 @@ func extract_releases(response: GdUnitUpdateClient.HttpResponse, current_version
 	await get_tree().process_frame
 	var result := ""
 	for release :Dictionary in response.response():
-		if GdUnit4Version.parse(str(release["tag_name"])).equals(current_version):
+		var release_version := str(release["tag_name"])
+		if GdUnit4Version.parse(release_version).equals(current_version):
 			break
-		var release_description: String = release["body"]
+		var release_description := _colored("<h1>GdUnit Release %s</h1>" % release_version, Color.CORNFLOWER_BLUE)
+		release_description += "\n"
+		release_description += release["body"]
+		release_description += "\n\n"
 		result += await _md_reader.to_bbcode(release_description)
 	return result
 

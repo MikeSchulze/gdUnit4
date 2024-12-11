@@ -23,7 +23,6 @@ func _enter_tree() -> void:
 	# Install the GdUnit Inspector
 	_gd_inspector = (load("res://addons/gdUnit4/src/ui/GdUnitInspector.tscn") as PackedScene).instantiate()
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, _gd_inspector)
-	set_dock_tab_icon(_gd_inspector, load("res://addons/gdUnit4/src/ui/settings/logo.png") as Texture2D)
 	# Install the GdUnit Console
 	_gd_console = (load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn") as PackedScene).instantiate()
 	var control := add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
