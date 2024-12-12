@@ -171,7 +171,7 @@ func convert_text(input :String) -> String:
 		else:
 			@warning_ignore("unsafe_cast")
 			input = regex_.sub(input, bb_replace as String, true)
-	return input + "\n"
+	return input
 
 
 func convert_code_block(input :String) -> String:

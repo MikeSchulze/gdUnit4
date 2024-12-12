@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c1rwx6anh3u3m"]
 
-[ext_resource type="Script" uid="uid://cdp6c2sdw2075" path="res://addons/gdUnit4/test/update/bbcodeView.gd" id="1"]
-[ext_resource type="Script" uid="uid://b14sutd7w0dx6" path="res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd" id="6"]
+[ext_resource type="Script" path="res://addons/gdUnit4/test/update/bbcodeView.gd" id="1"]
+[ext_resource type="Script" path="res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd" id="6"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
