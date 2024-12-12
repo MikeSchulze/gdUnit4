@@ -18,8 +18,6 @@ const image_download_folder := "res://addons/gdUnit4/tmp-update/"
 
 const exclude_font_size := "\b(?!(?:(font_size))\b)"
 
-var regex_comment := regex("(?m)^<!--.*-->$")
-
 var md_replace_patterns := [
 	# comments
 	[regex("(?m)^\\n?\\s*<!--[\\s\\S]*?-->\\s*\\n?"), ""],
@@ -64,8 +62,8 @@ var md_replace_patterns := [
 	[regex("([!]|)\\[(.+)\\]\\(([^ ]+?)\\)"),  "[url={\"url\":\"$3\"}]$2[/url]"],
 	# links with tool tip
 	[regex("([!]|)\\[(.+)\\]\\(([^ ]+?)( \"(.+)\")?\\)"),  "[url={\"url\":\"$3\", \"tool_tip\":\"$5\"}]$2[/url]"],
-	# links to pull request
-	[regex("(https://.*/?/(\\S+))"), '[url={"url":"$1", "tool_tip":"$1"}]#$2[/url]'],
+	# links to github, as shorted link
+	[regex("(https://github.*/?/(\\S+))"), '[url={"url":"$1", "tool_tip":"$1"}]#$2[/url]'],
 
 	# embeded text
 	[regex("(?m)^[ ]{0,3}>(.*?)$"), "[img=50x14]res://addons/gdUnit4/src/update/assets/embedded.png[/img][i]$1[/i]"],
@@ -100,19 +98,18 @@ var md_replace_patterns := [
 	[regex("`([\\s\\S]*?)`{1,2}"), code_block("$1")],
 ]
 
-var code_block__patterns := [
+var code_block_patterns := [
 	# code blocks, code blocks looks not like code blocks in richtext
 	[regex("```(javascript|python|shell|gdscript|gd)([\\s\\S]*?\n)```"), code_block("$2", true)],
-
 ]
 
 var _img_replace_regex := RegEx.new()
 var _image_urls := PackedStringArray()
 var _on_table_tag := false
-var _client :GdUnitUpdateClient
+var _client: GdUnitUpdateClient
 
 
-static func regex(pattern :String) -> RegEx:
+static func regex(pattern: String) -> RegEx:
 	var regex_ := RegEx.new()
 	var err := regex_.compile(pattern)
 	if err != OK:
@@ -126,12 +123,12 @@ func _init() -> void:
 	_img_replace_regex.compile("\\[img\\]((.*?))\\[/img\\]")
 
 
-func set_http_client(client :GdUnitUpdateClient) -> void:
+func set_http_client(client: GdUnitUpdateClient) -> void:
 	_client = client
 
 
 @warning_ignore("return_value_discarded")
-func _notification(what :int) -> void:
+func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		# finally remove_at the downloaded images
 		for image in _image_urls:
@@ -139,7 +136,7 @@ func _notification(what :int) -> void:
 			DirAccess.remove_absolute(image + ".import")
 
 
-func list_replace(indent :int) -> String:
+func list_replace(indent: int) -> String:
 	var replace_pattern := "[img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img]" if indent %2 else "[img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img]"
 	replace_pattern += " $1"
 
@@ -148,8 +145,7 @@ func list_replace(indent :int) -> String:
 	return replace_pattern
 
 
-func code_block(replace :String, border :bool = false) -> String:
-	#Color.DARK_SLATE_GRAY
+func code_block(replace: String, border: bool = false) -> String:
 	if border:
 		return """
 			[img=1400x14]res://addons/gdUnit4/src/update/assets/border_top.png[/img]
@@ -159,12 +155,12 @@ func code_block(replace :String, border :bool = false) -> String:
 	return "[code][bgcolor=DARK_SLATE_GRAY][color=GRAY][font_size=16]%s[/font_size][/color][/bgcolor][/code]" % replace
 
 
-func convert_text(input :String) -> String:
+func convert_text(input: String) -> String:
 	input = process_tables(input)
 
-	for pattern :Array in md_replace_patterns:
-		var regex_ :RegEx = pattern[0]
-		var bb_replace :Variant = pattern[1]
+	for pattern: Array in md_replace_patterns:
+		var regex_: RegEx = pattern[0]
+		var bb_replace: Variant = pattern[1]
 		if bb_replace is Callable:
 			@warning_ignore("unsafe_method_access")
 			input = await bb_replace.call(regex_, input)
@@ -174,17 +170,17 @@ func convert_text(input :String) -> String:
 	return input
 
 
-func convert_code_block(input :String) -> String:
-	for pattern :Array in code_block__patterns:
-		var regex_ :RegEx = pattern[0]
-		var bb_replace :Variant = pattern[1]
+func convert_code_block(input: String) -> String:
+	for pattern: Array in code_block_patterns:
+		var regex_: RegEx = pattern[0]
+		var bb_replace: Variant = pattern[1]
 		if bb_replace is Callable:
 			@warning_ignore("unsafe_method_access")
 			input = await bb_replace.call(regex_, input)
 		else:
 			@warning_ignore("unsafe_cast")
 			input = regex_.sub(input, bb_replace as String, true)
-	return input + "\n"
+	return input
 
 
 func to_bbcode(input: String) -> String:
@@ -226,16 +222,18 @@ class Table:
 	class Row:
 		var _cells := PackedStringArray()
 
-		func _init(cells :PackedStringArray, columns :int) -> void:
+
+		func _init(cells: PackedStringArray, columns: int) -> void:
 			_cells = cells
 			for i in range(_cells.size(), columns):
 				@warning_ignore("return_value_discarded")
 				_cells.append("")
 
-		func to_bbcode(cell_sizes :PackedInt32Array, bold :bool) -> String:
+
+		func to_bbcode(cell_sizes: PackedInt32Array, bold: bool) -> String:
 			var cells := PackedStringArray()
 			for cell_index in _cells.size():
-				var cell :String = _cells[cell_index]
+				var cell: String = _cells[cell_index]
 				if cell.strip_edges() == "--":
 					cell = create_line(cell_sizes[cell_index])
 				if bold:
@@ -244,14 +242,17 @@ class Table:
 				cells.append("[cell]%s[/cell]" % cell)
 			return "|".join(cells)
 
-		func create_line(length :int) -> String:
+
+		func create_line(length: int) -> String:
 			var line := ""
 			for i in length:
 				line += "-"
 			return line
 
-	func _init(columns :int) -> void:
+
+	func _init(columns: int) -> void:
 		_columns = columns
+
 
 	func parse_row(line :String) -> bool:
 		# is line containing cells?
@@ -260,6 +261,7 @@ class Table:
 		_rows.append(Row.new(line.split("|"), _columns))
 		return true
 
+
 	func calculate_max_cell_sizes() -> PackedInt32Array:
 		var cells_size := PackedInt32Array()
 		for column in _columns:
@@ -267,13 +269,14 @@ class Table:
 			cells_size.append(0)
 
 		for row_index in _rows.size():
-			var row :Row = _rows[row_index]
+			var row: Row = _rows[row_index]
 			for cell_index in row._cells.size():
-				var cell_size :int = cells_size[cell_index]
+				var cell_size: int = cells_size[cell_index]
 				var size := row._cells[cell_index].length()
 				if size > cell_size:
 					cells_size[cell_index] = size
 		return cells_size
+
 
 	@warning_ignore("return_value_discarded")
 	func to_bbcode() -> PackedStringArray:
@@ -287,8 +290,8 @@ class Table:
 		return bb_code
 
 
-func parse_table(lines :Array) -> PackedStringArray:
-	var line :String = lines[0]
+func parse_table(lines: Array) -> PackedStringArray:
+	var line: String = lines[0]
 	var table := Table.new(line.count("|") + 1)
 	while not lines.is_empty():
 		line = lines.pop_front()
@@ -297,11 +300,11 @@ func parse_table(lines :Array) -> PackedStringArray:
 	return table.to_bbcode()
 
 
-func is_table(line :String) -> bool:
+func is_table(line: String) -> bool:
 	return line.find("|") != -1
 
 
-func open_table(line :String) -> String:
+func open_table(line: String) -> String:
 	_on_table_tag = true
 	return "[table=%d]" % (line.count("|") + 1)
 
@@ -311,7 +314,7 @@ func close_table() -> String:
 	return "[/table]"
 
 
-func extract_cells(line :String, bold := false) -> String:
+func extract_cells(line: String, bold := false) -> String:
 	var cells := ""
 	for cell in line.split("|"):
 		if bold:
@@ -320,7 +323,7 @@ func extract_cells(line :String, bold := false) -> String:
 	return cells
 
 
-func process_image_references(p_regex :RegEx, p_input :String) -> String:
+func process_image_references(p_regex: RegEx, p_input: String) -> String:
 	#return p_input
 
 	# exists references?
@@ -342,17 +345,17 @@ func process_image_references(p_regex :RegEx, p_input :String) -> String:
 		extracted_references = extracted_references.replace(line, "")
 
 	# replace image references by collected url's
-	for reference_key :String in references.keys():
+	for reference_key: String in references.keys():
 		var regex_key := regex("\\](\\[%s\\])" % reference_key)
 		for reg_match in regex_key.search_all(extracted_references):
-			var ref :String = reg_match.get_string(0)
-			var image_url :String = "](%s)" % references.get(reference_key)
+			var ref: String = reg_match.get_string(0)
+			var image_url: String = "](%s)" % references.get(reference_key)
 			extracted_references = extracted_references.replace(ref, image_url)
 	return extracted_references
 
 
 @warning_ignore("return_value_discarded")
-func process_image(p_regex :RegEx, p_input :String) -> String:
+func process_image(p_regex: RegEx, p_input: String) -> String:
 	#return p_input
 	var to_replace := PackedStringArray()
 	var tool_tips :=  PackedStringArray()
@@ -372,13 +375,13 @@ func process_image(p_regex :RegEx, p_input :String) -> String:
 	return await _process_external_image_resources(p_input)
 
 
-func _process_external_image_resources(input :String) -> String:
+func _process_external_image_resources(input: String) -> String:
 	@warning_ignore("return_value_discarded")
 	DirAccess.make_dir_recursive_absolute(image_download_folder)
 	# scan all img for external resources and download it
 	for value in _img_replace_regex.search_all(input):
 		if value.get_group_count() >= 1:
-			var image_url :String = value.get_string(1)
+			var image_url: String = value.get_string(1)
 			# if not a local resource we need to download it
 			if image_url.begins_with("http"):
 				if OS.is_stdout_verbose():

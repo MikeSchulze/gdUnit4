@@ -88,7 +88,7 @@ func request_zip_package(url: String, file: String) -> HttpResponse:
 
 
 func extract_latest_version(response: HttpResponse) -> GdUnit4Version:
-	var body :Array = response.response()
+	var body: Array = response.response()
 	return GdUnit4Version.parse(str(body[0]["name"]))
 
 

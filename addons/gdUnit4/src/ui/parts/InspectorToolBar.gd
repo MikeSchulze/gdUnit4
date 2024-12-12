@@ -94,7 +94,7 @@ func _on_wiki_pressed() -> void:
 
 
 func _on_btn_tool_pressed() -> void:
-	var settings_dlg :Window = EditorInterface.get_base_control().find_child("GdUnitSettingsDialog", false, false)
+	var settings_dlg: Window = EditorInterface.get_base_control().find_child("GdUnitSettingsDialog", false, false)
 	if settings_dlg == null:
 		settings_dlg = preload("res://addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.tscn").instantiate()
 		EditorInterface.get_base_control().add_child(settings_dlg, true)
