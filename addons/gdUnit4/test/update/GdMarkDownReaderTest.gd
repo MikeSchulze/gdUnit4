@@ -45,19 +45,19 @@ func test_tobbcode_md_headers() -> void:
 
 
 func test_tobbcode_list() -> void:
-	assert_str(await _reader.to_bbcode("- item")).is_equal("[img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] item\n")
-	assert_str(await _reader.to_bbcode("  - item")).is_equal("   [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] item\n")
-	assert_str(await _reader.to_bbcode("    - item")).is_equal("      [img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] item\n")
-	assert_str(await _reader.to_bbcode("      - item")).is_equal("         [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] item\n")
+	assert_str(await _reader.to_bbcode("- item")).is_equal("[img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] item")
+	assert_str(await _reader.to_bbcode("  - item")).is_equal("   [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] item")
+	assert_str(await _reader.to_bbcode("    - item")).is_equal("      [img=12x12]res://addons/gdUnit4/src/update/assets/dot1.png[/img] item")
+	assert_str(await _reader.to_bbcode("      - item")).is_equal("         [img=12x12]res://addons/gdUnit4/src/update/assets/dot2.png[/img] item")
 
 
 func test_to_bbcode_embeded_text() -> void:
-	assert_str(await _reader.to_bbcode("> some text")).is_equal("[img=50x14]res://addons/gdUnit4/src/update/assets/embedded.png[/img][i] some text[/i]\n")
+	assert_str(await _reader.to_bbcode("> some text")).is_equal("[img=50x14]res://addons/gdUnit4/src/update/assets/embedded.png[/img][i] some text[/i]")
 
 
 func test_process_image() -> void:
 	#regex("!\\[(.*?)\\]\\((.*?)(( )+(.*?))?\\)")
-	var reg_ex :RegEx = _reader.md_replace_patterns[24][0]
+	var reg_ex :RegEx = _reader.md_replace_patterns[25][0]
 
 	# without tooltip
 	assert_str(await _reader.process_image(reg_ex, "![alt text](res://addons/gdUnit4/test/update/resources/icon48.png)"))\
@@ -84,7 +84,7 @@ func test_process_image() -> void:
 
 func test_process_image_by_reference() -> void:
 	#regex("!\\[(.*?)\\]\\((.*?)(( )+(.*?))?\\)")
-	var reg_ex :RegEx = _reader.md_replace_patterns[23][0]
+	var reg_ex :RegEx = _reader.md_replace_patterns[24][0]
 	var input := """
 		![alt text1][logo-1]
 

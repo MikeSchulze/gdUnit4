@@ -9,6 +9,7 @@ icon.png.import
 *.gd.uid
 *.cs.uid
 *.json.uid
+*.txt.uid
 
 # Mono-specific ignores
 .mono/
