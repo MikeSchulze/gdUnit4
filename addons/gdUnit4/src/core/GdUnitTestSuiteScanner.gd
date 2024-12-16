@@ -191,9 +191,9 @@ func _handle_test_case_arguments(test_suite: GdUnitTestSuite, script: GDScript, 
 		elif arg.has_default():
 			match arg.name():
 				_TestCase.ARGUMENT_TIMEOUT:
-					timeout = arg.default()
+					timeout =  convert(arg.default(), TYPE_INT)
 				_TestCase.ARGUMENT_SKIP:
-					var result :Variant = _expression_runner.execute(script, arg.plain_value())
+					var result: Variant = _expression_runner.execute(script, arg.plain_value())
 					if result is bool:
 						is_skipped = result
 					else:
@@ -201,9 +201,9 @@ func _handle_test_case_arguments(test_suite: GdUnitTestSuite, script: GDScript, 
 				_TestCase.ARGUMENT_SKIP_REASON:
 					skip_reason = arg.plain_value()
 				Fuzzer.ARGUMENT_ITERATIONS:
-					iterations = arg.default()
+					iterations = convert(arg.default(), TYPE_INT)
 				Fuzzer.ARGUMENT_SEED:
-					seed_value = arg.default()
+					seed_value = convert(arg.default(), TYPE_INT)
 	# create new test
 	@warning_ignore("return_value_discarded")
 	test.configure(fd.name(), fd.line_number(), fd.source_path(), timeout, fuzzers, iterations, seed_value)
