@@ -159,3 +159,8 @@ func test_multiline_fuzzer_args(
 		assert_object(fuzzer_a).is_not_null()
 		assert_object(fuzzer_b).is_not_null()
 		_current_iterations["test_multiline_fuzzer_args"] += 1
+
+
+@warning_ignore("untyped_declaration", "unused_parameter")
+func test_fuzzing_with_untyped_parameters(float_fuzzer = Fuzzers.rangef(-100.0, 100.0), fuzzer_iterations = 10):
+	assert_float(float_fuzzer.next_value()).is_between(-100.0, 100.0)
