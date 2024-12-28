@@ -24,7 +24,7 @@ func _popup_menu(paths: PackedStringArray) -> void:
 			continue
 
 		var file_type := resource_path.get_extension()
-		if file_type == "GDScript" or file_type == "CSharpScript":
+		if file_type == "gd" or file_type == "cs":
 			var resource: Script = ResourceLoader.load(resource_path, "Script", ResourceLoader.CACHE_MODE_REUSE)
 			if GdObjects.is_test_suite(resource):
 				test_suites.append(resource_path)
