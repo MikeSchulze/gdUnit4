@@ -22,7 +22,10 @@ const EXCLUDED_CLASSES = [
 	"Sprite3D", "AnimatedSprite3D", "LookAtModifier3D",
 	# Godot-4-4_dev5 unknown classes
 	"AnimationNodeStartState",
-	"AnimationNodeEndState"
+	"AnimationNodeEndState",
+	# Godot-4-4_dev7 get_class issues
+	"UPNPDevice",
+	"UPNP"
 ]
 
 
