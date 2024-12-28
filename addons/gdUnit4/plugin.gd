@@ -68,7 +68,7 @@ func _add_context_menus() -> void:
 		# With Godot 4.4 we have to use the 'add_context_menu_plugin' to register editor context menus
 		_gd_filesystem_context_menu = _create_context_menu("res://addons/gdUnit4/src/ui/menu/EditorFileSystemContextMenuHandlerV44.gdx")
 		call_deferred("add_context_menu_plugin", CONTEXT_SLOT_FILESYSTEM, _gd_filesystem_context_menu)
-		# the CONTEXT_SLOT_SCRIPT_EDITOR is adding to the script panel instead of script editor
+		# the CONTEXT_SLOT_SCRIPT_EDITOR is adding to the script panel instead of script editor see https://github.com/godotengine/godot/pull/100556
 		#_gd_scripteditor_context_menu = _preload("res://addons/gdUnit4/src/ui/menu/ScriptEditorContextMenuHandlerV44.gdx")
 		#call_deferred("add_context_menu_plugin", CONTEXT_SLOT_SCRIPT_EDITOR, _gd_scripteditor_context_menu)
 		# so we use the old hacky way to add the context menu
