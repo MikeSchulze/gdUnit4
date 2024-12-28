@@ -1,6 +1,10 @@
 @tool
 extends EditorPlugin
 
+# We need to define manually the slot id's, to be downwards compatible
+const CONTEXT_SLOT_FILESYSTEM = 1 # EditorContextMenuPlugin.CONTEXT_SLOT_FILESYSTEM
+const CONTEXT_SLOT_SCRIPT_EDITOR = 2 # EditorContextMenuPlugin.CONTEXT_SLOT_SCRIPT_EDITOR
+
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const GdUnitTestDiscoverGuard := preload("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd")
 const GdUnitConsole := preload("res://addons/gdUnit4/src/ui/GdUnitConsole.gd")
@@ -8,6 +12,8 @@ const GdUnitConsole := preload("res://addons/gdUnit4/src/ui/GdUnitConsole.gd")
 
 var _gd_inspector: Control
 var _gd_console: GdUnitConsole
+var _gd_filesystem_context_menu: Variant
+var _gd_scripteditor_context_menu: Variant
 var _guard: GdUnitTestDiscoverGuard
 
 
@@ -22,6 +28,7 @@ func _enter_tree() -> void:
 	GdUnitSettings.setup()
 	# Install the GdUnit Inspector
 	_gd_inspector = (load("res://addons/gdUnit4/src/ui/GdUnitInspector.tscn") as PackedScene).instantiate()
+	_add_context_menus()
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, _gd_inspector)
 	# Install the GdUnit Console
 	_gd_console = (load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn") as PackedScene).instantiate()
@@ -42,6 +49,7 @@ func _exit_tree() -> void:
 	if is_instance_valid(_gd_inspector):
 		remove_control_from_docks(_gd_inspector)
 		_gd_inspector.free()
+	_remove_context_menus()
 	if is_instance_valid(_gd_console):
 		remove_control_from_bottom_panel(_gd_console)
 		_gd_console.free()
@@ -53,6 +61,36 @@ func check_running_in_test_env() -> bool:
 	var args := OS.get_cmdline_args()
 	args.append_array(OS.get_cmdline_user_args())
 	return DisplayServer.get_name() == "headless" or args.has("--selftest") or args.has("--add") or args.has("-a") or args.has("--quit-after") or args.has("--import")
+
+
+func _add_context_menus() -> void:
+	if Engine.get_version_info().hex >= 0x40400:
+		# With Godot 4.4 we have to use the 'add_context_menu_plugin' to register editor context menus
+		_gd_filesystem_context_menu = _create_context_menu("res://addons/gdUnit4/src/ui/menu/EditorFileSystemContextMenuHandlerV44.gdx")
+		call_deferred("add_context_menu_plugin", CONTEXT_SLOT_FILESYSTEM, _gd_filesystem_context_menu)
+		# the CONTEXT_SLOT_SCRIPT_EDITOR is adding to the script panel instead of script editor see https://github.com/godotengine/godot/pull/100556
+		#_gd_scripteditor_context_menu = _preload("res://addons/gdUnit4/src/ui/menu/ScriptEditorContextMenuHandlerV44.gdx")
+		#call_deferred("add_context_menu_plugin", CONTEXT_SLOT_SCRIPT_EDITOR, _gd_scripteditor_context_menu)
+		# so we use the old hacky way to add the context menu
+		_gd_inspector.add_child(preload("res://addons/gdUnit4/src/ui/menu/ScriptEditorContextMenuHandler.gd").new())
+	else:
+		# TODO Delete it if the minimum requirement for the plugin is set to Godot 4.4.
+		_gd_inspector.add_child(preload("res://addons/gdUnit4/src/ui/menu/EditorFileSystemContextMenuHandler.gd").new())
+		_gd_inspector.add_child(preload("res://addons/gdUnit4/src/ui/menu/ScriptEditorContextMenuHandler.gd").new())
+
+
+func _remove_context_menus() -> void:
+	if is_instance_valid(_gd_filesystem_context_menu):
+		call_deferred("remove_context_menu_plugin", _gd_filesystem_context_menu)
+	if is_instance_valid(_gd_scripteditor_context_menu):
+		call_deferred("remove_context_menu_plugin", _gd_scripteditor_context_menu)
+
+
+func _create_context_menu(script_path: String) -> Variant:
+	var context_menu_script := GDScript.new()
+	context_menu_script.source_code = FileAccess.get_file_as_string(script_path)
+	context_menu_script.reload()
+	return context_menu_script.new()
 
 
 func _on_resource_saved(resource: Resource) -> void:
