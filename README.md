@@ -15,7 +15,7 @@
 </p>
 
 <h1 align="center">Compatibility Overview</h1>
-<p align="center">The latest version of GdUnit4 (master branch) is based on Godot <strong>v4.4.dev2.official [97ef3c837]</strong></p>
+<p align="center">The latest version of GdUnit4 (master branch) is working with Godot <strong>v4.4.dev7.mono.official [46c8f8c5c]</strong></p>
 <table align="center">
   <thead>
  <tr>
