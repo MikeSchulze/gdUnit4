@@ -26,8 +26,8 @@ const SETTINGS_SHORTCUT_MAPPING := {
 	GdUnitSettings.SHORTCUT_EDITOR_RUN_TEST : GdUnitShortcut.ShortCut.RUN_TESTCASE,
 	GdUnitSettings.SHORTCUT_EDITOR_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG,
 	GdUnitSettings.SHORTCUT_EDITOR_CREATE_TEST : GdUnitShortcut.ShortCut.CREATE_TEST,
-	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST : GdUnitShortcut.ShortCut.RUN_TESTCASE,
-	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG
+	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST : GdUnitShortcut.ShortCut.RUN_TESTSUITE,
+	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTSUITE_DEBUG
 }
 
 # the current test runner config
@@ -68,8 +68,8 @@ func _init() -> void:
 	register_command(GdUnitCommand.new(CMD_RUN_OVERALL, is_not_running, cmd_run_overall.bind(true), GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL))
 	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE, is_not_running, cmd_editor_run_test.bind(false), GdUnitShortcut.ShortCut.RUN_TESTCASE))
 	register_command(GdUnitCommand.new(CMD_RUN_TESTCASE_DEBUG, is_not_running, cmd_editor_run_test.bind(true), GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG))
-	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE, is_not_running, cmd_run_test_suites.bind(false)))
-	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE_DEBUG, is_not_running, cmd_run_test_suites.bind(true)))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE, is_not_running, cmd_run_test_suites.bind(false), GdUnitShortcut.ShortCut.RUN_TESTSUITE))
+	register_command(GdUnitCommand.new(CMD_RUN_TESTSUITE_DEBUG, is_not_running, cmd_run_test_suites.bind(true), GdUnitShortcut.ShortCut.RUN_TESTSUITE_DEBUG))
 	register_command(GdUnitCommand.new(CMD_RERUN_TESTS, is_not_running, cmd_run.bind(false), GdUnitShortcut.ShortCut.RERUN_TESTS))
 	register_command(GdUnitCommand.new(CMD_RERUN_TESTS_DEBUG, is_not_running, cmd_run.bind(true), GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG))
 	register_command(GdUnitCommand.new(CMD_CREATE_TESTCASE, is_not_running, cmd_create_test, GdUnitShortcut.ShortCut.CREATE_TEST))
@@ -240,24 +240,27 @@ func cmd_stop(client_id: int) -> void:
 
 
 func cmd_editor_run_test(debug: bool) -> void:
-	var cursor_line := active_base_editor().get_caret_line()
-	#run test case?
-	var regex := RegEx.new()
-	@warning_ignore("return_value_discarded")
-	regex.compile("(^func[ ,\t])(test_[a-zA-Z0-9_]*)")
-	var result := regex.search(active_base_editor().get_line(cursor_line))
-	if result:
-		var func_name := result.get_string(2).strip_edges()
-		prints("Run test:", func_name, "debug", debug)
-		if func_name.begins_with("test_"):
-			cmd_run_test_case(active_script().resource_path, func_name, -1, debug)
-			return
+	if is_active_script_editor():
+		var cursor_line := active_base_editor().get_caret_line()
+		#run test case?
+		var regex := RegEx.new()
+		@warning_ignore("return_value_discarded")
+		regex.compile("(^func[ ,\t])(test_[a-zA-Z0-9_]*)")
+		var result := regex.search(active_base_editor().get_line(cursor_line))
+		if result:
+			var func_name := result.get_string(2).strip_edges()
+			prints("Run test:", func_name, "debug", debug)
+			if func_name.begins_with("test_"):
+				cmd_run_test_case(active_script().resource_path, func_name, -1, debug)
+				return
 	# otherwise run the full test suite
 	var selected_test_suites := [active_script().resource_path]
 	cmd_run_test_suites(selected_test_suites, debug)
 
 
 func cmd_create_test() -> void:
+	if not is_active_script_editor():
+		return
 	var cursor_line := active_base_editor().get_caret_line()
 	var result := GdUnitTestSuiteBuilder.create(active_script(), cursor_line)
 	if result.is_error():
@@ -320,6 +323,10 @@ func run_release_mode() -> void:
 	arguments.append("res://addons/gdUnit4/src/core/GdUnitRunner.tscn")
 	_current_runner_process_id = OS.create_process(OS.get_executable_path(), arguments, false);
 	_is_running = true
+
+
+func is_active_script_editor() -> bool:
+	return EditorInterface.get_script_editor().get_current_editor() != null
 
 
 func active_base_editor() -> TextEdit:
