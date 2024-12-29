@@ -13,6 +13,12 @@ func _init() -> void:
 	_context_menus[GdUnitContextMenuItem.MENU_ID.TEST_RUN] = GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_RUN, "Run Testsuites", "Play", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE))
 	_context_menus[GdUnitContextMenuItem.MENU_ID.TEST_DEBUG] = GdUnitContextMenuItem.new(GdUnitContextMenuItem.MENU_ID.TEST_DEBUG, "Debug Testsuites", "PlayStart", is_test_suite.bind(true), _command_handler.command(GdUnitCommandHandler.CMD_RUN_TESTSUITE_DEBUG))
 
+	# setup shortcuts
+	for menu_item: GdUnitContextMenuItem  in _context_menus.values():
+		_set_menu_shortcut(menu_item)
+	# register for shortcut changes
+	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
+
 
 func _popup_menu(paths: PackedStringArray) -> void:
 	var test_suites := PackedStringArray()
@@ -35,7 +41,23 @@ func _popup_menu(paths: PackedStringArray) -> void:
 
 	for menu_item: GdUnitContextMenuItem  in _context_menus.values():
 		@warning_ignore("unused_parameter")
-		add_context_menu_item(menu_item.name,
-			func call(files: Array) -> void:
-				menu_item.execute([test_suites]),
-			GdUnitUiTools.get_icon(menu_item.icon))
+		var cb := func call(files: Array) -> void:
+			menu_item.execute([test_suites])
+		add_context_menu_item(menu_item.name, cb, GdUnitUiTools.get_icon(menu_item.icon))
+
+
+func _on_settings_changed(property: GdUnitProperty) -> void:
+	if GdUnitCommandHandler.SETTINGS_SHORTCUT_MAPPING.has(property.name()):
+		var shortcut :GdUnitShortcut.ShortCut = GdUnitCommandHandler.SETTINGS_SHORTCUT_MAPPING.get(property.name())
+		for menu_item: GdUnitContextMenuItem in _context_menus.values():
+			if menu_item.command.shortcut != shortcut:
+				continue
+			_set_menu_shortcut(menu_item)
+
+
+func _set_menu_shortcut(menu_item: GdUnitContextMenuItem) -> void:
+	var cb := func call(files: Array) -> void:
+		menu_item.execute([files])
+	# From the documentaion it should be called only ones, but we need to reset/overwrite the settings
+	# see https://github.com/godotengine/godot/pull/100556
+	add_menu_shortcut(menu_item.shortcut(), cb)
