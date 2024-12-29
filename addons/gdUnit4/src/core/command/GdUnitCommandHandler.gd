@@ -364,7 +364,11 @@ func _on_settings_changed(property: GdUnitProperty) -> void:
 		var value: PackedInt32Array = property.value()
 		var input_event := create_shortcut_input_even(value)
 		prints("Shortcut changed: '%s' to '%s'" % [GdUnitShortcut.ShortCut.keys()[shortcut], input_event.as_text()])
-		register_shortcut(shortcut, input_event)
+		var action := get_shortcut_action(shortcut)
+		if action != null:
+			action.update_shortcut(input_event)
+		else:
+			register_shortcut(shortcut, input_event)
 	if property.name() == GdUnitSettings.TEST_DISCOVER_ENABLED:
 		var timer :SceneTreeTimer = (Engine.get_main_loop() as SceneTree).create_timer(3)
 		@warning_ignore("return_value_discarded")
