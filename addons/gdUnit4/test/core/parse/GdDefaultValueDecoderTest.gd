@@ -16,6 +16,7 @@ func after() -> void:
 	for type_id in TYPE_MAX:
 		if type_id == TYPE_OBJECT:
 			continue
+		@warning_ignore("unsafe_method_access")
 		assert_that(_tested_types.get(type_id))\
 			.override_failure_message("Missing Variant type '%s'" % GdObjects.type_as_string(type_id))\
 			.is_not_null()
