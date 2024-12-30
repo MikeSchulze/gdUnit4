@@ -1,3 +1,4 @@
+class_name TestPerson
 extends Object
 
 var _name :String

@@ -1,3 +1,4 @@
+class_name DoubledClassSourceClassName
 
 const __INSTANCE_ID = "${instance_id}"
 const __SOURCE_CLASS = "${source_class}"
@@ -6,7 +7,7 @@ var __instance_delegator :Object
 var __excluded_methods :PackedStringArray = []
 
 
-static func __instance() -> Variant:
+static func __instance() -> DoubledClassSourceClassName:
 	return Engine.get_meta(__INSTANCE_ID)
 
 
