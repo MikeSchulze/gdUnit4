@@ -19,12 +19,14 @@ func test_double__init() -> void:
 	var doubler := GdUnitSpyFunctionDoubler.new(false)
 	# void _init() virtual
 	var fd := get_function_description("Object", "_init")
-	var expected := [
-		'func _init() -> void:',
-		'	super()',
-		'	pass',
-		'']
-	assert_array(doubler.double(fd)).contains_exactly(expected)
+	var expected := """
+		func _init() -> void:
+			@warning_ignore("unsafe_call_argument")
+			super()
+
+
+	""".dedent()
+	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
 
 
 func test_double_return_typed_function_without_arg() -> void:
@@ -129,47 +131,45 @@ func test_double_return_typed_function_with_args_and_varargs() -> void:
 	var doubler := GdUnitSpyFunctionDoubler.new(false)
 	# Error emit_signal(signal: StringName, ...) vararg
 	var fd := get_function_description("Object", "emit_signal")
-	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\')',
-		'@warning_ignore("native_method_override")',
-		'@warning_ignore("int_as_enum_without_match")',
-		'@warning_ignore("int_as_enum_without_cast")',
-		'func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:',
-		'	var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
-		'	var args__: Array = ["emit_signal", signal_] + varargs__',
-		'',
-		'	if __is_verify_interactions():',
-		'		__verify_interactions(args__)',
-		'		return OK',
-		'	else:',
-		'		__save_function_interaction(args__)',
-		'',
-		'	return __call_func("emit_signal", [signal_] + varargs__)',
-		'',
-		'']
-	assert_array(doubler.double(fd)).contains_exactly(expected)
+	var expected := """
+		@warning_ignore('shadowed_variable', 'untyped_declaration')
+		@warning_ignore("native_method_override")
+		func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:
+			var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
+			var args__: Array = ["emit_signal", signal_] + varargs__
+
+			if __is_verify_interactions():
+				__verify_interactions(args__)
+				return OK
+			else:
+				__save_function_interaction(args__)
+
+			return __call_func("emit_signal", [signal_] + varargs__)
+
+	""".dedent().trim_prefix("\n")
+	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
 
 
 func test_double_return_void_function_only_varargs() -> void:
 	var doubler := GdUnitSpyFunctionDoubler.new(false)
 	# void bar(s...) vararg
 	var fd := GdFunctionDescriptor.new( "bar", 23, false, false, false, TYPE_NIL, "void", [], GdFunctionDescriptor._build_varargs(true))
-	var expected := [
-		'@warning_ignore(\'shadowed_variable\', \'untyped_declaration\')',
-		'func bar(vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:',
-		'	var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])',
-		'	var args__: Array = ["bar", ] + varargs__',
-		'',
-		'	if __is_verify_interactions():',
-		'		__verify_interactions(args__)',
-		'		return',
-		'	else:',
-		'		__save_function_interaction(args__)',
-		'',
-		'	__call_func("bar", [] + varargs__)',
-		'',
-		'']
-	assert_array(doubler.double(fd)).contains_exactly(expected)
+	var expected := """
+		@warning_ignore('shadowed_variable', 'untyped_declaration')
+		func bar(vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:
+			var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
+			var args__: Array = ["bar", ] + varargs__
+
+			if __is_verify_interactions():
+				__verify_interactions(args__)
+				return
+			else:
+				__save_function_interaction(args__)
+
+			__call_func("bar", [] + varargs__)
+
+	""".dedent().trim_prefix("\n")
+	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
 
 
 func test_double_return_typed_function_only_varargs() -> void:

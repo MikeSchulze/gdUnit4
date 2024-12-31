@@ -1,3 +1,4 @@
+class_name DoubledMockClassSourceClassName
 
 ################################################################################
 # internal mocking stuff
@@ -17,7 +18,7 @@ var __prepare_return_value := false
 var __mocked_return_values := Dictionary()
 
 
-static func __instance() -> Object:
+static func __instance() -> DoubledMockClassSourceClassName:
 	return Engine.get_meta(__INSTANCE_ID)
 
 
@@ -77,18 +78,18 @@ func __save_function_return_value(__fuction_args :Array) -> void:
 	__prepare_return_value = false
 
 
-@warning_ignore("unsafe_method_access")
-func __is_mocked_args_match(__func_args :Array, __mocked_args :Array) -> bool:
+func __is_mocked_args_match(__func_args: Array, __mocked_args: Array) -> bool:
 	var __is_matching := false
 	for __index in __mocked_args.size():
-		var __fuction_args :Variant = __mocked_args[__index]
+		var __fuction_args: Array = __mocked_args[__index]
 		if __func_args.size() != __fuction_args.size():
 			continue
 		__is_matching = true
 		for __arg_index in __func_args.size():
-			var __func_arg :Variant = __func_args[__arg_index]
-			var __mock_arg :Variant = __fuction_args[__arg_index]
+			var __func_arg: Variant = __func_args[__arg_index]
+			var __mock_arg: Variant = __fuction_args[__arg_index]
 			if __mock_arg is GdUnitArgumentMatcher:
+				@warning_ignore("unsafe_method_access")
 				__is_matching = __is_matching and __mock_arg.is_match(__func_arg)
 			else:
 				__is_matching = __is_matching and typeof(__func_arg) == typeof(__mock_arg) and __func_arg == __mock_arg
@@ -99,15 +100,15 @@ func __is_mocked_args_match(__func_args :Array, __mocked_args :Array) -> bool:
 	return __is_matching
 
 
-@warning_ignore("unsafe_method_access")
-func __get_mocked_return_value_or_default(__fuction_args :Array, __default_return_value :Variant) -> Variant:
-	var __func_name :String = __fuction_args[0]
+func __get_mocked_return_value_or_default(__fuction_args: Array, __default_return_value: Variant) -> Variant:
+	var __func_name: String = __fuction_args[0]
 	if not __mocked_return_values.has(__func_name):
 		return __default_return_value
-	var __func_args :Array = __fuction_args.slice(1)
-	var __mocked_args :Array = __mocked_return_values.get(__func_name).keys()
+	var __func_args: Array = __fuction_args.slice(1)
+	@warning_ignore("unsafe_method_access")
+	var __mocked_args: Array = __mocked_return_values.get(__func_name).keys()
 	for __index in __mocked_args.size():
-		var __margs :Variant = __mocked_args[__index]
+		var __margs: Variant = __mocked_args[__index]
 		if __is_mocked_args_match(__func_args, [__margs]):
 			return __mocked_return_values[__func_name][__margs]
 	return __default_return_value
@@ -122,13 +123,13 @@ func __set_mode(mock_working_mode :String) -> Object:
 	return self
 
 
-@warning_ignore("unsafe_method_access")
-func __do_call_real_func(__func_name :String, __func_args := []) -> bool:
+func __do_call_real_func(__func_name: String, __func_args := []) -> bool:
 	var __is_call_real_func := __mock_working_mode == GdUnitMock.CALL_REAL_FUNC  and not __excluded_methods.has(__func_name)
 	# do not call real funcions for mocked functions
 	if __is_call_real_func and __mocked_return_values.has(__func_name):
-		var __fuction_args :Array = __func_args.slice(1)
-		var __mocked_args :Array = __mocked_return_values.get(__func_name).keys()
+		var __fuction_args: Array = __func_args.slice(1)
+		@warning_ignore("unsafe_method_access")
+		var __mocked_args: Array = __mocked_return_values.get(__func_name).keys()
 		return not __is_mocked_args_match(__fuction_args, __mocked_args)
 	return __is_call_real_func
 

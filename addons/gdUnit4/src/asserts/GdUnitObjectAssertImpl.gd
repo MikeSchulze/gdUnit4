@@ -92,11 +92,11 @@ func is_not_same(expected :Variant) -> GdUnitObjectAssert:
 	return report_success()
 
 
-func is_instanceof(type :Object) -> GdUnitObjectAssert:
-	var current :Variant = current_value()
+func is_instanceof(type: Variant) -> GdUnitObjectAssert:
+	var current: Variant = current_value()
 	if current == null or not is_instance_of(current, type):
-		var result_expected: = GdObjects.extract_class_name(type)
-		var result_current: = GdObjects.extract_class_name(current)
+		var result_expected := GdObjects.extract_class_name(type)
+		var result_current := GdObjects.extract_class_name(current)
 		return report_error(GdAssertMessages.error_is_instanceof(result_current, result_expected))
 	return report_success()
 

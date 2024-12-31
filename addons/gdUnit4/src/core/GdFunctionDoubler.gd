@@ -133,15 +133,18 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 	# save original constructor arguments
 	if func_name == "_init":
 		var constructor_args := ",".join(GdFunctionDoubler.extract_constructor_args(args))
-		var constructor := "func _init(%s) -> void:\n	super(%s)\n	pass\n" % [constructor_args, ", ".join(arg_names)]
+		var constructor := """
+			func _init(%s) -> void:
+				@warning_ignore("unsafe_call_argument")
+				super(%s)
+
+
+			""".dedent() % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
 
 	var double_src := "@warning_ignore('shadowed_variable', 'untyped_declaration')\n"
 	if func_descriptor.is_engine():
 		double_src += '@warning_ignore("native_method_override")\n'
-	if func_descriptor.return_type() == GdObjects.TYPE_ENUM:
-		double_src += '@warning_ignore("int_as_enum_without_match")\n'
-		double_src += '@warning_ignore("int_as_enum_without_cast")\n'
 	double_src += GdFunctionDoubler.extract_func_signature(func_descriptor)
 	# fix to  unix format, this is need when the template is edited under windows than the template is stored with \r\n
 	var func_template := get_template(func_descriptor, is_callable).replace("\r\n", "\n")
@@ -152,6 +155,11 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 		.replace("$(func_name)", func_name )\
 		.replace("${default_return_value}", return_value)\
 		.replace("$(push_errors)", _push_errors)
+
+	if func_descriptor.return_type() == GdObjects.TYPE_ENUM:
+		double_src = double_src.replace("$(return_as)", " as " + func_descriptor.return_type_as_string())
+	else:
+		double_src = double_src.replace("$(return_as)", "")
 
 	if is_static:
 		double_src = double_src.replace("$(instance)", "__instance().")

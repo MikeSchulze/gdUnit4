@@ -38,7 +38,7 @@ static func build(to_spy: Variant, debug_write := false) -> Variant:
 	var spy := spy_on_script(to_spy, excluded_functions, debug_write)
 	if spy == null:
 		return null
-	var spy_instance :Object = spy.new()
+	var spy_instance: Object = spy.new()
 	@warning_ignore("unsafe_cast")
 	copy_properties(to_spy as Object, spy_instance)
 	@warning_ignore("return_value_discarded")

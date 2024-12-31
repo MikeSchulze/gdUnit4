@@ -61,7 +61,7 @@ func test_spy_source_with_class_name_by_resource_path() -> void:
 	@warning_ignore("unsafe_method_access")
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
-		.contains("class_name DoubledClassMunderwoodPathingWorld")\
+		.contains("class_name DoubledSpyClassMunderwoodPathingWorld")\
 		.contains("extends 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'")
 
 
@@ -70,7 +70,7 @@ func test_spy_source_with_class_name_by_class() -> void:
 	@warning_ignore("unsafe_method_access")
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
-		.contains("class_name DoubledClassMunderwoodPathingWorld")\
+		.contains("class_name DoubledSpyClassMunderwoodPathingWorld")\
 		.contains("extends 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'")
 
 
@@ -79,7 +79,7 @@ func test_spy_extends_godot_class() -> void:
 	@warning_ignore("unsafe_method_access")
 	var head :String = m.get_script().source_code.substr(0, 200)
 	assert_str(head)\
-		.contains("class_name DoubledClassWorld")\
+		.contains("class_name DoubledSpyClassWorld")\
 		.contains("extends World3D")
 
 
