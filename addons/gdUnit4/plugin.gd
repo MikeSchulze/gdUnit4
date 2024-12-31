@@ -22,8 +22,8 @@ func _enter_tree() -> void:
 		@warning_ignore("return_value_discarded")
 		CmdConsole.new().prints_warning("It was recognized that GdUnit4 is running in a test environment, therefore the GdUnit4 plugin will not be executed!")
 		return
-	if Engine.get_version_info().hex < 0x40200:
-		prints("GdUnit4 plugin requires a minimum of Godot 4.2.x Version!")
+	if Engine.get_version_info().hex < 0x40300:
+		prints("GdUnit4 plugin requires a minimum of Godot 4.3.x Version!")
 		return
 	GdUnitSettings.setup()
 	# Install the GdUnit Inspector
