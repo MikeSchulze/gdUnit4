@@ -28,15 +28,20 @@ func test_double_return_typed_function_without_arg() -> void:
 			if __is_prepare_return_value():
 				__save_function_return_value(args__)
 				return ""
-			if __is_verify_interactions():
-				__verify_interactions(args__)
-				return ""
-			else:
-				__save_function_interaction(args__)
+
+			# verify block
+			var __verifier := __get_verifier()
+			if __verifier != null:
+				if __verifier.is_verify_interactions():
+					__verifier.verify_interactions(args__)
+					return ""
+				else:
+					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("get_class", args__):
 				@warning_ignore("unsafe_call_argument")
 				return super()
+
 			return __get_mocked_return_value_or_default(args__, "")
 
 	""".dedent().trim_prefix("\n")
@@ -56,15 +61,20 @@ func test_double_return_typed_function_with_args() -> void:
 			if __is_prepare_return_value():
 				__save_function_return_value(args__)
 				return false
-			if __is_verify_interactions():
-				__verify_interactions(args__)
-				return false
-			else:
-				__save_function_interaction(args__)
+
+			# verify block
+			var __verifier := __get_verifier()
+			if __verifier != null:
+				if __verifier.is_verify_interactions():
+					__verifier.verify_interactions(args__)
+					return false
+				else:
+					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("is_connected", args__):
 				@warning_ignore("unsafe_call_argument")
 				return super(signal_, callable_)
+
 			return __get_mocked_return_value_or_default(args__, false)
 
 	""".dedent().trim_prefix("\n")
@@ -86,11 +96,15 @@ func test_double_return_untyped_function_with_args() -> void:
 				if false:
 					push_error("Mocking a void function 'disconnect(<args>) -> void:' is not allowed.")
 				return
-			if __is_verify_interactions():
-				__verify_interactions(args__)
-				return
-			else:
-				__save_function_interaction(args__)
+
+			# verify block
+			var __verifier := __get_verifier()
+			if __verifier != null:
+				if __verifier.is_verify_interactions():
+					__verifier.verify_interactions(args__)
+					return
+				else:
+					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("disconnect"):
 				@warning_ignore("unsafe_call_argument")
@@ -108,7 +122,7 @@ func test_double_int_function_with_varargs() -> void:
 		@warning_ignore('shadowed_variable', 'untyped_declaration')
 		@warning_ignore("native_method_override")
 		func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:
-			var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
+			var varargs__: Array = __get_verifier().filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
 			var args__: Array = ["emit_signal", signal_] + varargs__
 
 			if __is_prepare_return_value():
@@ -116,11 +130,15 @@ func test_double_int_function_with_varargs() -> void:
 					push_error("Mocking a void function 'emit_signal(<args>) -> void:' is not allowed.")
 				__save_function_return_value(args__)
 				return OK as Error
-			if __is_verify_interactions():
-				__verify_interactions(args__)
-				return OK as Error
-			else:
-				__save_function_interaction(args__)
+
+			# verify block
+			var __verifier := __get_verifier()
+			if __verifier != null:
+				if __verifier.is_verify_interactions():
+					__verifier.verify_interactions(args__)
+					return OK as Error
+				else:
+					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("emit_signal", args__):
 				match varargs__.size():
@@ -146,6 +164,7 @@ func test_double_int_function_with_varargs() -> void:
 					9: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8])
 					@warning_ignore("unsafe_call_argument")
 					10: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8], varargs__[9])
+
 			return __get_mocked_return_value_or_default(args__, OK)
 
 	""".dedent().trim_prefix("\n")
@@ -162,7 +181,7 @@ func test_double_untyped_function_with_varargs() -> void:
 	var expected := """
 		@warning_ignore('shadowed_variable', 'untyped_declaration')
 		func emit_custom(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:
-			var varargs__: Array = __filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
+			var varargs__: Array = __get_verifier().filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
 			var args__: Array = ["emit_custom", signal_] + varargs__
 
 			if __is_prepare_return_value():
@@ -170,11 +189,15 @@ func test_double_untyped_function_with_varargs() -> void:
 					push_error("Mocking a void function 'emit_custom(<args>) -> void:' is not allowed.")
 				__save_function_return_value(args__)
 				return null
-			if __is_verify_interactions():
-				__verify_interactions(args__)
-				return null
-			else:
-				__save_function_interaction(args__)
+
+			# verify block
+			var __verifier := __get_verifier()
+			if __verifier != null:
+				if __verifier.is_verify_interactions():
+					__verifier.verify_interactions(args__)
+					return null
+				else:
+					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("emit_custom", args__):
 				match varargs__.size():
@@ -200,6 +223,7 @@ func test_double_untyped_function_with_varargs() -> void:
 					9: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8])
 					@warning_ignore("unsafe_call_argument")
 					10: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8], varargs__[9])
+
 			return __get_mocked_return_value_or_default(args__, null)
 
 	""".dedent().trim_prefix("\n")
@@ -221,11 +245,15 @@ func test_double_virtual_script_function_without_arg() -> void:
 				if false:
 					push_error("Mocking a void function '_ready(<args>) -> void:' is not allowed.")
 				return
-			if __is_verify_interactions():
-				__verify_interactions(args__)
-				return
-			else:
-				__save_function_interaction(args__)
+
+			# verify block
+			var __verifier := __get_verifier()
+			if __verifier != null:
+				if __verifier.is_verify_interactions():
+					__verifier.verify_interactions(args__)
+					return
+				else:
+					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("_ready"):
 				@warning_ignore("unsafe_call_argument")
@@ -250,11 +278,15 @@ func test_double_virtual_script_function_with_arg() -> void:
 				if false:
 					push_error("Mocking a void function '_input(<args>) -> void:' is not allowed.")
 				return
-			if __is_verify_interactions():
-				__verify_interactions(args__)
-				return
-			else:
-				__save_function_interaction(args__)
+
+			# verify block
+			var __verifier := __get_verifier()
+			if __verifier != null:
+				if __verifier.is_verify_interactions():
+					__verifier.verify_interactions(args__)
+					return
+				else:
+					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("_input"):
 				@warning_ignore("unsafe_call_argument")

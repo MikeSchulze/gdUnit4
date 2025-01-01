@@ -29,11 +29,7 @@ static func build(clazz :Variant, mock_mode :String, debug_write := false) -> Va
 		return null
 	var mock_instance: Object = mock.new()
 	@warning_ignore("unsafe_method_access")
-	mock_instance.__set_script(mock)
-	@warning_ignore("unsafe_method_access")
-	mock_instance.__set_singleton()
-	@warning_ignore("unsafe_method_access")
-	mock_instance.__set_mode(mock_mode)
+	mock_instance.__init(mock, mock_mode)
 	return register_auto_free(mock_instance)
 
 
@@ -83,9 +79,7 @@ static func mock_on_scene(scene: PackedScene, debug_write: bool) -> Variant:
 		return null
 	scene_instance.set_script(mock)
 	@warning_ignore("unsafe_method_access")
-	scene_instance.__set_singleton()
-	@warning_ignore("unsafe_method_access")
-	scene_instance.__set_mode(GdUnitMock.CALL_REAL_FUNC)
+	scene_instance.__init(mock, GdUnitMock.CALL_REAL_FUNC)
 	return register_auto_free(scene_instance)
 
 

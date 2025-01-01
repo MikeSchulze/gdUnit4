@@ -809,7 +809,7 @@ func test_matching_is_sorted() -> void:
 	do_return(null).on(mocked_node).get_child(3, true)
 
 	# get the sorted mocked args as array
-	var mocked_args :Array = mocked_node.__mocked_return_values.get("get_child").keys()
+	var mocked_args :Array = mocked_node.__mock_state().return_values.get("get_child").keys()
 	assert_array(mocked_args).has_size(5)
 
 	# we expect all argument matchers are sorted to the end

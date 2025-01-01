@@ -121,7 +121,6 @@ func get_template(return_type: GdFunctionDescriptor, is_callable: bool) -> Strin
 
 
 func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) -> PackedStringArray:
-	var is_static := func_descriptor.is_static()
 	var is_coroutine := func_descriptor.is_coroutine()
 	var func_name := func_descriptor.name()
 	var args := func_descriptor.args()
@@ -135,9 +134,9 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 		var constructor_args := ",".join(GdFunctionDoubler.extract_constructor_args(args))
 		var constructor := """
 			func _init(%s) -> void:
+				Engine.set_meta(__INSTANCE_ID, self)
 				@warning_ignore("unsafe_call_argument")
 				super(%s)
-
 
 			""".dedent() % [constructor_args, ", ".join(arg_names)]
 		return constructor.split("\n")
@@ -161,10 +160,6 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 	else:
 		double_src = double_src.replace("$(return_as)", "")
 
-	if is_static:
-		double_src = double_src.replace("$(instance)", "__instance().")
-	else:
-		double_src = double_src.replace("$(instance)", "")
 	return double_src.split("\n")
 
 

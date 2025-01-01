@@ -6,35 +6,32 @@ class_name DoubledMockClassSourceClassName
 const __INSTANCE_ID = "${instance_id}"
 const __SOURCE_CLASS = "${source_class}"
 
-var __mock_working_mode := GdUnitMock.RETURN_DEFAULTS
-var __excluded_methods :PackedStringArray = []
-var __do_return_value :Variant = null
-var __prepare_return_value := false
 
-#{ <func_name> = {
-#		<func_args> = <return_value>
-#	}
-#}
-var __mocked_return_values := Dictionary()
+class MockingState:
+	var working_mode := GdUnitMock.RETURN_DEFAULTS
+	var excluded_methods: PackedStringArray = []
+	var return_value: Variant = null
+	var is_prepare_return := false
 
-
-static func __instance() -> DoubledMockClassSourceClassName:
-	return Engine.get_meta(__INSTANCE_ID)
-
-
-func _notification(what :int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		if Engine.has_meta(__INSTANCE_ID):
-			Engine.remove_meta(__INSTANCE_ID)
+		#{ <func_name> = {
+	#		<func_args> = <return_value>
+	#	}
+	#}
+	var return_values := Dictionary():
+		get:
+			return return_values
 
 
-func __instance_id() -> String:
-	return __INSTANCE_ID
+@warning_ignore("unused_private_class_variable")
+var __verifier_instance := GdUnitObjectInteractionsVerifier.new()
+var __mocking_state := MockingState.new()
 
 
-func __set_singleton() -> void:
-	# store self need to mock static functions
+func __init(__script: GDScript, mock_working_mode: String) -> void:
+	# store self need to access static functions
 	Engine.set_meta(__INSTANCE_ID, self)
+	super.set_script(__script)
+	__mocking_state.working_mode = mock_working_mode
 
 
 func __release_double() -> void:
@@ -42,24 +39,50 @@ func __release_double() -> void:
 	Engine.remove_meta(__INSTANCE_ID)
 
 
-func __is_prepare_return_value() -> bool:
-	return __prepare_return_value
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		if Engine.has_meta(__INSTANCE_ID):
+			Engine.remove_meta(__INSTANCE_ID)
 
 
-func __sort_by_argument_matcher(__left_args :Array, __right_args :Array) -> bool:
+static func __mock_state() -> MockingState:
+	@warning_ignore("unsafe_property_access")
+	return __get_instance().__mocking_state
+
+
+static func __get_verifier() -> GdUnitObjectInteractionsVerifier:
+	var __instance := __get_instance()
+	@warning_ignore("unsafe_property_access")
+	return null if __instance == null else __instance.__verifier_instance
+
+
+static func __get_instance() -> Object:
+	return null if not Engine.has_meta(__INSTANCE_ID) else Engine.get_meta(__INSTANCE_ID)
+
+
+func __instance_id() -> String:
+	return __INSTANCE_ID
+
+
+static func __is_prepare_return_value() -> bool:
+	return __mock_state().is_prepare_return
+
+
+static func __sort_by_argument_matcher(__left_args: Array, __right_args: Array) -> bool:
 	for __index in __left_args.size():
-		var __larg :Variant = __left_args[__index]
+		var __larg: Variant = __left_args[__index]
 		if __larg is GdUnitArgumentMatcher:
 			return false
 	return true
 
 
 # we need to sort by matcher arguments so that they are all at the end of the list
-func __sort_dictionary(__unsorted_args :Dictionary) -> Dictionary:
+static func __sort_dictionary(__unsorted_args: Dictionary) -> Dictionary:
+	var __instance := __get_instance()
 	# only need to sort if contains more than one entry
 	if __unsorted_args.size() <= 1:
 		return __unsorted_args
-	var __sorted_args := __unsorted_args.keys()
+	var __sorted_args: Array = __unsorted_args.keys()
 	__sorted_args.sort_custom(__sort_by_argument_matcher)
 	var __sorted_result := {}
 	for __index in __sorted_args.size():
@@ -68,17 +91,19 @@ func __sort_dictionary(__unsorted_args :Dictionary) -> Dictionary:
 	return __sorted_result
 
 
-func __save_function_return_value(__fuction_args :Array) -> void:
-	var __func_name :String = __fuction_args[0]
-	var __func_args :Array = __fuction_args.slice(1)
-	var __mocked_return_value_by_args :Dictionary = __mocked_return_values.get(__func_name, {})
-	__mocked_return_value_by_args[__func_args] = __do_return_value
-	__mocked_return_values[__func_name] = __sort_dictionary(__mocked_return_value_by_args)
-	__do_return_value = null
-	__prepare_return_value = false
+static func __save_function_return_value(__fuction_args: Array) -> void:
+	var __mock := __mock_state()
+	var __func_name: String = __fuction_args[0]
+	var __func_args: Array = __fuction_args.slice(1)
+	var mocked_return_value_by_args: Dictionary = __mock.return_values.get(__func_name, {})
+
+	mocked_return_value_by_args[__func_args] = __mock.return_value
+	__mock.return_values[__func_name] = __sort_dictionary(mocked_return_value_by_args)
+	__mock.return_value = null
+	__mock.is_prepare_return = false
 
 
-func __is_mocked_args_match(__func_args: Array, __mocked_args: Array) -> bool:
+static func __is_mocked_args_match(__func_args: Array, __mocked_args: Array) -> bool:
 	var __is_matching := false
 	for __index in __mocked_args.size():
 		var __fuction_args: Array = __mocked_args[__index]
@@ -100,45 +125,38 @@ func __is_mocked_args_match(__func_args: Array, __mocked_args: Array) -> bool:
 	return __is_matching
 
 
-func __get_mocked_return_value_or_default(__fuction_args: Array, __default_return_value: Variant) -> Variant:
+static func __get_mocked_return_value_or_default(__fuction_args: Array, __default_return_value: Variant) -> Variant:
+	var __mock := __mock_state()
 	var __func_name: String = __fuction_args[0]
-	if not __mocked_return_values.has(__func_name):
+	if not __mock.return_values.has(__func_name):
 		return __default_return_value
 	var __func_args: Array = __fuction_args.slice(1)
 	@warning_ignore("unsafe_method_access")
-	var __mocked_args: Array = __mocked_return_values.get(__func_name).keys()
+	var __mocked_args: Array = __mock.return_values.get(__func_name).keys()
 	for __index in __mocked_args.size():
 		var __margs: Variant = __mocked_args[__index]
 		if __is_mocked_args_match(__func_args, [__margs]):
-			return __mocked_return_values[__func_name][__margs]
+			return __mock.return_values[__func_name][__margs]
 	return __default_return_value
 
 
-func __set_script(__script :GDScript) -> void:
-	super.set_script(__script)
-
-
-func __set_mode(mock_working_mode :String) -> Object:
-	__mock_working_mode = mock_working_mode
-	return self
-
-
-func __do_call_real_func(__func_name: String, __func_args := []) -> bool:
-	var __is_call_real_func := __mock_working_mode == GdUnitMock.CALL_REAL_FUNC  and not __excluded_methods.has(__func_name)
+static func __do_call_real_func(__func_name: String, __func_args := []) -> bool:
+	var __mock := __mock_state()
+	var __is_call_real_func: bool = __mock.working_mode == GdUnitMock.CALL_REAL_FUNC  and not __mock.excluded_methods.has(__func_name)
 	# do not call real funcions for mocked functions
-	if __is_call_real_func and __mocked_return_values.has(__func_name):
+	if __is_call_real_func and __mock.return_values.has(__func_name):
 		var __fuction_args: Array = __func_args.slice(1)
 		@warning_ignore("unsafe_method_access")
-		var __mocked_args: Array = __mocked_return_values.get(__func_name).keys()
+		var __mocked_args: Array = __mock.return_values.get(__func_name).keys()
 		return not __is_mocked_args_match(__fuction_args, __mocked_args)
 	return __is_call_real_func
 
 
-func __exclude_method_call(exluded_methods :PackedStringArray) -> void:
-	__excluded_methods.append_array(exluded_methods)
+func __exclude_method_call(exluded_methods: PackedStringArray) -> void:
+	__mocking_state.excluded_methods.append_array(exluded_methods)
 
 
-func __do_return(mock_do_return_value :Variant) -> Object:
-	__do_return_value = mock_do_return_value
-	__prepare_return_value = true
+func __do_return(mock_do_return_value: Variant) -> Object:
+	__mocking_state.return_value = mock_do_return_value
+	__mocking_state.is_prepare_return = true
 	return self
