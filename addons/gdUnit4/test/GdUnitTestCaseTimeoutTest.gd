@@ -115,7 +115,7 @@ func test_timeout_long_running_test_abort(timeout:=4000) -> void:
 @warning_ignore("unused_parameter", "unused_variable")
 func test_timeout_fuzzer(fuzzer := Fuzzers.rangei(-23, 22), timeout:=2000) -> void:
 	discard_error_interupted_by_timeout()
-	var value :int = fuzzer.next_value()
+	fuzzer.next_value()
 	# wait each iteration 200ms
 	await await_millis(200)
 	# we expects the test is interupped after 10 iterations because each test takes 200ms

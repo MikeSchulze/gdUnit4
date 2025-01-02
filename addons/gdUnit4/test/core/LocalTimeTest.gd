@@ -29,8 +29,11 @@ func test_now() -> void:
 func test_of_unix_time() -> void:
 	var time := LocalTime._get_system_time_msecs()
 	var local_time := LocalTime.of_unix_time(time)
+	@warning_ignore("integer_division")
 	assert_int(local_time.hour()).is_equal((time / LocalTime.MILLIS_PER_HOUR) % 24)
+	@warning_ignore("integer_division")
 	assert_int(local_time.minute()).is_equal((time / LocalTime.MILLIS_PER_MINUTE) % 60)
+	@warning_ignore("integer_division")
 	assert_int(local_time.second()).is_equal((time / LocalTime.MILLIS_PER_SECOND) % 60)
 	assert_int(local_time.millis()).is_equal(time % 1000)
 

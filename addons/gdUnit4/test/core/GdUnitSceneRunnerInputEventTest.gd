@@ -206,6 +206,7 @@ func test_simulate_keypressed_as_action() -> void:
 	assert_bool(Input.is_action_just_released("player_jump", true)).is_false()
 	assert_bool(Input.is_action_just_released("ui_accept", true)).is_false()
 	assert_bool(Input.is_action_just_released("ui_select", true)).is_false()
+	@warning_ignore("unsafe_property_access")
 	assert_bool(runner.scene()._player_jump_action_released).is_false()
 
 	await runner.simulate_key_pressed(KEY_SPACE)
@@ -213,6 +214,7 @@ func test_simulate_keypressed_as_action() -> void:
 	assert_bool(Input.is_action_just_released("player_jump", true)).is_true()
 	assert_bool(Input.is_action_just_released("ui_accept", true)).is_true()
 	assert_bool(Input.is_action_just_released("ui_select", true)).is_true()
+	@warning_ignore("unsafe_property_access")
 	assert_bool(runner.scene()._player_jump_action_released).is_true()
 
 	# test a key event is not trigger the custom action event
@@ -223,6 +225,7 @@ func test_simulate_keypressed_as_action() -> void:
 	assert_bool(Input.is_action_just_released("player_jump", true)).is_false()
 	assert_bool(Input.is_action_just_released("ui_accept", true)).is_false()
 	assert_bool(Input.is_action_just_released("ui_select", true)).is_false()
+	@warning_ignore("unsafe_property_access")
 	assert_bool(runner.scene()._player_jump_action_released).is_false()
 
 	# cleanup custom action

@@ -98,12 +98,12 @@ func assert_event_states(events :Array[GdUnitEvent]) -> GdUnitArrayAssert:
 
 
 @warning_ignore("unsafe_method_access", "unsafe_cast")
-func assert_event_reports(events :Array[GdUnitEvent], expected_reports :Array) -> void:
-	var _events := events.filter(func(event: GdUnitEvent) -> bool:
+func assert_event_reports(events: Array[GdUnitEvent], expected_reports: Array) -> void:
+	var _events: Array[GdUnitEvent] = events.filter(func(event: GdUnitEvent) -> bool:
 		return event.type() != GdUnitEvent.TESTCASE_STATISTICS
 	)
 	for event_index in _events.size():
-		var current :Array = _events[event_index].reports()
+		var current: Array[GdUnitReport] = _events[event_index].reports()
 		var expected :Array = expected_reports[event_index] if expected_reports.size() > event_index else []
 		if expected.is_empty():
 			for m in current.size():
@@ -1034,6 +1034,8 @@ class TestCaseNameExtractor extends GdUnitValueExtractor:
 	var r := RegEx.create_from_string("^.*:\\d")
 
 	@warning_ignore("unsafe_method_access", "unsafe_cast")
-	func extract_value(value :Variant) -> String:
-		var m := r.search(value.test_name() as String)
-		return m.get_string(0) if m != null else value.test_name()
+	func extract_value(value: Variant) -> String:
+		@warning_ignore("unsafe_method_access")
+		var test_name := str(value.test_name())
+		var m := r.search(test_name)
+		return m.get_string(0) if m != null else test_name
