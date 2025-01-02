@@ -523,14 +523,16 @@ func _parse_end_function(input: String, remove_trailing_char := false) -> String
 	return input.substr(0, current_index)
 
 
-@warning_ignore("unsafe_method_access")
 func extract_inner_class(source_rows: PackedStringArray, clazz_name :String) -> PackedStringArray:
 	for row_index in source_rows.size():
 		var input := source_rows[row_index]
 		var token := next_token(input, 0)
 		if token.is_inner_class():
+			@warning_ignore("unsafe_method_access")
 			if token.is_class_name(clazz_name):
+				@warning_ignore("unsafe_method_access")
 				token.parse(source_rows, row_index)
+				@warning_ignore("unsafe_method_access")
 				return token.content()
 	return PackedStringArray()
 

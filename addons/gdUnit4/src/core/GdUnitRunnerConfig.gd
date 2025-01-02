@@ -145,12 +145,13 @@ func load_config(path: String = CONFIG_FILE) -> GdUnitResult:
 	return GdUnitResult.success(path)
 
 
-@warning_ignore("unsafe_cast")
 func fix_value_types() -> void:
 	# fix float value to int json stores all numbers as float
 	var server_port_: int = _config.get(SERVER_PORT, -1)
 	_config[SERVER_PORT] = server_port_
+	@warning_ignore("unsafe_cast")
 	convert_Array_to_PackedStringArray(_config[INCLUDED] as Dictionary)
+	@warning_ignore("unsafe_cast")
 	convert_Array_to_PackedStringArray(_config[SKIPPED] as Dictionary)
 
 

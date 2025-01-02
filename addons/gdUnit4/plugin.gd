@@ -5,16 +5,11 @@ extends EditorPlugin
 const CONTEXT_SLOT_FILESYSTEM = 1 # EditorContextMenuPlugin.CONTEXT_SLOT_FILESYSTEM
 const CONTEXT_SLOT_SCRIPT_EDITOR = 2 # EditorContextMenuPlugin.CONTEXT_SLOT_SCRIPT_EDITOR
 
-const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-const GdUnitTestDiscoverGuard := preload("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd")
-const GdUnitConsole := preload("res://addons/gdUnit4/src/ui/GdUnitConsole.gd")
-
-
 var _gd_inspector: Control
-var _gd_console: GdUnitConsole
+var _gd_console: Control
 var _gd_filesystem_context_menu: Variant
 var _gd_scripteditor_context_menu: Variant
-var _guard: GdUnitTestDiscoverGuard
+var _guard: RefCounted
 
 
 func _enter_tree() -> void:
@@ -22,8 +17,9 @@ func _enter_tree() -> void:
 		@warning_ignore("return_value_discarded")
 		CmdConsole.new().prints_warning("It was recognized that GdUnit4 is running in a test environment, therefore the GdUnit4 plugin will not be executed!")
 		return
-	if Engine.get_version_info().hex < 0x40200:
-		prints("GdUnit4 plugin requires a minimum of Godot 4.2.x Version!")
+
+	if Engine.get_version_info().hex < 0x40300:
+		prints("GdUnit4 plugin requires a minimum of Godot 4.3.x Version!")
 		return
 	GdUnitSettings.setup()
 	# Install the GdUnit Inspector
@@ -33,11 +29,13 @@ func _enter_tree() -> void:
 	# Install the GdUnit Console
 	_gd_console = (load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn") as PackedScene).instantiate()
 	var control := add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
+	@warning_ignore("unsafe_method_access")
 	await _gd_console.setup_update_notification(control)
 	if GdUnit4CSharpApiLoader.is_mono_supported():
 		prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
 	# Connect to be notified for script changes to be able to discover new tests
-	_guard = GdUnitTestDiscoverGuard.new()
+	@warning_ignore("unsafe_method_access")
+	_guard = load("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd").new()
 	@warning_ignore("return_value_discarded")
 	resource_saved.connect(_on_resource_saved)
 	prints("Loading GdUnit4 Plugin success")
@@ -53,7 +51,9 @@ func _exit_tree() -> void:
 	if is_instance_valid(_gd_console):
 		remove_control_from_bottom_panel(_gd_console)
 		_gd_console.free()
-	GdUnitTools.dispose_all(true)
+	var gdUnitTools := load("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+	@warning_ignore("unsafe_method_access")
+	gdUnitTools.dispose_all(true)
 	prints("Unload GdUnit4 Plugin success")
 
 
@@ -95,4 +95,5 @@ func _create_context_menu(script_path: String) -> Variant:
 
 func _on_resource_saved(resource: Resource) -> void:
 	if resource is Script:
+		@warning_ignore("unsafe_method_access")
 		await _guard.discover(resource as Script)

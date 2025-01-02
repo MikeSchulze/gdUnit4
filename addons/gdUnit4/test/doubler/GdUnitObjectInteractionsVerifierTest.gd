@@ -1,19 +1,17 @@
 # GdUnit generated TestSuite
 extends GdUnitTestSuite
 
-# TestSuite generated from
-const __source = 'res://addons/gdUnit4/src/core/GdUnitObjectInteractionsTemplate.gd'
 
 
-func test___filter_vargs() -> void:
-	var template :Object = load(__source).new()
+func test_filter_vargs() -> void:
+	var template := GdUnitObjectInteractionsVerifier.new()
 
 	var varags :Array = [
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE]
-	assert_array(template.__filter_vargs(varags)).is_empty()
+	assert_array(template.filter_vargs(varags)).is_empty()
 
 	var object := RefCounted.new()
 	varags = [
@@ -27,7 +25,7 @@ func test___filter_vargs() -> void:
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
 		GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE]
-	assert_array(template.__filter_vargs(varags)).contains_exactly([
+	assert_array(template.filter_vargs(varags)).contains_exactly([
 		"foo",
 		"bar",
 		null,
