@@ -47,3 +47,15 @@ func is_instanceof(type: Variant) -> GdUnitObjectAssert:
 @warning_ignore("unused_parameter")
 func is_not_instanceof(type: Variant) -> GdUnitObjectAssert:
 	return self
+
+
+## Checks whether the current object inherits from the specified type.
+@warning_ignore("unused_parameter")
+func is_inheriting(type: Variant) -> GdUnitObjectAssert:
+	return self
+
+
+## Checks whether the current object does NOT inherit from the specified type.
+@warning_ignore("unused_parameter")
+func is_not_inheriting(type: Variant) -> GdUnitObjectAssert:
+	return self
