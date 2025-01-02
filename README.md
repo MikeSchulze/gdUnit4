@@ -25,7 +25,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>v5.0.0+</td><td>vv4.3, v4.4.dev7</td>
+      <td>v5.0.0+</td><td>v4.3.+, v4.4.dev7</td>
     </tr>
     <tr>
       <td>v4.4.0+</td><td>v4.2.0, v4.3, v4.4.dev2</td>
