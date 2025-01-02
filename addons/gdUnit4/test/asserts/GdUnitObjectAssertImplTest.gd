@@ -60,6 +60,53 @@ func test_is_not_instanceof() -> void:
 		.has_message("Expected not be a instance of <Node>")
 
 
+func test_is_inheriting() -> void:
+	# test on native Godot class
+	assert_object(auto_free(TabContainer.new()))\
+		.is_inheriting(Container)\
+		.is_inheriting(Control)\
+		# we need to specify by string name because is an abstract class
+		.is_inheriting("CanvasItem")\
+		.is_inheriting(Node)\
+		.is_inheriting(Object)
+	assert_failure(func() -> void:
+		assert_object(auto_free(TabContainer.new())).is_inheriting(Node3D)
+	).is_failed().has_message("Expected type to inherit from <Node3D>")
+
+	# test on user custom class
+	assert_object(auto_free(MyNode.new()))\
+		.is_inheriting(Node)\
+		.is_inheriting(Object)
+	assert_object(auto_free(MyExtendedNode.new()))\
+		.is_inheriting(GdUnitObjectAssertImplTest.MyNode)\
+		.is_inheriting(Node)\
+		.is_inheriting(Object)
+	assert_failure(func() -> void:
+		assert_object(auto_free(MyExtendedNode.new())).is_inheriting(Node3D)
+	).is_failed().has_message("Expected type to inherit from <Node3D>")
+
+	# using not Object type
+	assert_failure(func() -> void:
+		assert_object([]).is_inheriting(Node)
+	).is_failed().has_message("Expected '[]' to inherit from at least Object.")
+
+
+func test_is_not_inheriting() -> void:
+	# test on native Godot class
+	assert_object(auto_free(TabContainer.new()))\
+		.is_not_inheriting(Node2D)\
+		.is_not_inheriting(Node3D)
+
+	assert_failure(func() -> void:
+		assert_object(auto_free(TabContainer.new()))\
+			.is_not_inheriting(Node2D)\
+			.is_not_inheriting(Container)
+	).is_failed().has_message("Expected type to not inherit from <Container>")
+	# using not Object type
+	assert_failure(func() -> void:
+		assert_object([]).is_not_inheriting(Node)
+	).is_failed().has_message("Expected '[]' to inherit from at least Object.")
+
 func test_is_null() -> void:
 	assert_object(null).is_null()
 
@@ -76,10 +123,10 @@ func test_is_not_null() -> void:
 		.has_message("Expecting: not to be '<null>'")
 
 
-@warning_ignore("unsafe_method_access")
 func test_is_same() -> void:
 	var obj1 :Variant = auto_free(Node.new())
 	var obj2 :Variant = obj1
+	@warning_ignore("unsafe_method_access")
 	var obj3 :Variant = auto_free(obj1.duplicate())
 	assert_object(obj1).is_same(obj1)
 	assert_object(obj1).is_same(obj2)
@@ -99,10 +146,10 @@ func test_is_same() -> void:
 		.is_failed()
 
 
-@warning_ignore("unsafe_method_access")
 func test_is_not_same() -> void:
 	var obj1 :Variant = auto_free(Node.new())
 	var obj2 :Variant = obj1
+	@warning_ignore("unsafe_method_access")
 	var obj3 :Variant = auto_free(obj1.duplicate())
 	assert_object(null).is_not_same(obj1)
 	assert_object(obj1).is_not_same(obj3)
@@ -193,3 +240,10 @@ func test_is_failure() -> void:
 	if is_failure():
 		return
 	assert_bool(true).override_failure_message("This line shold never be called").is_false()
+
+
+class MyNode extends Node:
+	pass
+
+class MyExtendedNode extends MyNode:
+	pass
