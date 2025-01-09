@@ -1229,3 +1229,13 @@ class Foo extends Base:
 func test_mock_with_inheritance_method() -> void:
 	var foo: Variant = mock(Foo)
 	assert_object(foo).is_not_null()
+
+
+func test_mock_func_default_arg_dict() -> void:
+	var mock_obj :ClassWithDictionaryDefaultArguments = mock(ClassWithDictionaryDefaultArguments)
+
+	do_return(["a", "b"]).on(mock_obj).on_dictionary_case1(any_dictionary())
+	verify_no_interactions(mock_obj)
+
+	assert_array(mock_obj.on_dictionary_case1({})).contains_exactly(["a", "b"])
+	verify(mock_obj).on_dictionary_case1({})
