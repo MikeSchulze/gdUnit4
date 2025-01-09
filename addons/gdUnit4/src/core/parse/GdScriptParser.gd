@@ -478,6 +478,7 @@ func _parse_end_function(input: String, remove_trailing_char := false) -> String
 	var current_index := 0
 	var bracket_count := 0
 	var in_array := 0
+	var in_dict := 0
 	var end_of_func := false
 
 	while current_index < len(input) and not end_of_func:
@@ -504,14 +505,17 @@ func _parse_end_function(input: String, remove_trailing_char := false) -> String
 			# count if inside an array
 			"[": in_array += 1
 			"]": in_array -= 1
+			# count if inside an dictionary
+			"{": in_dict += 1
+			"}": in_dict -= 1
 			# count if inside a function
 			"(": bracket_count += 1
 			")":
 				bracket_count -= 1
-				if bracket_count < 0 and in_array <= 0:
+				if bracket_count < 0 and in_array <= 0 and in_dict <= 0:
 					end_of_func = true
 			",":
-				if bracket_count == 0 and in_array == 0:
+				if bracket_count == 0 and in_array == 0 and in_dict <= 0:
 					end_of_func = true
 		current_index += 1
 	if remove_trailing_char:

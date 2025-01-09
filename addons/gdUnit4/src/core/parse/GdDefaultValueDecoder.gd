@@ -160,6 +160,11 @@ func _on_type_Array(value: Variant, type: int) -> String:
 
 
 func _on_type_Vector(value: Variant, type: int) -> String:
+
+	if typeof(value) != type:
+		push_error("Internal Error: type missmatch detected for value '%s', expects type %s" % [value, type_string(type)])
+		return ""
+
 	match type:
 		TYPE_VECTOR2:
 			if value == Vector2():
