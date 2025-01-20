@@ -19,7 +19,7 @@ func _enter_tree() -> void:
 		return
 
 	if Engine.get_version_info().hex < 0x40300:
-		prints("GdUnit4 plugin requires a minimum of Godot 4.3.x Version!")
+		prints("The GdUnit4 plugin requires Godot version 4.3 or higher to run.")
 		return
 	GdUnitSettings.setup()
 	# Install the GdUnit Inspector

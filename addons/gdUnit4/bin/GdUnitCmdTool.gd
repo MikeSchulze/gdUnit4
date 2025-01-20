@@ -105,6 +105,12 @@ class CLIRunner:
 
 	func _ready() -> void:
 		_state = INIT
+
+		if Engine.get_version_info().hex < 0x40300:
+			_console.prints_error("The GdUnit4 plugin requires Godot version 4.3 or higher to run.")
+			quit(RETURN_ERROR_GODOT_VERSION_NOT_SUPPORTED)
+			return
+
 		_report_dir = GdUnitFileAccess.current_dir() + "reports"
 		_executor = GdUnitTestSuiteExecutor.new()
 		# stop checked first test failure to fail fast
@@ -613,10 +619,6 @@ var _cli_runner :CLIRunner
 
 
 func _initialize() -> void:
-	if Engine.get_version_info().hex < 0x40200:
-		prints("GdUnit4 requires a minimum of Godot 4.2.x Version!")
-		quit(CLIRunner.RETURN_ERROR_GODOT_VERSION_NOT_SUPPORTED)
-		return
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	_cli_runner = CLIRunner.new()
 	root.add_child(_cli_runner)
