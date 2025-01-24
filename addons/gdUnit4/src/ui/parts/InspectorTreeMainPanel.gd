@@ -76,6 +76,19 @@ const META_TEST_PARAM_INDEX := "test_param_index"
 var _tree_root: TreeItem
 var _item_hash := Dictionary()
 var _tree_view_mode_flat := GdUnitSettings.get_inspector_tree_view_mode() == GdUnitInspectorTreeConstants.TREE_VIEW_MODE.FLAT
+var _discovery_sink: GdUnitTestDiscoverSink
+
+## Using discovery sink to build the test tree
+class InspectorTestDiscoverySink extends GdUnitTestDiscoverSink:
+
+	var _discover_test_cb: Callable
+
+	func _init(discover_test_cb: Callable) -> void:
+		#GdUnitTestDiscoverySinkDispatcher.instance().register_discovery_sink(self)
+		_discover_test_cb = discover_test_cb
+
+	func on_test_case_discovered(test_case: GdUnitTestCase) -> void:
+		_discover_test_cb.call(test_case)
 
 
 func _build_cache_key(resource_path: String, test_name: String) -> Array:
@@ -191,6 +204,7 @@ func _ready() -> void:
 
 	_spinner.icon = GdUnitUiTools.get_spinner()
 	init_tree()
+	_discovery_sink = InspectorTestDiscoverySink.new(discover_test)
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(do_add_test_suite)
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
@@ -882,6 +896,12 @@ func add_test_cases(parent: TreeItem, test_case_names: PackedStringArray) -> voi
 		item.set_meta(META_TEST_PARAM_INDEX, index)
 		set_item_icon_by_state(item)
 		add_tree_item_to_cache(resource_path, test_case_name, item)
+
+
+@warning_ignore("unused_parameter")
+func discover_test(test_case: GdUnitTestCase) -> void:
+	# not yet implemented
+	pass
 
 
 func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:
