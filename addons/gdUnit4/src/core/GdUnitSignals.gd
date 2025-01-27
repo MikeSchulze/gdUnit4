@@ -21,6 +21,12 @@ signal gdunit_set_test_failed(is_failed :bool)
 @warning_ignore("unused_signal")
 signal gdunit_settings_changed(property :GdUnitProperty)
 
+## Called when a new test case is discovered during the discovery process.
+## Custom implementations should connect to this signal and store the discovered test case as needed.[br]
+## [member test_case] The discovered test case instance to be processed.
+@warning_ignore("unused_signal")
+signal gdunit_test_discovered(test_case: GdUnitTestCase)
+
 const META_KEY := "GdUnitSignals"
 
 

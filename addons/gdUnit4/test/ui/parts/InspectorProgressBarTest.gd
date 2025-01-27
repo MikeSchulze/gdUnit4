@@ -21,14 +21,18 @@ func test_progress_init() -> void:
 
 
 func test_progress_update_by_discovery() -> void:
+	# verify the InspectorProgressBar is connected to gdunit_test_discovered signal
+	assert_bool(GdUnitSignals.instance().gdunit_test_discovered.is_connected(_progress.on_test_case_discovered))\
+		.override_failure_message("The 'InspectorProgressBar' must be connected to signal 'gdunit_test_discovered'")\
+		.is_true()
+
 	var test_a := GdUnitTestCase.new()
 	test_a.guid = GdUnitGUID.new()
 	test_a.test_name = "test_a"
 
 	# using the sink to update the
-	@warning_ignore("unsafe_property_access")
-	var sink: GdUnitTestDiscoverSink = _progress._discovery_sink
-	sink.discover(test_a)
+	@warning_ignore("unsafe_method_access")
+	_progress.on_test_case_discovered(test_a)
 	assert_that(_progress.value).is_equal(0.000000)
 	assert_that(_progress.max_value).is_equal(1.000000)
 	assert_that(_status.text).is_equal("0:1")
@@ -39,7 +43,8 @@ func test_progress_update_by_discovery() -> void:
 		var test := GdUnitTestCase.new()
 		test.guid = GdUnitGUID.new()
 		test.test_name = "test_%d" % n
-		sink.discover(test)
+		@warning_ignore("unsafe_method_access")
+		_progress.on_test_case_discovered(test)
 	assert_that(_progress.value).is_equal(0.000000)
 	assert_that(_progress.max_value).is_equal(11.000000)
 	assert_that(_status.text).is_equal("0:11")

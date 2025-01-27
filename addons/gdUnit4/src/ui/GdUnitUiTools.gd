@@ -46,6 +46,8 @@ static func get_spinner() -> AnimatedTexture:
 
 
 static func get_color_animated_icon(icon_name :String, from :Color, to :Color) -> AnimatedTexture:
+	if not Engine.is_editor_hint():
+		return null
 	var texture := AnimatedTexture.new()
 	texture.frames = 8
 	texture.speed_scale = 2.5
