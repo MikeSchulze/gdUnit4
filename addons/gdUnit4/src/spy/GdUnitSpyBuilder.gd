@@ -104,8 +104,21 @@ static func spy_on_scene(scene :Node, debug_write :bool) -> Object:
 	scene_script.free()
 	if spy == null:
 		return null
-	# replace original script whit spy
+
+	# we need to restore the original script properties to apply after script exchange
+	var original_properties := {}
+	for p in scene.get_property_list():
+		var property_name: String = p["name"]
+		var usage: int = p["usage"]
+		if (usage & PROPERTY_USAGE_SCRIPT_VARIABLE) == PROPERTY_USAGE_SCRIPT_VARIABLE:
+			original_properties[property_name] = scene.get(property_name)
+
+	# exchage with spy
 	scene.set_script(spy)
+	# apply original script properties to the spy
+	for property_name: String in original_properties.keys():
+		scene.set(property_name, original_properties[property_name])
+
 	@warning_ignore("unsafe_method_access")
 	scene.__init(scene, [])
 	return register_auto_free(scene)
