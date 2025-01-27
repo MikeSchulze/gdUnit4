@@ -1,16 +1,10 @@
-# GdUnit generated TestSuite
-class_name InspectorProgressBarTest
 extends GdUnitTestSuite
-@warning_ignore('unused_parameter')
-@warning_ignore('return_value_discarded')
 
-# TestSuite generated from
-const __source = 'res://addons/gdUnit4/src/ui/parts/InspectorProgressBar.gd'
 
-var _runner :GdUnitSceneRunner
-var _progress :ProgressBar
-var _status :Label
-var _style :StyleBoxFlat
+var _runner: GdUnitSceneRunner
+var _progress: ProgressBar
+var _status: Label
+var _style: StyleBoxFlat
 
 
 func before_test() -> void:
@@ -18,14 +12,47 @@ func before_test() -> void:
 	_progress = _runner.scene()
 	_status = _runner.get_property("status")
 	_style = _runner.get_property("style")
-	# inital state
-	assert_that(_status.text).is_equal("0:0")
-	assert_that(_progress.value).is_equal(0.000000)
-	assert_that(_progress.max_value).is_equal(0.000000)
-	_runner.invoke("_on_gdunit_event", GdUnitInit.new(10, 42))
 
 
 func test_progress_init() -> void:
+	assert_that(_progress.value).is_equal(0.000000)
+	assert_that(_progress.max_value).is_equal(0.000000)
+	assert_that(_status.text).is_equal("0:0")
+
+
+func test_progress_update_by_discovery() -> void:
+	# verify the InspectorProgressBar is connected to gdunit_test_discovered signal
+	assert_bool(GdUnitSignals.instance().gdunit_test_discovered.is_connected(_progress.on_test_case_discovered))\
+		.override_failure_message("The 'InspectorProgressBar' must be connected to signal 'gdunit_test_discovered'")\
+		.is_true()
+
+	var test_a := GdUnitTestCase.new()
+	test_a.guid = GdUnitGUID.new()
+	test_a.test_name = "test_a"
+
+	# using the sink to update the
+	@warning_ignore("unsafe_method_access")
+	_progress.on_test_case_discovered(test_a)
+	assert_that(_progress.value).is_equal(0.000000)
+	assert_that(_progress.max_value).is_equal(1.000000)
+	assert_that(_status.text).is_equal("0:1")
+	assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
+
+	# Just discover 10 more tests
+	for n in 10:
+		var test := GdUnitTestCase.new()
+		test.guid = GdUnitGUID.new()
+		test.test_name = "test_%d" % n
+		@warning_ignore("unsafe_method_access")
+		_progress.on_test_case_discovered(test)
+	assert_that(_progress.value).is_equal(0.000000)
+	assert_that(_progress.max_value).is_equal(11.000000)
+	assert_that(_status.text).is_equal("0:11")
+	assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
+
+
+## @deprecated
+func test_progress_init_old() -> void:
 	_runner.invoke("_on_gdunit_event", GdUnitInit.new(10, 230))
 	assert_that(_progress.value).is_equal(0.000000)
 	assert_that(_progress.max_value).is_equal(230.000000)

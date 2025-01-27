@@ -194,6 +194,7 @@ func _ready() -> void:
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
 	GdUnitSignals.instance().gdunit_add_test_suite.connect(do_add_test_suite)
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
+	GdUnitSignals.instance().gdunit_test_discovered.connect(on_test_case_discovered)
 	var command_handler := GdUnitCommandHandler.instance()
 	command_handler.gdunit_runner_start.connect(_on_gdunit_runner_start)
 	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
@@ -882,6 +883,12 @@ func add_test_cases(parent: TreeItem, test_case_names: PackedStringArray) -> voi
 		item.set_meta(META_TEST_PARAM_INDEX, index)
 		set_item_icon_by_state(item)
 		add_tree_item_to_cache(resource_path, test_case_name, item)
+
+
+@warning_ignore("unused_parameter")
+func on_test_case_discovered(test_case: GdUnitTestCase) -> void:
+	# not yet implemented
+	pass
 
 
 func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:

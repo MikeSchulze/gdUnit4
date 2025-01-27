@@ -188,11 +188,14 @@ func _parse_parameter_set(input :String) -> PackedStringArray:
 ## value converters
 
 func as_array(value: String) -> Array:
-	if value == "Array()":
+	if value == "Array()" or value == "[]":
 		return []
+
 	if value.begins_with("Array("):
 		value = value.lstrip("Array(").rstrip(")")
-	return str_to_var(value)
+	if value.begins_with("["):
+		return str_to_var(value)
+	return []
 
 
 func as_dictionary(value: String) -> Dictionary:
@@ -200,4 +203,6 @@ func as_dictionary(value: String) -> Dictionary:
 		return {}
 	if value.begins_with("Dictionary("):
 		value = value.lstrip("Dictionary(").rstrip(")")
-	return str_to_var(value)
+	if value.begins_with("{"):
+		return str_to_var(value)
+	return {}

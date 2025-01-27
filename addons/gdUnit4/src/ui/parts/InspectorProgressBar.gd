@@ -4,16 +4,17 @@ extends ProgressBar
 @onready var status: Label = $Label
 @onready var style: StyleBoxFlat = get("theme_override_styles/fill")
 
-
 func _ready() -> void:
 	@warning_ignore("return_value_discarded")
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
+	GdUnitSignals.instance().gdunit_test_discovered.connect(on_test_case_discovered)
 	style.bg_color = Color.DARK_GREEN
 	value = 0
 	max_value = 0
 	update_text()
 
 
+## @deprecated
 func progress_init(p_max_value: int) -> void:
 	value = 0
 	max_value = p_max_value
@@ -21,6 +22,7 @@ func progress_init(p_max_value: int) -> void:
 	update_text()
 
 
+## @deprecated
 func progress_update(p_value: int, is_failed: bool) -> void:
 	value += p_value
 	update_text()
@@ -32,6 +34,13 @@ func update_text() -> void:
 	status.text = "%d:%d" % [value, max_value]
 
 
+@warning_ignore("unused_parameter")
+func on_test_case_discovered(test_case: GdUnitTestCase) -> void:
+	max_value += 1
+	update_text()
+
+
+## @deprecated
 func _on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:

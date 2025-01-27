@@ -375,6 +375,13 @@ func test_sort_tree_mode(sort_mode: GdUnitInspectorTreeConstants.SORT_MODE, expe
 	assert_tree_equals(tree_sorted, expected_tree)
 
 
+func test_discover_tests() -> void:
+	# verify the InspectorProgressBar is connected to gdunit_test_discovered signal
+	assert_bool(GdUnitSignals.instance().gdunit_test_discovered.is_connected(_inspector.on_test_case_discovered))\
+		.override_failure_message("The 'InspectorProgressBar' must be connected to signal 'gdunit_test_discovered'")\
+		.is_true()
+
+
 ## test helpers to validate two trees
 # ------------------------------------------------------------------------------------------------------------------------------------------
 

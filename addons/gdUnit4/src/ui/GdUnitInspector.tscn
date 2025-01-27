@@ -38,6 +38,7 @@ layout_mode = 2
 size_flags_vertical = 1
 
 [node name="ProgressBar" parent="VBoxContainer/Header" instance=ExtResource("2")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 5
 max_value = 0.0
@@ -47,6 +48,7 @@ layout_mode = 2
 size_flags_horizontal = 11
 
 [node name="MainPanel" parent="VBoxContainer" instance=ExtResource("7")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Monitor" parent="VBoxContainer" instance=ExtResource("4")]
