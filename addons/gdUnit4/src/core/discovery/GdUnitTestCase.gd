@@ -7,7 +7,7 @@ class_name GdUnitTestCase
 extends RefCounted
 
 ## A unique identifier for the test case. Used to track and reference specific test instances.
-var guid: GdUnitGUID
+var guid := GdUnitGUID.new()
 
 ## The name of the test method/function. Should start with "test_" prefix.
 var test_name: String
@@ -41,4 +41,4 @@ var line_number: int
 ## - timeout: int - Maximum execution time in milliseconds
 ## - skip: bool - Whether the test should be skipped
 ## - dependencies: Array[String] - Required test dependencies
-var metadate: Dictionary
+var metadate: Dictionary = {}

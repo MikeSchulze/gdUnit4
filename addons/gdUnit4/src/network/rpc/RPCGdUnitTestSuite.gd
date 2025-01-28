@@ -1,8 +1,6 @@
 class_name RPCGdUnitTestSuite
 extends RPC
 
-var _data :Dictionary
-
 
 static func of(test_suite :Node) -> RPCGdUnitTestSuite:
 	var rpc := RPCGdUnitTestSuite.new()
