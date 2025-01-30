@@ -30,9 +30,9 @@ jobs:
       max-parallel: 10
       matrix:
         # If changes are made here, they must be transferred to `.github\workflows\ci-pr-publish-report.yml`
-        godot-version: ['4.3']
-        godot-status: ['stable']
-        godot-net: ['.Net', '']
+        godot-version: [ '4.3' ]
+        godot-status: [ 'stable' ]
+        godot-net: [ '.Net', '' ]
         include:
           - godot-version: '4.4'
             godot-status: 'dev7'
@@ -44,7 +44,7 @@ jobs:
       pull-requests: write
       statuses: write
 
-    name: CI GdUnit4 - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
+    name: GdUnit4 | Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
 
     steps:
       - name: 'Checkout'
@@ -69,6 +69,7 @@ jobs:
           arguments: |
             --verbose
           timeout: 10
+          warnings-as-errors: true
           publish-report: false
           report-name: gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
 
@@ -83,6 +84,7 @@ jobs:
           paths: |
             res://addons/gdUnit4/test/mono
           timeout: 5
+          warnings-as-errors: true
           retries: 3 # We have set the number of repetitions to 3 because Godot mono randomly crashes during C# tests
           publish-report: false
           report-name: gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
@@ -91,7 +93,7 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     name: 'Final Results'
-    needs: [gdlint, unit-tests]
+    needs: [ gdlint, unit-tests ]
     steps:
       - run: exit 1
         if: >-
