@@ -51,8 +51,7 @@ class TcpConnection extends GdUnitTcpNode:
 		)
 
 
-	@warning_ignore("unused_parameter")
-	func console(value: Variant) -> void:
+	func console(_value: Variant) -> void:
 		#print_debug("TCP Server:		", value)
 		pass
 

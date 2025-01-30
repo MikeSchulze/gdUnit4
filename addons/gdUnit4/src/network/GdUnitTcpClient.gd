@@ -73,13 +73,13 @@ func _process(_delta: float) -> void:
 
 		StreamPeerTCP.STATUS_CONNECTED:
 			if not _connected:
-				var rpc_ :RPC = null
+				var rpc_data :RPC = null
 				set_process(false)
-				while rpc_ == null:
+				while rpc_data == null:
 					await get_tree().create_timer(0.500).timeout
-					rpc_ = rpc_receive()
+					rpc_data = rpc_receive()
 				set_process(true)
-				_client_id = (rpc_ as RPCClientConnect).client_id()
+				_client_id = (rpc_data as RPCClientConnect).client_id()
 				console("Connected to Server: %d" % _client_id)
 				connection_succeeded.emit("Connect to TCP Server %s:%d success." % [_host, _port])
 				_connected = true
@@ -98,8 +98,8 @@ func is_client_connected() -> bool:
 
 func process_rpc() -> void:
 	if _stream.get_available_bytes() > 0:
-		var rpc_ := rpc_receive()
-		if rpc_ is RPCClientDisconnect:
+		var rpc_data := rpc_receive()
+		if rpc_data is RPCClientDisconnect:
 			stop()
 
 
