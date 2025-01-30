@@ -61,41 +61,6 @@ func receive_packages(stream: StreamPeerTCP, rpc_cb: Callable = noop) -> Array[R
 	return received_packages
 
 
-func receive_packages_(stream: StreamPeerTCP, rpc_cb: Callable = noop) -> Array[RPC]:
-	var received_packages: Array[RPC] = []
-	var available_bytes := stream.get_available_bytes()
-	if available_bytes > 0:
-		var buffer := stream.get_data(available_bytes)
-		var status_code: int = buffer[0]
-		if status_code != OK:
-			push_error("'receive_packages:' Can't get_data(%d) for available_bytes, error: %s" % [available_bytes, error_string(status_code)])
-			return received_packages
-
-		var data_package: PackedByteArray
-		var package_buffer := StreamPeerBuffer.new()
-		package_buffer.data_array = buffer[1]
-		package_buffer.seek(0)
-		while package_buffer.get_position() < available_bytes:
-			if package_buffer.get_u32() == 0xDEADBEEF:
-				var size := package_buffer.get_u32()
-				var data := package_buffer.get_data(size)
-				status_code = data[0]
-				if status_code != OK:
-					push_error("'receive_packages:' Can't get_data(%d) for package, error: %s" % [size, error_string(status_code)])
-					continue
-				data_package = data[1]
-			else:
-				data_package = buffer[1]
-
-			var json := data_package.get_string_from_utf8()
-			if json.is_empty():
-				push_warning("json is empty, can't process data")
-				continue
-			received_packages.append(RPC.deserialize(json))
-			rpc_cb.call(RPC.deserialize(json))
-	return received_packages
-
-
 @warning_ignore("unused_parameter")
 static func noop(rpc_data: RPC) -> void:
 	pass
