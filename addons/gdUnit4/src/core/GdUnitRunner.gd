@@ -112,6 +112,22 @@ func load_test_suites() -> Array[Node]:
 	return test_suites
 
 
+func discover_test_suite(test_suite: Node) -> void:
+	for child in test_suite.get_children():
+		if child is not _TestCase:
+			continue
+		var test: _TestCase = child
+		var test_case := GdUnitTestCase.new()
+		test_case.suite_name = test_suite.get_name()
+		test_case.test_name = test.get_name()
+		test_case.fully_qualified_name = GdUnitTestDiscoverer.build_fully_qualified_name(test)
+		test_case.source_file = test.script_path()
+		test_case.line_number = test.line_number()
+		test_case.attribute_index = 0
+		test_case.require_godot_runtime = true
+		_client.send(RPCTestCase.new(test_case))
+
+
 func gdUnitInit() -> void:
 	#enable_manuall_polling()
 	send_message("Scanned %d test suites" % _test_suites_to_process.size())
@@ -120,7 +136,7 @@ func gdUnitInit() -> void:
 	if not GdUnitSettings.is_test_discover_enabled():
 		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverStart.new())
 		for test_suite in _test_suites_to_process:
-			GdUnitTestDiscoverer.discover_test_suite(test_suite)
+			discover_test_suite(test_suite)
 			## @Deprecated
 			send_test_suite(test_suite)
 		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverEnd.new(0, 0))

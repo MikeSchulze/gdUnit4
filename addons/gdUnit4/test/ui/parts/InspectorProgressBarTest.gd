@@ -21,6 +21,7 @@ func test_progress_init() -> void:
 
 func test_progress_update_by_discovery() -> void:
 	# verify the InspectorProgressBar is connected to gdunit_test_discovered signal
+	@warning_ignore("unsafe_property_access", "unsafe_call_argument")
 	assert_bool(GdUnitSignals.instance().gdunit_test_discovered.is_connected(_progress.on_test_case_discovered))\
 		.override_failure_message("The 'InspectorProgressBar' must be connected to signal 'gdunit_test_discovered'")\
 		.is_true()
