@@ -22,9 +22,9 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        godot-version: ['4.3']
-        godot-status: ['stable']
-        godot-net: ['.Net', '']
+        godot-version: [ '4.3' ]
+        godot-status: [ 'stable' ]
+        godot-net: [ '.Net', '' ]
 
     permissions:
       actions: write
@@ -33,13 +33,13 @@ jobs:
       pull-requests: write
       statuses: write
 
-    name: CI GdUnit4 - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
+    name: GdUnit4 | Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
 
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v4
         with:
-          lfs: true            
+          lfs: true
 
       - shell: bash
         run: |
@@ -56,6 +56,7 @@ jobs:
           paths: |
             res://addons/gdUnit4/test/
           timeout: 10
+          warnings-as-errors: true
           report-name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}.xml
 
       - name: 'Test GdUnit4 (master) - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net'
@@ -69,5 +70,6 @@ jobs:
           paths: |
             res://addons/gdUnit4/test/mono
           timeout: 5
+          warnings-as-errors: true
           retries: 3 # We have set the number of repetitions to 3 because Godot mono randomly crashes during C# tests
           report-name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-net.xml
