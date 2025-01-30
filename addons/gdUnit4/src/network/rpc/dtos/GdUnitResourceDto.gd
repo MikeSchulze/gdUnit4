@@ -1,11 +1,11 @@
 class_name GdUnitResourceDto
 extends Resource
 
-var _name :String
-var _path :String
+var _name: String
+var _path: String
 
 
-func serialize(resource :Node) -> Dictionary:
+func serialize(resource: Node) -> Dictionary:
 	var serialized := Dictionary()
 	serialized["name"] = resource.get_name()
 	@warning_ignore("unsafe_method_access")
@@ -13,7 +13,7 @@ func serialize(resource :Node) -> Dictionary:
 	return serialized
 
 
-func deserialize(data :Dictionary) -> GdUnitResourceDto:
+func deserialize(data: Dictionary) -> GdUnitResourceDto:
 	_name = data.get("name", "n.a.")
 	_path = data.get("resource_path", "")
 	return self

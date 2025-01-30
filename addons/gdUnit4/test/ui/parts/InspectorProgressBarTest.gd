@@ -1,6 +1,5 @@
 extends GdUnitTestSuite
 
-
 var _runner: GdUnitSceneRunner
 var _progress: ProgressBar
 var _status: Label
@@ -22,6 +21,7 @@ func test_progress_init() -> void:
 
 func test_progress_update_by_discovery() -> void:
 	# verify the InspectorProgressBar is connected to gdunit_test_discovered signal
+	@warning_ignore("unsafe_property_access", "unsafe_call_argument")
 	assert_bool(GdUnitSignals.instance().gdunit_test_discovered.is_connected(_progress.on_test_case_discovered))\
 		.override_failure_message("The 'InspectorProgressBar' must be connected to signal 'gdunit_test_discovered'")\
 		.is_true()
@@ -51,40 +51,29 @@ func test_progress_update_by_discovery() -> void:
 	assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
 
 
-## @deprecated
-func test_progress_init_old() -> void:
-	_runner.invoke("_on_gdunit_event", GdUnitInit.new(10, 230))
-	assert_that(_progress.value).is_equal(0.000000)
-	assert_that(_progress.max_value).is_equal(230.000000)
-	assert_that(_status.text).is_equal("0:230")
-	assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
-
-
 func test_progress_success() -> void:
 	_runner.invoke("_on_gdunit_event", GdUnitInit.new(10, 42))
 	var expected_progess_index :float = 0
+	var test_cases := discover_example_tests()
+
 	# simulate execution of 20 success test runs
-	for index in 20:
-		_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_statistics("res://test/testA.gd", "TestSuiteA", "test_a%d" % index, {}))
+	for test in test_cases:
+		_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_statistics(test.source_file, test.suite_name, test.test_name, {}))
 		expected_progess_index += 1
 		assert_that(_progress.value).is_equal(expected_progess_index)
-		assert_that(_status.text).is_equal("%d:42" % expected_progess_index)
+		assert_that(_status.text).is_equal("%d:30" % expected_progess_index)
 		assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
 
-	# simulate execution of parameterized test with 10 iterations
-	for index in 10:
-		_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_after("res://test/testA.gd", "TestSuiteA", "test_parameterized:%d (params)" % index, {}))
-		assert_that(_progress.value).is_equal(expected_progess_index)
 	# final test end event
 	_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_statistics("res://test/testA.gd", "TestSuiteA", "test_parameterized", {}))
 	# we expect only one progress step after a parameterized test has been executed, regardless of the iterations
 	expected_progess_index += 1
 	assert_that(_progress.value).is_equal(expected_progess_index)
-	assert_that(_status.text).is_equal("%d:42" % expected_progess_index)
+	assert_that(_status.text).is_equal("%d:30" % expected_progess_index)
 	assert_that(_style.bg_color).is_equal(Color.DARK_GREEN)
 
 	# verify the max progress state is not affected
-	assert_that(_progress.max_value).is_equal(42.000000)
+	assert_that(_progress.max_value).is_equal(30.000000)
 
 
 @warning_ignore("unused_parameter")
@@ -109,3 +98,28 @@ func test_progress_failed(test_name :String, is_failed :bool, is_error :bool, ex
 
 	_runner.invoke("_on_gdunit_event", GdUnitEvent.new().test_statistics("res://test/testA.gd", "TestSuiteA", test_name, statistics))
 	assert_that(_style.bg_color).is_equal(expected_color)
+
+
+func discover_example_tests() -> Array[GdUnitTestCase]:
+	var tests: Array[GdUnitTestCase] = []
+
+	# simulate execution of 20 success test runs
+	for index in 20:
+		var test := GdUnitTestCase.new()
+		test.guid = GdUnitGUID.new()
+		test.suite_name = "TestSuiteA"
+		test.test_name = "test_%d" % index
+		test.source_file = "res://test/testA.gd"
+		tests.append(test)
+		@warning_ignore("unsafe_method_access")
+		_progress.on_test_case_discovered(test)
+	for index in 10:
+		var test := GdUnitTestCase.new()
+		test.guid = GdUnitGUID.new()
+		test.suite_name = "TestSuiteA"
+		test.test_name = "test_parameterized:%d (params)" % index
+		test.source_file = "res://test/testA.gd"
+		tests.append(test)
+		@warning_ignore("unsafe_method_access")
+		_progress.on_test_case_discovered(test)
+	return tests

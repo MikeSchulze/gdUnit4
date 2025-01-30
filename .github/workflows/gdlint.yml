@@ -11,6 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       os:
+        description: 'Defines the type of machine to run the job on.'
         required: false
         type: string
         default: "ubuntu-22.04"
@@ -30,7 +31,7 @@ jobs:
       - name: Setup GDLint
         uses: Scony/godot-gdscript-toolkit@master
         with:
-          version: 4.3.1
+          version: 4.3.3
 
       - name: Run GDLint
         id: run-gdlint
@@ -41,6 +42,7 @@ jobs:
           gdlint addons/gdUnit4/src/cmd/ | tee reports/gdlint/cmd.txt
           gdlint addons/gdUnit4/src/report/ | tee reports/gdlint/report.txt
           gdlint addons/gdUnit4/src/asserts | tee reports/gdlint/gdlint_asserts.txt
+          gdlint addons/gdUnit4/src/network | tee reports/gdlint/gdlint_networkcode.txt
 
       - name: Upload GDLint Report
         if: failure()

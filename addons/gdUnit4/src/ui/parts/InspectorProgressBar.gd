@@ -15,9 +15,9 @@ func _ready() -> void:
 
 
 ## @deprecated
-func progress_init(p_max_value: int) -> void:
+func progress_init() -> void:
 	value = 0
-	max_value = p_max_value
+	max_value = 0
 	style.bg_color = Color.DARK_GREEN
 	update_text()
 
@@ -43,11 +43,9 @@ func on_test_case_discovered(test_case: GdUnitTestCase) -> void:
 ## @deprecated
 func _on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
-		GdUnitEvent.INIT:
-			progress_init(event.total_count())
 
-		GdUnitEvent.DISCOVER_END:
-			progress_init(event.total_count())
+		GdUnitEvent.DISCOVER_START:
+			progress_init()
 
 		GdUnitEvent.TESTCASE_STATISTICS:
 			progress_update(1, event.is_failed() or event.is_error())
