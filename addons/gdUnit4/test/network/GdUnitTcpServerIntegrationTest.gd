@@ -4,12 +4,14 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = 'res://addons/gdUnit4/src/network/GdUnitTcpServer.gd'
 
-var tcp_server := GdUnitTcpServer.new("Test TCP Server")
-var tcp_client := GdUnitTcpClient.new("Test TCP Client", true)
+var tcp_server: GdUnitTcpServer
+var tcp_client: GdUnitTcpClient
 
 
 ## We start a custom test server for this suite
 func before() -> void:
+	tcp_server = GdUnitTcpServer.new("Test TCP Server")
+	tcp_client = GdUnitTcpClient.new("Test TCP Client", true)
 	add_child(tcp_server)
 	add_child(tcp_client)
 
