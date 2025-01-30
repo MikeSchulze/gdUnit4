@@ -43,12 +43,12 @@ func receive_packages(stream: StreamPeerTCP, rpc_cb: Callable = noop) -> Array[R
 			buffer = stream.get_data(size)
 			package_buffer.data_array = buffer[1]
 
-			var data := package_buffer.get_data(size)
-			status_code = data[0]
+			var rpc_data := package_buffer.get_data(size)
+			status_code = rpc_data[0]
 			if status_code != OK:
 				push_error("'receive_packages:' Can't get_data(%d) for package, error: %s" % [size, error_string(status_code)])
 				continue
-			data_package = data[1]
+			data_package = rpc_data[1]
 		else:
 			data_package = buffer[1]
 
@@ -56,8 +56,9 @@ func receive_packages(stream: StreamPeerTCP, rpc_cb: Callable = noop) -> Array[R
 		if json.is_empty():
 			push_warning("json is empty, can't process data")
 			continue
-		received_packages.append(RPC.deserialize(json))
-		rpc_cb.call(RPC.deserialize(json))
+		var data := RPC.deserialize(json)
+		received_packages.append(data)
+		rpc_cb.call(data)
 	return received_packages
 
 

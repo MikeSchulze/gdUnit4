@@ -2,10 +2,8 @@ class_name RPCGdUnitEvent
 extends RPC
 
 
-static func of(p_event :GdUnitEvent) -> RPCGdUnitEvent:
-	var rpc := RPCGdUnitEvent.new()
-	rpc._data = p_event.serialize()
-	return rpc
+static func of(p_event: GdUnitEvent) -> RPCGdUnitEvent:
+	return RPCGdUnitEvent.new(p_event)
 
 
 func event() -> GdUnitEvent:

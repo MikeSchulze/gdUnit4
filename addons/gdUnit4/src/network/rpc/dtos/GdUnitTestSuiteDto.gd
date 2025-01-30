@@ -6,12 +6,12 @@ extends GdUnitResourceDto
 var _test_cases_by_name := Dictionary()
 
 
-static func of(test_suite :Node) -> GdUnitTestSuiteDto:
+static func of(test_suite: Node) -> GdUnitTestSuiteDto:
 	var dto := GdUnitTestSuiteDto.new()
 	return dto.deserialize(dto.serialize(test_suite))
 
 
-func serialize(test_suite :Node) -> Dictionary:
+func serialize(test_suite: Node) -> Dictionary:
 	var serialized := super.serialize(test_suite)
 	var test_cases_ := Array()
 	serialized["test_cases"] = test_cases_
@@ -20,11 +20,11 @@ func serialize(test_suite :Node) -> Dictionary:
 	return serialized
 
 
-func deserialize(data :Dictionary) -> GdUnitResourceDto:
+func deserialize(data: Dictionary) -> GdUnitResourceDto:
 	@warning_ignore("return_value_discarded")
 	super.deserialize(data)
-	var test_cases_ :Array = data.get("test_cases", [])
-	for test_case :Dictionary in test_cases_:
+	var test_cases_: Array = data.get("test_cases", [])
+	for test_case: Dictionary in test_cases_:
 		add_test_case(GdUnitTestCaseDto.new().deserialize(test_case))
 	return self
 
@@ -38,6 +38,6 @@ func test_case_count() -> int:
 
 
 func test_cases() -> Array[GdUnitTestCaseDto]:
-	var test_cases_ :Array[GdUnitTestCaseDto] = []
+	var test_cases_: Array[GdUnitTestCaseDto] = []
 	test_cases_.append_array(_test_cases_by_name.values())
 	return test_cases_

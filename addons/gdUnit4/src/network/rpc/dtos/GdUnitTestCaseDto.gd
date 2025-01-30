@@ -1,12 +1,12 @@
 class_name GdUnitTestCaseDto
 extends GdUnitResourceDto
 
-var _line_number :int = -1
+var _line_number: int = -1
 var _script_path: String
-var _test_case_names :PackedStringArray = []
+var _test_case_names: PackedStringArray = []
 
 
-func serialize(test_case :Node) -> Dictionary:
+func serialize(test_case: Node) -> Dictionary:
 	var serialized := super.serialize(test_case)
 	if test_case.has_method("line_number"):
 		@warning_ignore("unsafe_method_access")
@@ -29,7 +29,7 @@ func serialize(test_case :Node) -> Dictionary:
 	return serialized
 
 
-func deserialize(data :Dictionary) -> GdUnitTestCaseDto:
+func deserialize(data: Dictionary) -> GdUnitTestCaseDto:
 	@warning_ignore("return_value_discarded")
 	super.deserialize(data)
 	_line_number = data.get("line_number", -1)
