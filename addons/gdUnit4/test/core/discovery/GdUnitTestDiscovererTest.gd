@@ -1,16 +1,92 @@
-# GdUnit generated TestSuite
-class_name GdUnitTestDiscovererTest
 extends GdUnitTestSuite
-@warning_ignore('unused_parameter')
-@warning_ignore('return_value_discarded')
-
-# TestSuite generated from
-const __source = 'res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverer.gd'
 
 
-func test_build_fully_qualified_name() -> void:
-	var test: _TestCase = auto_free(_TestCase.new())
-	test.configure("test_a", 42, "res://foo/bar/TestSuiteA.gd")
+func test_discover_single_test() -> void:
+	var script: GDScript = load("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
 
-	var fully_qualified_name := GdUnitTestDiscoverer.build_fully_qualified_name(test)
-	assert_str(fully_qualified_name).is_equal("foo.bar.TestSuiteA.gdtest_a")
+	var discovered_tests := []
+	GdUnitTestDiscoverer.discover_test(script,
+		["test_case1"],
+		func discover(test_case: GdUnitTestCase) -> void:
+			discovered_tests.append(test_case)
+	)
+
+	assert_array(discovered_tests)\
+		.extractv(extr("test_name"), extr("display_name"))\
+		.contains_exactly([tuple("test_case1", "test_case1")])
+
+
+func test_discover_many_test() -> void:
+	var script: GDScript = load("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
+
+	var discovered_tests := []
+	GdUnitTestDiscoverer.discover_test(script,
+		["test_case1", "test_case2", "test_parameterized_static"],
+		func discover(test_case: GdUnitTestCase) -> void:
+			discovered_tests.append(test_case)
+	)
+
+	assert_array(discovered_tests)\
+		.extractv(extr("test_name"), extr("display_name"))\
+		.contains_exactly([
+			tuple("test_case1", "test_case1"),
+			tuple("test_case2", "test_case2"),
+			tuple("test_parameterized_static", "test_parameterized_static#0 (1, 1)"),
+			tuple("test_parameterized_static", "test_parameterized_static#1 (2, 2)"),
+			tuple("test_parameterized_static", "test_parameterized_static#2 (3, 3)"),
+		])
+
+
+func test_discover_parameterized_test() -> void:
+	var script: GDScript = load("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
+
+	var discovered_tests := []
+	GdUnitTestDiscoverer.discover_test(script,
+		["test_parameterized_static"],
+		func discover(test_case: GdUnitTestCase) -> void:
+			discovered_tests.append(test_case)
+	)
+
+	assert_array(discovered_tests)\
+		.extractv(extr("test_name"), extr("display_name"))\
+		.contains_exactly([
+			tuple("test_parameterized_static", "test_parameterized_static#0 (1, 1)"),
+			tuple("test_parameterized_static", "test_parameterized_static#1 (2, 2)"),
+			tuple("test_parameterized_static", "test_parameterized_static#2 (3, 3)"),
+		])
+
+
+func test_discover_tests() -> void:
+	var script: GDScript = load("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
+
+	var discovered_tests := []
+	GdUnitTestDiscoverer.discover_tests(script,\
+		func discover(test_case: GdUnitTestCase) -> void:
+			discovered_tests.append(test_case)
+	)
+
+	assert_array(discovered_tests)\
+		.extractv(extr("test_name"), extr("display_name"))\
+		.contains_exactly([
+			tuple("test_case1", "test_case1"),
+			tuple("test_case2", "test_case2"),
+			tuple("test_parameterized_static", "test_parameterized_static#0 (1, 1)"),
+			tuple("test_parameterized_static", "test_parameterized_static#1 (2, 2)"),
+			tuple("test_parameterized_static", "test_parameterized_static#2 (3, 3)"),
+			tuple("test_parameterized_dynamic", "test_parameterized_dynamic#0 (<null>)"),
+			tuple("test_parameterized_dynamic", "test_parameterized_dynamic#1 ((1, 1))"),
+			tuple("test_parameterized_dynamic", "test_parameterized_dynamic#2 ((1, 1))"),
+		])
+
+
+func test_discover_tests_on_GdUnitTestSuite() -> void:
+	var script: GDScript = load("res://addons/gdUnit4/src/GdUnitTestSuite.gd")
+
+	var discovered_tests := []
+	GdUnitTestDiscoverer.discover_tests(script,\
+		func discover(test_case: GdUnitTestCase) -> void:
+			discovered_tests.append(test_case)
+	)
+
+	# we expect no test covered from the base implementaion of GdUnitTestSuite
+	assert_array(discovered_tests).is_empty()

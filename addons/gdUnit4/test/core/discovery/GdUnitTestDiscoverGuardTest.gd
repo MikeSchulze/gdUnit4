@@ -46,7 +46,8 @@ func test_discover_on_GDScript() -> void:
 
 	assert_array(emitted_events).has_size(1)
 	assert_object(emitted_events[0]).is_instanceof(GdUnitEventTestDiscoverTestSuiteAdded)
-	assert_dict(discoverer._discover_cache).contains_key_value("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd", ["test_case1", "test_case2"])
+	assert_dict(discoverer._discover_cache).contains_key_value("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd",
+		["test_case1", "test_case2", "test_parameterized_static", "test_parameterized_dynamic"])
 
 
 @warning_ignore("unused_parameter")

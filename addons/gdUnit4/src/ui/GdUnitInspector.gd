@@ -23,8 +23,11 @@ func _process(_delta: float) -> void:
 	_command_handler._do_process()
 
 
-func _on_MainPanel_run_testsuite(test_suite_paths: Array, debug: bool) -> void:
-	_command_handler.cmd_run_test_suites(test_suite_paths, debug)
+func _on_MainPanel_run_testsuite(test_suite_paths: PackedStringArray, debug: bool) -> void:
+	var scripts: Array[Script] = []
+	for suite_path in test_suite_paths:
+		scripts.append(load(suite_path))
+	_command_handler.cmd_run_test_suites(scripts, debug)
 
 
 func _on_MainPanel_run_testcase(resource_path: String, test_case: String, test_param_index: int, debug: bool) -> void:
