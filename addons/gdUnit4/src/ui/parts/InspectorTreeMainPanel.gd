@@ -3,6 +3,8 @@ extends VSplitContainer
 
 signal run_testcase(test_suite_resource_path: String, test_case: String, test_param_index: int, run_debug: bool)
 signal run_testsuite()
+## Will be emitted when the test index counter is changed
+signal test_counters_changed(index: int, total: int, state: GdUnitInspectorTreeConstants.STATE)
 
 const CONTEXT_MENU_RUN_ID = 0
 const CONTEXT_MENU_DEBUG_ID = 1
@@ -45,25 +47,13 @@ enum GdUnitType {
 	TEST_CASE
 }
 
-
-enum STATE {
-	INITIAL,
-	RUNNING,
-	SUCCESS,
-	WARNING,
-	FLAKY,
-	FAILED,
-	ERROR,
-	ABORDED,
-	SKIPPED
-}
-
 const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
 const META_GDUNIT_ID := "gdUnit_id"
 const META_GDUNIT_NAME := "gdUnit_name"
 const META_GDUNIT_STATE := "gdUnit_state"
 const META_GDUNIT_TYPE := "gdUnit_type"
 const META_GDUNIT_TOTAL_TESTS := "gdUnit_suite_total_tests"
+const META_GDUNIT_TEST_INDEX := "gdUnit_test_index"
 const META_GDUNIT_SUCCESS_TESTS := "gdUnit_suite_success_tests"
 const META_GDUNIT_REPORT := "gdUnit_report"
 const META_GDUNIT_ORPHAN := "gdUnit_orphan"
@@ -72,6 +62,8 @@ const META_RESOURCE_PATH := "resource_path"
 const META_LINE_NUMBER := "line_number"
 const META_SCRIPT_PATH := "script_path"
 const META_TEST_PARAM_INDEX := "test_param_index"
+const STATE = GdUnitInspectorTreeConstants.STATE
+
 
 var _tree_root: TreeItem
 var _item_hash := Dictionary()
@@ -227,7 +219,10 @@ func init_tree() -> void:
 	_tree.set_column_custom_minimum_width(1, 100)
 	_tree_root = _tree.create_item()
 	_tree_root.set_text(0, "tree_root")
+	_tree_root.set_meta(META_GDUNIT_NAME, "tree_root")
 	_tree_root.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
+	_tree_root.set_meta(META_GDUNIT_TEST_INDEX, 0)
+	_tree_root.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	# fix tree icon scaling
 	var scale_factor := EditorInterface.get_editor_scale() if Engine.is_editor_hint() else 1.0
 	_tree.set("theme_override_constants/icon_max_width", 16 * scale_factor)
@@ -313,6 +308,10 @@ func sort_items_by_original_index(a: TreeItem, b: TreeItem) -> bool:
 
 
 func reset_tree_state(parent: TreeItem) -> void:
+	if parent == _tree_root:
+		_tree_root.set_meta(META_GDUNIT_TEST_INDEX, 0)
+		_tree_root.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
+
 	for item in parent.get_children():
 		set_state_initial(item)
 		reset_tree_state(item)
@@ -589,11 +588,13 @@ func update_test_case(event: GdUnitEvent) -> void:
 	if event.type() == GdUnitEvent.TESTCASE_BEFORE:
 		set_state_running(item)
 		return
+
 	if event.type() == GdUnitEvent.TESTCASE_AFTER:
 		update_item_elapsed_time_counter(item, event.elapsed_time())
 		if event.is_success() or event.is_warning():
 			update_item_processed_counter(item)
-	update_state(item, event)
+		update_state(item, event)
+		update_progress_counters(item)
 
 
 
@@ -624,18 +625,21 @@ func set_item_icon_by_state(item :TreeItem) -> void:
 		item.set_icon_modulate(0, Color.SKY_BLUE)
 
 
-func count_tests_total(accum: int, item: TreeItem) -> int:
-	return accum + item.get_meta(META_GDUNIT_TOTAL_TESTS)
-
-
 func update_item_total_counter(item: TreeItem) -> void:
-	if item == _tree_root:
+	if item == null:
 		return
 
 	var child_count := get_total_child_count(item)
 	if child_count > 0:
 		item.set_meta(META_GDUNIT_TOTAL_TESTS, child_count)
 		item.set_text(0, "(0/%d) %s" % [child_count, item.get_meta(META_GDUNIT_NAME)])
+
+	if item == _tree_root:
+		var index: int = item.get_meta(META_GDUNIT_TEST_INDEX)
+		var total_test: int = item.get_meta(META_GDUNIT_TOTAL_TESTS)
+		var state: STATE = item.get_meta(META_GDUNIT_STATE)
+		test_counters_changed.emit(index, total_test, state)
+
 	update_item_total_counter(item.get_parent())
 
 
@@ -654,7 +658,17 @@ func update_item_processed_counter(item: TreeItem) -> void:
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, success_count)
 	if item.has_meta(META_GDUNIT_TOTAL_TESTS):
 		item.set_text(0, "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)])
+
 	update_item_processed_counter(item.get_parent())
+
+
+func update_progress_counters(item: TreeItem) -> void:
+		var index: int = _tree_root.get_meta(META_GDUNIT_TEST_INDEX) + 1
+		var total_test: int = _tree_root.get_meta(META_GDUNIT_TOTAL_TESTS)
+
+		var state: STATE = item.get_meta(META_GDUNIT_STATE)
+		test_counters_changed.emit(index, total_test, state)
+		_tree_root.set_meta(META_GDUNIT_TEST_INDEX, index)
 
 
 func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:
