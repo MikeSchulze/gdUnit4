@@ -5,12 +5,12 @@ var test_retries := {
 	"test_flaky_success" = 0,
 	"test_flaky_fail" = 0,
 	"test_success" = 0,
-	"test_paramaterized_flaky:0" = 0,
-	"test_paramaterized_flaky:1" = 0,
-	"test_paramaterized_flaky:2" = 0,
-	"test_paramaterized_flaky:3" = 0,
-	"test_paramaterized_flaky:4" = 0,
-	"test_paramaterized_flaky:5" = 0,
+	"test_parameterized_flaky:0" = 0,
+	"test_parameterized_flaky:1" = 0,
+	"test_parameterized_flaky:2" = 0,
+	"test_parameterized_flaky:3" = 0,
+	"test_parameterized_flaky:4" = 0,
+	"test_parameterized_flaky:5" = 0,
 	"test_fuzzed_flaky_success" = 0,
 	"test_fuzzed_flaky_fail" = 0
 }
@@ -51,25 +51,25 @@ func after() -> void:
 		.override_failure_message("Expecting one test iteration to succeed 'test_success'\n but was %d" % retry_count)\
 		.is_equal(1)
 	# verify retry count of paramaterized test
-	retry_count = test_retries["test_paramaterized_flaky:0"]
+	retry_count = test_retries["test_parameterized_flaky:0"]
 	assert_int(retry_count)\
-		.override_failure_message("Expecting one test iteration to succeed 'test_paramaterized_flaky:0'\n but was %d" % retry_count)\
+		.override_failure_message("Expecting one test iteration to succeed 'test_parameterized_flaky:0'\n but was %d" % retry_count)\
 		.is_equal(1)
-	retry_count = test_retries["test_paramaterized_flaky:1"]
+	retry_count = test_retries["test_parameterized_flaky:1"]
 	assert_int(retry_count)\
-		.override_failure_message("Expecting one test iteration to succeed 'test_paramaterized_flaky:1'\n but was %d" % retry_count)\
+		.override_failure_message("Expecting one test iteration to succeed 'test_parameterized_flaky:1'\n but was %d" % retry_count)\
 		.is_equal(1)
-	retry_count = test_retries["test_paramaterized_flaky:2"]
+	retry_count = test_retries["test_parameterized_flaky:2"]
 	assert_int(retry_count)\
-		.override_failure_message("Expecting %d test iteration to fail 'test_paramaterized_flaky:2'\n but was %d" % [_run_with_reries, retry_count])\
+		.override_failure_message("Expecting %d test iteration to fail 'test_parameterized_flaky:2'\n but was %d" % [_run_with_reries, retry_count])\
 		.is_equal(_run_with_reries)
-	retry_count = test_retries["test_paramaterized_flaky:3"]
+	retry_count = test_retries["test_parameterized_flaky:3"]
 	assert_int(retry_count)\
-		.override_failure_message("Expecting one test iteration to succeed 'test_paramaterized_flaky:3'\n but was %d" % retry_count)\
+		.override_failure_message("Expecting one test iteration to succeed 'test_parameterized_flaky:3'\n but was %d" % retry_count)\
 		.is_equal(1)
-	retry_count = test_retries["test_paramaterized_flaky:4"]
+	retry_count = test_retries["test_parameterized_flaky:4"]
 	assert_int(retry_count)\
-		.override_failure_message("Expecting 3 test iteration to succeed 'test_paramaterized_flaky:4'\n but was %d" % retry_count)\
+		.override_failure_message("Expecting 3 test iteration to succeed 'test_parameterized_flaky:4'\n but was %d" % retry_count)\
 		.is_equal(3)
 	# fuzzed tests
 	retry_count = test_retries["test_fuzzed_flaky_success"]
@@ -110,14 +110,14 @@ func test_success() -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_paramaterized_flaky(test_index: int, expected_retry_count :int, test_parameters := [
+func test_parameterized_flaky(test_index: int, expected_retry_count :int, test_parameters := [
 	[0, 1],
 	[1, 1],
 	[2, 6],
 	[3, 1],
 	[4, 3]]) -> void:
 
-	var test_case_name := "test_paramaterized_flaky:%d" % test_index
+	var test_case_name := "test_parameterized_flaky:%d" % test_index
 	test_retries[test_case_name] += 1
 	var retry_count :int = test_retries[test_case_name]
 	assert_int(retry_count).is_less_equal(expected_retry_count)

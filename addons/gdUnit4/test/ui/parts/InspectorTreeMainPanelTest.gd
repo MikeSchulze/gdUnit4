@@ -416,8 +416,8 @@ func test_add_parameterized_test_case() -> void:
 	var dir_b := create_child(dir_a, "(0/2) dir_b")
 	var my_test_suite := create_child(dir_b, "(0/2) my_test_suite")
 	var test_parameterized := create_child(my_test_suite, "(0/2) test_parameterized")
-	create_child(test_parameterized, "test_parameterized#0 (1.2)")
-	create_child(test_parameterized, "test_parameterized#1 (2.2)")
+	create_child(test_parameterized, "test_parameterized:0 (1.2)")
+	create_child(test_parameterized, "test_parameterized:1 (2.2)")
 
 	assert_tree_equals(_inspector._tree_root, expected_root)
 

@@ -132,7 +132,7 @@ func _extract_test_names_by_reflection(test_case: _TestCase) -> PackedStringArra
 static func _build_test_case_name(test_case: _TestCase, index: int, test_parameter: String) -> String:
 	var parameters := test_parameter.replace("\t", "").replace('"', "'").replace("&'", "'")
 	parameters = parameters.trim_prefix("[").trim_suffix("]")
-	return "%s#%d (%s)" % [test_case.get_name(), index, parameters]
+	return "%s:%d (%s)" % [test_case.get_name(), index, parameters]
 	#return "%s.%s" % [test_case.get_name(), parameterizedTestName]
 
 

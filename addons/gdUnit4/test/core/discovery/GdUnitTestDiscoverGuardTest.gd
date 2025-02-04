@@ -8,9 +8,6 @@ extends GdUnitTestSuite
 const GdUnitTestDiscoverGuard = preload("res://addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd")
 
 
-
-
-
 func test_inital() -> void:
 	var discoverer := GdUnitTestDiscoverGuard.new()
 
@@ -47,7 +44,7 @@ func test_discover_on_GDScript() -> void:
 	assert_array(emitted_events).has_size(1)
 	assert_object(emitted_events[0]).is_instanceof(GdUnitEventTestDiscoverTestSuiteAdded)
 	assert_dict(discoverer._discover_cache).contains_key_value("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd",
-		["test_case1", "test_case2", "test_parameterized_static", "test_parameterized_dynamic"])
+		["test_case1", "test_case2", "test_parameterized_static", "test_parameterized_static_external", "test_parameterized_dynamic"])
 
 
 @warning_ignore("unused_parameter")
@@ -67,7 +64,8 @@ func test_discover_on_CSharpScript(do_skip := !GdUnit4CSharpApiLoader.is_mono_su
 	verify(discoverer, 1).rebuild_project(script)
 	assert_array(emitted_events).has_size(1)
 	assert_object(emitted_events[0]).is_instanceof(GdUnitEventTestDiscoverTestSuiteAdded)
-	assert_dict(discoverer._discover_cache).contains_key_value("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.cs", ["TestCase1", "TestCase2"])
+	assert_dict(discoverer._discover_cache).contains_key_value("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.cs",
+		["TestCase1", "TestCase2"])
 
 
 func create_test_dto(path: String, test_cases: PackedStringArray) -> GdUnitTestSuiteDto:

@@ -73,7 +73,7 @@ func _build_display_name(_test_parameters: String) -> void:
 	if attribute_index == -1:
 		display_name = test_name
 	else:
-		display_name = "%s#%d (%s)" % [test_name, attribute_index, _test_parameters.trim_prefix("[").trim_suffix("]").replace('"', "'")]
+		display_name = "%s:%d (%s)" % [test_name, attribute_index, _test_parameters.trim_prefix("[").trim_suffix("]").replace('"', "'")]
 
 
 func _build_fully_qualified_name() -> void:

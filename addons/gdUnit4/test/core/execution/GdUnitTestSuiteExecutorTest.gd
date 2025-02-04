@@ -42,7 +42,7 @@ func _on_gdunit_event_debug(event :GdUnitEvent) -> void:
 
 
 func _load(resource_path :String) -> GdUnitTestSuite:
-	return GdUnitTestResourceLoader.load_test_suite(resource_path) as GdUnitTestSuite
+	return GdUnitTestResourceLoader.load_test_suite_gd(resource_path)
 
 
 func flating_message(message :String) -> String:
@@ -802,7 +802,11 @@ func test_execute_test_case_is_flaky_and_failed() -> void:
 		tuple("test_success", false),
 		tuple("test_flaky_success", true),
 		tuple("test_flaky_fail", true),
-		tuple("test_paramaterized_flaky", true),
+		tuple("test_parameterized_flaky:0 (0, 1)", false),
+		tuple("test_parameterized_flaky:1 (1, 1)", false),
+		tuple("test_parameterized_flaky:2 (2, 6)", true),
+		tuple("test_parameterized_flaky:3 (3, 1)", false),
+		tuple("test_parameterized_flaky:4 (4, 3)", true),
 		tuple("test_fuzzed_flaky_success", true),
 		tuple("test_fuzzed_flaky_fail", true),
 		tuple("after", true),
@@ -844,50 +848,42 @@ func test_execute_test_case_is_flaky_and_failed() -> void:
 		tuple(GdUnitEvent.TESTCASE_AFTER, "test_success", true, false, false),
 	])
 
-	# --test_paramaterized_flaky---------------------------------------------------------------
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:0 [0, 1]"))\
+	# --test_parameterized_flaky---------------------------------------------------------------
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:0 (0, 1)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:0 [0, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:0 (0, 1)", true, false, false),
 	])
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:1 [1, 1]"))\
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:1 (1, 1)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:1 [1, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:1 (1, 1)", true, false, false),
 	])
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:2 [2, 6]"))\
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:2 (2, 6)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be fail after 5 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, false, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, true, true),
 	])
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:3 [3, 1]"))\
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:3 (3, 1)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:3 [3, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:3 (3, 1)", true, false, false),
 	])
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:4 [4, 3]"))\
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:4 (4, 3)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be success after 3 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", false, false, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", true, true, false),
-	])
-
-	# and finaly overall state of paremeterized test
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky"))\
-		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
-		.contains_exactly([
-		# expect be faild and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky", false, true, true)
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:4 (4, 3)", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:4 (4, 3)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:4 (4, 3)", true, true, false),
 	])
 
 	assert_array(filter_by_test_case(events, "test_fuzzed_flaky_success"))\
@@ -955,50 +951,43 @@ func test_execute_test_case_is_flaky_and_success() -> void:
 		tuple(GdUnitEvent.TESTCASE_AFTER, "test_success", true, false, false),
 	])
 
-	# --test_paramaterized_flaky---------------------------------------------------------------
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:0 [0, 1]"))\
+	# --test_parameterized_flaky---------------------------------------------------------------
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:0 (0, 1)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:0 [0, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:0 (0, 1)", true, false, false),
 	])
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:1 [1, 1]"))\
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:1 (1, 1)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:1 [1, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:1 (1, 1)", true, false, false),
 	])
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:2 [2, 6]"))\
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:2 (2, 6)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be fail 5 times and on 6't to be success and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, false, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:2 [2, 6]", true, true, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:2 (2, 6)", true, true, false),
 	])
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:3 [3, 1]"))\
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:3 (3, 1)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be success on first run and not flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:3 [3, 1]", true, false, false),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:3 (3, 1)", true, false, false),
 	])
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky:4 [4, 3]"))\
+	assert_array(filter_by_test_case(events, "test_parameterized_flaky:4 (4, 3)"))\
 		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
 		.contains_exactly([
 		# expect be success after 3 retries and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", false, false, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", false, true, true),
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky:4 [4, 3]", true, true, false),
-	])
-	# and finaly overall state of paremeterized test
-	assert_array(filter_by_test_case(events, "test_paramaterized_flaky"))\
-		.extractv(extr("type"), extr("test_name"), extr("is_success"), extr("is_flaky"), extr("is_failed"))\
-		.contains_exactly([
-		# expect be succed and marked as flaky
-		tuple(GdUnitEvent.TESTCASE_AFTER, "test_paramaterized_flaky", true, true, false)
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:4 (4, 3)", false, false, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:4 (4, 3)", false, true, true),
+		tuple(GdUnitEvent.TESTCASE_AFTER, "test_parameterized_flaky:4 (4, 3)", true, true, false),
 	])
 
 	# -- fuzzed tests ------------------------------------------------------------------------------------------
