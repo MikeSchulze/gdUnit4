@@ -59,6 +59,7 @@ enum STATE {
 }
 
 const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
+const META_GDUNIT_ID := "gdUnit_id"
 const META_GDUNIT_NAME := "gdUnit_name"
 const META_GDUNIT_STATE := "gdUnit_state"
 const META_GDUNIT_TYPE := "gdUnit_type"
@@ -596,15 +597,16 @@ func update_test_case(event: GdUnitEvent) -> void:
 
 
 
-func create_item(parent: TreeItem, resource_path: String, item_name: String, type: GdUnitType) -> TreeItem:
-	var script_path := ProjectSettings.localize_path(resource_path)
+func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type: GdUnitType) -> TreeItem:
+	var script_path := ProjectSettings.localize_path(test.source_file)
 	var item := _tree.create_item(parent)
 	item.collapsed = true
 	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, item_name)
+	item.set_meta(META_GDUNIT_ID, test.guid)
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)
-	item.set_meta(META_RESOURCE_PATH, resource_path)
+	item.set_meta(META_RESOURCE_PATH, test.source_file)
 	item.set_meta(META_SCRIPT_PATH, script_path)
 	set_state_initial(item)
 	update_item_total_counter(item)
@@ -776,16 +778,16 @@ func add_test_case(test_case: GdUnitTestCase) -> void:
 			parent = next
 			continue
 		if item_name.begins_with(test_case.test_name):
-			next = create_item(parent, test_case.source_file, item_name, GdUnitType.TEST_CASE)
+			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
 			next.set_meta(META_LINE_NUMBER, test_case.line_number)
 			next.set_meta(META_TEST_PARAM_INDEX, test_case.attribute_index)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		elif item_name == test_case.suite_name:
-			next = create_item(parent, test_case.source_file, item_name, GdUnitType.TEST_SUITE)
+			next = create_item(parent, test_case, item_name, GdUnitType.TEST_SUITE)
 			next.set_meta(META_LINE_NUMBER, 0)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		else:
-			next = create_item(parent, "",  item_name, GdUnitType.FOLDER)
+			next = create_item(parent, test_case,  item_name, GdUnitType.FOLDER)
 
 		parent = next
 
