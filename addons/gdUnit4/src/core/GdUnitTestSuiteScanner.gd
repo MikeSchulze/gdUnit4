@@ -37,7 +37,6 @@ func prescan_testsuite_classes() -> void:
 			_excluded_resources.append(resource_path)
 
 
-## @deprecated
 func scan(resource_path :String) -> Array[Node]:
 	prescan_testsuite_classes()
 	# if single testsuite requested
@@ -113,8 +112,6 @@ func _load_is_test_suite(resource_path: String) -> Script:
 	if not GdObjects.is_test_suite(script):
 		return null
 	return script
-
-
 
 
 func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[Node]:
