@@ -778,16 +778,17 @@ func add_test_case(test_case: GdUnitTestCase) -> void:
 			parent = next
 			continue
 		if item_name.begins_with(test_case.test_name):
+			var is_test_group := item_name == test_case.test_name
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
 			next.set_meta(META_LINE_NUMBER, test_case.line_number)
-			next.set_meta(META_TEST_PARAM_INDEX, test_case.attribute_index)
+			next.set_meta(META_TEST_PARAM_INDEX, -1 if is_test_group else test_case.attribute_index)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		elif item_name == test_case.suite_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_SUITE)
 			next.set_meta(META_LINE_NUMBER, 0)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		else:
-			next = create_item(parent, test_case,  item_name, GdUnitType.FOLDER)
+			next = create_item(parent, test_case, item_name, GdUnitType.FOLDER)
 
 		parent = next
 
@@ -837,13 +838,13 @@ func _on_run_pressed(run_debug: bool) -> void:
 		var resource_path: String = item.get_meta(META_RESOURCE_PATH)
 		run_testsuite.emit([resource_path], run_debug)
 		return
-	var parent := item.get_parent()
-	var test_suite_resource_path: String = parent.get_meta(META_RESOURCE_PATH)
+
+	var test_suite_resource_path: String = item.get_meta(META_RESOURCE_PATH)
 	var test_case: String = item.get_meta(META_GDUNIT_NAME)
 	# handle parameterized test selection
 	var test_param_index: int = item.get_meta(META_TEST_PARAM_INDEX)
 	if test_param_index != -1:
-		test_case = parent.get_meta(META_GDUNIT_NAME)
+		test_case = item.get_parent().get_meta(META_GDUNIT_NAME)
 	run_testcase.emit(test_suite_resource_path, test_case, test_param_index, run_debug)
 
 

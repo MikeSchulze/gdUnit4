@@ -274,7 +274,6 @@ func cmd_editor_run_test(debug: bool) -> void:
 		var result := regex.search(active_base_editor().get_line(cursor_line))
 		if result:
 			var func_name := result.get_string(2).strip_edges()
-			prints("Run test:", func_name, "debug", debug)
 			if func_name.begins_with("test_"):
 				cmd_run_test_case(active_script().resource_path, func_name, -1, debug)
 				return
