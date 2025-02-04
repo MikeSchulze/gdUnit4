@@ -112,34 +112,9 @@ func load_test_suites() -> Array[Node]:
 	return test_suites
 
 
-func discover_test_suite(test_suite: Node) -> void:
-	for child in test_suite.get_children():
-		if child is not _TestCase:
-			continue
-		var test: _TestCase = child
-		var test_case := GdUnitTestCase.new()
-		test_case.suite_name = test_suite.get_name()
-		test_case.test_name = test.get_name()
-		test_case.fully_qualified_name = GdUnitTestDiscoverer.build_fully_qualified_name(test)
-		test_case.source_file = test.script_path()
-		test_case.line_number = test.line_number()
-		test_case.attribute_index = 0
-		test_case.require_godot_runtime = true
-		_client.send(RPCTestCase.new(test_case))
-
-
 func gdUnitInit() -> void:
 	#enable_manuall_polling()
 	send_message("Scanned %d test suites" % _test_suites_to_process.size())
-	var total_count := _collect_test_case_count(_test_suites_to_process)
-	_on_gdunit_event(GdUnitInit.new(_test_suites_to_process.size(), total_count))
-	if not GdUnitSettings.is_test_discover_enabled():
-		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverStart.new())
-		for test_suite in _test_suites_to_process:
-			discover_test_suite(test_suite)
-			## @Deprecated
-			send_test_suite(test_suite)
-		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverEnd.new(0, 0))
 	await get_tree().process_frame
 
 
@@ -177,10 +152,6 @@ func _collect_test_case_count(testSuites :Array[Node]) -> int:
 # RPC send functions
 func send_message(message :String) -> void:
 	_client.send(RPCMessage.of(message))
-
-
-func send_test_suite(test_suite :Node) -> void:
-	_client.send(RPCGdUnitTestSuite.of(test_suite))
 
 
 func _on_gdunit_event(event :GdUnitEvent) -> void:

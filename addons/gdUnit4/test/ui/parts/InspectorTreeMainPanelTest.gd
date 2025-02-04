@@ -9,11 +9,14 @@ const FAILED := InspectorTreeMainPanel.STATE.FAILED
 const ERROR := InspectorTreeMainPanel.STATE.ERROR
 const FLAKY := InspectorTreeMainPanel.STATE.FLAKY
 
-var TEST_SUITE_A :String
-var TEST_SUITE_B :String
-var TEST_SUITE_C :String
 
-var _inspector :InspectorTreeMainPanel
+const META_SCRIPT_PATH := "script_path"
+
+var suite_a_item: TreeItem
+var suite_b_item: TreeItem
+var suite_c_item: TreeItem
+
+var _inspector: InspectorTreeMainPanel
 
 
 func before_test() -> void:
@@ -21,12 +24,7 @@ func before_test() -> void:
 	_inspector = load("res://addons/gdUnit4/src/ui/parts/InspectorTreePanel.tscn").instantiate()
 	add_child(_inspector)
 	_inspector.init_tree()
-
-	# load a testsuite
-	for test_suite :Node in setup_test_env():
-		_inspector.do_add_test_suite(toDto(test_suite))
-	# verify no failures are exists
-	assert_array(_inspector._on_select_next_item_by_state(FAILED)).is_null()
+	setup_example_tree()
 
 
 func after_test() -> void:
@@ -35,23 +33,29 @@ func after_test() -> void:
 	_inspector.free()
 
 
-func toDto(test_suite :Node) -> GdUnitTestSuiteDto:
-	var dto := GdUnitTestSuiteDto.new()
-	return dto.deserialize(dto.serialize(test_suite)) as GdUnitTestSuiteDto
+func setup_example_tree() -> void:
+	# load a testsuite
+	setup_test_env()
+
+	# verify no failures are exists
+	assert_array(_inspector._on_select_next_item_by_state(FAILED)).is_null()
 
 
-func setup_test_env() -> Array:
-	var test_suite_a := GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteA.resource")
-	var test_suite_b := GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteB.resource")
-	var test_suite_c := GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteC.resource")
-	TEST_SUITE_A = test_suite_a.get_script().resource_path
-	TEST_SUITE_B = test_suite_b.get_script().resource_path
-	TEST_SUITE_C = test_suite_c.get_script().resource_path
-	return Array([auto_free(test_suite_a), auto_free(test_suite_b), auto_free(test_suite_c)])
+func discover_sink(test_case: GdUnitTestCase) -> void:
+	_inspector.on_test_case_discovered(test_case)
 
 
-func find_item(resource_path :String) -> TreeItem:
-	return _inspector.get_tree_item(resource_path, resource_path.get_file().replace(".resource", ""))
+func setup_test_env() -> void:
+	var suite_a := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteA.resource", true)
+	var suite_b := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteB.resource", true)
+	var suite_c := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteC.resource", true)
+	GdUnitTestDiscoverer.discover_tests(suite_a, discover_sink)
+	GdUnitTestDiscoverer.discover_tests(suite_b, discover_sink)
+	GdUnitTestDiscoverer.discover_tests(suite_c, discover_sink)
+
+	suite_a_item = _inspector.get_tree_item(suite_a.resource_path, "ExampleTestSuiteA")
+	suite_b_item = _inspector.get_tree_item(suite_b.resource_path, "ExampleTestSuiteB")
+	suite_c_item = _inspector.get_tree_item(suite_c.resource_path, "ExampleTestSuiteC")
 
 
 func find_test_case(resource_path :String, test_case :String) -> TreeItem:
@@ -230,120 +234,112 @@ func test_select_previous_flaky() -> void:
 
 
 func test_suite_text_shows_amount_of_cases() -> void:
-	var suite_a: TreeItem = find_item(TEST_SUITE_A)
-	assert_str(suite_a.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-
-	var suite_b: TreeItem = find_item(TEST_SUITE_B)
-	assert_str(suite_b.get_text(0)).is_equal("(0/3) ExampleTestSuiteB")
+	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_str(suite_b_item.get_text(0)).is_equal("(0/3) ExampleTestSuiteB")
 
 
 func test_suite_text_responds_to_test_case_events() -> void:
-	var suite_a: TreeItem = find_item(TEST_SUITE_A)
-
-	var success_aa := GdUnitEvent.new().test_after(TEST_SUITE_A, "ExampleTestSuiteA", "test_aa")
+	var suite_script_path: String = suite_a_item.get_meta(META_SCRIPT_PATH)
+	var success_aa := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_aa")
 	_inspector._on_gdunit_event(success_aa)
-	assert_str(suite_a.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
+	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var error_ad := GdUnitEvent.new().test_after(TEST_SUITE_A, "ExampleTestSuiteA", "test_ad", {GdUnitEvent.ERRORS: true})
+	var error_ad := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_ad", {GdUnitEvent.ERRORS: true})
 	_inspector._on_gdunit_event(error_ad)
-	assert_str(suite_a.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
+	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var failure_ab := GdUnitEvent.new().test_after(TEST_SUITE_A, "ExampleTestSuiteA", "test_ab", {GdUnitEvent.FAILED: true})
+	var failure_ab := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_ab", {GdUnitEvent.FAILED: true})
 	_inspector._on_gdunit_event(failure_ab)
-	assert_str(suite_a.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
+	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var skipped_ac := GdUnitEvent.new().test_after(TEST_SUITE_A, "ExampleTestSuiteA", "test_ac", {GdUnitEvent.SKIPPED: true})
+	var skipped_ac := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_ac", {GdUnitEvent.SKIPPED: true})
 	_inspector._on_gdunit_event(skipped_ac)
-	assert_str(suite_a.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
+	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var success_ae := GdUnitEvent.new().test_after(TEST_SUITE_A, "ExampleTestSuiteA", "test_ae")
+	var success_ae := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_ae")
 	_inspector._on_gdunit_event(success_ae)
-	assert_str(suite_a.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
+	assert_str(suite_a_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
 
 
 # test coverage for issue GD-117
 func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
-	# add a second test suite where has same name as TEST_SUITE_A
-	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/ui/parts/resources/bar/ExampleTestSuiteA.resource"))
-	var test_suite_aa_path :String = test_suite.get_script().resource_path
-	_inspector.do_add_test_suite(toDto(test_suite))
+	# add a second test suite where has same name as suite_a_item
+	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/bar/ExampleTestSuiteA.resource", true)
+	GdUnitTestDiscoverer.discover_tests(suite_script, discover_sink)
+	var suite_item := _inspector.get_tree_item(suite_script.resource_path, "ExampleTestSuiteA")
+	var suite_a_script_path: String = suite_a_item.get_meta(META_SCRIPT_PATH)
 
-	# verify the items exists checked the tree
-	assert_str(TEST_SUITE_A).is_not_equal(test_suite_aa_path)
-	var suite_a: TreeItem = find_item(TEST_SUITE_A)
-	var suite_aa: TreeItem = find_item(test_suite_aa_path)
-	assert_object(suite_a).is_not_same(suite_aa)
-	assert_str(suite_a.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(TEST_SUITE_A)
-	assert_str(suite_aa.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(test_suite_aa_path)
+	assert_object(suite_a_item).is_not_same(suite_item)
+	assert_str(suite_item.get_meta(META_SCRIPT_PATH)).is_equal(suite_script.resource_path)
 
 	# verify inital state
-	assert_str(suite_a.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_a, "test_aa")).is_equal(_inspector.STATE.INITIAL)
-	assert_str(suite_aa.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
+	assert_str(suite_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
 
-	# set test starting checked TEST_SUITE_A
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(TEST_SUITE_A, "ExampleTestSuiteA", "test_aa"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(TEST_SUITE_A, "ExampleTestSuiteA", "test_ab"))
-	assert_str(suite_a.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_a, "test_aa")).is_equal(_inspector.STATE.RUNNING)
-	assert_int(get_item_state(suite_a, "test_ab")).is_equal(_inspector.STATE.RUNNING)
+	# set test starting checked suite_a_item
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(suite_a_script_path, "ExampleTestSuiteA", "test_aa"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(suite_a_script_path, "ExampleTestSuiteA", "test_ab"))
+	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.RUNNING)
+	assert_int(get_item_state(suite_a_item, "test_ab")).is_equal(_inspector.STATE.RUNNING)
 	# test test_suite_aa_path is not affected
-	assert_str(suite_aa.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_aa, "test_aa")).is_equal(_inspector.STATE.INITIAL)
-	assert_int(get_item_state(suite_aa, "test_ab")).is_equal(_inspector.STATE.INITIAL)
+	assert_str(suite_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite_item, "test_ab")).is_equal(_inspector.STATE.INITIAL)
 
 	# finish the tests with success
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(TEST_SUITE_A, "ExampleTestSuiteA", "test_aa"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(TEST_SUITE_A, "ExampleTestSuiteA", "test_ab"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(suite_a_script_path, "ExampleTestSuiteA", "test_aa"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(suite_a_script_path, "ExampleTestSuiteA", "test_ab"))
 
-	# verify updated state checked TEST_SUITE_A
-	assert_str(suite_a.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_a, "test_aa")).is_equal(_inspector.STATE.SUCCESS)
-	assert_int(get_item_state(suite_a, "test_ab")).is_equal(_inspector.STATE.SUCCESS)
+	# verify updated state checked suite_a_item
+	assert_str(suite_a_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.SUCCESS)
+	assert_int(get_item_state(suite_a_item, "test_ab")).is_equal(_inspector.STATE.SUCCESS)
 	# test test_suite_aa_path is not affected
-	assert_str(suite_aa.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_aa, "test_aa")).is_equal(_inspector.STATE.INITIAL)
-	assert_int(get_item_state(suite_aa, "test_ab")).is_equal(_inspector.STATE.INITIAL)
+	assert_str(suite_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite_item, "test_ab")).is_equal(_inspector.STATE.INITIAL)
 
 
 # Test coverage for issue GD-278: GdUnit Inspector: Test marks as passed if both warning and error
 func test_update_icon_state() -> void:
-	var TEST_SUITE_PATH := "res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource"
-	var TEST_SUITE_NAME := "TestSuiteFailAndOrpahnsDetected"
-	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite(TEST_SUITE_PATH))
-	_inspector.do_add_test_suite(toDto(test_suite))
-
-	var suite: TreeItem = find_item(TEST_SUITE_PATH)
+	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource", true)
+	GdUnitTestDiscoverer.discover_tests(suite_script, discover_sink)
+	var suite_script_path := suite_script.resource_path
+	var suite_name := "TestSuiteFailAndOrpahnsDetected"
+	var suite_item := _inspector.get_tree_item(suite_script_path, suite_name)
 
 	# Verify the inital state
-	assert_str(suite.get_text(0)).is_equal("(0/2) "+ TEST_SUITE_NAME)
-	assert_str(suite.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(TEST_SUITE_PATH)
-	assert_int(get_item_state(suite)).is_equal(_inspector.STATE.INITIAL)
-	assert_int(get_item_state(suite, "test_case1")).is_equal(_inspector.STATE.INITIAL)
-	assert_int(get_item_state(suite, "test_case2")).is_equal(_inspector.STATE.INITIAL)
+	assert_str(suite_item.get_text(0)).is_equal("(0/2) " + suite_name)
+	assert_str(suite_item.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(suite_script_path)
+	assert_int(get_item_state(suite_item)).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite_item, "test_case1")).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite_item, "test_case2")).is_equal(_inspector.STATE.INITIAL)
 
 	# Set tests to running
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case1"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case2"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(suite_script_path, suite_name, "test_case1"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(suite_script_path, suite_name, "test_case2"))
 	# Verify all items on state running.
-	assert_str(suite.get_text(0)).is_equal("(0/2) " + TEST_SUITE_NAME)
-	assert_int(get_item_state(suite, "test_case1")).is_equal(_inspector.STATE.RUNNING)
-	assert_int(get_item_state(suite, "test_case2")).is_equal(_inspector.STATE.RUNNING)
+	assert_str(suite_item.get_text(0)).is_equal("(0/2) " + suite_name)
+	assert_int(get_item_state(suite_item, "test_case1")).is_equal(_inspector.STATE.RUNNING)
+	assert_int(get_item_state(suite_item, "test_case2")).is_equal(_inspector.STATE.RUNNING)
 
-	# Simulate test processed.
+	# Simulate test processed and fails on test_case2
 	# test_case1 succeeded
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case1"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(suite_script_path, suite_name, "test_case1"))
 	# test_case2 is failing by an orphan warning and an failure
 	_inspector._on_gdunit_event(GdUnitEvent.new()\
-		.test_after(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case2", {GdUnitEvent.FAILED: true}))
+		.test_after(suite_script_path, suite_name, "test_case2", {GdUnitEvent.FAILED: true}))
 	# We check whether a test event with a warning does not overwrite a higher object status, e.g. an error.
 	_inspector._on_gdunit_event(GdUnitEvent.new()\
-		.test_after(TEST_SUITE_PATH, TEST_SUITE_NAME, "test_case2", {GdUnitEvent.WARNINGS: true}))
+		.test_after(suite_script_path, suite_name, "test_case2", {GdUnitEvent.WARNINGS: true}))
 
 	# Verify the final state
-	assert_str(suite.get_text(0)).is_equal("(2/2) " + TEST_SUITE_NAME)
-	assert_int(get_item_state(suite, "test_case1")).is_equal(_inspector.STATE.SUCCESS)
-	assert_int(get_item_state(suite, "test_case2")).is_equal(_inspector.STATE.FAILED)
+	assert_str(suite_item.get_text(0)).is_equal("(2/2) " + suite_name)
+	assert_int(get_item_state(suite_item)).is_equal(_inspector.STATE.FAILED)
+	assert_int(get_item_state(suite_item, "test_case1")).is_equal(_inspector.STATE.SUCCESS)
+	assert_int(get_item_state(suite_item, "test_case2")).is_equal(_inspector.STATE.FAILED)
 
 
 func test_tree_view_mode_tree() -> void:
@@ -382,6 +378,50 @@ func test_discover_tests() -> void:
 		.is_true()
 
 
+func test_add_test_case() -> void:
+	_inspector.init_tree()
+	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_foo"))
+	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_bar"))
+	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_x/my_test_suite2.gd", 0, "test_foo"))
+	_inspector.add_test_case(GdUnitTestCase.from("res://my_test_suite3.gd", 0, "test_foo"))
+
+	# create expected tree
+	var tree: Tree = auto_free(Tree.new())
+	var expected_root := tree.create_item()
+	expected_root.set_text(0, "tree_root")
+	var dir_a := create_child(expected_root, "(0/3) dir_a")
+	var dir_b := create_child(dir_a, "(0/2) dir_b")
+	var my_test_suite := create_child(dir_b, "(0/2) my_test_suite")
+	create_child(my_test_suite, "test_foo")
+	create_child(my_test_suite, "test_bar")
+	var dir_x := create_child(dir_a, "(0/1) dir_x")
+	var my_test_suite2 := create_child(dir_x, "(0/1) my_test_suite2")
+	create_child(my_test_suite2, "test_foo")
+	var my_test_suite3 := create_child(expected_root,  "(0/1) my_test_suite3")
+	create_child(my_test_suite3,  "test_foo")
+
+	assert_tree_equals(_inspector._tree_root, expected_root)
+
+
+func test_add_parameterized_test_case() -> void:
+	_inspector.init_tree()
+	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_parameterized", 0, "1.2"))
+	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_parameterized", 1, "2.2"))
+
+	# create expected tree
+	var tree: Tree = auto_free(Tree.new())
+	var expected_root := tree.create_item()
+	expected_root.set_text(0, "tree_root")
+	var dir_a := create_child(expected_root, "(0/2) dir_a")
+	var dir_b := create_child(dir_a, "(0/2) dir_b")
+	var my_test_suite := create_child(dir_b, "(0/2) my_test_suite")
+	var test_parameterized := create_child(my_test_suite, "(0/2) test_parameterized")
+	create_child(test_parameterized, "test_parameterized:0 (1.2)")
+	create_child(test_parameterized, "test_parameterized:1 (2.2)")
+
+	assert_tree_equals(_inspector._tree_root, expected_root)
+
+
 ## test helpers to validate two trees
 # ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -390,7 +430,10 @@ func assert_tree_equals(tree_left :TreeItem, tree_right: TreeItem) -> bool:
 	var left_childs := tree_left.get_children()
 	var right_childs := tree_right.get_children()
 
-	assert_that(left_childs.size()).is_equal(right_childs.size())
+	assert_that(left_childs.size())\
+		.override_failure_message("Expecting same child count %d vs %d on item %s" % [left_childs.size(), right_childs.size(), tree_left.get_text(0)])\
+		.is_equal(right_childs.size())
+
 	if is_failure():
 		return false
 
@@ -419,8 +462,10 @@ func _print_execution_times(item: TreeItem) -> void:
 func _print_tree(tree_left :TreeItem, indent: String = "\t") -> void:
 	var left := tree_left.get_children()
 	for index in left.size():
-		var l := left[index]
-		prints(indent, get_item_name(l))
+		var l: TreeItem = left[index]
+		var state_value: int = l.get_meta(_inspector.META_GDUNIT_STATE)
+		var state :Variant = _inspector.STATE.keys()[state_value]
+		prints(indent, get_item_name(l), state)
 		_print_tree(l, indent+"\t")
 
 
@@ -432,9 +477,7 @@ func _print_tree_up(item :TreeItem, indent: String = "\t") -> void:
 
 
 func get_item_name(item: TreeItem) -> String:
-	if item.has_meta("gdUnit_name"):
-		return "'" + item.get_meta("gdUnit_name") + "'"
-	return "''"
+	return item.get_text(0)
 
 
 func get_item_execution_time(item: TreeItem) -> String:
@@ -473,4 +516,11 @@ func create_tree_item_form_dict(item: TreeItem, data: Dictionary) -> TreeItem:
 		if key.begins_with("metadata"):
 			var meta_key := key.replace("metadata/", "")
 			item.set_meta(meta_key, data[key])
+	return item
+
+
+func create_child( parent: TreeItem, _name: String) -> TreeItem:
+	var item := parent.create_child()
+	item.set_text(0, _name)
+	item.collapsed = true
 	return item

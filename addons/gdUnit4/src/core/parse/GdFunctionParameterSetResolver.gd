@@ -1,5 +1,4 @@
-## @deprecated see GdFunctionParameterSetResolver
-class_name GdUnitTestParameterSetResolver
+class_name GdFunctionParameterSetResolver
 extends RefCounted
 
 const CLASS_TEMPLATE = """
@@ -18,12 +17,17 @@ const EXCLUDE_PROPERTIES_TO_COPY = [
 
 
 var _fd: GdFunctionDescriptor
-var _test_case_names_cache := PackedStringArray()
 var _static_sets_by_index := {}
 var _is_static := true
 
 func _init(fd: GdFunctionDescriptor) -> void:
 	_fd = fd
+
+
+func resolve_test_cases(script: GDScript) -> Array[GdUnitTestCase]:
+	if not is_parameterized():
+		return [GdUnitTestCase.from(_fd.source_path(), _fd.line_number(), _fd.name())]
+	return extract_test_cases_by_reflection(script)
 
 
 func is_parameterized() -> bool:
@@ -50,7 +54,7 @@ func validate(input_value_set: Array) -> String:
 			var current_arg_count := arr_values.size()
 			if current_arg_count != expected_arg_count:
 				return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	The test case requires [%d] input parameters, but the set contains [%d]" % [parameter_set_index, expected_arg_count, current_arg_count]
-			var error := GdUnitTestParameterSetResolver.validate_parameter_types(input_arguments, arr_values, parameter_set_index)
+			var error := validate_parameter_types(input_arguments, arr_values, parameter_set_index)
 			if not error.is_empty():
 				return error
 		else:
@@ -81,32 +85,30 @@ static func validate_parameter_types(input_arguments: Array, input_values: Array
 	return ""
 
 
-func build_test_case_names(test_case: _TestCase) -> PackedStringArray:
-	if not is_parameterized():
-		return []
-	# if test names already resolved?
-	if not _test_case_names_cache.is_empty():
-		return _test_case_names_cache
+func extract_test_cases_by_reflection(script: GDScript) -> Array[GdUnitTestCase]:
+	var source: Node = script.new()
+	source.queue_free()
 
 	var fa := GdFunctionArgument.get_parameter_set(_fd.args())
 	var parameter_sets := fa.parameter_sets()
 	# if no parameter set detected we need to resolve it by using reflection
 	if parameter_sets.size() == 0:
-		_test_case_names_cache = _extract_test_names_by_reflection(test_case)
 		_is_static = false
+		return _extract_test_cases_by_reflection(source)
 	else:
-		var property_names := _extract_property_names(test_case.get_parent())
+		var test_cases: Array[GdUnitTestCase] = []
+		var property_names := _extract_property_names(source)
 		for parameter_set_index in parameter_sets.size():
 			var parameter_set := parameter_sets[parameter_set_index]
 			_static_sets_by_index[parameter_set_index] = _is_static_parameter_set(parameter_set, property_names)
 			@warning_ignore("return_value_discarded")
-			_test_case_names_cache.append(GdUnitTestParameterSetResolver._build_test_case_name(test_case, parameter_set_index, parameter_set))
+			test_cases.append(GdUnitTestCase.from(_fd.source_path(), _fd.line_number(), _fd.name(), parameter_set_index, parameter_set))
 			parameter_set_index += 1
-	return _test_case_names_cache
+		return test_cases
 
 
-func _extract_property_names(node :Node) -> PackedStringArray:
-	return node.get_property_list()\
+func _extract_property_names(source: Node) -> PackedStringArray:
+	return source.get_property_list()\
 		.map(func(property :Dictionary) -> String: return property["name"])\
 		.filter(func(property :String) -> bool: return !EXCLUDE_PROPERTIES_TO_COPY.has(property))
 
@@ -120,26 +122,20 @@ func _is_static_parameter_set(parameters :String, property_names :PackedStringAr
 	return true
 
 
-func _extract_test_names_by_reflection(test_case: _TestCase) -> PackedStringArray:
-	var parameter_sets := load_parameter_sets(test_case)
-	var test_case_names: PackedStringArray = []
+func _extract_test_cases_by_reflection(source: Node) -> Array[GdUnitTestCase]:
+	var parameter_sets := load_parameter_sets(source)
+	var test_cases: Array[GdUnitTestCase] = []
 	for index in parameter_sets.size():
+		var parameter_set := str(parameter_sets[index])
 		@warning_ignore("return_value_discarded")
-		test_case_names.append(GdUnitTestParameterSetResolver._build_test_case_name(test_case, index, str(parameter_sets[index])))
-	return test_case_names
-
-
-static func _build_test_case_name(test_case: _TestCase, index: int, test_parameter: String) -> String:
-	var parameters := test_parameter.replace("\t", "").replace('"', "'").replace("&'", "'")
-	parameters = parameters.trim_prefix("[").trim_suffix("]")
-	return "%s:%d (%s)" % [test_case.get_name(), index, parameters]
-	#return "%s.%s" % [test_case.get_name(), parameterizedTestName]
+		test_cases.append(GdUnitTestCase.from(_fd.source_path(), _fd.line_number(), _fd.name(), index, parameter_set))
+	return test_cases
 
 
 # extracts the arguments from the given test case, using kind of reflection solution
 # to restore the parameters from a string representation to real instance type
-func load_parameter_sets(test_case: _TestCase, do_validate := false) -> Array:
-	var source_script :Script = test_case.get_parent().get_script()
+func load_parameter_sets(source: Node) -> Array:
+	var source_script: GDScript = source.get_script()
 	var parameter_arg := GdFunctionArgument.get_parameter_set(_fd.args())
 	var source_code := CLASS_TEMPLATE \
 		.replace("${clazz_path}", source_script.resource_path) \
@@ -154,34 +150,11 @@ func load_parameter_sets(test_case: _TestCase, do_validate := false) -> Array:
 	if result != OK:
 		push_error("Extracting test parameters failed! Script loading error: %s" % result)
 		return []
-	var instance :Object = script.new()
-	GdUnitTestParameterSetResolver.copy_properties(test_case.get_parent(), instance)
-	(instance as Node).queue_free()
+	var instance: Node = script.new()
+	GdFunctionParameterSetResolver.copy_properties(source, instance)
+	instance.queue_free()
 	var parameter_sets: Array = instance.call("__extract_test_parameters")
-	if not do_validate:
-		return parameter_sets
-	# validate the parameter set
-	var error := validate(parameter_sets)
-	if not error.is_empty():
-		test_case.skip(true, error)
-		test_case._interupted = true
-	if parameter_sets.size() != _test_case_names_cache.size():
-		push_error("Internal Error: The resolved test_case names has invalid size!")
-		error = """
-		%s:
-			The resolved test_case names has invalid size!
-			%s
-		""".dedent().trim_prefix("\n") % [
-			GdAssertMessages._error("Internal Error"),
-			GdAssertMessages._error("Please report this issue as a bug!")]
-		GdUnitThreadManager.get_current_context()\
-			.get_execution_context()\
-			.add_report(GdUnitReport.new().create(GdUnitReport.INTERUPTED, test_case.line_number(), error))
-		test_case.skip(true, error)
-		test_case._interupted = true
-	@warning_ignore("return_value_discarded")
-	fixure_typed_parameters(parameter_sets, _fd.args())
-	return parameter_sets
+	return fixure_typed_parameters(parameter_sets, _fd.args())
 
 
 func fixure_typed_parameters(parameter_sets: Array, arg_descriptors: Array[GdFunctionArgument]) -> Array:
@@ -197,7 +170,6 @@ func fixure_typed_parameters(parameter_sets: Array, arg_descriptors: Array[GdFun
 				if arg_descriptor.is_typed_array():
 					parameter_set[parameter_index] = Array(as_array, arg_descriptor.type_hint(), "", null)
 	return parameter_sets
-
 
 
 static func copy_properties(source: Object, dest: Object) -> void:

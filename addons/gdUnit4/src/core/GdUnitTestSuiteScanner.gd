@@ -52,6 +52,68 @@ func scan(resource_path :String) -> Array[Node]:
 	return _scan_test_suites(base_dir, [])
 
 
+func scan_directory(resource_path: String) -> Array[Script]:
+	prescan_testsuite_classes()
+	# We use the global cache to fast scan for test suites.
+	if _excluded_resources.has(resource_path):
+		return []
+
+	var base_dir := DirAccess.open(resource_path)
+	if base_dir == null:
+			prints("Given directory or file does not exists:", resource_path)
+			return []
+	return _scan_test_suites_scripts(base_dir, [])
+
+
+func _scan_test_suites_scripts(dir: DirAccess, collected_suites: Array[Script]) -> Array[Script]:
+	if exclude_scan_directories.has(dir.get_current_dir()):
+		return collected_suites
+	prints("Scanning for test suites in:", dir.get_current_dir())
+	@warning_ignore("return_value_discarded")
+	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
+	var file_name := dir.get_next()
+	while file_name != "":
+		var resource_path := GdUnitTestSuiteScanner._file(dir, file_name)
+		if dir.current_is_dir():
+			var sub_dir := DirAccess.open(resource_path)
+			if sub_dir != null:
+				@warning_ignore("return_value_discarded")
+				_scan_test_suites_scripts(sub_dir, collected_suites)
+		else:
+			var time := LocalTime.now()
+			var test_suite := _load_is_test_suite(resource_path)
+			if test_suite:
+				collected_suites.append(test_suite)
+			if OS.is_stdout_verbose() and time.elapsed_since_ms() > 300:
+				push_warning("Scanning of test-suite '%s' took more than 300ms: " % resource_path, time.elapsed_since())
+		file_name = dir.get_next()
+	return collected_suites
+
+
+func _load_is_test_suite(resource_path: String) -> Script:
+	if not GdUnitTestSuiteScanner._is_script_format_supported(resource_path):
+		return null
+
+	# We use the global cache to fast scan for test suites.
+	if _excluded_resources.has(resource_path):
+		return null
+	# Check in the global class cache whether the GdUnitTestSuite class has been extended.
+	if _included_resources.has(resource_path):
+		return GdUnitTestSuiteScanner.load_with_disabled_warnings(resource_path)
+
+	# Otherwise we need to scan manual, we need to exclude classes where direct extends form Godot classes
+	# the resource loader can fail to load e.g. plugin classes with do preload other scripts
+	var extends_from := get_extends_classname(resource_path)
+	# If not extends is defined or extends from a Godot class
+	if extends_from.is_empty() or ClassDB.class_exists(extends_from):
+		return null
+	# Finally, we need to load the class to determine it is a test suite
+	var script := GdUnitTestSuiteScanner.load_with_disabled_warnings(resource_path)
+	if not GdObjects.is_test_suite(script):
+		return null
+	return script
+
+
 func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[Node]:
 	if exclude_scan_directories.has(dir.get_current_dir()):
 		return collected_suites

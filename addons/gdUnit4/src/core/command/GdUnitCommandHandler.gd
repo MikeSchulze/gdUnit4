@@ -167,8 +167,21 @@ func command(cmd_name: String) -> GdUnitCommand:
 	return _commands.get(cmd_name)
 
 
-func cmd_run_test_suites(test_suite_paths: PackedStringArray, debug: bool, rerun := false) -> void:
+func cmd_run_test_suites(scripts: Array[Script], debug: bool, rerun := false) -> void:
+	# Update test discovery
+	GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverStart.new())
+	for script in scripts:
+		if script is GDScript:
+			GdUnitTestDiscoverer.discover_tests(script as GDScript)
+		else:
+			# todo call gdunit4Net discovery
+			print_debug("CSharpScript discovery not implemented!")
+	GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverEnd.new(0, 0))
+
 	# create new runner runner_config for fresh run otherwise use saved one
+	var test_suite_paths := scripts.map(func foo(script: Script) -> String:
+		return script.resource_path
+	)
 	if not rerun:
 		var result := _runner_config.clear()\
 			.add_test_suites(test_suite_paths)\
@@ -180,6 +193,18 @@ func cmd_run_test_suites(test_suite_paths: PackedStringArray, debug: bool, rerun
 
 
 func cmd_run_test_case(test_suite_resource_path: String, test_case: String, test_param_index: int, debug: bool, rerun := false) -> void:
+	# Update test discovery
+	var script := load(test_suite_resource_path)
+
+	if script is GDScript:
+		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverStart.new())
+		GdUnitTestDiscoverer.discover_test(script as GDScript, [test_case])
+		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverEnd.new(0, 0))
+	else:
+		# todo call gdunit4Net discovery
+		print_debug("CSharpScript discovery not implemented!")
+		return
+
 	# create new runner config for fresh run otherwise use saved one
 	if not rerun:
 		var result := _runner_config.clear()\
@@ -249,12 +274,11 @@ func cmd_editor_run_test(debug: bool) -> void:
 		var result := regex.search(active_base_editor().get_line(cursor_line))
 		if result:
 			var func_name := result.get_string(2).strip_edges()
-			prints("Run test:", func_name, "debug", debug)
 			if func_name.begins_with("test_"):
 				cmd_run_test_case(active_script().resource_path, func_name, -1, debug)
 				return
 	# otherwise run the full test suite
-	var selected_test_suites := [active_script().resource_path]
+	var selected_test_suites: Array[Script] = [active_script()]
 	cmd_run_test_suites(selected_test_suites, debug)
 
 

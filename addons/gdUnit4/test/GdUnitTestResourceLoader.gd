@@ -71,9 +71,10 @@ static func load_gd_script(resource_path :String, debug_write := false) -> GDScr
 	script.source_code = GdUnitFileAccess.resource_as_string(resource_path)
 	var script_resource_path := resource_path.replace(resource_path.get_extension(), "gd")
 	if debug_write:
-		script_resource_path = GdUnitFileAccess.create_temp_dir("test") + "/%s" % script_resource_path.get_file()
-		print_debug("save resource:", script_resource_path)
+		script_resource_path = script_resource_path.replace("res://", GdUnitFileAccess.temp_dir() + "/")
+		#print_debug("save resource: ", script_resource_path)
 		DirAccess.remove_absolute(script_resource_path)
+		DirAccess.make_dir_recursive_absolute(script_resource_path.get_base_dir())
 		var err := ResourceSaver.save(script, script_resource_path, ResourceSaver.FLAG_REPLACE_SUBRESOURCE_PATHS)
 		if err != OK:
 			print_debug("Can't save debug resource", script_resource_path, "Error:", error_string(err))

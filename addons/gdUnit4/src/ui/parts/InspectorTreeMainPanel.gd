@@ -42,8 +42,7 @@ const CONTEXT_MENU_EXPAND_ALL = 4
 enum GdUnitType {
 	FOLDER,
 	TEST_SUITE,
-	TEST_CASE,
-	TEST_CASE_PARAMETERIZED
+	TEST_CASE
 }
 
 
@@ -60,6 +59,7 @@ enum STATE {
 }
 
 const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
+const META_GDUNIT_ID := "gdUnit_id"
 const META_GDUNIT_NAME := "gdUnit_name"
 const META_GDUNIT_STATE := "gdUnit_state"
 const META_GDUNIT_TYPE := "gdUnit_type"
@@ -80,6 +80,13 @@ var _tree_view_mode_flat := GdUnitSettings.get_inspector_tree_view_mode() == GdU
 
 func _build_cache_key(resource_path: String, test_name: String) -> Array:
 	return [resource_path, test_name]
+
+
+func find_tree_item(parent: TreeItem, item_name: String) -> TreeItem:
+	for child in parent.get_children():
+		if child.get_meta(META_GDUNIT_NAME) == item_name:
+			return child
+	return null
 
 
 func get_tree_item(resource_path: String, item_name: String) -> TreeItem:
@@ -192,7 +199,6 @@ func _ready() -> void:
 	_spinner.icon = GdUnitUiTools.get_spinner()
 	init_tree()
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
-	GdUnitSignals.instance().gdunit_add_test_suite.connect(do_add_test_suite)
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	GdUnitSignals.instance().gdunit_test_discovered.connect(on_test_case_discovered)
 	var command_handler := GdUnitCommandHandler.instance()
@@ -220,6 +226,8 @@ func init_tree() -> void:
 	_tree.set_column_expand_ratio(1, 0)
 	_tree.set_column_custom_minimum_width(1, 100)
 	_tree_root = _tree.create_item()
+	_tree_root.set_text(0, "tree_root")
+	_tree_root.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
 	# fix tree icon scaling
 	var scale_factor := EditorInterface.get_editor_scale() if Engine.is_editor_hint() else 1.0
 	_tree.set("theme_override_constants/icon_max_width", 16 * scale_factor)
@@ -346,10 +354,13 @@ func set_state_initial(item: TreeItem) -> void:
 
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
+	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
+	if item.has_meta(META_GDUNIT_TOTAL_TESTS) and item.get_meta(META_GDUNIT_TOTAL_TESTS) > 0:
+		item.set_text(0, "(0/%d) %s" % [item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)])
 	item.remove_meta(META_GDUNIT_REPORT)
 	item.remove_meta(META_GDUNIT_ORPHAN)
+
 	set_item_icon_by_state(item)
-	init_item_counter(item)
 
 
 func set_state_running(item: TreeItem) -> void:
@@ -483,8 +494,8 @@ func update_state(item: TreeItem, event: GdUnitEvent, add_reports := true) -> vo
 		for report in event.reports():
 			add_report(item, report)
 	set_state_orphan(item, event)
-	if is_folder(item):
-		update_state(item.get_parent(), event, false)
+
+	update_state(item.get_parent(), event, false)
 
 
 func add_report(item: TreeItem, report: GdUnitReport) -> void:
@@ -564,7 +575,6 @@ func update_test_suite(event: GdUnitEvent) -> void:
 		set_state_running(item)
 		return
 	if event.type() == GdUnitEvent.TESTSUITE_AFTER:
-		update_item_counter(item)
 		update_item_elapsed_time_counter(item, event.elapsed_time())
 
 	update_state(item, event)
@@ -582,71 +592,26 @@ func update_test_case(event: GdUnitEvent) -> void:
 	if event.type() == GdUnitEvent.TESTCASE_AFTER:
 		update_item_elapsed_time_counter(item, event.elapsed_time())
 		if event.is_success() or event.is_warning():
-			update_item_counter(item)
+			update_item_processed_counter(item)
 	update_state(item, event)
 
 
-func create_tree_item(test_suite: GdUnitTestSuiteDto) -> TreeItem:
-	var parent := _tree_root
-	var test_root_folder := GdUnitSettings.test_root_folder()
-	var resource_path := ProjectSettings.localize_path(test_suite.path())
-	var test_base_path := "res://"
-	var test_relative_path := resource_path
-	if resource_path.contains(test_root_folder):
-		var path_elements := resource_path.split(test_root_folder)
-		test_base_path = path_elements[0] + "/" + test_root_folder
-		test_relative_path = path_elements[1]
-	test_relative_path = test_relative_path.replace("res://", "")
 
-	if _tree_view_mode_flat:
-		var element := test_relative_path.get_base_dir().trim_prefix("/")
-		if element.is_empty():
-			return _tree.create_item(parent)
-		test_base_path += "/" + element
-		parent = create_or_find_item(parent, test_base_path, element)
-		return _tree.create_item(parent)
-
-	var elements := test_relative_path.split("/")
-	if elements[0] == "res://" or elements[0] == "":
-		elements.remove_at(0)
-	if elements.size() > 0:
-		elements.remove_at(elements.size() - 1)
-	for element in elements:
-		test_base_path += "/" + element
-		parent = create_or_find_item(parent, test_base_path, element)
-	return _tree.create_item(parent)
-
-
-func create_or_find_item(parent: TreeItem, resource_path: String, item_name: String) -> TreeItem:
-	var item := _find_by_resource_path(parent, resource_path)
-	if item != null:
-		return item
-	item = _tree.create_item(parent)
-	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
-	item.set_text(0, item_name)
-	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
-	item.set_meta(META_GDUNIT_NAME, item_name)
-	item.set_meta(META_GDUNIT_TYPE, GdUnitType.FOLDER)
-	item.set_meta(META_RESOURCE_PATH, resource_path)
-	item.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
-	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
-	set_item_icon_by_state(item)
-	item.collapsed = true
-	return item
-
-
-func create_item(parent: TreeItem, resource_path: String, item_name: String, type: GdUnitType) -> TreeItem:
+func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type: GdUnitType) -> TreeItem:
+	var script_path := ProjectSettings.localize_path(test.source_file)
 	var item := _tree.create_item(parent)
+	item.collapsed = true
 	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, item_name)
-	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
+	item.set_meta(META_GDUNIT_ID, test.guid)
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)
+	# for folder items we need to get the base path
+	var resource_path := test.source_file if type != GdUnitType.FOLDER else test.source_file.get_base_dir()
 	item.set_meta(META_RESOURCE_PATH, resource_path)
-	item.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
-	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
-	set_item_icon_by_state(item)
-	item.collapsed = true
+	item.set_meta(META_SCRIPT_PATH, script_path)
+	set_state_initial(item)
+	update_item_total_counter(item)
 	return item
 
 
@@ -659,54 +624,37 @@ func set_item_icon_by_state(item :TreeItem) -> void:
 		item.set_icon_modulate(0, Color.SKY_BLUE)
 
 
-func init_item_counter(item: TreeItem) -> void:
-	if item.has_meta(META_GDUNIT_TOTAL_TESTS) and item.get_meta(META_GDUNIT_TOTAL_TESTS) > 0:
-		item.set_text(0, "(0/%s) %s" % [
-			item.get_meta(META_GDUNIT_TOTAL_TESTS),
-			item.get_meta(META_GDUNIT_NAME)])
-	init_folder_counter(item.get_parent())
-
-
-func increment_item_counter(item: TreeItem, increment_count: int) -> void:
-	if item != _tree_root and item.get_meta(META_GDUNIT_TOTAL_TESTS) != 0:
-		var count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
-		item.set_meta(META_GDUNIT_SUCCESS_TESTS, count + increment_count)
-		item.set_text(0, "(%s/%s) %s" % [
-			item.get_meta(META_GDUNIT_SUCCESS_TESTS),
-			item.get_meta(META_GDUNIT_TOTAL_TESTS),
-			item.get_meta(META_GDUNIT_NAME)])
-		if is_folder(item):
-			increment_item_counter(item.get_parent(), increment_count)
-
-
-func init_folder_counter(item: TreeItem) -> void:
-	if item == _tree_root:
-		return
-	var type :GdUnitType = item.get_meta(META_GDUNIT_TYPE)
-	if type == GdUnitType.FOLDER:
-		var count :int = item.get_children().reduce(count_tests_total, 0)
-		item.set_meta(META_GDUNIT_TOTAL_TESTS, count)
-		item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
-		item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
-		init_item_counter(item)
-
-
 func count_tests_total(accum: int, item: TreeItem) -> int:
 	return accum + item.get_meta(META_GDUNIT_TOTAL_TESTS)
 
 
-func update_item_counter(item: TreeItem) -> void:
+func update_item_total_counter(item: TreeItem) -> void:
 	if item == _tree_root:
 		return
-	var type :GdUnitType = item.get_meta(META_GDUNIT_TYPE)
-	match type:
-		GdUnitType.TEST_CASE:
-			increment_item_counter(item.get_parent(), 1)
-		GdUnitType.TEST_CASE_PARAMETERIZED:
-			increment_item_counter(item.get_parent(), 1)
-		GdUnitType.TEST_SUITE:
-			var count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
-			increment_item_counter(item.get_parent(), count)
+
+	var child_count := get_total_child_count(item)
+	if child_count > 0:
+		item.set_meta(META_GDUNIT_TOTAL_TESTS, child_count)
+		item.set_text(0, "(0/%d) %s" % [child_count, item.get_meta(META_GDUNIT_NAME)])
+	update_item_total_counter(item.get_parent())
+
+
+func get_total_child_count(item: TreeItem) -> int:
+	var total_count := 0
+	for child in item.get_children():
+		total_count += child.get_meta(META_GDUNIT_TOTAL_TESTS) if child.has_meta(META_GDUNIT_TOTAL_TESTS) else 1
+	return total_count
+
+
+func update_item_processed_counter(item: TreeItem) -> void:
+	if item == _tree_root:
+		return
+
+	var success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS) + 1
+	item.set_meta(META_GDUNIT_SUCCESS_TESTS, success_count)
+	if item.has_meta(META_GDUNIT_TOTAL_TESTS):
+		item.set_text(0, "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)])
+	update_item_processed_counter(item.get_parent())
 
 
 func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:
@@ -777,7 +725,7 @@ func discover_test_suite_added(event: GdUnitEventTestDiscoverTestSuiteAdded) -> 
 		return
 	# Otherwise create it
 	prints("Discovered test suite added: '%s' on %s" % [event.suite_name(), extract_resource_path(event)])
-	do_add_test_suite(event.suite_dto())
+	#do_add_test_suite(event.suite_dto())
 
 
 func discover_test_added(event: GdUnitEventTestDiscoverTestAdded) -> void:
@@ -794,11 +742,9 @@ func discover_test_added(event: GdUnitEventTestDiscoverTestAdded) -> void:
 		return
 	prints("Discovered test added: '%s' on %s" % [event.test_name(), resource_path])
 	# update test case count
-	var test_count :int = item.get_meta(META_GDUNIT_TOTAL_TESTS)
-	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_count + 1)
-	init_item_counter(item)
+	#init_item_counter(item)
 	# add new discovered test
-	add_test(item, event.test_case_dto())
+	#add_test(item, event.test_case_dto())
 
 
 func discover_test_removed(event: GdUnitEventTestDiscoverTestRemoved) -> void:
@@ -810,85 +756,47 @@ func discover_test_removed(event: GdUnitEventTestDiscoverTestRemoved) -> void:
 		return
 	# update test case count on test suite
 	var parent := item.get_parent()
-	var test_count :int = parent.get_meta(META_GDUNIT_TOTAL_TESTS)
-	parent.set_meta(META_GDUNIT_TOTAL_TESTS, test_count - 1)
-	init_item_counter(parent)
+	update_item_total_counter(parent)
 	# finally remove the test
 	@warning_ignore("return_value_discarded")
 	remove_tree_item(resource_path, event.test_name())
 
 
-func do_add_test_suite(test_suite: GdUnitTestSuiteDto) -> void:
-	var item := create_tree_item(test_suite)
-	var suite_name := test_suite.name()
-	var resource_path := ProjectSettings.localize_path(test_suite.path())
-	item.set_text(0, suite_name)
-	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
-	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
-	item.set_meta(META_GDUNIT_NAME, suite_name)
-	item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_SUITE)
-	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_suite.test_case_count())
-	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
-	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
-	item.set_meta(META_RESOURCE_PATH, resource_path)
-	item.set_meta(META_LINE_NUMBER, 1)
-	item.collapsed = true
-	set_item_icon_by_state(item)
-	init_item_counter(item)
-	add_tree_item_to_cache(resource_path, suite_name, item)
-	for test_case in test_suite.test_cases():
-		add_test(item, test_case)
+func add_test_case(test_case: GdUnitTestCase) -> void:
+	var test_root_folder := GdUnitSettings.test_root_folder().replace("res://", "")
+	var fully_qualified_name := test_case.fully_qualified_name.trim_prefix(test_root_folder).trim_suffix(test_case.display_name)
+	var parts := fully_qualified_name.split(".", false)
+	parts.append(test_case.display_name)
+	# skip tree structure until test root folder
+	var index := parts.find(test_root_folder)
+	if index != -1:
+		parts = parts.slice(index+1)
 
+	var parent := _tree_root
+	for item_name in parts:
+		var next := find_tree_item(parent, item_name)
+		if next != null:
+			parent = next
+			continue
+		if item_name.begins_with(test_case.test_name):
+			var is_test_group := item_name == test_case.test_name
+			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
+			next.set_meta(META_LINE_NUMBER, test_case.line_number)
+			next.set_meta(META_TEST_PARAM_INDEX, -1 if is_test_group else test_case.attribute_index)
+			add_tree_item_to_cache(test_case.source_file, item_name, next)
+		elif item_name == test_case.suite_name:
+			next = create_item(parent, test_case, item_name, GdUnitType.TEST_SUITE)
+			next.set_meta(META_LINE_NUMBER, 0)
+			add_tree_item_to_cache(test_case.source_file, item_name, next)
+		else:
+			next = create_item(parent, test_case, item_name, GdUnitType.FOLDER)
 
-func add_test(parent: TreeItem, test_case: GdUnitTestCaseDto) -> void:
-	var item := _tree.create_item(parent)
-	var test_name := test_case.name()
-	var resource_path :String = parent.get_meta(META_RESOURCE_PATH)
-	var test_case_names := test_case.test_case_names()
-
-	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
-	item.set_text(0, test_name)
-	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
-	item.set_meta(META_GDUNIT_NAME, test_name)
-	item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_CASE)
-	item.set_meta(META_RESOURCE_PATH, resource_path)
-	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
-	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
-	item.set_meta(META_GDUNIT_TOTAL_TESTS, test_case_names.size())
-	item.set_meta(META_SCRIPT_PATH, test_case.script_path())
-	item.set_meta(META_LINE_NUMBER, test_case.line_number())
-	item.set_meta(META_TEST_PARAM_INDEX, -1)
-	set_item_icon_by_state(item)
-	init_item_counter(item)
-	add_tree_item_to_cache(resource_path, test_name, item)
-	if not test_case_names.is_empty():
-		add_test_cases(item, test_case_names)
-
-
-func add_test_cases(parent: TreeItem, test_case_names: PackedStringArray) -> void:
-	for index in test_case_names.size():
-		var item := _tree.create_item(parent)
-		var test_case_name := test_case_names[index]
-		var resource_path :String = parent.get_meta(META_RESOURCE_PATH)
-		item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
-		item.set_text(0, test_case_name)
-		item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
-		item.set_meta(META_GDUNIT_NAME, test_case_name)
-		item.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
-		item.set_meta(META_GDUNIT_TYPE, GdUnitType.TEST_CASE_PARAMETERIZED)
-		item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
-		item.set_meta(META_RESOURCE_PATH, resource_path)
-		item.set_meta(META_SCRIPT_PATH, parent.get_meta(META_SCRIPT_PATH))
-		item.set_meta(META_LINE_NUMBER, parent.get_meta(META_LINE_NUMBER))
-		item.set_meta(META_TEST_PARAM_INDEX, index)
-		set_item_icon_by_state(item)
-		add_tree_item_to_cache(resource_path, test_case_name, item)
+		parent = next
 
 
 @warning_ignore("unused_parameter")
 func on_test_case_discovered(test_case: GdUnitTestCase) -> void:
-	# not yet implemented
-	pass
+	add_test_case(test_case)
 
 
 func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:
@@ -931,13 +839,13 @@ func _on_run_pressed(run_debug: bool) -> void:
 		var resource_path: String = item.get_meta(META_RESOURCE_PATH)
 		run_testsuite.emit([resource_path], run_debug)
 		return
-	var parent := item.get_parent()
-	var test_suite_resource_path: String = parent.get_meta(META_RESOURCE_PATH)
+
+	var test_suite_resource_path: String = item.get_meta(META_RESOURCE_PATH)
 	var test_case: String = item.get_meta(META_GDUNIT_NAME)
 	# handle parameterized test selection
 	var test_param_index: int = item.get_meta(META_TEST_PARAM_INDEX)
 	if test_param_index != -1:
-		test_case = parent.get_meta(META_GDUNIT_NAME)
+		test_case = item.get_parent().get_meta(META_GDUNIT_NAME)
 	run_testcase.emit(test_suite_resource_path, test_case, test_param_index, run_debug)
 
 

@@ -149,8 +149,8 @@ func test_build_test_case_names_on_static_parameter_set() -> void:
 
 	assert_array(resolver.build_test_case_names(test_case))\
 		.contains_exactly([
-			"test_resolve_parameters_static:0 [1, 10]",
-			"test_resolve_parameters_static:1 [2, 20]"])
+			"test_resolve_parameters_static:0 (1, 10)",
+			"test_resolve_parameters_static:1 (2, 20)"])
 	assert_that(resolver.is_parameter_sets_static()).is_true()
 	assert_that(resolver.is_parameter_set_static(0)).is_true()
 	assert_that(resolver.is_parameter_set_static(1)).is_true()
@@ -162,9 +162,9 @@ func test_build_test_case_names_on_runtime_parameter_set() -> void:
 
 	assert_array(resolver.build_test_case_names(test_case))\
 		.contains_exactly([
-			"test_resolve_parameters_at_runtime:0 [1, _test_param1]",
-			"test_resolve_parameters_at_runtime:1 [2, _test_param2]",
-			"test_resolve_parameters_at_runtime:2 [3, 30]"])
+			"test_resolve_parameters_at_runtime:0 (1, _test_param1)",
+			"test_resolve_parameters_at_runtime:1 (2, _test_param2)",
+			"test_resolve_parameters_at_runtime:2 (3, 30)"])
 	assert_that(resolver.is_parameter_sets_static()).is_false()
 	assert_that(resolver.is_parameter_set_static(0)).is_false()
 	assert_that(resolver.is_parameter_set_static(1)).is_false()
