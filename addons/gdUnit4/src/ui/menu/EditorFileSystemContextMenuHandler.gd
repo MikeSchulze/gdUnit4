@@ -52,7 +52,6 @@ func collect_testsuites(_menu_item: GdUnitContextMenuItem, file_tree: Tree) -> A
 	var file_system := EditorInterface.get_resource_filesystem()
 	var selected_item := file_tree.get_selected()
 	var selected_test_suites: Array[Script] = []
-
 	var suite_scaner := GdUnitTestSuiteScanner.new()
 
 	while selected_item:

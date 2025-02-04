@@ -25,8 +25,14 @@ func _process(_delta: float) -> void:
 
 func _on_MainPanel_run_testsuite(test_suite_paths: PackedStringArray, debug: bool) -> void:
 	var scripts: Array[Script] = []
+	var suite_scaner := GdUnitTestSuiteScanner.new()
+
 	for suite_path in test_suite_paths:
-		scripts.append(load(suite_path))
+		var is_dir := DirAccess.dir_exists_absolute(suite_path)
+		if is_dir:
+			scripts.append_array(suite_scaner.scan_directory(suite_path))
+		else:
+			scripts.append(load(suite_path))
 	_command_handler.cmd_run_test_suites(scripts, debug)
 
 

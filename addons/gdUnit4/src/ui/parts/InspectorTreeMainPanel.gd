@@ -606,7 +606,9 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 	item.set_meta(META_GDUNIT_ID, test.guid)
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)
-	item.set_meta(META_RESOURCE_PATH, test.source_file)
+	# for folder items we need to get the base path
+	var resource_path := test.source_file if type != GdUnitType.FOLDER else test.source_file.get_base_dir()
+	item.set_meta(META_RESOURCE_PATH, resource_path)
 	item.set_meta(META_SCRIPT_PATH, script_path)
 	set_state_initial(item)
 	update_item_total_counter(item)
@@ -653,7 +655,6 @@ func update_item_processed_counter(item: TreeItem) -> void:
 	if item.has_meta(META_GDUNIT_TOTAL_TESTS):
 		item.set_text(0, "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)])
 	update_item_processed_counter(item.get_parent())
-
 
 
 func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:
