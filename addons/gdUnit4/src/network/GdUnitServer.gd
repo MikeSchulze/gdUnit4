@@ -40,10 +40,3 @@ func _receive_rpc_data(p_rpc: RPC) -> void:
 		var rpc_event: RPCGdUnitEvent = p_rpc
 		GdUnitSignals.instance().gdunit_event.emit(rpc_event.event())
 		return
-	if p_rpc is RPCTestCase:
-		var test_case: GdUnitTestCase = p_rpc.get_data()
-		GdUnitTestDiscoverSink.discover(test_case)
-	## @Deprecated
-	if p_rpc is RPCGdUnitTestSuite:
-		var rpc_test_suite: RPCGdUnitTestSuite = p_rpc
-		GdUnitSignals.instance().gdunit_add_test_suite.emit(rpc_test_suite.dto())
