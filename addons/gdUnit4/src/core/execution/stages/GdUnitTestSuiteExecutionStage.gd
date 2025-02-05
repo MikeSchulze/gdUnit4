@@ -99,7 +99,12 @@ func fire_test_suite_skipped(context :GdUnitExecutionContext) -> void:
 			var test_case_context := GdUnitExecutionContext.of_test_case(context, test_case)
 			fire_event(GdUnitEvent.new()\
 				.test_before(test_case_context.get_test_suite_path(), test_case_context.get_test_suite_name(), test_case_context.get_test_case_name()))
-			fire_test_skipped(test_case_context)
+
+			if test_case.is_parameterized():
+				for test_name in test_case.test_case_names():
+					fire_test_skipped(GdUnitExecutionContext.of_parameterized_test(test_case_context, test_name, []))
+			else:
+				fire_test_skipped(test_case_context)
 
 
 	var statistics := {
@@ -139,12 +144,6 @@ func fire_test_skipped(context: GdUnitExecutionContext) -> void:
 			context.get_test_case_name(),
 			statistics,
 			[report]))
-	# finally fire test statistics report
-	fire_event(GdUnitEvent.new()\
-		.test_statistics(context.get_test_suite_path(),
-			context.get_test_suite_name(),
-			context.get_test_case_name(),
-			statistics))
 
 
 func set_debug_mode(debug_mode :bool = false) -> void:

@@ -199,7 +199,6 @@ func fixure_typed_parameters(parameter_sets: Array, arg_descriptors: Array[GdFun
 	return parameter_sets
 
 
-
 static func copy_properties(source: Object, dest: Object) -> void:
 	for property in source.get_property_list():
 		var property_name :String = property["name"]
