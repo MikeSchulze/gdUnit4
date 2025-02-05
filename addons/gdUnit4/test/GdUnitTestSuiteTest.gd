@@ -17,7 +17,7 @@ func collect_report(event :GdUnitEvent) -> void:
 func before() -> void:
 	# register to receive test reports
 	GdUnitSignals.instance().gdunit_event.connect(collect_report)
-	_flaky_settings = ProjectSettings.get_setting(GdUnitSettings.TEST_FLAKY_CHECK)
+	_flaky_settings = ProjectSettings.get_setting(GdUnitSettings.TEST_FLAKY_CHECK, false)
 	ProjectSettings.set_setting(GdUnitSettings.TEST_FLAKY_CHECK, true)
 
 
