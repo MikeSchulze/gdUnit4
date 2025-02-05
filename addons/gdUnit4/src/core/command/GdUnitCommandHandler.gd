@@ -195,15 +195,14 @@ func cmd_run_test_suites(scripts: Array[Script], debug: bool, rerun := false) ->
 func cmd_run_test_case(test_suite_resource_path: String, test_case: String, test_param_index: int, debug: bool, rerun := false) -> void:
 	# Update test discovery
 	var script := load(test_suite_resource_path)
-
+	GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverStart.new())
 	if script is GDScript:
-		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverStart.new())
 		GdUnitTestDiscoverer.discover_test(script as GDScript, [test_case])
-		GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverEnd.new(0, 0))
 	else:
 		# todo call gdunit4Net discovery
 		print_debug("CSharpScript discovery not implemented!")
 		return
+	GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverEnd.new(0, 0))
 
 	# create new runner config for fresh run otherwise use saved one
 	if not rerun:
@@ -231,6 +230,7 @@ func cmd_run(debug: bool) -> void:
 	# don't start is already running
 	if _is_running:
 		return
+	GdUnitSignals.instance().gdunit_event.emit(GdUnitInit.new(0, 0))
 	# save current selected excution config
 	var server_port: int = Engine.get_meta("gdunit_server_port")
 	var result := _runner_config.set_server_port(server_port).save_config()
