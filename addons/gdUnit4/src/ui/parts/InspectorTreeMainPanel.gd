@@ -312,6 +312,7 @@ func reset_tree_state(parent: TreeItem) -> void:
 	if parent == _tree_root:
 		_tree_root.set_meta(META_GDUNIT_TEST_INDEX, 0)
 		_tree_root.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
+		test_counters_changed.emit(0, 0, STATE.INITIAL)
 
 	for item in parent.get_children():
 		set_state_initial(item)
