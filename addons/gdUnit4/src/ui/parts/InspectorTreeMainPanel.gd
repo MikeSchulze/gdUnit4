@@ -223,6 +223,7 @@ func init_tree() -> void:
 	_tree_root.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
 	_tree_root.set_meta(META_GDUNIT_TEST_INDEX, 0)
 	_tree_root.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
+	_tree_root.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
 	# fix tree icon scaling
 	var scale_factor := EditorInterface.get_editor_scale() if Engine.is_editor_hint() else 1.0
 	_tree.set("theme_override_constants/icon_max_width", 16 * scale_factor)
@@ -341,6 +342,7 @@ func do_collapse_all(collapse: bool, parent := _tree_root) -> void:
 
 
 func set_state_initial(item: TreeItem) -> void:
+	item.set_text(0, item.get_meta(META_GDUNIT_NAME))
 	item.set_custom_color(0, Color.LIGHT_GRAY)
 	item.set_tooltip_text(0, "")
 	item.set_text_overrun_behavior(0, TextServer.OVERRUN_TRIM_CHAR)
@@ -393,9 +395,11 @@ func set_state_flaky(item: TreeItem, event: GdUnitEvent) -> void:
 	var retry_count := event.statistic(GdUnitEvent.RETRY_COUNT)
 	item.set_meta(META_GDUNIT_STATE, STATE.FLAKY)
 	if retry_count > 1:
-		item.set_text(0, "%s (%s retries)" % [
-			item.get_meta(META_GDUNIT_NAME),
-			retry_count])
+		var item_text: String = item.get_meta(META_GDUNIT_NAME)
+		if item.has_meta(META_GDUNIT_TOTAL_TESTS):
+			var success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
+			item_text = "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)]
+		item.set_text(0, "%s (%s retries)" % [item_text, retry_count])
 	item.set_custom_color(0, Color.GREEN_YELLOW)
 	item.set_custom_color(1, Color.GREEN_YELLOW)
 	item.collapsed = false
@@ -429,9 +433,11 @@ func set_state_failed(item: TreeItem, event: GdUnitEvent) -> void:
 		return
 	var retry_count := event.statistic(GdUnitEvent.RETRY_COUNT)
 	if retry_count > 1:
-		item.set_text(0, "%s (%s retries)" % [
-			item.get_meta(META_GDUNIT_NAME),
-			retry_count])
+		var item_text: String = item.get_meta(META_GDUNIT_NAME)
+		if item.has_meta(META_GDUNIT_TOTAL_TESTS):
+			var success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
+			item_text = "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)]
+		item.set_text(0, "%s (%s retries)" % [item_text, retry_count])
 	item.set_meta(META_GDUNIT_STATE, STATE.FAILED)
 	item.set_custom_color(0, Color.LIGHT_BLUE)
 	item.set_custom_color(1, Color.LIGHT_BLUE)
@@ -474,7 +480,7 @@ func set_state_orphan(item: TreeItem, event: GdUnitEvent) -> void:
 
 func update_state(item: TreeItem, event: GdUnitEvent, add_reports := true) -> void:
 	# we do not show the root
-	if item == _tree_root:
+	if item == null:
 		return
 
 	if event.is_success() and event.is_flaky():
@@ -575,9 +581,9 @@ func update_test_suite(event: GdUnitEvent) -> void:
 		return
 	if event.type() == GdUnitEvent.TESTSUITE_AFTER:
 		update_item_elapsed_time_counter(item, event.elapsed_time())
+		update_state(item, event)
+		update_progress_counters(item, 23)
 
-	update_state(item, event)
-	update_state(item.get_parent(), event, false)
 
 
 func update_test_case(event: GdUnitEvent) -> void:
@@ -594,7 +600,7 @@ func update_test_case(event: GdUnitEvent) -> void:
 		if event.is_success() or event.is_warning():
 			update_item_processed_counter(item)
 		update_state(item, event)
-		update_progress_counters(item)
+		update_progress_counters(item, event.retry_count())
 
 
 
@@ -617,6 +623,8 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 
 
 func set_item_icon_by_state(item :TreeItem) -> void:
+	if item == _tree_root:
+		return
 	var resource_path :String = item.get_meta(META_RESOURCE_PATH)
 	var state :STATE = item.get_meta(META_GDUNIT_STATE)
 	var is_orphan := is_item_state_orphan(item)
@@ -662,13 +670,16 @@ func update_item_processed_counter(item: TreeItem) -> void:
 	update_item_processed_counter(item.get_parent())
 
 
-func update_progress_counters(item: TreeItem) -> void:
-		var index: int = _tree_root.get_meta(META_GDUNIT_TEST_INDEX) + 1
-		var total_test: int = _tree_root.get_meta(META_GDUNIT_TOTAL_TESTS)
+func update_progress_counters(item: TreeItem, rety_count: int) -> void:
+	var index: int = _tree_root.get_meta(META_GDUNIT_TEST_INDEX)
+	var total_test: int = _tree_root.get_meta(META_GDUNIT_TOTAL_TESTS)
+	# We only increment the index counter once for a test
+	if  rety_count <= 1:
+		index += 1
 
-		var state: STATE = item.get_meta(META_GDUNIT_STATE)
-		test_counters_changed.emit(index, total_test, state)
-		_tree_root.set_meta(META_GDUNIT_TEST_INDEX, index)
+	var state: STATE = item.get_meta(META_GDUNIT_STATE)
+	test_counters_changed.emit(index, total_test, state)
+	_tree_root.set_meta(META_GDUNIT_TEST_INDEX, index)
 
 
 func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:
@@ -941,8 +952,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			discover_test_removed(event as GdUnitEventTestDiscoverTestRemoved)
 
 		GdUnitEvent.INIT:
-			if not GdUnitSettings.is_test_discover_enabled():
-				init_tree()
+			reset_tree_state(_tree_root)
 
 		GdUnitEvent.STOP:
 			sort_tree_items(_tree_root)

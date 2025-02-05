@@ -127,6 +127,10 @@ func skipped_count() -> int:
 	return _statistics.get(SKIPPED_COUNT, 0)
 
 
+func retry_count() -> int:
+	return _statistics.get(RETRY_COUNT, 0)
+
+
 func resource_path() -> String:
 	return _resource_path
 

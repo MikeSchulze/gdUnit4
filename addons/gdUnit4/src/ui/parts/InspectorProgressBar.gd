@@ -22,6 +22,8 @@ func _on_test_counter_changed(index: int, total: int, state: GdUnitInspectorTree
 	# inital state
 	if index == 0:
 		style.bg_color = Color.DARK_GREEN
+	if is_flaky(state):
+		style.bg_color = Color.WEB_GREEN
 	if is_failed(state):
 		style.bg_color = Color.DARK_RED
 	update_text()
@@ -32,3 +34,7 @@ func is_failed(state: GdUnitInspectorTreeConstants.STATE) -> bool:
 		GdUnitInspectorTreeConstants.STATE.FAILED,
 		GdUnitInspectorTreeConstants.STATE.ERROR,
 		GdUnitInspectorTreeConstants.STATE.ABORDED]
+
+
+func is_flaky(state: GdUnitInspectorTreeConstants.STATE) -> bool:
+	return state == GdUnitInspectorTreeConstants.STATE.FLAKY

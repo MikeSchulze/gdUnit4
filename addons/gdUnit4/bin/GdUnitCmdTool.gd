@@ -371,8 +371,7 @@ class CLIRunner:
 			_console.prints_color("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)
 			_state = STOP
 			quit(RETURN_SUCCESS)
-		var total_test_count := _collect_test_case_count(_test_suites_to_process)
-		_on_gdunit_event(GdUnitInit.new(_test_suites_to_process.size(), total_test_count))
+		_on_gdunit_event(GdUnitInit.new())
 
 
 	func load_testsuites(config: GdUnitRunnerConfig) -> Array[Node]:
