@@ -504,9 +504,6 @@ class CLIRunner:
 					event.is_flaky(),
 					event.elapsed_time())
 				_report.add_testcase_reports(event.resource_path(), event.test_name(), event.reports())
-			GdUnitEvent.TESTCASE_STATISTICS:
-				_report.update_testsuite_counters(event.resource_path(), event.is_error(), event.failed_count(), event.orphan_nodes(),\
-					event.is_skipped(), event.is_flaky(), event.elapsed_time())
 		print_status(event)
 
 

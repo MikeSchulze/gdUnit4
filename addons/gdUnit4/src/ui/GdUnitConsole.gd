@@ -12,14 +12,7 @@ var _text_color: Color
 var _function_color: Color
 var _engine_type_color: Color
 var _statistics := {}
-var _summary := {
-	"total_count": 0,
-	"error_count": 0,
-	"failed_count": 0,
-	"skipped_count": 0,
-	"flaky_count": 0,
-	"orphan_nodes": 0
-}
+var _summary := {}
 
 
 @warning_ignore("return_value_discarded")
@@ -56,34 +49,52 @@ func init_colors() -> void:
 	_engine_type_color = settings.get_setting("text_editor/theme/highlighting/engine_type_color")
 
 
-func init_statistics(event: GdUnitEvent) -> void:
-	_statistics["total_count"] = event.total_count()
-	_statistics["error_count"] = 0
-	_statistics["failed_count"] = 0
-	_statistics["skipped_count"] = 0
-	_statistics["flaky_count"] = 0
-	_statistics["orphan_nodes"] = 0
-	_summary["total_count"] += event.total_count()
+func init_summary() -> void:
+	_summary["total_count"] = 0
+	_summary["error_count"] = 0
+	_summary["failed_count"] = 0
+	_summary["skipped_count"] = 0
+	_summary["flaky_count"] = 0
+	_summary["orphan_nodes"] = 0
 
 
-func reset_statistics() -> void:
-	for k: String in _statistics.keys():
-		_statistics[k] = 0
-	for k: String in _summary.keys():
-		_summary[k] = 0
+func init_statistics() -> void:
+	_statistics.clear()
 
 
 func update_statistics(event: GdUnitEvent) -> void:
-	_statistics["error_count"] += event.error_count()
-	_statistics["failed_count"] += event.failed_count()
-	_statistics["skipped_count"] += event.is_skipped() as int
-	_statistics["flaky_count"] += event.is_flaky() as int
-	_statistics["orphan_nodes"] += event.orphan_nodes()
-	_summary["error_count"] += event.error_count()
-	_summary["failed_count"] += event.failed_count()
-	_summary["skipped_count"] += event.is_skipped() as int
-	_summary["flaky_count"] += event.is_flaky() as int
-	_summary["orphan_nodes"] += event.orphan_nodes()
+	var test_statisitics: Dictionary = _statistics.get_or_add(event.test_name(), {
+		"error_count" : 0,
+		"failed_count" : 0,
+		"skipped_count" : event.is_skipped() as int,
+		"flaky_count" : 0,
+		"orphan_nodes" : 0
+	})
+	test_statisitics["error_count"] = event.is_error() as int
+	test_statisitics["failed_count"] = event.is_failed() as int
+	test_statisitics["flaky_count"] = event.is_flaky() as int
+	test_statisitics["orphan_nodes"] = event.orphan_nodes()
+
+
+func get_value(acc: int, value: Dictionary, key: String) -> int:
+	return acc + value[key]
+
+
+func update_summary() -> Dictionary:
+	var statistic :=  {
+		"total_count" : _statistics.size(),
+		"error_count" : 0,
+		"failed_count" : 0,
+		"skipped_count" : 0,
+		"flaky_count" : 0,
+		"orphan_nodes" : 0
+	}
+	_summary["total_count"] += _statistics.size()
+	for key: String in ["error_count", "failed_count", "skipped_count", "flaky_count", "orphan_nodes"]:
+		var value: int = _statistics.values().reduce(get_value.bind(key), 0 )
+		statistic[key] = value
+		_summary[key] += value
+	return statistic
 
 
 func print_message(message: String, color: Color=_text_color, indent:=0) -> void:
@@ -140,7 +151,7 @@ func setup_update_notification(control: Button) -> void:
 func _on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
-			reset_statistics()
+			init_summary()
 
 		GdUnitEvent.STOP:
 			print_message("Summary:", Color.DODGER_BLUE)
@@ -155,11 +166,12 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			print_message("[wave][/wave]")
 
 		GdUnitEvent.TESTSUITE_BEFORE:
-			init_statistics(event)
+			init_statistics()
 			print_message("Execute: ", Color.DODGER_BLUE)
 			println_message(event._suite_name, _engine_type_color)
 
 		GdUnitEvent.TESTSUITE_AFTER:
+			var statistics := update_summary()
 			if not event.reports().is_empty():
 				println_message("\t" + event._suite_name, _engine_type_color)
 				for report: GdUnitReport in event.reports():
@@ -171,12 +183,12 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			else:
 				print_message("[shake rate=5 level=10][b]FAILED[/b][/shake]", Color.FIREBRICK)
 			print_message(" | %d total | %d error | %d failed | %d flaky | %d skipped | %d orphans |" %\
-				[_statistics["total_count"],
-				_statistics["error_count"],
-				_statistics["failed_count"],
-				_statistics["flaky_count"],
-				_statistics["skipped_count"],
-				_statistics["orphan_nodes"]])
+				[statistics["total_count"],
+				statistics["error_count"],
+				statistics["failed_count"],
+				statistics["flaky_count"],
+				statistics["skipped_count"],
+				statistics["orphan_nodes"]])
 			println_message("%+12s" % LocalTime.elapsed(event.elapsed_time()))
 			println_message(" ")
 
@@ -188,6 +200,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			print_message(("%" + spaces + "s") % event._test_name, _function_color)
 
 		GdUnitEvent.TESTCASE_AFTER:
+			update_statistics(event)
 			var reports := event.reports()
 			if event.is_flaky() and event.is_success():
 				var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
@@ -208,9 +221,6 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 
 			for report: GdUnitReport in event.reports():
 				println_message("line %s: %s" % [line_number(report), report._message], _text_color, 2)
-
-		GdUnitEvent.TESTCASE_STATISTICS:
-			update_statistics(event)
 
 
 func _on_gdunit_client_connected(client_id: int) -> void:
