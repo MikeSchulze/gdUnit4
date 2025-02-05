@@ -230,7 +230,7 @@ func cmd_run(debug: bool) -> void:
 	# don't start is already running
 	if _is_running:
 		return
-	GdUnitSignals.instance().gdunit_event.emit(GdUnitInit.new(0, 0))
+	GdUnitSignals.instance().gdunit_event.emit(GdUnitInit.new())
 	# save current selected excution config
 	var server_port: int = Engine.get_meta("gdunit_server_port")
 	var result := _runner_config.set_server_port(server_port).save_config()
