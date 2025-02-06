@@ -333,7 +333,7 @@ static func match_test_directory(directory: String, test_directory: String) -> b
 
 
 func run_debug_mode() -> void:
-	EditorInterface.play_custom_scene("res://addons/gdUnit4/src/core/GdUnitRunner.tscn")
+	EditorInterface.play_custom_scene("res://addons/gdUnit4/src/core/runners/GdUnitTestRunner.tscn")
 	_is_running = true
 
 
@@ -344,7 +344,7 @@ func run_release_mode() -> void:
 	arguments.append("--no-window")
 	arguments.append("--path")
 	arguments.append(ProjectSettings.globalize_path("res://"))
-	arguments.append("res://addons/gdUnit4/src/core/GdUnitRunner.tscn")
+	arguments.append("res://addons/gdUnit4/src/core/runners/GdUnitTestRunner.tscn")
 	_current_runner_process_id = OS.create_process(OS.get_executable_path(), arguments, false);
 	_is_running = true
 
