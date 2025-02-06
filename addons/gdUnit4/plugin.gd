@@ -15,7 +15,7 @@ var _guard: RefCounted
 func _enter_tree() -> void:
 	if check_running_in_test_env():
 		@warning_ignore("return_value_discarded")
-		CmdConsole.new().prints_warning("It was recognized that GdUnit4 is running in a test environment, therefore the GdUnit4 plugin will not be executed!")
+		GdUnitCSIMessageWriter.new().prints_warning("It was recognized that GdUnit4 is running in a test environment, therefore the GdUnit4 plugin will not be executed!")
 		return
 
 	if Engine.get_version_info().hex < 0x40300:
