@@ -153,3 +153,35 @@ func test_erase_value() -> void:
 func test_scan_typed() -> void:
 	assert_that(GdArrayTools.scan_typed([1, 2, 3])).is_equal(TYPE_INT)
 	assert_that(GdArrayTools.scan_typed([1, 2.2, 3])).is_equal(GdObjects.TYPE_VARIANT)
+
+
+class ExampleItem:
+	var _name: String
+	var _type: int
+
+	func _init(name: String, type: int) -> void:
+		_name = name
+		_type = type
+
+
+func test_group_by() -> void:
+	var values := [
+		ExampleItem.new("foo1", 0),
+		ExampleItem.new("foo2", 0),
+		ExampleItem.new("bar1", 1),
+		ExampleItem.new("bar2", 1),
+		ExampleItem.new("foo3", 0),
+		ExampleItem.new("foo3", 1),
+		ExampleItem.new("xxx", 2),
+	]
+
+	# We group by type
+	var result := GdArrayTools.group_by(values, func(item: ExampleItem) -> int:
+		return item._type
+	)
+
+	# Verify grouping result
+	assert_dict(result).has_size(3)\
+		.contains_key_value(0, [values[0], values[1], values[4]])\
+		.contains_key_value(1, [values[2], values[3], values[5]])\
+		.contains_key_value(2, [values[6]])\

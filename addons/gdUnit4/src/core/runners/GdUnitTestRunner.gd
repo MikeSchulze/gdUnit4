@@ -38,7 +38,7 @@ func _ready() -> void:
 ## [br]
 ## [param message] The error message describing the failure.
 func _on_connection_failed(message: String) -> void:
-	prints("_on_connection_failed", message, _test_suites_to_process)
+	prints("_on_connection_failed", message)
 	_state = STOP
 
 
@@ -48,10 +48,6 @@ func _on_connection_failed(message: String) -> void:
 func init_runner() -> void:
 	# wait until client is connected to the GdUnitServer
 	if _client.is_client_connected():
-		var time := LocalTime.now()
-		prints("Scan for test suites.")
-		_test_suites_to_process = load_test_suites(_runner_config)
-		prints("Scanning of %d test suites took" % _test_suites_to_process.size(), time.elapsed_since())
 		gdUnitInit()
 		_state = RUN
 
@@ -60,7 +56,7 @@ func init_runner() -> void:
 ## Sends initial message about number of test suites.
 func gdUnitInit() -> void:
 	#enable_manuall_polling()
-	send_message("Scanned %d test suites" % _test_suites_to_process.size())
+	_test_cases = _runner_config.test_cases()
 	await get_tree().process_frame
 
 

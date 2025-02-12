@@ -37,19 +37,15 @@ func prescan_testsuite_classes() -> void:
 			_excluded_resources.append(resource_path)
 
 
-func scan(resource_path :String) -> Array[Node]:
+func scan(resource_path: String) -> Array[Script]:
 	prescan_testsuite_classes()
 	# if single testsuite requested
 	if FileAccess.file_exists(resource_path):
-		var test_suite := _parse_is_test_suite(resource_path)
+		var test_suite := _load_is_test_suite(resource_path)
 		if test_suite != null:
 			return [test_suite]
-		return [] as Array[Node]
-	var base_dir := DirAccess.open(resource_path)
-	if base_dir == null:
-			prints("Given directory or file does not exists:", resource_path)
-			return []
-	return _scan_test_suites(base_dir, [])
+		return []
+	return scan_directory(resource_path)
 
 
 func scan_directory(resource_path: String) -> Array[Script]:
@@ -276,6 +272,7 @@ func _handle_test_case_arguments(test_suite: GdUnitTestSuite, script: GDScript, 
 
 
 func _parse_and_add_test_cases(test_suite: GdUnitTestSuite, script: GDScript, test_case_names: PackedStringArray) -> void:
+	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
 	var test_cases_to_find := Array(test_case_names)
 	var functions_to_scan := test_case_names.duplicate()
 	@warning_ignore("return_value_discarded")

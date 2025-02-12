@@ -8,28 +8,13 @@ const __source = 'res://addons/gdUnit4/src/core/GdUnitRunnerConfig.gd'
 
 func test_initial_config() -> void:
 	var config := GdUnitRunnerConfig.new()
-	assert_dict(config.to_execute()).is_empty()
-	assert_dict(config.skipped()).is_empty()
+	assert_array(config.test_cases()).is_empty()
 
 
 func test_clear_on_initial_config() -> void:
 	var config := GdUnitRunnerConfig.new()
 	config.clear()
-	assert_dict(config.to_execute()).is_empty()
-	assert_dict(config.skipped()).is_empty()
-
-
-func test_clear_on_filled_config() -> void:
-	var config := GdUnitRunnerConfig.new()
-	config.add_test_suite("res://foo")
-	config.skip_test_suite("res://bar")
-	assert_dict(config.to_execute()).is_not_empty()
-	assert_dict(config.skipped()).is_not_empty()
-
-	# clear it
-	config.clear()
-	assert_dict(config.to_execute()).is_empty()
-	assert_dict(config.skipped()).is_empty()
+	assert_array(config.test_cases()).is_empty()
 
 
 func test_set_server_port() -> void:
@@ -41,133 +26,6 @@ func test_set_server_port() -> void:
 	assert_int(config.server_port()).is_equal(1000)
 
 
-func test_self_test() -> void:
-	var config := GdUnitRunnerConfig.new()
-	# initial is empty
-	assert_dict(config.to_execute()).is_empty()
-
-	# configure self test
-	var to_execute := config.self_test().to_execute()
-	assert_dict(to_execute).contains_key_value("res://addons/gdUnit4/test/", PackedStringArray())
-
-
-func test_add_test_suite() -> void:
-	var config := GdUnitRunnerConfig.new()
-	# skip should have no affect
-	config.skip_test_suite("res://bar")
-
-	config.add_test_suite("res://foo")
-	assert_dict(config.to_execute()).contains_key_value("res://foo", PackedStringArray())
-	# add two more
-	config.add_test_suite("res://foo2")
-	config.add_test_suite("res://bar/foo")
-	assert_dict(config.to_execute())\
-		.contains_key_value("res://foo", PackedStringArray())\
-		.contains_key_value("res://foo2", PackedStringArray())\
-		.contains_key_value("res://bar/foo", PackedStringArray())
-
-
-func test_add_test_suites() -> void:
-	var config := GdUnitRunnerConfig.new()
-	# skip should have no affect
-	config.skip_test_suite("res://bar")
-
-	config.add_test_suites(PackedStringArray(["res://foo2", "res://bar/foo", "res://foo1"]))
-
-	assert_dict(config.to_execute())\
-		.contains_key_value("res://foo1", PackedStringArray())\
-		.contains_key_value("res://foo2", PackedStringArray())\
-		.contains_key_value("res://bar/foo", PackedStringArray())
-
-
-func test_add_test_case() -> void:
-	var config := GdUnitRunnerConfig.new()
-	# skip should have no affect
-	config.skip_test_suite("res://bar")
-
-	config.add_test_case("res://foo1", "testcaseA")
-	assert_dict(config.to_execute()).contains_key_value("res://foo1", PackedStringArray(["testcaseA"]))
-	# add two more
-	config.add_test_case("res://foo1", "testcaseB")
-	config.add_test_case("res://foo2", "testcaseX")
-	assert_dict(config.to_execute())\
-		.contains_key_value("res://foo1", PackedStringArray(["testcaseA", "testcaseB"]))\
-		.contains_key_value("res://foo2", PackedStringArray(["testcaseX"]))
-
-
-func test_add_test_suites_and_test_cases_combi() -> void:
-	var config := GdUnitRunnerConfig.new()
-
-	config.add_test_suite("res://foo1")
-	config.add_test_suite("res://foo2")
-	config.add_test_suite("res://bar/foo")
-	config.add_test_case("res://foo1", "testcaseA")
-	config.add_test_case("res://foo1", "testcaseB")
-	config.add_test_suites(PackedStringArray(["res://foo3", "res://bar/foo3", "res://foo4"]))
-
-	assert_dict(config.to_execute())\
-		.has_size(6)\
-		.contains_key_value("res://foo1", PackedStringArray(["testcaseA", "testcaseB"]))\
-		.contains_key_value("res://foo2", PackedStringArray())\
-		.contains_key_value("res://foo3", PackedStringArray())\
-		.contains_key_value("res://foo4", PackedStringArray())\
-		.contains_key_value("res://bar/foo3", PackedStringArray())\
-		.contains_key_value("res://bar/foo", PackedStringArray())
-
-
-func test_skip_test_suite() -> void:
-	var config := GdUnitRunnerConfig.new()
-
-	config.skip_test_suite("res://foo1")
-	assert_dict(config.skipped()).contains_key_value("res://foo1", PackedStringArray())
-	# add two more
-	config.skip_test_suite("res://foo2")
-	config.skip_test_suite("res://bar/foo1")
-	config.skip_test_suite("res://bar/foo2/")
-	config.skip_test_suite("bar/foo3/")
-	assert_dict(config.skipped())\
-		.contains_key_value("res://foo1", PackedStringArray())\
-		.contains_key_value("res://foo2", PackedStringArray())\
-		.contains_key_value("res://bar/foo1", PackedStringArray())\
-		.contains_key_value("res://bar/foo2/", PackedStringArray())\
-		.contains_key_value("bar/foo3/", PackedStringArray())
-
-
-func test_skip_test_suite_and_test_case() -> void:
-	var possible_paths :PackedStringArray = [
-		"/foo/MyTest.gd",
-		"res://foo/MyTest.gd",
-		"/foo/MyTest.gd:test_x",
-		"res://foo/MyTest.gd:test_y",
-		"MyTest",
-		"MyTest:test",
-		"MyTestX",
-	]
-	var config := GdUnitRunnerConfig.new()
-	for path in possible_paths:
-		config.skip_test_suite(path)
-	assert_dict(config.skipped())\
-		.has_size(3)\
-		.contains_key_value("res://foo/MyTest.gd", PackedStringArray(["test_x", "test_y"]))\
-		.contains_key_value("MyTest", PackedStringArray(["test"]))\
-		.contains_key_value("MyTestX", PackedStringArray())
-
-
-func test_skip_test_case() -> void:
-	var config := GdUnitRunnerConfig.new()
-
-	config._skip_test_case("res://foo1.gd", "testcaseA")
-	assert_dict(config.skipped()).contains_key_value("res://foo1.gd", PackedStringArray(["testcaseA"]))
-	# add two more
-	config.skip_test_suite("res://foo2/skippedTestsuite.gd")
-	config._skip_test_case("res://foo1.gd", "testcaseB")
-	config._skip_test_case("res://foo2.gd", "testcaseX")
-	assert_dict(config.skipped())\
-		.contains_key_value("res://foo2/skippedTestsuite.gd", PackedStringArray())\
-		.contains_key_value("res://foo1.gd", PackedStringArray(["testcaseA", "testcaseB"]))\
-		.contains_key_value("res://foo2.gd", PackedStringArray(["testcaseX"]))
-
-
 func test_load_fail() -> void:
 	var config := GdUnitRunnerConfig.new()
 
@@ -176,28 +34,17 @@ func test_load_fail() -> void:
 		.contains_message("Can't find test runner configuration 'invalid_path'! Please select a test to run.")
 
 
-func test_load_example_config() -> void:
-	var config := GdUnitRunnerConfig.new()
-	config.load_config("res://addons/gdUnit4/test/core/resources/GdUnitRunner_with_skipped_testsuites.cfg")
-
-	assert_dict(config.to_execute())\
-		.has_size(1)\
-		.contains_key_value("res://addons/gdUnit4/test/asserts/", PackedStringArray())
-	assert_dict(config.skipped())\
-		.has_size(4)\
-		.contains_key_value("res://addons/gdUnit4/test/asserts/GdUnitFailureAssertImplTest.gd", PackedStringArray())\
-		.contains_key_value("res://addons/gdUnit4/test/asserts/GdUnitAssertImplTest.gd", PackedStringArray())\
-		.contains_key_value("res://addons/gdUnit4/test/asserts/GdUnitIntAssertImplTest.gd", PackedStringArray())\
-		.contains_key_value("res://addons/gdUnit4/test/asserts/GdUnitVectorAssertImplTest.gd", PackedStringArray())
-
-
 func test_save_load() -> void:
 	var config := GdUnitRunnerConfig.new()
 	# add some dummy conf
 	config.set_server_port(1000)
-	config.skip_test_suite("res://bar")
-	config.add_test_suite("res://foo2")
-	config.add_test_case("res://foo1", "testcaseA")
+	# create a set of test cases
+	var test_to_save: Array[GdUnitTestCase] = [
+		GdUnitTestCase.from("res://test/example_suite.gd", 10, "test_a"),
+		GdUnitTestCase.from("res://test/example_suite.gd", 14, "test_b"),
+		GdUnitTestCase.from("res://test/example_suite.gd", 16, "test_c")
+	]
+	config.add_test_cases(test_to_save)
 
 	var config_file := create_temp_dir("test_save_load") + "/testconf.cfg"
 
@@ -207,4 +54,23 @@ func test_save_load() -> void:
 	var config2 := GdUnitRunnerConfig.new()
 	assert_result(config2.load_config(config_file)).is_success()
 	# verify the config has original enties
-	assert_object(config2).is_equal(config).is_not_same(config)
+	assert_str(config2.version()).is_equal(GdUnitRunnerConfig.CONFIG_VERSION)
+	assert_array(config2.test_cases()).contains_exactly_in_any_order(test_to_save)
+
+
+func test_add_test_cases() -> void:
+
+	var config := GdUnitRunnerConfig.new()
+	# add some dummy conf
+	config.set_server_port(1000)
+	# create a set of test cases
+	config.add_test_cases([
+		GdUnitTestCase.from("res://test/example_suite.gd", 10, "test_a"),
+		GdUnitTestCase.from("res://test/example_suite.gd", 14, "test_b"),
+		GdUnitTestCase.from("res://test/example_suite.gd", 16, "test_c")
+	])
+
+	var config_file := create_temp_dir("test_save_load") + "/testconf.cfg"
+
+	assert_result(config.save_config(config_file)).is_success()
+	assert_file(config_file).exists()

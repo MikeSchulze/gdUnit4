@@ -1,5 +1,5 @@
 #warning-ignore-all:return_value_discarded
-class_name GdUnitTestCLRunner
+class_name GdUnitTestCIRunner
 extends "res://addons/gdUnit4/src/core/runners/GdUnitBaseTestRunner.gd"
 ## Command line test runner implementation.[br]
 ## [br]
@@ -30,7 +30,9 @@ var _report_dir: String
 var _report_max: int = DEFAULT_REPORT_COUNT
 var _headless_mode_ignore := false
 var _runner_config_file := ""
-var _debug_cmd_args: = PackedStringArray()
+var _debug_cmd_args := PackedStringArray()
+var _included_tests := PackedStringArray()
+var _excluded_tests := PackedStringArray()
 
 ## Command line options configuration
 var _cmd_options := CmdOptions.new([
@@ -210,7 +212,7 @@ func run_self_test() -> void:
 		Color.DEEP_SKY_BLUE
 	)
 	disable_fail_fast()
-	_runner_config.self_test()
+
 
 
 ## Shows GdUnit and Godot version information.
@@ -342,10 +344,10 @@ func init_gd_unit() -> void:
 		CmdCommandHandler.new(_cmd_options)
 			.register_cb("-help", show_help)
 			.register_cb("--help-advanced", show_advanced_help)
-			.register_cb("-a", _runner_config.add_test_suite)
-			.register_cbv("-a", _runner_config.add_test_suites)
-			.register_cb("-i", _runner_config.skip_test_suite)
-			.register_cbv("-i", _runner_config.skip_test_suites)
+			.register_cb("-a", add_test_suite)
+			.register_cbv("-a", add_test_suites)
+			.register_cb("-i", skip_test_suite)
+			.register_cbv("-i", skip_test_suites)
 			.register_cb("-rd", set_report_dir)
 			.register_cb("-rc", set_report_count)
 			.register_cb("--selftest", run_self_test)
@@ -387,13 +389,70 @@ func init_gd_unit() -> void:
 			quit(RETURN_ERROR_HEADLESS_NOT_SUPPORTED)
 			return
 
-	_test_suites_to_process = load_test_suites(_runner_config)
-	if _test_suites_to_process.is_empty():
-		console_info("No test suites found, abort test run!", Color.YELLOW)
+	_test_cases = _runner_config.test_cases()
+	_test_cases.append_array(discover_tests())
+	if _test_cases.is_empty():
+		console_info("No test cases found, abort test run!", Color.YELLOW)
 		console_info("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)
 		quit(RETURN_SUCCESS)
 	_on_gdunit_event(GdUnitInit.new())
 	_state = RUN
+
+
+
+func discover_tests() -> Array[GdUnitTestCase]:
+	var scanner := GdUnitTestSuiteScanner.new()
+	for path in _included_tests:
+		var scripts := scanner.scan(path)
+		for script in scripts:
+			if script is GDScript:
+				var gd_script: GDScript = script
+				GdUnitTestDiscoverer.discover_tests(gd_script, func(test: GdUnitTestCase) -> void:
+					if not is_skipped(test):
+						#_console.println_message("discoverd %s" % test.display_name)
+						_test_cases.append(test)
+				)
+			else:
+				## TODO implement c# test discovery here
+				pass
+
+	return _test_cases
+
+
+func add_test_suite(path: String) -> void:
+	_included_tests.append(path)
+
+
+func add_test_suites(paths: PackedStringArray) -> void:
+	_included_tests.append_array(paths)
+
+
+func skip_test_suite(path: String) -> void:
+	_excluded_tests.append(path)
+
+
+func skip_test_suites(paths: PackedStringArray) -> void:
+	_excluded_tests.append_array(paths)
+
+
+func is_skipped(test: GdUnitTestCase) -> bool:
+	for skipped_info in _excluded_tests:
+
+		# is suite skipped by full path or suite name
+		if skipped_info == test.suite_name or test.source_file.contains(skipped_info):
+			return true
+
+		# check for skipped single test
+		if not skipped_info.contains(":"):
+			continue
+		var parts: PackedStringArray = skipped_info.rsplit(":")
+		var skipped_suite :=  parts[0] + ":" + parts[1] if parts[0] == "res" else parts[0]
+		var skipped_test := parts[2] if parts[0] == "res" else parts[1]
+		# is suite skipped by full path or suite name
+		if (skipped_suite == test.suite_name or test.source_file.contains(skipped_suite)) and skipped_test == test.test_name:
+			return true
+
+	return false
 
 
 func _on_gdunit_event(event: GdUnitEvent) -> void:
