@@ -43,4 +43,4 @@ static func _generate_guid() -> String:
 
 
 func _to_string() -> String:
-	return "guid: %s" % _guid
+	return _guid

@@ -2,7 +2,7 @@ class_name GdUnitTestDiscoverer
 extends RefCounted
 
 
-static func run() -> void:
+static func run() -> Array[GdUnitTestCase]:
 	prints("Running test discovery ..")
 	await (Engine.get_main_loop() as SceneTree).process_frame
 	GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverStart.new())
@@ -10,10 +10,11 @@ static func run() -> void:
 	# We run the test discovery in an extra thread so that the main thread is not blocked
 	var t:= Thread.new()
 	@warning_ignore("return_value_discarded")
-	t.start(func () -> void:
+	t.start(func () -> Array[GdUnitTestCase]:
 		var test_suite_directories :PackedStringArray = GdUnitCommandHandler.scan_all_test_directories(GdUnitSettings.test_root_folder())
 		var scanner := GdUnitTestSuiteScanner.new()
 
+		var collected_tests: Array[GdUnitTestCase] = []
 		var collected_test_suites: Array[GDScript] = []
 		# collect test suites
 		for test_suite_dir in test_suite_directories:
@@ -22,16 +23,21 @@ static func run() -> void:
 		# Do sync the main thread before emit the discovered test suites to the inspector
 		await (Engine.get_main_loop() as SceneTree).process_frame
 		for test_suites_script in collected_test_suites:
-			discover_tests(test_suites_script)
+			discover_tests(test_suites_script, func(test_case: GdUnitTestCase) -> void:
+				collected_tests.append(test_case)
+				GdUnitTestDiscoverSink.discover(test_case)
+			)
 
 		prints("%d test suites discovered." % collected_test_suites.size())
+		return collected_tests
 	)
 	# wait unblocked to the tread is finished
 	while t.is_alive():
 		await (Engine.get_main_loop() as SceneTree).process_frame
 	# needs finally to wait for finish
-	await t.wait_to_finish()
+	var test_to_execute: Array[GdUnitTestCase] = await t.wait_to_finish()
 	GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverEnd.new(0, 0))
+	return test_to_execute
 
 
 static func filter_tests(method: Dictionary) -> bool:

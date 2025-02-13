@@ -17,18 +17,18 @@ const exclude_scan_directories = [
 
 
 var _script_parser := GdScriptParser.new()
-var _included_resources :PackedStringArray = []
-var _excluded_resources :PackedStringArray = []
+var _included_resources: PackedStringArray = []
+var _excluded_resources: PackedStringArray = []
 var _expression_runner := GdUnitExpressionRunner.new()
 var _regex_extends_clazz_name := RegEx.create_from_string("extends[\\s]+([\\S]+)")
 
 
 func prescan_testsuite_classes() -> void:
 	# scan and cache extends GdUnitTestSuite by class name an resource paths
-	var script_classes :Array[Dictionary] = ProjectSettings.get_global_class_list()
+	var script_classes: Array[Dictionary] = ProjectSettings.get_global_class_list()
 	for script_meta in script_classes:
-		var base_class :String = script_meta["base"]
-		var resource_path :String = script_meta["path"]
+		var base_class: String = script_meta["base"]
+		var resource_path: String = script_meta["path"]
 		if base_class == "GdUnitTestSuite":
 			@warning_ignore("return_value_discarded")
 			_included_resources.append(resource_path)
@@ -37,19 +37,15 @@ func prescan_testsuite_classes() -> void:
 			_excluded_resources.append(resource_path)
 
 
-func scan(resource_path :String) -> Array[Node]:
+func scan(resource_path: String) -> Array[Script]:
 	prescan_testsuite_classes()
 	# if single testsuite requested
 	if FileAccess.file_exists(resource_path):
-		var test_suite := _parse_is_test_suite(resource_path)
+		var test_suite := _load_is_test_suite(resource_path)
 		if test_suite != null:
 			return [test_suite]
-		return [] as Array[Node]
-	var base_dir := DirAccess.open(resource_path)
-	if base_dir == null:
-			prints("Given directory or file does not exists:", resource_path)
-			return []
-	return _scan_test_suites(base_dir, [])
+		return []
+	return scan_directory(resource_path)
 
 
 func scan_directory(resource_path: String) -> Array[Script]:
@@ -69,8 +65,10 @@ func _scan_test_suites_scripts(dir: DirAccess, collected_suites: Array[Script]) 
 	if exclude_scan_directories.has(dir.get_current_dir()):
 		return collected_suites
 	prints("Scanning for test suites in:", dir.get_current_dir())
-	@warning_ignore("return_value_discarded")
-	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
+	var err := dir.list_dir_begin()
+	if err != OK:
+		push_error("Error on scanning directory %s" % dir.get_current_dir(), error_string(err))
+		return collected_suites
 	var file_name := dir.get_next()
 	while file_name != "":
 		var resource_path := GdUnitTestSuiteScanner._file(dir, file_name)
@@ -114,39 +112,14 @@ func _load_is_test_suite(resource_path: String) -> Script:
 	return script
 
 
-func _scan_test_suites(dir :DirAccess, collected_suites :Array[Node]) -> Array[Node]:
-	if exclude_scan_directories.has(dir.get_current_dir()):
-		return collected_suites
-	prints("Scanning for test suites in:", dir.get_current_dir())
-	@warning_ignore("return_value_discarded")
-	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
-	var file_name := dir.get_next()
-	while file_name != "":
-		var resource_path := GdUnitTestSuiteScanner._file(dir, file_name)
-		if dir.current_is_dir():
-			var sub_dir := DirAccess.open(resource_path)
-			if sub_dir != null:
-				@warning_ignore("return_value_discarded")
-				_scan_test_suites(sub_dir, collected_suites)
-		else:
-			var time := LocalTime.now()
-			var test_suite := _parse_is_test_suite(resource_path)
-			if test_suite:
-				collected_suites.append(test_suite)
-			if OS.is_stdout_verbose() and time.elapsed_since_ms() > 300:
-				push_warning("Scanning of test-suite '%s' took more than 300ms: " % resource_path, time.elapsed_since())
-		file_name = dir.get_next()
-	return collected_suites
-
-
-static func _file(dir :DirAccess, file_name :String) -> String:
+static func _file(dir: DirAccess, file_name: String) -> String:
 	var current_dir := dir.get_current_dir()
 	if current_dir.ends_with("/"):
 		return current_dir + file_name
 	return current_dir + "/" + file_name
 
 
-func _parse_is_test_suite(resource_path :String) -> Node:
+func _parse_is_test_suite(resource_path: String) -> Node:
 	if not GdUnitTestSuiteScanner._is_script_format_supported(resource_path):
 		return null
 	if GdUnit4CSharpApiLoader.is_test_suite(resource_path):
@@ -187,7 +160,7 @@ static func load_with_disabled_warnings(resource_path: String) -> GDScript:
 	return script
 
 
-static func _is_script_format_supported(resource_path :String) -> bool:
+static func _is_script_format_supported(resource_path: String) -> bool:
 	var ext := resource_path.get_extension()
 	if ext == "gd":
 		return true
@@ -211,13 +184,13 @@ func _parse_test_suite(script: Script) -> GdUnitTestSuite:
 	return test_suite
 
 
-func _extract_test_case_names(script :GDScript) -> PackedStringArray:
+func _extract_test_case_names(script: GDScript) -> PackedStringArray:
 	return script.get_script_method_list()\
 		.map(func(descriptor: Dictionary) -> String: return descriptor["name"])\
 		.filter(func(func_name: String) -> bool: return func_name.begins_with("test"))
 
 
-static func parse_test_suite_name(script :Script) -> String:
+static func parse_test_suite_name(script: Script) -> String:
 	return script.resource_path.get_file().replace(".gd", "")
 
 
@@ -276,6 +249,7 @@ func _handle_test_case_arguments(test_suite: GdUnitTestSuite, script: GDScript, 
 
 
 func _parse_and_add_test_cases(test_suite: GdUnitTestSuite, script: GDScript, test_case_names: PackedStringArray) -> void:
+	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
 	var test_cases_to_find := Array(test_case_names)
 	var functions_to_scan := test_case_names.duplicate()
 	@warning_ignore("return_value_discarded")
@@ -291,7 +265,7 @@ func _parse_and_add_test_cases(test_suite: GdUnitTestSuite, script: GDScript, te
 
 const TEST_CASE_ARGUMENTS = [_TestCase.ARGUMENT_TIMEOUT, _TestCase.ARGUMENT_SKIP, _TestCase.ARGUMENT_SKIP_REASON, Fuzzer.ARGUMENT_ITERATIONS, Fuzzer.ARGUMENT_SEED]
 
-func _validate_argument(fd :GdFunctionDescriptor, test_case :_TestCase) -> void:
+func _validate_argument(fd: GdFunctionDescriptor, test_case: _TestCase) -> void:
 	if fd.is_parameterized():
 		return
 	for argument in fd.args():
@@ -301,7 +275,7 @@ func _validate_argument(fd :GdFunctionDescriptor, test_case :_TestCase) -> void:
 
 
 # converts given file name by configured naming convention
-static func _to_naming_convention(file_name :String) -> String:
+static func _to_naming_convention(file_name: String) -> String:
 	var nc :int = GdUnitSettings.get_setting(GdUnitSettings.TEST_SUITE_NAMING_CONVENTION, 0)
 	match nc:
 		GdUnitSettings.NAMING_CONVENTIONS.AUTO_DETECT:
@@ -316,7 +290,7 @@ static func _to_naming_convention(file_name :String) -> String:
 	return "-<Unexpected>-"
 
 
-static func resolve_test_suite_path(source_script_path :String, test_root_folder :String = "test") -> String:
+static func resolve_test_suite_path(source_script_path: String, test_root_folder: String = "test") -> String:
 	var file_name := source_script_path.get_basename().get_file()
 	var suite_name := _to_naming_convention(file_name)
 	if test_root_folder.is_empty() or test_root_folder == "/":
@@ -327,7 +301,7 @@ static func resolve_test_suite_path(source_script_path :String, test_root_folder
 		return normalize_path(source_script_path.replace("user://tmp", "user://tmp/" + test_root_folder)).replace(file_name, suite_name)
 
 	# at first look up is the script under a "src" folder located
-	var test_suite_path :String
+	var test_suite_path: String
 	var src_folder := source_script_path.find("/src/")
 	if src_folder != -1:
 		test_suite_path = source_script_path.replace("/src/", "/"+test_root_folder+"/")
@@ -346,11 +320,11 @@ static func resolve_test_suite_path(source_script_path :String, test_root_folder
 	return normalize_path(test_suite_path).replace(file_name, suite_name)
 
 
-static func normalize_path(path :String) -> String:
+static func normalize_path(path: String) -> String:
 	return path.replace("///", "/")
 
 
-static func create_test_suite(test_suite_path :String, source_path :String) -> GdUnitResult:
+static func create_test_suite(test_suite_path: String, source_path: String) -> GdUnitResult:
 	# create directory if not exists
 	if not DirAccess.dir_exists_absolute(test_suite_path.get_base_dir()):
 		var error_ := DirAccess.make_dir_recursive_absolute(test_suite_path.get_base_dir())
@@ -364,7 +338,7 @@ static func create_test_suite(test_suite_path :String, source_path :String) -> G
 	return GdUnitResult.success(test_suite_path)
 
 
-static func get_test_case_line_number(resource_path :String, func_name :String) -> int:
+static func get_test_case_line_number(resource_path: String, func_name: String) -> int:
 	var file := FileAccess.open(resource_path, FileAccess.READ)
 	if file != null:
 		var line_number := 0
@@ -380,7 +354,7 @@ static func get_test_case_line_number(resource_path :String, func_name :String) 
 	return -1
 
 
-func get_extends_classname(resource_path :String) -> String:
+func get_extends_classname(resource_path: String) -> String:
 	var file := FileAccess.open(resource_path, FileAccess.READ)
 	if file != null:
 		while not file.eof_reached():
@@ -397,7 +371,7 @@ func get_extends_classname(resource_path :String) -> String:
 	return ""
 
 
-static func add_test_case(resource_path :String, func_name :String)  -> GdUnitResult:
+static func add_test_case(resource_path: String, func_name: String)  -> GdUnitResult:
 	var script := load_with_disabled_warnings(resource_path)
 	# count all exiting lines and add two as space to add new test case
 	var line_number := count_lines(script) + 2
@@ -415,12 +389,13 @@ static func add_test_case(resource_path :String, func_name :String)  -> GdUnitRe
 	return GdUnitResult.success({ "path" : resource_path, "line" : line_number})
 
 
-static func count_lines(script : GDScript) -> int:
+static func count_lines(script: GDScript) -> int:
 	return script.source_code.split("\n").size()
 
 
-static func test_suite_exists(test_suite_path :String) -> bool:
+static func test_suite_exists(test_suite_path: String) -> bool:
 	return FileAccess.file_exists(test_suite_path)
+
 
 static func test_case_exists(test_suite_path :String, func_name :String) -> bool:
 	if not test_suite_exists(test_suite_path):
@@ -431,7 +406,8 @@ static func test_case_exists(test_suite_path :String, func_name :String) -> bool
 			return true
 	return false
 
-static func create_test_case(test_suite_path :String, func_name :String, source_script_path :String) -> GdUnitResult:
+
+static func create_test_case(test_suite_path: String, func_name: String, source_script_path: String) -> GdUnitResult:
 	if test_case_exists(test_suite_path, func_name):
 		var line_number := get_test_case_line_number(test_suite_path, func_name)
 		return GdUnitResult.success({ "path" : test_suite_path, "line" : line_number})

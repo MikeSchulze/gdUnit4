@@ -343,7 +343,7 @@ func do_collapse_all(collapse: bool, parent := _tree_root) -> void:
 
 
 func set_state_initial(item: TreeItem) -> void:
-	item.set_text(0, item.get_meta(META_GDUNIT_NAME))
+	item.set_text(0, str(item.get_meta(META_GDUNIT_NAME)))
 	item.set_custom_color(0, Color.LIGHT_GRAY)
 	item.set_tooltip_text(0, "")
 	item.set_text_overrun_behavior(0, TextServer.OVERRUN_TRIM_CHAR)

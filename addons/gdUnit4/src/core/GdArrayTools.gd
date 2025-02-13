@@ -44,6 +44,19 @@ static func filter_value(array: Variant, value: Variant) -> Variant:
 	return filtered_array
 
 
+## Groups an array by a custom key selector
+## The function should take an item and return the group key
+static func group_by(array: Array, key_selector: Callable) -> Dictionary:
+	var result := {}
+
+	for item: Variant in array:
+		var group_key: Variant = key_selector.call(item)
+		var values: Array = result.get_or_add(group_key, [])
+		values.append(item)
+
+	return result
+
+
 ## Erases a value from given array by using equals(l,r) to find the element to erase
 static func erase_value(array :Array, value :Variant) -> void:
 	for element :Variant in array:
