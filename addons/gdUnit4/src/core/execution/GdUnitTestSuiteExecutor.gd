@@ -39,7 +39,6 @@ func run_and_wait(tests: Array[GdUnitTestCase]) -> void:
 		var test_suite: GdUnitTestSuite = script.new()
 		scanner._parse_and_add_test_cases(test_suite, script, test_names)
 		_apply_test_attribute_index(test_suite, tests_by_suite)
-		#test_case.set_test_parameter_index(test_param_index.to_int())
 		await execute(test_suite)
 
 
@@ -55,7 +54,8 @@ func _apply_test_attribute_index(test_suite: Node, tests: Array[GdUnitTestCase])
 			continue
 		var test: GdUnitTestCase = t[0]
 		var test_case: _TestCase = test_suite.find_child(test_name, false, false)
-		test_case.set_test_parameter_index(test.attribute_index)
+		if test_case:
+			test_case.set_test_parameter_index(test.attribute_index)
 
 
 func fail_fast(enabled :bool) -> void:

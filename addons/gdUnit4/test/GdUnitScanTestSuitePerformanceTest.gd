@@ -10,5 +10,3 @@ func test_load_performance() -> void:
 		.override_failure_message("Expecting the loading time overall is less than 5s")\
 		.is_less(5*1000)
 	prints("Scanning of %d test suites took" % test_suites.size(), time.elapsed_since())
-	for ts in test_suites:
-		ts.free()
