@@ -154,3 +154,10 @@ func test_extract_return_type(info: String, expected: int, descriptor: Dictionar
 ]) -> void:
 	var return_type := GdFunctionDescriptor._extract_return_type(descriptor)
 	assert_that(return_type).is_equal(expected)
+
+
+func example_signature(info: String, expected: int, test_parameters := [
+	["aaa", 10],
+	["bbb", 11],
+]) -> void:
+	pass

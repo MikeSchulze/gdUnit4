@@ -27,16 +27,18 @@ enum {
 	DISCOVER_TEST_REMOVED,
 }
 
-var _event_type :int
-var _resource_path :String
-var _suite_name :String
-var _test_name :String
-var _total_count :int = 0
+var _event_type: int
+var _guid: GdUnitGUID
+var _resource_path: String
+var _suite_name: String
+var _test_name: String
+var _total_count: int = 0
 var _statistics := Dictionary()
-var _reports :Array[GdUnitReport] = []
+var _reports: Array[GdUnitReport] = []
 
 
-func suite_before(p_resource_path :String, p_suite_name :String, p_total_count :int) -> GdUnitEvent:
+func suite_before(p_resource_path: String, p_suite_name: String, p_total_count: int) -> GdUnitEvent:
+	_guid = GdUnitGUID.new()
 	_event_type = TESTSUITE_BEFORE
 	_resource_path = p_resource_path
 	_suite_name = p_suite_name
@@ -45,7 +47,8 @@ func suite_before(p_resource_path :String, p_suite_name :String, p_total_count :
 	return self
 
 
-func suite_after(p_resource_path :String, p_suite_name :String, p_statistics :Dictionary = {}, p_reports :Array[GdUnitReport] = []) -> GdUnitEvent:
+func suite_after(p_resource_path: String, p_suite_name: String, p_statistics: Dictionary = {}, p_reports: Array[GdUnitReport] = []) -> GdUnitEvent:
+	_guid = GdUnitGUID.new()
 	_event_type = TESTSUITE_AFTER
 	_resource_path = p_resource_path
 	_suite_name  = p_suite_name
@@ -55,16 +58,18 @@ func suite_after(p_resource_path :String, p_suite_name :String, p_statistics :Di
 	return self
 
 
-func test_before(p_resource_path :String, p_suite_name :String, p_test_name :String) -> GdUnitEvent:
+func test_before(p_guid: GdUnitGUID, p_resource_path: String, p_suite_name: String, p_test_name: String) -> GdUnitEvent:
 	_event_type = TESTCASE_BEFORE
+	_guid = p_guid
 	_resource_path = p_resource_path
 	_suite_name  = p_suite_name
 	_test_name = p_test_name
 	return self
 
 
-func test_after(p_resource_path :String, p_suite_name :String, p_test_name :String, p_statistics :Dictionary = {}, p_reports :Array[GdUnitReport] = []) -> GdUnitEvent:
+func test_after(p_guid: GdUnitGUID, p_resource_path: String, p_suite_name: String, p_test_name: String, p_statistics: Dictionary = {}, p_reports :Array[GdUnitReport] = []) -> GdUnitEvent:
 	_event_type = TESTCASE_AFTER
+	_guid = p_guid
 	_resource_path = p_resource_path
 	_suite_name  = p_suite_name
 	_test_name = p_test_name
@@ -75,6 +80,10 @@ func test_after(p_resource_path :String, p_suite_name :String, p_test_name :Stri
 
 func type() -> int:
 	return _event_type
+
+
+func guid() -> GdUnitGUID:
+	return _guid
 
 
 func suite_name() -> String:
@@ -154,7 +163,7 @@ func reports() -> Array[GdUnitReport]:
 
 
 func _to_string() -> String:
-	return "Event: %s %s:%s, %s, %s" % [_event_type, _suite_name, _test_name, _statistics, _reports]
+	return "Event: %s id:%s %s:%s, %s, %s" % [_event_type, _guid, _suite_name, _test_name, _statistics, _reports]
 
 
 func serialize() -> Dictionary:
@@ -166,12 +175,15 @@ func serialize() -> Dictionary:
 		"total_count"  : _total_count,
 		"statistics"    : _statistics
 	}
+	if _guid != null:
+		serialized["guid"] = _guid._guid
 	serialized["reports"] = _serialize_TestReports()
 	return serialized
 
 
-func deserialize(serialized :Dictionary) -> GdUnitEvent:
+func deserialize(serialized: Dictionary) -> GdUnitEvent:
 	_event_type    = serialized.get("type", null)
+	_guid          = GdUnitGUID.new(str(serialized.get("guid", "")))
 	_resource_path = serialized.get("resource_path", null)
 	_suite_name    = serialized.get("suite_name", null)
 	_test_name     = serialized.get("test_name", "unknown")
@@ -193,7 +205,7 @@ func _serialize_TestReports() -> Array[Dictionary]:
 	return serialized_reports
 
 
-func _deserialize_reports(p_reports :Array[Dictionary]) -> Array[GdUnitReport]:
+func _deserialize_reports(p_reports: Array[Dictionary]) -> Array[GdUnitReport]:
 	var deserialized_reports :Array[GdUnitReport] = []
 	for report in p_reports:
 		var test_report := GdUnitReport.new().deserialize(report)

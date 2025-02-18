@@ -12,7 +12,7 @@ func _ready() -> void:
 	#var tool := CmdTool.new()
 
 	var runner := GdUnitTestCIRunner.new()
-	runner._debug_cmd_args = [\"GdUnitCmdTool.gd\", \"--add\", \"res://addons/gdUnit4/test/core/parse/\", \"--add\", \"res://addons/gdUnit4/test/asserts/GdUnitAssertImplTest.gd\", \"-i\", \"GdDefaultValueDecoderTest\", \"-i\", \"GdScriptParserTest\", \"--continue\", \"-rc\", \"1\"]
+	runner._debug_cmd_args = [\"GdUnitCmdTool.gd\", \"--add\", \"res://addons/gdUnit4/test/core/GdUnitTestSuiteBuilderTest.gd\", \"--continue\", \"-rc\", \"1\"]
 
 	add_child(runner)
 

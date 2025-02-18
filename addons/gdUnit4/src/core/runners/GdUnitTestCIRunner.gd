@@ -389,8 +389,7 @@ func init_gd_unit() -> void:
 			quit(RETURN_ERROR_HEADLESS_NOT_SUPPORTED)
 			return
 
-	_test_cases = _runner_config.test_cases()
-	_test_cases.append_array(discover_tests())
+	discover_tests()
 	if _test_cases.is_empty():
 		console_info("No test cases found, abort test run!", Color.YELLOW)
 		console_info("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)
@@ -401,6 +400,7 @@ func init_gd_unit() -> void:
 
 
 func discover_tests() -> Array[GdUnitTestCase]:
+	_test_cases = _runner_config.test_cases()
 	var scanner := GdUnitTestSuiteScanner.new()
 	for path in _included_tests:
 		var scripts := scanner.scan(path)

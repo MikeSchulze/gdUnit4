@@ -21,14 +21,12 @@ static func load_test_suite(resource_path :String, script_type := GD_SUITE) -> N
 
 static func load_test_suite_gd(resource_path :String) -> GdUnitTestSuite:
 	var script := load_gd_script(resource_path)
-	var test_suite :GdUnitTestSuite = script.new()
-	test_suite.set_name(resource_path.get_file().replace(".resource", "").replace(".gd", ""))
+	var discovered_tests: Array[GdUnitTestCase] = []
+	GdUnitTestDiscoverer.discover_tests(script, func(test: GdUnitTestCase) -> void:
+		discovered_tests.append(test)
+	)
 	# complete test suite wiht parsed test cases
-	var suite_scanner := GdUnitTestSuiteScanner.new()
-	var test_case_names := suite_scanner._extract_test_case_names(script)
-	# add test cases to test suite and parse test case line nummber
-	suite_scanner._parse_and_add_test_cases(test_suite, script, test_case_names)
-	return test_suite
+	return GdUnitTestSuiteScanner.new().load_suite(script, discovered_tests)
 
 
 static func load_test_suite_cs(resource_path :String) -> Node:
