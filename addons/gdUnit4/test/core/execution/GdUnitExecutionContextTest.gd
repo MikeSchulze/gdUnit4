@@ -8,7 +8,7 @@ extends GdUnitTestSuite
 func test_report_collectors() -> void:
 	# setup
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
-	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
+	var tc :_TestCase = auto_free(create_test_case("test_case1", 0, ""))
 	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
 	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
@@ -37,7 +37,7 @@ func test_report_collectors() -> void:
 func test_has_and_count_failures() -> void:
 	# setup
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
-	var tc :_TestCase = auto_free(_TestCase.new().configure("test_case1", 0, ""))
+	var tc :_TestCase = auto_free(create_test_case("test_case1", 0, ""))
 	ts.add_child(tc)
 	var ec1 := GdUnitExecutionContext.of_test_suite(ts)
 	var ec2 := GdUnitExecutionContext.of_test_case(ec1, tc)
@@ -85,3 +85,12 @@ func test_has_and_count_failures() -> void:
 	assert_that(ec3.has_failures()).is_true()
 	assert_that(ec3.count_failures(true)).is_equal(4)
 	ec1.dispose()
+
+
+static func create_test_case(p_name: String, p_line_number: int, p_script_path: String) -> _TestCase:
+	var test_case := GdUnitTestCase.new()
+	test_case.test_name = p_name
+	test_case.line_number = p_line_number
+	test_case.source_file = p_script_path
+	var attribute := TestCaseAttribute.new()
+	return _TestCase.new(test_case, attribute, null)

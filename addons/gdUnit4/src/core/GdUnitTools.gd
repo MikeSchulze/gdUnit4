@@ -127,6 +127,15 @@ static func release_double(instance :Object) -> void:
 		instance.call("__release_double")
 
 
-static func register_expect_interupted_by_timeout(test_suite :Node, test_case_name :String) -> void:
-	var test_case: _TestCase = test_suite.find_child(test_case_name, false, false)
-	test_case.expect_to_interupt()
+
+static func find_test_case(test_suite: Node, test_case_name: String) -> _TestCase:
+	for test_case: _TestCase in test_suite.get_children():
+		if test_case.test_name() == test_case_name:
+			return test_case
+	return null
+
+
+static func register_expect_interupted_by_timeout(test_suite: Node, test_case_name: String) -> void:
+	var test_case := find_test_case(test_suite, test_case_name)
+	if test_case:
+		test_case.expect_to_interupt()

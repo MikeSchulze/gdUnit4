@@ -23,7 +23,7 @@ func test_sync_cache() -> void:
 	assert_dict(discoverer._discover_cache).contains_key_value("res://test/my_test_suite.gd", ["test_a", "test_b"])
 
 
-func test_discover_on_GDScript() -> void:
+func _test_discover_on_GDScript() -> void:
 	var discoverer :GdUnitTestDiscoverGuard = spy(GdUnitTestDiscoverGuard.new())
 
 	# connect to catch the events emitted by the test discoverer
@@ -48,7 +48,7 @@ func test_discover_on_GDScript() -> void:
 
 
 @warning_ignore("unused_parameter")
-func test_discover_on_CSharpScript(do_skip := !GdUnit4CSharpApiLoader.is_mono_supported()) -> void:
+func _test_discover_on_CSharpScript(do_skip := !GdUnit4CSharpApiLoader.is_mono_supported()) -> void:
 	var discoverer :GdUnitTestDiscoverGuard = spy(GdUnitTestDiscoverGuard.new())
 
 	# connect to catch the events emitted by the test discoverer

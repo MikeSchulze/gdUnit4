@@ -68,7 +68,7 @@ func set_test_state(test_cases: PackedStringArray, state: InspectorTreeMainPanel
 	if parent != _inspector._tree_root:
 		_inspector.set_state_succeded(parent)
 
-	var test_event := GdUnitEvent.new().test_after("res://foo.gd", "test_suite", "test_name")
+	var test_event := GdUnitEvent.new().test_after(GdUnitGUID.new(), "res://foo.gd", "test_suite", "test_name")
 
 	for item in parent.get_children():
 		set_test_state(test_cases, state, item)
@@ -240,23 +240,23 @@ func test_suite_text_shows_amount_of_cases() -> void:
 
 func test_suite_text_responds_to_test_case_events() -> void:
 	var suite_script_path: String = suite_a_item.get_meta(META_SCRIPT_PATH)
-	var success_aa := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_aa")
+	var success_aa := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_aa")
 	_inspector._on_gdunit_event(success_aa)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var error_ad := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_ad", {GdUnitEvent.ERRORS: true})
+	var error_ad := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_ad", {GdUnitEvent.ERRORS: true})
 	_inspector._on_gdunit_event(error_ad)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var failure_ab := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_ab", {GdUnitEvent.FAILED: true})
+	var failure_ab := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_ab", {GdUnitEvent.FAILED: true})
 	_inspector._on_gdunit_event(failure_ab)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var skipped_ac := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_ac", {GdUnitEvent.SKIPPED: true})
+	var skipped_ac := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_ac", {GdUnitEvent.SKIPPED: true})
 	_inspector._on_gdunit_event(skipped_ac)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var success_ae := GdUnitEvent.new().test_after(suite_script_path, "ExampleTestSuiteA", "test_ae")
+	var success_ae := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_ae")
 	_inspector._on_gdunit_event(success_ae)
 	assert_str(suite_a_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
 
@@ -278,8 +278,8 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	assert_str(suite_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
 
 	# set test starting checked suite_a_item
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(suite_a_script_path, "ExampleTestSuiteA", "test_aa"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(suite_a_script_path, "ExampleTestSuiteA", "test_ab"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(GdUnitGUID.new(), suite_a_script_path, "ExampleTestSuiteA", "test_aa"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(GdUnitGUID.new(), suite_a_script_path, "ExampleTestSuiteA", "test_ab"))
 	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
 	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.RUNNING)
 	assert_int(get_item_state(suite_a_item, "test_ab")).is_equal(_inspector.STATE.RUNNING)
@@ -289,8 +289,8 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	assert_int(get_item_state(suite_item, "test_ab")).is_equal(_inspector.STATE.INITIAL)
 
 	# finish the tests with success
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(suite_a_script_path, "ExampleTestSuiteA", "test_aa"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(suite_a_script_path, "ExampleTestSuiteA", "test_ab"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_a_script_path, "ExampleTestSuiteA", "test_aa"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_a_script_path, "ExampleTestSuiteA", "test_ab"))
 
 	# verify updated state checked suite_a_item
 	assert_str(suite_a_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
@@ -318,8 +318,8 @@ func test_update_icon_state() -> void:
 	assert_int(get_item_state(suite_item, "test_case2")).is_equal(_inspector.STATE.INITIAL)
 
 	# Set tests to running
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(suite_script_path, suite_name, "test_case1"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(suite_script_path, suite_name, "test_case2"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(GdUnitGUID.new(), suite_script_path, suite_name, "test_case1"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(GdUnitGUID.new(), suite_script_path, suite_name, "test_case2"))
 	# Verify all items on state running.
 	assert_str(suite_item.get_text(0)).is_equal("(0/2) " + suite_name)
 	assert_int(get_item_state(suite_item, "test_case1")).is_equal(_inspector.STATE.RUNNING)
@@ -327,13 +327,13 @@ func test_update_icon_state() -> void:
 
 	# Simulate test processed and fails on test_case2
 	# test_case1 succeeded
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(suite_script_path, suite_name, "test_case1"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, suite_name, "test_case1"))
 	# test_case2 is failing by an orphan warning and an failure
 	_inspector._on_gdunit_event(GdUnitEvent.new()\
-		.test_after(suite_script_path, suite_name, "test_case2", {GdUnitEvent.FAILED: true}))
+		.test_after(GdUnitGUID.new(), suite_script_path, suite_name, "test_case2", {GdUnitEvent.FAILED: true}))
 	# We check whether a test event with a warning does not overwrite a higher object status, e.g. an error.
 	_inspector._on_gdunit_event(GdUnitEvent.new()\
-		.test_after(suite_script_path, suite_name, "test_case2", {GdUnitEvent.WARNINGS: true}))
+		.test_after(GdUnitGUID.new(), suite_script_path, suite_name, "test_case2", {GdUnitEvent.WARNINGS: true}))
 
 	# Verify the final state
 	assert_str(suite_item.get_text(0)).is_equal("(2/2) " + suite_name)

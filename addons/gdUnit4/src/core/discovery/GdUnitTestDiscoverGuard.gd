@@ -56,65 +56,27 @@ func discover(script: Script) -> void:
 		# a new test suite is discovered
 		var script_path := ProjectSettings.localize_path(script.resource_path)
 		var scanner := GdUnitTestSuiteScanner.new()
-		var test_suite := scanner._parse_test_suite(script)
-		var suite_name := test_suite.get_name()
+
+		# rediscover all tests
+		if script is GDScript:
+			GdUnitTestDiscoverer.discover_tests(script)
+		else:
+			## TODO add c# test sidcovery here
+			pass
 
 		if not _discover_cache.has(script_path):
-			var dto :GdUnitTestSuiteDto = GdUnitTestSuiteDto.of(test_suite)
-			GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverTestSuiteAdded.new(script_path, suite_name, dto))
-			sync_cache(dto)
-			test_suite.queue_free()
+			#var dto :GdUnitTestSuiteDto = GdUnitTestSuiteDto.of(test_suite)
+			#GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverTestSuiteAdded.new(script_path, suite_name, dto))
+			#sync_cache(dto)
+			#test_suite.queue_free()
 			return
 
 		var discovered_test_cases :Array[String] = _discover_cache.get(script_path, [] as Array[String])
-		var script_test_cases := extract_test_functions(test_suite)
 
-		# first detect removed/renamed tests
-		var tests_removed := PackedStringArray()
-		for test_case in discovered_test_cases:
-			if not script_test_cases.has(test_case):
-				@warning_ignore("return_value_discarded")
-				tests_removed.append(test_case)
-		# second detect new added tests
-		var tests_added :Array[String] = []
-		for test_case in script_test_cases:
-			if not discovered_test_cases.has(test_case):
-				tests_added.append(test_case)
 
-		# We need to scan for parameterized test because of possible test data changes
-		# For more details look at https://github.com/MikeSchulze/gdUnit4/issues/592
-		for test_case_name in script_test_cases:
-			if discovered_test_case_indices_cache.contains_test_case(script_path, test_case_name):
-				var test_case: _TestCase = test_suite.find_child(test_case_name, false, false)
-				var test_indices := test_case.test_case_names()
-				if not discovered_test_case_indices_cache.validate(script_path, test_case_name, test_indices):
-					if !tests_removed.has(test_case_name):
-						tests_removed.append(test_case_name)
-					if !tests_added.has(test_case_name):
-						tests_added.append(test_case_name)
-					discovered_test_case_indices_cache.sync(script_path, test_case_name, test_indices)
 
-		# finally notify changes to the inspector
-		if not tests_removed.is_empty() or not tests_added.is_empty():
-			# emit deleted tests
-			for test_name in tests_removed:
-				discovered_test_cases.erase(test_name)
-				GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverTestRemoved.new(script_path, suite_name, test_name))
 
-			# emit new discovered tests
-			for test_name in tests_added:
-				discovered_test_cases.append(test_name)
-				var test_case := test_suite.find_child(test_name, false, false)
-				var dto := GdUnitTestCaseDto.new()
-				dto = dto.deserialize(dto.serialize(test_case))
-				GdUnitSignals.instance().gdunit_event.emit(GdUnitEventTestDiscoverTestAdded.new(script_path, suite_name, dto))
-				# if the parameterized test fresh added we need to sync the cache
-				if not discovered_test_case_indices_cache.contains_test_case(script_path, test_name):
-					discovered_test_case_indices_cache.sync(script_path, test_name, dto.test_case_names())
 
-			# update the cache
-			_discover_cache[script_path] = discovered_test_cases
-			test_suite.queue_free()
 
 
 func extract_test_functions(test_suite :Node) -> PackedStringArray:

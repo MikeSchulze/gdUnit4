@@ -523,6 +523,13 @@ static func create_instance(clazz :Variant) -> GdUnitResult:
 	return GdUnitResult.error("Can't create instance for class '%s'." % str(clazz))
 
 
+## We do dispose 'GDScriptFunctionState' in a kacky style because the class is not visible anymore
+static func dispose_function_state(func_state: Variant) -> void:
+	if func_state != null and str(func_state).contains("GDScriptFunctionState"):
+		@warning_ignore("unsafe_method_access")
+		func_state.completed.emit()
+
+
 @warning_ignore("return_value_discarded")
 static func extract_class_path(clazz :Variant) -> PackedStringArray:
 	var clazz_path := PackedStringArray()

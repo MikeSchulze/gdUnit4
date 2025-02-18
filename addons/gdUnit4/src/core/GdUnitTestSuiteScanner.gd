@@ -16,6 +16,12 @@ const exclude_scan_directories = [
 	"res://reports"]
 
 
+const ARGUMENT_TIMEOUT := "timeout"
+const ARGUMENT_SKIP := "do_skip"
+const ARGUMENT_SKIP_REASON := "skip_reason"
+const ARGUMENT_PARAMETER_SET := "test_parameters"
+
+
 var _script_parser := GdScriptParser.new()
 var _included_resources: PackedStringArray = []
 var _excluded_resources: PackedStringArray = []
@@ -88,6 +94,13 @@ func _scan_test_suites_scripts(dir: DirAccess, collected_suites: Array[Script]) 
 	return collected_suites
 
 
+static func _file(dir: DirAccess, file_name: String) -> String:
+	var current_dir := dir.get_current_dir()
+	if current_dir.ends_with("/"):
+		return current_dir + file_name
+	return current_dir + "/" + file_name
+
+
 func _load_is_test_suite(resource_path: String) -> Script:
 	if not GdUnitTestSuiteScanner._is_script_format_supported(resource_path):
 		return null
@@ -112,37 +125,71 @@ func _load_is_test_suite(resource_path: String) -> Script:
 	return script
 
 
-static func _file(dir: DirAccess, file_name: String) -> String:
-	var current_dir := dir.get_current_dir()
-	if current_dir.ends_with("/"):
-		return current_dir + file_name
-	return current_dir + "/" + file_name
+func load_suite(script: GDScript, tests: Array[GdUnitTestCase]) -> GdUnitTestSuite:
+	var test_suite: GdUnitTestSuite = script.new()
+	var first_test: GdUnitTestCase = tests.front()
+	test_suite.set_name(first_test.suite_name)
+
+	# We need to group first all parameterized tests together to load the parameter set once
+	var grouped_by_test := GdArrayTools.group_by(tests, func(test: GdUnitTestCase) -> String:
+		return test.test_name
+	)
+	# Extract function descriptors
+	var test_names: PackedStringArray = grouped_by_test.keys()
+	test_names.append("before")
+	var function_descriptors := _script_parser.get_function_descriptors(script, test_names)
+
+	# Convert to test
+	for fd in function_descriptors:
+		if fd.name() == "before":
+			_handle_test_suite_arguments(test_suite, script, fd)
+			continue
+
+		# Build test attributes from test method
+		var test_attribute := _build_test_attribute(script, fd)
+		# Create test from descriptor and given attributes
+		var test_group: Array = grouped_by_test[fd.name()]
+		for test: GdUnitTestCase in test_group:
+			test_suite.add_child(_TestCase.new(test, test_attribute, fd))
+	return test_suite
 
 
-func _parse_is_test_suite(resource_path: String) -> Node:
-	if not GdUnitTestSuiteScanner._is_script_format_supported(resource_path):
-		return null
-	if GdUnit4CSharpApiLoader.is_test_suite(resource_path):
-		return GdUnit4CSharpApiLoader.parse_test_suite(resource_path)
+func _build_test_attribute(script: GDScript, fd: GdFunctionDescriptor) -> TestCaseAttribute:
+	var collected_unknown_aruments := PackedStringArray()
+	var attribute := TestCaseAttribute.new()
 
-	# We use the global cache to fast scan for test suites.
-	if _excluded_resources.has(resource_path):
-		return null
-	# Check in the global class cache whether the GdUnitTestSuite class has been extended.
-	if _included_resources.has(resource_path):
-		return _parse_test_suite(GdUnitTestSuiteScanner.load_with_disabled_warnings(resource_path))
+	# Collect test attributes
+	for arg: GdFunctionArgument in fd.args():
+		if arg.type() == GdObjects.TYPE_FUZZER:
+			attribute.fuzzers.append(arg)
+		else:
+			match arg.name():
+				ARGUMENT_TIMEOUT:
+					attribute.timeout = convert(arg.default(), TYPE_INT)
+				ARGUMENT_SKIP:
+					var result: Variant = _expression_runner.execute(script, arg.plain_value())
+					if result is bool:
+						attribute.is_skipped = result
+					else:
+						push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.plain_value())
+				ARGUMENT_SKIP_REASON:
+					attribute.skip_reason = arg.plain_value()
+				Fuzzer.ARGUMENT_ITERATIONS:
+					attribute.fuzzer_iterations = convert(arg.default(), TYPE_INT)
+				Fuzzer.ARGUMENT_SEED:
+					attribute.test_seed = convert(arg.default(), TYPE_INT)
+				ARGUMENT_PARAMETER_SET:
+					collected_unknown_aruments.clear()
+					pass
+				_:
+					collected_unknown_aruments.append(arg.name())
 
-	# Otherwise we need to scan manual, we need to exclude classes where direct extends form Godot classes
-	# the resource loader can fail to load e.g. plugin classes with do preload other scripts
-	var extends_from := get_extends_classname(resource_path)
-	# If not extends is defined or extends from a Godot class
-	if extends_from.is_empty() or ClassDB.class_exists(extends_from):
-		return null
-	# Finally, we need to load the class to determine it is a test suite
-	var script := GdUnitTestSuiteScanner.load_with_disabled_warnings(resource_path)
-	if not GdObjects.is_test_suite(script):
-		return null
-	return _parse_test_suite(script)
+	# Verify for unknown arguments
+	if not collected_unknown_aruments.is_empty():
+		attribute.is_skipped = true
+		attribute.skip_reason = "Unknown test case argument's %s found." % collected_unknown_aruments
+
+	return attribute
 
 
 # We load the test suites with disabled unsafe_method_access to avoid spamming loading errors
@@ -167,29 +214,6 @@ static func _is_script_format_supported(resource_path: String) -> bool:
 	return GdUnit4CSharpApiLoader.is_csharp_file(resource_path)
 
 
-func _parse_test_suite(script: Script) -> GdUnitTestSuite:
-	if not GdObjects.is_test_suite(script):
-		return null
-
-	# If test suite a C# script
-	if GdUnit4CSharpApiLoader.is_test_suite(script.resource_path):
-		return GdUnit4CSharpApiLoader.parse_test_suite(script.resource_path)
-
-	# Do pares as GDScript
-	var test_suite: GdUnitTestSuite = (script as GDScript).new()
-	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
-	# add test cases to test suite and parse test case line nummber
-	var test_case_names := _extract_test_case_names(script as GDScript)
-	_parse_and_add_test_cases(test_suite, script as GDScript, test_case_names)
-	return test_suite
-
-
-func _extract_test_case_names(script: GDScript) -> PackedStringArray:
-	return script.get_script_method_list()\
-		.map(func(descriptor: Dictionary) -> String: return descriptor["name"])\
-		.filter(func(func_name: String) -> bool: return func_name.begins_with("test"))
-
-
 static func parse_test_suite_name(script: Script) -> String:
 	return script.resource_path.get_file().replace(".gd", "")
 
@@ -197,81 +221,16 @@ static func parse_test_suite_name(script: Script) -> String:
 func _handle_test_suite_arguments(test_suite: GdUnitTestSuite, script: GDScript, fd: GdFunctionDescriptor) -> void:
 	for arg in fd.args():
 		match arg.name():
-			_TestCase.ARGUMENT_SKIP:
+			ARGUMENT_SKIP:
 				var result: Variant = _expression_runner.execute(script, arg.plain_value())
 				if result is bool:
 					test_suite.__is_skipped = result
 				else:
 					push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.plain_value())
-			_TestCase.ARGUMENT_SKIP_REASON:
+			ARGUMENT_SKIP_REASON:
 				test_suite.__skip_reason = arg.plain_value()
 			_:
 				push_error("Unsuported argument `%s` found on before() at '%s'!" % [arg.name(), script.resource_path])
-
-
-func _handle_test_case_arguments(test_suite: GdUnitTestSuite, script: GDScript, fd: GdFunctionDescriptor) -> void:
-	var timeout := _TestCase.DEFAULT_TIMEOUT
-	var iterations := Fuzzer.ITERATION_DEFAULT_COUNT
-	var seed_value := -1
-	var is_skipped := false
-	var skip_reason := "Unknown."
-	var fuzzers: Array[GdFunctionArgument] = []
-	var test := _TestCase.new()
-
-	for arg: GdFunctionArgument in fd.args():
-		# verify argument is allowed
-		# is test using fuzzers?
-		if arg.type() == GdObjects.TYPE_FUZZER:
-			fuzzers.append(arg)
-		elif arg.has_default():
-			match arg.name():
-				_TestCase.ARGUMENT_TIMEOUT:
-					timeout =  convert(arg.default(), TYPE_INT)
-				_TestCase.ARGUMENT_SKIP:
-					var result: Variant = _expression_runner.execute(script, arg.plain_value())
-					if result is bool:
-						is_skipped = result
-					else:
-						push_error("Test expression '%s' cannot be evaluated because it is not of type bool!" % arg.plain_value())
-				_TestCase.ARGUMENT_SKIP_REASON:
-					skip_reason = arg.plain_value()
-				Fuzzer.ARGUMENT_ITERATIONS:
-					iterations = convert(arg.default(), TYPE_INT)
-				Fuzzer.ARGUMENT_SEED:
-					seed_value = convert(arg.default(), TYPE_INT)
-	# create new test
-	@warning_ignore("return_value_discarded")
-	test.configure(fd.name(), fd.line_number(), fd.source_path(), timeout, fuzzers, iterations, seed_value)
-	test.set_function_descriptor(fd)
-	test.skip(is_skipped, skip_reason)
-	_validate_argument(fd, test)
-	test_suite.add_child(test)
-
-
-func _parse_and_add_test_cases(test_suite: GdUnitTestSuite, script: GDScript, test_case_names: PackedStringArray) -> void:
-	test_suite.set_name(GdUnitTestSuiteScanner.parse_test_suite_name(script))
-	var test_cases_to_find := Array(test_case_names)
-	var functions_to_scan := test_case_names.duplicate()
-	@warning_ignore("return_value_discarded")
-	functions_to_scan.append("before")
-
-	var function_descriptors := _script_parser.get_function_descriptors(script, functions_to_scan)
-	for fd in function_descriptors:
-		if fd.name() == "before":
-			_handle_test_suite_arguments(test_suite, script, fd)
-		if test_cases_to_find.has(fd.name()):
-			_handle_test_case_arguments(test_suite, script, fd)
-
-
-const TEST_CASE_ARGUMENTS = [_TestCase.ARGUMENT_TIMEOUT, _TestCase.ARGUMENT_SKIP, _TestCase.ARGUMENT_SKIP_REASON, Fuzzer.ARGUMENT_ITERATIONS, Fuzzer.ARGUMENT_SEED]
-
-func _validate_argument(fd: GdFunctionDescriptor, test_case: _TestCase) -> void:
-	if fd.is_parameterized():
-		return
-	for argument in fd.args():
-		if argument.type() == GdObjects.TYPE_FUZZER or argument.name() in TEST_CASE_ARGUMENTS:
-			continue
-		test_case.skip(true, "Unknown test case argument '%s' found." % argument.name())
 
 
 # converts given file name by configured naming convention
