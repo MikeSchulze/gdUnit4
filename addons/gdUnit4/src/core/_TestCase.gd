@@ -62,9 +62,8 @@ func _resolve_test_parameters(attribute_index: int) -> Array:
 		completed.emit()
 		return []
 
-	var parameter_sets: Array = result.value()
-
 	# validate the parameter set
+	var parameter_sets: Array = result.value()
 	result = _parameter_set_resolver.validate(parameter_sets, attribute_index)
 	if result.is_error():
 		do_skip(true, result.error_message())
@@ -93,9 +92,10 @@ func dispose() -> void:
 
 @warning_ignore("shadowed_variable_base_class", "redundant_await")
 func _execute_test_case(name: String, test_parameter: Array) -> void:
-	# needs at least on await otherwise it breaks the awaiting chain
+	# save the function state like GDScriptFunctionState to dispose at test timeout to prevent orphan state
 	_func_state = get_parent().callv(name, test_parameter)
 	await _func_state
+	# needs at least on await otherwise it breaks the awaiting chain
 	await (Engine.get_main_loop() as SceneTree).process_frame
 	completed.emit()
 
@@ -123,7 +123,7 @@ func set_timeout() -> void:
 
 func do_interrupt() -> void:
 	_interupted = true
-	@warning_ignore("unsafe_call_argument")
+	# We need to dispose manually the function state here
 	GdObjects.dispose_function_state(_func_state)
 	if not is_expect_interupted():
 		var execution_context:= GdUnitThreadManager.get_current_context().get_execution_context()
