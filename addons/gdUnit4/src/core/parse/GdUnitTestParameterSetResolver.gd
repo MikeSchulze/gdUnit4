@@ -38,26 +38,33 @@ func is_parameter_set_static(index: int) -> bool:
 
 
 # validates the given arguments are complete and matches to required input fields of the test function
-func validate(input_value_set: Array) -> String:
-	var input_arguments := _fd.args()
+func validate(parameter_sets: Array, parameter_set_index: int) -> GdUnitResult:
+	if parameter_sets.size() < parameter_set_index:
+		return GdUnitResult.error("Internal error: the resolved paremeterset has invalid size.")
+
+	var input_values: Array = parameter_sets[parameter_set_index]
+	if input_values == null:
+		return GdUnitResult.error("The parameter set '%s' must be an Array!" % parameter_sets[parameter_set_index])
+
 	# check given parameter set with test case arguments
-	var expected_arg_count := input_arguments.size() - 1
-	for input_values :Variant in input_value_set:
-		var parameter_set_index := input_value_set.find(input_values)
-		if input_values is Array:
-			var arr_values: Array = input_values
-			var current_arg_count := arr_values.size()
-			if current_arg_count != expected_arg_count:
-				return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	The test case requires [%d] input parameters, but the set contains [%d]" % [parameter_set_index, expected_arg_count, current_arg_count]
-			var error := GdUnitTestParameterSetResolver.validate_parameter_types(input_arguments, arr_values, parameter_set_index)
-			if not error.is_empty():
-				return error
-		else:
-			return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	Expecting an array of input values." % parameter_set_index
-	return ""
+	var input_arguments := _fd.args()
+	var expected_arg_count := input_arguments.size() - 1 #(-1 we exclude the parameter set itself)
+	var current_arg_count := input_values.size()
+	if current_arg_count != expected_arg_count:
+		var arg_names := input_arguments\
+			.filter(func(arg: GdFunctionArgument) -> bool: return not arg.is_parameter_set())\
+			.map(func(arg: GdFunctionArgument) -> String: return str(arg))
+
+		return  GdUnitResult.error("""
+			The test data set at index (%d) does not match the expected test arguments:
+				test function: [color=snow]func test...(%s)[/color]
+				test input values: [color=snow]%s[/color]
+			"""
+			.dedent() % [parameter_set_index, ",".join(arg_names), input_values])
+	return GdUnitTestParameterSetResolver.validate_parameter_types(input_arguments, input_values)
 
 
-static func validate_parameter_types(input_arguments: Array, input_values: Array, parameter_set_index: int) -> String:
+static func validate_parameter_types(input_arguments: Array[GdFunctionArgument], input_values: Array) -> GdUnitResult:
 	for i in input_arguments.size():
 		var input_param: GdFunctionArgument = input_arguments[i]
 		# only check the test input arguments
@@ -76,8 +83,13 @@ static func validate_parameter_types(input_arguments: Array, input_values: Array
 		if input_param_type == TYPE_OBJECT and input_value_type == TYPE_NIL:
 			continue
 		if input_param_type != input_value_type:
-			return "\n	The parameter set at index [%d] does not match the expected input parameters!\n	The value '%s' does not match the required input parameter <%s>." % [parameter_set_index, input_value, input_param]
-	return ""
+			return GdUnitResult.error("""
+				The test data value does not match the expected input type!
+					input value: [color=snow]'%s', <%s>[/color]
+					expected argument: [color=snow]%s[/color]
+				"""
+				.dedent() % [input_value, type_string(input_value_type), str(input_param)])
+	return GdUnitResult.success("No errors found.")
 
 
 func _extract_property_names(node :Node) -> PackedStringArray:
@@ -97,7 +109,7 @@ func _is_static_parameter_set(parameters :String, property_names :PackedStringAr
 
 # extracts the arguments from the given test case, using kind of reflection solution
 # to restore the parameters from a string representation to real instance type
-func load_parameter_sets(test_suite: Node, do_validate := false) -> GdUnitResult:
+func load_parameter_sets(test_suite: Node) -> GdUnitResult:
 	var source_script: Script = test_suite.get_script()
 	var parameter_arg := GdFunctionArgument.get_parameter_set(_fd.args())
 	var source_code := CLASS_TEMPLATE \
@@ -111,19 +123,12 @@ func load_parameter_sets(test_suite: Node, do_validate := false) -> GdUnitResult
 	#ResourceSaver.save(script, script.resource_path)
 	var result := script.reload()
 	if result != OK:
-		push_error("Extracting test parameters failed! Script loading error: %s" % result)
-		return GdUnitResult.success([])
+		return GdUnitResult.error("Extracting test parameters failed! Script loading error: %s" % error_string(result))
 	var instance :Object = script.new()
 	GdUnitTestParameterSetResolver.copy_properties(test_suite, instance)
 	(instance as Node).queue_free()
 	var parameter_sets: Array = instance.call("__extract_test_parameters")
 	fixure_typed_parameters(parameter_sets, _fd.args())
-	if do_validate:
-		# validate the parameter set
-		var error := validate(parameter_sets)
-		if not error.is_empty():
-			return GdUnitResult.error(error)
-	@warning_ignore("return_value_discarded")
 	return GdUnitResult.success(parameter_sets)
 
 

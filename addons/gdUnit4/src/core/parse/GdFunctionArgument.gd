@@ -128,7 +128,7 @@ static func get_parameter_set(parameters :Array[GdFunctionArgument]) -> GdFuncti
 func _to_string() -> String:
 	var s := _name
 	if _type != TYPE_NIL:
-		s += ":" + GdObjects.type_as_string(_type)
+		s += ": " + GdObjects.type_as_string(_type)
 	if _type_hint != TYPE_NIL:
 		s += "[%s]" % GdObjects.type_as_string(_type_hint)
 	if typeof(_default_value) != TYPE_STRING:

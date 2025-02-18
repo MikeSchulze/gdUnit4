@@ -47,7 +47,7 @@ func execute_parameterized() -> void:
 	set_timeout()
 
 	# Resolve parameter set at runtime to include runtime variables
-	var test_parameters := _resolve_test_parameters(_test_case.attribute_index)
+	var test_parameters := await _resolve_test_parameters(_test_case.attribute_index)
 	if test_parameters.is_empty():
 		return
 
@@ -55,17 +55,20 @@ func execute_parameterized() -> void:
 
 
 func _resolve_test_parameters(attribute_index: int) -> Array:
-	var result := _parameter_set_resolver.load_parameter_sets(get_parent(), true)
+	var result := _parameter_set_resolver.load_parameter_sets(get_parent())
 	if result.is_error():
 		do_skip(true, result.error_message())
-		#await (Engine.get_main_loop() as SceneTree).process_frame
+		await (Engine.get_main_loop() as SceneTree).process_frame
 		completed.emit()
 		return []
 
 	var parameter_sets: Array = result.value()
-	if parameter_sets.size() < _test_case.attribute_index:
-		do_skip(true, "Internal error: the resolved paremeterset has invalid size.")
-		#await (Engine.get_main_loop() as SceneTree).process_frame
+
+	# validate the parameter set
+	result = _parameter_set_resolver.validate(parameter_sets, attribute_index)
+	if result.is_error():
+		do_skip(true, result.error_message())
+		await (Engine.get_main_loop() as SceneTree).process_frame
 		completed.emit()
 		return []
 

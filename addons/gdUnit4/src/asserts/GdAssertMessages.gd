@@ -644,19 +644,20 @@ static func format_chars(characters :PackedByteArray, type :Color) -> PackedByte
 	# Replace each control character with its readable form
 	var formatted_text := characters.get_string_from_utf8()
 	for control_char: String in control_chars:
-		formatted_text = formatted_text.replace(control_char, control_chars[control_char])
+		var replace_text: String = control_chars[control_char]
+		formatted_text = formatted_text.replace(control_char, replace_text)
 
 	# Handle special ASCII control characters (0x00-0x1F, 0x7F)
 	var ascii_text := ""
 	for i in formatted_text.length():
-		var char := formatted_text[i]
-		var code := char.unicode_at(0)
-		if code < 0x20 and not control_chars.has(char):  # Control characters not handled above
+		var character := formatted_text[i]
+		var code := character.unicode_at(0)
+		if code < 0x20 and not control_chars.has(character):  # Control characters not handled above
 			ascii_text += "<0x%02X>" % code
 		elif code == 0x7F:  # DEL character
 			ascii_text += "<DEL>"
 		else:
-			ascii_text += char
+			ascii_text += character
 
 	var message := "[bgcolor=#%s][color=white]%s[/color][/bgcolor]" % [
 		type.to_html(),
