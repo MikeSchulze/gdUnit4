@@ -4,8 +4,6 @@ extends Node
 signal completed()
 
 
-
-var _id := GdUnitGUID.new()
 var _test_case: GdUnitTestCase
 var _attribute: TestCaseAttribute
 var _current_iteration: int = -1
@@ -19,7 +17,6 @@ var _func_state: Variant
 
 
 func _init(test_case: GdUnitTestCase, attribute: TestCaseAttribute, fd: GdFunctionDescriptor) -> void:
-	_id = test_case.guid
 	_test_case = test_case
 	_attribute = attribute
 	set_function_descriptor(fd)
@@ -188,7 +185,7 @@ func skip_info() -> String:
 
 
 func id() -> GdUnitGUID:
-	return _id
+	return _test_case.guid
 
 
 func test_name() -> String:

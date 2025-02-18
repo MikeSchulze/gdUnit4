@@ -9,7 +9,7 @@ const ADD_COLOR :=  Color(0, 1, 0, .3)
 
 
 # Dictionary of control characters and their readable representations
-const control_chars = {
+const CONTROL_CHARS = {
 	"\n": "<LF>",   # Line Feed
 	"\r": "<CR>",   # Carriage Return
 	"\t": "<TAB>",  # Tab
@@ -643,8 +643,8 @@ static func format_chars(characters :PackedByteArray, type :Color) -> PackedByte
 
 	# Replace each control character with its readable form
 	var formatted_text := characters.get_string_from_utf8()
-	for control_char: String in control_chars:
-		var replace_text: String = control_chars[control_char]
+	for control_char: String in CONTROL_CHARS:
+		var replace_text: String = CONTROL_CHARS[control_char]
 		formatted_text = formatted_text.replace(control_char, replace_text)
 
 	# Handle special ASCII control characters (0x00-0x1F, 0x7F)
@@ -652,7 +652,7 @@ static func format_chars(characters :PackedByteArray, type :Color) -> PackedByte
 	for i in formatted_text.length():
 		var character := formatted_text[i]
 		var code := character.unicode_at(0)
-		if code < 0x20 and not control_chars.has(character):  # Control characters not handled above
+		if code < 0x20 and not CONTROL_CHARS.has(character):  # Control characters not handled above
 			ascii_text += "<0x%02X>" % code
 		elif code == 0x7F:  # DEL character
 			ascii_text += "<DEL>"
