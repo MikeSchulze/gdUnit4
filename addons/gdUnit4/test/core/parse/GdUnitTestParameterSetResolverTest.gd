@@ -142,40 +142,77 @@ func test_validate_test_parameter_set() -> void:
 	var test_suite :GdUnitTestSuite = auto_free(GdUnitTestResourceLoader.load_test_suite("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteInvalidParameterizedTests.resource"))
 
 	assert_is_not_skipped(test_suite, "test_no_parameters")
-	assert_is_not_skipped(test_suite, "test_parameterized_success")
-	assert_is_not_skipped(test_suite, "test_parameterized_failed")
-	assert_is_skipped(test_suite, "test_parameterized_to_less_args")\
-		.contains("The parameter set at index [0] does not match the expected input parameters!")\
-		.contains("The test case requires [3] input parameters, but the set contains [4]")
-	assert_is_skipped(test_suite, "test_parameterized_to_many_args")\
-		.contains("The parameter set at index [0] does not match the expected input parameters!")\
-		.contains("The test case requires [5] input parameters, but the set contains [4]")
-	assert_is_skipped(test_suite, "test_parameterized_to_less_args_at_index_1")\
-		.contains("The parameter set at index [1] does not match the expected input parameters!")\
-		.contains("The test case requires [3] input parameters, but the set contains [4]")
-	assert_is_skipped(test_suite, "test_parameterized_invalid_struct")\
-		.contains("The parameter set at index [1] does not match the expected input parameters!")\
-		.contains("The test case requires [3] input parameters, but the set contains [1]")
-	assert_is_skipped(test_suite, "test_parameterized_invalid_args")\
-		.contains("The parameter set at index [1] does not match the expected input parameters!")\
-		.contains("The value '4' does not match the required input parameter <b:int>.")
+	assert_is_not_skipped(test_suite, "test_parameterized_success", 0)
+	assert_is_not_skipped(test_suite, "test_parameterized_success", 1)
+	assert_is_not_skipped(test_suite, "test_parameterized_success", 2)
+	assert_is_not_skipped(test_suite, "test_parameterized_failed", 0)
+	assert_is_not_skipped(test_suite, "test_parameterized_failed", 1)
+	assert_is_not_skipped(test_suite, "test_parameterized_failed", 2)
+	assert_is_skipped(test_suite, "test_parameterized_to_less_args", 0).is_equal(
+		"""
+			The test data set at index (0) does not match the expected test arguments:
+				test function: func test...(a: int,b: int,expected: int)
+				test input values: [1, 2, 3, 6]
+		""".dedent()
+	)
+	assert_is_skipped(test_suite, "test_parameterized_to_less_args", 1).is_equal(
+		"""
+			The test data set at index (1) does not match the expected test arguments:
+				test function: func test...(a: int,b: int,expected: int)
+				test input values: [3, 4, 5, 11]
+		""".dedent()
+	)
+	assert_is_skipped(test_suite, "test_parameterized_to_many_args", 0).is_equal(
+		"""
+			The test data set at index (0) does not match the expected test arguments:
+				test function: func test...(a: int,b: int,c: int,d: int,expected: int)
+				test input values: [1, 2, 3, 6]
+		""".dedent()
+	)
+	assert_is_skipped(test_suite, "test_parameterized_to_less_args", 0).is_equal(
+		"""
+			The test data set at index (0) does not match the expected test arguments:
+				test function: func test...(a: int,b: int,expected: int)
+				test input values: [1, 2, 3, 6]
+		""".dedent()
+	)
+	# test_parameterized_invalid_struct
+	assert_is_not_skipped(test_suite, "test_parameterized_invalid_struct", 0)
+	assert_is_skipped(test_suite, "test_parameterized_invalid_struct", 1).is_equal(
+		"""
+			The test data set at index (1) does not match the expected test arguments:
+				test function: func test...(a: int,b: int,expected: int)
+				test input values: ["foo"]
+		""".dedent()
+	)
+	assert_is_not_skipped(test_suite, "test_parameterized_invalid_struct", 2)
+	# test_parameterized_invalid_args
+	assert_is_not_skipped(test_suite, "test_parameterized_invalid_args", 0)
+	assert_is_skipped(test_suite, "test_parameterized_invalid_args", 1).is_equal(
+		"""
+			The test data value does not match the expected input type!
+				input value: '4', <String>
+				expected argument: b: int
+		""".dedent()
+	)
+	assert_is_not_skipped(test_suite, "test_parameterized_invalid_args", 2)
 
 
-func assert_is_not_skipped(test_suite :GdUnitTestSuite, test_case :String) -> void:
-	var test := GdUnitTools.find_test_case(test_suite, test_case)
+func assert_is_not_skipped(test_suite: GdUnitTestSuite, test_case: String, index := -1) -> void:
+	var test := GdUnitTools.find_test_case(test_suite, test_case, index)
 	if test.is_parameterized():
 		# to load parameter set and force validate
-		test._resolve_test_parameters(0)
+		test._resolve_test_parameters(index)
 	assert_bool(test.is_skipped()).is_false()
 
 
-func assert_is_skipped(test_suite :GdUnitTestSuite, test_case :String) -> GdUnitStringAssert:
-	var test := GdUnitTools.find_test_case(test_suite, test_case)
+func assert_is_skipped(test_suite: GdUnitTestSuite, test_case: String, index := -1) -> GdUnitStringAssert:
+	var test := GdUnitTools.find_test_case(test_suite, test_case, index)
 	if test.is_parameterized():
 		# to load parameter set and force validate
-		test._resolve_test_parameters(0)
+		test._resolve_test_parameters(index)
 	assert_bool(test.is_skipped()).is_true()
-	return assert_str(test.skip_info())
+	return assert_str(GdUnitTools.richtext_normalize(test.skip_info()))
 
 
 func load_parameter_sets(child_name: String) -> Array:

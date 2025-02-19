@@ -150,7 +150,9 @@ func load_suite(script: GDScript, tests: Array[GdUnitTestCase]) -> GdUnitTestSui
 		# Create test from descriptor and given attributes
 		var test_group: Array = grouped_by_test[fd.name()]
 		for test: GdUnitTestCase in test_group:
-			test_suite.add_child(_TestCase.new(test, test_attribute, fd))
+			# We need a copy, because of mutable state
+			var attribute: TestCaseAttribute = test_attribute.duplicate(true)
+			test_suite.add_child(_TestCase.new(test, attribute, fd))
 	return test_suite
 
 
