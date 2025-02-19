@@ -60,3 +60,17 @@ var fuzzer_iterations: int = Fuzzer.ITERATION_DEFAULT_COUNT
 ## Each [GdFunctionArgument] defines how random test data[br]
 ## should be generated for a particular parameter.
 var fuzzers: Array[GdFunctionArgument] = []
+
+
+# There is a bug in `duplicate` see https://github.com/godotengine/godot/issues/98644
+# we need in addition to overwrite default values with the source values
+@warning_ignore("native_method_override")
+func clone() -> Resource:
+	var copy: TestCaseAttribute = TestCaseAttribute.new()
+	copy.timeout = timeout
+	copy.test_seed = test_seed
+	copy.is_skipped = is_skipped
+	copy.skip_reason = skip_reason
+	copy.fuzzer_iterations = fuzzer_iterations
+	copy.fuzzers = fuzzers.duplicate()
+	return copy
