@@ -496,10 +496,10 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 
 
 func report_exit_code(report: GdUnitHtmlReport) -> int:
-	if report.error_count() + report.failure_count() > 0:
+	if _test_reporter.total_error_count() + _test_reporter.total_failure_count() > 0:
 		console_info("Exit code: %d" % RETURN_ERROR, Color.FIREBRICK)
 		return RETURN_ERROR
-	if report.orphan_count() > 0:
+	if _test_reporter.total_orphan_count() > 0:
 		console_info("Exit code: %d" % RETURN_WARNING, Color.GOLDENROD)
 		return RETURN_WARNING
 	console_info("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)

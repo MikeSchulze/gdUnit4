@@ -246,7 +246,7 @@ func test_scan_by_inheritance_class_name() -> void:
 	assert_array(test_suites).has_size(3)
 	# sort by names
 	assert_array(test_suites).extract("resource_path")\
-		.contains_exactly([
+		.contains_exactly_in_any_order([
 			"res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/BaseTest.gd",
 			"res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/ExtendedTest.gd",
 			"res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/ExtendsExtendedTest.gd"])

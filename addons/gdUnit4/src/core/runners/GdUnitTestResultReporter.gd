@@ -96,6 +96,22 @@ func total_flaky_count() -> int:
 	return _summary["flaky_count"]
 
 
+func total_error_count() -> int:
+	return _summary["error_count"]
+
+
+func total_failure_count() -> int:
+	return _summary["failed_count"]
+
+
+func total_skipped_count() -> int:
+	return _summary["skipped_count"]
+
+
+func total_orphan_count() -> int:
+	return _summary["orphan_nodes"]
+
+
 func elapsed_time() -> int:
 	return _summary["elapsed_time"]
 
