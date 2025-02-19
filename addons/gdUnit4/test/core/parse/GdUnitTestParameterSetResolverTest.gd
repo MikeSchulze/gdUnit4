@@ -166,7 +166,7 @@ func assert_is_not_skipped(test_suite :GdUnitTestSuite, test_case :String) -> vo
 	if test.is_parameterized():
 		# to load parameter set and force validate
 		test._resolve_test_parameters(0)
-	assert_that(test.is_skipped()).is_false()
+	assert_bool(test.is_skipped()).is_false()
 
 
 func assert_is_skipped(test_suite :GdUnitTestSuite, test_case :String) -> GdUnitStringAssert:
@@ -174,12 +174,13 @@ func assert_is_skipped(test_suite :GdUnitTestSuite, test_case :String) -> GdUnit
 	if test.is_parameterized():
 		# to load parameter set and force validate
 		test._resolve_test_parameters(0)
-	assert_that(test.is_skipped()).is_true()
+	assert_bool(test.is_skipped()).is_true()
 	return assert_str(test.skip_info())
 
 
 func load_parameter_sets(child_name: String) -> Array:
-	var function_descriptors := GdScriptParser.new().get_function_descriptors(self.get_script(), [child_name])
+	var script: GDScript = self.get_script()
+	var function_descriptors := GdScriptParser.new().get_function_descriptors(script, [child_name])
 	var fd: GdFunctionDescriptor = function_descriptors.front()
 	var result := GdUnitTestParameterSetResolver.new(fd).load_parameter_sets(self)
 	if result.is_success():
