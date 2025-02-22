@@ -156,8 +156,6 @@ func discover(script: Script, discover_sink: Callable = default_discover_sink) -
 				discover_sink.call(test_case)
 			return
 
-		@warning_ignore("unsafe_method_access")
-
 		sync_moved_tests(source_file, discovered_tests)
 		sync_renamed_tests(source_file, discovered_tests)
 		sync_deleted_tests(source_file, discovered_tests)
@@ -268,18 +266,6 @@ func is_test_moved(left: GdUnitTestCase, right: GdUnitTestCase) -> bool:
 
 func test_equals(left: GdUnitTestCase, right: GdUnitTestCase) -> bool:
 	return left.display_name == right.display_name
-
-
-func extract_test_functions(test_suite :Node) -> PackedStringArray:
-	return test_suite.get_children()\
-		.filter(func(child: Node) -> bool: return is_instance_of(child, _TestCase))\
-		.map(func (child: Node) -> String: return child.get_name())
-
-
-func is_paramaterized_test(test_suite :Node, test_case_name: String) -> bool:
-	return test_suite.get_children()\
-		.filter(func(child: Node) -> bool: return child.name == test_case_name)\
-		.any(func (test: _TestCase) -> bool: return test.is_parameterized())
 
 
 # do rebuild the entire project, there is actual no way to enforce the Godot engine itself to do this

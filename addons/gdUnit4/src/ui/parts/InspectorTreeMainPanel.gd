@@ -798,8 +798,6 @@ func on_test_case_discover_deleted(test_case: GdUnitTestCase) -> void:
 
 		# update the cached counters
 		var item_success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
-
-
 		var item_total_test_count: int = item.get_meta(META_GDUNIT_TOTAL_TESTS, 0)
 		var total_test_count: int = parent.get_meta(META_GDUNIT_TOTAL_TESTS, 0)
 		parent.set_meta(META_GDUNIT_TOTAL_TESTS, total_test_count-item_total_test_count)

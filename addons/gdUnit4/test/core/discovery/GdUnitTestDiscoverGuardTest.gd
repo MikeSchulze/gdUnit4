@@ -265,14 +265,14 @@ func test_discover_moved_test_GDScript() -> void:
 			expected_renamed_tests.append(test_case)
 	)
 	# verify the expected tests are collected (2 test each with a dataset of 3 == 6)
-	assert_array(expected_renamed_tests).extractv(extr("display_name"), extr("line_number"))\
+	assert_array(expected_renamed_tests).extractv(extr("test_name"), extr("attribute_index"), extr("line_number"))\
 		.contains_exactly([
-			tuple("test_parameterized_static_external:0 (<null>)", 28),
-			tuple("test_parameterized_static_external:1 ((1, 1))", 28),
-			tuple("test_parameterized_static_external:2 ((1, 1))", 28),
-			tuple("test_parameterized_dynamic:0 (<null>)", 35),
-			tuple("test_parameterized_dynamic:1 ((1, 1))", 35),
-			tuple("test_parameterized_dynamic:2 ((1, 1))", 35),
+			tuple("test_parameterized_static_external", 0, 28),
+			tuple("test_parameterized_static_external", 1, 28),
+			tuple("test_parameterized_static_external", 2, 28),
+			tuple("test_parameterized_dynamic", 0, 35),
+			tuple("test_parameterized_dynamic", 1, 35),
+			tuple("test_parameterized_dynamic", 2, 35),
 		])
 
 	# we insert two new lines before test test_parameterized_static_external (test source_line is now changed)
@@ -288,14 +288,14 @@ func test_discover_moved_test_GDScript() -> void:
 
 	# verify discovery detects the moved tests by two lines
 	var changed_tests: Array[GdUnitTestCase] = discoverer._discovered_changes["changed_tests"]
-	assert_array(changed_tests).extractv(extr("guid"), extr("display_name"), extr("line_number"))\
+	assert_array(changed_tests).extractv(extr("guid"), extr("test_name"), extr("attribute_index"), extr("line_number"))\
 		.contains_exactly([
-			tuple(expected_renamed_tests[0].guid, "test_parameterized_static_external:0 (<null>)", 30),
-			tuple(expected_renamed_tests[1].guid, "test_parameterized_static_external:1 ((1, 1))", 30),
-			tuple(expected_renamed_tests[2].guid, "test_parameterized_static_external:2 ((1, 1))", 30),
-			tuple(expected_renamed_tests[3].guid, "test_parameterized_dynamic:0 (<null>)", 37),
-			tuple(expected_renamed_tests[4].guid, "test_parameterized_dynamic:1 ((1, 1))", 37),
-			tuple(expected_renamed_tests[5].guid, "test_parameterized_dynamic:2 ((1, 1))", 37),
+			tuple(expected_renamed_tests[0].guid, "test_parameterized_static_external", 0, 30),
+			tuple(expected_renamed_tests[1].guid, "test_parameterized_static_external", 1, 30),
+			tuple(expected_renamed_tests[2].guid, "test_parameterized_static_external", 2, 30),
+			tuple(expected_renamed_tests[3].guid, "test_parameterized_dynamic", 0, 37),
+			tuple(expected_renamed_tests[4].guid, "test_parameterized_dynamic", 1, 37),
+			tuple(expected_renamed_tests[5].guid, "test_parameterized_dynamic", 2, 37),
 		])
 	# and no added or removed tests
 	assert_array(discoverer._discovered_changes["deleted_tests"]).is_empty()
