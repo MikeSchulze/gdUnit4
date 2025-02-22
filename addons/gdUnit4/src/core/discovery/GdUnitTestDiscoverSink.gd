@@ -10,4 +10,4 @@ extends RefCounted
 ## Sends the test case to all listeners connected to the gdunit_test_discovered signal.[br]
 ## [member test_case] The discovered test case to be broadcast to all connected listeners.
 static func discover(test_case: GdUnitTestCase) -> void:
-	GdUnitSignals.instance().gdunit_test_discovered.emit(test_case)
+	GdUnitSignals.instance().gdunit_test_discover_added.emit(test_case)
