@@ -42,7 +42,7 @@ func setup_example_tree() -> void:
 
 
 func discover_sink(test_case: GdUnitTestCase) -> void:
-	_inspector.on_test_case_discovered(test_case)
+	_inspector.on_test_case_discover_added(test_case)
 
 
 func setup_test_env() -> void:
@@ -373,17 +373,17 @@ func test_sort_tree_mode(sort_mode: GdUnitInspectorTreeConstants.SORT_MODE, expe
 
 func test_discover_tests() -> void:
 	# verify the InspectorProgressBar is connected to gdunit_test_discovered signal
-	assert_bool(GdUnitSignals.instance().gdunit_test_discovered.is_connected(_inspector.on_test_case_discovered))\
+	assert_bool(GdUnitSignals.instance().gdunit_test_discover_added.is_connected(_inspector.on_test_case_discover_added))\
 		.override_failure_message("The 'InspectorProgressBar' must be connected to signal 'gdunit_test_discovered'")\
 		.is_true()
 
 
-func test_add_test_case() -> void:
+func test_on_test_case_discover_added() -> void:
 	_inspector.init_tree()
-	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_foo"))
-	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_bar"))
-	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_x/my_test_suite2.gd", 0, "test_foo"))
-	_inspector.add_test_case(GdUnitTestCase.from("res://my_test_suite3.gd", 0, "test_foo"))
+	_inspector.on_test_case_discover_added(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_foo"))
+	_inspector.on_test_case_discover_added(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_bar"))
+	_inspector.on_test_case_discover_added(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_x/my_test_suite2.gd", 0, "test_foo"))
+	_inspector.on_test_case_discover_added(GdUnitTestCase.from("res://my_test_suite3.gd", 0, "test_foo"))
 
 	# create expected tree
 	var tree: Tree = auto_free(Tree.new())
@@ -405,8 +405,8 @@ func test_add_test_case() -> void:
 
 func test_add_parameterized_test_case() -> void:
 	_inspector.init_tree()
-	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_parameterized", 0, "1.2"))
-	_inspector.add_test_case(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_parameterized", 1, "2.2"))
+	_inspector.on_test_case_discover_added(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_parameterized", 0, "1.2"))
+	_inspector.on_test_case_discover_added(GdUnitTestCase.from("res://addons/gdUnit4/test/dir_a/dir_b/my_test_suite.gd", 0, "test_parameterized", 1, "2.2"))
 
 	# create expected tree
 	var tree: Tree = auto_free(Tree.new())

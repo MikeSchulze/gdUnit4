@@ -6,7 +6,7 @@ class TestDiscoverSinkReceiver:
 	var _discovered_tests: Array[GdUnitTestCase]
 
 	func _init() -> void:
-		GdUnitSignals.instance().gdunit_test_discovered.connect(on_test_case_discovered)
+		GdUnitSignals.instance().gdunit_test_discover_added.connect(on_test_case_discovered)
 
 	func on_test_case_discovered(test_case: GdUnitTestCase) -> void:
 		_discovered_tests.append(test_case)

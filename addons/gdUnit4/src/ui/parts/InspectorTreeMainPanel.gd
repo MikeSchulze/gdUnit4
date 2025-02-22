@@ -81,6 +81,18 @@ func find_tree_item(parent: TreeItem, item_name: String) -> TreeItem:
 	return null
 
 
+func find_tree_item_by_id(parent: TreeItem, id: GdUnitGUID) -> TreeItem:
+	for child in parent.get_children():
+		if child.get_meta(META_GDUNIT_ID) == id:
+			return child
+		if child.get_child_count() > 0:
+			var item := find_tree_item_by_id(child, id)
+			if item != null:
+				return item
+
+	return null
+
+
 func get_tree_item(resource_path: String, item_name: String) -> TreeItem:
 	var key := _build_cache_key(resource_path, item_name)
 	return _item_hash.get(key, null)
@@ -192,7 +204,9 @@ func _ready() -> void:
 	init_tree()
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
 	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
-	GdUnitSignals.instance().gdunit_test_discovered.connect(on_test_case_discovered)
+	GdUnitSignals.instance().gdunit_test_discover_added.connect(on_test_case_discover_added)
+	GdUnitSignals.instance().gdunit_test_discover_deleted.connect(on_test_case_discover_deleted)
+	GdUnitSignals.instance().gdunit_test_discover_modified.connect(on_test_case_discover_modified)
 	var command_handler := GdUnitCommandHandler.instance()
 	command_handler.gdunit_runner_start.connect(_on_gdunit_runner_start)
 	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
@@ -659,16 +673,16 @@ func get_total_child_count(item: TreeItem) -> int:
 	return total_count
 
 
-func update_item_processed_counter(item: TreeItem) -> void:
+func update_item_processed_counter(item: TreeItem, add_count := 1) -> void:
 	if item == _tree_root:
 		return
 
-	var success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS) + 1
+	var success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS) + add_count
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, success_count)
 	if item.has_meta(META_GDUNIT_TOTAL_TESTS):
 		item.set_text(0, "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)])
 
-	update_item_processed_counter(item.get_parent())
+	update_item_processed_counter(item.get_parent(), add_count)
 
 
 func update_progress_counters(item: TreeItem, rety_count: int) -> void:
@@ -744,51 +758,7 @@ func get_icon_by_file_type(path: String, state: STATE, orphans: bool) -> Texture
 			return ICON_FOLDER
 
 
-func discover_test_suite_added(event: GdUnitEventTestDiscoverTestSuiteAdded) -> void:
-	# Check first if the test suite already exists
-	var item := get_tree_item(extract_resource_path(event), event.suite_name())
-	if item != null:
-		return
-	# Otherwise create it
-	prints("Discovered test suite added: '%s' on %s" % [event.suite_name(), extract_resource_path(event)])
-	#do_add_test_suite(event.suite_dto())
-
-
-func discover_test_added(event: GdUnitEventTestDiscoverTestAdded) -> void:
-	# check if the test already exists
-	var test_name := event.test_case_dto().name()
-	var resource_path := extract_resource_path(event)
-	var item := get_tree_item(resource_path, test_name)
-	if item != null:
-		return
-
-	item = get_tree_item(resource_path, event.suite_name())
-	if not item:
-		push_error("Internal Error: Can't find test suite %s:%s" % [event.suite_name(), resource_path])
-		return
-	prints("Discovered test added: '%s' on %s" % [event.test_name(), resource_path])
-	# update test case count
-	#init_item_counter(item)
-	# add new discovered test
-	#add_test(item, event.test_case_dto())
-
-
-func discover_test_removed(event: GdUnitEventTestDiscoverTestRemoved) -> void:
-	var resource_path := extract_resource_path(event)
-	prints("Discovered test removed: '%s' on %s" % [event.test_name(), resource_path])
-	var item := get_tree_item(resource_path, event.test_name())
-	if not item:
-		push_error("Internal Error: Can't find test suite %s:%s" % [event.suite_name(), resource_path])
-		return
-	# update test case count on test suite
-	var parent := item.get_parent()
-	update_item_total_counter(parent)
-	# finally remove the test
-	@warning_ignore("return_value_discarded")
-	remove_tree_item(resource_path, event.test_name())
-
-
-func add_test_case(test_case: GdUnitTestCase) -> void:
+func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 	var test_root_folder := GdUnitSettings.test_root_folder().replace("res://", "")
 	var fully_qualified_name := test_case.fully_qualified_name.trim_prefix(test_root_folder).trim_suffix(test_case.display_name)
 	var parts := fully_qualified_name.split(".", false)
@@ -806,6 +776,7 @@ func add_test_case(test_case: GdUnitTestCase) -> void:
 			continue
 		if item_name.begins_with(test_case.test_name):
 			var is_test_group := item_name == test_case.test_name
+
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
 			next.set_meta(META_LINE_NUMBER, test_case.line_number)
 			next.set_meta(META_TEST_PARAM_INDEX, -1 if is_test_group else test_case.attribute_index)
@@ -816,13 +787,34 @@ func add_test_case(test_case: GdUnitTestCase) -> void:
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		else:
 			next = create_item(parent, test_case, item_name, GdUnitType.FOLDER)
-
 		parent = next
 
 
-@warning_ignore("unused_parameter")
-func on_test_case_discovered(test_case: GdUnitTestCase) -> void:
-	add_test_case(test_case)
+func on_test_case_discover_deleted(test_case: GdUnitTestCase) -> void:
+	var item := find_tree_item_by_id(_tree_root, test_case.guid)
+	if item != null:
+		var parent := item.get_parent()
+		parent.remove_child(item)
+
+		# update the cached counters
+		var item_success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
+
+
+		var item_total_test_count: int = item.get_meta(META_GDUNIT_TOTAL_TESTS, 0)
+		var total_test_count: int = parent.get_meta(META_GDUNIT_TOTAL_TESTS, 0)
+		parent.set_meta(META_GDUNIT_TOTAL_TESTS, total_test_count-item_total_test_count)
+
+		# propagate counter update to all parents
+		update_item_total_counter(parent)
+		update_item_processed_counter(parent, -item_success_count)
+
+
+func on_test_case_discover_modified(test_case: GdUnitTestCase) -> void:
+	var item := find_tree_item_by_id(_tree_root, test_case.guid)
+	if item != null:
+		item.set_meta(META_LINE_NUMBER, test_case.line_number)
+		item.set_text(0, test_case.display_name)
+		item.set_meta(META_GDUNIT_NAME, test_case.display_name)
 
 
 func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:
@@ -942,15 +934,6 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			_discover_hint.visible = false
 			_tree_root.visible = true
 			#_dump_tree_as_json("tree_example_discovered")
-
-		GdUnitEvent.DISCOVER_SUITE_ADDED:
-			discover_test_suite_added(event as GdUnitEventTestDiscoverTestSuiteAdded)
-
-		GdUnitEvent.DISCOVER_TEST_ADDED:
-			discover_test_added(event as GdUnitEventTestDiscoverTestAdded)
-
-		GdUnitEvent.DISCOVER_TEST_REMOVED:
-			discover_test_removed(event as GdUnitEventTestDiscoverTestRemoved)
 
 		GdUnitEvent.INIT:
 			reset_tree_state(_tree_root)
