@@ -21,19 +21,20 @@ func _init() -> void:
 
 
 func _popup_menu(paths: PackedStringArray) -> void:
-	var test_suites := PackedStringArray()
+	var test_suites: Array[Script] = []
+	var suite_scaner := GdUnitTestSuiteScanner.new()
 
 	for resource_path in paths:
 		# directories and test-suites are valid to enable the menu
 		if DirAccess.dir_exists_absolute(resource_path):
-			test_suites.append(resource_path)
+			test_suites.append_array(suite_scaner.scan_directory(resource_path))
 			continue
 
 		var file_type := resource_path.get_extension()
 		if file_type == "gd" or file_type == "cs":
-			var resource: Script = ResourceLoader.load(resource_path, "Script", ResourceLoader.CACHE_MODE_REUSE)
-			if GdObjects.is_test_suite(resource):
-				test_suites.append(resource_path)
+			var script: Script = ResourceLoader.load(resource_path, "Script", ResourceLoader.CACHE_MODE_REUSE)
+			if GdObjects.is_test_suite(script):
+				test_suites.append(script)
 
 	# no direcory or test-suites selected?
 	if test_suites.is_empty():

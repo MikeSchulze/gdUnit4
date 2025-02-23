@@ -89,7 +89,9 @@ func _remove_context_menus() -> void:
 func _create_context_menu(script_path: String) -> Variant:
 	var context_menu_script := GDScript.new()
 	context_menu_script.source_code = FileAccess.get_file_as_string(script_path)
-	context_menu_script.reload()
+	var err := context_menu_script.reload(true)
+	if err != OK:
+		push_error("Can't create context menu %s, error: %s" % [script_path, error_string(err)])
 	return context_menu_script.new()
 
 
