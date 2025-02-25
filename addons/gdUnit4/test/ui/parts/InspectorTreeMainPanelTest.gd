@@ -422,6 +422,42 @@ func test_add_parameterized_test_case() -> void:
 	assert_tree_equals(_inspector._tree_root, expected_root)
 
 
+func test_collect_test_cases() -> void:
+	var script := load_non_cached("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
+	var tests_by_id := {}
+	GdUnitTestDiscoverer.discover_tests(script, func(test_to_discover: GdUnitTestCase) -> void:
+		discover_sink(test_to_discover)
+		tests_by_id[test_to_discover.display_name] = test_to_discover
+	)
+
+	# Test select a single test
+	var expected_test: GdUnitTestCase = tests_by_id["test_case1"]
+	# Find tree node by test id
+	var test := _inspector.find_tree_item_by_id(_inspector._tree_root, expected_test.guid)
+	# Collect all test cases by given tree node
+	var collected_tests := _inspector.collect_test_cases(test)
+	assert_array(collected_tests).contains_exactly([expected_test])
+
+	# Test select on paramaterized
+	var paramaterized_test: GdUnitTestCase = tests_by_id["test_parameterized_static:0 (1, 1)"]
+	test = _inspector.find_tree_item_by_id(_inspector._tree_root, paramaterized_test.guid)
+	# Collect all paramaterized tests
+	collected_tests = _inspector.collect_test_cases(test)
+	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
+	var expected_tests: Array = tests_by_id.values().filter(func(test_to_filter: GdUnitTestCase) -> bool:
+		return test_to_filter.test_name == "test_parameterized_static"
+	)
+	assert_array(collected_tests)\
+		.has_size(3)\
+		.contains_exactly_in_any_order(expected_tests)
+
+	# Test select a single suite
+	# Collect all test cases from the suite node (parent)
+	collected_tests = _inspector.collect_test_cases(test.get_parent())
+	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
+	assert_array(collected_tests).contains_exactly_in_any_order(tests_by_id.values())
+
+
 ## test helpers to validate two trees
 # ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -524,3 +560,8 @@ func create_child( parent: TreeItem, _name: String) -> TreeItem:
 	item.set_text(0, _name)
 	item.collapsed = true
 	return item
+
+
+# we need to load the scripts freshly uncached because of script changes during test execution
+func load_non_cached(resource_path: String) -> GDScript:
+	return ResourceLoader.load(resource_path, "GDScript", ResourceLoader.CACHE_MODE_IGNORE)

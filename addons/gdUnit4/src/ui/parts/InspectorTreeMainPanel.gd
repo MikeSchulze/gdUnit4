@@ -1,8 +1,6 @@
 @tool
 extends VSplitContainer
 
-signal run_testcase(test_suite_resource_path: String, test_case: String, test_param_index: int, run_debug: bool)
-signal run_testsuite()
 ## Will be emitted when the test index counter is changed
 signal test_counters_changed(index: int, total: int, state: GdUnitInspectorTreeConstants.STATE)
 
@@ -47,8 +45,8 @@ enum GdUnitType {
 	TEST_CASE
 }
 
+const META_TEST_CASE := "gdunit_test_case"
 const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
-const META_GDUNIT_ID := "gdUnit_id"
 const META_GDUNIT_NAME := "gdUnit_name"
 const META_GDUNIT_STATE := "gdUnit_state"
 const META_GDUNIT_TYPE := "gdUnit_type"
@@ -58,10 +56,6 @@ const META_GDUNIT_SUCCESS_TESTS := "gdUnit_suite_success_tests"
 const META_GDUNIT_REPORT := "gdUnit_report"
 const META_GDUNIT_ORPHAN := "gdUnit_orphan"
 const META_GDUNIT_EXECUTION_TIME := "gdUnit_execution_time"
-const META_RESOURCE_PATH := "resource_path"
-const META_LINE_NUMBER := "line_number"
-const META_SCRIPT_PATH := "script_path"
-const META_TEST_PARAM_INDEX := "test_param_index"
 const STATE = GdUnitInspectorTreeConstants.STATE
 
 
@@ -83,7 +77,7 @@ func find_tree_item(parent: TreeItem, item_name: String) -> TreeItem:
 
 func find_tree_item_by_id(parent: TreeItem, id: GdUnitGUID) -> TreeItem:
 	for child in parent.get_children():
-		if child.get_meta(META_GDUNIT_ID) == id:
+		if is_test_id(child, id):
 			return child
 		if child.get_child_count() > 0:
 			var item := find_tree_item_by_id(child, id)
@@ -119,7 +113,7 @@ func clear_tree_item_cache() -> void:
 
 func _find_by_resource_path(current: TreeItem, resource_path: String) -> TreeItem:
 	for item in current.get_children():
-		if item.get_meta(META_RESOURCE_PATH) == resource_path:
+		if get_item_source_file(item) == resource_path:
 			return item
 	return null
 
@@ -189,6 +183,13 @@ func is_test_case(item: TreeItem) -> bool:
 func is_folder(item: TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_TYPE) and item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER
 
+
+func is_test_id(item: TreeItem, id: GdUnitGUID) -> bool:
+	if not item.has_meta(META_TEST_CASE):
+		return false
+
+	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+	return test_case.guid == id
 
 @warning_ignore("return_value_discarded")
 func _ready() -> void:
@@ -620,18 +621,14 @@ func update_test_case(event: GdUnitEvent) -> void:
 
 
 func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type: GdUnitType) -> TreeItem:
-	var script_path := ProjectSettings.localize_path(test.source_file)
 	var item := _tree.create_item(parent)
 	item.collapsed = true
 	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, item_name)
-	item.set_meta(META_GDUNIT_ID, test.guid)
+	if type == GdUnitType.TEST_CASE:
+		item.set_meta(META_TEST_CASE, test)
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)
-	# for folder items we need to get the base path
-	var resource_path := test.source_file if type != GdUnitType.FOLDER else test.source_file.get_base_dir()
-	item.set_meta(META_RESOURCE_PATH, resource_path)
-	item.set_meta(META_SCRIPT_PATH, script_path)
 	set_state_initial(item)
 	update_item_total_counter(item)
 	return item
@@ -640,9 +637,9 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 func set_item_icon_by_state(item :TreeItem) -> void:
 	if item == _tree_root:
 		return
-	var resource_path :String = item.get_meta(META_RESOURCE_PATH)
 	var state :STATE = item.get_meta(META_GDUNIT_STATE)
 	var is_orphan := is_item_state_orphan(item)
+	var resource_path := get_item_source_file(item)
 	item.set_icon(0, get_icon_by_file_type(resource_path, state, is_orphan))
 	if item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER:
 		item.set_icon_modulate(0, Color.SKY_BLUE)
@@ -775,15 +772,10 @@ func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 			parent = next
 			continue
 		if item_name.begins_with(test_case.test_name):
-			var is_test_group := item_name == test_case.test_name
-
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
-			next.set_meta(META_LINE_NUMBER, test_case.line_number)
-			next.set_meta(META_TEST_PARAM_INDEX, -1 if is_test_group else test_case.attribute_index)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		elif item_name == test_case.suite_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_SUITE)
-			next.set_meta(META_LINE_NUMBER, 0)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		else:
 			next = create_item(parent, test_case, item_name, GdUnitType.FOLDER)
@@ -810,13 +802,29 @@ func on_test_case_discover_deleted(test_case: GdUnitTestCase) -> void:
 func on_test_case_discover_modified(test_case: GdUnitTestCase) -> void:
 	var item := find_tree_item_by_id(_tree_root, test_case.guid)
 	if item != null:
-		item.set_meta(META_LINE_NUMBER, test_case.line_number)
+		item.set_meta(META_TEST_CASE, test_case)
 		item.set_text(0, test_case.display_name)
 		item.set_meta(META_GDUNIT_NAME, test_case.display_name)
 
 
 func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:
 	return item.get_meta(META_GDUNIT_REPORT)
+
+
+func get_item_test_line_number(item: TreeItem) -> int:
+	if item == null or not item.has_meta(META_TEST_CASE):
+		return -1
+
+	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+	return test_case.line_number
+
+
+func get_item_source_file(item: TreeItem) -> String:
+	if item == null or not item.has_meta(META_TEST_CASE):
+		return ""
+
+	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+	return test_case.source_file
 
 
 func _dump_tree_as_json(dump_name: String) -> void:
@@ -836,6 +844,18 @@ func extract_resource_path(event: GdUnitEvent) -> String:
 	return ProjectSettings.localize_path(event.resource_path())
 
 
+func collect_test_cases(item: TreeItem, tests: Array[GdUnitTestCase] = []) -> Array[GdUnitTestCase]:
+	for next in item.get_children():
+		collect_test_cases(next, tests)
+
+	if not is_folder(item) and item.has_meta(META_TEST_CASE):
+		var test: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+		if not tests.has(test):
+			tests.append(test)
+
+	return tests
+
+
 ################################################################################
 # Tree signal receiver
 ################################################################################
@@ -851,18 +871,9 @@ func _on_run_pressed(run_debug: bool) -> void:
 	if item == null:
 		print_rich("[color=GOLDENROD]Abort Testrun, no test suite selected![/color]")
 		return
-	if item.get_meta(META_GDUNIT_TYPE) == GdUnitType.TEST_SUITE or item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER:
-		var resource_path: String = item.get_meta(META_RESOURCE_PATH)
-		run_testsuite.emit([resource_path], run_debug)
-		return
 
-	var test_suite_resource_path: String = item.get_meta(META_RESOURCE_PATH)
-	var test_case: String = item.get_meta(META_GDUNIT_NAME)
-	# handle parameterized test selection
-	var test_param_index: int = item.get_meta(META_TEST_PARAM_INDEX)
-	if test_param_index != -1:
-		test_case = item.get_parent().get_meta(META_GDUNIT_NAME)
-	run_testcase.emit(test_suite_resource_path, test_case, test_param_index, run_debug)
+	var test_to_execute := collect_test_cases(item)
+	GdUnitCommandHandler.instance().cmd_run_tests(test_to_execute, run_debug)
 
 
 func _on_Tree_item_selected() -> void:
@@ -876,12 +887,9 @@ func _on_Tree_item_selected() -> void:
 # Opens the test suite
 func _on_Tree_item_activated() -> void:
 	var selected_item := _tree.get_selected()
-	if selected_item != null and selected_item.has_meta(META_LINE_NUMBER):
-		var script_path: String = (
-			selected_item.get_meta(META_RESOURCE_PATH) if is_test_suite(selected_item)
-			else selected_item.get_meta(META_SCRIPT_PATH)
-		)
-		var line_number: int = selected_item.get_meta(META_LINE_NUMBER)
+	var line_number := get_item_test_line_number(selected_item)
+	if line_number != -1:
+		var script_path := ProjectSettings.localize_path(get_item_source_file(selected_item))
 		var resource: Script = load(script_path)
 
 		if selected_item.has_meta(META_GDUNIT_REPORT):

@@ -224,6 +224,17 @@ func cmd_run_test_case(test_suite_resource_path: String, test_case: String, test
 	cmd_run(debug)
 
 
+func cmd_run_tests(tests_to_execute: Array[GdUnitTestCase], debug: bool) -> void:
+	# Save tests to runner config before execute
+	var result := _runner_config.clear()\
+		.add_test_cases(tests_to_execute)\
+		.save_config()
+	if result.is_error():
+		push_error(result.error_message())
+		return
+	cmd_run(debug)
+
+
 func cmd_run_overall(debug: bool) -> void:
 	var tests_to_execute := await GdUnitTestDiscoverer.run()
 	var result := _runner_config.clear()\
