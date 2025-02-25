@@ -47,7 +47,6 @@ enum GdUnitType {
 
 const META_TEST_CASE := "gdunit_test_case"
 const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
-const META_GDUNIT_ID := "gdUnit_id"
 const META_GDUNIT_NAME := "gdUnit_name"
 const META_GDUNIT_STATE := "gdUnit_state"
 const META_GDUNIT_TYPE := "gdUnit_type"
@@ -58,7 +57,6 @@ const META_GDUNIT_REPORT := "gdUnit_report"
 const META_GDUNIT_ORPHAN := "gdUnit_orphan"
 const META_GDUNIT_EXECUTION_TIME := "gdUnit_execution_time"
 const META_RESOURCE_PATH := "resource_path"
-const META_LINE_NUMBER := "line_number"
 const META_SCRIPT_PATH := "script_path"
 const META_TEST_PARAM_INDEX := "test_param_index"
 const STATE = GdUnitInspectorTreeConstants.STATE
@@ -82,7 +80,7 @@ func find_tree_item(parent: TreeItem, item_name: String) -> TreeItem:
 
 func find_tree_item_by_id(parent: TreeItem, id: GdUnitGUID) -> TreeItem:
 	for child in parent.get_children():
-		if child.has_meta(META_GDUNIT_ID) and child.get_meta(META_GDUNIT_ID) == id:
+		if is_test_id(child, id):
 			return child
 		if child.get_child_count() > 0:
 			var item := find_tree_item_by_id(child, id)
@@ -188,6 +186,13 @@ func is_test_case(item: TreeItem) -> bool:
 func is_folder(item: TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_TYPE) and item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER
 
+
+func is_test_id(item: TreeItem, id: GdUnitGUID) -> bool:
+	if not item.has_meta(META_TEST_CASE):
+		return false
+
+	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+	return test_case.guid == id
 
 @warning_ignore("return_value_discarded")
 func _ready() -> void:
@@ -626,7 +631,6 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 	item.set_text(0, item_name)
 	if type == GdUnitType.TEST_CASE:
 		item.set_meta(META_TEST_CASE, test)
-		item.set_meta(META_GDUNIT_ID, test.guid)
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)
 	# for folder items we need to get the base path
@@ -779,12 +783,10 @@ func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 			var is_test_group := item_name == test_case.test_name
 
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
-			next.set_meta(META_LINE_NUMBER, test_case.line_number)
 			next.set_meta(META_TEST_PARAM_INDEX, -1 if is_test_group else test_case.attribute_index)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		elif item_name == test_case.suite_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_SUITE)
-			next.set_meta(META_LINE_NUMBER, 0)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		else:
 			next = create_item(parent, test_case, item_name, GdUnitType.FOLDER)
@@ -812,13 +814,20 @@ func on_test_case_discover_modified(test_case: GdUnitTestCase) -> void:
 	var item := find_tree_item_by_id(_tree_root, test_case.guid)
 	if item != null:
 		item.set_meta(META_TEST_CASE, test_case)
-		item.set_meta(META_LINE_NUMBER, test_case.line_number)
 		item.set_text(0, test_case.display_name)
 		item.set_meta(META_GDUNIT_NAME, test_case.display_name)
 
 
 func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:
 	return item.get_meta(META_GDUNIT_REPORT)
+
+
+func get_item_test_line_number(item: TreeItem) -> int:
+	if item == null or not item.has_meta(META_TEST_CASE):
+		return -1
+
+	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+	return test_case.line_number
 
 
 func _dump_tree_as_json(dump_name: String) -> void:
@@ -881,12 +890,12 @@ func _on_Tree_item_selected() -> void:
 # Opens the test suite
 func _on_Tree_item_activated() -> void:
 	var selected_item := _tree.get_selected()
-	if selected_item != null and selected_item.has_meta(META_LINE_NUMBER):
+	var line_number := get_item_test_line_number(selected_item)
+	if line_number != -1:
 		var script_path: String = (
 			selected_item.get_meta(META_RESOURCE_PATH) if is_test_suite(selected_item)
 			else selected_item.get_meta(META_SCRIPT_PATH)
 		)
-		var line_number: int = selected_item.get_meta(META_LINE_NUMBER)
 		var resource: Script = load(script_path)
 
 		if selected_item.has_meta(META_GDUNIT_REPORT):
