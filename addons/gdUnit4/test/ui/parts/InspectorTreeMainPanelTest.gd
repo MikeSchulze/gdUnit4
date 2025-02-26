@@ -239,7 +239,7 @@ func test_suite_text_shows_amount_of_cases() -> void:
 
 
 func test_suite_text_responds_to_test_case_events() -> void:
-	var suite_script_path: String = suite_a_item.get_meta(META_SCRIPT_PATH)
+	var suite_script_path: String = _inspector.get_item_source_file(_inspector.find_tree_item(suite_a_item, "test_aa"))
 	var success_aa := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_aa")
 	_inspector._on_gdunit_event(success_aa)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
@@ -265,41 +265,44 @@ func test_suite_text_responds_to_test_case_events() -> void:
 func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	# add a second test suite where has same name as suite_a_item
 	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/bar/ExampleTestSuiteA.resource", true)
-	GdUnitTestDiscoverer.discover_tests(suite_script, discover_sink)
+	var discovered_tests := {}
+	GdUnitTestDiscoverer.discover_tests(suite_script, func(discover_test: GdUnitTestCase) -> void:
+		discover_sink(discover_test)
+		discovered_tests[discover_test.test_name] = discover_test
+	)
 	var suite_item := _inspector.get_tree_item(suite_script.resource_path, "ExampleTestSuiteA")
-	var suite_a_script_path: String = suite_a_item.get_meta(META_SCRIPT_PATH)
-
-	assert_object(suite_a_item).is_not_same(suite_item)
-	assert_str(suite_item.get_meta(META_SCRIPT_PATH)).is_equal(suite_script.resource_path)
+	assert_object(suite_item).is_not_same(suite_a_item)
 
 	# verify inital state
-	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
 	assert_str(suite_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
+	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
 
 	# set test starting checked suite_a_item
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(GdUnitGUID.new(), suite_a_script_path, "ExampleTestSuiteA", "test_aa"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(GdUnitGUID.new(), suite_a_script_path, "ExampleTestSuiteA", "test_ab"))
-	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.RUNNING)
-	assert_int(get_item_state(suite_a_item, "test_ab")).is_equal(_inspector.STATE.RUNNING)
-	# test test_suite_aa_path is not affected
+	var test_aa: GdUnitTestCase = discovered_tests["test_aa"]
+	var test_ab: GdUnitTestCase = discovered_tests["test_ab"]
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(test_aa.guid, test_aa.source_file, test_aa.suite_name, test_aa.test_name))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(test_ab.guid, test_ab.source_file, test_ab.suite_name, test_ab.test_name))
 	assert_str(suite_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
-	assert_int(get_item_state(suite_item, "test_ab")).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite_item, "test_aa")).is_equal(_inspector.STATE.RUNNING)
+	assert_int(get_item_state(suite_item, "test_ab")).is_equal(_inspector.STATE.RUNNING)
+	# test suite_a_item is not affected
+	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite_a_item, "test_ab")).is_equal(_inspector.STATE.INITIAL)
 
 	# finish the tests with success
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_a_script_path, "ExampleTestSuiteA", "test_aa"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_a_script_path, "ExampleTestSuiteA", "test_ab"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_aa.guid, test_aa.source_file, test_aa.suite_name, test_aa.test_name))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_ab.guid, test_ab.source_file, test_ab.suite_name, test_ab.test_name))
 
 	# verify updated state checked suite_a_item
-	assert_str(suite_a_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.SUCCESS)
-	assert_int(get_item_state(suite_a_item, "test_ab")).is_equal(_inspector.STATE.SUCCESS)
-	# test test_suite_aa_path is not affected
-	assert_str(suite_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
-	assert_int(get_item_state(suite_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
-	assert_int(get_item_state(suite_item, "test_ab")).is_equal(_inspector.STATE.INITIAL)
+	assert_str(suite_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_item, "test_aa")).is_equal(_inspector.STATE.SUCCESS)
+	assert_int(get_item_state(suite_item, "test_ab")).is_equal(_inspector.STATE.SUCCESS)
+	# test suite_a_item is not affected
+	assert_str(suite_a_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
+	assert_int(get_item_state(suite_a_item, "test_aa")).is_equal(_inspector.STATE.INITIAL)
+	assert_int(get_item_state(suite_a_item, "test_ab")).is_equal(_inspector.STATE.INITIAL)
 
 
 # Test coverage for issue GD-278: GdUnit Inspector: Test marks as passed if both warning and error
@@ -312,7 +315,6 @@ func test_update_icon_state() -> void:
 
 	# Verify the inital state
 	assert_str(suite_item.get_text(0)).is_equal("(0/2) " + suite_name)
-	assert_str(suite_item.get_meta(_inspector.META_RESOURCE_PATH)).is_equal(suite_script_path)
 	assert_int(get_item_state(suite_item)).is_equal(_inspector.STATE.INITIAL)
 	assert_int(get_item_state(suite_item, "test_case1")).is_equal(_inspector.STATE.INITIAL)
 	assert_int(get_item_state(suite_item, "test_case2")).is_equal(_inspector.STATE.INITIAL)
@@ -422,6 +424,42 @@ func test_add_parameterized_test_case() -> void:
 	assert_tree_equals(_inspector._tree_root, expected_root)
 
 
+func test_collect_test_cases() -> void:
+	var script := load_non_cached("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
+	var tests_by_id := {}
+	GdUnitTestDiscoverer.discover_tests(script, func(test_to_discover: GdUnitTestCase) -> void:
+		discover_sink(test_to_discover)
+		tests_by_id[test_to_discover.display_name] = test_to_discover
+	)
+
+	# Test select a single test
+	var expected_test: GdUnitTestCase = tests_by_id["test_case1"]
+	# Find tree node by test id
+	var test := _inspector.find_tree_item_by_id(_inspector._tree_root, expected_test.guid)
+	# Collect all test cases by given tree node
+	var collected_tests := _inspector.collect_test_cases(test)
+	assert_array(collected_tests).contains_exactly([expected_test])
+
+	# Test select on paramaterized
+	var paramaterized_test: GdUnitTestCase = tests_by_id["test_parameterized_static:0 (1, 1)"]
+	test = _inspector.find_tree_item_by_id(_inspector._tree_root, paramaterized_test.guid)
+	# Collect all paramaterized tests
+	collected_tests = _inspector.collect_test_cases(test)
+	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
+	var expected_tests: Array = tests_by_id.values().filter(func(test_to_filter: GdUnitTestCase) -> bool:
+		return test_to_filter.test_name == "test_parameterized_static"
+	)
+	assert_array(collected_tests)\
+		.has_size(3)\
+		.contains_exactly_in_any_order(expected_tests)
+
+	# Test select a single suite
+	# Collect all test cases from the suite node (parent)
+	collected_tests = _inspector.collect_test_cases(test.get_parent())
+	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
+	assert_array(collected_tests).contains_exactly_in_any_order(tests_by_id.values())
+
+
 ## test helpers to validate two trees
 # ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -524,3 +562,8 @@ func create_child( parent: TreeItem, _name: String) -> TreeItem:
 	item.set_text(0, _name)
 	item.collapsed = true
 	return item
+
+
+# we need to load the scripts freshly uncached because of script changes during test execution
+func load_non_cached(resource_path: String) -> GDScript:
+	return ResourceLoader.load(resource_path, "GDScript", ResourceLoader.CACHE_MODE_IGNORE)

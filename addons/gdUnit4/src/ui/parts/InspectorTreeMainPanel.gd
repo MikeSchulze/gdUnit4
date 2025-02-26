@@ -1,8 +1,6 @@
 @tool
 extends VSplitContainer
 
-signal run_testcase(test_suite_resource_path: String, test_case: String, test_param_index: int, run_debug: bool)
-signal run_testsuite()
 ## Will be emitted when the test index counter is changed
 signal test_counters_changed(index: int, total: int, state: GdUnitInspectorTreeConstants.STATE)
 
@@ -47,21 +45,17 @@ enum GdUnitType {
 	TEST_CASE
 }
 
-const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
-const META_GDUNIT_ID := "gdUnit_id"
+const META_GDUNIT_PROGRESS_COUNT_MAX := "gdUnit_progress_count_max"
+const META_GDUNIT_PROGRESS_INDEX := "gdUnit_progress_index"
+const META_TEST_CASE := "gdunit_test_case"
 const META_GDUNIT_NAME := "gdUnit_name"
 const META_GDUNIT_STATE := "gdUnit_state"
 const META_GDUNIT_TYPE := "gdUnit_type"
-const META_GDUNIT_TOTAL_TESTS := "gdUnit_suite_total_tests"
-const META_GDUNIT_TEST_INDEX := "gdUnit_test_index"
 const META_GDUNIT_SUCCESS_TESTS := "gdUnit_suite_success_tests"
 const META_GDUNIT_REPORT := "gdUnit_report"
 const META_GDUNIT_ORPHAN := "gdUnit_orphan"
 const META_GDUNIT_EXECUTION_TIME := "gdUnit_execution_time"
-const META_RESOURCE_PATH := "resource_path"
-const META_LINE_NUMBER := "line_number"
-const META_SCRIPT_PATH := "script_path"
-const META_TEST_PARAM_INDEX := "test_param_index"
+const META_GDUNIT_ORIGINAL_INDEX = "gdunit_original_index"
 const STATE = GdUnitInspectorTreeConstants.STATE
 
 
@@ -83,7 +77,7 @@ func find_tree_item(parent: TreeItem, item_name: String) -> TreeItem:
 
 func find_tree_item_by_id(parent: TreeItem, id: GdUnitGUID) -> TreeItem:
 	for child in parent.get_children():
-		if child.get_meta(META_GDUNIT_ID) == id:
+		if is_test_id(child, id):
 			return child
 		if child.get_child_count() > 0:
 			var item := find_tree_item_by_id(child, id)
@@ -119,7 +113,7 @@ func clear_tree_item_cache() -> void:
 
 func _find_by_resource_path(current: TreeItem, resource_path: String) -> TreeItem:
 	for item in current.get_children():
-		if item.get_meta(META_RESOURCE_PATH) == resource_path:
+		if get_item_source_file(item) == resource_path:
 			return item
 	return null
 
@@ -190,6 +184,13 @@ func is_folder(item: TreeItem) -> bool:
 	return item.has_meta(META_GDUNIT_TYPE) and item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER
 
 
+func is_test_id(item: TreeItem, id: GdUnitGUID) -> bool:
+	if not item.has_meta(META_TEST_CASE):
+		return false
+
+	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+	return test_case.guid == id
+
 @warning_ignore("return_value_discarded")
 func _ready() -> void:
 	_context_menu.set_item_icon(CONTEXT_MENU_RUN_ID, GdUnitUiTools.get_icon("Play"))
@@ -234,8 +235,8 @@ func init_tree() -> void:
 	_tree_root = _tree.create_item()
 	_tree_root.set_text(0, "tree_root")
 	_tree_root.set_meta(META_GDUNIT_NAME, "tree_root")
-	_tree_root.set_meta(META_GDUNIT_TOTAL_TESTS, 0)
-	_tree_root.set_meta(META_GDUNIT_TEST_INDEX, 0)
+	_tree_root.set_meta(META_GDUNIT_PROGRESS_COUNT_MAX, 0)
+	_tree_root.set_meta(META_GDUNIT_PROGRESS_INDEX, 0)
 	_tree_root.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	_tree_root.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
 	# fix tree icon scaling
@@ -324,7 +325,7 @@ func sort_items_by_original_index(a: TreeItem, b: TreeItem) -> bool:
 
 func reset_tree_state(parent: TreeItem) -> void:
 	if parent == _tree_root:
-		_tree_root.set_meta(META_GDUNIT_TEST_INDEX, 0)
+		_tree_root.set_meta(META_GDUNIT_PROGRESS_INDEX, 0)
 		_tree_root.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 		test_counters_changed.emit(0, 0, STATE.INITIAL)
 
@@ -371,8 +372,8 @@ func set_state_initial(item: TreeItem) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
 	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
-	if item.has_meta(META_GDUNIT_TOTAL_TESTS) and item.get_meta(META_GDUNIT_TOTAL_TESTS) > 0:
-		item.set_text(0, "(0/%d) %s" % [item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)])
+	if item.has_meta(META_GDUNIT_PROGRESS_COUNT_MAX) and item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX) > 0:
+		item.set_text(0, "(0/%d) %s" % [item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX), item.get_meta(META_GDUNIT_NAME)])
 	item.remove_meta(META_GDUNIT_REPORT)
 	item.remove_meta(META_GDUNIT_ORPHAN)
 
@@ -411,9 +412,9 @@ func set_state_flaky(item: TreeItem, event: GdUnitEvent) -> void:
 	item.set_meta(META_GDUNIT_STATE, STATE.FLAKY)
 	if retry_count > 1:
 		var item_text: String = item.get_meta(META_GDUNIT_NAME)
-		if item.has_meta(META_GDUNIT_TOTAL_TESTS):
+		if item.has_meta(META_GDUNIT_PROGRESS_COUNT_MAX):
 			var success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
-			item_text = "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)]
+			item_text = "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX), item.get_meta(META_GDUNIT_NAME)]
 		item.set_text(0, "%s (%s retries)" % [item_text, retry_count])
 	item.set_custom_color(0, Color.GREEN_YELLOW)
 	item.set_custom_color(1, Color.GREEN_YELLOW)
@@ -449,9 +450,9 @@ func set_state_failed(item: TreeItem, event: GdUnitEvent) -> void:
 	var retry_count := event.statistic(GdUnitEvent.RETRY_COUNT)
 	if retry_count > 1:
 		var item_text: String = item.get_meta(META_GDUNIT_NAME)
-		if item.has_meta(META_GDUNIT_TOTAL_TESTS):
+		if item.has_meta(META_GDUNIT_PROGRESS_COUNT_MAX):
 			var success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
-			item_text = "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)]
+			item_text = "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX), item.get_meta(META_GDUNIT_NAME)]
 		item.set_text(0, "%s (%s retries)" % [item_text, retry_count])
 	item.set_meta(META_GDUNIT_STATE, STATE.FAILED)
 	item.set_custom_color(0, Color.LIGHT_BLUE)
@@ -600,7 +601,6 @@ func update_test_suite(event: GdUnitEvent) -> void:
 		update_progress_counters(item, 23)
 
 
-
 func update_test_case(event: GdUnitEvent) -> void:
 	var item := get_tree_item(extract_resource_path(event), event.test_name())
 	if not item:
@@ -618,20 +618,15 @@ func update_test_case(event: GdUnitEvent) -> void:
 		update_progress_counters(item, event.retry_count())
 
 
-
 func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type: GdUnitType) -> TreeItem:
-	var script_path := ProjectSettings.localize_path(test.source_file)
 	var item := _tree.create_item(parent)
 	item.collapsed = true
 	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, item_name)
-	item.set_meta(META_GDUNIT_ID, test.guid)
+	if type == GdUnitType.TEST_CASE:
+		item.set_meta(META_TEST_CASE, test)
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)
-	# for folder items we need to get the base path
-	var resource_path := test.source_file if type != GdUnitType.FOLDER else test.source_file.get_base_dir()
-	item.set_meta(META_RESOURCE_PATH, resource_path)
-	item.set_meta(META_SCRIPT_PATH, script_path)
 	set_state_initial(item)
 	update_item_total_counter(item)
 	return item
@@ -640,9 +635,9 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 func set_item_icon_by_state(item :TreeItem) -> void:
 	if item == _tree_root:
 		return
-	var resource_path :String = item.get_meta(META_RESOURCE_PATH)
 	var state :STATE = item.get_meta(META_GDUNIT_STATE)
 	var is_orphan := is_item_state_orphan(item)
+	var resource_path := get_item_source_file(item)
 	item.set_icon(0, get_icon_by_file_type(resource_path, state, is_orphan))
 	if item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER:
 		item.set_icon_modulate(0, Color.SKY_BLUE)
@@ -654,12 +649,12 @@ func update_item_total_counter(item: TreeItem) -> void:
 
 	var child_count := get_total_child_count(item)
 	if child_count > 0:
-		item.set_meta(META_GDUNIT_TOTAL_TESTS, child_count)
+		item.set_meta(META_GDUNIT_PROGRESS_COUNT_MAX, child_count)
 		item.set_text(0, "(0/%d) %s" % [child_count, item.get_meta(META_GDUNIT_NAME)])
 
 	if item == _tree_root:
-		var index: int = item.get_meta(META_GDUNIT_TEST_INDEX)
-		var total_test: int = item.get_meta(META_GDUNIT_TOTAL_TESTS)
+		var index: int = item.get_meta(META_GDUNIT_PROGRESS_INDEX)
+		var total_test: int = item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX)
 		var state: STATE = item.get_meta(META_GDUNIT_STATE)
 		test_counters_changed.emit(index, total_test, state)
 
@@ -669,7 +664,7 @@ func update_item_total_counter(item: TreeItem) -> void:
 func get_total_child_count(item: TreeItem) -> int:
 	var total_count := 0
 	for child in item.get_children():
-		total_count += child.get_meta(META_GDUNIT_TOTAL_TESTS) if child.has_meta(META_GDUNIT_TOTAL_TESTS) else 1
+		total_count += child.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX) if child.has_meta(META_GDUNIT_PROGRESS_COUNT_MAX) else 1
 	return total_count
 
 
@@ -679,22 +674,22 @@ func update_item_processed_counter(item: TreeItem, add_count := 1) -> void:
 
 	var success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS) + add_count
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, success_count)
-	if item.has_meta(META_GDUNIT_TOTAL_TESTS):
-		item.set_text(0, "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_TOTAL_TESTS), item.get_meta(META_GDUNIT_NAME)])
+	if item.has_meta(META_GDUNIT_PROGRESS_COUNT_MAX):
+		item.set_text(0, "(%d/%d) %s" % [success_count, item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX), item.get_meta(META_GDUNIT_NAME)])
 
 	update_item_processed_counter(item.get_parent(), add_count)
 
 
 func update_progress_counters(item: TreeItem, rety_count: int) -> void:
-	var index: int = _tree_root.get_meta(META_GDUNIT_TEST_INDEX)
-	var total_test: int = _tree_root.get_meta(META_GDUNIT_TOTAL_TESTS)
+	var index: int = _tree_root.get_meta(META_GDUNIT_PROGRESS_INDEX)
+	var total_test: int = _tree_root.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX)
 	# We only increment the index counter once for a test
 	if  rety_count <= 1:
 		index += 1
 
 	var state: STATE = item.get_meta(META_GDUNIT_STATE)
 	test_counters_changed.emit(index, total_test, state)
-	_tree_root.set_meta(META_GDUNIT_TEST_INDEX, index)
+	_tree_root.set_meta(META_GDUNIT_PROGRESS_INDEX, index)
 
 
 func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:
@@ -775,15 +770,10 @@ func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 			parent = next
 			continue
 		if item_name.begins_with(test_case.test_name):
-			var is_test_group := item_name == test_case.test_name
-
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
-			next.set_meta(META_LINE_NUMBER, test_case.line_number)
-			next.set_meta(META_TEST_PARAM_INDEX, -1 if is_test_group else test_case.attribute_index)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		elif item_name == test_case.suite_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_SUITE)
-			next.set_meta(META_LINE_NUMBER, 0)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		else:
 			next = create_item(parent, test_case, item_name, GdUnitType.FOLDER)
@@ -798,9 +788,9 @@ func on_test_case_discover_deleted(test_case: GdUnitTestCase) -> void:
 
 		# update the cached counters
 		var item_success_count: int = item.get_meta(META_GDUNIT_SUCCESS_TESTS)
-		var item_total_test_count: int = item.get_meta(META_GDUNIT_TOTAL_TESTS, 0)
-		var total_test_count: int = parent.get_meta(META_GDUNIT_TOTAL_TESTS, 0)
-		parent.set_meta(META_GDUNIT_TOTAL_TESTS, total_test_count-item_total_test_count)
+		var item_total_test_count: int = item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX, 0)
+		var total_test_count: int = parent.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX, 0)
+		parent.set_meta(META_GDUNIT_PROGRESS_COUNT_MAX, total_test_count-item_total_test_count)
 
 		# propagate counter update to all parents
 		update_item_total_counter(parent)
@@ -810,13 +800,29 @@ func on_test_case_discover_deleted(test_case: GdUnitTestCase) -> void:
 func on_test_case_discover_modified(test_case: GdUnitTestCase) -> void:
 	var item := find_tree_item_by_id(_tree_root, test_case.guid)
 	if item != null:
-		item.set_meta(META_LINE_NUMBER, test_case.line_number)
+		item.set_meta(META_TEST_CASE, test_case)
 		item.set_text(0, test_case.display_name)
 		item.set_meta(META_GDUNIT_NAME, test_case.display_name)
 
 
 func get_item_reports(item: TreeItem) -> Array[GdUnitReport]:
 	return item.get_meta(META_GDUNIT_REPORT)
+
+
+func get_item_test_line_number(item: TreeItem) -> int:
+	if item == null or not item.has_meta(META_TEST_CASE):
+		return -1
+
+	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+	return test_case.line_number
+
+
+func get_item_source_file(item: TreeItem) -> String:
+	if item == null or not item.has_meta(META_TEST_CASE):
+		return ""
+
+	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+	return test_case.source_file
 
 
 func _dump_tree_as_json(dump_name: String) -> void:
@@ -836,6 +842,18 @@ func extract_resource_path(event: GdUnitEvent) -> String:
 	return ProjectSettings.localize_path(event.resource_path())
 
 
+func collect_test_cases(item: TreeItem, tests: Array[GdUnitTestCase] = []) -> Array[GdUnitTestCase]:
+	for next in item.get_children():
+		collect_test_cases(next, tests)
+
+	if not is_folder(item) and item.has_meta(META_TEST_CASE):
+		var test: GdUnitTestCase = item.get_meta(META_TEST_CASE)
+		if not tests.has(test):
+			tests.append(test)
+
+	return tests
+
+
 ################################################################################
 # Tree signal receiver
 ################################################################################
@@ -851,18 +869,9 @@ func _on_run_pressed(run_debug: bool) -> void:
 	if item == null:
 		print_rich("[color=GOLDENROD]Abort Testrun, no test suite selected![/color]")
 		return
-	if item.get_meta(META_GDUNIT_TYPE) == GdUnitType.TEST_SUITE or item.get_meta(META_GDUNIT_TYPE) == GdUnitType.FOLDER:
-		var resource_path: String = item.get_meta(META_RESOURCE_PATH)
-		run_testsuite.emit([resource_path], run_debug)
-		return
 
-	var test_suite_resource_path: String = item.get_meta(META_RESOURCE_PATH)
-	var test_case: String = item.get_meta(META_GDUNIT_NAME)
-	# handle parameterized test selection
-	var test_param_index: int = item.get_meta(META_TEST_PARAM_INDEX)
-	if test_param_index != -1:
-		test_case = item.get_parent().get_meta(META_GDUNIT_NAME)
-	run_testcase.emit(test_suite_resource_path, test_case, test_param_index, run_debug)
+	var test_to_execute := collect_test_cases(item)
+	GdUnitCommandHandler.instance().cmd_run_tests(test_to_execute, run_debug)
 
 
 func _on_Tree_item_selected() -> void:
@@ -876,12 +885,9 @@ func _on_Tree_item_selected() -> void:
 # Opens the test suite
 func _on_Tree_item_activated() -> void:
 	var selected_item := _tree.get_selected()
-	if selected_item != null and selected_item.has_meta(META_LINE_NUMBER):
-		var script_path: String = (
-			selected_item.get_meta(META_RESOURCE_PATH) if is_test_suite(selected_item)
-			else selected_item.get_meta(META_SCRIPT_PATH)
-		)
-		var line_number: int = selected_item.get_meta(META_LINE_NUMBER)
+	var line_number := get_item_test_line_number(selected_item)
+	if line_number != -1:
+		var script_path := ProjectSettings.localize_path(get_item_source_file(selected_item))
 		var resource: Script = load(script_path)
 
 		if selected_item.has_meta(META_GDUNIT_REPORT):
