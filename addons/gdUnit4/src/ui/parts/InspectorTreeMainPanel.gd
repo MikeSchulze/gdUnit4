@@ -640,14 +640,12 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 	match type:
 		GdUnitType.TEST_CASE:
 			item.set_meta(META_TEST_CASE, test)
-		GdUnitType.FOLDER:
-			pass
-		GdUnitType.TEST_SUITE:
-			# we need to create a copy of GdUnitTestCase with a new guid
-			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.suite_name))
-		_:
-			# we need to create a copy of GdUnitTestCase with a new guid
+		GdUnitType.TEST_GROUP:
+			# We need to create a copy of the test record meta with a new uniqe guid
 			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.test_name))
+		GdUnitType.TEST_SUITE:
+			# We need to create a copy of the test record meta with a new uniqe guid
+			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.suite_name))
 
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)

@@ -34,6 +34,7 @@
 ## # Discover tests and track changes
 ## await guard.discover(test_script)
 ## [/codeblock]
+class_name GdUnitTestDiscoverGuard
 extends RefCounted
 
 
@@ -117,6 +118,22 @@ func handle_discover_events(event: GdUnitEvent) -> void:
 ## Default sink writes to [class GdUnitTestDiscoverSink].
 static func default_discover_sink(test_case: GdUnitTestCase) -> void:
 	GdUnitTestDiscoverSink.discover(test_case)
+
+
+## Finds a test case by its unique identifier.[br]
+## [br]
+## Searches through all cached test cases across all test suites[br]
+## to find a test with the matching GUID.[br]
+## [br]
+## [param id] The GUID of the test to find[br]
+## Returns the matching test case or null if not found.
+func find_test_by_id(id: GdUnitGUID) -> GdUnitTestCase:
+	for test_sets: Array[GdUnitTestCase] in _discover_cache.values():
+		for test in test_sets:
+			if test.guid.equals(id):
+				return test
+
+	return null
 
 
 ## Discovers tests in a script and tracks changes.[br]
