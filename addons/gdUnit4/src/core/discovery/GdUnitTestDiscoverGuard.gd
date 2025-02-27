@@ -34,7 +34,8 @@
 ## # Discover tests and track changes
 ## await guard.discover(test_script)
 ## [/codeblock]
-extends RefCounted
+class_name GdUnitTestDiscoverGuard
+extends Object
 
 
 ## Maps source files to their discovered test cases.[br]
@@ -58,6 +59,16 @@ var _discovered_changes := {}
 ## When true, maintains _discovered_changes for debugging.[br]
 ## Used primarily in tests to verify change detection.
 var _is_debug := false
+
+
+static func _get_instance() -> GdUnitTestDiscoverGuard:
+	return GdUnitSingleton.instance("GdUnitTestDiscoverGuard", func() -> GdUnitTestDiscoverGuard:
+		return GdUnitTestDiscoverGuard.new()
+	)
+
+
+static func init() -> void:
+	_get_instance()
 
 
 ## Creates a new guard instance.[br]
@@ -119,6 +130,16 @@ static func default_discover_sink(test_case: GdUnitTestCase) -> void:
 	GdUnitTestDiscoverSink.discover(test_case)
 
 
+
+static func find_test_by_id(id: GdUnitGUID) -> GdUnitTestCase:
+	for test_sets: Array[GdUnitTestCase] in _get_instance()._discover_cache.values():
+		for test in test_sets:
+			if test.guid.equals(id):
+				return test
+
+	return null
+
+
 ## Discovers tests in a script and tracks changes.[br]
 ## [br]
 ## Handles both GDScript and C# test suites.[br]
@@ -126,15 +147,17 @@ static func default_discover_sink(test_case: GdUnitTestCase) -> void:
 ## [br]
 ## [param script] The test script to analyze[br]
 ## [param discover_sink] Optional callback for test discovery events
-func discover(script: Script, discover_sink: Callable = default_discover_sink) -> void:
+static func discover(script: Script, discover_sink: Callable = default_discover_sink) -> void:
+	var instance := _get_instance()
+
 	# for cs scripts we need to recomplie before discover new tests
 	if GdObjects.is_cs_script(script):
-		await rebuild_project(script)
+		await instance.rebuild_project(script)
 
-	if _is_debug:
-		_discovered_changes["changed_tests"] = Array([], TYPE_OBJECT, "RefCounted", GdUnitTestCase)
-		_discovered_changes["deleted_tests"] = Array([], TYPE_OBJECT, "RefCounted", GdUnitTestCase)
-		_discovered_changes["added_tests"] = Array([], TYPE_OBJECT, "RefCounted", GdUnitTestCase)
+	if instance._is_debug:
+		instance._discovered_changes["changed_tests"] = Array([], TYPE_OBJECT, "RefCounted", GdUnitTestCase)
+		instance._discovered_changes["deleted_tests"] = Array([], TYPE_OBJECT, "RefCounted", GdUnitTestCase)
+		instance._discovered_changes["added_tests"] = Array([], TYPE_OBJECT, "RefCounted", GdUnitTestCase)
 
 	if GdObjects.is_test_suite(script):
 		# rediscover all tests
@@ -151,15 +174,15 @@ func discover(script: Script, discover_sink: Callable = default_discover_sink) -
 			pass
 
 		# The suite is never discovered, we add all discovered tests
-		if not _discover_cache.has(source_file):
+		if not instance._discover_cache.has(source_file):
 			for test_case in discovered_tests:
 				discover_sink.call(test_case)
 			return
 
-		sync_moved_tests(source_file, discovered_tests)
-		sync_renamed_tests(source_file, discovered_tests)
-		sync_deleted_tests(source_file, discovered_tests)
-		sync_added_tests(source_file, discovered_tests, discover_sink)
+		instance.sync_moved_tests(source_file, discovered_tests)
+		instance.sync_renamed_tests(source_file, discovered_tests)
+		instance.sync_deleted_tests(source_file, discovered_tests)
+		instance.sync_added_tests(source_file, discovered_tests, discover_sink)
 
 
 ## Synchronizes moved tests between discover cycles.[br]
