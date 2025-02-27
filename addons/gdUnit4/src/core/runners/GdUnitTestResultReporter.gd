@@ -21,6 +21,7 @@ func _init(writer: GdUnitMessageWritter, detailed := false) -> void:
 	if _detailed:
 		_status_indent = 20
 	init_colors()
+	GdUnitTestDiscoverGuard.init()
 
 
 func init_colors() -> void:
@@ -147,26 +148,33 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 				println_message("")
 
 		GdUnitEvent.TESTCASE_BEFORE:
-			_print_test_path(event)
+			var test := GdUnitTestDiscoverGuard.find_test_by_id(event.guid())
+			_print_test_path(test, event.guid())
 			if _detailed:
 				_writer.color(Color.FOREST_GREEN).print_at("STARTED", _status_indent)
 				println_message("")
 
 		GdUnitEvent.TESTCASE_AFTER:
+			var test := GdUnitTestDiscoverGuard.find_test_by_id(event.guid())
 			update_statistics(event)
 			if _detailed:
-				_print_test_path(event)
+				_print_test_path(test, event.guid())
 			_print_status(event)
 			_print_failure_report(event.reports())
 			if _detailed:
 				println_message("")
 
 
-func _print_test_path(event: GdUnitEvent) -> void:
-	var suite_path := event.resource_path() if _detailed else event._suite_name
-	_writer.indent(1).color(_engine_type_color).print_message(suite_path)
+func _print_test_path(test: GdUnitTestCase, uid: GdUnitGUID) -> void:
+	if test == null:
+		prints_warning("Can't print full test info, the test by uid: '%s' was not discovered." % uid)
+		_writer.indent(1).color(_engine_type_color).print_message("Test ID: %s" % uid)
+		return
+
+	var suite_name := test.source_file if _detailed else test.suite_name
+	_writer.indent(1).color(_engine_type_color).print_message(suite_name)
 	print_message(" > ")
-	print_message(event.test_name(), _function_color)
+	print_message(test.display_name, _function_color)
 
 
 func _print_status(event: GdUnitEvent) -> void:

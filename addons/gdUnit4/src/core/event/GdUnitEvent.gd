@@ -55,21 +55,15 @@ func suite_after(p_resource_path: String, p_suite_name: String, p_statistics: Di
 	return self
 
 
-func test_before(p_guid: GdUnitGUID, p_resource_path: String, p_suite_name: String, p_test_name: String) -> GdUnitEvent:
+func test_before(p_guid: GdUnitGUID) -> GdUnitEvent:
 	_event_type = TESTCASE_BEFORE
 	_guid = p_guid
-	_resource_path = p_resource_path
-	_suite_name  = p_suite_name
-	_test_name = p_test_name
 	return self
 
 
-func test_after(p_guid: GdUnitGUID, p_resource_path: String, p_suite_name: String, p_test_name: String, p_statistics: Dictionary = {}, p_reports :Array[GdUnitReport] = []) -> GdUnitEvent:
+func test_after(p_guid: GdUnitGUID, p_statistics: Dictionary = {}, p_reports :Array[GdUnitReport] = []) -> GdUnitEvent:
 	_event_type = TESTCASE_AFTER
 	_guid = p_guid
-	_resource_path = p_resource_path
-	_suite_name  = p_suite_name
-	_test_name = p_test_name
 	_statistics = p_statistics
 	_reports = p_reports
 	return self

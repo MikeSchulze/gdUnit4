@@ -42,7 +42,8 @@ const CONTEXT_MENU_EXPAND_ALL = 4
 enum GdUnitType {
 	FOLDER,
 	TEST_SUITE,
-	TEST_CASE
+	TEST_CASE,
+	TEST_GROUP
 }
 
 const META_GDUNIT_PROGRESS_COUNT_MAX := "gdUnit_progress_count_max"
@@ -83,6 +84,19 @@ func find_tree_item_by_id(parent: TreeItem, id: GdUnitGUID) -> TreeItem:
 			var item := find_tree_item_by_id(child, id)
 			if item != null:
 				return item
+
+	return null
+
+
+## Used for debugging purposes only
+func print_tree_item_ids(parent: TreeItem) -> TreeItem:
+	for child in parent.get_children():
+		if child.has_meta(META_TEST_CASE):
+			var test_case: GdUnitTestCase = child.get_meta(META_TEST_CASE)
+			prints(test_case.guid, test_case.test_name)
+
+		if child.get_child_count() > 0:
+			print_tree_item_ids(child)
 
 	return null
 
@@ -189,7 +203,7 @@ func is_test_id(item: TreeItem, id: GdUnitGUID) -> bool:
 		return false
 
 	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
-	return test_case.guid == id
+	return test_case.guid.equals(id)
 
 @warning_ignore("return_value_discarded")
 func _ready() -> void:
@@ -602,9 +616,9 @@ func update_test_suite(event: GdUnitEvent) -> void:
 
 
 func update_test_case(event: GdUnitEvent) -> void:
-	var item := get_tree_item(extract_resource_path(event), event.test_name())
+	var item := find_tree_item_by_id(_tree_root, event.guid())
 	if not item:
-		push_error("Internal Error: Can't find test case %s:%s" % [event.suite_name(), event.test_name()])
+		push_error("Internal Error: Can't find test id %s" % [event.guid()])
 		return
 	if event.type() == GdUnitEvent.TESTCASE_BEFORE:
 		set_state_running(item)
@@ -623,8 +637,18 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 	item.collapsed = true
 	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, item_name)
-	if type == GdUnitType.TEST_CASE:
-		item.set_meta(META_TEST_CASE, test)
+	match type:
+		GdUnitType.TEST_CASE:
+			item.set_meta(META_TEST_CASE, test)
+		GdUnitType.FOLDER:
+			pass
+		GdUnitType.TEST_SUITE:
+			# we need to create a copy of GdUnitTestCase with a new guid
+			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.suite_name))
+		_:
+			# we need to create a copy of GdUnitTestCase with a new guid
+			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.test_name))
+
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)
 	set_state_initial(item)
@@ -769,8 +793,12 @@ func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 		if next != null:
 			parent = next
 			continue
-		if item_name.begins_with(test_case.test_name):
+		if item_name == test_case.display_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
+			add_tree_item_to_cache(test_case.source_file, item_name, next)
+		# on grouped tests (parameterized tests)
+		elif item_name == test_case.test_name:
+			next = create_item(parent, test_case, item_name, GdUnitType.TEST_GROUP)
 			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		elif item_name == test_case.suite_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_SUITE)
@@ -846,7 +874,7 @@ func collect_test_cases(item: TreeItem, tests: Array[GdUnitTestCase] = []) -> Ar
 	for next in item.get_children():
 		collect_test_cases(next, tests)
 
-	if not is_folder(item) and item.has_meta(META_TEST_CASE):
+	if is_test_case(item):
 		var test: GdUnitTestCase = item.get_meta(META_TEST_CASE)
 		if not tests.has(test):
 			tests.append(test)

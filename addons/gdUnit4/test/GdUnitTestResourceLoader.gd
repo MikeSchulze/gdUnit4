@@ -19,6 +19,16 @@ static func load_test_suite(resource_path :String, script_type := GD_SUITE) -> N
 	return null
 
 
+static func load_tests(resource_path :String) -> Dictionary:
+	var script := load_gd_script(resource_path)
+	var discovered_tests := {}
+	GdUnitTestDiscoverer.discover_tests(script, func(test: GdUnitTestCase) -> void:
+		discovered_tests[test.display_name] = test
+	)
+
+	return discovered_tests
+
+
 static func load_test_suite_gd(resource_path :String) -> GdUnitTestSuite:
 	var script := load_gd_script(resource_path)
 	var discovered_tests: Array[GdUnitTestCase] = []
