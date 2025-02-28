@@ -69,9 +69,9 @@ func setup_test_env() -> void:
 		discovered_tests_suite_c[discover_test.test_name] = discover_test
 	)
 
-	suite_a_item = _inspector.get_tree_item(suite_a.resource_path, "ExampleTestSuiteA")
-	suite_b_item = _inspector.get_tree_item(suite_b.resource_path, "ExampleTestSuiteB")
-	suite_c_item = _inspector.get_tree_item(suite_c.resource_path, "ExampleTestSuiteC")
+	suite_a_item = _inspector._find_tree_item_by_path(suite_a.resource_path, "ExampleTestSuiteA")
+	suite_b_item = _inspector._find_tree_item_by_path(suite_b.resource_path, "ExampleTestSuiteB")
+	suite_c_item = _inspector._find_tree_item_by_path(suite_c.resource_path, "ExampleTestSuiteC")
 
 
 func find_test_case(resource_path :String, test_case :String) -> TreeItem:
@@ -80,7 +80,7 @@ func find_test_case(resource_path :String, test_case :String) -> TreeItem:
 
 func set_test_state(test_cases: Array[GdUnitTestCase], state: InspectorTreeMainPanel.STATE) -> void:
 	for test in test_cases:
-		var item := _inspector.find_tree_item_by_id(_inspector._tree_root, test.guid)
+		var item := _inspector._find_tree_item_by_id(_inspector._tree_root, test.guid)
 		var parent := item.get_parent()
 		var test_event := GdUnitEvent.new().test_after(test.guid)
 		match state:
@@ -113,7 +113,7 @@ func test_find_item_by_id() -> void:
 		discovered_tests[discover_test.test_name] = discover_test
 	)
 	var test_aa: GdUnitTestCase = discovered_tests["test_aa"]
-	var item := _inspector.find_tree_item_by_id(_inspector._tree_root, test_aa.guid)
+	var item := _inspector._find_tree_item_by_id(_inspector._tree_root, test_aa.guid)
 	assert_object(item).is_not_null()
 
 
@@ -330,7 +330,7 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 		discover_sink(discover_test)
 		discovered_tests[discover_test.test_name] = discover_test
 	)
-	var suite_item := _inspector.get_tree_item(suite_script.resource_path, "ExampleTestSuiteA")
+	var suite_item := _inspector._find_tree_item_by_path(suite_script.resource_path, "ExampleTestSuiteA")
 	assert_object(suite_item).is_not_same(suite_a_item)
 
 	# verify inital state
@@ -375,7 +375,7 @@ func test_update_icon_state() -> void:
 	)
 	var suite_script_path := suite_script.resource_path
 	var suite_name := "TestSuiteFailAndOrpahnsDetected"
-	var suite_item := _inspector.get_tree_item(suite_script_path, suite_name)
+	var suite_item := _inspector._find_tree_item_by_path(suite_script_path, suite_name)
 
 	# Verify the inital state
 	assert_str(suite_item.get_text(0)).is_equal("(0/2) " + suite_name)
@@ -500,21 +500,21 @@ func test_collect_test_cases() -> void:
 
 	# Test select a single suite
 	# Collect all test cases from the suite node (parent of test_case1)
-	var test := _inspector.find_tree_item_by_id(_inspector._tree_root, test_case1.guid)
+	var test := _inspector._find_tree_item_by_id(_inspector._tree_root, test_case1.guid)
 	var collected_tests := _inspector.collect_test_cases(test.get_parent())
 	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
 	assert_array(collected_tests).contains_exactly_in_any_order(tests_by_id.values())
 
 	# Test select a single test
 	# Find tree node by test id
-	test = _inspector.find_tree_item_by_id(_inspector._tree_root, test_case1.guid)
+	test = _inspector._find_tree_item_by_id(_inspector._tree_root, test_case1.guid)
 	# Collect all test cases by given tree node
 	collected_tests = _inspector.collect_test_cases(test)
 	assert_array(collected_tests).contains_exactly([test_case1])
 
 	# Test select on paramaterized
 	var paramaterized_test: GdUnitTestCase = tests_by_id["test_parameterized_static:0 (1, 1)"]
-	test = _inspector.find_tree_item_by_id(_inspector._tree_root, paramaterized_test.guid)
+	test = _inspector._find_tree_item_by_id(_inspector._tree_root, paramaterized_test.guid)
 	# Collect all paramaterized tests (by parent of paramaterized_test)
 	collected_tests = _inspector.collect_test_cases(test.get_parent())
 	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
