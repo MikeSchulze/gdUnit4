@@ -16,6 +16,11 @@ var suite_a_item: TreeItem
 var suite_b_item: TreeItem
 var suite_c_item: TreeItem
 
+var discovered_tests_suite_a := {}
+var discovered_tests_suite_b := {}
+var discovered_tests_suite_c := {}
+
+
 var _inspector: InspectorTreeMainPanel
 
 
@@ -49,42 +54,48 @@ func setup_test_env() -> void:
 	var suite_a := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteA.resource", true)
 	var suite_b := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteB.resource", true)
 	var suite_c := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/foo/ExampleTestSuiteC.resource", true)
-	GdUnitTestDiscoverer.discover_tests(suite_a, discover_sink)
-	GdUnitTestDiscoverer.discover_tests(suite_b, discover_sink)
-	GdUnitTestDiscoverer.discover_tests(suite_c, discover_sink)
 
-	suite_a_item = _inspector.get_tree_item(suite_a.resource_path, "ExampleTestSuiteA")
-	suite_b_item = _inspector.get_tree_item(suite_b.resource_path, "ExampleTestSuiteB")
-	suite_c_item = _inspector.get_tree_item(suite_c.resource_path, "ExampleTestSuiteC")
+
+	GdUnitTestDiscoverer.discover_tests(suite_a, func(discover_test: GdUnitTestCase) -> void:
+		discover_sink(discover_test)
+		discovered_tests_suite_a[discover_test.test_name] = discover_test
+	)
+	GdUnitTestDiscoverer.discover_tests(suite_b, func(discover_test: GdUnitTestCase) -> void:
+		discover_sink(discover_test)
+		discovered_tests_suite_b[discover_test.test_name] = discover_test
+	)
+	GdUnitTestDiscoverer.discover_tests(suite_c, func(discover_test: GdUnitTestCase) -> void:
+		discover_sink(discover_test)
+		discovered_tests_suite_c[discover_test.test_name] = discover_test
+	)
+
+	suite_a_item = _inspector._find_tree_item_by_path(suite_a.resource_path, "ExampleTestSuiteA")
+	suite_b_item = _inspector._find_tree_item_by_path(suite_b.resource_path, "ExampleTestSuiteB")
+	suite_c_item = _inspector._find_tree_item_by_path(suite_c.resource_path, "ExampleTestSuiteC")
 
 
 func find_test_case(resource_path :String, test_case :String) -> TreeItem:
 	return _inspector.get_tree_item(resource_path, test_case)
 
 
-func set_test_state(test_cases: PackedStringArray, state: InspectorTreeMainPanel.STATE, parent:TreeItem = _inspector._tree_root) -> void:
-	assert_object(parent).is_not_null()
-	# mark all test as failed
-	if parent != _inspector._tree_root:
-		_inspector.set_state_succeded(parent)
+func set_test_state(test_cases: Array[GdUnitTestCase], state: InspectorTreeMainPanel.STATE) -> void:
+	for test in test_cases:
+		var item := _inspector._find_tree_item_by_id(_inspector._tree_root, test.guid)
+		var parent := item.get_parent()
+		var test_event := GdUnitEvent.new().test_after(test.guid)
+		match state:
+			ERROR:
+				_inspector.set_state_error(parent)
+				_inspector.set_state_error(item)
+			FAILED:
+				_inspector.set_state_failed(parent, test_event)
+				_inspector.set_state_failed(item, test_event)
+			FLAKY:
+				_inspector.set_state_flaky(parent, test_event)
+				_inspector.set_state_flaky(item, test_event)
 
-	var test_event := GdUnitEvent.new().test_after(GdUnitGUID.new(), "res://foo.gd", "test_suite", "test_name")
 
-	for item in parent.get_children():
-		set_test_state(test_cases, state, item)
-		if test_cases.has(item.get_text(0)):
-			match state:
-				ERROR:
-					_inspector.set_state_error(parent)
-					_inspector.set_state_error(item)
-				FAILED:
-					_inspector.set_state_failed(parent, test_event)
-					_inspector.set_state_failed(item, test_event)
-				FLAKY:
-					_inspector.set_state_flaky(parent, test_event)
-					_inspector.set_state_flaky(item, test_event)
-		else:
-			_inspector.set_state_succeded(item)
+	#		_inspector.set_state_succeded(item)
 
 
 func get_item_state(parent :TreeItem, item_name :String = "") -> int:
@@ -92,6 +103,18 @@ func get_item_state(parent :TreeItem, item_name :String = "") -> int:
 		if item.get_text(0) == item_name:
 			return item.get_meta(_inspector.META_GDUNIT_STATE)
 	return parent.get_meta(_inspector.META_GDUNIT_STATE)
+
+
+func test_find_item_by_id() -> void:
+	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/bar/ExampleTestSuiteA.resource", true)
+	var discovered_tests := {}
+	GdUnitTestDiscoverer.discover_tests(suite_script, func(discover_test: GdUnitTestCase) -> void:
+		discover_sink(discover_test)
+		discovered_tests[discover_test.test_name] = discover_test
+	)
+	var test_aa: GdUnitTestCase = discovered_tests["test_aa"]
+	var item := _inspector._find_tree_item_by_id(_inspector._tree_root, test_aa.guid)
+	assert_object(item).is_not_null()
 
 
 func test_select_first_failure() -> void:
@@ -103,7 +126,13 @@ func test_select_first_failure() -> void:
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	set_test_state(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"], FAILED)
+	set_test_state([
+		discovered_tests_suite_a["test_aa"],
+		discovered_tests_suite_a["test_ad"],
+		discovered_tests_suite_c["test_cb"],
+		discovered_tests_suite_c["test_cc"],
+		discovered_tests_suite_c["test_ce"]]
+		, FAILED)
 
 	# select first failure
 	_inspector._on_select_next_item_by_state(FAILED)
@@ -119,7 +148,13 @@ func test_select_last_failure() -> void:
 	assert_object(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	set_test_state(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"], FAILED)
+	set_test_state([
+		discovered_tests_suite_a["test_aa"],
+		discovered_tests_suite_a["test_ad"],
+		discovered_tests_suite_c["test_cb"],
+		discovered_tests_suite_c["test_cc"],
+		discovered_tests_suite_c["test_ce"]]
+		, FAILED)
 	# select last failure
 	_inspector._on_select_previous_item_by_state(FAILED)
 	assert_str(_inspector._tree.get_selected().get_text(0)).is_equal("test_ce")
@@ -134,7 +169,13 @@ func test_select_next_failure() -> void:
 	assert_str(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	set_test_state(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"], FAILED)
+	set_test_state([
+		discovered_tests_suite_a["test_aa"],
+		discovered_tests_suite_a["test_ad"],
+		discovered_tests_suite_c["test_cb"],
+		discovered_tests_suite_c["test_cc"],
+		discovered_tests_suite_c["test_ce"]]
+		, FAILED)
 
 	# first time select next than select first failure
 	_inspector._on_select_next_item_by_state(FAILED)
@@ -163,7 +204,13 @@ func test_select_previous_failure() -> void:
 	assert_str(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	set_test_state(["test_aa", "test_ad", "test_cb", "test_cc", "test_ce"], FAILED)
+	set_test_state([
+		discovered_tests_suite_a["test_aa"],
+		discovered_tests_suite_a["test_ad"],
+		discovered_tests_suite_c["test_cb"],
+		discovered_tests_suite_c["test_cc"],
+		discovered_tests_suite_c["test_ce"]]
+		, FAILED)
 
 	# first time select previous than select last failure
 	_inspector._on_select_previous_item_by_state(FAILED)
@@ -192,7 +239,11 @@ func test_select_next_flaky() -> void:
 	assert_str(_inspector._tree.get_selected()).is_null()
 
 	# add flaky tests
-	set_test_state(["test_cb", "test_cc", "test_ce"], FLAKY)
+	set_test_state([
+		discovered_tests_suite_c["test_cb"],
+		discovered_tests_suite_c["test_cc"],
+		discovered_tests_suite_c["test_ce"]]
+		, FLAKY)
 
 	# first time select next than select first failure
 	_inspector._on_select_next_item_by_state(FLAKY)
@@ -217,7 +268,11 @@ func test_select_previous_flaky() -> void:
 	assert_str(_inspector._tree.get_selected()).is_null()
 
 	# add failures
-	set_test_state(["test_cb", "test_cc", "test_ce"], FLAKY)
+	set_test_state([
+		discovered_tests_suite_c["test_cb"],
+		discovered_tests_suite_c["test_cc"],
+		discovered_tests_suite_c["test_ce"]]
+		, FLAKY)
 
 	# first time select previous than select last failure
 	_inspector._on_select_previous_item_by_state(FLAKY)
@@ -239,24 +294,29 @@ func test_suite_text_shows_amount_of_cases() -> void:
 
 
 func test_suite_text_responds_to_test_case_events() -> void:
-	var suite_script_path: String = _inspector.get_item_source_file(_inspector.find_tree_item(suite_a_item, "test_aa"))
-	var success_aa := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_aa")
+
+	var test_aa: GdUnitTestCase = discovered_tests_suite_a["test_aa"]
+	var test_ab: GdUnitTestCase = discovered_tests_suite_a["test_ab"]
+	var test_ac: GdUnitTestCase = discovered_tests_suite_a["test_ac"]
+	var test_ad: GdUnitTestCase = discovered_tests_suite_a["test_ad"]
+	var test_ae: GdUnitTestCase = discovered_tests_suite_a["test_ae"]
+	var success_aa := GdUnitEvent.new().test_after(test_aa.guid)
 	_inspector._on_gdunit_event(success_aa)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var error_ad := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_ad", {GdUnitEvent.ERRORS: true})
+	var error_ad := GdUnitEvent.new().test_after(test_ad.guid, {GdUnitEvent.ERRORS: true})
 	_inspector._on_gdunit_event(error_ad)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var failure_ab := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_ab", {GdUnitEvent.FAILED: true})
+	var failure_ab := GdUnitEvent.new().test_after(test_ab.guid, {GdUnitEvent.FAILED: true})
 	_inspector._on_gdunit_event(failure_ab)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var skipped_ac := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_ac", {GdUnitEvent.SKIPPED: true})
+	var skipped_ac := GdUnitEvent.new().test_after(test_ac.guid, {GdUnitEvent.SKIPPED: true})
 	_inspector._on_gdunit_event(skipped_ac)
 	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
 
-	var success_ae := GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, "ExampleTestSuiteA", "test_ae")
+	var success_ae := GdUnitEvent.new().test_after(test_ae.guid)
 	_inspector._on_gdunit_event(success_ae)
 	assert_str(suite_a_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
 
@@ -270,7 +330,7 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 		discover_sink(discover_test)
 		discovered_tests[discover_test.test_name] = discover_test
 	)
-	var suite_item := _inspector.get_tree_item(suite_script.resource_path, "ExampleTestSuiteA")
+	var suite_item := _inspector._find_tree_item_by_path(suite_script.resource_path, "ExampleTestSuiteA")
 	assert_object(suite_item).is_not_same(suite_a_item)
 
 	# verify inital state
@@ -281,8 +341,8 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	# set test starting checked suite_a_item
 	var test_aa: GdUnitTestCase = discovered_tests["test_aa"]
 	var test_ab: GdUnitTestCase = discovered_tests["test_ab"]
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(test_aa.guid, test_aa.source_file, test_aa.suite_name, test_aa.test_name))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(test_ab.guid, test_ab.source_file, test_ab.suite_name, test_ab.test_name))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(test_aa.guid))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(test_ab.guid))
 	assert_str(suite_item.get_text(0)).is_equal("(0/5) ExampleTestSuiteA")
 	assert_int(get_item_state(suite_item, "test_aa")).is_equal(_inspector.STATE.RUNNING)
 	assert_int(get_item_state(suite_item, "test_ab")).is_equal(_inspector.STATE.RUNNING)
@@ -292,8 +352,8 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 	assert_int(get_item_state(suite_a_item, "test_ab")).is_equal(_inspector.STATE.INITIAL)
 
 	# finish the tests with success
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_aa.guid, test_aa.source_file, test_aa.suite_name, test_aa.test_name))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_ab.guid, test_ab.source_file, test_ab.suite_name, test_ab.test_name))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_aa.guid))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_ab.guid))
 
 	# verify updated state checked suite_a_item
 	assert_str(suite_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
@@ -308,10 +368,14 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 # Test coverage for issue GD-278: GdUnit Inspector: Test marks as passed if both warning and error
 func test_update_icon_state() -> void:
 	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/core/resources/testsuites/TestSuiteFailAndOrpahnsDetected.resource", true)
-	GdUnitTestDiscoverer.discover_tests(suite_script, discover_sink)
+	var discovered_tests := {}
+	GdUnitTestDiscoverer.discover_tests(suite_script, func(discover_test: GdUnitTestCase) -> void:
+		discover_sink(discover_test)
+		discovered_tests[discover_test.test_name] = discover_test
+	)
 	var suite_script_path := suite_script.resource_path
 	var suite_name := "TestSuiteFailAndOrpahnsDetected"
-	var suite_item := _inspector.get_tree_item(suite_script_path, suite_name)
+	var suite_item := _inspector._find_tree_item_by_path(suite_script_path, suite_name)
 
 	# Verify the inital state
 	assert_str(suite_item.get_text(0)).is_equal("(0/2) " + suite_name)
@@ -320,8 +384,10 @@ func test_update_icon_state() -> void:
 	assert_int(get_item_state(suite_item, "test_case2")).is_equal(_inspector.STATE.INITIAL)
 
 	# Set tests to running
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(GdUnitGUID.new(), suite_script_path, suite_name, "test_case1"))
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(GdUnitGUID.new(), suite_script_path, suite_name, "test_case2"))
+	var test_case1: GdUnitTestCase = discovered_tests["test_case1"]
+	var test_case2: GdUnitTestCase = discovered_tests["test_case2"]
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(test_case1.guid))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_before(test_case2.guid))
 	# Verify all items on state running.
 	assert_str(suite_item.get_text(0)).is_equal("(0/2) " + suite_name)
 	assert_int(get_item_state(suite_item, "test_case1")).is_equal(_inspector.STATE.RUNNING)
@@ -329,13 +395,11 @@ func test_update_icon_state() -> void:
 
 	# Simulate test processed and fails on test_case2
 	# test_case1 succeeded
-	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(GdUnitGUID.new(), suite_script_path, suite_name, "test_case1"))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_case1.guid))
 	# test_case2 is failing by an orphan warning and an failure
-	_inspector._on_gdunit_event(GdUnitEvent.new()\
-		.test_after(GdUnitGUID.new(), suite_script_path, suite_name, "test_case2", {GdUnitEvent.FAILED: true}))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_case2.guid, {GdUnitEvent.FAILED: true}))
 	# We check whether a test event with a warning does not overwrite a higher object status, e.g. an error.
-	_inspector._on_gdunit_event(GdUnitEvent.new()\
-		.test_after(GdUnitGUID.new(), suite_script_path, suite_name, "test_case2", {GdUnitEvent.WARNINGS: true}))
+	_inspector._on_gdunit_event(GdUnitEvent.new().test_after(test_case2.guid, {GdUnitEvent.WARNINGS: true}))
 
 	# Verify the final state
 	assert_str(suite_item.get_text(0)).is_equal("(2/2) " + suite_name)
@@ -432,19 +496,27 @@ func test_collect_test_cases() -> void:
 		tests_by_id[test_to_discover.display_name] = test_to_discover
 	)
 
+	var test_case1: GdUnitTestCase = tests_by_id["test_case1"]
+
+	# Test select a single suite
+	# Collect all test cases from the suite node (parent of test_case1)
+	var test := _inspector._find_tree_item_by_id(_inspector._tree_root, test_case1.guid)
+	var collected_tests := _inspector.collect_test_cases(test.get_parent())
+	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
+	assert_array(collected_tests).contains_exactly_in_any_order(tests_by_id.values())
+
 	# Test select a single test
-	var expected_test: GdUnitTestCase = tests_by_id["test_case1"]
 	# Find tree node by test id
-	var test := _inspector.find_tree_item_by_id(_inspector._tree_root, expected_test.guid)
+	test = _inspector._find_tree_item_by_id(_inspector._tree_root, test_case1.guid)
 	# Collect all test cases by given tree node
-	var collected_tests := _inspector.collect_test_cases(test)
-	assert_array(collected_tests).contains_exactly([expected_test])
+	collected_tests = _inspector.collect_test_cases(test)
+	assert_array(collected_tests).contains_exactly([test_case1])
 
 	# Test select on paramaterized
 	var paramaterized_test: GdUnitTestCase = tests_by_id["test_parameterized_static:0 (1, 1)"]
-	test = _inspector.find_tree_item_by_id(_inspector._tree_root, paramaterized_test.guid)
-	# Collect all paramaterized tests
-	collected_tests = _inspector.collect_test_cases(test)
+	test = _inspector._find_tree_item_by_id(_inspector._tree_root, paramaterized_test.guid)
+	# Collect all paramaterized tests (by parent of paramaterized_test)
+	collected_tests = _inspector.collect_test_cases(test.get_parent())
 	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
 	var expected_tests: Array = tests_by_id.values().filter(func(test_to_filter: GdUnitTestCase) -> bool:
 		return test_to_filter.test_name == "test_parameterized_static"
@@ -452,12 +524,6 @@ func test_collect_test_cases() -> void:
 	assert_array(collected_tests)\
 		.has_size(3)\
 		.contains_exactly_in_any_order(expected_tests)
-
-	# Test select a single suite
-	# Collect all test cases from the suite node (parent)
-	collected_tests = _inspector.collect_test_cases(test.get_parent())
-	# Do verify all tests are collected, ignoring the order could be different according to selected sort mode
-	assert_array(collected_tests).contains_exactly_in_any_order(tests_by_id.values())
 
 
 ## test helpers to validate two trees

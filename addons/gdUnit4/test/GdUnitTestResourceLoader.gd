@@ -9,7 +9,7 @@ enum {
 }
 
 
-static func load_test_suite(resource_path :String, script_type := GD_SUITE) -> Node:
+static func load_test_suite(resource_path: String, script_type := GD_SUITE) -> Node:
 	match script_type:
 		GD_SUITE:
 			return load_test_suite_gd(resource_path)
@@ -19,7 +19,17 @@ static func load_test_suite(resource_path :String, script_type := GD_SUITE) -> N
 	return null
 
 
-static func load_test_suite_gd(resource_path :String) -> GdUnitTestSuite:
+static func load_tests(resource_path: String) -> Dictionary:
+	var script := load_gd_script(resource_path)
+	var discovered_tests := {}
+	GdUnitTestDiscoverer.discover_tests(script, func(test: GdUnitTestCase) -> void:
+		discovered_tests[test.display_name] = test
+	)
+
+	return discovered_tests
+
+
+static func load_test_suite_gd(resource_path: String) -> GdUnitTestSuite:
 	var script := load_gd_script(resource_path)
 	var discovered_tests: Array[GdUnitTestCase] = []
 	GdUnitTestDiscoverer.discover_tests(script, func(test: GdUnitTestCase) -> void:
@@ -29,7 +39,7 @@ static func load_test_suite_gd(resource_path :String) -> GdUnitTestSuite:
 	return GdUnitTestSuiteScanner.new().load_suite(script, discovered_tests)
 
 
-static func load_test_suite_cs(resource_path :String) -> Node:
+static func load_test_suite_cs(resource_path: String) -> Node:
 	if not GdUnit4CSharpApiLoader.is_mono_supported():
 		return null
 	var script :Script = ClassDB.instantiate("CSharpScript")
@@ -39,7 +49,7 @@ static func load_test_suite_cs(resource_path :String) -> Node:
 	return null
 
 
-static func load_cs_script(resource_path :String, debug_write := false) -> Script:
+static func load_cs_script(resource_path: String, debug_write := false) -> Script:
 	if not GdUnit4CSharpApiLoader.is_mono_supported():
 		return null
 	var script :Script = ClassDB.instantiate("CSharpScript")
@@ -59,7 +69,7 @@ static func load_cs_script(resource_path :String, debug_write := false) -> Scrip
 	return script
 
 
-static func load_gd_script(resource_path :String, debug_write := false) -> GDScript:
+static func load_gd_script(resource_path: String, debug_write := false) -> GDScript:
 		# grap current level
 	var unsafe_method_access: Variant = ProjectSettings.get_setting("debug/gdscript/warnings/unsafe_method_access")
 	# disable and load the script

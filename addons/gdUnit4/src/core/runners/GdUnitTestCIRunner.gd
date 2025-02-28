@@ -398,8 +398,9 @@ func init_gd_unit() -> void:
 	_state = RUN
 
 
-
 func discover_tests() -> Array[GdUnitTestCase]:
+	var gdunit_test_discover_added := GdUnitSignals.instance().gdunit_test_discover_added
+
 	_test_cases = _runner_config.test_cases()
 	var scanner := GdUnitTestSuiteScanner.new()
 	for path in _included_tests:
@@ -411,6 +412,7 @@ func discover_tests() -> Array[GdUnitTestCase]:
 					if not is_skipped(test):
 						#_console.println_message("discoverd %s" % test.display_name)
 						_test_cases.append(test)
+						gdunit_test_discover_added.emit(test)
 				)
 			else:
 				## TODO implement c# test discovery here

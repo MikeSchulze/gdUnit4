@@ -42,7 +42,8 @@ const CONTEXT_MENU_EXPAND_ALL = 4
 enum GdUnitType {
 	FOLDER,
 	TEST_SUITE,
-	TEST_CASE
+	TEST_CASE,
+	TEST_GROUP
 }
 
 const META_GDUNIT_PROGRESS_COUNT_MAX := "gdUnit_progress_count_max"
@@ -68,40 +69,6 @@ func _build_cache_key(resource_path: String, test_name: String) -> Array:
 	return [resource_path, test_name]
 
 
-func find_tree_item(parent: TreeItem, item_name: String) -> TreeItem:
-	for child in parent.get_children():
-		if child.get_meta(META_GDUNIT_NAME) == item_name:
-			return child
-	return null
-
-
-func find_tree_item_by_id(parent: TreeItem, id: GdUnitGUID) -> TreeItem:
-	for child in parent.get_children():
-		if is_test_id(child, id):
-			return child
-		if child.get_child_count() > 0:
-			var item := find_tree_item_by_id(child, id)
-			if item != null:
-				return item
-
-	return null
-
-
-func get_tree_item(resource_path: String, item_name: String) -> TreeItem:
-	var key := _build_cache_key(resource_path, item_name)
-	return _item_hash.get(key, null)
-
-
-func remove_tree_item(resource_path: String, item_name: String) -> bool:
-	var key := _build_cache_key(resource_path, item_name)
-	var item :TreeItem= _item_hash.get(key, null)
-	if item:
-		item.get_parent().remove_child(item)
-		item.free()
-		return _item_hash.erase(key)
-	return false
-
-
 func add_tree_item_to_cache(resource_path: String, test_name: String, item: TreeItem) -> void:
 	var key := _build_cache_key(resource_path, test_name)
 	_item_hash[key] = item
@@ -109,6 +76,43 @@ func add_tree_item_to_cache(resource_path: String, test_name: String, item: Tree
 
 func clear_tree_item_cache() -> void:
 	_item_hash.clear()
+
+
+## Used for debugging purposes only
+func print_tree_item_ids(parent: TreeItem) -> TreeItem:
+	for child in parent.get_children():
+		if child.has_meta(META_TEST_CASE):
+			var test_case: GdUnitTestCase = child.get_meta(META_TEST_CASE)
+			prints(test_case.guid, test_case.test_name)
+
+		if child.get_child_count() > 0:
+			print_tree_item_ids(child)
+
+	return null
+
+
+func _find_tree_item(parent: TreeItem, item_name: String) -> TreeItem:
+	for child in parent.get_children():
+		if child.get_meta(META_GDUNIT_NAME) == item_name:
+			return child
+	return null
+
+
+func _find_tree_item_by_id(parent: TreeItem, id: GdUnitGUID) -> TreeItem:
+	for child in parent.get_children():
+		if is_test_id(child, id):
+			return child
+		if child.get_child_count() > 0:
+			var item := _find_tree_item_by_id(child, id)
+			if item != null:
+				return item
+
+	return null
+
+
+func _find_tree_item_by_path(resource_path: String, item_name: String) -> TreeItem:
+	var key := _build_cache_key(resource_path, item_name)
+	return _item_hash.get(key, null)
 
 
 func _find_by_resource_path(current: TreeItem, resource_path: String) -> TreeItem:
@@ -189,7 +193,7 @@ func is_test_id(item: TreeItem, id: GdUnitGUID) -> bool:
 		return false
 
 	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
-	return test_case.guid == id
+	return test_case.guid.equals(id)
 
 @warning_ignore("return_value_discarded")
 func _ready() -> void:
@@ -588,7 +592,7 @@ func show_failed_report(selected_item: TreeItem) -> void:
 
 
 func update_test_suite(event: GdUnitEvent) -> void:
-	var item := get_tree_item(extract_resource_path(event), event.suite_name())
+	var item := _find_tree_item_by_path(extract_resource_path(event), event.suite_name())
 	if not item:
 		push_error("Internal Error: Can't find test suite %s" % event.suite_name())
 		return
@@ -602,9 +606,9 @@ func update_test_suite(event: GdUnitEvent) -> void:
 
 
 func update_test_case(event: GdUnitEvent) -> void:
-	var item := get_tree_item(extract_resource_path(event), event.test_name())
+	var item := _find_tree_item_by_id(_tree_root, event.guid())
 	if not item:
-		push_error("Internal Error: Can't find test case %s:%s" % [event.suite_name(), event.test_name()])
+		push_error("Internal Error: Can't find test id %s" % [event.guid()])
 		return
 	if event.type() == GdUnitEvent.TESTCASE_BEFORE:
 		set_state_running(item)
@@ -623,8 +627,18 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 	item.collapsed = true
 	item.set_meta(META_GDUNIT_ORIGINAL_INDEX, item.get_index())
 	item.set_text(0, item_name)
-	if type == GdUnitType.TEST_CASE:
-		item.set_meta(META_TEST_CASE, test)
+	match type:
+		GdUnitType.TEST_CASE:
+			item.set_meta(META_TEST_CASE, test)
+		GdUnitType.TEST_GROUP:
+			# We need to create a copy of the test record meta with a new uniqe guid
+			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.test_name))
+		GdUnitType.TEST_SUITE:
+			# We need to create a copy of the test record meta with a new uniqe guid
+			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.suite_name))
+			# We need to add the suite item to the item cache by path because the guid is not provided
+			add_tree_item_to_cache(test.source_file, item_name, item)
+
 	item.set_meta(META_GDUNIT_NAME, item_name)
 	item.set_meta(META_GDUNIT_TYPE, type)
 	set_state_initial(item)
@@ -765,23 +779,24 @@ func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 
 	var parent := _tree_root
 	for item_name in parts:
-		var next := find_tree_item(parent, item_name)
+		var next := _find_tree_item(parent, item_name)
 		if next != null:
 			parent = next
 			continue
-		if item_name.begins_with(test_case.test_name):
+		if item_name == test_case.display_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
-			add_tree_item_to_cache(test_case.source_file, item_name, next)
+		# on grouped tests (parameterized tests)
+		elif item_name == test_case.test_name:
+			next = create_item(parent, test_case, item_name, GdUnitType.TEST_GROUP)
 		elif item_name == test_case.suite_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_SUITE)
-			add_tree_item_to_cache(test_case.source_file, item_name, next)
 		else:
 			next = create_item(parent, test_case, item_name, GdUnitType.FOLDER)
 		parent = next
 
 
 func on_test_case_discover_deleted(test_case: GdUnitTestCase) -> void:
-	var item := find_tree_item_by_id(_tree_root, test_case.guid)
+	var item := _find_tree_item_by_id(_tree_root, test_case.guid)
 	if item != null:
 		var parent := item.get_parent()
 		parent.remove_child(item)
@@ -798,7 +813,7 @@ func on_test_case_discover_deleted(test_case: GdUnitTestCase) -> void:
 
 
 func on_test_case_discover_modified(test_case: GdUnitTestCase) -> void:
-	var item := find_tree_item_by_id(_tree_root, test_case.guid)
+	var item := _find_tree_item_by_id(_tree_root, test_case.guid)
 	if item != null:
 		item.set_meta(META_TEST_CASE, test_case)
 		item.set_text(0, test_case.display_name)
@@ -846,7 +861,7 @@ func collect_test_cases(item: TreeItem, tests: Array[GdUnitTestCase] = []) -> Ar
 	for next in item.get_children():
 		collect_test_cases(next, tests)
 
-	if not is_folder(item) and item.has_meta(META_TEST_CASE):
+	if is_test_case(item):
 		var test: GdUnitTestCase = item.get_meta(META_TEST_CASE)
 		if not tests.has(test):
 			tests.append(test)
