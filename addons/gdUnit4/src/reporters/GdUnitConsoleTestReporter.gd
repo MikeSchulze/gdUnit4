@@ -1,18 +1,16 @@
 @tool
-class_name GdUnitTestResultReporter
-extends RefCounted
+class_name GdUnitConsoleTestReporter
+extends GdUnitTestReporter
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 var _writer: GdUnitMessageWritter
-var _statistics := {}
-var _summary := {}
 var _status_indent := 86
 var _detailed: bool
 var _text_color: Color = Color.ANTIQUE_WHITE
 var _function_color: Color = Color.ANTIQUE_WHITE
 var _engine_type_color: Color = Color.ANTIQUE_WHITE
-var _guard := GdUnitTestDiscoverGuard.new()
+var _guard := GdUnitTestDiscoverGuard.instance()
 
 
 func _init(writer: GdUnitMessageWritter, detailed := false) -> void:
@@ -30,17 +28,6 @@ func init_colors() -> void:
 		_text_color = settings.get_setting("text_editor/theme/highlighting/text_color")
 		_function_color = settings.get_setting("text_editor/theme/highlighting/function_color")
 		_engine_type_color = settings.get_setting("text_editor/theme/highlighting/engine_type_color")
-
-
-func init_summary() -> void:
-	_summary["suite_count"] = 0
-	_summary["total_count"] = 0
-	_summary["error_count"] = 0
-	_summary["failed_count"] = 0
-	_summary["skipped_count"] = 0
-	_summary["flaky_count"] = 0
-	_summary["orphan_nodes"] = 0
-	_summary["elapsed_time"] = 0
 
 
 func init_statistics() -> void:
@@ -85,43 +72,11 @@ func build_statisitcs(event: GdUnitEvent) -> Dictionary:
 	return statistic
 
 
-func processed_suite_count() -> int:
-	return _summary["suite_count"]
-
-
-func total_test_count() -> int:
-	return _summary["total_count"]
-
-
-func total_flaky_count() -> int:
-	return _summary["flaky_count"]
-
-
-func total_error_count() -> int:
-	return _summary["error_count"]
-
-
-func total_failure_count() -> int:
-	return _summary["failed_count"]
-
-
-func total_skipped_count() -> int:
-	return _summary["skipped_count"]
-
-
-func total_orphan_count() -> int:
-	return _summary["orphan_nodes"]
-
-
-func elapsed_time() -> int:
-	return _summary["elapsed_time"]
-
-
 func clear() -> void:
 	_writer.clear()
 
 
-func _on_gdunit_event(event: GdUnitEvent) -> void:
+func on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
 			init_summary()
