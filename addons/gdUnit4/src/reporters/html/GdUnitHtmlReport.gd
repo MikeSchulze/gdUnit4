@@ -3,11 +3,13 @@ extends GdUnitReportSummary
 
 const REPORT_DIR_PREFIX = "report_"
 
-var _report_path :String
-var _iteration :int
+var _report_path: String
+var _iteration: int
+var _max_reports: int
 
 
 func _init(report_path :String, max_reports: int) -> void:
+	_max_reports = max_reports
 	if max_reports > 1:
 		_iteration = GdUnitFileAccess.find_last_path_index(report_path, REPORT_DIR_PREFIX) + 1
 	else:
@@ -100,21 +102,23 @@ func update_summary_counters(
 	_duration += p_duration
 
 
-func write() -> String:
+func write() -> void:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/report/template/index.html")
 	var to_write := GdUnitHtmlPatterns.build(template, self, "")
 	to_write = apply_path_reports(_report_path, to_write, _reports)
 	to_write = apply_testsuite_reports(_report_path, to_write, _reports)
 	# write report
-	var index_file := "%s/index.html" % _report_path
-	FileAccess.open(index_file, FileAccess.WRITE).store_string(to_write)
+	FileAccess.open(report_file(), FileAccess.WRITE).store_string(to_write)
 	@warning_ignore("return_value_discarded")
 	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/report/template/css/", _report_path + "/css")
-	return index_file
 
 
-func delete_history(max_reports :int) -> int:
-	return GdUnitFileAccess.delete_path_index_lower_equals_than(_report_path.get_base_dir(), REPORT_DIR_PREFIX, _iteration-max_reports)
+func report_file() -> String:
+	return "%s/index.html" % _report_path
+
+
+func delete_history() -> int:
+	return GdUnitFileAccess.delete_path_index_lower_equals_than(_report_path.get_base_dir(), REPORT_DIR_PREFIX, _iteration-_max_reports)
 
 
 func apply_path_reports(report_dir :String, template :String, report_summaries :Array) -> String:

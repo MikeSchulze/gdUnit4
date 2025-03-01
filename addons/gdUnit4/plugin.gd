@@ -9,7 +9,6 @@ var _gd_inspector: Control
 var _gd_console: Control
 var _gd_filesystem_context_menu: Variant
 var _gd_scripteditor_context_menu: Variant
-var _guard: GdUnitTestDiscoverGuard
 
 
 func _enter_tree() -> void:
@@ -34,7 +33,7 @@ func _enter_tree() -> void:
 	if GdUnit4CSharpApiLoader.is_mono_supported():
 		prints("GdUnit4Net version '%s' loaded." % GdUnit4CSharpApiLoader.version())
 	# Connect to be notified for script changes to be able to discover new tests
-	_guard = GdUnitTestDiscoverGuard.new()
+	GdUnitTestDiscoverGuard.instance()
 	@warning_ignore("return_value_discarded")
 	resource_saved.connect(_on_resource_saved)
 	prints("Loading GdUnit4 Plugin success")
@@ -96,4 +95,4 @@ func _create_context_menu(script_path: String) -> Variant:
 
 func _on_resource_saved(resource: Resource) -> void:
 	if resource is Script:
-		await _guard.discover(resource as Script)
+		await GdUnitTestDiscoverGuard.instance().discover(resource as Script)
