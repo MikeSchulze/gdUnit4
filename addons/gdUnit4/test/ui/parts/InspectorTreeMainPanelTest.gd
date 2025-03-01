@@ -74,10 +74,6 @@ func setup_test_env() -> void:
 	suite_c_item = _inspector._find_tree_item_by_path(suite_c.resource_path, "ExampleTestSuiteC")
 
 
-func find_test_case(resource_path :String, test_case :String) -> TreeItem:
-	return _inspector.get_tree_item(resource_path, test_case)
-
-
 func set_test_state(test_cases: Array[GdUnitTestCase], state: InspectorTreeMainPanel.STATE) -> void:
 	for test in test_cases:
 		var item := _inspector._find_tree_item_by_id(_inspector._tree_root, test.guid)
