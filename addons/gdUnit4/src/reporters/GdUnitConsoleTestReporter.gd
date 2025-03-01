@@ -135,7 +135,9 @@ func _print_test_path(test: GdUnitTestCase, uid: GdUnitGUID) -> void:
 func _print_status(event: GdUnitEvent) -> void:
 	if event.is_flaky() and event.is_success():
 		var retries: int = event.statistic(GdUnitEvent.RETRY_COUNT)
-		_writer.color(Color.GREEN_YELLOW).style(GdUnitMessageWritter.ITALIC).print_at("FLAKY (%d retries)" % retries, _status_indent)
+		_writer.color(Color.GREEN_YELLOW)\
+			.style(GdUnitMessageWritter.ITALIC)\
+			.print_at("FLAKY (%d retries)" % retries, _status_indent)
 	elif event.is_success():
 		_writer.color(Color.FOREST_GREEN).print_at("PASSED", _status_indent)
 	elif event.is_skipped():
@@ -143,9 +145,14 @@ func _print_status(event: GdUnitEvent) -> void:
 	elif event.is_failed() or event.is_error():
 		var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
 		var message := "FAILED (retry %d)" % retries if retries > 1 else "FAILED"
-		_writer.color(Color.FIREBRICK).style(GdUnitMessageWritter.BOLD).effect(GdUnitMessageWritter.Effect.WAVE).print_at(message, _status_indent)
+		_writer.color(Color.FIREBRICK)\
+			.style(GdUnitMessageWritter.BOLD)\
+			.effect(GdUnitMessageWritter.Effect.WAVE)\
+			.print_at(message, _status_indent)
 	elif event.is_warning():
-		_writer.color(Color.GOLDENROD).style(GdUnitMessageWritter.UNDERLINE).print_at("WARNING", _status_indent)
+		_writer.color(Color.GOLDENROD)\
+			.style(GdUnitMessageWritter.UNDERLINE)\
+			.print_at("WARNING", _status_indent)
 
 	println_message(" %s" % LocalTime.elapsed(event.elapsed_time()), Color.CORNFLOWER_BLUE)
 
@@ -158,7 +165,10 @@ func _print_failure_report(reports: Array[GdUnitReport]) -> void:
 			or report.is_warning()
 			or report.is_skipped()
 		):
-			_writer.indent(1).color(Color.DARK_TURQUOISE).style(GdUnitMessageWritter.BOLD | GdUnitMessageWritter.UNDERLINE).println_message("Report:")
+			_writer.indent(1)\
+				.color(Color.DARK_TURQUOISE)\
+				.style(GdUnitMessageWritter.BOLD | GdUnitMessageWritter.UNDERLINE)\
+				.println_message("Report:")
 			var text := GdUnitTools.richtext_normalize(str(report))
 			for line in text.split("\n", false):
 				_writer.indent(2).color(Color.DARK_TURQUOISE).println_message(line)
