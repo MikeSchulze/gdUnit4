@@ -62,7 +62,7 @@ const STATE = GdUnitInspectorTreeConstants.STATE
 
 var _tree_root: TreeItem
 var _item_hash := Dictionary()
-var _tree_view_mode_flat := GdUnitSettings.get_inspector_tree_view_mode() == GdUnitInspectorTreeConstants.TREE_VIEW_MODE.FLAT
+var _current_tree_view_mode := GdUnitSettings.get_inspector_tree_view_mode()
 
 
 func _build_cache_key(resource_path: String, test_name: String) -> Array:
@@ -327,6 +327,139 @@ func sort_items_by_original_index(a: TreeItem, b: TreeItem) -> bool:
 	return index_a < index_b
 
 
+func restructure_tree(parent: TreeItem, tree_mode: GdUnitInspectorTreeConstants.TREE_VIEW_MODE) -> void:
+	_current_tree_view_mode = tree_mode
+
+	match tree_mode:
+		GdUnitInspectorTreeConstants.TREE_VIEW_MODE.FLAT:
+			restructure_tree_to_flat(parent)
+		GdUnitInspectorTreeConstants.TREE_VIEW_MODE.TREE:
+			restructure_tree_to_tree(parent)
+	recalculate_counters(_tree_root)
+	# finally apply actual sort mode
+	sort_tree_items(_tree_root)
+
+
+# Restructure into flat mode
+func restructure_tree_to_flat(parent: TreeItem) -> void:
+	var folders := flatmap_folders(parent)
+	# Store current folder paths and their test suites
+	for folder_path: String in folders:
+		var test_suites: Array[TreeItem] = folders[folder_path]
+		if test_suites.is_empty():
+			continue
+
+		# Create flat folder and move test suites into it
+		var folder := _tree.create_item(parent)
+		folder.set_meta(META_GDUNIT_NAME, folder_path)
+		update_item_total_counter(folder)
+		set_state_initial(folder, GdUnitType.FOLDER)
+
+		# Move test suites under the flat folder
+		for test_suite in test_suites:
+			var old_parent := test_suite.get_parent()
+			old_parent.remove_child(test_suite)
+			folder.add_child(test_suite)
+
+	# Cleanup old folder structure
+	cleanup_empty_folders(parent)
+
+
+# Restructure into hierarchical tree mode
+func restructure_tree_to_tree(parent: TreeItem) -> void:
+	var items_to_process := parent.get_children().duplicate()
+
+	for item: TreeItem in items_to_process:
+		if is_folder(item):
+			var folder_path: String = item.get_meta(META_GDUNIT_NAME)
+			var parts := folder_path.split("/")
+
+			if parts.size() > 1:
+				var current_parent := parent
+				# Build folder hierarchy
+				for part in parts:
+					var next := _find_tree_item(current_parent, part)
+					if not next:
+						next = _tree.create_item(current_parent)
+						next.set_meta(META_GDUNIT_NAME, part)
+						set_state_initial(next, GdUnitType.FOLDER)
+					current_parent = next
+
+				# Move test suites to deepest folder
+				var test_suites := item.get_children()
+				for test_suite in test_suites:
+					item.remove_child(test_suite)
+					current_parent.add_child(test_suite)
+
+				# Remove the flat folder
+				item.get_parent().remove_child(item)
+				item.free()
+
+
+func flatmap_folders(parent: TreeItem) -> Dictionary:
+	var folder_map := {}
+
+	for item in parent.get_children():
+		if is_folder(item):
+			var current_path: String = item.get_meta(META_GDUNIT_NAME)
+			# Get parent folder paths
+			var parent_path := get_parent_folder_path(item)
+			if parent_path:
+				current_path = parent_path + "/" + current_path
+
+			# Collect direct children of this folder
+			var children: Array[TreeItem] = []
+			for child in item.get_children():
+				if is_test_suite(child):
+					children.append(child)
+
+			# Add children to existing path or create new entry
+			if not children.is_empty():
+				if folder_map.has(current_path):
+					@warning_ignore("unsafe_method_access")
+					folder_map[current_path].append_array(children)
+				else:
+					folder_map[current_path] = children
+
+			# Recursively process subfolders
+			var sub_folders := flatmap_folders(item)
+			for path: String in sub_folders.keys():
+				if folder_map.has(path):
+					@warning_ignore("unsafe_method_access")
+					folder_map[path].append_array(sub_folders[path])
+				else:
+					folder_map[path] = sub_folders[path]
+	return folder_map
+
+
+func get_parent_folder_path(item: TreeItem) -> String:
+	var path := ""
+	var parent := item.get_parent()
+
+	while parent != _tree_root:
+		if is_folder(parent):
+			path = parent.get_meta(META_GDUNIT_NAME) + ("/" + path if path else "")
+		parent = parent.get_parent()
+
+	return path
+
+
+func cleanup_empty_folders(parent: TreeItem) -> void:
+	var folders: Array[TreeItem] = []
+	# First collect all folders to avoid modification during iteration
+	for item in parent.get_children():
+		if is_folder(item):
+			folders.append(item)
+
+	# Process collected folders
+	for folder in folders:
+		cleanup_empty_folders(folder)
+		# Remove folder if it has no children after cleanup
+		if folder.get_child_count() == 0:
+			parent.remove_child(folder)
+			folder.free()
+
+
 func reset_tree_state(parent: TreeItem) -> void:
 	if parent == _tree_root:
 		_tree_root.set_meta(META_GDUNIT_PROGRESS_INDEX, 0)
@@ -334,7 +467,7 @@ func reset_tree_state(parent: TreeItem) -> void:
 		test_counters_changed.emit(0, 0, STATE.INITIAL)
 
 	for item in parent.get_children():
-		set_state_initial(item)
+		set_state_initial(item, get_item_type(item))
 		reset_tree_state(item)
 
 
@@ -361,7 +494,7 @@ func do_collapse_all(collapse: bool, parent := _tree_root) -> void:
 			do_collapse_all(collapse, item)
 
 
-func set_state_initial(item: TreeItem) -> void:
+func set_state_initial(item: TreeItem, type: GdUnitType) -> void:
 	item.set_text(0, str(item.get_meta(META_GDUNIT_NAME)))
 	item.set_custom_color(0, Color.LIGHT_GRAY)
 	item.set_tooltip_text(0, "")
@@ -374,6 +507,7 @@ func set_state_initial(item: TreeItem) -> void:
 	item.set_tooltip_text(1, "")
 
 	item.set_meta(META_GDUNIT_STATE, STATE.INITIAL)
+	item.set_meta(META_GDUNIT_TYPE, type)
 	item.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
 	item.set_meta(META_GDUNIT_EXECUTION_TIME, 0)
 	if item.has_meta(META_GDUNIT_PROGRESS_COUNT_MAX) and item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX) > 0:
@@ -640,8 +774,7 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 			add_tree_item_to_cache(test.source_file, item_name, item)
 
 	item.set_meta(META_GDUNIT_NAME, item_name)
-	item.set_meta(META_GDUNIT_TYPE, type)
-	set_state_initial(item)
+	set_state_initial(item, type)
 	update_item_total_counter(item)
 	return item
 
@@ -704,6 +837,56 @@ func update_progress_counters(item: TreeItem, rety_count: int) -> void:
 	var state: STATE = item.get_meta(META_GDUNIT_STATE)
 	test_counters_changed.emit(index, total_test, state)
 	_tree_root.set_meta(META_GDUNIT_PROGRESS_INDEX, index)
+
+
+func recalculate_counters(parent: TreeItem) -> void:
+	# Reset the counter first
+	if parent.has_meta(META_GDUNIT_PROGRESS_COUNT_MAX):
+		parent.set_meta(META_GDUNIT_PROGRESS_COUNT_MAX, 0)
+	if parent.has_meta(META_GDUNIT_PROGRESS_INDEX):
+		parent.set_meta(META_GDUNIT_PROGRESS_INDEX, 0)
+	if parent.has_meta(META_GDUNIT_SUCCESS_TESTS):
+		parent.set_meta(META_GDUNIT_SUCCESS_TESTS, 0)
+
+	# Calculate new count based on children
+	var total_count := 0
+	var success_count := 0
+	var progress_index := 0
+
+	for child in parent.get_children():
+		if child.get_child_count() > 0:
+			# Recursively update child counters first
+			recalculate_counters(child)
+			# Add child's counters to parent
+			if child.has_meta(META_GDUNIT_PROGRESS_COUNT_MAX):
+				total_count += child.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX)
+			if child.has_meta(META_GDUNIT_SUCCESS_TESTS):
+				success_count += child.get_meta(META_GDUNIT_SUCCESS_TESTS)
+			if child.has_meta(META_GDUNIT_PROGRESS_INDEX):
+				progress_index += child.get_meta(META_GDUNIT_PROGRESS_INDEX)
+		elif is_test_case(child):
+			# Count individual test cases
+			total_count += 1
+			# Count completed tests
+			if is_state_success(child) or is_state_warning(child) or is_state_failed(child) or is_state_error(child):
+				progress_index += 1
+			if is_state_success(child) or is_state_warning(child):
+				success_count += 1
+
+	# Update the counters
+	if total_count > 0:
+		parent.set_meta(META_GDUNIT_PROGRESS_COUNT_MAX, total_count)
+		parent.set_meta(META_GDUNIT_PROGRESS_INDEX, progress_index)
+		parent.set_meta(META_GDUNIT_SUCCESS_TESTS, success_count)
+
+		# Update the display text
+		parent.set_text(0, "(%d/%d) %s" % [success_count, total_count, parent.get_meta(META_GDUNIT_NAME)])
+
+	# If this is the root, emit the counter change signal
+	if parent == _tree_root:
+		var state: STATE = parent.get_meta(META_GDUNIT_STATE)
+		test_counters_changed.emit(progress_index, total_count, state)
+
 
 
 func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:
@@ -772,11 +955,19 @@ func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 	var fully_qualified_name := test_case.fully_qualified_name.trim_prefix(test_root_folder).trim_suffix(test_case.display_name)
 	var parts := fully_qualified_name.split(".", false)
 	parts.append(test_case.display_name)
-	# skip tree structure until test root folder
+	# Skip tree structure until test root folder
 	var index := parts.find(test_root_folder)
 	if index != -1:
 		parts = parts.slice(index+1)
 
+	match _current_tree_view_mode:
+		GdUnitInspectorTreeConstants.TREE_VIEW_MODE.FLAT:
+			create_items_tree_mode_flat(test_case, parts)
+		GdUnitInspectorTreeConstants.TREE_VIEW_MODE.TREE:
+			create_items_tree_mode_tree(test_case, parts)
+
+
+func create_items_tree_mode_tree(test_case: GdUnitTestCase, parts: PackedStringArray) -> void:
 	var parent := _tree_root
 	for item_name in parts:
 		var next := _find_tree_item(parent, item_name)
@@ -785,7 +976,7 @@ func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 			continue
 		if item_name == test_case.display_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_CASE)
-		# on grouped tests (parameterized tests)
+		# On grouped tests (parameterized tests)
 		elif item_name == test_case.test_name:
 			next = create_item(parent, test_case, item_name, GdUnitType.TEST_GROUP)
 		elif item_name == test_case.suite_name:
@@ -793,6 +984,37 @@ func on_test_case_discover_added(test_case: GdUnitTestCase) -> void:
 		else:
 			next = create_item(parent, test_case, item_name, GdUnitType.FOLDER)
 		parent = next
+
+
+func create_items_tree_mode_flat(test_case: GdUnitTestCase, parts: PackedStringArray) -> void:
+	# All parts except the last two (suite name and test name/display name)
+	var slice_index := -2 if parts[-1] == test_case.test_name else -3
+	var path_parts := parts.slice(0, slice_index)
+	var folder_path := "/".join(path_parts)
+
+	# Find or create flat folder
+	var folder_item: TreeItem
+	if folder_path.is_empty():
+		folder_item = _tree_root
+	else:
+		folder_item = _find_tree_item(_tree_root, folder_path)
+		if folder_item == null:
+			folder_item = create_item(_tree_root, test_case, folder_path, GdUnitType.FOLDER)
+
+	# Find suite under the flat folder (second to last part)
+	var suite_item := _find_tree_item(folder_item, test_case.suite_name)
+	if suite_item == null:
+		suite_item = create_item(folder_item, test_case, test_case.suite_name, GdUnitType.TEST_SUITE)
+
+	# Add test case or group under the suite
+	if test_case.test_name != test_case.display_name:
+		# It's a parameterized test group
+		var group_item := _find_tree_item(suite_item, test_case.test_name)
+		if group_item == null:
+			group_item = create_item(suite_item, test_case, test_case.test_name, GdUnitType.TEST_GROUP)
+		create_item(group_item, test_case, test_case.display_name, GdUnitType.TEST_CASE)
+	else:
+		create_item(suite_item, test_case, test_case.display_name, GdUnitType.TEST_CASE)
 
 
 func on_test_case_discover_deleted(test_case: GdUnitTestCase) -> void:
@@ -838,6 +1060,12 @@ func get_item_source_file(item: TreeItem) -> String:
 
 	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
 	return test_case.source_file
+
+
+func get_item_type(item: TreeItem) -> GdUnitType:
+	if item == null or not item.has_meta(META_GDUNIT_TYPE):
+		return GdUnitType.FOLDER
+	return item.get_meta(META_GDUNIT_TYPE)
 
 
 func _dump_tree_as_json(dump_name: String) -> void:
@@ -987,10 +1215,10 @@ func _on_context_m_index_pressed(index: int) -> void:
 
 
 func _on_settings_changed(property :GdUnitProperty) -> void:
-	if property.name() == GdUnitSettings.INSPECTOR_TREE_SORT_MODE:
-		sort_tree_items(_tree_root)
-		# _dump_tree_as_json("tree_sorted_by_%s" % GdUnitInspectorTreeConstants.SORT_MODE.keys()[property.value()])
+	match property.name():
+		GdUnitSettings.INSPECTOR_TREE_SORT_MODE:
+			sort_tree_items(_tree_root)
+			# _dump_tree_as_json("tree_sorted_by_%s" % GdUnitInspectorTreeConstants.SORT_MODE.keys()[property.value()])
 
-	if property.name() == GdUnitSettings.INSPECTOR_TREE_VIEW_MODE:
-		_tree_view_mode_flat = property.value() == GdUnitInspectorTreeConstants.TREE_VIEW_MODE.FLAT
-		GdUnitCommandHandler.instance().cmd_discover_tests()
+		GdUnitSettings.INSPECTOR_TREE_VIEW_MODE:
+			restructure_tree(_tree_root, GdUnitSettings.get_inspector_tree_view_mode())
