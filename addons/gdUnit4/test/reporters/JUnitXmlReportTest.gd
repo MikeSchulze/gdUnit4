@@ -4,8 +4,6 @@
 class_name JUnitXmlReportTest
 extends GdUnitTestSuite
 
-# TestSuite generated from
-const __source = 'res://addons/gdUnit4/src/report/JUnitXmlReport.gd'
 
 
 func test_to_time() -> void:

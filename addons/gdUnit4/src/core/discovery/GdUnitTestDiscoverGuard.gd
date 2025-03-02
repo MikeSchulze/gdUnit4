@@ -35,7 +35,14 @@
 ## await guard.discover(test_script)
 ## [/codeblock]
 class_name GdUnitTestDiscoverGuard
-extends RefCounted
+extends Object
+
+
+
+static func instance() -> GdUnitTestDiscoverGuard:
+	return GdUnitSingleton.instance("GdUnitTestDiscoverGuard", func() -> GdUnitTestDiscoverGuard:
+		return GdUnitTestDiscoverGuard.new()
+	)
 
 
 ## Maps source files to their discovered test cases.[br]

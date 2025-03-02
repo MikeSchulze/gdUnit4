@@ -65,13 +65,33 @@ jobs:
           godot-status: ${{ matrix.godot-status }}
           version: installed
           paths: |
-            res://addons/gdUnit4/test/
+            res://addons/gdUnit4/test/cmd
           arguments: |
             --verbose
           timeout: 10
           warnings-as-errors: true
           publish-report: false
           report-name: gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
+
+      - name: Publish HTML Report to PR
+        uses: actions/github-script@v6
+        if: ${{ always() && matrix.godot-net == '' }}
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = './home/runner/work/gdUnit4/gdUnit4/reports/report_1/index.html';
+
+            if (fs.existsSync(reportPath)) {
+              const reportContent = fs.readFileSync(reportPath, 'utf8');
+              const reportUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `## Test Report\nTest report is available [here](${reportUrl}/artifacts).\n\nDownload the test-report artifact to view the full HTML report.`
+              });
+            }
 
       - name: 'Test GdUnit4 dev - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net'
         if: ${{ matrix.godot-net == '.Net' }}

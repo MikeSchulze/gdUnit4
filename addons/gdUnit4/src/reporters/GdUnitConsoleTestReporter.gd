@@ -1,18 +1,16 @@
 @tool
-class_name GdUnitTestResultReporter
-extends RefCounted
+class_name GdUnitConsoleTestReporter
+extends GdUnitTestReporter
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 var _writer: GdUnitMessageWritter
-var _statistics := {}
-var _summary := {}
 var _status_indent := 86
 var _detailed: bool
 var _text_color: Color = Color.ANTIQUE_WHITE
 var _function_color: Color = Color.ANTIQUE_WHITE
 var _engine_type_color: Color = Color.ANTIQUE_WHITE
-var _guard := GdUnitTestDiscoverGuard.new()
+
 
 
 func _init(writer: GdUnitMessageWritter, detailed := false) -> void:
@@ -32,96 +30,11 @@ func init_colors() -> void:
 		_engine_type_color = settings.get_setting("text_editor/theme/highlighting/engine_type_color")
 
 
-func init_summary() -> void:
-	_summary["suite_count"] = 0
-	_summary["total_count"] = 0
-	_summary["error_count"] = 0
-	_summary["failed_count"] = 0
-	_summary["skipped_count"] = 0
-	_summary["flaky_count"] = 0
-	_summary["orphan_nodes"] = 0
-	_summary["elapsed_time"] = 0
-
-
-func init_statistics() -> void:
-	_statistics.clear()
-
-
-func update_statistics(event: GdUnitEvent) -> void:
-	var test_statisitics: Dictionary = _statistics.get_or_add(event.test_name(), {
-		"error_count" : 0,
-		"failed_count" : 0,
-		"skipped_count" : event.is_skipped() as int,
-		"flaky_count" : 0,
-		"orphan_nodes" : 0
-	})
-	test_statisitics["error_count"] = event.is_error() as int
-	test_statisitics["failed_count"] = event.is_failed() as int
-	test_statisitics["flaky_count"] = event.is_flaky() as int
-	test_statisitics["orphan_nodes"] = event.orphan_nodes()
-
-
-func get_value(acc: int, value: Dictionary, key: String) -> int:
-	return acc + value[key]
-
-
-func build_statisitcs(event: GdUnitEvent) -> Dictionary:
-	var statistic :=  {
-		"total_count" : _statistics.size(),
-		"error_count" : 0,
-		"failed_count" : 0,
-		"skipped_count" : 0,
-		"flaky_count" : 0,
-		"orphan_nodes" : 0
-	}
-	_summary["suite_count"] += 1
-	_summary["total_count"] += _statistics.size()
-	_summary["elapsed_time"] += event.elapsed_time()
-
-	for key: String in ["error_count", "failed_count", "skipped_count", "flaky_count", "orphan_nodes"]:
-		var value: int = _statistics.values().reduce(get_value.bind(key), 0 )
-		statistic[key] = value
-		_summary[key] += value
-	return statistic
-
-
-func processed_suite_count() -> int:
-	return _summary["suite_count"]
-
-
-func total_test_count() -> int:
-	return _summary["total_count"]
-
-
-func total_flaky_count() -> int:
-	return _summary["flaky_count"]
-
-
-func total_error_count() -> int:
-	return _summary["error_count"]
-
-
-func total_failure_count() -> int:
-	return _summary["failed_count"]
-
-
-func total_skipped_count() -> int:
-	return _summary["skipped_count"]
-
-
-func total_orphan_count() -> int:
-	return _summary["orphan_nodes"]
-
-
-func elapsed_time() -> int:
-	return _summary["elapsed_time"]
-
-
 func clear() -> void:
 	_writer.clear()
 
 
-func _on_gdunit_event(event: GdUnitEvent) -> void:
+func on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
 			init_summary()
@@ -140,22 +53,26 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			println_message(event.resource_path(), _engine_type_color)
 
 		GdUnitEvent.TESTSUITE_AFTER:
+			if not event.reports().is_empty():
+				_writer.color(Color.DARK_SALMON)\
+					.style(GdUnitMessageWritter.BOLD)\
+					.println_message(event.suite_name()+":finalze")
 			_print_failure_report(event.reports())
-			_print_statistics(build_statisitcs(event))
+			_print_statistics(build_test_suite_statisitcs(event))
 			_print_status(event)
 			println_message("")
 			if _detailed:
 				println_message("")
 
 		GdUnitEvent.TESTCASE_BEFORE:
-			var test := _guard.find_test_by_id(event.guid())
+			var test := find_test_by_id(event.guid())
 			_print_test_path(test, event.guid())
 			if _detailed:
 				_writer.color(Color.FOREST_GREEN).print_at("STARTED", _status_indent)
 				println_message("")
 
 		GdUnitEvent.TESTCASE_AFTER:
-			var test := _guard.find_test_by_id(event.guid())
+			var test := find_test_by_id(event.guid())
 			update_statistics(event)
 			if _detailed:
 				_print_test_path(test, event.guid())
@@ -180,7 +97,9 @@ func _print_test_path(test: GdUnitTestCase, uid: GdUnitGUID) -> void:
 func _print_status(event: GdUnitEvent) -> void:
 	if event.is_flaky() and event.is_success():
 		var retries: int = event.statistic(GdUnitEvent.RETRY_COUNT)
-		_writer.color(Color.GREEN_YELLOW).style(GdUnitMessageWritter.ITALIC).print_at("FLAKY (%d retries)" % retries, _status_indent)
+		_writer.color(Color.GREEN_YELLOW)\
+			.style(GdUnitMessageWritter.ITALIC)\
+			.print_at("FLAKY (%d retries)" % retries, _status_indent)
 	elif event.is_success():
 		_writer.color(Color.FOREST_GREEN).print_at("PASSED", _status_indent)
 	elif event.is_skipped():
@@ -188,9 +107,14 @@ func _print_status(event: GdUnitEvent) -> void:
 	elif event.is_failed() or event.is_error():
 		var retries :int = event.statistic(GdUnitEvent.RETRY_COUNT)
 		var message := "FAILED (retry %d)" % retries if retries > 1 else "FAILED"
-		_writer.color(Color.FIREBRICK).style(GdUnitMessageWritter.BOLD).effect(GdUnitMessageWritter.Effect.WAVE).print_at(message, _status_indent)
+		_writer.color(Color.FIREBRICK)\
+			.style(GdUnitMessageWritter.BOLD)\
+			.effect(GdUnitMessageWritter.Effect.WAVE)\
+			.print_at(message, _status_indent)
 	elif event.is_warning():
-		_writer.color(Color.GOLDENROD).style(GdUnitMessageWritter.UNDERLINE).print_at("WARNING", _status_indent)
+		_writer.color(Color.GOLDENROD)\
+			.style(GdUnitMessageWritter.UNDERLINE)\
+			.print_at("WARNING", _status_indent)
 
 	println_message(" %s" % LocalTime.elapsed(event.elapsed_time()), Color.CORNFLOWER_BLUE)
 
@@ -203,7 +127,10 @@ func _print_failure_report(reports: Array[GdUnitReport]) -> void:
 			or report.is_warning()
 			or report.is_skipped()
 		):
-			_writer.indent(1).color(Color.DARK_TURQUOISE).style(GdUnitMessageWritter.BOLD | GdUnitMessageWritter.UNDERLINE).println_message("Report:")
+			_writer.indent(1)\
+				.color(Color.DARK_TURQUOISE)\
+				.style(GdUnitMessageWritter.BOLD | GdUnitMessageWritter.UNDERLINE)\
+				.println_message("Report:")
 			var text := GdUnitTools.richtext_normalize(str(report))
 			for line in text.split("\n", false):
 				_writer.indent(2).color(Color.DARK_TURQUOISE).println_message(line)
