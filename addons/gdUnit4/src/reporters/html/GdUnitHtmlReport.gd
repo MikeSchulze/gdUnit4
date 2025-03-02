@@ -33,16 +33,11 @@ func add_testcase(resource_path :String, suite_name :String, test_name: String) 
 
 func add_testsuite_reports(
 	p_resource_path :String,
-	p_error_count :int,
-	p_failure_count :int,
-	p_orphan_count :int,
-	p_duration :int,
 	p_reports :Array = []) -> void:
 
 	for report:GdUnitTestSuiteReport in _reports:
 		if report.get_resource_path() == p_resource_path:
 			report.set_reports(p_reports)
-	update_summary_counters(p_error_count, p_failure_count, p_orphan_count, 0, 0, p_duration)
 
 
 func add_testcase_reports(
@@ -60,14 +55,14 @@ func update_testsuite_counters(
 	p_error_count: int,
 	p_failure_count: int,
 	p_orphan_count: int,
-	p_is_skipped: bool,
-	p_is_flaky: bool,
+	p_skipped_count: int,
+	p_flaky_count: int,
 	p_duration: int) -> void:
 
 	for report:GdUnitTestSuiteReport in _reports:
 		if report.get_resource_path() == p_resource_path:
-			report.update_testsuite_counters(p_error_count, p_failure_count, p_orphan_count, p_is_skipped, p_is_flaky, p_duration)
-	update_summary_counters(p_error_count, p_failure_count, p_orphan_count, p_is_skipped, p_is_flaky, 0)
+			report.update_testsuite_counters(p_error_count, p_failure_count, p_orphan_count, p_skipped_count, p_flaky_count, p_duration)
+	update_summary_counters(p_error_count, p_failure_count, p_orphan_count, p_skipped_count, p_flaky_count, 0)
 
 
 func set_testcase_counters(
@@ -90,27 +85,27 @@ func update_summary_counters(
 	p_error_count: int,
 	p_failure_count: int,
 	p_orphan_count: int,
-	p_is_skipped: bool,
-	p_is_flaky: bool,
+	p_skipped_count: int,
+	p_flaky_count: int,
 	p_duration: int) -> void:
 
 	_error_count += p_error_count
 	_failure_count += p_failure_count
 	_orphan_count += p_orphan_count
-	_skipped_count += p_is_skipped as int
-	_flaky_count += p_is_flaky as int
+	_skipped_count += p_skipped_count
+	_flaky_count += p_flaky_count
 	_duration += p_duration
 
 
 func write() -> void:
-	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/report/template/index.html")
+	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/reporters/html/template/index.html")
 	var to_write := GdUnitHtmlPatterns.build(template, self, "")
 	to_write = apply_path_reports(_report_path, to_write, _reports)
 	to_write = apply_testsuite_reports(_report_path, to_write, _reports)
 	# write report
 	FileAccess.open(report_file(), FileAccess.WRITE).store_string(to_write)
 	@warning_ignore("return_value_discarded")
-	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/report/template/css/", _report_path + "/css")
+	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/reporters/html/template/css/", _report_path + "/css")
 
 
 func report_file() -> String:

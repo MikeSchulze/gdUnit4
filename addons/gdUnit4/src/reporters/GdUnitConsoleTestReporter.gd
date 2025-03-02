@@ -10,7 +10,7 @@ var _detailed: bool
 var _text_color: Color = Color.ANTIQUE_WHITE
 var _function_color: Color = Color.ANTIQUE_WHITE
 var _engine_type_color: Color = Color.ANTIQUE_WHITE
-var _guard := GdUnitTestDiscoverGuard.instance()
+
 
 
 func _init(writer: GdUnitMessageWritter, detailed := false) -> void:
@@ -28,48 +28,6 @@ func init_colors() -> void:
 		_text_color = settings.get_setting("text_editor/theme/highlighting/text_color")
 		_function_color = settings.get_setting("text_editor/theme/highlighting/function_color")
 		_engine_type_color = settings.get_setting("text_editor/theme/highlighting/engine_type_color")
-
-
-func init_statistics() -> void:
-	_statistics.clear()
-
-
-func update_statistics(event: GdUnitEvent) -> void:
-	var test_statisitics: Dictionary = _statistics.get_or_add(event.test_name(), {
-		"error_count" : 0,
-		"failed_count" : 0,
-		"skipped_count" : event.is_skipped() as int,
-		"flaky_count" : 0,
-		"orphan_nodes" : 0
-	})
-	test_statisitics["error_count"] = event.is_error() as int
-	test_statisitics["failed_count"] = event.is_failed() as int
-	test_statisitics["flaky_count"] = event.is_flaky() as int
-	test_statisitics["orphan_nodes"] = event.orphan_nodes()
-
-
-func get_value(acc: int, value: Dictionary, key: String) -> int:
-	return acc + value[key]
-
-
-func build_statisitcs(event: GdUnitEvent) -> Dictionary:
-	var statistic :=  {
-		"total_count" : _statistics.size(),
-		"error_count" : 0,
-		"failed_count" : 0,
-		"skipped_count" : 0,
-		"flaky_count" : 0,
-		"orphan_nodes" : 0
-	}
-	_summary["suite_count"] += 1
-	_summary["total_count"] += _statistics.size()
-	_summary["elapsed_time"] += event.elapsed_time()
-
-	for key: String in ["error_count", "failed_count", "skipped_count", "flaky_count", "orphan_nodes"]:
-		var value: int = _statistics.values().reduce(get_value.bind(key), 0 )
-		statistic[key] = value
-		_summary[key] += value
-	return statistic
 
 
 func clear() -> void:
@@ -95,22 +53,26 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 			println_message(event.resource_path(), _engine_type_color)
 
 		GdUnitEvent.TESTSUITE_AFTER:
+			if not event.reports().is_empty():
+				_writer.color(Color.DARK_SALMON)\
+					.style(GdUnitMessageWritter.BOLD)\
+					.println_message(event.suite_name()+":finalze")
 			_print_failure_report(event.reports())
-			_print_statistics(build_statisitcs(event))
+			_print_statistics(build_test_suite_statisitcs(event))
 			_print_status(event)
 			println_message("")
 			if _detailed:
 				println_message("")
 
 		GdUnitEvent.TESTCASE_BEFORE:
-			var test := _guard.find_test_by_id(event.guid())
+			var test := find_test_by_id(event.guid())
 			_print_test_path(test, event.guid())
 			if _detailed:
 				_writer.color(Color.FOREST_GREEN).print_at("STARTED", _status_indent)
 				println_message("")
 
 		GdUnitEvent.TESTCASE_AFTER:
-			var test := _guard.find_test_by_id(event.guid())
+			var test := find_test_by_id(event.guid())
 			update_statistics(event)
 			if _detailed:
 				_print_test_path(test, event.guid())

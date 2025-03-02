@@ -463,7 +463,8 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 
 	match event.type():
 		GdUnitEvent.STOP:
-			#JUnitXmlReport.new(_report._report_path, _report.iteration()).write(_report)
+			# TODO move to `GdUnitJUnitXMLTestReporter`
+			JUnitXmlReport.new(_html_reporter._report._report_path, _html_reporter._report.iteration()).write(_html_reporter._report)
 			console_info(
 				"Open HTML Report at: file://%s" % _html_reporter.report_file(),
 				Color.CORNFLOWER_BLUE
