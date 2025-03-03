@@ -171,10 +171,21 @@ Here is an example of how to use find_child:
 {% tab scene-runner-find_child C# %}
 
 ```cs
-This function is not yet supported in C#.
+/// <summary>
+/// Find a child located in the current scene.
+/// </summary>
+/// <param name="name">The name of the node to find.</param>
+/// <param name="recursive">Enables/disables searching recursively.</param>
+/// <param name="owned">If set to true, it only finds nodes who have an assigned owner.</param>
+/// <returns>The node if found, otherwise null.</returns>
+Node FindChild(string name, bool recursive = true, bool owned = false) -> Node:
 ```
 
 ```cs
+var runner = ISceneRunner.Load("res://test_scene.tscn");
+
+// Searches for the node `Health` inside the scene tree
+var output = runner.FindChild("Health", true, true) as HealthComponent;
 ```
 
 {% endtab %}
