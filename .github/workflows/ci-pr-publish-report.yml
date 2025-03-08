@@ -23,12 +23,12 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        godot-version: [ '4.3' ]
+        godot-version: [ '4.3', '4.4' ]
         godot-status: [ 'stable' ]
         godot-net: [ '-net', '' ]
-        include:
-          - godot-version: '4.4'
-            godot-status: 'rc1'
+        # include:
+        #   - godot-version: '4.4'
+        #     godot-status: 'rc3'
 
     steps:
       - uses: actions/checkout@v4

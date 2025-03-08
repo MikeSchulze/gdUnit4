@@ -30,12 +30,12 @@ jobs:
       max-parallel: 10
       matrix:
         # If changes are made here, they must be transferred to `.github\workflows\ci-pr-publish-report.yml`
-        godot-version: [ '4.3' ]
+        godot-version: [ '4.3', '4.4' ]
         godot-status: [ 'stable' ]
         godot-net: [ '.Net', '' ]
-        include:
-          - godot-version: '4.4'
-            godot-status: 'rc1'
+        #include:
+        #  - godot-version: '4.4'
+        #    godot-status: 'rc3'
 
     permissions:
       actions: write
