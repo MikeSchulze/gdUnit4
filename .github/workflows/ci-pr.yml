@@ -35,7 +35,7 @@ jobs:
         godot-net: [ '.Net', '' ]
         include:
           - godot-version: '4.4'
-            godot-status: 'rc1'
+            godot-status: 'rc3'
 
     permissions:
       actions: write

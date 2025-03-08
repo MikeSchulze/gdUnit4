@@ -28,7 +28,7 @@ jobs:
         godot-net: [ '-net', '' ]
         include:
           - godot-version: '4.4'
-            godot-status: 'rc1'
+            godot-status: 'rc3'
 
     steps:
       - uses: actions/checkout@v4
