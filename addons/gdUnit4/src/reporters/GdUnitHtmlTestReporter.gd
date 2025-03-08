@@ -10,7 +10,6 @@ func _init(report_dir: String, max_reports: int) -> void:
 
 
 func on_gdunit_event(event: GdUnitEvent) -> void:
-
 	match event.type():
 		GdUnitEvent.INIT:
 			init_summary()
@@ -24,11 +23,11 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 			var statistics := build_test_suite_statisitcs(event)
 			_report.update_testsuite_counters(
 				event.resource_path(),
-				statistics["error_count"],
-				statistics["failed_count"],
-				statistics["orphan_nodes"],
-				statistics["skipped_count"],
-				statistics["flaky_count"],
+				error_count(statistics),
+				failed_count(statistics),
+				orphan_nodes(statistics),
+				skipped_count(statistics),
+				flaky_count(statistics),
 				event.elapsed_time())
 			_report.add_testsuite_reports(
 				event.resource_path(),
@@ -53,3 +52,23 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 
 func report_file() -> String:
 	return _report.report_file()
+
+
+func error_count(statistics: Dictionary) -> int:
+	return statistics["error_count"]
+
+
+func failed_count(statistics: Dictionary) -> int:
+	return statistics["failed_count"]
+
+
+func orphan_nodes(statistics: Dictionary) -> int:
+	return statistics["orphan_nodes"]
+
+
+func skipped_count(statistics: Dictionary) -> int:
+	return statistics["skipped_count"]
+
+
+func flaky_count(statistics: Dictionary) -> int:
+	return statistics["flaky_count"]

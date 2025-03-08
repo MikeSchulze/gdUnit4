@@ -19,7 +19,7 @@ static func sort_reports_by_path(report_summaries :Array[GdUnitReportSummary]) -
 
 
 func path() -> String:
-	return _resource_path.replace("res://", "")
+	return _resource_path.replace("res://", "").trim_suffix("/")
 
 
 func create_record(report_link :String) -> String:
