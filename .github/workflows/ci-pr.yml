@@ -33,9 +33,27 @@ jobs:
         godot-version: [ '4.3', '4.4' ]
         godot-status: [ 'stable' ]
         godot-net: [ '.Net', '' ]
-        #include:
-        #  - godot-version: '4.4'
-        #    godot-status: 'rc3'
+        include:
+          - godot-version: '4.4'
+            godot-status: 'dev1'
+          - godot-version: '4.4'
+            godot-status: 'dev2'
+          - godot-version: '4.4'
+            godot-status: 'dev3'
+          - godot-version: '4.4'
+            godot-status: 'dev4'
+          - godot-version: '4.4'
+            godot-status: 'dev5'
+          - godot-version: '4.4'
+            godot-status: 'dev6'
+          - godot-version: '4.4'
+            godot-status: 'dev7'
+          - godot-version: '4.4'
+            godot-status: 'rc1'
+          - godot-version: '4.4'
+            godot-status: 'rc2'
+          - godot-version: '4.4'
+            godot-status: 'rc3'
 
     permissions:
       actions: write
