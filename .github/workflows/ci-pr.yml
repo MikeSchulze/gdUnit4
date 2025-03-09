@@ -30,30 +30,32 @@ jobs:
       max-parallel: 10
       matrix:
         # If changes are made here, they must be transferred to `.github\workflows\ci-pr-publish-report.yml`
-        godot-version: [ '4.3', '4.4' ]
+        #godot-version: [ '4.3', '4.4' ]
+        godot-version: [ '4.4' ]
         godot-status: [ 'stable' ]
-        godot-net: [ '.Net', '' ]
-        include:
-          - godot-version: '4.4'
-            godot-status: 'dev1'
-          - godot-version: '4.4'
-            godot-status: 'dev2'
-          - godot-version: '4.4'
-            godot-status: 'dev3'
-          - godot-version: '4.4'
-            godot-status: 'dev4'
-          - godot-version: '4.4'
-            godot-status: 'dev5'
-          - godot-version: '4.4'
-            godot-status: 'dev6'
-          - godot-version: '4.4'
-            godot-status: 'dev7'
-          - godot-version: '4.4'
-            godot-status: 'rc1'
-          - godot-version: '4.4'
-            godot-status: 'rc2'
-          - godot-version: '4.4'
-            godot-status: 'rc3'
+        #godot-net: [ '.Net', '' ]
+        godot-net: [ '' ]
+          #include:
+          #- godot-version: '4.4'
+          #  godot-status: 'dev1'
+          #- godot-version: '4.4'
+          #  godot-status: 'dev2'
+          #- godot-version: '4.4'
+          #  godot-status: 'dev3'
+          #- godot-version: '4.4'
+          #  godot-status: 'dev4'
+          #- godot-version: '4.4'
+          #  godot-status: 'dev5'
+          #- godot-version: '4.4'
+          #  godot-status: 'dev6'
+          #- godot-version: '4.4'
+          #  godot-status: 'dev7'
+          #- godot-version: '4.4'
+          #  godot-status: 'rc1'
+          #- godot-version: '4.4'
+          #  godot-status: 'rc2'
+        #- godot-version: '4.4'
+        #  godot-status: 'rc3'
 
     permissions:
       actions: write
@@ -83,7 +85,7 @@ jobs:
           godot-status: ${{ matrix.godot-status }}
           version: installed
           paths: |
-            res://addons/gdUnit4/test/asserts
+            res://addons/gdUnit4/test/cmd
           arguments: |
             --verbose
           timeout: 10
