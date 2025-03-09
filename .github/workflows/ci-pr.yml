@@ -53,7 +53,7 @@ jobs:
           #- godot-version: '4.4'
           #  godot-status: 'rc1'
           #- godot-version: '4.4'
-          #  godot-status: 'rc2'
+        #  godot-status: 'rc2'
         #- godot-version: '4.4'
         #  godot-status: 'rc3'
 
@@ -85,7 +85,7 @@ jobs:
           godot-status: ${{ matrix.godot-status }}
           version: installed
           paths: |
-            res://addons/gdUnit4/test/cmd
+            res://addons/gdUnit4/test/core/command
           arguments: |
             --verbose
           timeout: 10
