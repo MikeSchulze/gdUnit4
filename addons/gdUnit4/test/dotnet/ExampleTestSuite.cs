@@ -7,7 +7,7 @@ namespace GdUnit4
 {
 	using static Assertions;
 	using static Utils;
-	
+
 	[TestSuite]
 	public partial class ExampleTestSuite
 	{
@@ -16,7 +16,7 @@ namespace GdUnit4
 		{
 			AssertThat("Foo").IsEqual("Foo");
 		}
-		
+
 		[TestCase('A', Variant.Type.Int)]
 		[TestCase(SByte.MaxValue, Variant.Type.Int)]
 		[TestCase(Byte.MaxValue, Variant.Type.Int)]
