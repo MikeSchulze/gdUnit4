@@ -318,7 +318,7 @@ func test_discover_moved_test_GDScript() -> void:
 
 
 @warning_ignore("unused_parameter")
-func _test_discover_on_CSharpScript(do_skip := !GdUnit4CSharpApiLoader.is_mono_supported()) -> void:
+func _test_discover_on_CSharpScript(do_skip := !GdUnit4CSharpApiLoader.is_dotnet_supported()) -> void:
 	var discoverer :GdUnitTestDiscoverGuard = spy(GdUnitTestDiscoverGuard.new())
 
 	# connect to catch the events emitted by the test discoverer
