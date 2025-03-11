@@ -1,38 +1,36 @@
 // GdUnit generated TestSuite
-using Godot;
+
+namespace gdUnit4.addons.gdUnit4.test.dotnet;
+
 using GdUnit4;
-using System;
 
-namespace GdUnit4
+using Godot;
+
+using static GdUnit4.Assertions;
+
+[TestSuite]
+[RequireGodotRuntime]
+public class ExampleTestSuite
 {
-	using static Assertions;
-	using static Utils;
+    [TestCase]
+    public void IsFoo() => AssertThat("Foo").IsEqual("Foo");
 
-	[TestSuite]
-	public partial class ExampleTestSuite
-	{
-		[TestCase]
-		public void IsFoo()
-		{
-			AssertThat("Foo").IsEqual("Foo");
-		}
-
-		[TestCase('A', Variant.Type.Int)]
-		[TestCase(SByte.MaxValue, Variant.Type.Int)]
-		[TestCase(Byte.MaxValue, Variant.Type.Int)]
-		[TestCase(Int16.MaxValue, Variant.Type.Int)]
-		[TestCase(UInt16.MaxValue, Variant.Type.Int)]
-		[TestCase(Int32.MaxValue, Variant.Type.Int)]
-		[TestCase(UInt32.MaxValue, Variant.Type.Int)]
-		[TestCase(Int64.MaxValue, Variant.Type.Int)]
-		[TestCase(UInt64.MaxValue, Variant.Type.Int)]
-		[TestCase(Single.MaxValue, Variant.Type.Float)]
-		[TestCase(Double.MaxValue, Variant.Type.Float)]
-		[TestCase("HalloWorld", Variant.Type.String)]
-		[TestCase(true, Variant.Type.Bool)]
-		public void ParameterizedTest(dynamic? value, Variant.Type type) {
-			Godot.Variant v = value == null ? new Variant() : Godot.Variant.CreateFrom(value);
-			AssertObject(v.VariantType).IsEqual(type);
-		}
-	}
+    [TestCase('A', Variant.Type.Int)]
+    [TestCase(sbyte.MaxValue, Variant.Type.Int)]
+    [TestCase(byte.MaxValue, Variant.Type.Int)]
+    [TestCase(short.MaxValue, Variant.Type.Int)]
+    [TestCase(ushort.MaxValue, Variant.Type.Int)]
+    [TestCase(int.MaxValue, Variant.Type.Int)]
+    [TestCase(uint.MaxValue, Variant.Type.Int)]
+    [TestCase(long.MaxValue, Variant.Type.Int)]
+    [TestCase(ulong.MaxValue, Variant.Type.Int)]
+    [TestCase(float.MaxValue, Variant.Type.Float)]
+    [TestCase(double.MaxValue, Variant.Type.Float)]
+    [TestCase("HalloWorld", Variant.Type.String)]
+    [TestCase(true, Variant.Type.Bool)]
+    public void ParameterizedTest(dynamic? value, Variant.Type type)
+    {
+        Variant v = value == null ? new Variant() : Variant.CreateFrom(value);
+        AssertObject(v.VariantType).IsEqual(type);
+    }
 }

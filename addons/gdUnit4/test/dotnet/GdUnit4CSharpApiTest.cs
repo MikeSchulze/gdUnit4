@@ -1,8 +1,13 @@
-namespace GdUnit4;
+namespace gdUnit4.addons.gdUnit4.test.dotnet;
 
-using static Assertions;
+using GdUnit4;
+
+using src.dotnet;
+
+using static GdUnit4.Assertions;
 
 [TestSuite]
+[RequireGodotRuntime]
 public class GdUnit4CSharpApiTest
 {
     [TestCase]
