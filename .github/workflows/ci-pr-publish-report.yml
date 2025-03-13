@@ -45,7 +45,7 @@ jobs:
 
       - name: 'Publish Test Results'
         if: ${{ matrix.godot-net == '' }}
-        uses: dorny/test-reporter@v1.9.1
+        uses: dorny/test-reporter@v2.0.0
         with:
           name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
           # using artifact to download is broken since download-artifact@v4 see https://github.com/dorny/test-reporter/issues/363
@@ -58,7 +58,7 @@ jobs:
 
       - name: 'Publish Test Adapter Results'
         if: ${{ matrix.godot-net == '-net' }}
-        uses: dorny/test-reporter@v1.9.1
+        uses: dorny/test-reporter@v2.0.0
         with:
           name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
           # using artifact to download is broken since download-artifact@v4 see https://github.com/dorny/test-reporter/issues/363
