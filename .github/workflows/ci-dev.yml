@@ -57,7 +57,7 @@ jobs:
             res://addons/gdUnit4/test/
           timeout: 10
           warnings-as-errors: true
-          report-name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}.xml
+          report-name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
 
       - name: 'Test GdUnit4 (master) - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}-net'
         if: ${{ matrix.godot-net == '.Net' }}
@@ -68,8 +68,8 @@ jobs:
           godot-net: true
           version: master
           paths: |
-            res://addons/gdUnit4/test/mono
+            res://addons/gdUnit4/test/dotnet
           timeout: 5
           warnings-as-errors: true
           retries: 3 # We have set the number of repetitions to 3 because Godot mono randomly crashes during C# tests
-          report-name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-net.xml
+          report-name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
