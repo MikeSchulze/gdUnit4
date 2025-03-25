@@ -136,7 +136,6 @@ func get_exit_code() -> int:
 func quit(code: int) -> void:
 	if code != RETURN_SUCCESS:
 		_state = EXIT
-	_cs_executor = null
 	GdUnitTools.dispose_all()
 	await GdUnitMemoryObserver.gc_on_guarded_instances()
 	await super(code)

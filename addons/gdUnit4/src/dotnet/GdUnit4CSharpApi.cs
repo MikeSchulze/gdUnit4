@@ -1,16 +1,18 @@
 namespace gdUnit4.addons.gdUnit4.src.dotnet;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
-using GdUnit4;
+using GdUnit4.Core.Discovery;
 
 using Godot;
 using Godot.Collections;
 
 // GdUnit4 GDScript - C# API wrapper
 // ReSharper disable once CheckNamespace
-public partial class GdUnit4CSharpApi : GodotObject
+public partial class GdUnit4CSharpApi : RefCounted
 {
     private static Type? apiType;
 
@@ -53,14 +55,42 @@ public partial class GdUnit4CSharpApi : GodotObject
     public static string Version()
         => GdUnit4NetVersion().ToString();
 
-    public static bool IsTestSuite(string classPath)
-        => InvokeApiMethod<bool>("IsTestSuite", classPath);
+    public static bool IsTestSuite(CSharpScript script)
+        => InvokeApiMethod<bool>("IsTestSuite", script);
 
-    public static RefCounted Executor(Node listener)
-        => InvokeApiMethod<RefCounted>("Executor", listener);
-
-    public static CsNode? ParseTestSuite(string classPath)
-        => InvokeApiMethod<CsNode?>("ParseTestSuite", classPath);
+    public static Array<Dictionary> DiscoverTests(CSharpScript sourceScript)
+    {
+        try
+        {
+            // Get the list of test case descriptors from the API
+            var testCaseDescriptors = InvokeApiMethod<List<TestCaseDescriptor>>("DiscoverTestsFromScript", sourceScript);
+            // Convert each TestCaseDescriptor to a Dictionary
+            return testCaseDescriptors
+                .Select(descriptor => new Dictionary
+                {
+                    ["Guid"] = descriptor.Id.ToString(),
+                    ["managed_type"] = descriptor.ManagedType,
+                    ["test_name"] = descriptor.ManagedMethod,
+                    ["source_file"] = sourceScript.ResourcePath,
+                    ["line_number"] = descriptor.LineNumber,
+                    ["attribute_index"] = descriptor.AttributeIndex,
+                    ["require_godot_runtime"] = descriptor.RequireRunningGodotEngine,
+                    ["code_file_path"] = descriptor.CodeFilePath ?? "",
+                    ["simple_name"] = descriptor.SimpleName,
+                    ["fully_qualified_name"] = descriptor.FullyQualifiedName
+                })
+                .Aggregate(new Array<Dictionary>(), (array, dict) =>
+                {
+                    array.Add(dict);
+                    return array;
+                });
+        }
+        catch (Exception e)
+        {
+            GD.PrintErr($"Error discovering tests: {e.Message}\n{e.StackTrace}");
+            return new Array<Dictionary>();
+        }
+    }
 
     public static Dictionary CreateTestSuite(string sourcePath, int lineNumber, string testSuitePath)
         => InvokeApiMethod<Dictionary>("CreateTestSuite", sourcePath, lineNumber, testSuitePath);

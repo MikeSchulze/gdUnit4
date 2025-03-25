@@ -1,21 +1,17 @@
-namespace GdUnit4.Tests.Resource
+namespace gdUnit4.addons.gdUnit4.test.core.discovery.resources;
+
+using GdUnit4;
+
+using static GdUnit4.Assertions;
+
+[TestSuite]
+public class DiscoverExampleTestSuite
 {
-	using static Assertions;
+	[TestCase]
+	public void TestCase1()
+		=> AssertBool(true).IsEqual(true);
 
-	[TestSuite]
-	public partial class ExampleTestSuite
-	{
-
-		[TestCase]
-		public void TestCase1()
-		{
-			AssertBool(true).IsEqual(true);
-		}
-
-		[TestCase]
-		public void TestCase2()
-		{
-			AssertBool(false).IsEqual(false);
-		}
-	}
+	[TestCase]
+	public void TestCase2()
+		=> AssertBool(false).IsEqual(false);
 }

@@ -84,4 +84,4 @@ func _on_gdunit_client_disconnected(client_id: int) -> void:
 
 
 func _on_gdunit_message(message: String) -> void:
-	_test_reporter.println_message(message)
+	_test_reporter.println_message(message, Color.CORNFLOWER_BLUE)

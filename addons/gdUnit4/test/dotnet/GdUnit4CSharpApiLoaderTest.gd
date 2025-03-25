@@ -25,7 +25,7 @@ func test_is_engine_version_supported(version :int, expected :bool, test_paramet
 
 
 func test_api_version() -> void:
-	assert_str(GdUnit4CSharpApiLoader.version()).starts_with("4.3")
+	assert_str(GdUnit4CSharpApiLoader.version()).starts_with("4.4")
 
 
 func test_create_test_suite() -> void:
@@ -44,24 +44,13 @@ func test_create_test_suite() -> void:
 	assert_int(info.get("line")).is_equal(16)
 
 
-func test_parse_test_suite() -> void:
-	var test_suite := GdUnit4CSharpApiLoader.parse_test_suite("res://addons/gdUnit4/test/dotnet/GdUnit4CSharpApiTest.cs")
-	assert_that(test_suite).is_not_null()
-	assert_bool(test_suite.get("IsCsTestSuite")).is_true()
-	test_suite.free()
-
-
 class TestRunListener extends Node:
 	pass
 
 
-func test_executor() -> void:
-	var listener :TestRunListener = auto_free(TestRunListener.new())
-	var executor := GdUnit4CSharpApiLoader.create_executor(listener)
-	assert_that(executor).is_not_null()
+func test_discover_tests() -> void:
+	var script: Script = load("res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs")
+	var tests := GdUnit4CSharpApiLoader.discover_tests(script)
 
-	var test_suite := GdUnit4CSharpApiLoader.parse_test_suite("res://addons/gdUnit4/test/dotnet/GdUnit4CSharpApiTest.cs")
-	@warning_ignore("unsafe_method_access")
-	assert_bool(executor.IsExecutable(test_suite)).is_true()
-
-	test_suite.free()
+	assert_array(tests).has_size(14)\
+		.contains([any_class(GdUnitTestCase)])
