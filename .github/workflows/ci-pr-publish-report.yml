@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   publish-reports:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -35,8 +35,8 @@ jobs:
         with:
           sparse-checkout: .github
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v4.2.1
+      - name: 'Download artifacts'
+        uses: actions/download-artifact@v4
         with:
           name: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -44,27 +44,14 @@ jobs:
           run-id: ${{ github.event.inputs.workflow_run_id || github.event.workflow_run.id }}
 
       - name: 'Publish Test Results'
-        if: ${{ matrix.godot-net == '' }}
-        uses: dorny/test-reporter@v2.0.0
+        uses: dorny/test-reporter@v2
         with:
-          name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
-          # using artifact to download is broken since download-artifact@v4 see https://github.com/dorny/test-reporter/issues/363
-          # We do the download manually on step `Download artifacts`
-          #artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}
-          path: './home/runner/work/gdUnit4/gdUnit4/reports/**/results.xml'
-          reporter: java-junit
-          fail-on-error: 'false'
-          fail-on-empty: 'false'
-
-      - name: 'Publish Test Adapter Results'
-        if: ${{ matrix.godot-net == '-net' }}
-        uses: dorny/test-reporter@v2.0.0
-        with:
-          name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}-net
           # using artifact to download is broken since download-artifact@v4 see https://github.com/dorny/test-reporter/issues/363
           # We do the download manually on step `Download artifacts`
           #artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
-          path: './home/runner/work/gdUnit4/gdUnit4/reports/*.xml'
-          reporter: dotnet-trx
+          name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
+          path: './home/runner/work/gdUnit4/gdUnit4/reports/**/*.xml'
+          reporter: ${{ matrix.godot-net == '-net' && 'dotnet-trx' || 'java-junit' }}
           fail-on-error: 'false'
           fail-on-empty: 'false'
+          use-actions-summary: 'false'
