@@ -15,6 +15,7 @@ icon.png.import
 .mono/
 data_*/
 mono_crash.*.json
+gdunit4_testadapter/*
 
 # submodules
 gdUnit3-examples/
@@ -26,6 +27,9 @@ gdUnit4-examples/
 *~
 .DS_Store
 .vscode/
+gdUnit4.sln.DotSettings.user
+.idea/**
+
 
 # temporary generated files
 GdUnitRunner.cfg

@@ -43,7 +43,21 @@ var line_number: int = -1
 ## - timeout: int - Maximum execution time in milliseconds
 ## - skip: bool - Whether the test should be skipped
 ## - dependencies: Array[String] - Required test dependencies
-var metadate: Dictionary = {}
+var metadata: Dictionary = {}
+
+
+static func from_dict(dict: Dictionary) -> GdUnitTestCase:
+	var test := GdUnitTestCase.new()
+	test.guid = GdUnitGUID.new(str(dict["Guid"]))
+	test.suite_name = dict["managed_type"]
+	test.test_name = dict["test_name"]
+	test.display_name = dict["simple_name"]
+	test.fully_qualified_name = dict["fully_qualified_name"]
+	test.attribute_index = dict["attribute_index"]
+	test.source_file = dict["source_file"]
+	test.line_number = dict["line_number"]
+	test.require_godot_runtime = dict["require_godot_runtime"]
+	return test
 
 
 static func from(_source_file: String, _line_number: int, _test_name: String, _attribute_index := -1, _test_parameters := "") -> GdUnitTestCase:

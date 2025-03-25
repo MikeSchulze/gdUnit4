@@ -43,7 +43,7 @@ static func is_dotnet_supported() -> bool:
 		return true
 
 	# First we check if this is a Godot .NET runtime instance
-	if not ClassDB.class_exists("CSharpScript") and not is_engine_version_supported():
+	if not ClassDB.class_exists("CSharpScript") or not is_engine_version_supported():
 		return false
 	# Second we check the C# project file exists
 	var assembly_name: String = ProjectSettings.get_setting("dotnet/project/assembly_name")
@@ -64,6 +64,17 @@ static func version() -> String:
 	return instance().Version()
 
 
+static func discover_tests(source_script: Script) -> Array[GdUnitTestCase]:
+	var tests: Array = instance().call("DiscoverTests", source_script)
+
+	return Array(tests.map(GdUnitTestCase.from_dict), TYPE_OBJECT, "RefCounted", GdUnitTestCase)
+
+
+static func execute(_tests: Array[GdUnitTestCase]) -> void:
+	push_warning("GdUnit4CSharpLoade:execute is not implemented yet!")
+	await (Engine.get_main_loop() as SceneTree).process_frame
+
+
 static func create_test_suite(source_path: String, line_number: int, test_suite_path: String) -> GdUnitResult:
 	if not GdUnit4CSharpApiLoader.is_dotnet_supported():
 		return  GdUnitResult.error("Can't create test suite. No .NET support found.")
@@ -74,32 +85,9 @@ static func create_test_suite(source_path: String, line_number: int, test_suite_
 	return  GdUnitResult.success(result)
 
 
-static func is_test_suite(resource_path: String) -> bool:
-	if not is_csharp_file(resource_path) or not GdUnit4CSharpApiLoader.is_dotnet_supported():
-		return false
-
-	if resource_path.is_empty():
-		if GdUnitSettings.is_report_push_errors():
-			push_error("Can't create test suite. Missing resource path.")
-		return  false
+static func is_test_suite(script: Script) -> bool:
 	@warning_ignore("unsafe_method_access")
-	return instance().IsTestSuite(resource_path)
-
-
-static func parse_test_suite(source_path: String) -> Node:
-	if not GdUnit4CSharpApiLoader.is_dotnet_supported():
-		if GdUnitSettings.is_report_push_errors():
-			push_error("Can't create test suite. No .Net support found.")
-		return null
-	@warning_ignore("unsafe_method_access")
-	return instance().ParseTestSuite(source_path)
-
-
-static func create_executor(listener: Node) -> RefCounted:
-	if not GdUnit4CSharpApiLoader.is_dotnet_supported():
-		return null
-	@warning_ignore("unsafe_method_access")
-	return instance().Executor(listener)
+	return instance().IsTestSuite(script)
 
 
 static func is_csharp_file(resource_path: String) -> bool:
