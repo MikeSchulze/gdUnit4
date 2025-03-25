@@ -65,7 +65,7 @@ jobs:
           godot-status: ${{ matrix.godot-status }}
           version: installed
           paths: |
-            res://addons/gdUnit4/test/extractors
+            res://addons/gdUnit4/test/
           arguments: |
             --verbose
           timeout: 10
