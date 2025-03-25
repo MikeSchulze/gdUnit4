@@ -65,7 +65,7 @@ jobs:
           godot-status: ${{ matrix.godot-status }}
           version: installed
           paths: |
-            res://addons/gdUnit4/test/
+            res://addons/gdUnit4/test/extractors
           arguments: |
             --verbose
           timeout: 10
@@ -82,7 +82,7 @@ jobs:
           godot-net: true
           version: installed
           paths: |
-            res://addons/gdUnit4/test/mono
+            res://addons/gdUnit4/test/dotnet
           timeout: 5
           warnings-as-errors: true
           retries: 3 # We have set the number of repetitions to 3 because Godot mono randomly crashes during C# tests
