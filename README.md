@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/Godot-v4.2.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.2.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.3-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
-  <img src="https://img.shields.io/badge/Godot-v4.4.dev2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
+  <img src="https://img.shields.io/badge/Godot-v4.4-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
 </p>
 
 <h1 align="center">Compatibility Overview</h1>
