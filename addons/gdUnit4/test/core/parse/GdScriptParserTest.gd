@@ -234,6 +234,25 @@ func test_parse_arguments_fuzzers() -> void:
 		.contains_key_value("fuzzer_seed", "100")
 
 
+func test_parse_arguments_typed_dict() -> void:
+	# remove this line and complete your test
+	assert_dict(_parser._parse_function_arguments('func generate(arg1: Dictionary[String,Variant], arg2 :Dictionary = {"a":1, "b":2}, arg3 := {}) -> void:'))\
+		.has_size(3)\
+		.contains_key_value("arg1", GdFunctionArgument.UNDEFINED)\
+		.contains_key_value("arg2", '{"a":1, "b":2}')\
+		.contains_key_value("arg3", "{}")
+
+
+func test_parse_arguments_typed_array() -> void:
+	# remove this line and complete your test
+	assert_dict(_parser._parse_function_arguments("func generate(arg1: Array, arg2: Array = [1,2,3], arg3: Array[int] = [4,5,6], arg4 := []) -> void:"))\
+		.has_size(4)\
+		.contains_key_value("arg1", GdFunctionArgument.UNDEFINED)\
+		.contains_key_value("arg2", "[1,2,3]")\
+		.contains_key_value("arg3", "[4,5,6]")\
+		.contains_key_value("arg4", "[]")
+
+
 class TestObject:
 	var x: int
 
