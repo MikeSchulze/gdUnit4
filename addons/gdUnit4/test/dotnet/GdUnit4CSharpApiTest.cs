@@ -1,7 +1,10 @@
 namespace gdUnit4.addons.gdUnit4.test.dotnet;
 
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using GdUnit4;
 
@@ -14,7 +17,7 @@ using static GdUnit4.Assertions;
 
 [TestSuite]
 [RequireGodotRuntime]
-public class GdUnit4CSharpApiTest
+public partial class GdUnit4CSharpApiTest
 {
     [TestCase]
     public void IsTestSuite()
@@ -41,9 +44,13 @@ public class GdUnit4CSharpApiTest
         // Filter out the Guid from each test dictionary before comparing
         var testsWithoutGuids = tests.Select(dict =>
         {
+            // Verify id contains the Guid and the assembly location
+            AssertThat(dict).ContainsKeys("guid", "assembly_location");
+            AssertThat(dict["assembly_location"].AsString()).Contains("gdUnit4.dll");
             var newDict = new Dictionary();
             newDict.Merge(dict);
-            newDict.Remove("Guid");
+            newDict.Remove("guid");
+            newDict.Remove("assembly_location");
             return newDict;
         }).ToArray();
 
@@ -86,5 +93,98 @@ public class GdUnit4CSharpApiTest
                     ["simple_name"] = "ParameterizedTest:11 (\"HalloWorld\", 4)",
                     ["managed_type"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite"
                 });
+    }
+
+    [TestCase]
+    public void BuildTestSuiteNodeFrom()
+    {
+        var script = GD.Load<CSharpScript>("res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs");
+        var tests = GdUnit4CSharpApi.DiscoverTests(script);
+
+        // convert the discovered tests into a test suite node
+        var testSuite = GdUnit4CSharpApi.BuildTestSuiteNodeFrom(tests);
+        AssertThat(testSuite).IsNotNull();
+        AssertThat(testSuite.ManagedType).IsEqual("gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite");
+        AssertThat(testSuite.AssemblyPath).EndsWith("gdUnit4.dll");
+        AssertThat(testSuite.Tests).HasSize(14);
+    }
+
+    [TestCase]
+    public async Task ExecuteAsync()
+    {
+        var script = GD.Load<CSharpScript>("res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs");
+        var tests = GdUnit4CSharpApi.DiscoverTests(script);
+
+
+// Create a list to track received events
+        var receivedEvents = new List<Dictionary>();
+
+        // Create a TestEventHandler object to handle the events
+        var eventHandler = AutoFree(new TestEventHandler());
+        eventHandler!.EventReceived += eventData =>
+        {
+            // Track the event
+            receivedEvents.Add(new Dictionary
+            {
+                ["type"] = eventData["type"],
+                ["guid"] = eventData["guid"],
+                ["suite_name"] = eventData["suite_name"],
+                ["test_name"] = eventData["test_name"]
+            });
+        };
+
+        // Create a Callable that references the handler method
+        var listener = new Callable(eventHandler, nameof(TestEventHandler.PublishEvent));
+
+        var api = AutoFree(new GdUnit4CSharpApi())!;
+        api.ExecuteAsync(tests, listener);
+
+        // await execution is finished
+        await api.ToSignal(api, GdUnit4CSharpApi.SignalName.ExecutionCompleted);
+
+        // tests * 2 (beforeTest and afterTest) + before and after
+        var expectedCount = (tests.Count * 2) + 2;
+        AssertArray(receivedEvents).HasSize(expectedCount).Contains(
+            new Dictionary
+            {
+                ["type"] = 2, // before
+                ["guid"] = "00000000-0000-0000-0000-000000000000",
+                ["suite_name"] = "ExampleTestSuite",
+                ["test_name"] = "Before"
+            },
+            new Dictionary
+            {
+                ["type"] = 3, //  after
+                ["guid"] = "00000000-0000-0000-0000-000000000000",
+                ["suite_name"] = "ExampleTestSuite",
+                ["test_name"] = "After"
+            },
+            // check exemplary for one test
+            new Dictionary
+            {
+                ["type"] = 4, // beforeTest
+                ["guid"] = tests.First()["guid"],
+                ["suite_name"] = "ExampleTestSuite",
+                ["test_name"] = "IsFoo"
+            },
+            new Dictionary
+            {
+                ["type"] = 5, // afterTest
+                ["guid"] = tests.First()["guid"],
+                ["suite_name"] = "ExampleTestSuite",
+                ["test_name"] = "IsFoo"
+            }
+        );
+    }
+
+    // Helper class to handle events
+    private sealed partial class TestEventHandler : RefCounted
+    {
+        // Event to notify when events are received
+        public event Action<Dictionary>? EventReceived;
+
+        // Method that will be called by the Callable
+        public void PublishEvent(Dictionary eventData)
+            => EventReceived?.Invoke(eventData);
     }
 }

@@ -34,6 +34,9 @@ var require_godot_runtime: bool = true
 ## Used for test discovery and execution.
 var source_file: String
 
+## Optional holds the assembly location for C# tests
+var assembly_location: String = ""
+
 ## The line number where the test case is defined in the source file.
 ## Used for navigation and error reporting.
 var line_number: int = -1
@@ -48,7 +51,7 @@ var metadata: Dictionary = {}
 
 static func from_dict(dict: Dictionary) -> GdUnitTestCase:
 	var test := GdUnitTestCase.new()
-	test.guid = GdUnitGUID.new(str(dict["Guid"]))
+	test.guid = GdUnitGUID.new(str(dict["guid"]))
 	test.suite_name = dict["managed_type"]
 	test.test_name = dict["test_name"]
 	test.display_name = dict["simple_name"]
@@ -57,7 +60,23 @@ static func from_dict(dict: Dictionary) -> GdUnitTestCase:
 	test.source_file = dict["source_file"]
 	test.line_number = dict["line_number"]
 	test.require_godot_runtime = dict["require_godot_runtime"]
+	test.assembly_location = dict["assembly_location"]
 	return test
+
+
+static func to_dict(test: GdUnitTestCase) -> Dictionary:
+	return {
+		"guid": test.guid._guid,
+		"managed_type": test.suite_name,
+		"test_name" : test.test_name,
+		"simple_name" : test.display_name,
+		"fully_qualified_name" : test.fully_qualified_name,
+		"attribute_index" : test.attribute_index,
+		"source_file" : test.source_file,
+		"line_number" : test.line_number,
+		"require_godot_runtime" : test.require_godot_runtime,
+		"assembly_location" : test.assembly_location
+	}
 
 
 static func from(_source_file: String, _line_number: int, _test_name: String, _attribute_index := -1, _test_parameters := "") -> GdUnitTestCase:
