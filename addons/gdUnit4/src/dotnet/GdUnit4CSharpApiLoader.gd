@@ -9,11 +9,24 @@
 ## - Loading the C# wrapper script
 ## - Checking for the GdUnit4Api assembly
 ## - Providing proxy methods to access GdUnit4 functionality in C#
+@static_unload
 class_name GdUnit4CSharpApiLoader
 extends RefCounted
 
 ## Cached reference to the loaded C# wrapper script
 static var _gdUnit4NetWrapper: Script
+
+## Cached instance of the API (singleton pattern)
+static var _api_instance: RefCounted
+
+
+class TestEventListener extends RefCounted:
+
+	func publish_event(event: Dictionary) -> void:
+		var test_event := GdUnitEvent.new().deserialize(event)
+		GdUnitSignals.instance().gdunit_event.emit(test_event)
+
+static var _test_event_listener := TestEventListener.new()
 
 
 ## Returns an instance of the GdUnit4CSharpApi wrapper.[br]
@@ -23,6 +36,15 @@ static func instance() -> Script:
 		return null
 
 	return _gdUnit4NetWrapper
+
+
+## Returns or creates a single instance of the API [br]
+## This improves performance by reusing the same object
+static func api_instance() -> RefCounted:
+	if _api_instance == null and is_dotnet_supported():
+		@warning_ignore("unsafe_method_access")
+		_api_instance = instance().new()
+	return _api_instance
 
 
 static func is_engine_version_supported(engine_version: int = Engine.get_version_info().hex) -> bool:
@@ -65,14 +87,21 @@ static func version() -> String:
 
 
 static func discover_tests(source_script: Script) -> Array[GdUnitTestCase]:
-	var tests: Array = instance().call("DiscoverTests", source_script)
+	var tests: Array = _gdUnit4NetWrapper.call("DiscoverTests", source_script)
 
 	return Array(tests.map(GdUnitTestCase.from_dict), TYPE_OBJECT, "RefCounted", GdUnitTestCase)
 
 
-static func execute(_tests: Array[GdUnitTestCase]) -> void:
-	push_warning("GdUnit4CSharpLoade:execute is not implemented yet!")
-	await (Engine.get_main_loop() as SceneTree).process_frame
+static func execute(tests: Array[GdUnitTestCase]) -> void:
+	var net_api := api_instance()
+	if net_api == null:
+		push_warning("Execute C# tests not supported!")
+		return
+	var tests_as_dict: Array[Dictionary] = Array(tests.map(GdUnitTestCase.to_dict), TYPE_DICTIONARY, "", null)
+
+	net_api.call("ExecuteAsync", tests_as_dict, _test_event_listener.publish_event)
+	@warning_ignore("unsafe_property_access")
+	await net_api.ExecutionCompleted
 
 
 static func create_test_suite(source_path: String, line_number: int, test_suite_path: String) -> GdUnitResult:

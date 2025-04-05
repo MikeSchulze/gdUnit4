@@ -405,17 +405,12 @@ func discover_tests() -> Array[GdUnitTestCase]:
 	for path in _included_tests:
 		var scripts := scanner.scan(path)
 		for script in scripts:
-			if script is GDScript:
-				var gd_script: GDScript = script
-				GdUnitTestDiscoverer.discover_tests(gd_script, func(test: GdUnitTestCase) -> void:
-					if not is_skipped(test):
-						#_console.println_message("discoverd %s" % test.display_name)
-						_test_cases.append(test)
-						gdunit_test_discover_added.emit(test)
-				)
-			else:
-				## TODO implement c# test discovery here
-				pass
+			GdUnitTestDiscoverer.discover_tests(script, func(test: GdUnitTestCase) -> void:
+				if not is_skipped(test):
+					#_console.println_message("discoverd %s" % test.display_name)
+					_test_cases.append(test)
+					gdunit_test_discover_added.emit(test)
+			)
 
 	return _test_cases
 
