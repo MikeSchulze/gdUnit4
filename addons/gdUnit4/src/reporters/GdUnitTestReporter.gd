@@ -26,7 +26,7 @@ func init_statistics() -> void:
 
 
 func update_statistics(event: GdUnitEvent) -> void:
-	var test_statisitics: Dictionary = _statistics.get_or_add(event.test_name(), {
+	var test_statisitics: Dictionary = _statistics.get_or_add(event.guid(), {
 		"error_count" : 0,
 		"failed_count" : 0,
 		"skipped_count" : event.is_skipped() as int,
