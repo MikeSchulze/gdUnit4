@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.3.0">
+<Project Sdk="Godot.NET.Sdk/4.4.1">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>11.0</LangVersion>
@@ -9,11 +9,11 @@
     <NoWarn>NU1605</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <!-- ProjectReference Include="..\gdUnit4Net\api\gdUnit4Api.csproj" /-->
-    <PackageReference Include="gdUnit4.api" Version="4.4.0-rc12"/>
-    <PackageReference Include="gdUnit4.test.adapter" Version="2.1.0-rc4"/>
-    <PackageReference Include="gdUnit4.analyzers" Version="1.0.0-rc5">
+    <PackageReference Include="gdUnit4.api" Version="5.0.0-rc*" />
+    <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0-rc*" />
+    <PackageReference Include="gdUnit4.analyzers" Version="1.0.0-rc*">
       <PrivateAssets>none</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

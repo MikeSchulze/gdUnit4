@@ -2,6 +2,7 @@ namespace gdUnit4.addons.gdUnit4.src.dotnet;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -42,22 +43,31 @@ public partial class GdUnit4CSharpApi : RefCounted
             return gdUnit4Api ??= Assembly.Load("gdUnit4Api");
     }
 
-    private static Type GetApiType()
+    private static Type? GetApiType()
     {
         if (apiType != null)
             return apiType;
         apiType = GetApi().GetType("GdUnit4.GdUnit4NetApiGodotBridge");
-        return apiType!;
+        return apiType;
     }
 
-    private static Version GdUnit4NetVersion()
-        => GetApi().GetName().Version!;
-
-    private static T InvokeApiMethod<T>(string methodName, params object[] args)
+    private static Version? GdUnit4NetVersion()
     {
-        var method = GetApiType().GetMethod(methodName) ??
+        try
+        {
+            return GetApi().GetName().Version;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private static T? InvokeApiMethod<T>(string methodName, params object[] args)
+    {
+        var method = GetApiType()?.GetMethod(methodName) ??
                      throw new MethodAccessException($"Can't invoke method {methodName}");
-        return (T)method.Invoke(null, args)!;
+        return (T?)method.Invoke(null, args);
     }
 
     public static bool FindGdUnit4NetAssembly()
@@ -73,7 +83,8 @@ public partial class GdUnit4CSharpApi : RefCounted
     }
 
     public static string Version()
-        => GdUnit4NetVersion().ToString();
+        => GdUnit4NetVersion()?.ToString()
+           ?? "Unknown";
 
     public static bool IsTestSuite(CSharpScript script)
         => InvokeApiMethod<bool>("IsTestSuite", script);
@@ -83,7 +94,7 @@ public partial class GdUnit4CSharpApi : RefCounted
         try
         {
             // Get the list of test case descriptors from the API
-            var testCaseDescriptors = InvokeApiMethod<List<TestCaseDescriptor>>("DiscoverTestsFromScript", sourceScript);
+            var testCaseDescriptors = InvokeApiMethod<ImmutableList<TestCaseDescriptor>>("DiscoverTestsFromScript", sourceScript)!;
             // Convert each TestCaseDescriptor to a Dictionary
             return testCaseDescriptors
                 .Select(descriptor => new Dictionary
@@ -125,7 +136,7 @@ public partial class GdUnit4CSharpApi : RefCounted
             executionCts = new CancellationTokenSource();
 
             var testSuiteNodes = new List<TestSuiteNode> { BuildTestSuiteNodeFrom(tests) };
-            InvokeApiMethod<Task>("ExecuteAsync", testSuiteNodes, listener, executionCts.Token)
+            InvokeApiMethod<Task>("ExecuteAsync", testSuiteNodes, listener, executionCts.Token)?
                 .GetAwaiter()
                 .OnCompleted(() => EmitSignal(SignalName.ExecutionCompleted));
         }
@@ -149,7 +160,7 @@ public partial class GdUnit4CSharpApi : RefCounted
     }
 
     public static Dictionary CreateTestSuite(string sourcePath, int lineNumber, string testSuitePath)
-        => InvokeApiMethod<Dictionary>("CreateTestSuite", sourcePath, lineNumber, testSuitePath);
+        => InvokeApiMethod<Dictionary>("CreateTestSuite", sourcePath, lineNumber, testSuitePath)!;
 
 
     // Convert a set of Tests stored as Dictionaries to TestSuiteNode
