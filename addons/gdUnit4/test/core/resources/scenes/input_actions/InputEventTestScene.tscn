@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cvklb72mxqh1h"]
 
-[ext_resource type="Script" path="res://addons/gdUnit4/test/core/resources/scenes/input_actions/InputEventTestScene.gd" id="1_wslmn"]
+[ext_resource type="Script" uid="uid://cgk00pw4s4par" path="res://addons/gdUnit4/test/core/resources/scenes/input_actions/InputEventTestScene.gd" id="1_wslmn"]
 
 [node name="InputEventTestScene" type="Control"]
 layout_mode = 3

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cn8ucy2rheu0f"]
 
-[ext_resource type="Script" path="res://addons/gdUnit4/test/core/resources/scenes/simple_scene.gd" id="2"]
-[ext_resource type="Texture2D" uid="uid://mdg54o4ynxsl" path="res://addons/gdUnit4/test/core/resources/scenes/icon.png" id="2_jtr47"]
+[ext_resource type="Script" uid="uid://b7i3bsri7yvey" path="res://addons/gdUnit4/test/core/resources/scenes/simple_scene.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://tyt68dhy4ubc" path="res://addons/gdUnit4/test/core/resources/scenes/icon.png" id="2_jtr47"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("2")

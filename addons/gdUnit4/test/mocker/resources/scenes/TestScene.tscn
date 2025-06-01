@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bf24pr1xj60o6"]
 
-[ext_resource type="Script" path="res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.gd" id="1"]
+[ext_resource type="Script" uid="uid://b7b4gqmqsssib" path="res://addons/gdUnit4/test/mocker/resources/scenes/TestScene.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://btx5kcrsngasl" path="res://addons/gdUnit4/src/core/assets/touch-button.png" id="2_xgglm"]
 
 [node name="Control" type="Control"]
