@@ -7,11 +7,9 @@
 
 <h1 align="center">Supported Godot Versions</h1>
 <p align="center">
-  <img src="https://img.shields.io/badge/Godot-v4.2.0-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
-  <img src="https://img.shields.io/badge/Godot-v4.2.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
-  <img src="https://img.shields.io/badge/Godot-v4.2.2-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.3-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
   <img src="https://img.shields.io/badge/Godot-v4.4-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
+<img src="https://img.shields.io/badge/Godot-v4.4.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green">
 </p>
 
 <h1 align="center">Compatibility Overview</h1>
@@ -25,7 +23,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>(master branch)v5.0.0+</td><td>v4.3.+, v4.4</td>
+      <td>(master branch)v5.0.0+</td><td>v4.3, v4.4, v4.4.1</td>
     </tr>
     <tr>
       <td>v4.4.0+</td><td>v4.2.0, v4.3, v4.4.dev2</td>
@@ -181,4 +179,3 @@ We value your input and appreciate your contributions to make GdUnit4 even bette
 [<img src="https://avatars.githubusercontent.com/u/2313134?v=4" alt="sebastianhutter" width="125"/>](https://github.com/sebastianhutter) Sebastian Hutter
 [<img src="https://avatars.githubusercontent.com/u/836370?v=4" alt="rafaelGuerreiro" width="125"/>](https://github.com/rafaelGuerreiro) Rafael Guerreiro
 [<img src="https://avatars.githubusercontent.com/u/58704291?v=4" alt="greenpixels" width="125"/>](https://github.com/greenpixels) Sven Teigler
-
