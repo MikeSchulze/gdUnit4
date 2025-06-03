@@ -93,7 +93,7 @@ func run_update() -> void:
 	else:
 		copy_directory(tmp_path, "res://")
 
-	await update_progress("Upgrade UID's")
+	await update_progress("Patch invalid UID's")
 	await patch_uids()
 
 	await update_progress("New GdUnit version successfully installed, Restarting Godot please wait.")
@@ -111,9 +111,8 @@ func patch_uids(path := "res://addons/gdUnit4/src/") -> void:
 		var ext := file.get_extension()
 
 		if ext == "tscn" or ext == "scn" or ext == "tres" or ext == "res":
-			message_h4("Upgrade uid for resource '%s'" % file, Color.WEB_GREEN)
-			var res := load(file_path)
-			ResourceSaver.save(res)
+			message_h4("Patch GdUnit4 scene: '%s'" % file, Color.WEB_GREEN)
+			remove_uids_from_file(file_path)
 		elif FileAccess.file_exists(file_path + ".import"):
 			to_reimport.append(file_path)
 
@@ -124,8 +123,39 @@ func patch_uids(path := "res://addons/gdUnit4/src/") -> void:
 
 	for dir in DirAccess.get_directories_at(path):
 		if not dir.begins_with("."):
-			patch_uids(path.path_join(dir))
+			remove_uids_from_file(path.path_join(dir))
 	await get_tree().process_frame
+
+
+func remove_uids_from_file(file_path: String) -> bool:
+	var file := FileAccess.open(file_path, FileAccess.READ)
+	if file == null:
+		print("Failed to open file: ", file_path)
+		return false
+
+	var original_content := file.get_as_text()
+	file.close()
+
+	# Remove UIDs using regex
+	var regex := RegEx.new()
+	regex.compile("(\\[ext_resource[^\\]]*?)\\s+uid=\"uid://[^\"]*\"")
+
+	var modified_content := regex.sub(original_content, "$1", true)
+
+	# Check if any changes were made
+	if original_content != modified_content:
+		prints("Patched invalid uid's out in '%s'" % file_path)
+		# Write the modified content back
+		file = FileAccess.open(file_path, FileAccess.WRITE)
+		if file == null:
+			print("Failed to write to file: ", file_path)
+			return false
+
+		file.store_string(modified_content)
+		file.close()
+		return true
+
+	return false
 
 
 func restart_godot() -> void:
