@@ -502,7 +502,7 @@ func invoke(
 	arg9: Variant = NO_ARG) -> Variant:
 	var args: Array = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], NO_ARG)
 	if scene().has_method(name):
-		return scene().callv(name, args)
+		return await scene().callv(name, args)
 	return "The method '%s' not exist checked loaded scene." % name
 
 

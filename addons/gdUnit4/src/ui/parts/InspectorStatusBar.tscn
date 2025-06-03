@@ -1,6 +1,6 @@
 [gd_scene load_steps=32 format=3 uid="uid://c22l4odk7qesc"]
 
-[ext_resource type="Script" uid="uid://kv33is2tf6np" path="res://addons/gdUnit4/src/ui/parts/InspectorStatusBar.gd" id="3"]
+[ext_resource type="Script" path="res://addons/gdUnit4/src/ui/parts/InspectorStatusBar.gd" id="3"]
 
 [sub_resource type="Image" id="Image_mb3ih"]
 data = {
