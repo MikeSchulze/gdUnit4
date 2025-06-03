@@ -22,7 +22,7 @@ const GdUnitUpdateClient = preload ("res://addons/gdUnit4/src/update/GdUnitUpdat
 
 var _font_size: float
 
-
+@warning_ignore_start("unsafe_property_access", "unsafe_call_argument", "unsafe_method_access")
 func _ready() -> void:
 	set_name("GdUnitSettingsDialog")
 	# initialize for testing
@@ -315,3 +315,5 @@ func stop_progress() -> void:
 func update_progress(message: String) -> void:
 	_progress_text.text = message
 	_progress_bar.value += 1
+
+@warning_ignore_restore("unsafe_property_access", "unsafe_call_argument", "unsafe_method_access")

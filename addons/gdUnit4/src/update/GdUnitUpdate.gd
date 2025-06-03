@@ -18,7 +18,7 @@ var _download_url :String
 
 
 func _ready() -> void:
-	init_progress(5)
+	init_progress(6)
 
 
 func _process(_delta :float) -> void:
@@ -56,6 +56,8 @@ func message_h4(message: String, color: Color, show_spinner := true) -> void:
 	if show_spinner:
 		_progress_content.add_image(_spinner_img)
 	_progress_content.append_text(" [font_size=16]%s[/font_size]" % _colored(message, color))
+	if _debug_mode:
+		prints(message)
 
 
 @warning_ignore("return_value_discarded")
@@ -91,12 +93,39 @@ func run_update() -> void:
 	else:
 		copy_directory(tmp_path, "res://")
 
+	await update_progress("Upgrade UID's")
+	await patch_uids()
+
 	await update_progress("New GdUnit version successfully installed, Restarting Godot please wait.")
 	await get_tree().create_timer(3).timeout
 	enable_gdUnit()
 	hide()
 	delete_directory("res://addons/.gdunit_update")
 	restart_godot()
+
+
+func patch_uids(path := "res://addons/gdUnit4/src/") -> void:
+	var to_reimport: PackedStringArray
+	for file in DirAccess.get_files_at(path):
+		var file_path := path.path_join(file)
+		var ext := file.get_extension()
+
+		if ext == "tscn" or ext == "scn" or ext == "tres" or ext == "res":
+			message_h4("Upgrade uid for resource '%s'" % file, Color.WEB_GREEN)
+			var res := load(file_path)
+			ResourceSaver.save(res)
+		elif FileAccess.file_exists(file_path + ".import"):
+			to_reimport.append(file_path)
+
+	if not to_reimport.is_empty():
+		message_h4("Reimport resources '%s'" % ", ".join(to_reimport), Color.WEB_GREEN)
+		if Engine.is_editor_hint():
+			EditorInterface.get_resource_filesystem().reimport_files(to_reimport)
+
+	for dir in DirAccess.get_directories_at(path):
+		if not dir.begins_with("."):
+			patch_uids(path.path_join(dir))
+	await get_tree().process_frame
 
 
 func restart_godot() -> void:
