@@ -123,7 +123,7 @@ func patch_uids(path := "res://addons/gdUnit4/src/") -> void:
 
 	for dir in DirAccess.get_directories_at(path):
 		if not dir.begins_with("."):
-			remove_uids_from_file(path.path_join(dir))
+			patch_uids(path.path_join(dir))
 	await get_tree().process_frame
 
 
