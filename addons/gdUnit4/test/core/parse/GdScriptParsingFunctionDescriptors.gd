@@ -125,6 +125,26 @@ func test_default_args_callable() -> void:
 		)
 
 
+func test_default_args_variant() -> void:
+	var script: GDScript = load("res://addons/gdUnit4/test/core/resources/parsing/functions/ClassWithVariantTypeDefaultArguments.gd")
+
+	var fds := _parser.get_function_descriptors(script, [])
+	assert_that(fds[0])\
+		.is_equal(GdFunctionDescriptor
+			.create("add_button", script.resource_path, 4, GdObjects.TYPE_VOID, [
+				GdFunctionArgument.new("ucids", TYPE_ARRAY, GdFunctionArgument.UNDEFINED, TYPE_INT),
+				GdFunctionArgument.new("position", TYPE_VECTOR2I),
+				GdFunctionArgument.new("size", TYPE_VECTOR2I),
+				GdFunctionArgument.new("style", TYPE_INT),
+				GdFunctionArgument.new("text", GdObjects.TYPE_VARIANT, ""),
+				GdFunctionArgument.new("button_name", TYPE_STRING, ""),
+				GdFunctionArgument.new("type_in", TYPE_INT, 0),
+				GdFunctionArgument.new("caption", TYPE_STRING, ""),
+				GdFunctionArgument.new("show_everywhere", TYPE_BOOL, false),
+			])
+		)
+
+
 # Basic build-in-types
 func test_default_args_basic_type_int() -> void:
 	var script: GDScript = load("res://addons/gdUnit4/test/core/resources/parsing/functions/basic_build_in_types/ClassWithBasicTypeIntDefaultArguments.gd")

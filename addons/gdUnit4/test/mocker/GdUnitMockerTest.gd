@@ -1239,3 +1239,7 @@ func test_mock_func_default_arg_dict() -> void:
 
 	assert_array(mock_obj.on_dictionary_case1({})).contains_exactly(["a", "b"])
 	verify(mock_obj).on_dictionary_case1({})
+
+func test_mock_with_variant_as_defaults() -> void:
+	var mock_obj: Variant = mock(ClassWithVariantDefaultArguments)
+	assert_object(mock_obj).is_not_null()
