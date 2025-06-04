@@ -243,6 +243,32 @@ func test_parse_arguments_typed_dict() -> void:
 		.contains_key_value("arg3", "{}")
 
 
+func test_parse_arguments_variant() -> void:
+	# remove this line and complete your test
+	var args := _parser._parse_function_arguments('func generate(
+		ucids: Array[int],
+		position: Vector2i,
+		size: Vector2i,
+		style: int,
+		text: Variant = "",
+		button_name := "",
+		type_in := 0,
+		caption := "",
+		show_everywhere := false')
+
+	assert_dict(args)\
+		.has_size(9)\
+		.contains_key_value("ucids", GdFunctionArgument.UNDEFINED)\
+		.contains_key_value("position", GdFunctionArgument.UNDEFINED)\
+		.contains_key_value("size", GdFunctionArgument.UNDEFINED)\
+		.contains_key_value("style", GdFunctionArgument.UNDEFINED)\
+		.contains_key_value("text", '""')\
+		.contains_key_value("button_name", '""')\
+		.contains_key_value("type_in", '0')\
+		.contains_key_value("caption", '""')\
+		.contains_key_value("show_everywhere", 'false')
+
+
 func test_parse_arguments_typed_array() -> void:
 	# remove this line and complete your test
 	assert_dict(_parser._parse_function_arguments("func generate(arg1: Array, arg2: Array = [1,2,3], arg3: Array[int] = [4,5,6], arg4 := []) -> void:"))\
@@ -568,7 +594,7 @@ func test_parse_func_descriptor_with_fuzzers() -> void:
 		GdFunctionArgument.new("fuzzer_c", GdObjects.TYPE_FUZZER, "fuzz_c()"),
 		GdFunctionArgument.new("fuzzer", GdObjects.TYPE_FUZZER, "Fuzzers.rangei(-23, 22)"),
 		# untyped arg is TYPE_VARIANT
-		GdFunctionArgument.new("fuzzer_iterations", GdObjects.TYPE_VARIANT, "234"),
+		GdFunctionArgument.new("fuzzer_iterations", GdObjects.TYPE_VARIANT, 234),
 		# typed is TYPE_INT
 		GdFunctionArgument.new("fuzzer_seed", TYPE_INT, 100)
 	]))
