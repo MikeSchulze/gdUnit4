@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ca2rr3dan4vvw"]
 
-[ext_resource type="Script" uid="uid://cmn027vuhjg6d" path="res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropControl.gd" id="1"]
+[ext_resource type="Script" path="res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropControl.gd" id="1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s2qi1"]
 size = Vector2(110, 110)
