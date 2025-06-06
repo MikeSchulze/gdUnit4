@@ -263,12 +263,20 @@ func _free_recursive(items:=_tree_root.get_children()) -> void:
 		item.call_deferred("free")
 
 
-func sort_tree_items(parent :TreeItem) -> void:
+func sort_tree_items(parent: TreeItem) -> void:
+	_sort_tree_items(parent, GdUnitSettings.get_inspector_tree_sort_mode())
+	_tree.queue_redraw()
+
+
+static func _sort_tree_items(parent: TreeItem, sort_mode: GdUnitInspectorTreeConstants.SORT_MODE) -> void:
 	parent.visible = false
 	var items := parent.get_children()
+	# first remove all childs before sorting
+	for item in items:
+		parent.remove_child(item)
 
 	# do sort by selected sort mode
-	match GdUnitSettings.get_inspector_tree_sort_mode():
+	match sort_mode:
 		GdUnitInspectorTreeConstants.SORT_MODE.UNSORTED:
 			items.sort_custom(sort_items_by_original_index)
 
@@ -281,32 +289,58 @@ func sort_tree_items(parent :TreeItem) -> void:
 		GdUnitInspectorTreeConstants.SORT_MODE.EXECUTION_TIME:
 			items.sort_custom(sort_items_by_execution_time)
 
+	# readding sorted childs
 	for item in items:
-		parent.remove_child(item)
 		parent.add_child(item)
 		if item.get_child_count() > 0:
-			sort_tree_items(item)
+			_sort_tree_items(item, sort_mode)
 	parent.visible = true
-	_tree.queue_redraw()
 
 
-func sort_items_by_name(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
+static func sort_items_by_name1(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
 	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
 	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
-	 # Compare types first
-	if type_a != type_b:
-		return type_a == GdUnitType.FOLDER
 	var name_a :String = a.get_meta(META_GDUNIT_NAME)
 	var name_b :String = b.get_meta(META_GDUNIT_NAME)
-	return name_a.naturalnocasecmp_to(name_b) < 0 if ascending else name_a.naturalnocasecmp_to(name_b) > 0
+
+	# Sorting folders
+	if type_a == GdUnitType.FOLDER and type_b == GdUnitType.FOLDER:
+		return name_a.naturalnocasecmp_to(name_b) < 0 if ascending else name_a.naturalnocasecmp_to(name_b) > 0
+
+	if type_a in [GdUnitType.TEST_CASE, GdUnitType.TEST_GROUP, GdUnitType.TEST_SUITE] and type_b in [GdUnitType.TEST_CASE, GdUnitType.TEST_GROUP, GdUnitType.TEST_SUITE]:
+		return name_a.naturalnocasecmp_to(name_b) < 0 if ascending else name_a.naturalnocasecmp_to(name_b) > 0
+	# sort folders on top
+	return type_a == GdUnitType.FOLDER
 
 
-func sort_items_by_execution_time(a: TreeItem, b: TreeItem) -> bool:
+static func sort_items_by_name(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
 	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
 	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
-	 # Compare types first
-	if type_a != type_b:
-		return type_a == GdUnitType.FOLDER
+
+	# Sort folders to the top
+	if type_a == GdUnitType.FOLDER and type_b != GdUnitType.FOLDER:
+		return true
+	if type_b == GdUnitType.FOLDER and type_a != GdUnitType.FOLDER:
+		return false
+
+	# sort by name
+	var name_a: String = a.get_meta(META_GDUNIT_NAME)
+	var name_b: String = b.get_meta(META_GDUNIT_NAME)
+	var comparison := name_a.naturalnocasecmp_to(name_b)
+
+	return comparison < 0 if ascending else comparison > 0
+
+
+static func sort_items_by_execution_time(a: TreeItem, b: TreeItem) -> bool:
+	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
+	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
+
+	# Sort folders to the top
+	if type_a == GdUnitType.FOLDER and type_b != GdUnitType.FOLDER:
+		return true
+	if type_b == GdUnitType.FOLDER and type_a != GdUnitType.FOLDER:
+		return false
+
 	var execution_time_a :int = a.get_meta(META_GDUNIT_EXECUTION_TIME)
 	var execution_time_b :int = b.get_meta(META_GDUNIT_EXECUTION_TIME)
 	# if has same execution time sort by name
@@ -317,13 +351,20 @@ func sort_items_by_execution_time(a: TreeItem, b: TreeItem) -> bool:
 	return execution_time_a > execution_time_b
 
 
-func sort_items_by_original_index(a: TreeItem, b: TreeItem) -> bool:
+static func sort_items_by_original_index(a: TreeItem, b: TreeItem) -> bool:
 	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
 	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
-	if type_a != type_b:
-		return type_a == GdUnitType.FOLDER
+
+	# Sort folders to the top
+	if type_a == GdUnitType.FOLDER and type_b != GdUnitType.FOLDER:
+		return true
+	if type_b == GdUnitType.FOLDER and type_a != GdUnitType.FOLDER:
+		return false
+
 	var index_a :int = a.get_meta(META_GDUNIT_ORIGINAL_INDEX)
 	var index_b :int = b.get_meta(META_GDUNIT_ORIGINAL_INDEX)
+
+	# Sorting by index
 	return index_a < index_b
 
 
@@ -1077,7 +1118,7 @@ func _dump_tree_as_json(dump_name: String) -> void:
 
 func _to_json(parent :TreeItem) -> Dictionary:
 	var item_as_dict := GdObjects.obj2dict(parent)
-	item_as_dict["TreeItem"]["childs"] = parent.get_children().map(func(item: TreeItem) -> Dictionary:
+	item_as_dict["TreeItem"]["childrens"] = parent.get_children().map(func(item: TreeItem) -> Dictionary:
 			return _to_json(item))
 	return item_as_dict
 
@@ -1219,7 +1260,7 @@ func _on_settings_changed(property :GdUnitProperty) -> void:
 	match property.name():
 		GdUnitSettings.INSPECTOR_TREE_SORT_MODE:
 			sort_tree_items(_tree_root)
-			# _dump_tree_as_json("tree_sorted_by_%s" % GdUnitInspectorTreeConstants.SORT_MODE.keys()[property.value()])
+			#_dump_tree_as_json("tree_sorted_by_%s" % GdUnitInspectorTreeConstants.SORT_MODE.keys()[property.value()])
 
 		GdUnitSettings.INSPECTOR_TREE_VIEW_MODE:
 			restructure_tree(_tree_root, GdUnitSettings.get_inspector_tree_view_mode())
