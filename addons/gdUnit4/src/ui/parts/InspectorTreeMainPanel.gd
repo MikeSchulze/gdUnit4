@@ -297,22 +297,6 @@ static func _sort_tree_items(parent: TreeItem, sort_mode: GdUnitInspectorTreeCon
 	parent.visible = true
 
 
-static func sort_items_by_name1(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
-	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
-	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
-	var name_a :String = a.get_meta(META_GDUNIT_NAME)
-	var name_b :String = b.get_meta(META_GDUNIT_NAME)
-
-	# Sorting folders
-	if type_a == GdUnitType.FOLDER and type_b == GdUnitType.FOLDER:
-		return name_a.naturalnocasecmp_to(name_b) < 0 if ascending else name_a.naturalnocasecmp_to(name_b) > 0
-
-	if type_a in [GdUnitType.TEST_CASE, GdUnitType.TEST_GROUP, GdUnitType.TEST_SUITE] and type_b in [GdUnitType.TEST_CASE, GdUnitType.TEST_GROUP, GdUnitType.TEST_SUITE]:
-		return name_a.naturalnocasecmp_to(name_b) < 0 if ascending else name_a.naturalnocasecmp_to(name_b) > 0
-	# sort folders on top
-	return type_a == GdUnitType.FOLDER
-
-
 static func sort_items_by_name(a: TreeItem, b: TreeItem, ascending: bool) -> bool:
 	var type_a: GdUnitType = a.get_meta(META_GDUNIT_TYPE)
 	var type_b: GdUnitType = b.get_meta(META_GDUNIT_TYPE)
