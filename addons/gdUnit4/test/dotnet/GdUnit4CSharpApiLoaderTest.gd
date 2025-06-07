@@ -9,7 +9,7 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
 @warning_ignore("unused_parameter")
-func before(do_skip := not GdUnit4CSharpApiLoader.is_dotnet_supported(), skip_reason := "Do run only for Godot .Net version") -> void:
+func before(do_skip := not GdUnit4CSharpApiLoader.is_api_loaded(), skip_reason := "Do run only for Godot .Net version") -> void:
 	pass
 
 
