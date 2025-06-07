@@ -1240,6 +1240,19 @@ func test_mock_func_default_arg_dict() -> void:
 	assert_array(mock_obj.on_dictionary_case1({})).contains_exactly(["a", "b"])
 	verify(mock_obj).on_dictionary_case1({})
 
+
 func test_mock_with_variant_as_defaults() -> void:
 	var mock_obj: Variant = mock(ClassWithVariantDefaultArguments)
 	assert_object(mock_obj).is_not_null()
+
+
+# https://github.com/MikeSchulze/gdUnit4/issues/742
+func test_mock_with_await_function() -> void:
+	@warning_ignore("unsafe_cast")
+	var mocked_instance := mock(ClassWithAwaitFunc, CALL_REAL_FUNC) as ClassWithAwaitFunc
+	add_child(mocked_instance)
+
+	mocked_instance.await_function()
+
+	@warning_ignore("unsafe_method_access")
+	verify(mocked_instance, 1).await_function()
