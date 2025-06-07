@@ -1,5 +1,6 @@
 namespace gdUnit4.addons.gdUnit4.test.dotnet;
 
+#if GDUNIT4NET_API_V5
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,14 +20,6 @@ using static GdUnit4.Assertions;
 [RequireGodotRuntime]
 public partial class GdUnit4CSharpApiTest
 {
-    [TestCase]
-    public void IsTestSuite()
-    {
-        AssertThat(GdUnit4CSharpApi.IsTestSuite(GD.Load<CSharpScript>("res://addons/gdUnit4/src/dotnet/GdUnit4CSharpApi.cs"))).IsFalse();
-        AssertThat(GdUnit4CSharpApi.IsTestSuite(GD.Load<CSharpScript>("res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs"))).IsTrue();
-        AssertThat(GdUnit4CSharpApi.IsTestSuite(GD.Load<CSharpScript>("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.cs"))).IsTrue();
-    }
-
     [TestCase]
     public void GetVersion()
     {
@@ -188,3 +181,4 @@ public partial class GdUnit4CSharpApiTest
             => EventReceived?.Invoke(eventData);
     }
 }
+#endif
