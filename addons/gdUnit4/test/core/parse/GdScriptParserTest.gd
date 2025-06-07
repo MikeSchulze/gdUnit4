@@ -598,3 +598,35 @@ func test_parse_func_descriptor_with_fuzzers() -> void:
 		# typed is TYPE_INT
 		GdFunctionArgument.new("fuzzer_seed", TYPE_INT, 100)
 	]))
+
+
+func test_is_func_coroutine() -> void:
+	var script := """
+	extends RefCounted:
+		func normal_function() -> void:
+			print("normal")
+
+
+		func await_function() -> void:
+			print(await _await_function())
+
+
+		func _await_function() -> String:
+			await get_tree().process_frame
+			return "test"
+
+
+		func check_is_waiting() -> String:
+			return is_await()
+
+
+		func print_message() -> String:
+			return "do await for timeout"
+	"""
+
+	var rows := script.split("\n")
+	assert_bool(_parser.is_func_coroutine(rows, 2)).is_false()
+	assert_bool(_parser.is_func_coroutine(rows, 6)).is_true()
+	assert_bool(_parser.is_func_coroutine(rows, 10)).is_true()
+	assert_bool(_parser.is_func_coroutine(rows, 15)).is_false()
+	assert_bool(_parser.is_func_coroutine(rows, 19)).is_false()
