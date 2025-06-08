@@ -63,6 +63,7 @@ const STATE = GdUnitInspectorTreeConstants.STATE
 var _tree_root: TreeItem
 var _item_hash := Dictionary()
 var _current_tree_view_mode := GdUnitSettings.get_inspector_tree_view_mode()
+var _run_test_recovery := true
 
 
 func _build_cache_key(resource_path: String, test_name: String) -> Array:
@@ -195,6 +196,11 @@ func is_test_id(item: TreeItem, id: GdUnitGUID) -> bool:
 	var test_case: GdUnitTestCase = item.get_meta(META_TEST_CASE)
 	return test_case.guid.equals(id)
 
+
+func disable_test_recovery() -> void:
+	_run_test_recovery = false
+
+
 @warning_ignore("return_value_discarded")
 func _ready() -> void:
 	_context_menu.set_item_icon(CONTEXT_MENU_RUN_ID, GdUnitUiTools.get_icon("Play"))
@@ -215,6 +221,8 @@ func _ready() -> void:
 	var command_handler := GdUnitCommandHandler.instance()
 	command_handler.gdunit_runner_start.connect(_on_gdunit_runner_start)
 	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
+	if _run_test_recovery:
+		GdUnitTestDiscoverer.restore_last_session()
 
 
 # we need current to manually redraw bacause of the animation bug
