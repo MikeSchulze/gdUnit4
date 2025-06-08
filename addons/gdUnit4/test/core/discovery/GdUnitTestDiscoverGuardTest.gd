@@ -14,8 +14,8 @@ func test_inital() -> void:
 
 func test_sync_cache() -> void:
 	# setup example tests
-	var test1 := GdUnitTestCase.from("res://test/my_test_suite.gd", 23, "test_a")
-	var test2 := GdUnitTestCase.from("res://test/my_test_suite.gd", 42, "test_b")
+	var test1 := GdUnitTestCase.from("res://test/my_test_suite.gd", "res://test/my_test_suite.gd", 23, "test_a")
+	var test2 := GdUnitTestCase.from("res://test/my_test_suite.gd", "res://test/my_test_suite.gd", 42, "test_b")
 
 	# simulate running test dicovery
 	var discoverer: GdUnitTestDiscoverGuard = auto_free(GdUnitTestDiscoverGuard.new())

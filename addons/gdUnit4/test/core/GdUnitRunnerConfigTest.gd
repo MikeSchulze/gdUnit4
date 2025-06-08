@@ -40,9 +40,9 @@ func test_save_load() -> void:
 	config.set_server_port(1000)
 	# create a set of test cases
 	var test_to_save: Array[GdUnitTestCase] = [
-		GdUnitTestCase.from("res://test/example_suite.gd", 10, "test_a"),
-		GdUnitTestCase.from("res://test/example_suite.gd", 14, "test_b"),
-		GdUnitTestCase.from("res://test/example_suite.gd", 16, "test_c")
+		GdUnitTestCase.from("res://test/example_suite.gd", "res://test/example_suite.gd", 10, "test_a"),
+		GdUnitTestCase.from("res://test/example_suite.gd", "res://test/example_suite.gd", 14, "test_b"),
+		GdUnitTestCase.from("res://test/example_suite.gd", "res://test/example_suite.gd", 16, "test_c")
 	]
 	config.add_test_cases(test_to_save)
 
@@ -65,9 +65,9 @@ func test_add_test_cases() -> void:
 	config.set_server_port(1000)
 	# create a set of test cases
 	config.add_test_cases([
-		GdUnitTestCase.from("res://test/example_suite.gd", 10, "test_a"),
-		GdUnitTestCase.from("res://test/example_suite.gd", 14, "test_b"),
-		GdUnitTestCase.from("res://test/example_suite.gd", 16, "test_c")
+		GdUnitTestCase.from("res://test/example_suite.gd", "res://test/example_suite.gd", 10, "test_a"),
+		GdUnitTestCase.from("res://test/example_suite.gd", "res://test/example_suite.gd", 14, "test_b"),
+		GdUnitTestCase.from("res://test/example_suite.gd", "res://test/example_suite.gd", 16, "test_c")
 	])
 
 	var config_file := create_temp_dir("test_save_load") + "/testconf.cfg"
