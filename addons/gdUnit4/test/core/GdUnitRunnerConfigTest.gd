@@ -30,7 +30,7 @@ func test_load_fail() -> void:
 	var config := GdUnitRunnerConfig.new()
 
 	assert_result(config.load_config("invalid_path"))\
-		.is_error()\
+		.is_warning()\
 		.contains_message("Can't find test runner configuration 'invalid_path'! Please select a test to run.")
 
 
