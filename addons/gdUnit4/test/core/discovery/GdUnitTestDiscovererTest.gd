@@ -78,3 +78,21 @@ func test_discover_tests_on_GdUnitTestSuite() -> void:
 
 	# we expect no test covered from the base implementaion of GdUnitTestSuite
 	assert_array(discovered_tests).is_empty()
+
+
+func test_discover_tests_inherited() -> void:
+	var script: GDScript = load("res://addons/gdUnit4/test/core/resources/scan_testsuite_inheritance/by_class_name/ExtendsExtendedTest.gd")
+
+	var discovered_tests := []
+	GdUnitTestDiscoverer.discover_tests(script,\
+		func discover(test_case: GdUnitTestCase) -> void:
+			discovered_tests.append(test_case)
+	)
+
+	assert_array(discovered_tests)\
+		.extractv(extr("test_name"), extr("display_name"), extr("fully_qualified_name"))\
+		.contains_exactly([
+			tuple("test_foo3", "test_foo3", "addons.gdUnit4.test.core.resources.scan_testsuite_inheritance.by_class_name.ExtendsExtendedTest.test_foo3"),
+			tuple("test_foo2", "test_foo2", "addons.gdUnit4.test.core.resources.scan_testsuite_inheritance.by_class_name.ExtendsExtendedTest.test_foo2"),
+			tuple("test_foo1", "test_foo1", "addons.gdUnit4.test.core.resources.scan_testsuite_inheritance.by_class_name.ExtendsExtendedTest.test_foo1")
+		])

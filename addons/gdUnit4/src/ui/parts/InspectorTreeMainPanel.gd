@@ -753,7 +753,7 @@ func show_failed_report(selected_item: TreeItem) -> void:
 func update_test_suite(event: GdUnitEvent) -> void:
 	var item := _find_tree_item_by_path(extract_resource_path(event), event.suite_name())
 	if not item:
-		push_error("[GdUnitInspector:731] Internal Error: Can't find tree item for\n %s" % event)
+		push_error("[InspectorTreeMainPanel.gd:753] Internal Error: Can't find tree item for\n %s" % event)
 		return
 	if event.type() == GdUnitEvent.TESTSUITE_BEFORE:
 		set_state_running(item)
@@ -791,10 +791,10 @@ func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type
 			item.set_meta(META_TEST_CASE, test)
 		GdUnitType.TEST_GROUP:
 			# We need to create a copy of the test record meta with a new uniqe guid
-			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.test_name))
+			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.suite_resource_path, test.source_file, test.line_number, test.test_name))
 		GdUnitType.TEST_SUITE:
 			# We need to create a copy of the test record meta with a new uniqe guid
-			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.source_file, test.line_number, test.suite_name))
+			item.set_meta(META_TEST_CASE, GdUnitTestCase.from(test.suite_resource_path, test.source_file, test.line_number, test.suite_name))
 			# We need to add the suite item to the item cache by path because the guid is not provided
 			add_tree_item_to_cache(test.source_file, item_name, item)
 
