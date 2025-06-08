@@ -569,7 +569,7 @@ func _handle_actions(event: InputEventAction) -> bool:
 		return false
 	__print("	process action %s (%s) <- %s" % [scene(), _scene_name(), event.as_text()])
 	if event.is_pressed():
-		Input.action_press(event.action, InputMap.action_get_deadzone(event.action))
+		Input.action_press(event.action, event.get_strength())
 	else:
 		Input.action_release(event.action)
 	return true
