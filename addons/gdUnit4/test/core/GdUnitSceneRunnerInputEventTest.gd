@@ -97,6 +97,11 @@ func test_simulate_action_press() -> void:
 
 		assert_that(Input.is_action_pressed(action))\
 			.override_failure_message("Expect the action '%s' is pressed" % action).is_true()
+		assert_float(Input.get_action_strength(action))\
+			.is_equal_approx(1.0, 0.1)
+		assert_float(_runner.get_property("_last_pressed_strength"))\
+			.is_equal_approx(1.0, 0.1)
+
 	# other actions are not pressed
 	for action :String in ["ui_accept", "ui_select", "ui_cancel"]:
 		assert_that(Input.is_action_pressed(action))\

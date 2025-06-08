@@ -14,6 +14,8 @@ const COLOR_CYCLE := [Color.ROYAL_BLUE, Color.CHARTREUSE, Color.YELLOW_GREEN]
 @warning_ignore("unused_private_class_variable")
 var _nullable :Object
 
+var _last_pressed_strength: float
+
 
 func _ready() -> void:
 	panel_color_change.connect(_on_panel_color_changed)
@@ -99,6 +101,10 @@ func _destroy_spell(spell :Spell) -> void:
 func _input(event :InputEvent) -> void:
 	if event.is_action_released("ui_accept"):
 		add_child(create_spell())
+
+	if event is InputEventAction:
+		_last_pressed_strength = (event as InputEventAction).strength
+
 	#prints(event.as_text())
 
 
