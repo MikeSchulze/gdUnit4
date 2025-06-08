@@ -83,13 +83,9 @@ static func restore_last_session() -> void:
 
 
 static func recover_test_guid(current: GdUnitTestCase, recovered_tests: Array[GdUnitTestCase]) -> void:
-	if recovered_tests.is_empty():
-		return
-	var test_index := recovered_tests.find_custom(func (test: GdUnitTestCase) -> bool:
-		return test.fully_qualified_name == current.fully_qualified_name
-	)
-	if test_index != -1:
-		current.guid = recovered_tests[test_index].guid
+	for recovered_test in recovered_tests:
+		if recovered_test.fully_qualified_name == current.fully_qualified_name:
+			current.guid = recovered_test.guid
 
 
 static func console_log_discover_results(tests: Array[GdUnitTestCase]) -> void:
