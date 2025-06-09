@@ -1,7 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    ":ignoreUnstable"
   ],
   "customManagers": [
     {
@@ -14,8 +15,28 @@
         "GODOT_VERSION:\\s*(?<currentValue>[0-9.]+)"
       ],
       "datasourceTemplate": "github-releases",
-      "depNameTemplate": "godotengine/godot-builds",
-      "ignoreUnstable": "false"
+      "depNameTemplate": "godotengine/godot-builds"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchPackageNames": [
+        "godotengine/godot-builds"
+      ],
+      "ignoreUnstable": "false",
+      "respectLatest": "false",
+      "groupName": "Godot Engine",
+      "commitMessageTopic": "Godot Engine",
+      "automerge": false,
+      "minimumReleaseAge": "12 hours",
+      "labels": [
+        "godot",
+        "ci",
+        "prerelease"
+      ]
     }
   ]
 }
