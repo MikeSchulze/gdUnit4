@@ -27,7 +27,6 @@
         "godotengine/godot-builds"
       ],
       "ignoreUnstable": "false",
-      "respectLatest": "false",
       "groupName": "Godot Engine",
       "commitMessageTopic": "Godot Engine",
       "automerge": false,
