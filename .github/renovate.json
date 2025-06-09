@@ -15,7 +15,7 @@
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
-      "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-(?<prerelease>.+))?$"
+      "ignoreUnstable": "false"
     }
   ]
 }
