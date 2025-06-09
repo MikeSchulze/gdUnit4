@@ -1,13 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^\\.github/workflows/ci-pr\\.yml$"],
-      "matchStrings": ["GODOT_VERSION:\\s*(?<currentValue>[0-9.]+)"],
-      "datasourceTemplate": "npm",
-      "depNameTemplate": "lodash"
+      "description": "Test Godot datasource with simple pattern",
+      "fileMatch": [
+        "^\\.github/workflows/ci-pr\\.yml$"
+      ],
+      "matchStrings": [
+        "GODOT_VERSION:\\s*(?<currentValue>[0-9.]+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "godotengine/godot-builds"
     }
   ]
 }
