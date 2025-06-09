@@ -25,12 +25,12 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Test with known good datasource",
+      "description": "Test - Find GODOT_VERSION env var",
       "managerFilePatterns": [
         "^\\.github/workflows/ci-pr\\.yml$"
       ],
       "matchStrings": [
-        "(?<currentValue>dev1)"
+        "GODOT_VERSION:\\s*(?<currentValue>[0-9.]+)"
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "actions/checkout"

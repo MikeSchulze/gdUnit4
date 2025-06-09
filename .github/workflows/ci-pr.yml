@@ -9,6 +9,9 @@ on:
       - '**.md'
   workflow_dispatch:
 
+env:
+  GODOT_VERSION: 4.4.1
+
 
 concurrency:
   group: ci-pr-${{ github.event.number }}
