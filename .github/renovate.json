@@ -14,7 +14,9 @@
         "GODOT_VERSION:\\s*(?<currentValue>[0-9.]+)"
       ],
       "datasourceTemplate": "github-tags",
-      "depNameTemplate": "godotengine/godot-builds"
+      "depNameTemplate": "godotengine/godot-builds",
+      "versioningTemplate": "semver",
+      "extractVersionTemplate": "^(?<version>.*)$"
     }
   ]
 }
