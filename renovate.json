@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "timezone": "UTC",
   "schedule": [
@@ -27,9 +27,9 @@
     {
       "customType": "regex",
       "description": "Update Godot dev/prerelease versions in CI matrix include section",
-      "fileMatch": [
-        "^\\.github/workflows/ci-pr\\.yml$",
-        "^\\.github/workflows/ci-pr-publish-report\\.yml$"
+      "managerFilePatterns": [
+        "/^\\.github/workflows/ci-pr\\.yml$/",
+        "/^\\.github/workflows/ci-pr-publish-report\\.yml$/"
       ],
       "matchStrings": [
         "# renovate: godot-dev\\s+- godot-version: ['\"](?<currentValue>[^'\"]+)['\"]\\s+godot-status: ['\"](?<currentStatus>[^'\"]+)['\"]"
@@ -42,8 +42,8 @@
     {
       "customType": "regex",
       "description": "Update GdUnit4 action versions",
-      "fileMatch": [
-        "^\\.github/workflows/.*\\.ya?ml$"
+      "managerFilePatterns": [
+        "/^\\.github/workflows/.*\\.ya?ml$/"
       ],
       "matchStrings": [
         "uses: MikeSchulze/gdUnit4-action@(?<currentValue>v\\d+(?:\\.\\d+)*)"
@@ -55,8 +55,8 @@
     {
       "customType": "regex",
       "description": "Update GitHub Actions",
-      "fileMatch": [
-        "^\\.github/workflows/.*\\.ya?ml$"
+      "managerFilePatterns": [
+        "/^\\.github/workflows/.*\\.ya?ml$/"
       ],
       "matchStrings": [
         "uses: (?<depName>[^@]+)@(?<currentValue>v\\d+(?:\\.\\d+)*)"
@@ -77,7 +77,6 @@
       "commitMessageTopic": "Godot Engine",
       "prTitle": "🎮 Update Godot Engine to {{newVersion}}",
       "automerge": false,
-      "stabilityDays": 2,
       "minimumReleaseAge": "48 hours",
       "labels": [
         "godot",
@@ -103,7 +102,6 @@
         "prerelease",
         "testing"
       ],
-      "stabilityDays": 0,
       "minimumReleaseAge": "12 hours",
       "prPriority": 5,
       "prBodyTemplate": "This PR updates Godot Engine **prerelease** version in CI.\n\n## 🧪 Prerelease Update\n- Updated from `{{currentValue}}` to `{{newValue}}`\n- This is a **{{#if isMajor}}major{{else}}{{#if isMinor}}minor{{else}}patch{{/if}}{{/if}} prerelease** update\n\n## 🔍 Release Information\n{{#if hasReleaseNotes}}{{releaseNotes}}{{else}}Check the [Godot prerelease page](https://github.com/godotengine/godot/releases/tag/{{newVersion}}) for details.{{/if}}\n\n## ⚠️ Important Notes\n- ⚠️ This is a **prerelease version** - may contain bugs\n- 🧪 Thorough testing recommended before merging\n- 📋 Check compatibility with existing GdUnit4 tests\n\n## ✅ Testing Checklist\n- [ ] All CI tests pass\n- [ ] No regression in existing functionality  \n- [ ] GdUnit4 tests work correctly\n- [ ] Both GDScript and C# tests pass\n\n---\n*Prerelease auto-update by Renovate 🤖*"
@@ -135,9 +133,6 @@
       "matchDepTypes": [
         "action"
       ],
-      "excludePackageNames": [
-        "MikeSchulze/gdUnit4-action"
-      ],
       "groupName": "GitHub Actions",
       "commitMessageTopic": "GitHub Actions",
       "prTitle": "🔧 Update GitHub Actions",
@@ -150,6 +145,9 @@
       "minimumReleaseAge": "3 days",
       "schedule": [
         "before 6am on monday"
+      ],
+      "matchPackageNames": [
+        "!MikeSchulze/gdUnit4-action"
       ]
     }
   ],
