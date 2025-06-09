@@ -3,8 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "_comment": "cache bust 12345",
-  "logLevel": "debug",
   "timezone": "UTC",
   "schedule": [
     "before 6am on monday"
@@ -25,6 +23,18 @@
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
   "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Find dev1 anywhere",
+      "managerFilePatterns": [
+        "^\\.github/workflows/ci-pr\\.yml$"
+      ],
+      "matchStrings": [
+        "(?<currentValue>dev1)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "godotengine/godot-builds"
+    },
     {
       "customType": "regex",
       "description": "Update Godot dev/prerelease versions in CI matrix include section",
