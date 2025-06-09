@@ -14,7 +14,8 @@
         "GODOT_VERSION:\\s*(?<currentValue>[0-9.]+)"
       ],
       "datasourceTemplate": "github-releases",
-      "depNameTemplate": "godotengine/godot-builds"
+      "depNameTemplate": "godotengine/godot-builds",
+      "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-(?<prerelease>.+))?$"
     }
   ]
 }
