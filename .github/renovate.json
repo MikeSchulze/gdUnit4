@@ -25,7 +25,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Find dev1 anywhere",
+      "description": "Test with known good datasource",
       "managerFilePatterns": [
         "^\\.github/workflows/ci-pr\\.yml$"
       ],
@@ -33,7 +33,7 @@
         "(?<currentValue>dev1)"
       ],
       "datasourceTemplate": "github-releases",
-      "depNameTemplate": "godotengine/godot-builds"
+      "depNameTemplate": "actions/checkout"
     },
     {
       "customType": "regex",
