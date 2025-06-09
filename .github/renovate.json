@@ -12,7 +12,7 @@
         "^\\.github/workflows/ci-pr\\.yml$"
       ],
       "matchStrings": [
-        "GODOT_VERSION:\\s*(?<currentValue>[0-9.]+)"
+        "GODOT_VERSION:\\s*(?<currentValue>[0-9.]{2,5}-\\w+)"
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds"
