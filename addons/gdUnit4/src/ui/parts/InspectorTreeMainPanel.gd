@@ -572,6 +572,8 @@ func set_state_running(item: TreeItem) -> void:
 
 
 func set_state_succeded(item: TreeItem) -> void:
+	if item == _tree_root:
+		return
 	item.set_custom_color(0, Color.GREEN)
 	item.set_custom_color(1, Color.GREEN)
 	item.set_meta(META_GDUNIT_STATE, STATE.SUCCESS)
