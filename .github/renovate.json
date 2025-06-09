@@ -16,7 +16,8 @@
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "godotengine/godot-builds",
       "versioningTemplate": "semver",
-      "extractVersionTemplate": "^(?<version>.*)$"
+      "extractVersionTemplate": "^(?<version>.*)$",
+      "includePrereleasesTemplate": true
     }
   ]
 }
