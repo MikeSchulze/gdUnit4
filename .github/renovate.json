@@ -25,18 +25,6 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Debug - Find ANY godot-version",
-      "managerFilePatterns": [
-        "^\\.github/workflows/.*\\.yml$"
-      ],
-      "matchStrings": [
-        "godot-version:\\s*['\"](?<currentValue>[^'\"]+)['\"]"
-      ],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "godotengine/godot-builds"
-    },
-    {
-      "customType": "regex",
       "description": "Update Godot dev/prerelease versions in CI matrix include section",
       "managerFilePatterns": [
         "^\\.github/workflows/ci-pr\\.yml$",
