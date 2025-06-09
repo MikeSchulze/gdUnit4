@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  GODOT_VERSION: 4.4.1
+  GODOT_VERSION: 4.17.21
 
 
 concurrency:
