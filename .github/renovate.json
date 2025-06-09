@@ -13,7 +13,7 @@
       "matchStrings": [
         "GODOT_VERSION:\\s*(?<currentValue>[0-9.]+)"
       ],
-      "datasourceTemplate": "github-releases",
+      "datasourceTemplate": "github-tags",
       "depNameTemplate": "godotengine/godot-builds"
     }
   ]
