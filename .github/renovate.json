@@ -19,10 +19,9 @@
   "prCreation": "not-pending",
   "prConcurrentLimit": 3,
   "branchConcurrentLimit": 5,
-  "commitMessagePrefix": "🤖 ",
+  "commitMessagePrefix": "🤖 Update ",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
-  "prTitle": "🤖 Update {{depName}} to {{newVersion}}",
   "customManagers": [
     {
       "customType": "regex",
@@ -75,7 +74,6 @@
       ],
       "groupName": "Godot Engine",
       "commitMessageTopic": "Godot Engine",
-      "prTitle": "🎮 Update Godot Engine to {{newVersion}}",
       "automerge": false,
       "minimumReleaseAge": "12 hours",
       "labels": [
@@ -94,7 +92,6 @@
       ],
       "groupName": "GdUnit4 Testing Action",
       "commitMessageTopic": "GdUnit4 Action",
-      "prTitle": "🧪 Update GdUnit4 Action to {{newVersion}}",
       "labels": [
         "testing",
         "gdunit4",
@@ -114,7 +111,6 @@
       ],
       "groupName": "GitHub Actions",
       "commitMessageTopic": "GitHub Actions",
-      "prTitle": "🔧 Update GitHub Actions",
       "labels": [
         "github-actions",
         "ci"
