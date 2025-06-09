@@ -33,9 +33,10 @@ jobs:
         godot-version: [ '4.3', '4.4', '4.4.1' ]
         godot-status: [ 'stable' ]
         godot-net: [ '.Net', '' ]
-      #   include:
-      #     - godot-version: '4.4'
-      #       godot-status: 'dev1'
+        include:
+          # renovate: godot-dev
+          - godot-version: '4.5'
+            godot-status: 'dev1'
 
     permissions:
       actions: write

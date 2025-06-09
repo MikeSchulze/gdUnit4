@@ -1,0 +1,165 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "timezone": "UTC",
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+  "assigneesFromCodeOwners": true,
+  "reviewersFromCodeOwners": true,
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "🎮 Godot CI Dependencies Dashboard",
+  "dependencyDashboardHeader": "This dashboard tracks Godot Engine and CI dependency updates.\n\n- 🎮 **Godot versions** are automatically updated from GitHub releases\n- 📅 **Updates run** every Monday morning\n- 🧪 **Testing** is required before merging major updates",
+  "prCreation": "not-pending",
+  "prConcurrentLimit": 3,
+  "branchConcurrentLimit": 5,
+  "commitMessagePrefix": "🤖 ",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "prTitle": "🤖 Update {{depName}} to {{newVersion}}",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Godot dev/prerelease versions in CI matrix include section",
+      "fileMatch": [
+        "^\\.github/workflows/ci-pr\\.yml$",
+        "^\\.github/workflows/ci-pr-publish-report\\.yml$"
+      ],
+      "matchStrings": [
+        "# renovate: godot-dev\\s+- godot-version: ['\"](?<currentValue>[^'\"]+)['\"]\\s+godot-status: ['\"](?<currentStatus>[^'\"]+)['\"]"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "godotengine/godot",
+      "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-(?<prerelease>.+))?$",
+      "extractVersionTemplate": "^(?<version>\\d+\\.\\d+(?:\\.\\d+)?)(?:-(?<prerelease>.+))?$"
+    },
+    {
+      "customType": "regex",
+      "description": "Update GdUnit4 action versions",
+      "fileMatch": [
+        "^\\.github/workflows/.*\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "uses: MikeSchulze/gdUnit4-action@(?<currentValue>v\\d+(?:\\.\\d+)*)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "MikeSchulze/gdUnit4-action",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Update GitHub Actions",
+      "fileMatch": [
+        "^\\.github/workflows/.*\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "uses: (?<depName>[^@]+)@(?<currentValue>v\\d+(?:\\.\\d+)*)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepNames": [
+        "godotengine/godot"
+      ],
+      "groupName": "Godot Engine",
+      "commitMessageTopic": "Godot Engine",
+      "prTitle": "🎮 Update Godot Engine to {{newVersion}}",
+      "automerge": false,
+      "stabilityDays": 2,
+      "minimumReleaseAge": "48 hours",
+      "labels": [
+        "godot",
+        "ci",
+        "engine-update"
+      ],
+      "prBodyTemplate": "This PR updates Godot Engine in the CI workflows.\n\n## 🎯 Changes\n- Updated from `{{currentValue}}` to `{{newValue}}`\n- Status: {{#if newDigest}}Digest update{{else}}{{#if isMajor}}**Major version update**{{else}}{{#if isMinor}}Minor version update{{else}}Patch version update{{/if}}{{/if}}{{/if}}\n\n## 🔍 Release Information\n{{#if hasReleaseNotes}}{{releaseNotes}}{{else}}Check the [Godot release page](https://github.com/godotengine/godot/releases/tag/{{newVersion}}) for details.{{/if}}\n\n## ⚠️ Testing Checklist\n- [ ] Verify CI workflows pass with new version\n- [ ] Check for breaking changes in Godot release notes\n- [ ] Ensure GdUnit4 compatibility\n- [ ] Test both stable and .NET versions\n\n---\n*Automated by Renovate 🤖*"
+    },
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepNames": [
+        "godotengine/godot"
+      ],
+      "matchCurrentVersion": "/.*-(beta|rc|dev|alpha).*/",
+      "groupName": "Godot Engine (prerelease)",
+      "commitMessageTopic": "Godot Engine prerelease",
+      "prTitle": "🎮 Update Godot Engine prerelease to {{newVersion}}",
+      "labels": [
+        "godot",
+        "ci",
+        "prerelease",
+        "testing"
+      ],
+      "stabilityDays": 0,
+      "minimumReleaseAge": "12 hours",
+      "prPriority": 5,
+      "prBodyTemplate": "This PR updates Godot Engine **prerelease** version in CI.\n\n## 🧪 Prerelease Update\n- Updated from `{{currentValue}}` to `{{newValue}}`\n- This is a **{{#if isMajor}}major{{else}}{{#if isMinor}}minor{{else}}patch{{/if}}{{/if}} prerelease** update\n\n## 🔍 Release Information\n{{#if hasReleaseNotes}}{{releaseNotes}}{{else}}Check the [Godot prerelease page](https://github.com/godotengine/godot/releases/tag/{{newVersion}}) for details.{{/if}}\n\n## ⚠️ Important Notes\n- ⚠️ This is a **prerelease version** - may contain bugs\n- 🧪 Thorough testing recommended before merging\n- 📋 Check compatibility with existing GdUnit4 tests\n\n## ✅ Testing Checklist\n- [ ] All CI tests pass\n- [ ] No regression in existing functionality  \n- [ ] GdUnit4 tests work correctly\n- [ ] Both GDScript and C# tests pass\n\n---\n*Prerelease auto-update by Renovate 🤖*"
+    },
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepNames": [
+        "MikeSchulze/gdUnit4-action"
+      ],
+      "groupName": "GdUnit4 Testing Action",
+      "commitMessageTopic": "GdUnit4 Action",
+      "prTitle": "🧪 Update GdUnit4 Action to {{newVersion}}",
+      "labels": [
+        "testing",
+        "gdunit4",
+        "ci"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "minimumReleaseAge": "24 hours",
+      "prBodyTemplate": "This PR updates the GdUnit4 testing action.\n\n## 🧪 Testing Action Update\n- Updated from `{{currentValue}}` to `{{newValue}}`\n\n## 📋 Changes\n{{#if hasReleaseNotes}}{{releaseNotes}}{{else}}Check the [GdUnit4 releases](https://github.com/MikeSchulze/gdUnit4-action/releases/tag/{{newVersion}}) for details.{{/if}}\n\n---\n*Auto-merging testing dependency update 🤖*"
+    },
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepTypes": [
+        "action"
+      ],
+      "excludePackageNames": [
+        "MikeSchulze/gdUnit4-action"
+      ],
+      "groupName": "GitHub Actions",
+      "commitMessageTopic": "GitHub Actions",
+      "prTitle": "🔧 Update GitHub Actions",
+      "labels": [
+        "github-actions",
+        "ci"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "minimumReleaseAge": "3 days",
+      "schedule": [
+        "before 6am on monday"
+      ]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": false
+  },
+  "lockFileMaintenance": {
+    "enabled": false
+  },
+  "separateMultipleMajor": true,
+  "separateMinorPatch": false,
+  "rangeStrategy": "replace"
+}
