@@ -3,6 +3,8 @@
   "extends": [
     "config:recommended"
   ],
+  "_comment": "cache bust 12345",
+  "logLevel": "debug",
   "timezone": "UTC",
   "schedule": [
     "before 6am on monday"
