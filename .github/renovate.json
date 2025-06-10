@@ -11,13 +11,12 @@
         "/^\\.github/workflows/ci-pr\\.yml$/"
       ],
       "matchStrings": [
-        "\\s*- godot-version: '(?<godotVersion>[0-9.]+)'\\s*\\n\\s*godot-status: '(?<godotStatus>\\w+)'"
+        "\\s*- godot-version: '(?<godotVersion>[0-9.]+)'\\s*\\n\\s*godot-status: '(?<currentDigest>\\w+)'"
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
-      "versioningTemplate": "regex:^(?<major>[0-9]+)\\.(?<minor>[0-9]+)-(?<prerelease>.+)$",
-      "currentValueTemplate": "{{godotVersion}}-{{godotStatus}}",
-      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\\n            godot-status: '{{newPrerelease}}'"
+      "currentValueTemplate": "{{godotVersion}}-{{currentDigest}}",
+      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\\n            godot-status: '{{newDigest}}'"
     }
   ],
   "packageRules": [
@@ -28,6 +27,8 @@
       "matchPackageNames": [
         "godotengine/godot-builds"
       ],
+      "versioning": "regex:^(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?-(?<prerelease>.*)?$",
+      "ignoreUnstable": true,
       "groupName": "Godot Engine",
       "commitMessageTopic": "Godot Engine",
       "commitMessageExtra": "{{currentValue}} → {{newValue}} ({{updateType}})",
