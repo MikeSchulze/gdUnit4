@@ -11,12 +11,12 @@
         "/^\\.github/workflows/ci-pr\\.yml$/"
       ],
       "matchStrings": [
-        "\\s*- godot-version: '(?<godotVersion>[0-9.]+)'\\s*\\n\\s*godot-status: '(?<currentDigest>\\w+)'"
+        "\\s*- godot-version: '(?<godotVersion>[0-9.]+)'\\s*\\n\\s*godot-status: '(?<godotStatus>\\w+)'"
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
-      "currentValueTemplate": "{{godotVersion}}-{{currentDigest}}",
-      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\\n            godot-status: '{{newDigest}}'"
+      "currentValueTemplate": "{{godotVersion}}-{{godotStatus}}",
+      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\\n            godot-status: 'dev5'"
     }
   ],
   "packageRules": [
