@@ -6,16 +6,18 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Test Godot datasource with simple pattern",
+      "description": "Update Godot matrix version and status",
       "managerFilePatterns": [
         "/^\\.github/workflows/ci-pr\\.yml$/"
       ],
       "matchStrings": [
-        "GODOT_VERSION:\\s*(?<currentValue>[0-9.]{2,5}-\\w+)"
+        "\\s*- godot-version: '(?<godotVersion>[0-9.]+)'\\s*\\n\\s*godot-status: '(?<godotStatus>\\w+)'"
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
-      "versioningTemplate": "loose"
+      "versioningTemplate": "regex:^(?<major>[0-9]+)\\.(?<minor>[0-9]+)-(?<prerelease>.+)$",
+      "currentValueTemplate": "{{godotVersion}}-{{godotStatus}}",
+      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\\n            godot-status: '{{newPrerelease}}'"
     }
   ],
   "packageRules": [
