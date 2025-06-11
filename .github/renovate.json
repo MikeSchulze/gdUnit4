@@ -3,15 +3,21 @@
   "extends": [
     "config:recommended"
   ],
-  "assigneesFromCodeOwners": true,
-  "reviewersFromCodeOwners": true,
+  "assigneesFromCodeOwners": false,
+  "reviewersFromCodeOwners": false,
+  "assignees": [
+    "renovate[bot]"
+  ],
+  "reviewers": [
+    "MikeSchulze"
+  ],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "🎮 Godot CI Dependencies Dashboard",
   "dependencyDashboardHeader": "This dashboard tracks Godot Engine and CI dependency updates.\n\n- 🎮 **Godot versions** are automatically updated from GitHub releases\n- 📅 **Updates run** every Monday morning\n- 🧪 **Testing** is required before merging major updates",
   "prCreation": "not-pending",
   "prConcurrentLimit": 3,
   "branchConcurrentLimit": 5,
-  "commitMessagePrefix": "🤖 Update ",
+  "commitMessagePrefix": "🤖",
   "customManagers": [
     {
       "customType": "regex",
@@ -41,13 +47,15 @@
       "groupName": "Godot Engine",
       "commitMessageTopic": "Godot Engine",
       "commitMessageExtra": "{{currentValue}} → {{newValue}} ({{updateType}})",
-      "automerge": false,
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "merge",
       "minimumReleaseAge": "12 hours",
       "labels": [
         "godot-prerelease",
         "ci"
       ],
-      "prBodyTemplate": "This PR updates Godot Engine prerelease version in CI workflows.\n\n## 🧪 Prerelease Update\n- Updated from `{{currentValue}}` to `{{newValue}}`\n\n## 🔍 Release Information\n{{#if hasReleaseNotes}}{{releaseNotes}}{{else}}Check the [Godot builds release page](https://github.com/godotengine/godot-builds/releases/tag/{{newVersion}}) for details.{{/if}}\n\n## ⚠️ Testing Checklist\n- [ ] All CI tests pass\n- [ ] GdUnit4 tests work correctly\n- [ ] Both GDScript and C# tests pass\n\n---\n*Prerelease update by Renovate 🤖*"
+      "prBodyTemplate": "This PR updates Godot Engine prerelease version in CI workflows.\n\n## 🔍 Release Information\n{{#if hasReleaseNotes}}{{releaseNotes}}{{else}}Check the [Godot builds release page](https://github.com/godotengine/godot-builds/releases/tag/{{newVersion}}) for details.{{/if}}\n\n---\n*Prerelease update by Renovate 🤖*"
     }
   ]
 }
