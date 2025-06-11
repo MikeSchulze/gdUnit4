@@ -119,7 +119,13 @@ func test_extract_from_descriptor_is_virtual_func_full_check() -> void:
 			"_iter_next",
 			"_iter_get"
 		])
-
+	# since Godot 4.5-dev5 there are more virtual functions
+	if Engine.get_version_info().hex >= 0x40500 and Engine.get_version_info().status == 'dev5':
+		expected_virtual_functions.append_array([
+			"_get_accessibility_configuration_warnings",
+			"_get_focused_accessibility_element",
+			"_get_accessibility_container_name"
+		])
 	var _count := 0
 	for method_descriptor in methods:
 		var fd := GdFunctionDescriptor.extract_from(method_descriptor)
