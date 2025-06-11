@@ -16,7 +16,7 @@
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
       "currentValueTemplate": "{{godotVersion}}-{{godotStatus}}",
-      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\\n            godot-status: 'dev5'"
+      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\n           godot-status: 'dev5'"
     }
   ],
   "packageRules": [
@@ -28,7 +28,6 @@
         "godotengine/godot-builds"
       ],
       "versioning": "regex:^(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?-(?<prerelease>.*)?$",
-      "ignoreUnstable": true,
       "groupName": "Godot Engine",
       "commitMessageTopic": "Godot Engine",
       "commitMessageExtra": "{{currentValue}} → {{newValue}} ({{updateType}})",
