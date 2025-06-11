@@ -20,15 +20,13 @@
         "/^\\.github/workflows/ci-pr\\.yml$/",
         "/^\\.github/workflows/ci-pr-publish-report\\.yml$/"
       ],
-      "matchStringsStrategy": "combination",
       "matchStrings": [
-        "\\s*- godot-version: '(?<godotVersion>[0-9.]+)'",
-        "\\s*godot-status: '(?<godotStatus>\\w+)'"
+        "(?<indentation>\\s*)- godot-version: '(?<godotVersion>[0-9.]+)'\\s*\\n\\s*godot-status: '(?<godotStatus>\\w+)'"
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
       "currentValueTemplate": "{{godotVersion}}-{{godotStatus}}",
-      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\n            godot-status: 'dev5'"
+      "autoReplaceStringTemplate": "{{indentation}}- godot-version: '{{replace '^(\\d+)\\.(\\d+).*' '$1.$2' newValue}}'\n{{indentation}}  godot-status: '{{replace '^\\d+\\.\\d+-(\\w+\\d*).*' '$1' newValue}}'"
     }
   ],
   "packageRules": [
