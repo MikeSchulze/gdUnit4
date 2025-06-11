@@ -21,7 +21,7 @@
         "/^\\.github/workflows/ci-pr-publish-report\\.yml$/"
       ],
       "matchStrings": [
-        "(?<indentation>\\s*)- godot-version: '(?<godotVersion>[0-9.]+)'\\n(?<statusIndentation>\\s*)godot-status: '(?<godotStatus>\\w+)'"
+        "(?<fullMatch>(?<indentation>\\s*)- godot-version: '(?<godotVersion>[0-9.]+)'\\s*\\n(?<statusIndentation>\\s*)godot-status: '(?<godotStatus>\\w+)')"
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
