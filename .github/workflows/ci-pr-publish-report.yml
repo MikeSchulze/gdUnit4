@@ -27,7 +27,6 @@ jobs:
         godot-status: [ 'stable' ]
         godot-net: [ '-net', '' ]
         include:
-          # renovate: godot-dev
           - godot-version: '4.5'
             godot-status: 'dev1'
 
