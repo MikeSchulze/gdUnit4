@@ -26,7 +26,7 @@
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
       "currentValueTemplate": "{{godotVersion}}-{{currentDigest}}",
-      "autoReplaceStringTemplate": "          # renovate: godot-dev\n          - godot-version: '{{newMajor}}.{{newMinor}}'\n           godot-status: '{{newDigest}}'"
+      "autoReplaceStringTemplate": "          - godot-version: '{{newMajor}}.{{newMinor}}'\n           godot-status: '{{newDigest}}'"
     }
   ],
   "packageRules": [
