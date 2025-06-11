@@ -26,7 +26,7 @@
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
       "currentValueTemplate": "{{godotVersion}}-{{godotStatus}}",
-      "autoReplaceStringTemplate": "{{indentation}}- godot-version: '{{replace '^(\\d+)\\.(\\d+).*' '$1.$2' newValue}}'\n{{indentation}}  godot-status: '{{replace '^\\d+\\.\\d+-(\\w+\\d*).*' '$1' newValue}}'"
+      "autoReplaceStringTemplate": "{{indentation}}- godot-version: '{{replace '^(\\d+)\\.(\\d+).*' '$1.$2' newValue}}'{{indentation}}  godot-status: '{{replace '^\\d+\\.\\d+-(\\w+\\d*).*' '$1' newValue}}'"
     }
   ],
   "packageRules": [
