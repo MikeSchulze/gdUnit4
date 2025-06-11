@@ -5,8 +5,9 @@
   ],
   "assigneesFromCodeOwners": false,
   "reviewersFromCodeOwners": false,
+  "gitAuthor": "Development Bot <dev-bot@my-software-company.com>",
   "assignees": [
-    "renovate[bot]"
+    "MikeSchulze"
   ],
   "reviewers": [
     "MikeSchulze"
@@ -55,7 +56,7 @@
         "godot-prerelease",
         "ci"
       ],
-      "prBodyTemplate": "This PR updates Godot Engine prerelease version in CI workflows.\n\n## 🔍 Release Information\n{{#if hasReleaseNotes}}{{releaseNotes}}{{else}}Check the [Godot builds release page](https://github.com/godotengine/godot-builds/releases/tag/{{newVersion}}) for details.{{/if}}\n\n---\n*Prerelease update by Renovate 🤖*"
+      "prBodyTemplate": "# Why\nUpdate Godot Engine CI to the latest prerelease version to maintain compatibility and test new features early.\n\n# What\n**Version Update**: {{#each upgrades}}`{{currentValue}}` → `{{newValue}}`{{#unless @last}}, {{/unless}}{{/each}}\n\n**Files Updated**:\n{{#each upgrades}}- `{{packageFile}}`{{#unless @last}}\\n{{/unless}}{{/each}}\n\n**Update Type**: {{#each upgrades}}{{updateType}}{{#unless @last}}, {{/unless}}{{/each}}\n\n## 🔍 Release Information\n{{#if hasReleaseNotes}}{{releaseNotes}}{{else}}Check the [Godot builds release page](https://github.com/godotengine/godot-builds/releases) for details.{{/if}}\n\n---\n*Auto-merge enabled after CI passes • Renovate 🤖*"
     }
   ]
 }
