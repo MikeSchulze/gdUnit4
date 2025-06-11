@@ -55,7 +55,7 @@ var metadata: Dictionary = {}
 static func from_dict(dict: Dictionary) -> GdUnitTestCase:
 	var test := GdUnitTestCase.new()
 	test.guid = GdUnitGUID.new(str(dict["guid"]))
-	test.suite_resource_path = dict["suite_resource_path"]
+	test.suite_resource_path = dict["suite_resource_path"] if dict.has("suite_resource_path") else dict["source_file"]
 	test.suite_name = dict["managed_type"]
 	test.test_name = dict["test_name"]
 	test.display_name = dict["simple_name"]
