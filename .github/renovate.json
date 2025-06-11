@@ -21,12 +21,12 @@
         "/^\\.github/workflows/ci-pr-publish-report\\.yml$/"
       ],
       "matchStrings": [
-        "(?<fullMatch>(?<indentation>\\s*)- godot-version: '(?<godotVersion>[0-9.]+)'\\s*\\n(?<statusIndentation>\\s*)godot-status: '(?<godotStatus>\\w+)')"
+        "(?<fullMatch>(?<indentation>\\s*)- godot-version: '(?<godotVersion>[0-9.]+)'(?<statusIndentation>\\s*\\n)godot-status: '(?<godotStatus>\\w+)')"
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "godotengine/godot-builds",
       "currentValueTemplate": "{{godotVersion}}-{{godotStatus}}",
-      "autoReplaceStringTemplate": "{{indentation}}- godot-version: '{{replace '^(\\d+)\\.(\\d+).*' '$1.$2' newValue}}'\n{{statusIndentation}}godot-status: '{{replace '^\\d+\\.\\d+-(\\w+\\d*).*' '$1' newValue}}'"
+      "autoReplaceStringTemplate": "{{indentation}}- godot-version: '{{replace '^(\\d+)\\.(\\d+).*' '$1.$2' newValue}}'{{statusIndentation}}godot-status: '{{replace '^\\d+\\.\\d+-(\\w+\\d*).*' '$1' newValue}}'"
     }
   ],
   "packageRules": [
