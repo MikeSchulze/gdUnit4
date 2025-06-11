@@ -96,3 +96,20 @@ func test_discover_tests_inherited() -> void:
 			tuple("test_foo2", "test_foo2", "addons.gdUnit4.test.core.resources.scan_testsuite_inheritance.by_class_name.ExtendsExtendedTest.test_foo2"),
 			tuple("test_foo1", "test_foo1", "addons.gdUnit4.test.core.resources.scan_testsuite_inheritance.by_class_name.ExtendsExtendedTest.test_foo1")
 		])
+
+
+#if GDUNIT4NET_API_V5
+func test_discover_csharp_tests(do_skip := !GdUnit4CSharpApiLoader.is_api_loaded()) -> void:
+	var script :Script = load("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.cs")
+	var discovered_tests := []
+	GdUnitTestDiscoverer.discover_tests(script,\
+		func discover(test_case: GdUnitTestCase) -> void:
+			discovered_tests.append(test_case)
+	)
+	assert_array(discovered_tests)\
+		.extractv(extr("test_name"), extr("display_name"), extr("fully_qualified_name"))\
+		.contains_exactly([
+			tuple("TestCase1", "TestCase1", "gdUnit4.addons.gdUnit4.test.core.discovery.resources.DiscoverExampleTestSuite.TestCase1"),
+			tuple("TestCase2", "TestCase2", "gdUnit4.addons.gdUnit4.test.core.discovery.resources.DiscoverExampleTestSuite.TestCase2")
+		])
+#endif
