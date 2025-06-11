@@ -6,12 +6,7 @@
   "assigneesFromCodeOwners": false,
   "reviewersFromCodeOwners": false,
   "gitAuthor": "Development Bot <dev-bot@my-software-company.com>",
-  "assignees": [
-    "MikeSchulze"
-  ],
-  "reviewers": [
-    "MikeSchulze"
-  ],
+  "assignAutomerge": true,
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "🎮 Godot CI Dependencies Dashboard",
   "dependencyDashboardHeader": "This dashboard tracks Godot Engine and CI dependency updates.\n\n- 🎮 **Godot versions** are automatically updated from GitHub releases\n- 📅 **Updates run** every Monday morning\n- 🧪 **Testing** is required before merging major updates",
@@ -51,12 +46,18 @@
       "automerge": true,
       "automergeType": "pr",
       "automergeStrategy": "merge",
+      "assignees": [
+        "MikeSchulze"
+      ],
+      "reviewers": [
+        "MikeSchulze"
+      ],
       "minimumReleaseAge": "12 hours",
       "labels": [
         "godot-prerelease",
         "ci"
       ],
-      "prBodyTemplate": "# Why\nUpdate Godot Engine CI to the latest prerelease version to maintain compatibility and test new features early.\n\n# What\n**Version Update**: {{#each upgrades}}{{depName}} from `{{currentValue}}` to `{{newValue}}`{{#unless @last}}, {{/unless}}{{/each}}\n\n**Files Updated**:\n{{#each upgrades}}- `{{packageFile}}`{{#unless @last}}\\n{{/unless}}{{/each}}\n\n**Update Type**: {{#each upgrades}}{{updateType}}{{#unless @last}}, {{/unless}}{{/each}}\n\n## 🔍 Release Information\nCheck the [Godot builds release page](https://github.com/godotengine/godot-builds/releases) for the latest release details and improvements.\n\n## 🎮 What's New in This Update\n- Latest Godot 4.5 development improvements\n- Bug fixes and stability enhancements  \n- New features in development\n- Performance optimizations\n\n---\n*Auto-merge enabled after CI passes • Renovate 🤖*"
+      "prBodyTemplate": "# Why\n\nUpdate Godot Engine CI to the latest prerelease version to maintain compatibility and test new features early.\n\n# What\n\n**Version Update**: Godot Engine prerelease version (see PR title for exact versions)\n\n**Files Updated**:\n- `.github/workflows/ci-pr.yml`\n- `.github/workflows/ci-pr-publish-report.yml`\n\n## 🔍 Release Information\n\nCheck the [Godot builds release page](https://github.com/godotengine/godot-builds/releases) for the latest release details and improvements.\n\n## 🛠️ Update to latest Godot PreRelease version\n\n- **CI Compatibility**: Ensures our test matrix uses the latest Godot version\n- **Early Testing**: Helps identify compatibility issues before stable release\n- **Development Flow**: Keeps our development environment current\n\n---\n*Auto-merge enabled after CI passes • Renovate 🤖*"
     }
   ]
 }
