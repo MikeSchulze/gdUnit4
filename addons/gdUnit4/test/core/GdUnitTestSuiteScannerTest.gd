@@ -115,7 +115,7 @@ func test_create_test_suite_pascal_case_path() -> void:
 			"@warning_ignore('return_value_discarded')",
 			"",
 			"# TestSuite generated from",
-			"const __source = '%s'" % source_path,
+			"const __source: String = '%s'" % source_path,
 			""])
 	# checked source with class_name is NOT set
 	source_path = "res://addons/gdUnit4/test/core/resources/naming_conventions/PascalCaseWithoutClassName.gd"
@@ -134,7 +134,7 @@ func test_create_test_suite_pascal_case_path() -> void:
 			"@warning_ignore('return_value_discarded')",
 			"",
 			"# TestSuite generated from",
-			"const __source = '%s'" % source_path,
+			"const __source: String = '%s'" % source_path,
 			""])
 
 
@@ -157,7 +157,7 @@ func test_create_test_suite_snake_case_path() -> void:
 			"@warning_ignore('return_value_discarded')",
 			"",
 			"# TestSuite generated from",
-			"const __source = '%s'" % source_path,
+			"const __source: String = '%s'" % source_path,
 			""])
 	# checked source with class_name is NOT set
 	source_path ="res://addons/gdUnit4/test/core/resources/naming_conventions/snake_case_without_class_name.gd"
@@ -176,7 +176,7 @@ func test_create_test_suite_snake_case_path() -> void:
 			"@warning_ignore('return_value_discarded')",
 			"",
 			"# TestSuite generated from",
-			"const __source = '%s'" % source_path,
+			"const __source: String = '%s'" % source_path,
 			""])
 
 
@@ -201,7 +201,7 @@ func test_create_test_case() -> void:
 			"@warning_ignore('return_value_discarded')",
 			"",
 			"# TestSuite generated from",
-			"const __source = '%s'" % source_path,
+			"const __source: String = '%s'" % source_path,
 			"",
 			"",
 			"func test_last_name() -> void:",
