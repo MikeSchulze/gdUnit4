@@ -2,8 +2,8 @@
 extends EditorPlugin
 
 # We need to define manually the slot id's, to be downwards compatible
-const CONTEXT_SLOT_FILESYSTEM = 1 # EditorContextMenuPlugin.CONTEXT_SLOT_FILESYSTEM
-const CONTEXT_SLOT_SCRIPT_EDITOR = 2 # EditorContextMenuPlugin.CONTEXT_SLOT_SCRIPT_EDITOR
+const CONTEXT_SLOT_FILESYSTEM: int = 1 # EditorContextMenuPlugin.CONTEXT_SLOT_FILESYSTEM
+const CONTEXT_SLOT_SCRIPT_EDITOR: int = 2 # EditorContextMenuPlugin.CONTEXT_SLOT_SCRIPT_EDITOR
 
 var _gd_inspector: Control
 var _gd_console: Control
@@ -12,6 +12,15 @@ var _gd_scripteditor_context_menu: Variant
 
 
 func _enter_tree() -> void:
+
+	var inferred_declaration: int = ProjectSettings.get_setting("debug/gdscript/warnings/inferred_declaration")
+	var exclude_addons: bool = ProjectSettings.get_setting("debug/gdscript/warnings/exclude_addons")
+	if !exclude_addons and inferred_declaration != 0:
+		printerr("GdUnit4: 'inferred_declaration' is set to Warning/Error!")
+		printerr("GdUnit4 is not 'inferred_declaration' save, you have to excluded addons (debug/gdscript/warnings/exclude_addons)")
+		printerr("Loading GdUnit4 Plugin failed.")
+		return
+
 	if check_running_in_test_env():
 		@warning_ignore("return_value_discarded")
 		GdUnitCSIMessageWriter.new().prints_warning("It was recognized that GdUnit4 is running in a test environment, therefore the GdUnit4 plugin will not be executed!")
@@ -27,7 +36,7 @@ func _enter_tree() -> void:
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, _gd_inspector)
 	# Install the GdUnit Console
 	_gd_console = (load("res://addons/gdUnit4/src/ui/GdUnitConsole.tscn") as PackedScene).instantiate()
-	var control := add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
+	var control: Control = add_control_to_bottom_panel(_gd_console, "gdUnitConsole")
 	@warning_ignore("unsafe_method_access")
 	await _gd_console.setup_update_notification(control)
 	if GdUnit4CSharpApiLoader.is_api_loaded():
@@ -40,11 +49,7 @@ func _enter_tree() -> void:
 	resource_saved.connect(_on_resource_saved)
 	prints("Loading GdUnit4 Plugin success")
 
-	if Engine.get_version_info().hex < 0x40400:
-		var inferred_declaration := ProjectSettings.get_setting("debug/gdscript/warnings/inferred_declaration")
-		if inferred_declaration != 0:
-			printerr("'inferred_declaration' is set to Warning/Error!")
-			printerr("It is recomended to upgrade to Godot v4.4.x or higher")
+
 
 
 func _exit_tree() -> void:
@@ -57,14 +62,14 @@ func _exit_tree() -> void:
 	if is_instance_valid(_gd_console):
 		remove_control_from_bottom_panel(_gd_console)
 		_gd_console.free()
-	var gdUnitTools := load("res://addons/gdUnit4/src/core/GdUnitTools.gd")
+	var gdUnitTools: GDScript = load("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 	@warning_ignore("unsafe_method_access")
 	gdUnitTools.dispose_all(true)
 	prints("Unload GdUnit4 Plugin success")
 
 
 func check_running_in_test_env() -> bool:
-	var args := OS.get_cmdline_args()
+	var args: PackedStringArray = OS.get_cmdline_args()
 	args.append_array(OS.get_cmdline_user_args())
 	return DisplayServer.get_name() == "headless" or args.has("--selftest") or args.has("--add") or args.has("-a") or args.has("--quit-after") or args.has("--import")
 
