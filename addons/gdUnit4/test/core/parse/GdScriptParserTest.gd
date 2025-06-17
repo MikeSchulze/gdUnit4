@@ -378,11 +378,11 @@ func test_parse_func_description() -> void:
 			pass
 
 		@warning_ignore("unused_parameter")
-		static func foo1(arg1 :int, arg2:=false) -> String:
+		static func foo1(arg1: int, arg2: bool =false) -> String:
 			return ""
 
 		@warning_ignore("untyped_declaration", "unused_parameter")
-		static func foo2(arg1 :int, arg2:=true):
+		static func foo2(arg1: int, arg2: bool =true):
 			pass
 	""")
 	var fds := _parser.get_function_descriptors(script)
@@ -523,7 +523,7 @@ func test_extract_func_signature_multiline() -> void:
 func test_parse_func_description_paramized_test() -> void:
 	var script := build_tmp_script("""
 		@warning_ignore("unused_parameter")
-		func test_parameterized(a: int, b: int, c: int, expected: int, test_parameters := [[1,2,3,6],[3,4,5,11],[6,7,8,21]]) -> Variant:
+		func test_parameterized(a: int, b: int, c: int, expected: int, test_parameters: Array = [[1,2,3,6],[3,4,5,11],[6,7,8,21]]) -> Variant:
 			return null
 	""")
 	var fds := GdScriptParser.new().get_function_descriptors(script, ["test_parameterized"])
@@ -577,7 +577,7 @@ func test_parse_func_descriptor_with_fuzzers() -> void:
 		func fuzz_c() -> Fuzzer:
 			return Fuzzers.rangef(0, 10)
 
-		@warning_ignore("untyped_declaration", "unused_parameter")
+		@warning_ignore("untyped_declaration", "unused_parameter", "inferred_declaration")
 		func test_foo(fuzzer_a = fuzz_a(), fuzzer_b := fuzz_b(),
 			fuzzer_c :Fuzzer = fuzz_c(),
 			fuzzer = Fuzzers.rangei(-23, 22),

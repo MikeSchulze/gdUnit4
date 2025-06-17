@@ -40,6 +40,12 @@ func _enter_tree() -> void:
 	resource_saved.connect(_on_resource_saved)
 	prints("Loading GdUnit4 Plugin success")
 
+	if Engine.get_version_info().hex < 0x40400:
+		var inferred_declaration := ProjectSettings.get_setting("debug/gdscript/warnings/inferred_declaration")
+		if inferred_declaration != 0:
+			printerr("'inferred_declaration' is set to Warning/Error!")
+			printerr("It is recomended to upgrade to Godot v4.4.x or higher")
+
 
 func _exit_tree() -> void:
 	if check_running_in_test_env():
@@ -66,7 +72,7 @@ func check_running_in_test_env() -> bool:
 func _add_context_menus() -> void:
 	if Engine.get_version_info().hex >= 0x40400:
 		# With Godot 4.4 we have to use the 'add_context_menu_plugin' to register editor context menus
-		_gd_filesystem_context_menu = _create_context_menu("res://addons/gdUnit4/src/ui/menu/EditorFileSystemContextMenuHandlerV44.gdx")
+		_gd_filesystem_context_menu = _preload_gdx_script("res://addons/gdUnit4/src/ui/menu/EditorFileSystemContextMenuHandlerV44.gdx")
 		call_deferred("add_context_menu_plugin", CONTEXT_SLOT_FILESYSTEM, _gd_filesystem_context_menu)
 		# the CONTEXT_SLOT_SCRIPT_EDITOR is adding to the script panel instead of script editor see https://github.com/godotengine/godot/pull/100556
 		#_gd_scripteditor_context_menu = _preload("res://addons/gdUnit4/src/ui/menu/ScriptEditorContextMenuHandlerV44.gdx")
@@ -86,13 +92,14 @@ func _remove_context_menus() -> void:
 		call_deferred("remove_context_menu_plugin", _gd_scripteditor_context_menu)
 
 
-func _create_context_menu(script_path: String) -> Variant:
-	var context_menu_script := GDScript.new()
-	context_menu_script.source_code = FileAccess.get_file_as_string(script_path)
-	var err := context_menu_script.reload(true)
+func _preload_gdx_script(script_path: String) -> Variant:
+	var script: GDScript = GDScript.new()
+	script.source_code = GdUnitFileAccess.resource_as_string(script_path)
+	script.take_over_path(script_path)
+	var err :Error = script.reload()
 	if err != OK:
 		push_error("Can't create context menu %s, error: %s" % [script_path, error_string(err)])
-	return context_menu_script.new()
+	return script.new()
 
 
 func _on_resource_saved(resource: Resource) -> void:

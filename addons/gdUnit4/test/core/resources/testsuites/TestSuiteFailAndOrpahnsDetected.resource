@@ -1,7 +1,7 @@
 # this test suite fails on multiple stages and detects orphans
 extends GdUnitTestSuite
 
-var _orphans := Array()
+var _orphans: Array = Array()
 
 func before() -> void:
 	# create a node where never freed (orphan)
