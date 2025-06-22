@@ -105,7 +105,7 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Simulate the UP key is pressed by using the input action "ui_up"
 runner.SimulateActionPressed("ui_up");
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -156,7 +156,7 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Simulate the UP key is press by using the action "ui_up"
 runner.SimulateActionPress("ui_up");
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -209,7 +209,7 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Simulate the UP key is released by using the action "ui_up"
 runner.SimulateActionRelease("ui-up");
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -217,4 +217,4 @@ await AwaitIdleFrame();
 In this example, we simulate that the action "ui_up" is released. We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the action is complete before moving on to the next instruction.
 
 ---
-<h4> document version v4.4.0 </h4>
+<h4> document version v5.0.0 </h4>

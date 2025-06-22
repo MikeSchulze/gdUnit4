@@ -42,13 +42,16 @@ await await_input_processed()
 
 ```cs
 /// <summary>
-/// A utility to synchronize the current thread with the Godot render thread.
-/// This can be used to await the completion of a single render frame in Godot.
+///     Waits for all input events to be processed by flushing any buffered input events and then awaiting a full cycle of
+///     both the process and physics frames.
+///     This is typically used to ensure that any simulated or queued inputs are fully processed before proceeding with the
+///     next steps in the scene.
+///     It's essential for reliable input simulation or when synchronizing logic based on inputs.
 /// </summary>
-public static SignalAwaiter SyncProcessFrame
+public static Task AwaitInputProcessed()
 ```
 
-Here is an example of how to use SimulateFrames:
+Here is an example of how to use AwaitInputProcessed:
 
 ```cs
 ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
@@ -59,11 +62,11 @@ runner
     .SimulateKeyPress(Key.C);
 
 // finalize the input event processing
-await ISceneRunner.SyncProcessFrame;
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
 {% endtabs %}
 
 ---
-<h4> document version v4.4.0 </h4>
+<h4> document version v5.0.0 </h4>

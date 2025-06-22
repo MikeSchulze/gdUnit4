@@ -115,11 +115,11 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Simulate the enter key is pressed
 runner.SimulateKeyPressed(KeyList.Enter);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 
 // Simulates key combination ctrl+C is pressed
 runner.SimulateKeyPressed(KeyList.C, false, true);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -186,17 +186,17 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Simulate the enter key is press
 runner.SimulateKeyPress(KeyList.Enter);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 
 // Simulates key combination ctrl+C is press in one method call
 runner.SimulateKeyPress(KeyList.C, false. true);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 
 // Simulates multi key combination ctrl+alt+C is press
 runner.SimulateKeyPress(KeyList.CTRL);
 runner.SimulateKeyPress(KeyList.ALT);
 runner.SimulateKeyPress(KeyList.C);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -267,13 +267,13 @@ await AwaitIdleFrame();
 
 // Simulates key combination ctrl+C is released
 runner.SimulateKeyRelease(KeyList.C, false, true);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 
 // Simulates multi key combination ctrl+C is released
 runner.SimulateKeyRelease(KeyList.CTRL);
 runner.SimulateKeyRelease(KeyList.ALT);
 runner.SimulateKeyRelease(KeyList.C);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -282,4 +282,4 @@ await AwaitIdleFrame();
 In this example, we simulate that the enter key is released and then we simulate that the key combination ctrl+C is released. We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the key press is complete before moving on to the next instruction.
 
 ---
-<h4> document version v4.4.0 </h4>
+<h4> document version v5.0.0 </h4>

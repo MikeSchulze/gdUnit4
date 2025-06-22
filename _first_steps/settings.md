@@ -145,5 +145,33 @@ To personalize your test-suite template in GdUnit, you can use the provided tags
 These tags allow you to add custom placeholders and data fields to your test-suite, making them more informative and easier to manage. To view a list of all the supported tags, simply click on the **Supported Tags** button in the template page.
 ![](/gdUnit4/assets/images/settings/settings-template-editor-tags.png){:.centered}
 
+
+---
+
+## Updates
+
+The Updates section provides automatic update management for GdUnit4 by monitoring the GitHub repository for new releases.
+
+![](/gdUnit4/assets/images/settings/settings-update.png){:.centered}
+
+
+* **Update Notification**<br>
+  When a new version of GdUnit4 is available on GitHub, the Updates tab will display a yellow bell icon to notify you of the available update. This visual indicator makes it easy to spot when updates are ready for installation. The update notification is enabled by default but can be manually disabled in the Common settings section if you prefer not to receive update notifications.
+
+* **Release Notes**<br>
+  The Updates section displays the complete release notes for the new version, allowing you to review what changes, bug fixes, and new features are included before deciding to update. This helps you understand what improvements or potential breaking changes the update may introduce.
+
+* **Update Installation**<br>
+  To install the new version, simply click the **Update** button. The update process will:
+    1. Download the latest version from the GitHub repository
+    2. Replace the currently installed GdUnit4 plugin with the new version
+    3. Automatically restart Godot after the installation is complete
+
+* **Technical Details**<br>
+  The update system works by checking the GitHub releases API for new versions during Godot startup. When a newer version is detected compared to your currently installed version, the notification system activates and the update becomes available for installation.
+
+---
+<h4> document version v5.0.0 </h4>
+
 ---
 <h4> document version v4.4.0 </h4>

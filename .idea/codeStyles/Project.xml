@@ -1,0 +1,13 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <option name="OTHER_INDENT_OPTIONS">
+      <value>
+        <option name="USE_TAB_CHARACTER" value="true" />
+      </value>
+    </option>
+    <codeStyleSettings language="EditorConfig">
+      <option name="SPACE_BEFORE_COLON" value="true" />
+      <option name="SPACE_AFTER_COLON" value="true" />
+    </codeStyleSettings>
+  </code_scheme>
+</component>

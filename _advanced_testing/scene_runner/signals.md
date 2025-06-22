@@ -85,14 +85,18 @@ Task AwaitSignal(string signal, params object[] args);
 Here is an example of how to use AwaitSignal:
 
 ```cs
-ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
-// call function `start_color_cycle` to start the color cycle
-runner.Invoke("start_color_cycle")
+[TestCase]
+public async Task ColorChangedSignals()
+{
+    var sceneRunner = ISceneRunner.Load("res://test_scene.tscn");
 
-// Wait for the signals `panel_color_change` emitted by the function `start_color_cycle` by a maximum of 100ms or fails
-await runner.AwaitSignal("panel_color_change", [box1, Color.RED], 100);
-await runner.AwaitSignal("panel_color_change", [box2, Color.BLUE], 100);
-await runner.AwaitSignal("panel_color_change", [box3, Color.GREEN], 100);
+    // call function `start_color_cycle` to start the color cycle
+    sceneRunner.Invoke("ColorCycle");
+
+    await AwaitSignal(TestScene.SignalName.PanelColorChange, new Color(1, 0, 0)).WithTimeout(100);
+    await AwaitSignal(TestScene.SignalName.PanelColorChange, new Color(0, 0, 1)).WithTimeout(100);
+    await AwaitSignal(TestScene.SignalName.PanelColorChange, new Color(0, 1, 0)).WithTimeout(100);
+}
 ```
 
 {% endtab %}
@@ -139,14 +143,37 @@ await runner.await_signal_on(box3, "color_change", [Color.GREEN], 100)
 {% tab scene-runner-await_signal_on C# %}
 
 ```cs
-// This function is not yet supported in C#.
+/// <summary>
+///     Waits for the specified signal to be emitted by a particular source node.
+///     If the signal is not emitted within the given timeout, the operation fails.
+/// </summary>
+/// <param name="source">The object from which the signal is emitted.</param>
+/// <param name="signal">The name of the signal to wait.</param>
+/// <param name="args">An optional set of signal arguments.</param>
+/// <returns>Task to wait.</returns>
+static async Task<ISignalAssert> AwaitSignalOn(GodotObject source, string signal, params Variant[] args)
 ```
 
 ```cs
+[TestCase]
+public async Task ColorChangedSignals()
+{
+    var sceneRunner = ISceneRunner.Load("res://test_scene.tscn");
+    var box1 = sceneRunner.GetProperty<ColorRect>("Box1")!;
+    var box2 = sceneRunner.GetProperty<ColorRect>("Box2")!;
+    var box3 = sceneRunner.GetProperty<ColorRect>("Box3")!;
+
+    // call function `start_color_cycle` to start the color cycle
+    sceneRunner.Invoke("ColorCycle");
+
+    await AwaitSignalOn(box1, TestScene.SignalName.PanelColorChange, new Color(1, 0, 0)).WithTimeout(100);
+    await AwaitSignalOn(box2, TestScene.SignalName.PanelColorChange, new Color(0, 0, 1)).WithTimeout(100);
+    await AwaitSignalOn(box3, TestScene.SignalName.PanelColorChange, new Color(0, 1, 0)).WithTimeout(100);
+}
 ```
 
 {% endtab %}
 {% endtabs %}
 
 ---
-<h4> document version v4.4.0 </h4>
+<h4> document version v5.0.0 </h4>
