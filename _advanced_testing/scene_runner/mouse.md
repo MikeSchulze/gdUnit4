@@ -132,7 +132,7 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // sets the current mouse position to 100, 100
 runner.SetMousePos(new Vector2(100, 100));
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -233,11 +233,11 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 # Set the mouse position to a inital position
 runner.SetMousePos(new Vector2(160, 20))
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 
 # simulates a mouse move to final position 200,40
 runner.SimulateMouseMove(new Vector2(200, 40))
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -296,12 +296,12 @@ Here is an example of how to use SimulateMouseMoveRelative:
 ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Set mouse position to an initial position
-sceneRunner.SimulateMouseMove(Vector2(10, 20));
-await ISceneRunner.SyncProcessFrame;
+runner.SimulateMouseMove(Vector2(10, 20));
+await runner.AwaitInputProcessed();
 
 // Simulate a mouse move from the current position to the relative position within 1 second
 // the final position will be (410, 220) when is completed
-await sceneRunner.SimulateMouseMoveRelative(new Vector2(400, 200));
+await runner.SimulateMouseMoveRelative(new Vector2(400, 200));
 ```
 
 {% endtab %}
@@ -358,12 +358,12 @@ Here is an example of how to use SimulateMouseMoveAbsolute:
 ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Set mouse position to an initial position
-sceneRunner.SimulateMouseMove(Vector2(10, 20));
-await ISceneRunner.SyncProcessFrame;
+runner.SimulateMouseMove(Vector2(10, 20));
+await runner.AwaitInputProcessed();
 
 // Simulate a mouse move from the current position to the absolute position within 1 second
 // the final position will be (400, 200) when is completed
-await sceneRunner.SimulateMouseMoveAbsolute(new Vector2(400, 200));
+await runner.SimulateMouseMoveAbsolute(new Vector2(400, 200));
 ```
 
 {% endtab %}
@@ -415,7 +415,7 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Simulates pressing the left mouse button
 runner.SimulateMouseButtonPressed(ButtonList.Left);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -470,7 +470,7 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // simulates mouse left button is press
 runner.SimulateMouseButtonPress(ButtonList.Left);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -523,7 +523,7 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Simulates a mouse left button is released
 runner.SimulateMouseButtonRelease(ButtonList.Left);
-await AwaitIdleFrame();
+await runner.AwaitInputProcessed();
 ```
 
 {% endtab %}
@@ -532,4 +532,4 @@ await AwaitIdleFrame();
 We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the mouse input is complete before moving on to the next instruction.
 
 ---
-<h4> document version v4.4.0 </h4>
+<h4> document version v5.0.0 </h4>
