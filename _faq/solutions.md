@@ -12,6 +12,7 @@ This section lists known problems and possible solutions/workarounds.
 
 - [Script/Resource Errors after the plugin is installed](/gdUnit4/faq/solutions/#scriptresource-errors-after-the-plugin-is-installed)
 - [Modifying the Game Engine State 'mainLoop.Paused = true' during Tests](/gdUnit4/faq/solutions/#modifying-the-game-engine-state-mainlooppaused--true-during-tests)
+- [Export Failures with GdUnit4 Plugin Installed](/gdUnit4/faq/solutions/#export-failures-with-gdunit4-plugin-installed)
 
 ---
 
@@ -83,4 +84,31 @@ public void GamePaused()
 {% endtabs %}
 
 ---
-<h4> document version v4.2.5 </h4>
+### Export Failures with GdUnit4 Plugin Installed
+
+When exporting games with the GdUnit4 plugin installed, you may encounter crashes during the export process, particularly in CI/CD environments. The crash typically shows a "Program crashed with signal 11" error and occurs because Godot has issues when exporting projects that include editor-only plugins like GdUnit4.
+
+#### Solution
+
+The recommended solution is to **exclude the GdUnit4 addon from the export** rather than disabling the plugin entirely. This allows you to keep the plugin active for development while ensuring clean exports.
+
+**Exclude GdUnit4 from Export Settings**
+
+1. Open your project in the Godot Editor
+2. Go to **Project > Export...**
+3. Select your export preset (e.g., "Windows Desktop", "macOS", etc.)
+4. In the **Resources** tab, locate the **Filters to exclude files/folders from project** section
+5. Add the following filter to exclude the GdUnit4 addon:
+   ```
+   addons/gdunit4/*
+   ```
+   ![](/gdUnit4/assets/images/faq/export-excludes.png)
+6. Export your game - the crash should no longer occur
+
+**Important Notes:**
+- The export exclusion method is preferred over disabling the plugin because it keeps GdUnit4 functional during development
+- The GdUnit4 addon is designed for development and testing environments and should not be included in production builds
+- After applying the exclusion filters, test your export to ensure it works correctly
+
+---
+<h4> document version v5.0.0 </h4>
