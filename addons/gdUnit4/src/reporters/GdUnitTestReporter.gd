@@ -1,7 +1,14 @@
 class_name GdUnitTestReporter
 extends RefCounted
 
-var _guard := GdUnitTestDiscoverGuard.instance()
+
+var test_cases: Array[GdUnitTestCase] :
+	get:
+		return test_cases
+	set(value):
+		test_cases = value
+
+
 var _statistics := {}
 var _summary := {}
 
@@ -68,8 +75,19 @@ func get_value(acc: int, value: Dictionary, key: String) -> int:
 	return acc + value[key]
 
 
+## Finds a test case by its unique identifier.[br]
+## [br]
+## Searches through all test cases[br]
+## to find a test with the matching GUID.[br]
+## [br]
+## [param id] The GUID of the test to find[br]
+## Returns the matching test case or null if not found.
 func find_test_by_id(id: GdUnitGUID) -> GdUnitTestCase:
-	return _guard.find_test_by_id(id)
+	for test in test_cases:
+		if test.guid.equals(id):
+			return test
+
+	return null
 
 
 func processed_suite_count() -> int:

@@ -1,6 +1,6 @@
 #warning-ignore-all:return_value_discarded
 class_name GdUnitTestCIRunner
-extends "res://addons/gdUnit4/src/core/runners/GdUnitBaseTestRunner.gd"
+extends "res://addons/gdUnit4/src/core/runners/GdUnitTestSessionRunner.gd"
 ## Command line test runner implementation.[br]
 ## [br]
 ## This runner is designed for CI/CD pipelines and command line test execution.[br]
@@ -24,7 +24,6 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 var _console := GdUnitCSIMessageWriter.new()
 var _console_reporter: GdUnitTestReporter
-var _html_reporter: GdUnitHtmlTestReporter
 var _report_dir: String
 var _report_max: int = DEFAULT_REPORT_COUNT
 var _headless_mode_ignore := false
@@ -109,9 +108,9 @@ func _init() -> void:
 func _ready() -> void:
 	super()
 	_report_dir = GdUnitFileAccess.current_dir() + "reports"
-	_console_reporter = GdUnitConsoleTestReporter.new(_console, true)
 	# stop checked first test failure to fail fast
 	_executor.fail_fast(true)
+	GdUnitSignals.instance().gdunit_message.connect(_on_send_message)
 
 
 func _notification(what: int) -> void:
@@ -387,13 +386,13 @@ func init_gd_unit() -> void:
 			quit(RETURN_ERROR_HEADLESS_NOT_SUPPORTED)
 			return
 
-	_html_reporter = GdUnitHtmlTestReporter.new(_report_dir, _report_max)
-	discover_tests()
+	register_report_hooks(_report_dir, _report_max)
+	_console_reporter = GdUnitConsoleTestReporter.new(_console, true)
+	_console_reporter.test_cases = discover_tests()
 	if _test_cases.is_empty():
 		console_info("No test cases found, abort test run!", Color.YELLOW)
 		console_info("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)
 		quit(RETURN_SUCCESS)
-	_on_gdunit_event(GdUnitInit.new())
 	_state = RUN
 
 
@@ -451,18 +450,12 @@ func is_skipped(test: GdUnitTestCase) -> bool:
 	return false
 
 
+func _on_send_message(message: String) -> void:
+	_console.color(Color.CORNFLOWER_BLUE).println_message(message)
+
+
 func _on_gdunit_event(event: GdUnitEvent) -> void:
 	_console_reporter.on_gdunit_event(event)
-	_html_reporter.on_gdunit_event(event)
-
-	match event.type():
-		GdUnitEvent.STOP:
-			# TODO move to `GdUnitJUnitXMLTestReporter`
-			JUnitXmlReport.new(_html_reporter._report._report_path, _html_reporter._report.iteration()).write(_html_reporter._report)
-			console_info(
-				"Open HTML Report at: file://%s" % _html_reporter.report_file(),
-				Color.CORNFLOWER_BLUE
-			)
 
 
 func report_exit_code() -> int:

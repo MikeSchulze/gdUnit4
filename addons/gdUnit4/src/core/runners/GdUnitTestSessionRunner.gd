@@ -31,12 +31,16 @@ var _runner_config := GdUnitRunnerConfig.new()
 
 ## The test suite executor instance
 var _executor: GdUnitTestSuiteExecutor
+var _hooks := GdUnitTestSessionHookService.new()
 
 ## Current runner state
 var _state := READY
 
 ## Current tests to be processed
 var _test_cases: Array[GdUnitTestCase] =  []
+
+# holds the current test session context
+var _test_session: GdUnitTestSession
 
 ## Runner state machine
 enum {
@@ -46,7 +50,6 @@ enum {
 	STOP,
 	EXIT
 }
-
 
 func _init() -> void:
 	# minimize scene window checked debug mode
@@ -80,24 +83,33 @@ func _notification(what: int) -> void:
 func _process(_delta: float) -> void:
 	match _state:
 		INIT:
-			init_runner()
+			await init_runner()
 		RUN:
+			GdUnitSignals.instance().gdunit_event.emit(GdUnitSessionStart.new())
 			# process next test suite
 			set_process(false)
+			_test_session = GdUnitTestSession.new()
+			_test_session.test_cases = _test_cases.duplicate(true)
+			var result := await _hooks.execute_startup(_test_session)
+			if result.is_error():
+				push_error(result.error_message())
 			await _executor.run_and_wait(_test_cases)
+			result = await _hooks.execute_shutdown(_test_session)
+			if result.is_error():
+				push_error(result.error_message())
 			_state = STOP
 			set_process(true)
+			GdUnitSignals.instance().gdunit_event.emit(GdUnitSessionClose.new())
 		STOP:
 			_state = EXIT
 			# give the engine small amount time to finish the rpc
-			_on_gdunit_event(GdUnitStop.new())
 			await get_tree().create_timer(0.1).timeout
 			await quit(get_exit_code())
 
 
 ## Used by the inheriting runners to initialize test execution
 func init_runner() -> void:
-	pass
+	await get_tree().process_frame
 
 
 ## Returns the exit code when the test run is finished.[br]
@@ -115,6 +127,12 @@ func quit(code: int) -> void:
 
 func prints_warning(message: String) -> void:
 	prints(message)
+
+
+func register_report_hooks(report_dir: String, report_max: int) -> void:
+	var result := _hooks.register(GdUnitHtmlReporterTestSessionHook.new(report_dir, report_max), true)
+	if result.is_error():
+		push_error(result.error_message())
 
 
 ## Default event handler to process test events.[br]

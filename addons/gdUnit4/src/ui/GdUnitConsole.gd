@@ -71,6 +71,10 @@ func setup_update_notification(control: Button) -> void:
 
 
 func _on_gdunit_event(event: GdUnitEvent) -> void:
+	if event.type() == GdUnitEvent.INIT:
+		_test_reporter.test_cases = GdUnitTestDiscoverGuard.instance().get_discovered_tests()
+	elif event.type() == GdUnitEvent.STOP:
+		_test_reporter.test_cases.clear()
 	_test_reporter.on_gdunit_event(event)
 
 
