@@ -9,7 +9,7 @@ func _init(report_dir: String, max_reports: int) -> void:
 	_report = GdUnitHtmlReport.new(report_dir, max_reports)
 
 
-func on_gdunit_event(event: GdUnitEvent) -> void:
+func on_gdunit_event(event: GdUnitEvent, session: GdUnitTestSession) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
 			init_summary()
@@ -34,11 +34,11 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 				event.reports()
 			)
 		GdUnitEvent.TESTCASE_BEFORE:
-			var test := find_test_by_id(event.guid())
+			var test := session.find_test_by_id(event.guid())
 			_report.add_testcase(test.source_file, test.suite_name, test.display_name)
 		GdUnitEvent.TESTCASE_AFTER:
 			update_statistics(event)
-			var test := find_test_by_id(event.guid())
+			var test := session.find_test_by_id(event.guid())
 			_report.set_testcase_counters(test.source_file,
 				test.display_name,
 				event.error_count(),

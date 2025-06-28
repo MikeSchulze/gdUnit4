@@ -88,8 +88,7 @@ func _process(_delta: float) -> void:
 			GdUnitSignals.instance().gdunit_event.emit(GdUnitSessionStart.new())
 			# process next test suite
 			set_process(false)
-			_test_session = GdUnitTestSession.new()
-			_test_session.test_cases = _test_cases.duplicate(true)
+			_test_session = GdUnitTestSession.new(_test_cases)
 			var result := await _hooks.execute_startup(_test_session)
 			if result.is_error():
 				push_error(result.error_message())

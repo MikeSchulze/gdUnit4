@@ -9,8 +9,7 @@ func _init(report_dir: String, max_reports: int) -> void:
 
 
 func startup(session: GdUnitTestSession) -> GdUnitResult:
-	_html_reporter.test_cases = session.test_cases
-	session.test_event.connect(_on_test_event)
+	session.test_event.connect(_on_test_event.bind(session))
 	return GdUnitResult.success()
 
 
@@ -22,5 +21,5 @@ func shutdown(session: GdUnitTestSession) -> GdUnitResult:
 	return GdUnitResult.success()
 
 
-func _on_test_event(test_event : GdUnitEvent) -> void:
-	_html_reporter.on_gdunit_event(test_event)
+func _on_test_event(test_event: GdUnitEvent, session: GdUnitTestSession) -> void:
+	_html_reporter.on_gdunit_event(test_event, session)

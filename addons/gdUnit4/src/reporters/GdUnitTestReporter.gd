@@ -2,18 +2,11 @@ class_name GdUnitTestReporter
 extends RefCounted
 
 
-var test_cases: Array[GdUnitTestCase] :
-	get:
-		return test_cases
-	set(value):
-		test_cases = value
-
-
 var _statistics := {}
 var _summary := {}
 
 
-func on_gdunit_event(_event: GdUnitEvent) -> void:
+func on_gdunit_event(_event: GdUnitEvent, _session: GdUnitTestSession) -> void:
 	push_error("Reporter: 'on_gdunit_event' is not implemented!")
 
 
@@ -73,21 +66,6 @@ func build_test_suite_statisitcs(event: GdUnitEvent) -> Dictionary:
 
 func get_value(acc: int, value: Dictionary, key: String) -> int:
 	return acc + value[key]
-
-
-## Finds a test case by its unique identifier.[br]
-## [br]
-## Searches through all test cases[br]
-## to find a test with the matching GUID.[br]
-## [br]
-## [param id] The GUID of the test to find[br]
-## Returns the matching test case or null if not found.
-func find_test_by_id(id: GdUnitGUID) -> GdUnitTestCase:
-	for test in test_cases:
-		if test.guid.equals(id):
-			return test
-
-	return null
 
 
 func processed_suite_count() -> int:

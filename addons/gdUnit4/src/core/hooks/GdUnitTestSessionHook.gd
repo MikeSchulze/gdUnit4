@@ -1,22 +1,20 @@
-## GdUnitTestSessionHook
+## @since GdUnit4 5.1.0
 ##
-## Base class for creating custom test session hooks in GdUnit4.
-##
-## Test session hooks allow users to extend the GdUnit4 test framework by providing
+## Base class for creating custom test session hooks in GdUnit4.[br]
+## [br]
+## [i]Test session hooks allow users to extend the GdUnit4 test framework by providing
 ## custom functionality that runs at specific points during the test execution lifecycle.
-## This base class defines the interface that all test session hooks must implement.
-##
-## ## Usage
-##
-## To create a custom test session hook:
-## 1. Create a new class that extends GdUnitTestSessionHook
-## 2. Override the required methods (startup, shutdown)
-## 3. Optionally set the priority property to control execution order
-## 4. Register your hook with the test engine (using the GdUnit4 settings dialog)
-##
-## ## Example
-##
-## ```gdscript
+## This base class defines the interface that all test session hooks must implement.[/i]
+## [br]
+## [br]
+## [b][u]Usage[/u][/b][br]
+## 1. Create a new class that extends GdUnitTestSessionHook[br]
+## 2. Override the required methods (startup, shutdown)[br]
+## 3. Optionally set the priority property to control execution order[br]
+## 4. Register your hook with the test engine (using the GdUnit4 settings dialog)[br]
+## [br]
+## [b][u]Example[/u][/b]
+## [codeblock]
 ## class_name MyCustomTestHook
 ## extends GdUnitTestSessionHook
 ##
@@ -32,48 +30,42 @@
 ##     session.send_message("Custom hook cleanup completed")
 ##     # Cleanup resources, generate reports, etc.
 ##     return GdUnitResult.success()
-## ```
+## [/codeblock]
 ##
-## ## Hook Lifecycle
+## [b][u]Hook Lifecycle[/u][/b][br]
+## 1. [i][b]Registration[/b][/i]: Hooks are registered with the test engine via settings dialog[br]
+## 2. [i][b]Priority Sorting[/b][/i]: Hooks are sorted by priority (lower numbers = higher priority)[br]
+## 3. [i][b]Startup[/b][/i]: startup() is called before test execution begins, if it returns an error is shown in the console[br]
+## 4. [i][b]Test Execution[/b][/i]: Tests run normally (only if all hooks started successfully)[br]
+## 5. [i][b]Shutdown[/b][/i]: shutdown() is called after all tests complete, regardless of startup success[br]
+## [br]
+## [b][u]Priority System[/u][/b][br]
+## The priority system allows controlling the execution order of multiple hooks.[br]
+## - Lower numbers indicate higher priority (executed first during startup, last during shutdown)[br]
+## - Default priority is 100[br]
+## - Negative priorities are reserved for system-level hooks[br]
+## - Positive priorities are recommended for user hooks[br]
+## [br]
+## [b][u]Session Access[/u][/b][br]
 ##
-## 1. **Registration**: Hooks are registered with the test engine via settings dialog
-## 2. **Priority Sorting**: Hooks are sorted by priority (lower numbers = higher priority)
-## 3. **Startup**: startup() is called before test execution begins, if it returns an error is shown in the console
-## 4. **Test Execution**: Tests run normally (only if all hooks started successfully)
-## 5. **Shutdown**: shutdown() is called after all tests complete, regardless of startup success
-##
-## ## Priority System
-##
-## The priority system allows controlling the execution order of multiple hooks:
-## - Lower numbers indicate higher priority (executed first during startup, last during shutdown)
-## - Default priority is 100
-## - Negative priorities are reserved for system-level hooks
-## - Positive priorities are recommended for user hooks
-##
-## ## Session Access
-##
-## Both startup() and shutdown() methods receive a GdUnitTestSession parameter that provides:
-## - Access to test cases being executed
-## - Event emission capabilities for test progress tracking
-## - Message sending functionality for logging and communication
-##
-## @since GdUnit4 5.1.0
+## Both [i]startup()[/i] and [i]shutdown()[/i] methods receive a [GdUnitTestSession] parameter that provides:[br]
+## - Access to test cases being executed[br]
+## - Event emission capabilities for test progress tracking[br]
+## - Message sending functionality for logging and communication[br]
 class_name GdUnitTestSessionHook
 extends RefCounted
 
 
-## Execution priority of this hook.
-##
-## Hooks with lower priority values are executed first during startup
+
+## The Execution priority of this hook, can be set during initialization to change the execution order.[br]
+## [br]
+## [i]Hooks with lower priority values are executed first during startup
 ## and last during shutdown. This allows for proper dependency management
-## between different hooks.
-##
-## ! Negative priorities are reserved for system-level hooks
-##
-## Can be set during initialization to change execution order.
-## Default value is 100.
-##
-## @default 100
+## between different hooks.[/i]
+## [br]
+## [color=yellow]Negative priorities are reserved for system-level hooks[/color][br]
+## [br]
+## [param priority] default: 100
 var priority: int = 100:
 	get:
 		return priority
@@ -81,44 +73,38 @@ var priority: int = 100:
 		priority = value
 
 
-## Called when the test session starts up, before any tests are executed.
-##
-## This method should be overridden to implement custom initialization logic
-## such as:
-## - Setting up test databases or external services
-## - Initializing mock objects or test fixtures
-## - Configuring logging or reporting systems
-## - Preparing the test environment
-## - Subscribing to test events via the session
-##
-## @param session The test session instance providing access to test data and communication
-## @return GdUnitResult.success() if initialization succeeds, or GdUnitResult.error() with
-##         an error message if initialization fails. Test execution is aborted if
-##         this method returns an error.
-##
-## @abstract This method must be implemented by subclasses
+## Called when the test session starts up, before any tests are executed.[br]
+## [br]
+## [color=yellow][i]This method should be overridden to implement custom initialization logic[/i][/color][br]
+## [br]
+## such as:[br]
+## - Setting up test databases or external services[br]
+## - Initializing mock objects or test fixtures[br]
+## - Configuring logging or reporting systems[br]
+## - Preparing the test environment[br]
+## - Subscribing to test events via the session[br]
+## [br]
+## [param session] The test session instance providing access to test data and communication[br]
+## [b]return:[/b] [code]GdUnitResult.success()[/code] if initialization succeeds, or [code]GdUnitResult.error("error")[/code] with
+##         an error message if initialization fails.
 func startup(_session: GdUnitTestSession) -> GdUnitResult:
 	return GdUnitResult.error("%s:startup is not implemented" % get_script().resource_path)
 
 
-## Called when the test session shuts down, after all tests have completed.
-##
-## This method should be overridden to implement custom cleanup logic
-## such as:
-## - Cleaning up test databases or external services
-## - Generating test reports or artifacts
-## - Releasing resources allocated during startup
-## - Performing final validation or assertions
-## - Processing collected test events and data
-##
-## This method should handle cleanup gracefully even if startup() failed
-## or if the test execution was interrupted.
-##
-## @param session The test session instance providing access to test results and communication
-## @return GdUnitResult.success() if cleanup succeeds, or GdUnitResult.error() with
+## Called when the test session shuts down, after all tests have completed.[br]
+## [br]
+## [color=yellow][i]This method should be overridden to implement custom cleanup logic[/i][/color][br]
+## [br]
+## such as:[br]
+## - Cleaning up test databases or external services[br]
+## - Generating test reports or artifacts[br]
+## - Releasing resources allocated during startup[br]
+## - Performing final validation or assertions[br]
+## - Processing collected test events and data[br]
+## [br]
+## [param session] The test session instance providing access to test results and communication[br]
+## [b]return:[/b] [code]GdUnitResult.success()[/code] if cleanup succeeds, or [code]GdUnitResult.error("error")[/code] with
 ##         an error message if cleanup fails. Cleanup errors are typically logged
 ##         but don't prevent the test engine from shutting down.
-##
-## @abstract This method must be implemented by subclasses
 func shutdown(_session: GdUnitTestSession) -> GdUnitResult:
 	return GdUnitResult.error("%s:shutdown is not implemented" % get_script().resource_path)

@@ -31,6 +31,7 @@ var _runner_config_file := ""
 var _debug_cmd_args := PackedStringArray()
 var _included_tests := PackedStringArray()
 var _excluded_tests := PackedStringArray()
+var _current_test_session: GdUnitTestSession
 
 ## Command line options configuration
 var _cmd_options := CmdOptions.new([
@@ -110,6 +111,7 @@ func _ready() -> void:
 	_report_dir = GdUnitFileAccess.current_dir() + "reports"
 	# stop checked first test failure to fail fast
 	_executor.fail_fast(true)
+	_console_reporter = GdUnitConsoleTestReporter.new(_console, true)
 	GdUnitSignals.instance().gdunit_message.connect(_on_send_message)
 
 
@@ -387,8 +389,7 @@ func init_gd_unit() -> void:
 			return
 
 	register_report_hooks(_report_dir, _report_max)
-	_console_reporter = GdUnitConsoleTestReporter.new(_console, true)
-	_console_reporter.test_cases = discover_tests()
+	_test_cases = discover_tests()
 	if _test_cases.is_empty():
 		console_info("No test cases found, abort test run!", Color.YELLOW)
 		console_info("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)
@@ -455,7 +456,12 @@ func _on_send_message(message: String) -> void:
 
 
 func _on_gdunit_event(event: GdUnitEvent) -> void:
-	_console_reporter.on_gdunit_event(event)
+	match event.type():
+		GdUnitEvent.SESSION_START:
+			_current_test_session = GdUnitTestSession.new(_test_cases)
+		GdUnitEvent.SESSION_CLOSE:
+			_current_test_session = null
+	_console_reporter.on_gdunit_event(event, _current_test_session)
 
 
 func report_exit_code() -> int:

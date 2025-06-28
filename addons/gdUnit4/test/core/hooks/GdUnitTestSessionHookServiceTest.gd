@@ -60,7 +60,7 @@ func test_execute_startup() -> void:
 
 	assert_array(hook._state).is_empty()
 
-	service.execute_startup(GdUnitTestSession.new())
+	service.execute_startup(GdUnitTestSession.new([]))
 	assert_array(hook._state).contains_exactly(["startup"])
 
 
@@ -72,7 +72,7 @@ func test_execute_shutdown() -> void:
 
 	assert_array(hook._state).is_empty()
 
-	service.execute_shutdown(GdUnitTestSession.new())
+	service.execute_shutdown(GdUnitTestSession.new([]))
 	assert_array(hook._state).contains_exactly(["shutdown"])
 
 
@@ -97,7 +97,7 @@ func test_hook_priority_execution() -> void:
 	assert_result(service.register(hook_a)).is_success()
 
 	# must be executed ordered by priority
-	var test_session := GdUnitTestSession.new()
+	var test_session := GdUnitTestSession.new([])
 	assert_result(await service.execute_startup(test_session)).is_success()
 	assert_result(await service.execute_shutdown(test_session)).is_success()
 
