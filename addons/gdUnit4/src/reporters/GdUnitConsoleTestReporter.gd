@@ -12,7 +12,6 @@ var _function_color: Color = Color.ANTIQUE_WHITE
 var _engine_type_color: Color = Color.ANTIQUE_WHITE
 
 
-
 func _init(writer: GdUnitMessageWritter, detailed := false) -> void:
 	_writer = writer
 	_writer.clear()
@@ -34,7 +33,7 @@ func clear() -> void:
 	_writer.clear()
 
 
-func on_gdunit_event(event: GdUnitEvent) -> void:
+func on_gdunit_event(event: GdUnitEvent, test_session: GdUnitTestSession) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
 			init_summary()
@@ -65,14 +64,14 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 				println_message("")
 
 		GdUnitEvent.TESTCASE_BEFORE:
-			var test := find_test_by_id(event.guid())
+			var test := test_session.find_test_by_id(event.guid())
 			_print_test_path(test, event.guid())
 			if _detailed:
 				_writer.color(Color.FOREST_GREEN).print_at("STARTED", _status_indent)
 				println_message("")
 
 		GdUnitEvent.TESTCASE_AFTER:
-			var test := find_test_by_id(event.guid())
+			var test := test_session.find_test_by_id(event.guid())
 			update_statistics(event)
 			if _detailed:
 				_print_test_path(test, event.guid())
