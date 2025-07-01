@@ -38,7 +38,7 @@ func test_build_template_default() -> void:
 		@warning_ignore('return_value_discarded')
 
 		# TestSuite generated from
-		const __source = 'res://addons/gdUnit4/test/core/resources/script_with_class_name.gd'
+		const __source: String = 'res://addons/gdUnit4/test/core/resources/script_with_class_name.gd'
 		""".dedent().trim_prefix("\n")
 	assert_str(template).is_equal(expected)
 

@@ -1,12 +1,12 @@
 class_name GdUnitTestReporter
 extends RefCounted
 
-var _guard := GdUnitTestDiscoverGuard.instance()
+
 var _statistics := {}
 var _summary := {}
 
 
-func on_gdunit_event(_event: GdUnitEvent) -> void:
+func on_gdunit_event(_event: GdUnitEvent, _session: GdUnitTestSession) -> void:
 	push_error("Reporter: 'on_gdunit_event' is not implemented!")
 
 
@@ -66,10 +66,6 @@ func build_test_suite_statisitcs(event: GdUnitEvent) -> Dictionary:
 
 func get_value(acc: int, value: Dictionary, key: String) -> int:
 	return acc + value[key]
-
-
-func find_test_by_id(id: GdUnitGUID) -> GdUnitTestCase:
-	return _guard.find_test_by_id(id)
 
 
 func processed_suite_count() -> int:

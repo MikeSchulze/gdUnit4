@@ -20,11 +20,13 @@ body:
       label: The used GdUnit4 version
       description: Which GdUnit4 version are you using?
       options:
-        - 5.0.3 (Pre Release/Master branch)
-        - 5.0.2 (Latest Release)
+        - 5.1.0 (Pre Release/Master branch)
+        - 5.0.4 (Latest Release)
+        - 5.0.3
+        - 5.0.2
         - 5.0.1
         - 5.0.0
-        - 4.5.0 
+        - 4.5.0
         - 4.4.3
         - 4.4.2
         - 4.4.1
@@ -87,7 +89,7 @@ body:
       label: Steps to Reproduce
       description: |
         Provide a detailed list of steps or sample code that reproduces the issue.
-        Having reproducible issues is crucial for contributors to be able to solve them. 
+        Having reproducible issues is crucial for contributors to be able to solve them.
         If applicable, include information such as input data, specific configurations, or screenshots.
       placeholder: Describe the steps to reproduce the issue.
       value: |

@@ -222,7 +222,6 @@ func _ready() -> void:
 	GdUnitSignals.instance().gdunit_test_discover_deleted.connect(on_test_case_discover_deleted)
 	GdUnitSignals.instance().gdunit_test_discover_modified.connect(on_test_case_discover_modified)
 	var command_handler := GdUnitCommandHandler.instance()
-	command_handler.gdunit_runner_start.connect(_on_gdunit_runner_start)
 	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
 	if _run_test_recovery:
 		GdUnitTestDiscoverer.restore_last_session()
@@ -711,10 +710,6 @@ func abort_running(items:=_tree_root.get_children()) -> void:
 			abort_running(item.get_children())
 
 
-func select_first_failure() -> TreeItem:
-	return select_item(_find_first_item_by_state(_tree_root, STATE.FAILED))
-
-
 func _on_select_next_item_by_state(item_state: int) -> TreeItem:
 	var current_selected := _tree.get_selected()
 	# If nothing is selected, the first error is selected or the next one in the vicinity of the current selection is found
@@ -1194,21 +1189,21 @@ func _on_Tree_item_activated() -> void:
 # external signal receiver
 ################################################################################
 func _on_gdunit_runner_start() -> void:
-	reset_tree_state(_current_selected_item)
 	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, true)
 	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, true)
+	reset_tree_state(_tree_root)
 	clear_reports()
 
 
-func _on_gdunit_runner_stop(_client_id: int) -> void:
+func _on_gdunit_runner_stop(_id: int) -> void:
 	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, false)
 	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, false)
 	abort_running()
 	sort_tree_items(_tree_root)
 	# wait until the tree redraw
 	await get_tree().process_frame
-	@warning_ignore("return_value_discarded")
-	select_first_failure()
+	var failure_item := _find_first_item_by_state(_tree_root, STATE.FAILED)
+	select_item( failure_item if failure_item else _current_selected_item)
 
 
 func _on_gdunit_event(event: GdUnitEvent) -> void:
@@ -1226,12 +1221,7 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 			#_dump_tree_as_json("tree_example_discovered")
 
 		GdUnitEvent.INIT:
-			reset_tree_state(_tree_root)
-
-		GdUnitEvent.STOP:
-			sort_tree_items(_tree_root)
-			select_item(_current_selected_item)
-			#_dump_tree_as_json("tree_example")
+			_on_gdunit_runner_start()
 
 		GdUnitEvent.TESTCASE_BEFORE:
 			update_test_case(event)
