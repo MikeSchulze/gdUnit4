@@ -20,6 +20,7 @@ const GdUnitUpdateClient = preload ("res://addons/gdUnit4/src/update/GdUnitUpdat
 @onready var _tab_container: TabContainer = %Properties
 @onready var _update_tab: Control = %Update
 
+
 var _font_size: float
 
 
@@ -136,6 +137,7 @@ func _create_input_element(property: GdUnitProperty, reset_btn: Button) -> Node:
 		key_input_button.pressed.connect(_on_shortcut_change.bind(key_input_button, property, reset_btn))
 		return key_input_button
 	return Control.new()
+
 
 
 func to_shortcut(keys: PackedInt32Array) -> String:

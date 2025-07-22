@@ -31,7 +31,7 @@ var _runner_config := GdUnitRunnerConfig.new()
 
 ## The test suite executor instance
 var _executor: GdUnitTestSuiteExecutor
-var _hooks := GdUnitTestSessionHookService.new()
+var _hooks := GdUnitTestSessionHookService.instance()
 
 ## Current runner state
 var _state := READY
@@ -126,12 +126,6 @@ func quit(code: int) -> void:
 
 func prints_warning(message: String) -> void:
 	prints(message)
-
-
-func register_report_hooks(report_dir: String, report_max: int) -> void:
-	var result := _hooks.register(GdUnitHtmlReporterTestSessionHook.new(report_dir, report_max), true)
-	if result.is_error():
-		push_error(result.error_message())
 
 
 ## Default event handler to process test events.[br]

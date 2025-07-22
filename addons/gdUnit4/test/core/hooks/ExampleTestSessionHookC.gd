@@ -1,21 +1,23 @@
-class_name PriorizedTestSessionHook
+class_name ExampleTestSessionHookC
 extends GdUnitTestSessionHook
 
 signal start_up(name: String)
 signal shut_down(name: String)
 
-var _name: String
+var _state: PackedStringArray = []
 
-func _init(_priority: int, name: String) -> void:
-	priority = _priority
-	_name = name
+
+func _init() -> void:
+	super("hook_c", "An example hook for testing purpose.")
 
 
 func startup(_session: GdUnitTestSession) -> GdUnitResult:
-	start_up.emit(_name)
+	start_up.emit(name)
+	_state.push_back("startup")
 	return GdUnitResult.success()
 
 
 func shutdown(_session: GdUnitTestSession) -> GdUnitResult:
-	shut_down.emit(_name)
+	shut_down.emit(name)
+	_state.push_back("shutdown")
 	return GdUnitResult.success()

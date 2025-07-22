@@ -10,8 +10,7 @@
 ## [b][u]Usage[/u][/b][br]
 ## 1. Create a new class that extends GdUnitTestSessionHook[br]
 ## 2. Override the required methods (startup, shutdown)[br]
-## 3. Optionally set the priority property to control execution order[br]
-## 4. Register your hook with the test engine (using the GdUnit4 settings dialog)[br]
+## 3. Register your hook with the test engine (using the GdUnit4 settings dialog)[br]
 ## [br]
 ## [b][u]Example[/u][/b]
 ## [codeblock]
@@ -19,7 +18,7 @@
 ## extends GdUnitTestSessionHook
 ##
 ## func _init():
-##     priority = 10  # Higher priority than default
+##     super("MyHook", "This is a description")
 ##
 ## func startup(session: GdUnitTestSession) -> GdUnitResult:
 ##     session.send_message("Custom hook initialized")
@@ -34,17 +33,15 @@
 ##
 ## [b][u]Hook Lifecycle[/u][/b][br]
 ## 1. [i][b]Registration[/b][/i]: Hooks are registered with the test engine via settings dialog[br]
-## 2. [i][b]Priority Sorting[/b][/i]: Hooks are sorted by priority (lower numbers = higher priority)[br]
+## 2. [i][b]Priority Sorting[/b][/i]: Hooks are sorted by priority[br]
 ## 3. [i][b]Startup[/b][/i]: startup() is called before test execution begins, if it returns an error is shown in the console[br]
 ## 4. [i][b]Test Execution[/b][/i]: Tests run normally (only if all hooks started successfully)[br]
 ## 5. [i][b]Shutdown[/b][/i]: shutdown() is called after all tests complete, regardless of startup success[br]
 ## [br]
 ## [b][u]Priority System[/u][/b][br]
 ## The priority system allows controlling the execution order of multiple hooks.[br]
-## - Lower numbers indicate higher priority (executed first during startup, last during shutdown)[br]
-## - Default priority is 100[br]
-## - Negative priorities are reserved for system-level hooks[br]
-## - Positive priorities are recommended for user hooks[br]
+## - The order can be changed in the GdUnit4 settings dialog.[br]
+## - The priority of system hooks cannot be changed and they cannot be deleted.[br]
 ## [br]
 ## [b][u]Session Access[/u][/b][br]
 ##
@@ -56,21 +53,19 @@ class_name GdUnitTestSessionHook
 extends RefCounted
 
 
-
-## The Execution priority of this hook, can be set during initialization to change the execution order.[br]
-## [br]
-## [i]Hooks with lower priority values are executed first during startup
-## and last during shutdown. This allows for proper dependency management
-## between different hooks.[/i]
-## [br]
-## [color=yellow]Negative priorities are reserved for system-level hooks[/color][br]
-## [br]
-## [param priority] default: 100
-var priority: int = 100:
+var name: String:
 	get:
-		return priority
-	set(value):
-		priority = value
+		return name
+
+
+var description: String:
+	get:
+		return description
+
+
+func _init(_name: String, _description: String) -> void:
+	self.name = _name
+	self.description = _description
 
 
 ## Called when the test session starts up, before any tests are executed.[br]
