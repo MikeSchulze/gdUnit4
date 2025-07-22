@@ -46,9 +46,8 @@ func load_hook(hook_resourc_path: String) -> GdUnitResult:
 
 
 func register(hook: GdUnitTestSessionHook, is_system_hook := false) -> GdUnitResult:
-	for registered_hook in enigne_hooks:
-		if contains_hook.call(registered_hook, hook):
-			return GdUnitResult.error("A hook instance of '%s' is already registered." % hook.get_script().resource_path)
+	if find_custom(hook) != -1:
+		return GdUnitResult.error("A hook instance of '%s' is already registered." % hook.get_script().resource_path)
 
 	hook.set_meta("SYSTEM_HOOK", is_system_hook)
 	enigne_hooks.append(hook)
@@ -138,7 +137,6 @@ func save_hock_setttings() -> void:
 
 func load_hook_settings() -> void:
 	GdUnitSignals.instance().gdunit_message.emit("Install GdUnit4 session hooks.")
-	_save_settings = false
 	var hooks_resource_paths := GdUnitSettings.get_session_hooks()
 	for hock_path in hooks_resource_paths:
 		var result := load_hook(hock_path)
