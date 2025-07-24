@@ -122,6 +122,21 @@ func test_is_push_warning() -> void:
 		""".dedent().trim_prefix("\n"))
 
 
+func test_is_push_warning_using_argument_matcher() -> void:
+	await assert_error(func() -> void: GodotErrorTestClass.new().test(2))\
+		.is_push_warning(any())
+	await assert_error(func() -> void: GodotErrorTestClass.new().test(2))\
+		.is_push_warning(any_string())
+
+	var assert_ := await assert_failure_await(func() -> void:
+		await assert_error(func() -> void: GodotErrorTestClass.new().test(2)).is_push_warning(any_int()))
+	assert_.is_failed().has_message("""
+		Expecting: push_warning() is called.
+			message: 'any_int()'
+			found: this is an push_warning
+		""".dedent().trim_prefix("\n"))
+
+
 func test_is_push_error() -> void:
 	await assert_error(func() -> void: GodotErrorTestClass.new().test(3))\
 		.is_push_error('this is an push_error')
@@ -135,6 +150,21 @@ func test_is_push_error() -> void:
 		""".dedent().trim_prefix("\n"))
 
 
+func test_is_push_error_using_argument_matcher() -> void:
+	await assert_error(func() -> void: GodotErrorTestClass.new().test(3))\
+		.is_push_error(any())
+	await assert_error(func() -> void: GodotErrorTestClass.new().test(3))\
+		.is_push_error(any_string())
+
+	var assert_ := await assert_failure_await(func() -> void:
+		await assert_error(func() -> void: GodotErrorTestClass.new().test(3)).is_push_error(any_int()))
+	assert_.is_failed().has_message("""
+		Expecting: push_error() is called.
+			message: 'any_int()'
+			found: this is an push_error
+		""".dedent().trim_prefix("\n"))
+
+
 func test_is_runtime_error() -> void:
 	await assert_error(func() -> void: GodotErrorTestClass.new().test(4))\
 		.is_runtime_error("Division by zero error in operator '/'.")
@@ -145,4 +175,19 @@ func test_is_runtime_error() -> void:
 		Expecting: a runtime error is triggered.
 			message: 'Division by zero error in operator '/'.'
 			found: no errors
+		""".dedent().trim_prefix("\n"))
+
+
+func test_is_runtime_error_using_argument_matcher() -> void:
+	await assert_error(func() -> void: GodotErrorTestClass.new().test(4))\
+		.is_runtime_error(any())
+	await assert_error(func() -> void: GodotErrorTestClass.new().test(4))\
+		.is_runtime_error(any_string())
+
+	var assert_ := await assert_failure_await(func() -> void:
+		await assert_error(func() -> void: GodotErrorTestClass.new().test(4)).is_runtime_error(any_int()))
+	assert_.is_failed().has_message("""
+		Expecting: a runtime error is triggered.
+			message: 'any_int()'
+			found: Division by zero error in operator '/'.
 		""".dedent().trim_prefix("\n"))
