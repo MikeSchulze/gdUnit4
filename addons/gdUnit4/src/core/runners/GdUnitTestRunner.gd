@@ -67,8 +67,6 @@ func init_runner() -> void:
 func gdUnitInit() -> void:
 	#enable_manuall_polling()
 	_test_cases = _runner_config.test_cases()
-	var report_dir := GdUnitFileAccess.current_dir() + "reports"
-	register_report_hooks(report_dir, 1)
 	await get_tree().process_frame
 
 

@@ -388,13 +388,22 @@ func init_gd_unit() -> void:
 			quit(RETURN_ERROR_HEADLESS_NOT_SUPPORTED)
 			return
 
-	register_report_hooks(_report_dir, _report_max)
+	configure_system_hooks()
 	_test_cases = discover_tests()
 	if _test_cases.is_empty():
 		console_info("No test cases found, abort test run!", Color.YELLOW)
 		console_info("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)
 		quit(RETURN_SUCCESS)
 	_state = RUN
+
+
+func configure_system_hooks() -> void:
+	_hooks.enigne_hooks.all(func(hook: GdUnitTestSessionHook) -> void:
+		if hook is GdUnitHtmlReporterTestSessionHook:
+			var report_hook: GdUnitHtmlReporterTestSessionHook = hook
+			report_hook.report_max = _report_max
+			report_hook.report_dir = _report_dir
+	)
 
 
 func discover_tests() -> Array[GdUnitTestCase]:
