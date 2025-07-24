@@ -22,6 +22,8 @@ enum {
 	TESTCASE_AFTER,
 	DISCOVER_START,
 	DISCOVER_END,
+	SESSION_START,
+	SESSION_CLOSE
 }
 
 var _event_type: int
