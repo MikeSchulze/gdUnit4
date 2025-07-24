@@ -70,7 +70,7 @@ func test_simulate_frames(timeout = 5000) -> void:
 
 ```cs
 [TestCase]
-public void simulate_frame() {
+public async Task simulate_frame() {
     // Create the scene runner for scene `test_scene.tscn`
     ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
