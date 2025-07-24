@@ -53,16 +53,22 @@ class_name GdUnitTestSessionHook
 extends RefCounted
 
 
+## The display name of this hook.
 var name: String:
 	get:
 		return name
 
 
+## A detailed description of what this hook does.
 var description: String:
 	get:
 		return description
 
 
+## Initializes a new test session hook.
+##
+## [param _name] The display name for this hook
+## [param _description] A detailed description of the hook's functionality
 func _init(_name: String, _description: String) -> void:
 	self.name = _name
 	self.description = _description
