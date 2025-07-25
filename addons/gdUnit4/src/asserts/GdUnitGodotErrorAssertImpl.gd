@@ -72,6 +72,9 @@ func is_success() -> GdUnitGodotErrorAssert:
 
 
 func is_runtime_error(expected_error: Variant) -> GdUnitGodotErrorAssert:
+	var result := GdUnitArgumentMatchers.is_variant_string_matching(expected_error)
+	if result.is_error():
+		return _report_error(result.error_message())
 	var log_entries := await _execute()
 	if _has_log_entry(log_entries, ErrorLogEntry.TYPE.SCRIPT_ERROR, expected_error):
 		return _report_success()
@@ -83,6 +86,9 @@ func is_runtime_error(expected_error: Variant) -> GdUnitGodotErrorAssert:
 
 
 func is_push_warning(expected_warning: Variant) -> GdUnitGodotErrorAssert:
+	var result := GdUnitArgumentMatchers.is_variant_string_matching(expected_warning)
+	if result.is_error():
+		return _report_error(result.error_message())
 	var log_entries := await _execute()
 	if _has_log_entry(log_entries, ErrorLogEntry.TYPE.PUSH_WARNING, expected_warning):
 		return _report_success()
@@ -94,6 +100,9 @@ func is_push_warning(expected_warning: Variant) -> GdUnitGodotErrorAssert:
 
 
 func is_push_error(expected_error: Variant) -> GdUnitGodotErrorAssert:
+	var result := GdUnitArgumentMatchers.is_variant_string_matching(expected_error)
+	if result.is_error():
+		return _report_error(result.error_message())
 	var log_entries := await _execute()
 	if _has_log_entry(log_entries, ErrorLogEntry.TYPE.PUSH_ERROR, expected_error):
 		return _report_success()
