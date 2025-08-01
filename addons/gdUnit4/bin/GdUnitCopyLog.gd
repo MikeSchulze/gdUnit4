@@ -82,9 +82,9 @@ func _process(_delta: float) -> bool:
 func set_current_report_path() -> void:
 	# scan for latest report directory
 	var iteration := GdUnitFileAccess.find_last_path_index(
-		_report_root_path, GdUnitHtmlReport.REPORT_DIR_PREFIX
+		_report_root_path, GdUnitConstants.REPORT_DIR_PREFIX
 	)
-	_current_report_path = "%s/%s%d" % [_report_root_path, GdUnitHtmlReport.REPORT_DIR_PREFIX, iteration]
+	_current_report_path = "%s/%s%d" % [_report_root_path, GdUnitConstants.REPORT_DIR_PREFIX, iteration]
 
 
 func set_report_directory(path: String) -> void:

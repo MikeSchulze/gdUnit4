@@ -15,6 +15,8 @@ extends "res://addons/gdUnit4/src/core/runners/GdUnitTestSessionRunner.gd"
 
 func _init() -> void:
 	super()
+	# We set the default max report history to 1
+	max_report_history = 1
 
 
 func _ready() -> void:
