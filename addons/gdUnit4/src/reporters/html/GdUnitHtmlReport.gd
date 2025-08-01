@@ -1,11 +1,11 @@
 class_name GdUnitHtmlReport
 extends GdUnitReportSummary
 
-var report_path: String
+var _report_path: String
 
 
-func _init(report_path_: String) -> void:
-	report_path = report_path_
+func _init(report_path: String) -> void:
+	_report_path = report_path
 
 
 func add_testsuite_report(p_resource_path: String, p_suite_name: String, p_test_count: int) -> void:
@@ -89,16 +89,16 @@ func update_summary_counters(
 func write() -> void:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/reporters/html/template/index.html")
 	var to_write := GdUnitHtmlPatterns.build(template, self, "")
-	to_write = apply_path_reports(report_path, to_write, _reports)
-	to_write = apply_testsuite_reports(report_path, to_write, _reports)
+	to_write = apply_path_reports(_report_path, to_write, _reports)
+	to_write = apply_testsuite_reports(_report_path, to_write, _reports)
 	# write report
 	FileAccess.open(report_file(), FileAccess.WRITE).store_string(to_write)
 	@warning_ignore("return_value_discarded")
-	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/reporters/html/template/css/", report_path + "/css")
+	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/reporters/html/template/css/", _report_path + "/css")
 
 
 func report_file() -> String:
-	return "%s/index.html" % report_path
+	return "%s/index.html" % _report_path
 
 
 func apply_path_reports(report_dir :String, template :String, report_summaries :Array) -> String:
