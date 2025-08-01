@@ -76,15 +76,21 @@ signal test_event(event: GdUnitEvent)
 var _test_cases : Array[GdUnitTestCase] = []
 
 
+var report_path: String:
+	get:
+		return report_path
+
+
 ## Initializes the test session and sets up event forwarding.[br]
 ## [br]
 ## [i]This constructor automatically connects to the global GdUnit event system
 ## and forwards all events to the session's test_event signal. This allows
 ## session-specific components to listen for test events without managing
 ## global signal connections.[/i]
-func _init(test_cases: Array[GdUnitTestCase]) -> void:
+func _init(test_cases: Array[GdUnitTestCase], session_report_path: String) -> void:
 	# We build a copy to prevent a user is modifing the tests
 	_test_cases = test_cases.duplicate(true)
+	report_path = session_report_path
 	GdUnitSignals.instance().gdunit_event.connect(func(event: GdUnitEvent) -> void:
 		test_event.emit(event)
 	)

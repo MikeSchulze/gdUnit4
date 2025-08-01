@@ -23,11 +23,9 @@ const ATTR_TYPE := "type"
 const HEADER := '<?xml version="1.0" encoding="UTF-8" ?>\n'
 
 var _report_path :String
-var _iteration :int
 
 
-func _init(path :String, iteration :int) -> void:
-	_iteration = iteration
+func _init(path :String) -> void:
 	_report_path = path
 
 
@@ -44,7 +42,7 @@ func build_junit_report(report :GdUnitReportSummary) -> String:
 	var iso8601_datetime := Time.get_date_string_from_system()
 	var test_suites := XmlElement.new("testsuites")\
 		.attribute(ATTR_ID, iso8601_datetime)\
-		.attribute(ATTR_NAME, "report_%s" % _iteration)\
+		.attribute(ATTR_NAME, _report_path.get_file())\
 		.attribute(ATTR_TESTS, report.test_count())\
 		.attribute(ATTR_FAILURES, report.failure_count())\
 		.attribute(ATTR_SKIPPED, report.skipped_count())\

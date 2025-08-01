@@ -4,9 +4,14 @@ extends RefCounted
 
 var _statistics := {}
 var _summary := {}
+var test_session: GdUnitTestSession:
+	get:
+		return test_session
+	set(value):
+		test_session = value
 
 
-func on_gdunit_event(_event: GdUnitEvent, _session: GdUnitTestSession) -> void:
+func on_gdunit_event(_event: GdUnitEvent) -> void:
 	push_error("Reporter: 'on_gdunit_event' is not implemented!")
 
 
