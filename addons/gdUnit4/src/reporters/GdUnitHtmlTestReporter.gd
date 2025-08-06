@@ -5,17 +5,17 @@ extends GdUnitTestReporter
 var _report: GdUnitHtmlReport
 
 
-func _init(report_dir: String, max_reports: int) -> void:
-	_report = GdUnitHtmlReport.new(report_dir, max_reports)
+func _init(session: GdUnitTestSession) -> void:
+	_report = GdUnitHtmlReport.new(session.report_path)
+	test_session = session
 
 
-func on_gdunit_event(event: GdUnitEvent, session: GdUnitTestSession) -> void:
+func on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
 			init_summary()
 		GdUnitEvent.STOP:
 			_report.write()
-			_report.delete_history()
 		GdUnitEvent.TESTSUITE_BEFORE:
 			init_statistics()
 			_report.add_testsuite_report(event.resource_path(), event.suite_name(), event.total_count())
@@ -34,11 +34,11 @@ func on_gdunit_event(event: GdUnitEvent, session: GdUnitTestSession) -> void:
 				event.reports()
 			)
 		GdUnitEvent.TESTCASE_BEFORE:
-			var test := session.find_test_by_id(event.guid())
+			var test := test_session.find_test_by_id(event.guid())
 			_report.add_testcase(test.source_file, test.suite_name, test.display_name)
 		GdUnitEvent.TESTCASE_AFTER:
 			update_statistics(event)
-			var test := session.find_test_by_id(event.guid())
+			var test := test_session.find_test_by_id(event.guid())
 			_report.set_testcase_counters(test.source_file,
 				test.display_name,
 				event.error_count(),

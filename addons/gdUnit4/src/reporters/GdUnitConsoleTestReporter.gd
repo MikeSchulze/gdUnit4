@@ -33,7 +33,7 @@ func clear() -> void:
 	_writer.clear()
 
 
-func on_gdunit_event(event: GdUnitEvent, test_session: GdUnitTestSession) -> void:
+func on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
 			init_summary()

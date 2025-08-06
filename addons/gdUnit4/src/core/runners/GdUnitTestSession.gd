@@ -59,8 +59,8 @@ extends RefCounted
 signal test_event(event: GdUnitEvent)
 
 
+## [b][color=red]@readonly: Should not be modified directly during test execution![/color][/b][br]
 ## Collection of test cases to be executed in this session.[br]
-## [color=red]DANGER: Do not modify this set![/color][br]
 ## [br]
 ## This array contains all the test cases that will be run during the session.
 ## Test hooks can access this collection to:
@@ -71,9 +71,41 @@ signal test_event(event: GdUnitEvent)
 ##
 ## The collection is typically populated before session startup and remains
 ## constant during test execution.
-##
-## @readonly Should not be modified directly during test execution
 var _test_cases : Array[GdUnitTestCase] = []
+
+
+## [b][color=red]@readonly: The report path should not be modified after session creation![/color][/b][br]
+## The file system path where test reports for this session will be generated.[br]
+## [br]
+## [i]This property provides centralized access to the report output location,
+## allowing test hooks, reporters, and other components to reference the same
+## report path without coupling to specific reporter implementations.[/i][br]
+## [br]
+## [b][u]Common use cases include:[/u][/b][br]
+## - Test hooks generating additional report files in the same directory[br]
+## - Custom reporters creating supplementary output files[br]
+## - Post-processing scripts that need to locate generated reports[br]
+## - Cleanup operations that need to manage report artifacts[br]
+## [br]
+## [b][u]Example Usage:[/u][/b]
+## [codeblock]
+## # In a test hook
+## func startup(session: GdUnitTestSession) -> GdUnitResult:
+##     var report_dir = session.report_path.get_base_dir()
+##     var custom_report = report_dir.path_join("custom_metrics.json")
+##     # Generate additional reports in the same location
+##     return GdUnitResult.success()
+##
+## func shutdown(session: GdUnitTestSession) -> GdUnitResult:
+##     session.send_message("Reports available at: " + session.report_path)
+##     return GdUnitResult.success()
+## [/codeblock]
+## [br]
+## The path is set during session initialization and remains constant throughout
+## the test execution lifecycle.
+var report_path: String:
+	get:
+		return report_path
 
 
 ## Initializes the test session and sets up event forwarding.[br]
@@ -82,9 +114,10 @@ var _test_cases : Array[GdUnitTestCase] = []
 ## and forwards all events to the session's test_event signal. This allows
 ## session-specific components to listen for test events without managing
 ## global signal connections.[/i]
-func _init(test_cases: Array[GdUnitTestCase]) -> void:
+func _init(test_cases: Array[GdUnitTestCase], session_report_path: String) -> void:
 	# We build a copy to prevent a user is modifing the tests
 	_test_cases = test_cases.duplicate(true)
+	report_path = session_report_path
 	GdUnitSignals.instance().gdunit_event.connect(func(event: GdUnitEvent) -> void:
 		test_event.emit(event)
 	)

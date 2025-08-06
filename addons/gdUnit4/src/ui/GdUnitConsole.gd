@@ -10,7 +10,6 @@ const TITLE = "gdUnit4 ${version} Console"
 
 
 var _test_reporter: GdUnitConsoleTestReporter
-var _current_test_session: GdUnitTestSession
 
 
 @warning_ignore("return_value_discarded")
@@ -74,11 +73,10 @@ func setup_update_notification(control: Button) -> void:
 func _on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.SESSION_START:
-			_current_test_session = GdUnitTestSession.new(GdUnitTestDiscoverGuard.instance().get_discovered_tests())
+			_test_reporter.test_session =  GdUnitTestSession.new(GdUnitTestDiscoverGuard.instance().get_discovered_tests(), "")
 		GdUnitEvent.SESSION_CLOSE:
-			_current_test_session = null
-
-	_test_reporter.on_gdunit_event(event, _current_test_session)
+			_test_reporter.test_session = null
+	_test_reporter.on_gdunit_event(event)
 
 
 func _on_gdunit_client_connected(client_id: int) -> void:

@@ -1,34 +1,11 @@
 class_name GdUnitHtmlReport
 extends GdUnitReportSummary
 
-const REPORT_DIR_PREFIX = "report_"
-
-var report_path: String:
-	get:
-		return "%s/%s%d" % [_report_base_path, REPORT_DIR_PREFIX, _iteration]
-	set(value):
-		_report_base_path = value
+var _report_path: String
 
 
-var max_reports: int = 1:
-	get:
-		return max_reports
-	set(value):
-		max_reports = value
-		if max_reports > 1:
-			_iteration = GdUnitFileAccess.find_last_path_index(_report_base_path, REPORT_DIR_PREFIX) + 1
-		else:
-			_iteration = 1
-
-var _iteration: int
-var _report_base_path: String
-
-
-func _init(_report_path :String, _max_reports: int) -> void:
-	max_reports = _max_reports
-	report_path = _report_path
-	#@warning_ignore("return_value_discarded")
-	#DirAccess.make_dir_recursive_absolute(report_path)
+func _init(report_path: String) -> void:
+	_report_path = report_path
 
 
 func add_testsuite_report(p_resource_path: String, p_suite_name: String, p_test_count: int) -> void:
@@ -112,20 +89,16 @@ func update_summary_counters(
 func write() -> void:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/reporters/html/template/index.html")
 	var to_write := GdUnitHtmlPatterns.build(template, self, "")
-	to_write = apply_path_reports(report_path, to_write, _reports)
-	to_write = apply_testsuite_reports(report_path, to_write, _reports)
+	to_write = apply_path_reports(_report_path, to_write, _reports)
+	to_write = apply_testsuite_reports(_report_path, to_write, _reports)
 	# write report
 	FileAccess.open(report_file(), FileAccess.WRITE).store_string(to_write)
 	@warning_ignore("return_value_discarded")
-	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/reporters/html/template/css/", report_path + "/css")
+	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/reporters/html/template/css/", _report_path + "/css")
 
 
 func report_file() -> String:
-	return "%s/index.html" % report_path
-
-
-func delete_history() -> int:
-	return GdUnitFileAccess.delete_path_index_lower_equals_than(report_path.get_base_dir(), REPORT_DIR_PREFIX, _iteration-max_reports)
+	return "%s/index.html" % _report_path
 
 
 func apply_path_reports(report_dir :String, template :String, report_summaries :Array) -> String:
@@ -151,7 +124,3 @@ func apply_testsuite_reports(report_dir: String, template: String, test_suite_re
 		@warning_ignore("return_value_discarded")
 		table_records.append(report.create_record(report_link) as String)
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTSUITES, "\n".join(table_records))
-
-
-func iteration() -> int:
-	return _iteration
