@@ -7,11 +7,14 @@ nav_order: 3
 
 # Testing for Signals
 
-With GdUnit, you can test signals in your Godot projects. GdUnit provides two tools specifically for working with signals: `assert_signal()` and `monitor_signals()`.<br>
+With GdUnit, you can test signals in your Godot projects. GdUnit provides two tools specifically for working with signals:
+`assert_signal()` and `monitor_signals()`.<br>
 By using these tools, you can test the emission of signals in your Godot projects and ensure that the correct signals are being sent and received.
 
 ## Verify Signals
-The `assert_signal()` an Assertion Tool to verify for emitted signals until a certain time. When the timeout is reached, the assertion fails with a timeout error.<br>
+
+The `assert_signal()` an Assertion Tool to verify for emitted signals until a certain time. When the timeout is reached,
+the assertion fails with a timeout error.<br>
 For more details show [assert_signal](/gdUnit4/testing/assert-signal/#signal-assertions)
 
 Here's an example of using `assert_signal()`:
@@ -153,7 +156,9 @@ public partial class SignalAssertTest
 {% endtabs %}
 
 ## Monitor Signals
-The `monitor_signals()` tool allows you to monitor the emission of signals from a specific object. It sets up a signal monitoring system for the specified object, which enables you to capture and analyze the signals emitted during the execution of your test.
+
+The `monitor_signals()` tool allows you to monitor the emission of signals from a specific object.
+It sets up a signal monitoring system for the specified object, which enables you to capture and analyze the signals emitted during the execution of your test.
 
 {% tabs monitor_signals-overview %}
 {% tab monitor_signals-overview GdScript %}

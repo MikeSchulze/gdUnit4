@@ -4,7 +4,6 @@ title: Setup/Installation
 nav_order: 1
 ---
 
-
 ## GdUnit4 C# Test Setup
 
 {% include advice.html
@@ -12,14 +11,17 @@ content="Please note that running C# tests is only supported with GdUnit4 versio
 To be able to use the GdUnit4Net C# Test API, at least one Godot-Mono version 4.3.x must be installed."
 %}
 
-
 ### How GdUnit4 Integrates C# Test Support
 
-GdUnit4 integrates C# testing capabilities through the [GdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net){:target="_blank"} project. This integration works by loading the necessary dependencies and utilizing the GdUnit4Net test engine to discover and execute C# tests directly within the Godot editor environment.
+GdUnit4 integrates C# testing capabilities through the [GdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net){:target="_blank"} project.
+This integration works by loading the necessary dependencies and utilizing the GdUnit4Net test engine to discover and execute C# tests directly
+within the Godot editor environment.
 
-The complete list of features and capabilities provided by the C# testing integration can be found on the [GdUnit4Net GitHub page](https://github.com/MikeSchulze/gdUnit4Net){:target="_blank"}.
+The complete list of features and capabilities provided by the C# testing integration can be found on the
+[GdUnit4Net GitHub page](https://github.com/MikeSchulze/gdUnit4Net){:target="_blank"}.
 
-💡 **Recommended Approach:** For optimal C# testing experience, use dedicated IDEs like **JetBrains Rider**, **Visual Studio**, or **Visual Studio Code** instead of the Godot editor.
+💡 **Recommended Approach:** For optimal C# testing experience, use dedicated IDEs like **JetBrains Rider**, **Visual Studio**,
+or **Visual Studio Code** instead of the Godot editor.
 
 ⚠️ **Debugging Limitation:** Debugging C# tests inside the Godot editor is **not supported**. Use external IDEs for debugging capabilities.
 
@@ -55,7 +57,8 @@ GdUnit4 utilizes the C# language standard 12.0. To ensure seamless integration, 
         </PackageReference>
       </ItemGroup>
     ```
-#### Check for the latest available version on nuget.org:
+
+   **Check for the latest available version on nuget.org**
 
    * [gdUnit4.analyzer](https://www.nuget.org/packages/gdUnit4.analyzers/#versions-body-tab){:target="_blank"}
    * [gdUnit4.api](https://www.nuget.org/packages/gdUnit4.api/#versions-body-tab){:target="_blank"}
@@ -63,60 +66,60 @@ GdUnit4 utilizes the C# language standard 12.0. To ensure seamless integration, 
 
 2. Ensure the dotnet 8 or 9 SDK is installed.
 
-```bash
-dotnet --list-sdks
-8.0.201 [C:\Program Files\dotnet\sdk]
-9.0.100 [C:\Program Files\dotnet\sdk]
-```
+   ```bash
+   dotnet --list-sdks
+   8.0.201 [C:\Program Files\dotnet\sdk]
+   9.0.100 [C:\Program Files\dotnet\sdk]
+   ```
 
-If no sdk 8.0 or 9.0 installed, you can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet){:target="_blank"}<br>
-If you encounter issues with older SDKs, consider uninstalling them.<br>
-Here is a complete example of what your project should look like.
+   If no sdk 8.0 or 9.0 installed, you can [download it here](https://dotnet.microsoft.com/en-us/download/dotnet){:target="_blank"}<br>
+   If you encounter issues with older SDKs, consider uninstalling them.<br>
+   Here is a complete example of what your project should look like.
 
-```cs
-<Project Sdk="Godot.NET.Sdk/4.4.1">
-  <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>12.0</LangVersion>
-    <!--Force nullable warnings, you can disable if you want-->
-    <Nullable>enable</Nullable>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <!--Disable warning of invalid/incompatible GodotSharp version-->
-    <NoWarn>NU1605</NoWarn>
-  </PropertyGroup>
-  <ItemGroup>
-    <!--Required for GdUnit4Net-->
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="gdUnit4.api" Version="5.0.0" />
-    <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0" />
-    <PackageReference Include="gdUnit4.analyzers" Version="1.0.0">
-      <PrivateAssets>none</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-</Project>
-```
+   ```cs
+   <Project Sdk="Godot.NET.Sdk/4.4.1">
+     <PropertyGroup>
+       <TargetFrameworks>net8.0</TargetFrameworks>
+       <LangVersion>12.0</LangVersion>
+       <!--Force nullable warnings, you can disable if you want-->
+       <Nullable>enable</Nullable>
+       <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+       <!--Disable warning of invalid/incompatible GodotSharp version-->
+       <NoWarn>NU1605</NoWarn>
+     </PropertyGroup>
+     <ItemGroup>
+       <!--Required for GdUnit4Net-->
+       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+       <PackageReference Include="gdUnit4.api" Version="5.0.0" />
+       <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0" />
+       <PackageReference Include="gdUnit4.analyzers" Version="1.0.0">
+         <PrivateAssets>none</PrivateAssets>
+         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+       </PackageReference>
+     </ItemGroup>
+   </Project>
+   ```
 
 ## The GdUnit4 Godot Editor C# Support
 
-GdUnit4 supports with [GdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"} v5.0.0 to write and run tests inside the Godot editor.
-For support **Visual Studio**, **Visual Studio Code** and **JetBrains Rider** [click here](/gdUnit4/csharp_project_setup/vstest-adapter/){:target="_blank"}.
+GdUnit4 supports with [GdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net/blob/master/api/README.md){:target="_blank"}
+v5.0.0 to write and run tests inside the Godot editor.
+For support **Visual Studio**, **Visual Studio Code** and **JetBrains Rider** [check out here](/gdUnit4/csharp_project_setup/vstest-adapter/){:target="_blank"}.
 
 ## Test your C# build settings in the Godot Editor
 
 Open the **MSBuild** inspector at the bottom of the Godot editor and press **Rebuild Solution**.
-![](/gdUnit4/assets/images/install/cs-build-test.png)
+![cs-build-test](/gdUnit4/assets/images/install/cs-build-test.png)
 The output should indicate that the project is built successfully.
 
 ### Running C# Tests inside the Godot Editor
 
 How to [run test](/gdUnit4/testing/run-tests/)
 
-
 ## Using External C# Editor
 
 Open your Godot editor settings, and navigate to **dotnet** and select your preferred C# tool.
-![](/gdUnit4/assets/images/install/cs-setup.png)
+![cs-setup](/gdUnit4/assets/images/install/cs-setup.png)
 
 ---
 <h4> document version v5.0.0 </h4>

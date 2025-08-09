@@ -7,7 +7,8 @@ nav_order: 1
 
 # Tools and Helpers
 
-GdUnit provides several tools to help you write tests, including managing objects to free and accessing a temporary filesystem to store your test data.
+GdUnit provides several tools to help you write tests, including managing objects to free and accessing a temporary
+    filesystem to store your test data.
 
 ---
 
@@ -15,11 +16,13 @@ GdUnit provides several tools to help you write tests, including managing object
 
 A little helper for automatically releasing the objects you create after test execution.
 
-*Note that objects do not manage memory. If a class inherits from Object, you will need to delete its instances manually.*
-*References keep an internal reference counter so that they are automatically released when no longer in use, and only then. Therefore, you do not need to free references manually with Object.free().*
+*Note that objects do not manage memory. If a class inherits from Object, you will need to delete its instances manually.
+References keep an internal reference counter so that they are automatically released when no longer in use,
+and only then. Therefore, you do not need to free references manually with Object.free().*
 
 Use **auto_free()** to automatically release objects when they are no longer in use.
-Objects that are covered by **auto_free** only live in the scope where they are used. These scopes include the test suite setup, test case setup, and the tests themselves.
+Objects that are covered by **auto_free** only live in the scope where they are used.
+These scopes include the test suite setup, test case setup, and the tests themselves.
 
 {% tabs tools-auto_free %}
 {% tab tools-auto_free GdScript %}
@@ -133,7 +136,8 @@ Here's an extended example of a test suite to demonstrate the usage of auto_free
 
 ## create_temp_dir()
 
-This helper function creates a new directory under the temporary directory *user://tmp*, which can be useful for storing data during test execution.<br>
+This helper function creates a new directory under the temporary directory *user://tmp*,
+which can be useful for storing data during test execution.<br>
 The directory is automatically deleted after the test suite has finished executing.
 
 {% tabs tools-create_temp_dir %}
@@ -176,7 +180,9 @@ Here’s an example:
 
 ## clean_temp_dir()
 
-Deletes the temporary directory created by **create_temp_dir()**. This function is called automatically after each execution of the test suite to ensure that the temporary directory is clean and ready for the next test suite.
+Deletes the temporary directory created by **create_temp_dir()**.
+This function is called automatically after each execution of the test suite to ensure that the temporary directory
+is clean and ready for the next test suite.
 
 {% tabs tools-clean_temp_dir %}
 {% tab tools-clean_temp_dir GdScript %}
@@ -197,9 +203,11 @@ Deletes the temporary directory created by **create_temp_dir()**. This function 
 
 ## create_temp_file()
 
-The **create_temp_file()** function creates a new File under the temporary directory *user://tmp* + *\<relative_path\>* with the given name *\<file_name\>* and file *\<mode\>* (default = File.WRITE).<br>
+The **create_temp_file()** function creates a new File under the temporary directory *user://tmp* + *\<relative_path\>*
+with the given name *\<file_name\>* and file *\<mode\>* (default = File.WRITE).<br>
 If successful, the returned File is automatically closed after the execution of the test suite.<br>
-We can create a small test file at the beginning of a test suite in the **before()** function and read it later in the test. It is not necessary to close the file, as the GdUnit test runner will close it automatically.
+We can create a small test file at the beginning of a test suite in the **before()** function and read it later
+in the test. It is not necessary to close the file, as the GdUnit test runner will close it automatically.
 
 ```ruby
     func create_temp_file(relative_path :String, file_name :String, mode :=File.WRITE) -> File:

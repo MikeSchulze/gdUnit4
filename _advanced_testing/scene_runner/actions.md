@@ -10,11 +10,13 @@ nav_order: 1
 # Simulate Actions
 
 This page provides guidance on how to test actions in your scene using GdUnit4.
-For more detailed information on Godot actions, please refer to the [official Godot documentation](https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html#actions){:target="_blank"}
+For more detailed information on Godot actions, please refer to
+the [official Godot documentation](https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html#actions){:target="_blank"}
 
 ## Function Overview
 
-All functions listed below utilize the [InputEventAction](https://docs.godotengine.org/en/stable/classes/class_inputeventaction.html){:target="_blank"} class to simulate action events.
+All functions listed below utilize the
+[InputEventAction](https://docs.godotengine.org/en/stable/classes/class_inputeventaction.html){:target="_blank"} class to simulate action events.
 
 {% tabs scene-runner-overview %}
 {% tab scene-runner-overview GdScript %}
@@ -39,10 +41,13 @@ All functions listed below utilize the [InputEventAction](https://docs.godotengi
 
 ## How to Simulate Actions
 
-To simulate actions interactions in your scene, you can use the provided action simulation functions. These functions allow you to mimic user key inputs as actions for testing purposes. There are two main categories of functions:
+To simulate actions interactions in your scene, you can use the provided action simulation functions.
+These functions allow you to mimic user key inputs as actions for testing purposes. There are two main categories of functions:
 
 * **Unfinished Functions**<br>
-    Unfinished functions simulate the act of pressing a action without releasing it immediately. These are useful for simulating combinations, such as holding down a modifier key (e.g., Ctrl) while pressing another key (e.g., C for Ctrl+C). The interaction is completed when the action release function is called.
+    Unfinished functions simulate the act of pressing a action without releasing it immediately.
+    These are useful for simulating combinations, such as holding down a modifier key (e.g., Ctrl) while pressing another key (e.g., C for Ctrl+C).
+    The interaction is completed when the action release function is called.
 
   * **[simulate_action_press](#simulate_action_press)**<br>
     Simulates pressing a key without releasing it.<br>
@@ -56,7 +61,8 @@ To simulate actions interactions in your scene, you can use the provided action 
     Simulates a full action press-and-release interaction.
   
 {% include advice.html
-content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs. Use the <b>await await_input_processed()</b> function to accomplish this."
+content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs.
+Use the <b>await await_input_processed()</b> function to accomplish this."
 %}
 See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)
 
@@ -111,7 +117,9 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-In this example, we simulate that the action "ui-up" is pressed. We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the action is complete before moving on to the next instruction.
+In this example, we simulate that the action "ui-up" is pressed.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the action is complete before moving on to the next instruction.
 
 ### simulate_action_press
 
@@ -162,7 +170,9 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-In this example, we simulate that the action "ui_up" is press. We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the action is complete before moving on to the next instruction.
+In this example, we simulate that the action "ui_up" is press.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the action is complete before moving on to the next instruction.
 
 ### simulate_action_release
 
@@ -214,7 +224,9 @@ await runner.AwaitInputProcessed();
 
 {% endtab %}
 {% endtabs %}
-In this example, we simulate that the action "ui_up" is released. We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the action is complete before moving on to the next instruction.
+In this example, we simulate that the action "ui_up" is released.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the action is complete before moving on to the next instruction.
 
 ---
 <h4> document version v5.0.0 </h4>

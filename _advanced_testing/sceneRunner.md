@@ -11,18 +11,23 @@ has_toc: false
 
 ## Definition
 
-The Scene Runner is a tool used for simulating interactions on a scene. With this tool, you can simulate input events such as keyboard or mouse input and/or simulate scene processing over a certain number of frames.
+The Scene Runner is a tool used for simulating interactions on a scene. With this tool, you can simulate input events such as keyboard or mouse input
+and/or simulate scene processing over a certain number of frames.
 
 This tool is typically used for integration testing a scene.
 <figure class="video_container">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/m6tYigD6Oe0?si=SgdLorwkoIGTJvNI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+    <iframe width="560" height="315"
+    src="https://www.youtube.com/embed/m6tYigD6Oe0?si=SgdLorwkoIGTJvNI"
+    title="YouTube video player" frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
     </iframe>
 </figure>
 For more advanced example, see [Tutorial - Testing Scenes](/gdUnit4/tutorials/scenerunner_examples/#testing-scene-interactions)
 
 ## How to Use It
 
-The Scene Runner is managed by the GdUnit API and is automatically freed after use. One Scene Runner can only manage one scene. If you need to test multiple scenes, you must create a separate runner for each scene in your test suite.
+The Scene Runner is managed by the GdUnit API and is automatically freed after use. One Scene Runner can only manage one scene.
+If you need to test multiple scenes, you must create a separate runner for each scene in your test suite.
 
 {% tabs scene-runner-definition %}
 {% tab scene-runner-definition GdScript %}
@@ -132,7 +137,8 @@ This section provides guidance on how to process and render your scene during te
 
 ### simulate_frames
 
-The **simulate_frames** function allows you to simulate the processing and rendering of a specified number of frames in your scene. This is particularly useful for testing and debugging, as it provides a way to advance the scene's state over time without user input or external triggers.
+The **simulate_frames** function allows you to simulate the processing and rendering of a specified number of frames in your scene.
+This is particularly useful for testing and debugging, as it provides a way to advance the scene's state over time without user input or external triggers.
 
 This function is useful when you need to validate behaviors that depend on frame updates, such as animations, physics, and scripted events.<br>
 Simulate frame progression in your scene to test animations, interactions, and time-based logic under controlled conditions.<br>
@@ -247,9 +253,11 @@ await runner.SimulateFrames(60);
 ### move_window_to_foreground
 
 The **move_window_to_foreground** function restores the scene window to a windowed mode and brings it to the foreground.<br>
-This ensures that the scene is visible and active during testing, making it easier to observe and interact with, as the window are minimized or moved to the background after each test.<br>
+This ensures that the scene is visible and active during testing, making it easier to observe and interact with,
+as the window are minimized or moved to the background after each test.<br>
 <br>
-This function is essential for scenarios where the scene needs to be actively monitored or interacted with during automated tests. Without it, the scene may not be visible or accessible, which can hinder the debugging process.
+This function is essential for scenarios where the scene needs to be actively monitored or interacted with during automated tests.
+Without it, the scene may not be visible or accessible, which can hinder the debugging process.
 
 {% tabs scene-runner-move_window_to_foreground %}
 {% tab scene-runner-move_window_to_foreground GdScript %}

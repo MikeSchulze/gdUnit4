@@ -53,10 +53,13 @@ All functions listed below utilize the listed classes to simulate mouse input ev
 
 ## How to Simulate Mouse Interactions
 
-To simulate mouse interactions in your scene, you can use the provided mouse simulation functions. These functions allow you to mimic user mouse inputs for testing purposes. There are two main categories of functions:
+To simulate mouse interactions in your scene, you can use the provided mouse simulation functions.
+These functions allow you to mimic user mouse inputs for testing purposes. There are two main categories of functions:
 
 * **Unfinished Functions**<br>
-    Unfinished functions simulate the act of pressing a key without releasing it immediately. These are useful for simulating combinations, such as holding down a modifier mouse button (e.g., Left-Button) while pressing another mouse button (e.g., Right-Button). The interaction is completed when mouse release function is called.
+    Unfinished functions simulate the act of pressing a key without releasing it immediately.
+* These are useful for simulating combinations, such as holding down a modifier mouse button (e.g., Left-Button) while pressing another mouse button
+  (e.g., Right-Button). The interaction is completed when mouse release function is called.
 
   * **[set_mouse_position](#set_mouse_position)**<br>
     Simulates moving the mouse cursor to a specified position.<br>
@@ -80,7 +83,8 @@ To simulate mouse interactions in your scene, you can use the provided mouse sim
     Moves the mouse cursor to an absolute position within the window or screen.
   
 {% include advice.html
-content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs. Use the <b>await await_input_processed()</b> function to accomplish this."
+content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs.
+Use the <b>await await_input_processed()</b> function to accomplish this."
 %}
 See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)
 
@@ -138,7 +142,8 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the mouse input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the mouse input is complete before moving on to the next instruction.
 
 ### get_mouse_position
 
@@ -243,7 +248,8 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the mouse input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the mouse input is complete before moving on to the next instruction.
 
 ### simulate_mouse_move_relative
 
@@ -421,7 +427,8 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the mouse input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the mouse input is complete before moving on to the next instruction.
 
 ### simulate_mouse_button_press
 
@@ -476,7 +483,8 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the mouse input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the mouse input is complete before moving on to the next instruction.
 
 ### simulate_mouse_button_release
 
@@ -529,7 +537,8 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the mouse input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the mouse input is complete before moving on to the next instruction.
 
 ---
 <h4> document version v5.0.0 </h4>

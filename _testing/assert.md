@@ -10,15 +10,24 @@ has_toc: false
 
 ## Definition
 
-Test assertions are conditions used in automated tests to check whether an expected result or behavior in a software application has been achieved. They are used to validate that the output of a test matches the expected result, and to identify any discrepancies or bugs in the application. Test assertions can be used for a variety of purposes, such as verifying the correctness of calculations, checking the behavior of user interfaces, or ensuring that data is properly stored and retrieved. Test assertions typically involve comparing actual results with expected results using comparison operators, such as equal to, greater than, less than, etc. If the assertion fails, it means that the test has identified a problem or bug in the application, and further investigation is needed to determine the cause and fix the issue.
+Test assertions are conditions used in automated tests to check whether an expected result or behavior in a software application has been achieved.
+They are used to validate that the output of a test matches the expected result, and to identify any discrepancies or bugs in the application.
+Test assertions can be used for a variety of purposes, such as verifying the correctness of calculations, checking the behavior of user interfaces,
+or ensuring that data is properly stored and retrieved.
+Test assertions typically involve comparing actual results with expected results using comparison operators, such as equal to, greater than, less than, etc.
+If the assertion fails, it means that the test has identified a problem or bug in the application,
+and further investigation is needed to determine the cause and fix the issue.
 
 ---
 
 ## How GdUnit Asserts compares Objects
 
-In GdUnit, asserts generally compare objects based on parameter equality. This means that two objects of different instances are considered equal if they are of the same type and have the same parameter values.
+In GdUnit, asserts generally compare objects based on parameter equality. This means that two objects of different instances are considered equal
+if they are of the same type and have the same parameter values.
 
-For object reference comparison, GdUnit provides separate validation functions such as `is_same` and `is_not_same`, as well as assert-specific functions that handle reference comparison, such as `contains_same` or `not_contains_same`. These functions allow you to specifically check if two objects refer to the same instance or not.
+For object reference comparison, GdUnit provides separate validation functions such as `is_same` and `is_not_same`, as well as assert-specific
+functions that handle reference comparison, such as `contains_same` or `not_contains_same`.
+These functions allow you to specifically check if two objects refer to the same instance or not.
 
 Here is an example of using assert to compare objects:
 
@@ -61,8 +70,10 @@ func test_object_reference_comparison():
 
 ## How to use GdUnit assets to verify things
 
-GdUnit4 provides a set of assertions that give you helpful error messages and improve the readability of your test code. Assertions are organized by type and support fluent syntax writing.<br>
-The pattern for using asserts is defined as `assert_<type>(<current>).<comparison function>([expected])`. If you don't know the type of the current value, use the generic `assert_that(<current>)` instead.
+GdUnit4 provides a set of assertions that give you helpful error messages and improve the readability of your test code.
+Assertions are organized by type and support fluent syntax writing.<br>
+The pattern for using asserts is defined as `assert_<type>(<current>).<comparison function>([expected])`.
+If you don't know the type of the current value, use the generic `assert_that(<current>)` instead.
 
 Here is an example:
 {% tabs assert-example %}
@@ -84,7 +95,8 @@ func test_hello_world() -> void:
 
 {% endtab %}
 {% tab assert-example C# %}
-The C# assert is smart and switches to the equivalent assert implementation by auto-typing and should also be used preferentially. Alternatively, you can use the typed asserts if you want to. To use the assert, you have to import it via `static GdUnit4.Assertions`.
+The C# assert is smart and switches to the equivalent assert implementation by auto-typing and should also be used preferentially.
+Alternatively, you can use the typed asserts if you want to. To use the assert, you have to import it via `static GdUnit4.Assertions`.
 
 ```cs
 using GdUnit4;
@@ -177,7 +189,9 @@ namespace ExampleProject.Tests
 
 ## How to Override the Failure Message
 
-By default, GdUnit generates a failure report based on the used assert, according to the expected vs. current value scheme. However, in some cases, the default failure message may not be specific enough or helpful to the reader. In those cases, you can override the default failure message using the **override_failure_message function**.
+By default, GdUnit generates a failure report based on the used assert, according to the expected vs. current value scheme.
+However, in some cases, the default failure message may not be specific enough or helpful to the reader.
+In those cases, you can override the default failure message using the **override_failure_message function**.
 
 To use this function, simply call it on the assertion and pass in a custom failure message as a string. For example:
 
@@ -194,7 +208,9 @@ To use this function, simply call it on the assertion and pass in a custom failu
 
 ## The Generic Assert
 
-The generic assert, assert_that (in GdScript) and AssertThat (in C#), can be used for all types and gives you access to the basic test functions of GdUnit Assert.<br> However, it is recommended to use the type-safe asserts whenever possible to ensure type safety in your tests.
+The generic assert, assert_that (in GdScript) and AssertThat (in C#), can be used for all types and gives you access to the basic test functions
+of GdUnit Assert.<br>
+However, it is recommended to use the type-safe asserts whenever possible to ensure type safety in your tests.
 
 |Assert|Type|
 |--|--|
@@ -214,13 +230,16 @@ The generic assert, assert_that (in GdScript) and AssertThat (in C#), can be use
 |[assert_bool](/gdUnit4/testing/assert-bool/) | bool |
 |[assert_int](/gdUnit4/testing/assert-integer/) | int |
 |[assert_float](/gdUnit4/testing/assert-float/) | float |
+
 {% endtab %}
 {% tab assert-basic-types C# %}
+
 |Assert|Type|
 |--|--|
 |[IStringAssert](/gdUnit4/testing/assert-string/) | string |
 |[IBoolAssert](/gdUnit4/testing/assert-bool/) | bool |
 |[INumberAssert](/gdUnit4/testing/assert-number/) | number (sbyte,byte,short,ushort,int,uint,long,ulong,float,double,decimal) |
+
 {% endtab %}
 {% endtabs %}
 For more details about Build-In types click here
@@ -237,12 +256,15 @@ For more details about Build-In types click here
 |--|--|
 |[assert_array](/gdUnit4/testing/assert-array/) | All Godot Array Types |
 |[assert_dict](/gdUnit4/testing/assert-dictionary/) | Dictionary |
+
 {% endtab %}
 {% tab assert-container-types C# %}
+
 |Assert|Type|
 |--|--|
 |[IEnumerableAssert](/gdUnit4/testing/assert-array/) | IEnumerable |
 |[IDictionaryAssert](/gdUnit4/testing/assert-dictionary/) | IDictionary |
+
 {% endtab %}
 {% endtabs %}
 
@@ -261,12 +283,15 @@ For more details about Build-In types click here
 |[assert_object](/gdUnit4/testing/assert-object/) | Object|
 |[assert_vector](/gdUnit4/testing/assert-vector/) | All Godot Vector Types |
 |[assert_file](/gdUnit4/testing/assert-file/) | File|
+
 {% endtab %}
 {% tab assert-engine-types C# %}
+
 |Type|Assert|
 |--|--|
 |[IObjectAssert](/gdUnit4/testing/assert-object/) | Godot.Object, System.object|
 |[IVectorAssert](/gdUnit4/testing/assert-vector/) | Godot.Vector2|
+
 {% endtab %}
 {% endtabs %}
 
@@ -281,13 +306,14 @@ For more details about Build-In types click here
 |--|--|
 |[assert_signal](/gdUnit4/testing/assert-signal/) | Signals |
 |[assert_error](/gdUnit4/testing/assert-error/) | Godot Errors |
+
 {% endtab %}
 {% tab assert-tool-types C# %}
+
 |Type|Assert|
 |--|--|
 |[ISignalAssert](/gdUnit4/testing/assert-signal/) | Signals |
 |[IErrorAssert](/gdUnit4/testing/assert-error/) | Godot Errors |
+
 {% endtab %}
 {% endtabs %}
-
----

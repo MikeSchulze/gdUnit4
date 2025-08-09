@@ -8,12 +8,15 @@ nav_order: 2
 # Testing with Fuzzers
 
 ## Definition
-Fuzz Testing or Fuzzing is a software testing technique of putting invalid or random data called FUZZ into software system to discover coding errors and security loopholes. The purpose of fuzz testing is inserting data using automated or semi-automated techniques and testing the system for various exceptions like system crashing or failure of built-in code, etc.
+
+Fuzz Testing or Fuzzing is a software testing technique of putting invalid or random data called FUZZ into software system to discover coding errors
+and security loopholes. The purpose of fuzz testing is inserting data using automated or semi-automated techniques and testing the system for
+various exceptions like system crashing or failure of built-in code, etc.
 
 {% tabs fuzzing-definition %}
 {% tab fuzzing-definition GdScript %}
-```ruby
-    func test_my_test(fuzzer := <Fuzzer>, <fuzzer_iterations>, <fuzzer_seed>):
+```gd
+func test_my_test(fuzzer := <Fuzzer>, <fuzzer_iterations>, <fuzzer_seed>):
 ```
 {% endtab %}
 {% tab fuzzing-definition C# %}
@@ -22,7 +25,6 @@ Fuzz Testing or Fuzzing is a software testing technique of putting invalid or ra
 {% endtab %}
 {% endtabs %}
 
-
 {% include advice.html
 content="Fuzzing is current only supported for GdScripts."
 %}
@@ -30,6 +32,7 @@ content="Fuzzing is current only supported for GdScripts."
 ---
 
 ## Fuzzers Overview
+
 For now GdUnit provides only this very small set of Fuzzer implementations and will be extend later!
 
 |Fuzzer|Description|
@@ -43,8 +46,8 @@ For now GdUnit provides only this very small set of Fuzzer implementations and w
 
 ---
 
-
 ## Using Fuzzers
+
 To use a fuzzer, you only need to add the argument 'fuzzer = <Fuzzer>' to your test.
 The name of the fuzzer argument must always start with the prefix `fuzzer`, followed by characters such as '_' and alphanumeric characters.
 
@@ -55,8 +58,8 @@ If you want to have the same fuzzer results, you can set a seed with the optiona
 {% tabs fuzzing-using %}
 {% tab fuzzing-using GdScript %}
 
-```ruby
-    func test_name(fuzzer := <Fuzzer>, <fuzzer_iterations>, <fuzzer_seed>):
+```gd
+func test_name(fuzzer := <Fuzzer>, <fuzzer_iterations>, <fuzzer_seed>):
 ```
 {% endtab %}
 {% tab fuzzing-using C# %}
@@ -68,60 +71,60 @@ If you want to have the same fuzzer results, you can set a seed with the optiona
 {% endtabs %}
 
 Here is an example of using a fuzzer that generates random values in the range from -23 to 22 and iterates 100 times:
-```ruby
-    func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iterations = 100):
-        assert_int(fuzzer.next_value()).is_in_range(-23, 22)
+```gd
+func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iterations = 100):
+    assert_int(fuzzer.next_value()).is_in_range(-23, 22)
 
 
-    # using multiple fuzzers in test are allowed
-    func test_fuzzer_inject_value(fuzzer_a := Fuzzers.rangei(-23, 22), fuzzer_b := Fuzzers.rangei(0, 42), fuzzer_iterations = 100):
-        assert_int(fuzzer_a.next_value()).is_in_range(-23, 22)
-        assert_int(fuzzer_b.next_value()).is_in_range(-23, 22)
+# using multiple fuzzers in test are allowed
+func test_fuzzer_inject_value(fuzzer_a := Fuzzers.rangei(-23, 22), fuzzer_b := Fuzzers.rangei(0, 42), fuzzer_iterations = 100):
+    assert_int(fuzzer_a.next_value()).is_in_range(-23, 22)
+    assert_int(fuzzer_b.next_value()).is_in_range(-23, 22)
 ```
 
 * **fuzzer_iterations**<br>
     If you want to iterate more or less than the default of 1000 iterations, you can set the number of iterations using the `fuzzer_iterations` argument.
 
-    ```ruby
-        # execute this test 5000 times
-        func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-100000, 100000), fuzzer_iterations=5000):
+    ```gd
+    # execute this test 5000 times
+    func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-100000, 100000), fuzzer_iterations=5000):
     ```
 
 * **fuzzer_seed**<br>
     If you want to ensure consistent test results for a random generating fuzzer, you can specify a seed using the `fuzzer_seed` argument.
 
-    ```ruby
-        # execute this test with a seed value of 123456
-        func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-100000, 100000), fuzzer_seed=123456):
+    ```gd
+    # execute this test with a seed value of 123456
+    func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-100000, 100000), fuzzer_seed=123456):
     ```
 
 ---
 
-
 ## Create a Custom Fuzzer
+
 If you need a custom fuzzer you do this by extend from class `Fuzzer` and implement the function **next_value()**
 
-```ruby
-    # Base interface for fuzz testing
-    class_name Fuzzer
-    extends Resource
+```gd
+# Base interface for fuzz testing
+class_name Fuzzer
+extends Resource
 
-        # generates the next fuzz value
-        # needs to be implement 
-        func next_value():
-            push_error("Invalid vall. Fuzzer not implemented 'next_value()'")
-            return null
+    # generates the next fuzz value
+    # needs to be implement 
+    func next_value():
+        push_error("Invalid vall. Fuzzer not implemented 'next_value()'")
+        return null
 ```
 
 Here a small example custom fuzzer implementation:
 
-```ruby
-    # A simple test fuzzer where a random value of a hard coded set of values is provided
-    class TestFuzzer extends Fuzzer:
-        var _data := [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+```gd
+# A simple test fuzzer where a random value of a hard coded set of values is provided
+class TestFuzzer extends Fuzzer:
+    var _data := [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 
-        func next_value():
-            return _data[randi_range(0, _data.size())]
+    func next_value():
+        return _data[randi_range(0, _data.size())]
 ```
 ---
 <h4> document version v4.1.0 </h4>

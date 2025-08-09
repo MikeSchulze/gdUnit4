@@ -8,7 +8,8 @@ nav_order: 4
 
 # Simulate Touchscreen Inputs
 
-This section provides an overview of how to simulate touchscreen interactions in your scene using the Scene Runner in GdUnit4. These functions allow you to test different touch events, such as taps, drags, and drops, without requiring a physical touchscreen device.
+This section provides an overview of how to simulate touchscreen interactions in your scene using the Scene Runner in GdUnit4.
+These functions allow you to test different touch events, such as taps, drags, and drops, without requiring a physical touchscreen device.
 For more detailed information on Godot touchscreen events, please refer to the [official Godot documentation](https://docs.godotengine.org/en/stable/tutorials/inputs/input_examples.html#touch-events){:target="_blank"}
 
 ## Function Overview
@@ -46,10 +47,13 @@ The functions listed below use the following classes to simulate touchscreen inp
 
 ## How to Simulate Touchscreen Interactions
 
-To simulate touchscreen interactions in your scene, you can use the provided touchscreen simulation functions. These functions allow you to mimic user touchscreen inputs for testing purposes. There are two main categories of functions:
+To simulate touchscreen interactions in your scene, you can use the provided touchscreen simulation functions.
+These functions allow you to mimic user touchscreen inputs for testing purposes. There are two main categories of functions:
 
 * **Unfinished Functions**<br>
-    Unfinished functions simulate ongoing touch actions without completing them immediately. They are ideal for scenarios where you need to simulate multi-touch interactions, such as holding down one finger while using another to perform gestures. The interaction is completed by calling a corresponding release function.
+    Unfinished functions simulate ongoing touch actions without completing them immediately.
+    They are ideal for scenarios where you need to simulate multi-touch interactions, such as holding down one finger while using another to perform gestures.
+    The interaction is completed by calling a corresponding release function.
 
   * **[simulate_screen_touch_press](#simulate_screen_touch_press)**<br>
     Simulates a finger pressing down on the screen at a specified position.<br>
@@ -57,7 +61,8 @@ To simulate touchscreen interactions in your scene, you can use the provided tou
     Simulates a finger being lifted off the screen from a previously pressed position.
 
 * **Finalized Functions**<br>
-    Finalized functions simulate complete touchscreen actions, encompassing both the press and release events in a single function call. These are useful for simulating single-tap actions or gestures like swipes and drags.
+    Finalized functions simulate complete touchscreen actions, encompassing both the press and release events in a single function call.
+    These are useful for simulating single-tap actions or gestures like swipes and drags.
 
   * **[get_screen_touch_drag_position](#get_screen_touch_drag_position)**<br>
     Retrieves the current drag position of a touchscreen input.<br>
@@ -73,7 +78,8 @@ To simulate touchscreen interactions in your scene, you can use the provided tou
     Simulates a drag-and-drop action, where a touch input is pressed, dragged to a target position, and then released.
   
 {% include advice.html
-content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs. Use the <b>await await_input_processed()</b> function to accomplish this."
+content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs.
+Use the <b>await await_input_processed()</b> function to accomplish this."
 %}
 See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)
 
@@ -81,7 +87,8 @@ See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inpu
 
 ### get_screen_touch_drag_position
 
-The **get_screen_touch_drag_position** function returns the current position of a drag event by its index. This is useful for verifying the location of touch events during drag operations.
+The **get_screen_touch_drag_position** function returns the current position of a drag event by its index.
+This is useful for verifying the location of touch events during drag operations.
 
 {% tabs scene-runner-func_name %}
 {% tab scene-runner-func_name GdScript %}
@@ -172,7 +179,8 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the touchscreen input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the touchscreen input is complete before moving on to the next instruction.
 
 ---
 
@@ -226,7 +234,8 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the touchscreen input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the touchscreen input is complete before moving on to the next instruction.
 
 ---
 
@@ -280,13 +289,15 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the touchscreen input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the touchscreen input is complete before moving on to the next instruction.
 
 ---
 
 ### simulate_screen_touch_release
 
-The **simulate_screen_touch_release** function simulates the release of a screen touch event. This can be used in combination with simulate_screen_touch_press to complete a tap or hold interaction.
+The **simulate_screen_touch_release** function simulates the release of a screen touch event.
+This can be used in combination with simulate_screen_touch_press to complete a tap or hold interaction.
 
 {% tabs scene-runner-func_name %}
 {% tab scene-runner-func_name GdScript %}
@@ -336,13 +347,15 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 {% endtab %}
 {% endtabs %}
 
-We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the touchscreen input is complete before moving on to the next instruction.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of
+the touchscreen input is complete before moving on to the next instruction.
 
 ---
 
 ### simulate_screen_touch_drag_relative
 
-The **simulate_screen_touch_drag_relative** function simulates a touch drag and drop event to a relative position. Use this function to test drag-and-drop mechanics that move objects by a specified offset.
+The **simulate_screen_touch_drag_relative** function simulates a touch drag and drop event to a relative position.
+Use this function to test drag-and-drop mechanics that move objects by a specified offset.
 
 {% tabs scene-runner-func_name %}
 {% tab scene-runner-func_name GdScript %}
@@ -392,7 +405,8 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 ### simulate_screen_touch_drag_absolute
 
-The **simulate_screen_touch_drag_absolute** function simulates a touch drag and drop event to an absolute position. Use this function to test scenarios where an object needs to be moved to a specific location.
+The **simulate_screen_touch_drag_absolute** function simulates a touch drag and drop event to an absolute position.
+Use this function to test scenarios where an object needs to be moved to a specific location.
 
 {% tabs scene-runner-func_name %}
 {% tab scene-runner-func_name GdScript %}
@@ -442,7 +456,8 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 ### simulate_screen_touch_drag_drop
 
-The **simulate_screen_touch_drag_drop** function simulates a complete drag and drop event from one position to another. This is ideal for testing complex drag-and-drop scenarios that require a specific start and end position.
+The **simulate_screen_touch_drag_drop** function simulates a complete drag and drop event from one position to another.
+This is ideal for testing complex drag-and-drop scenarios that require a specific start and end position.
 
 {% tabs scene-runner-func_name %}
 {% tab scene-runner-func_name GdScript %}
