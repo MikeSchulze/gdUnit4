@@ -40,16 +40,16 @@ To get an overview of the available commands, execute it with the command `-help
      -conf [testconfiguration.cfg]
 ```
 
-## Preconditions to run on Windows 10
+## Preconditions to run on Windows 10/11
 
 - Setup test environment as follow
 
   Add the environment variable `GODOT_BIN` by opening a termial and entering the command below.
   Replace the path `D:\develop\Godot.exe` with your own location where you have Godot installed.
 
-```bash
-setx GODOT_BIN D:\develop\Godot.exe
-```
+  ```bash
+  setx GODOT_BIN D:\develop\Godot.exe
+  ```
 
 - The GdUnit tool uses colored console output and needs to be enabled manually under Windows 10.
 
@@ -60,11 +60,11 @@ setx GODOT_BIN D:\develop\Godot.exe
   
   **Do this with the following command and open the terminal again:**
 
-```bash
-REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1
-```
+  ```shell
+  REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1
+  ```
 
-Now you can run your tests by `runtest [cmd]`
+  Now you can run your tests by `./addons/gdUnit4/runtest`
 
 ## Preconditions to run on MacOS and Linux
 
@@ -73,11 +73,14 @@ Now you can run your tests by `runtest [cmd]`
   Add the environment variable `GODOT_BIN` by opening a termial and entering the command below.
   Replace the path `/Applications/Godot.app/Contents/MacOS/Godot` with your own location where you have Godot installed.
 
-```bash
-export GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot
-```
+  And make the tool script executable.
 
-Now you can run your tests by `./runtest.sh [cmd]`
+  ```shell
+  export GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot
+  chmod +x ./addons/gdUnit4/runtest.sh
+  ```
+
+  Now you can run your tests by `./addons/gdUnit4/runtest.sh`
 
 ### How to use
 
@@ -85,45 +88,97 @@ Now you can run your tests by `./runtest.sh [cmd]`
 
 You can use the tool to run a complete test package or only a specific set of execution definitions or tests.
 
-```bash
+{% tabs cmd_1 %}
+{% tab cmd_1 Unix/Linix %}
+```shell
 # runs all testsuites located under the directory '/myProject/test'
-runtest -a /myProject/test
+./addons/gdUnit4/runtest.sh -a /myProject/test
 ```
+{% endtab %}
+{% tab cmd_1 Windows %}
+```shell
+# runs all testsuites located under the directory '/myProject/test'
+./addons/gdUnit4/runtest -a /myProject/test
+```
+{% endtab %}
+{% endtabs %}
 
 You can specify one ore more directories for execution
 
-```bash
+{% tabs cmd_1 %}
+{% tab cmd_1 Unix/Linix %}
+```shell
 # runs all testsuites located under the directory /myProject/test/foo/bar1' and '/myProject/test/foo/bar3'
-runtest -a /myProject/test/foo/bar1 -a /myProject/test/foo/bar3
+./addons/gdUnit4/runtest.sh -a /myProject/test/foo/bar1 -a /myProject/test/foo/bar3
 ```
+{% endtab %}
+{% tab cmd_1 Windows %}
+```shell
+# runs all testsuites located under the directory /myProject/test/foo/bar1' and '/myProject/test/foo/bar3'
+./addons/gdUnit4/runtest -a /myProject/test/foo/bar1 -a /myProject/test/foo/bar3
+```
+{% endtab %}
+{% endtabs %}
 
 Sometimes it may be necessary to skip (ignore) some test suites or tests from test execution.
 
 You can do this easily with the command '-i'.
 
-```bash
+{% tabs cmd_1 %}
+{% tab cmd_1 Unix/Linix %}
+```shell
 # runs all testsuites located under the directory /myProject/test' exclusive all tests located under '/myProject/test/foo/bar3'
-runtest -a /myProject/test -i /myProject/test/foo/bar3
+./addons/gdUnit4/runtest.sh -a /myProject/test -i /myProject/test/foo/bar3
 ```
+{% endtab %}
+{% tab cmd_1 Windows %}
+```shell
+# runs all testsuites located under the directory /myProject/test' exclusive all tests located under '/myProject/test/foo/bar3'
+./addons/gdUnit4/runtest -a /myProject/test -i /myProject/test/foo/bar3
+```
+{% endtab %}
+{% endtabs %}
+
 
 You can also specify skipping by testsuite name and/or testcase name.
 
+{% tabs cmd_1 %}
+{% tab cmd_1 Unix/Linix %}
 ```bash
 # runs all testsuites located under the directory /myProject/test' exclusive testsuite 'ClassATest' and 'ClassBTest:test_abc'
-runtest -a /myProject/test -i ClassATest -i ClassBTest:test_abc
+./addons/gdUnit4/runtest.sh -a /myProject/test -i ClassATest -i ClassBTest:test_abc
 ```
+{% endtab %}
+{% tab cmd_1 Windows %}
+```bash
+# runs all testsuites located under the directory /myProject/test' exclusive testsuite 'ClassATest' and 'ClassBTest:test_abc'
+./addons/gdUnit4/runtest -a /myProject/test -i ClassATest -i ClassBTest:test_abc
+```
+{% endtab %}
+{% endtabs %}
 
 You can also rerun the latest test execution (executed over the UI GdUnit-inspector)
 
-```bash
+{% tabs cmd_1 %}
+{% tab cmd_1 Unix/Linix %}
+```shell
 # loads latest GdUnitRunner.cfg and runs the configured tests
-runtest -conf
-```
+./addons/gdUnit4/runtest.sh -conf
 
-```bash
 # loads a specific test configuration and runs the configured tests (since v1.0.6)
-runtest -conf <test_config.cfg>
+./addons/gdUnit4/runtest.sh -conf <test_config.cfg>
 ```
+{% endtab %}
+{% tab cmd_1 Windows %}
+```shell
+# loads latest GdUnitRunner.cfg and runs the configured tests
+./addons/gdUnit4/runtest -conf
+
+# loads a specific test configuration and runs the configured tests (since v1.0.6)
+./addons/gdUnit4/runtest -conf <test_config.cfg>
+```
+{% endtab %}
+{% endtabs %}
 
 The report is stored by default under `/reports`. You can also set the default directory for reports with the option `-rd [directory]`.
 By default, the last 20 reports are saved, older reports are automatically deleted. You can change the number with `-rc [number]`.
