@@ -3,11 +3,6 @@ description: 'Validate YAML, XML, Markdown, and GitHub Actions workflow files'
 author: 'MikeSchulze'
 
 inputs:
-  validation-ignore-file:
-    description: 'File containing validation ignore patterns'
-    required: false
-    default: 'actions/formatting_checks/.validationignore'
-
   use-gitignore:
     description: 'Use .gitignore for validation exclusions'
     required: false
@@ -35,5 +30,5 @@ runs:
     - name: 'Validate JSON and YAML syntax'
       uses: GrantBirki/json-yaml-validate@v2.6.0
       with:
-        exclude_file: ${{ inputs.validation-ignore-file }}
+        exclude_file: ".github/actions/formatting_checks/.validationignore"
         use_gitignore: ${{ inputs.use-gitignore }}
