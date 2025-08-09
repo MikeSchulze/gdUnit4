@@ -18,18 +18,15 @@ concurrency:
 jobs:
   format-checks:
     if: ${{ !cancelled() }}
-    name: '📝 Formatting Checks'
+    name: '📝 YamlLint + MdLint'
     runs-on: ubuntu-24.04
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v4
-
-      - name: 'Run Format Validation'
-        uses: ./.github/actions/formatting_checks
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/formatting_checks
 
   gdlint:
     if: ${{ !cancelled() }}
-    name: '📝 GDScript Lint'
+    name: '📝 GDLint'
     uses: ./.github/workflows/gdlint.yml
 
 
