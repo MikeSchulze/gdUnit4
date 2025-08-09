@@ -15,6 +15,16 @@ concurrency:
 
 
 jobs:
+  format-checks:
+    if: ${{ !cancelled() }}
+    name: '📝 Formatting Checks'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'Run Format Validation'
+        uses: ./.github/actions/formatting_checks
 
   gdlint:
     if: ${{ !cancelled() }}
@@ -92,7 +102,7 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     name: 'Final Results'
-    needs: [ gdlint, unit-tests ]
+    needs: [ format-checks, gdlint, unit-tests ]
     steps:
       - run: exit 1
         if: >-
