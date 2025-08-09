@@ -29,7 +29,7 @@ jobs:
 
   gdlint:
     if: ${{ !cancelled() }}
-    name: '🔧 GDLint'
+    name: '📝 GDScript Lint'
     uses: ./.github/workflows/gdlint.yml
 
 
