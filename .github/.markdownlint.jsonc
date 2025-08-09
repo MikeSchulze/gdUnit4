@@ -6,6 +6,11 @@
         "tables": false
     },
 
+    "MD025": {
+        "front_matter_title": ""
+    },
+
+    "MD031": false, // Disable code blocks should be surrounded by blank lines
     "MD033": false,  // Allow all inline HTML
     "showFound": true
 }
