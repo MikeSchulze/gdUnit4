@@ -8,7 +8,9 @@ nav_order: 6
 
 # Signals
 
-In asynchronous programming, you often need to wait for signals to be emitted before proceeding with your program's execution. The Scene Runner provides several functions to help you wait for these signals efficiently. These functions allow you to synchronize your tests or operations with events occurring in the scene, ensuring that your program flows as expected.
+In asynchronous programming, you often need to wait for signals to be emitted before proceeding with your program's execution.
+The Scene Runner provides several functions to help you wait for these signals efficiently.
+These functions allow you to synchronize your tests or operations with events occurring in the scene, ensuring that your program flows as expected.
 
 ## Function Overview
 
@@ -33,7 +35,9 @@ In asynchronous programming, you often need to wait for signals to be emitted be
 
 ### await_signal
 
-The **await_signal** function is used to pause execution until a specific signal is emitted by the scene. This is particularly useful for testing or ensuring that certain conditions are met before continuing. If the signal is not emitted within the specified timeout, the function will throw an error, indicating a failure in the expected signal emission.
+The **await_signal** function is used to pause execution until a specific signal is emitted by the scene.
+This is particularly useful for testing or ensuring that certain conditions are met before continuing.
+If the signal is not emitted within the specified timeout, the function will throw an error, indicating a failure in the expected signal emission.
 
 {% tabs scene-runner-await_signal %}
 {% tab scene-runner-await_signal GdScript %}
@@ -104,7 +108,8 @@ public async Task ColorChangedSignals()
 
 ### await_signal_on
 
-The **await_signal_on** function works similarly to await_signal, but it targets a specific node (source) within the scene. This is useful when you want to wait for signals from a particular node rather than the entire scene.
+The **await_signal_on** function works similarly to await_signal, but it targets a specific node (source) within the scene.
+This is useful when you want to wait for signals from a particular node rather than the entire scene.
 
 {% tabs scene-runner-await_signal_on %}
 {% tab scene-runner-await_signal_on GdScript %}

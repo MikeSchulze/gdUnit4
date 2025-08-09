@@ -7,19 +7,26 @@ nav_order: 13
 
 # Error Assertion
 
-The error assertion functionality in GdUnit4 is designed to test for runtime errors and exceptions. Due to the fundamental differences between GdScript and C# as programming languages and their integration with the Godot engine, GdUnit4 provides different approaches for error testing in each language.
+The error assertion functionality in GdUnit4 is designed to test for runtime errors and exceptions. Due to the fundamental differences between GdScript
+and C# as programming languages and their integration with the Godot engine, GdUnit4 provides different approaches for error testing in each language.
 
 ## Why Different Approaches?
 
-**GdScript Integration**: GdScript is Godot's native scripting language with built-in error handling mechanisms. GdUnit4 leverages Godot's internal error reporting system to capture `push_error()`, `push_warning()`, and assertion failures through the `assert_error()` function approach.
+**GdScript Integration**: GdScript is Godot's native scripting language with built-in error handling mechanisms. GdUnit4 leverages Godot's internal error
+reporting system to capture `push_error()`, `push_warning()`, and assertion failures through the `assert_error()` function approach.
 
-**C# Integration**: C# operates as a managed language within Godot's runtime, where exceptions can occur at multiple levels - both in managed C# code and during Godot engine callbacks. GdUnit4Net provides attribute-based testing that integrates with the .NET exception system and includes specialized monitoring for exceptions that occur within Godot's main thread execution.
+**C# Integration**: C# operates as a managed language within Godot's runtime, where exceptions can occur at multiple levels - both in managed C# code and
+during Godot engine callbacks. GdUnit4Net provides attribute-based testing that integrates with the .NET exception system and includes specialized
+monitoring for exceptions that occur within Godot's main thread execution.
 
-**Runtime Differences**: While GdScript errors are typically reported through Godot's logging system, C# exceptions follow the .NET exception model. Additionally, many C# exceptions that occur during Godot callbacks (like `_Ready()`, `_Process()`) are caught and silently handled by Godot's `CSharpInstanceBridge`, making them invisible to normal exception handling - hence the need for specialized monitoring.
+**Runtime Differences**: While GdScript errors are typically reported through Godot's logging system, C# exceptions follow the .NET exception model.
+Additionally, many C# exceptions that occur during Godot callbacks (like `_Ready()`, `_Process()`) are caught and silently handled by
+Godot's `CSharpInstanceBridge`, making them invisible to normal exception handling - hence the need for specialized monitoring.
 
 ## How the Approaches Differ
 
-In **GdScript**, `assert_error` tests for Godot runtime errors such as failing asserts, script runtime errors, `push_error`, and `push_warning` messages. In **C#**, GdUnit4Net provides advanced exception handling capabilities that can capture exceptions normally hidden by the Godot runtime.
+In **GdScript**, `assert_error` tests for Godot runtime errors such as failing asserts, script runtime errors, `push_error`, and `push_warning` messages.
+In **C#**, GdUnit4Net provides advanced exception handling capabilities that can capture exceptions normally hidden by the Godot runtime.
 
 {% tabs assert-error-overview %}
 {% tab assert-error-overview GdScript %}
@@ -54,13 +61,12 @@ To test whether a specific code snippet runs successfully without any errors, yo
 
 {% tabs assert-error-is_success %}
 {% tab assert-error-is_success GdScript %}
-```gdscript
-    func assert_error(<Callable>).is_success() -> GdUnitGodotErrorAssert:
+```gd
+func assert_error(<Callable>).is_success() -> GdUnitGodotErrorAssert:
 ```
-
-```gdscript
-    func test_is_success() -> void:
-        await assert_error(func(): <code to execute>).is_success()
+```gd
+func test_is_success() -> void:
+    await assert_error(func(): <code to execute>).is_success()
 ```
 {% endtab %}
 {% tab assert-error-is_success C# %}
@@ -68,22 +74,24 @@ For C# exception testing, use the `[ThrowsException]` attribute. See the [C# Exc
 {% endtab %}
 {% endtabs %}
 
-Replace `<code to execute>` with the actual code snippet you want to test. If the code executes without any runtime errors, the test will pass; otherwise, it will fail.
+Replace `<code to execute>` with the actual code snippet you want to test. If the code executes without any runtime errors,
+the test will pass; otherwise, it will fail.
 
 ### Testing for Assert Failed
 
-You can use `assert_error` to verify that an assertion failure occurs during the execution of your code. This can help you ensure that your asserts are working correctly. Here's an example:
+You can use `assert_error` to verify that an assertion failure occurs during the execution of your code. This can help you ensure that your asserts
+are working correctly. Here's an example:
 
 {% tabs assert-error-is_failed %}
 {% tab assert-error-is_failed GdScript %}
-```gdscript
-    func assert_error(<Callable>).is_runtime_error(<message>) -> GdUnitGodotErrorAssert:
+```gd
+func assert_error(<Callable>).is_runtime_error(<message>) -> GdUnitGodotErrorAssert:
 ```
 
-```gdscript
-    func test_is_assert_failed() -> void:
-        await assert_error(func(): <code to execute>)\
-            .is_runtime_error('Assertion failed: this is an assert error')
+```gd
+func test_is_assert_failed() -> void:
+    await assert_error(func(): <code to execute>)\
+        .is_runtime_error('Assertion failed: this is an assert error')
 ```
 {% endtab %}
 {% tab assert-error-is_failed C# %}
@@ -91,27 +99,28 @@ For C# exception testing, use the `[ThrowsException]` attribute. See the [C# Exc
 {% endtab %}
 {% endtabs %}
 
-Replace `<code to execute>` with the code snippet that contains the assertion you want to test. The `is_runtime_error` function checks whether the expected assertion error message is generated. If the assertion fails as expected, the test will pass; otherwise, it will fail.
+Replace `<code to execute>` with the code snippet that contains the assertion you want to test. The `is_runtime_error` function checks whether the
+expected assertion error message is generated. If the assertion fails as expected, the test will pass; otherwise, it will fail.
 
 ### Testing for Push Warnings and Push Errors
 
-You can also use `assert_error` to test for specific push warnings and push errors that may occur during the execution of your code. Here are examples for both cases:
+You can also use `assert_error` to test for specific push warnings and push errors that may occur during the execution of your code.
+Here are examples for both cases:
 
 {% tabs assert-error-is_push %}
 {% tab assert-error-is_push GdScript %}
-```gdscript
-    func assert_error(<Callable>).is_push_warning(<message>) -> GdUnitGodotErrorAssert:
-    func assert_error(<Callable>).is_push_error(<message>) -> GdUnitGodotErrorAssert:
+```gd
+func assert_error(<Callable>).is_push_warning(<message>) -> GdUnitGodotErrorAssert:
+func assert_error(<Callable>).is_push_error(<message>) -> GdUnitGodotErrorAssert:
 ```
+```gd
+func test_is_push_warning() -> void:
+    await assert_error(func(): <code to execute>)\
+        .is_push_warning('this is a push_warning')
 
-```gdscript
-    func test_is_push_warning() -> void:
-        await assert_error(func(): <code to execute>)\
-            .is_push_warning('this is a push_warning')
-
-    func test_is_push_error() -> void:
-        await assert_error(func(): <code to execute>)\
-            .is_push_error('this is a push_error')
+func test_is_push_error() -> void:
+    await assert_error(func(): <code to execute>)\
+        .is_push_error('this is a push_error')
 ```
 {% endtab %}
 {% tab assert-error-is_push C# %}
@@ -119,13 +128,16 @@ For C# exception testing, use the `[ThrowsException]` attribute. See the [C# Exc
 {% endtab %}
 {% endtabs %}
 
-Replace `<code to execute>` with the relevant code snippet that may generate a push warning or a push error. The `is_push_warning` and `is_push_error` functions check whether the expected warning or error message is generated during code execution. If the message is generated as expected, the test will pass; otherwise, it will fail.
+Replace `<code to execute>` with the relevant code snippet that may generate a push warning or a push error. The `is_push_warning` and `is_push_error`
+functions check whether the expected warning or error message is generated during code execution. If the message is generated as expected,
+the test will pass; otherwise, it will fail.
 
 ---
 
 ## C# Exception Testing with ThrowsException
 
-GdUnit4Net provides the `[ThrowsException]` attribute for comprehensive exception testing in C#. This attribute allows you to verify that specific exceptions are thrown with optional message and source location verification.
+GdUnit4Net provides the `[ThrowsException]` attribute for comprehensive exception testing in C#. This attribute allows you to verify that specific
+exceptions are thrown with optional message and source location verification.
 
 ### Basic Exception Type Testing
 
@@ -211,7 +223,8 @@ public async Task TestTimeoutException()
 
 ## Godot Exception Monitoring
 
-GdUnit4Net provides the `[GodotExceptionMonitor]` attribute to capture exceptions that occur during Godot's main thread execution. These exceptions are normally caught and hidden by Godot's `CSharpInstanceBridge.Call` method.
+GdUnit4Net provides the `[GodotExceptionMonitor]` attribute to capture exceptions that occur during Godot's main thread execution.
+These exceptions are normally caught and hidden by Godot's `CSharpInstanceBridge.Call` method.
 
 ### Method-Level Monitoring
 
@@ -270,7 +283,7 @@ public async Task TestSceneException()
 
 💡 **Resource Loading**: Catch exceptions during asset loading and resource management.
 
-### Push Error Testing in C#
+### Push Error Testing in CSharp
 
 Test Godot push_error calls as test failures:
 
@@ -285,7 +298,7 @@ public void TestPushErrorHandling()
 
 ---
 
-## Key Differences Between GdScript and C#
+## Key Differences Between GdScript and CSharp
 
 | Feature | GdScript | C# |
 |---------|----------|-----|
@@ -297,11 +310,14 @@ public void TestPushErrorHandling()
 | Multiple Exception Types | ❌ | ✅ |
 | Timeout Exception Testing | ❌ | ✅ |
 
-⚠️ **Important**: Godot Exception Monitoring with `[GodotExceptionMonitor]` is only available in the C# API and provides capabilities not available in GdScript testing.
+⚠️ **Important**: Godot Exception Monitoring with `[GodotExceptionMonitor]` is only available in the C# API and provides capabilities
+not available in GdScript testing.
 
 ## Conclusion
 
-Error assertion capabilities in GdUnit4 provide comprehensive testing for both expected and unexpected error conditions. While GdScript offers fundamental error testing through `assert_error`, the C# API provides advanced exception handling with precise control over exception verification and Godot runtime exception monitoring.
+Error assertion capabilities in GdUnit4 provide comprehensive testing for both expected and unexpected error conditions.
+While GdScript offers fundamental error testing through `assert_error`, the C# API provides advanced exception handling with precise control over
+exception verification and Godot runtime exception monitoring.
 
 ---
 <h4> document version v5.0.0 </h4>

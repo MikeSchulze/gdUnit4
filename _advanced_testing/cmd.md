@@ -9,8 +9,11 @@ nav_order: 8
 
 ## The GdUnit Command Line Tool
 
-GdUnit4 provides a command line tool named `res://addons/gdUnit4/bin/GdUnitCmdTool.gd` that allows you to run a specific set of test suites and tests from the command line. The tool provides a set of commands that can be used to control the execution of tests.
-You can use the provided scripts `addons/gdunit4/runtest.sh` for linux/macos and `addons/gdunit4/runtest.cmd` for windows to execute the tool.
+GdUnit4 provides a command line tool named `res://addons/gdUnit4/bin/GdUnitCmdTool.gd` that allows you to run
+a specific set of test suites and tests from the command line.
+The tool provides a set of commands that can be used to control the execution of tests.
+You can use the provided scripts `addons/gdunit4/runtest.sh` for linux/macos and `addons/gdunit4/runtest.cmd`
+for windows to execute the tool.
 
 To get an overview of the available commands, execute it with the command `-help`.
 
@@ -55,7 +58,8 @@ To get an overview of the available commands, execute it with the command `-help
 
   **Do it manually by open regedit:**
 
-  The registry key at HKEY_CURRENT_USER\Console\VirtualTerminalLevel sets the global default behavior for processing ANSI escape sequences. Create a
+  The registry key at HKEY_CURRENT_USER\Console\VirtualTerminalLevel sets the global default behavior for processing
+  ANSI escape sequences. Create a
   DWORD key (if necessary) and set its value to 1 to globally enable (or 0 to disable`) ANSI processing by default.
   
   **Do this with the following command and open the terminal again:**
@@ -139,7 +143,6 @@ You can do this easily with the command '-i'.
 {% endtab %}
 {% endtabs %}
 
-
 You can also specify skipping by testsuite name and/or testcase name.
 
 {% tabs cmd_1 %}
@@ -180,8 +183,10 @@ You can also rerun the latest test execution (executed over the UI GdUnit-inspec
 {% endtab %}
 {% endtabs %}
 
-The report is stored by default under `/reports`. You can also set the default directory for reports with the option `-rd [directory]`.
-By default, the last 20 reports are saved, older reports are automatically deleted. You can change the number with `-rc [number]`.
+The report is stored by default under `/reports`.
+You can also set the default directory for reports with the option `-rd [directory]`.
+By default, the last 20 reports are saved, older reports are automatically deleted.
+You can change the number with `-rc [number]`.
 
 See next section.
 
@@ -211,8 +216,8 @@ The tool ends with a certain return code, where you can check if the tests were 
 
 ## The Report
 
-The GdUnit command line tool generates a modern HTML and JUnit report with which you can quickly get an overview of the executed tests.
-You can find the reports in the report folder as:
+The GdUnit command line tool generates a modern HTML and JUnit report with which you can quickly get an
+overview of the executed tests. You can find the reports in the report folder as:
 
 - index.htm - the HTML report
 - results.xml - the [JUnit report](https://www.ibm.com/docs/en/developer-for-zos/14.1.0?topic=formats-junit-xml-format){:target="_blank"}

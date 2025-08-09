@@ -6,7 +6,9 @@ nav_order: 2
 
 ## How GdUnit4Net Achieves IDE Support
 
-GdUnit4Net leverages the industry-standard ([VSTest](https://github.com/microsoft/vstest?tab=readme-ov-file#vstest){:target="_blank"}) API to provide comprehensive IDE integration. By implementing the VSTest adapter interface, GdUnit4Net allows IDEs that support the Visual Studio Test Platform to:
+GdUnit4Net leverages the industry-standard ([VSTest](https://github.com/microsoft/vstest?tab=readme-ov-file#vstest){:target="_blank"})
+API to provide comprehensive IDE integration.
+By implementing the VSTest adapter interface, GdUnit4Net allows IDEs that support the Visual Studio Test Platform to:
 
 - **Discover tests** automatically in your Godot C# projects
 - **Execute tests** with real-time feedback and reporting
@@ -36,12 +38,16 @@ Before configuring your IDE, ensure you have completed the following setup requi
 > 🔜 - not yet implemented<br>
 
 ### 1. Project Configuration
-Your Godot C# project must be properly configured with GdUnit4Net dependencies as described in the [Setup Documentation](/gdUnit4/csharp_project_setup/csharp-setup/). This includes:
+
+Your Godot C# project must be properly configured with GdUnit4Net dependencies as described in the
+[Setup Documentation](/gdUnit4/csharp_project_setup/csharp-setup/). This includes:
+
 - Correct .NET framework targeting (net8.0 or net9.0)
 - Required NuGet package references (gdUnit4.api, gdUnit4.test.adapter, etc.)
 - Proper project file structure
 
 ### 2. Environment Variable Setup
+
 You must configure the `GODOT_BIN` environment variable pointing to your Godot executable.
 
 |Platform|Environment Variable|Example Path|
@@ -52,8 +58,9 @@ You must configure the `GODOT_BIN` environment variable pointing to your Godot e
 Or define it in the **.runsettings** under `EnvironmentVariables` see below.
 
 ### 3. RunSettings Configuration
+
 Create a `.runsettings` file in your project to configure test execution.
-The full guide to configure the settings can be found [here](https://github.com/MikeSchulze/gdUnit4Net/blob/master/TestAdapter/README.md#configuration-with-runsettings){:target="_blank"}.
+The full guide to configure the settings [can be found here](https://github.com/MikeSchulze/gdUnit4Net/blob/master/TestAdapter/README.md#configuration-with-runsettings){:target="_blank"}.
 
 Below is an example:
 
@@ -92,11 +99,25 @@ Below is an example:
     </LoggerRunSettings>
 
     <GdUnit4>
-        <!-- Additional Godot runtime parameters-->
-        <Parameters></Parameters>
-        <!-- Controls the Display name attribute of the TestCase. Allowed values are SimpleName and FullyQualifiedName.
-             This likely determines how the test names are displayed in the test results.-->
+        <!-- Additional Godot runtime parameters. These are passed to the Godot executable when running tests.-->
+        <Parameters>"--verbose"</Parameters>
+  
+        <!-- Controls the display name format of test cases in the test results.
+                 Allowed values:
+                 - SimpleName: Uses only the method name (e.g., "TestMethod")
+                 - FullyQualifiedName: Uses the full path including class and method name (e.g., "MyNamespace.MyClass.TestMethod")
+                 Default: SimpleName -->
         <DisplayName>FullyQualifiedName</DisplayName>
+  
+        <!-- When set to true, standard output (stdout) from test cases is captured
+                 and included in the test result. This can be useful for debugging. -->
+        <CaptureStdOut>true</CaptureStdOut>
+  
+        <!-- The maximum duration allowed for a Godot project compilation process in milliseconds.
+                         After this timeout period expires, the compilation process is forcefully terminated.
+                         For large or complex Godot projects, you may need to increase this value.
+                         Default: 20000 (20 seconds) -->
+        <CompileProcessTimeout>20000</CompileProcessTimeout>
     </GdUnit4>
 </RunSettings>
 ```
@@ -109,11 +130,11 @@ Below is an example:
 
 **Do follow this steps to activate the test explorer:**
 
-* Activate the test explorer
+- Activate the test explorer
   ![explorer](/gdUnit4/assets/images/faq/visualstudio/setup-test-1.png)
-* Configure the path to your `.runsettings`
+- Configure the path to your `.runsettings`
   ![explorer](/gdUnit4/assets/images/faq/visualstudio/setup-test-2.png)
-* Restart Visual Studio
+- Restart Visual Studio
 
 ---
 
@@ -123,17 +144,17 @@ Below is an example:
 
 **Do follow this steps to activate the test explorer:**
 
-* Install the C# Dev Kit (v1.5.12 (pre-release) recommended). Detailed instructions can be found [here](https://code.visualstudio.com/docs/csharp/testing){:target="_blank"}.
+- Install the C# Dev Kit (v1.5.12 (pre-release) recommended).
+- Detailed instructions [can be found here](https://code.visualstudio.com/docs/csharp/testing){:target="_blank"}.
   ![devkit](/gdUnit4/assets/images/faq/visualstudio-code/test-setup-1.png)
-* Open your `.vscode/settings.json` and add the following property to your project settings:
+- Open your `.vscode/settings.json` and add the following property to your project settings:
   It is important to use the correct C# Dev Kit version, which is currently a PreRelease.
   The property is newly introduced by this [issue](https://github.com/microsoft/vscode-dotnettools/issues/156){:target="_blank"}.
 
     ```json
     "dotnet.unitTests.runSettingsPath": "./test/.runsettings"
     ```
-
-* Restart Visual Studio Code
+- Restart Visual Studio Code
 
 ---
 
@@ -144,47 +165,27 @@ Below is an example:
 **Do follow these steps to activate the test explorer:**
 
 {% include advice.html
-content="We recommend to use Rider <b>2024.2</b> or higher to enable test debugging! <a href=\"https://plugins.jetbrains.com/plugin/13882-godot-support\"> Checkout for the latest version</a> <br>
-For older Rider versions check the <a href=\"/gdUnit4/csharp_project_setup/vstest-adapter/#test-debug-workaround-for-jetbrains-rider-less-version-20242\">workaround</a>."
+content="We recommend to use Rider <b>2024.2</b> or higher to enable test debugging!
+<a href='https://plugins.jetbrains.com/plugin/13882-godot-support'> Checkout for the latest version</a><br>"
 %}
 
-* Install the Godot Support plugin
+- Install the Godot Support plugin
   ![godot-support](/gdUnit4/assets/images/faq/jetbrains/plugin-godot-support.png)
-* Configure the path to your `.runsettings`
+- Configure the path to your `.runsettings`
   ![runsettings](/gdUnit4/assets/images/faq/jetbrains/setup-test-1.png)
-* Enable the [VSTest adapters](https://www.jetbrains.com/help/rider/Reference__Options__Tools__Unit_Testing__VSTest.html#projects-with-unit-tests){:target="_blank"} in the Rider settings
+- Enable the
+  [VSTest adapters](https://www.jetbrains.com/help/rider/Reference__Options__Tools__Unit_Testing__VSTest.html#projects-with-unit-tests){:target="_blank"}
+  in the Rider settings
   ![enable vstest](/gdUnit4/assets/images/faq/jetbrains/setup-test-2.png)
-* Restart JetBrains Rider
+- Restart JetBrains Rider
 
 ---
 
 ### Issues and Workarounds
 
-|Issue|Solution|
-|-|-|
-|The test discovery is aborted and not all tests are found|Increase the `<TestSessionTimeout>` in your [RunSettings](#the-test-adapter-settings)|
-|Test Debug workaround for JetBrains Rider|[click here](#test-debug-workaround-for-jetbrains-rider)|
-
-#### Test Debug workaround for JetBrains Rider less version 2024.2
-
-* Paste this code into your test suite to wait until the debugger is connected to the Godot process.
-
-```cs
-    [BeforeTest]
-    public void DebugWorkaround()
-    {
-        while (!Debugger.IsAttached)
-        {
-        }
-    }
-```
-
-* Set your breakpoints
-* Start debugging test
-* Attach the debugger to the running Godot instance.
-  ![attach_debugger](/gdUnit4/assets/images/faq/jetbrains/attach-debug-process.png)
-* Search for Godot and select and press attach
-  ![select_process](/gdUnit4/assets/images/faq/jetbrains/select-process.png)
+|Issue| Solution                                                                                |
+|-|-----------------------------------------------------------------------------------------|
+|The test discovery is aborted and not all tests are found| Increase the `<TestSessionTimeout>` in your [RunSettings](#3-runsettings-configuration) |
 
 ---
 <h4> document version v5.0.0 </h4>

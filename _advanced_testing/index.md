@@ -9,10 +9,12 @@ has_toc: false
 
 ## GdUnit4 Advanced Testing
 
-Welcome to the GdUnit4 advanced testing page! Here, we will introduce you to a set of advanced techniques that can help you write comprehensive and effective tests for your Godot game.
+Welcome to the GdUnit4 advanced testing page!
+Here, we will introduce you to a set of advanced techniques that can help you write comprehensive and effective tests for your Godot game.
 
 **Prerequisites**
-Before starting to read the advanced techniques, you should have a basic understanding of the Godot engine and the GDScript language. You should also have GdUnit4 installed and set up in your Godot project.
+Before starting to read the advanced techniques, you should have a basic understanding of the Godot engine and the GDScript language.
+You should also have GdUnit4 installed and set up in your Godot project.
 
 ## Overview
 

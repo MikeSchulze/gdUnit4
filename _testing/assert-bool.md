@@ -19,6 +19,7 @@ An assertion tool to verify boolean values.
 |[is_false](/gdUnit4/testing/assert-bool/#is_false)| Verifies that the current value is false.|
 |[is_equal](/gdUnit4/testing/assert-bool/#is_equal)| Verifies that the current value is equal to the given one.|
 |[is_not_equal](/gdUnit4/testing/assert-bool/#is_not_equal)| Verifies that the current value is not equal to the given one.|
+
 {% endtab %}
 {% tab assert-bool C# %}
 **IBoolAssert**<br>
@@ -29,6 +30,7 @@ An assertion tool to verify boolean values.
 |[IsFalse](/gdUnit4/testing/assert-bool/#is_false)| Verifies that the current value is false.|
 |[IsEqual](/gdUnit4/testing/assert-bool/#is_equal)| Verifies that the current value is equal to the given one.|
 |[IsNotEqual](/gdUnit4/testing/assert-bool/#is_not_equal)| Verifies that the current value is not equal to the given one.|
+
 {% endtab %}
 {% endtabs %}
 
@@ -43,31 +45,29 @@ Verifies that the current value is true.
 {% tabs assert-bool-is_true %}
 {% tab assert-bool-is_true GdScript %}
 
-```ruby
-    func assert_bool(<current>).is_true() -> GdUnitBoolAssert
+```gd
+func assert_bool(<current>).is_true() -> GdUnitBoolAssert
 ```
+```gd
+# this assertion succeeds
+assert_bool(true).is_true()
 
-```ruby
-    # this assertion succeeds
-    assert_bool(true).is_true()
-
-    # this assertion fails because the value is false and not true
-    assert_bool(false).is_true()
+# this assertion fails because the value is false and not true
+assert_bool(false).is_true()
 ```
 
 {% endtab %}
 {% tab assert-bool-is_true C# %}
 
 ```cs
-    public static IBoolAssert AssertThat(<current>).IsTrue()
+public static IBoolAssert AssertThat(<current>).IsTrue()
 ```
-
 ```cs
-    // this assertion succeeds
-    AssertThat(true).IsTrue();
+// this assertion succeeds
+AssertThat(true).IsTrue();
 
-    // this assertion fails because the value is false and not true
-    AssertThat(false).IsTrue();
+// this assertion fails because the value is false and not true
+AssertThat(false).IsTrue();
 ```
 
 {% endtab %}
@@ -79,31 +79,29 @@ Verifies that the current value is false.
 {% tabs assert-bool-is_false %}
 {% tab assert-bool-is_false GdScript %}
 
-```ruby
-    func assert_bool(<current>).is_false() -> GdUnitBoolAssert
+```gd
+func assert_bool(<current>).is_false() -> GdUnitBoolAssert
 ```
+```gd
+# this assertion succeeds
+assert_bool(false).is_false()
 
-```ruby
-    # this assertion succeeds
-    assert_bool(false).is_false()
-
-    # this assertion fails because the value is true and not false
-    assert_bool(true).is_false()
+# this assertion fails because the value is true and not false
+assert_bool(true).is_false()
 ```
 
 {% endtab %}
 {% tab assert-bool-is_false C# %}
 
 ```cs
-    public static IBoolAssert AssertThat(<current>).IsFalse();
+public static IBoolAssert AssertThat(<current>).IsFalse();
 ```
-
 ```cs
-    // this assertion succeeds
-    AssertThat(false).IsFalse();
+// this assertion succeeds
+AssertThat(false).IsFalse();
 
-    // this assertion fails because the value is true and not false
-    AssertThat(true).IsFalse();
+// this assertion fails because the value is true and not false
+AssertThat(true).IsFalse();
 ```
 
 {% endtab %}
@@ -115,31 +113,29 @@ Verifies that the current value is equal to the given one.
 {% tabs assert-bool-is_equal %}
 {% tab assert-bool-is_equal GdScript %}
 
-```ruby
-    func assert_bool(<current>).is_equal(<expected>) -> GdUnitBoolAssert
+```gd
+func assert_bool(<current>).is_equal(<expected>) -> GdUnitBoolAssert
 ```
+```gd
+# this assertion succeeds
+assert_bool(false).is_equal(false)
 
-```ruby
-    # this assertion succeeds
-    assert_bool(false).is_equal(false)
-
-    # this assertion fails because the value is false and not true
-    assert_bool(false).is_equal(true)
+# this assertion fails because the value is false and not true
+assert_bool(false).is_equal(true)
 ```
 
 {% endtab %}
 {% tab assert-bool-is_equal C# %}
 
 ```cs
-    public static IBoolAssert AssertThat(<current>).IsEqual(<expected>);
+public static IBoolAssert AssertThat(<current>).IsEqual(<expected>);
 ```
-
 ```cs
-    // this assertion succeeds
-    AssertThat(false).IsEqual(false);
+// this assertion succeeds
+AssertThat(false).IsEqual(false);
 
-    // this assertion fails because the value is false and not true
-    AssertThat(false).IsEqual(true);
+// this assertion fails because the value is false and not true
+AssertThat(false).IsEqual(true);
 ```
 
 {% endtab %}
@@ -151,31 +147,29 @@ Verifies that the current value is not equal to the given one.
 {% tabs assert-bool-is_not_equal %}
 {% tab assert-bool-is_not_equal GdScript %}
 
-```ruby
-    func assert_bool(<current>).is_not_equal(<expected>) -> GdUnitBoolAssert
+```gd
+func assert_bool(<current>).is_not_equal(<expected>) -> GdUnitBoolAssert
 ```
+```gd
+# this assertion succeeds
+assert_bool(false).is_not_equal(true)
 
-```ruby
-    # this assertion succeeds
-    assert_bool(false).is_not_equal(true)
-
-    # this assertion fails because the value is false and should not be false
-    assert_bool(false).is_not_equal(false)
+# this assertion fails because the value is false and should not be false
+assert_bool(false).is_not_equal(false)
 ```
 
 {% endtab %}
 {% tab assert-bool-is_not_equal C# %}
 
 ```cs
-    public static IBoolAssert AssertThat(<current>).IsNotEqual(<expected>);
+public static IBoolAssert AssertThat(<current>).IsNotEqual(<expected>);
 ```
-
 ```cs
-    // this assertion succeeds
-    AssertThat(false).IsNotEqual(true);
+// this assertion succeeds
+AssertThat(false).IsNotEqual(true);
 
-    // this assertion fails because the value is false and should not be false
-    AssertThat(false).IsNotEqual(false);
+// this assertion fails because the value is false and should not be false
+AssertThat(false).IsNotEqual(false);
 ```
 
 {% endtab %}

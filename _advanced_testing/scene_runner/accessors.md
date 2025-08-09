@@ -8,11 +8,13 @@ nav_order: 8
 
 # Scene Accessors
 
-In addition to simulating the scene, the SceneRunner provides functions to access the scene's nodes. These functions are useful for debugging and testing purposes.
+In addition to simulating the scene, the SceneRunner provides functions to access the scene's nodes.
+These functions are useful for debugging and testing purposes.
 
 For example, you can use **find_child()** to retrieve a specific node in the scene, and then call its methods or change its properties to test its behavior.
 
-By using these functions, you can gain greater control over the scene and test various scenarios, making it easier to find and fix bugs and improve the overall quality of your game or application.
+By using these functions, you can gain greater control over the scene and test various scenarios,
+making it easier to find and fix bugs and improve the overall quality of your game or application.
 
 ## Function Overview
 

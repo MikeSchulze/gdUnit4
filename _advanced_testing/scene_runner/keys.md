@@ -10,11 +10,13 @@ nav_order: 2
 # Simulate Key Inputs
 
 This page provides guidance on how to test key inputs in your scene using GdUnit4.
-For more detailed information on Godot keyboard events, please refer to the [official Godot documentation](https://docs.godotengine.org/en/stable/tutorials/inputs/input_examples.html#keyboard-events){:target="_blank"}
+For more detailed information on Godot keyboard events, please refer to
+the [official Godot documentation](https://docs.godotengine.org/en/stable/tutorials/inputs/input_examples.html#keyboard-events){:target="_blank"}
 
 ## Function Overview
 
-All functions listed below utilize the [InputEventKey](https://docs.godotengine.org/en/stable/classes/class_inputeventkey.html#class-inputeventkey){:target="_blank"} class to simulate key input events.
+All functions listed below utilize the
+[InputEventKey](https://docs.godotengine.org/en/stable/classes/class_inputeventkey.html#class-inputeventkey){:target="_blank"} class to simulate key input events.
 
 {% tabs scene-runner-overview %}
 {% tab scene-runner-overview GdScript %}
@@ -39,10 +41,13 @@ All functions listed below utilize the [InputEventKey](https://docs.godotengine.
 
 ## How to Simulate Key Interactions
 
-To simulate key interactions in your scene, you can use the provided key simulation functions. These functions allow you to mimic user key inputs for testing purposes. There are two main categories of functions:
+To simulate key interactions in your scene, you can use the provided key simulation functions.
+These functions allow you to mimic user key inputs for testing purposes. There are two main categories of functions:
 
 * **Unfinished Functions**<br>
-    Unfinished functions simulate the act of pressing a key without releasing it immediately. These are useful for simulating combinations, such as holding down a modifier key (e.g., Ctrl) while pressing another key (e.g., C for Ctrl+C). The interaction is completed when the key release function is called.
+    Unfinished functions simulate the act of pressing a key without releasing it immediately.
+    These are useful for simulating combinations, such as holding down a modifier key (e.g., Ctrl) while pressing another key (e.g., C for Ctrl+C).
+    The interaction is completed when the key release function is called.
 
   * **[simulate_key_press](#simulate_key_press)**<br>
     Simulates pressing a key without releasing it.<br>
@@ -56,7 +61,8 @@ To simulate key interactions in your scene, you can use the provided key simulat
     Simulates a full key press-and-release interaction.
   
 {% include advice.html
-content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs. Use the <b>await await_input_processed()</b> function to accomplish this."
+content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs.
+Use the <b>await await_input_processed()</b> function to accomplish this."
 %}
 See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)
 
@@ -125,7 +131,9 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-In this example, we simulate that the enter key is pressed and then we simulate that the key combination ctrl+C is pressed. We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the key press is complete before moving on to the next instruction.
+In this example, we simulate that the enter key is pressed and then we simulate that the key combination ctrl+C is pressed.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the key press is complete before moving on to the next instruction.
 
 ### simulate_key_press
 
@@ -202,7 +210,9 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-In this example, we simulate that the enter key is press and then we simulate that the key combination ctrl+C is press. We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the key press is complete before moving on to the next instruction.
+In this example, we simulate that the enter key is press and then we simulate that the key combination ctrl+C is press.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the key press is complete before moving on to the next instruction.
 
 ### simulate_key_release
 
@@ -279,7 +289,9 @@ await runner.AwaitInputProcessed();
 {% endtab %}
 {% endtabs %}
 
-In this example, we simulate that the enter key is released and then we simulate that the key combination ctrl+C is released. We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation of the key press is complete before moving on to the next instruction.
+In this example, we simulate that the enter key is released and then we simulate that the key combination ctrl+C is released.
+We use **[await_input_processed()](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)** to ensure that the simulation
+of the key press is complete before moving on to the next instruction.
 
 ---
 <h4> document version v5.0.0 </h4>

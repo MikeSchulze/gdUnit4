@@ -8,7 +8,10 @@ nav_order: 5
 # Argument Matchers
 
 ## Definition
-GdUnit4 provides a set of argument matchers designed to facilitate testing of function calls with specific argument types. Argument matchers allow you to verify the behavior of a function call without needing to specify the exact argument value(s). This is particularly useful when you're interested in verifying the type of argument passed to a function rather than its exact value.
+
+GdUnit4 provides a set of argument matchers designed to facilitate testing of function calls with specific argument types.
+Argument matchers allow you to verify the behavior of a function call without needing to specify the exact argument value(s).
+This is particularly useful when you're interested in verifying the type of argument passed to a function rather than its exact value.
 
 Using argument matchers enhances the flexibility and expressiveness of your tests by allowing you to focus on the relevant aspects of function behavior.
 {% include advice.html
@@ -16,10 +19,11 @@ content="Argument Matchers are currently only supported for GdScripts."
 %}
 
 ### Usage
+
 Argument matchers can be employed in various scenarios, such as:
 
 1. **Assert Functions:** When verifying assertions and not interested in the exact value:
-   ```gdscript
+   ```gd
    # Verifies that the value is a variant integer
    assert_that(100).is_equal(any_int())
    # This check will fail as the value is not a boolean
@@ -27,28 +31,29 @@ Argument matchers can be employed in various scenarios, such as:
    ```
 
 2. **Assert Signal:** When you're only interested in whether a signal is emitted, regardless of its arguments:
-   ```gdscript
+   ```gd
    # Waits until signal 'test_signal_counted' is emitted with signal arguments as an integer
    await assert_signal(signal_emitter).is_emitted("test_signal_counted", [any_int()])
    ```
 
 3. **Mock Verification:** When verifying function calls with specific argument types:
-   ```gdscript
+   ```gd
    # Verifies that the function `set_message` is called twice with any string argument
    verify(mock, 2).set_message(any_string())
    ```
 
 4. **Any Matcher:**
-    In this example using the `any()` matcher allows you to focus on the number of function calls without concerning yourself with the specific value of the argument is passed.
-    ```gdscript
+    In this example using the `any()` matcher allows you to focus on the number of function calls without concerning yourself with the specific
+    value of the argument is passed.
+    ```gd
     # Verifies that the function `set_message` is called twice with any argument
     verify(mock, 2).set_message(any())
     ```
 
-
 ---
 
 ### Argument Matcher Overview
+
 The following matchers are available:<br>
 
 |Argument Matcher|Description|
@@ -92,62 +97,63 @@ The following matchers are available:<br>
 ---
 
 ## Build your own custom Argument Matcher
+
 You can write your own argument matcher if necessary. You can do this by extend from class **GdUnitArgumentMatcher** and implement the **is_match** function.
 
-```ruby
-    # base class of all argument matchers
-    class_name GdUnitArgumentMatcher
-    extends Reference
+```gd
+# base class of all argument matchers
+class_name GdUnitArgumentMatcher
+extends Reference
 
-        # the fuction you have to override in your custom matcher
-        func is_match(value) -> bool:
-            return true
+    # the fuction you have to override in your custom matcher
+    func is_match(value) -> bool:
+        return true
 ```
 
-
 Here is a simple example of how to write your own argument matcher.<br>
-```ruby
-    # a simple class we want to test
-    class_name MyClass
-    extends Reference
+```gd
+# a simple class we want to test
+class_name MyClass
+extends Reference
 
-        var _value:int
+    var _value:int
 
-        func set_value(value :int):
-            _value = value
+    func set_value(value :int):
+        _value = value
 ```
 
 The custom argument matcher:
-``` ruby
-    class PeekMatcher extends GdUnitArgumentMatcher:
-        var _peek :int
-        
-        func _init(peek :int):
-            _peek = peek
+```gd
+class PeekMatcher extends GdUnitArgumentMatcher:
+    var _peek :int
+    
+    func _init(peek :int):
+        _peek = peek
 
-        func is_match(value) -> bool:
-            return value > _peek
+    func is_match(value) -> bool:
+        return value > _peek
 ```
-Just to clarify, the `PeekMatcher` class is an implementation of the `GdUnitArgumentMatcher` abstract class, which provides the **is_match()** function. In this example, the is_match method checks if the argument is greater than the _peek value passed in the constructor.
-
+Just to clarify, the `PeekMatcher` class is an implementation of the `GdUnitArgumentMatcher` abstract class, which provides the **is_match()** function.
+In this example, the is_match method checks if the argument is greater than the `_peek` value passed in the constructor.
 
 The test:
-```ruby
-    func test_custom_matcher():
-        # we mock the custom class here
-        var mocked_test_class :MyClass = mock(MyClass)
-        
-        mocked_test_class.set_value(1000)
-        mocked_test_class.set_value(1001)
-        mocked_test_class.set_value(1002)
-        mocked_test_class.set_value(2002)
-        
-        # counts 1001, 1002, 2002 = 3 times
-        verify(mocked_test_class, 3).set_value(PeekMatcher.new(1000))
-        # counts 2002 = 1 times
-        verify(mocked_test_class, 1).set_value(PeekMatcher.new(2000))
+```gd
+func test_custom_matcher():
+    # we mock the custom class here
+    var mocked_test_class :MyClass = mock(MyClass)
+    
+    mocked_test_class.set_value(1000)
+    mocked_test_class.set_value(1001)
+    mocked_test_class.set_value(1002)
+    mocked_test_class.set_value(2002)
+    
+    # counts 1001, 1002, 2002 = 3 times
+    verify(mocked_test_class, 3).set_value(PeekMatcher.new(1000))
+    # counts 2002 = 1 times
+    verify(mocked_test_class, 1).set_value(PeekMatcher.new(2000))
 ```
-Then in the test, we create a mocked_test_class object and call its **set_value** method with different arguments. Finally, we use verify to check if the method was called with arguments that meet the condition of the PeekMatcher.
+Then in the test, we create a mocked_test_class object and call its **set_value** method with different arguments.
+Finally, we use verify to check if the method was called with arguments that meet the condition of the PeekMatcher.
 
 ---
 <h4> document version v4.2.1 </h4>

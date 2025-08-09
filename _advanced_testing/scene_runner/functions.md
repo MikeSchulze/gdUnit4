@@ -8,7 +8,9 @@ nav_order: 7
 
 ## Functions
 
-In asynchronous programming, it's often necessary to wait for a function to complete and obtain its result before continuing with your program. The Scene Runner provides functions that allow you to wait for specific methods to return a value, with a specified timeout. This is particularly useful in scenarios where you want to test or ensure the result of a method call within a certain timeframe.
+In asynchronous programming, it's often necessary to wait for a function to complete and obtain its result before continuing with your program.
+The Scene Runner provides functions that allow you to wait for specific methods to return a value, with a specified timeout.
+This is particularly useful in scenarios where you want to test or ensure the result of a method call within a certain timeframe.
 
 ## Function Overview
 
@@ -33,7 +35,9 @@ In asynchronous programming, it's often necessary to wait for a function to comp
 
 ### await_func
 
-The **await_func** function pauses execution until a specified function in the scene returns a value. It returns a [GdUnitFuncAssert](/gdUnit4/testing/assert-function/#functionmethod-assertions) object, which provides a suite of assertion methods to verify the returned value.
+The **await_func** function pauses execution until a specified function in the scene returns a value.
+It returns a [GdUnitFuncAssert](/gdUnit4/testing/assert-function/#functionmethod-assertions) object, which provides a suite of
+assertion methods to verify the returned value.
 
 {% tabs scene-runner-await_func %}
 {% tab scene-runner-await_func GdScript %}
@@ -86,7 +90,9 @@ await runner.AwaitMethod<bool>("color_cycle").IsEqual("black").WithTimeout(5000)
 
 ### await_func_on
 
-The **await_func_on** function extends the functionality of await_func by allowing you to specify a source node within the scene. It waits for a specified function on that node to return a value and returns a [GdUnitFuncAssert](/gdUnit4/testing/assert-function/#functionmethod-assertions) object for assertions.
+The **await_func_on** function extends the functionality of await_func by allowing you to specify a source node within the scene.
+It waits for a specified function on that node to return a value and returns
+a [GdUnitFuncAssert](/gdUnit4/testing/assert-function/#functionmethod-assertions) object for assertions.
 
 {% tabs scene-runner-await_func_on %}
 {% tab scene-runner-await_func_on GdScript %}
