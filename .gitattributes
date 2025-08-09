@@ -1,3 +1,4 @@
+# .gitattributes
 # Exclude files not needed for AssetLib users.
 
 /**                    export-ignore
@@ -5,3 +6,28 @@
 /addons/gdUnit4        !export-ignore
 /addons/gdUnit4/**     !export-ignore
 /addons/gdUnit4/test   export-ignore
+
+
+# Ensure Unix line endings for text files
+* text=auto eol=lf
+
+# Specific file types
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.cs text eol=lf
+*.gd text eol=lf
+*.cfg text eol=lf
+*.txt text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.exe binary
+*.dll binary

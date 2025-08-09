@@ -1,7 +1,8 @@
 name: gdlint
+
 run-name: ${{ github.head_ref || github.ref_name }}-gdlint
 
-on:
+on: # yamllint disable-line rule:truthy
   workflow_call:
     inputs:
       os:
