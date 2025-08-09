@@ -1,7 +1,8 @@
 name: ci-pr
+
 run-name: ${{ github.head_ref || github.ref_name }}-ci-pr
 
-on:
+on: # yamllint disable-line rule:truthy
   pull_request:
     paths-ignore:
       - '**.jpg'
@@ -39,9 +40,9 @@ jobs:
       max-parallel: 10
       matrix:
         # If changes are made here, they must be transferred to `.github\workflows\ci-pr-publish-report.yml`
-        godot-version: [ '4.3', '4.4', '4.4.1' ]
-        godot-status: [ 'stable' ]
-        godot-net: [ '.Net', '' ]
+        godot-version: ['4.3', '4.4', '4.4.1']
+        godot-status: ['stable']
+        godot-net: ['.Net', '']
         include:
           - godot-version: '4.5'
             godot-status: 'dev5'
@@ -102,7 +103,7 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     name: 'Final Results'
-    needs: [ format-checks, gdlint, unit-tests ]
+    needs: [format-checks, gdlint, unit-tests]
     steps:
       - run: exit 1
         if: >-

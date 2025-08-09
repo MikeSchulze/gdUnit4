@@ -50,6 +50,7 @@ indent_size = 2
 # YAML Files
 [*.{yml,yaml}]
 indent_size = 2
+end_of_line = lf
 
 # Markdown Files
 [*.{md,mdx}]

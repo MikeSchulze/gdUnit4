@@ -9,5 +9,10 @@
       <option name="SPACE_BEFORE_COLON" value="true" />
       <option name="SPACE_AFTER_COLON" value="true" />
     </codeStyleSettings>
+    <codeStyleSettings language="yaml">
+      <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
+      <option name="LINE_COMMENT_ADD_SPACE" value="true" />
+      <option name="LINE_COMMENT_ADD_SPACE_ON_REFORMAT" value="true" />
+    </codeStyleSettings>
   </code_scheme>
 </component>

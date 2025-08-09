@@ -1,6 +1,6 @@
 name: cleanup-workflow-runs
 
-on:
+on: # yamllint disable-line rule:truthy
   schedule:
     - cron: "0 0 * * *" # GMT
   workflow_dispatch:
@@ -43,10 +43,10 @@ jobs:
         with:
           script: |
             const script = require('./.github/actions/workflow-cleanup/index.js')
-            await script({ 
-              github, 
-              context, 
-              core, 
+            await script({
+              github,
+              context,
+              core,
               exec,
               env: process.env
             });

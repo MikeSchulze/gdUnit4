@@ -3,21 +3,6 @@ description: 'Validate YAML, XML, Markdown, and GitHub Actions workflow files'
 author: 'MikeSchulze'
 
 inputs:
-  yaml-config:
-    description: 'YAML lint configuration'
-    required: false
-    default: |
-      extends: default
-      rules:
-        line-length:
-          max: 120
-        new-line-at-end-of-file:
-          level: warning
-        trailing-spaces:
-          level: warning
-        comments:
-          min-spaces-from-content: 1
-
   validation-ignore-file:
     description: 'File containing validation ignore patterns'
     required: false
@@ -39,7 +24,7 @@ runs:
     - name: 'Validate YAML files'
       uses: ibiqlik/action-yamllint@v3
       with:
-        config_data: ${{ inputs.yaml-config }}
+        config_file: ".github/actions/formatting_checks/.yamllint.yml"
 
     - name: 'Validate GitHub Actions workflows'
       uses: raven-actions/actionlint@v2
