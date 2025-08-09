@@ -1,0 +1,169 @@
+name: Refactoring
+description: Create a refactoring issue to improve GdUnit4 codebase
+title: "[GD-XXX] Brief description of the refactoring"
+labels: ["refactoring"]
+projects: ["GdUnit4/5"]
+assignees:
+  - MikeSchulze
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thanks for suggesting code improvements!
+        - Please search [existing refactoring issues](https://github.com/MikeSchulze/gdUnit4/issues?q=label%3Arefactoring%20is%3Aissue) to avoid duplicates
+        - Consider the impact on existing users and backward compatibility
+        - Focus on improving code quality, maintainability, or performance
+
+  - type: dropdown
+    id: refactoring-type
+    attributes:
+      label: Refactoring Type
+      description: What type of refactoring is this?
+      options:
+        - Code cleanup/organization
+        - Performance optimization
+        - API simplification
+        - Architecture improvement
+        - Technical debt reduction
+        - Code duplication removal
+        - Error handling improvement
+        - Documentation/naming improvement
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: Current State
+      description: What is the current implementation that needs refactoring?
+      placeholder: |
+        Describe the current code/implementation:
+        - Which files, classes, or functions are affected?
+        - What makes the current implementation problematic?
+        - Include code snippets if helpful:
+
+        ```gdscript
+        # Current implementation example
+        func current_problematic_code():
+            # existing code here
+            pass
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: problems-motivation
+    attributes:
+      label: Problems and Motivation
+      description: Why does this refactoring need to happen?
+      placeholder: |
+        Explain the motivation for this refactoring:
+        - What problems does the current code have?
+        - How does it impact maintainability, performance, or usability?
+        - What technical debt would this address?
+        - How would this benefit future development?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-changes
+    attributes:
+      label: Proposed Changes
+      description: What specific changes do you propose?
+      placeholder: |
+        Describe the proposed refactoring:
+        - What would the new implementation look like?
+        - Which design patterns or approaches would you use?
+        - How would the API change (if at all)?
+
+        ```gdscript
+        # Proposed implementation example
+        func improved_implementation():
+            # new approach here
+            pass
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-areas
+    attributes:
+      label: Affected Areas
+      description: What parts of the codebase would be impacted?
+      placeholder: |
+        List the affected areas:
+        - Specific files, classes, or modules
+        - Public APIs that might change
+        - Tests that would need updating
+        - Documentation that would need changes
+        - Potential impact on existing user code
+    validations:
+      required: true
+
+  - type: textarea
+    id: backward-compatibility
+    attributes:
+      label: Backward Compatibility
+      description: How would this affect existing users?
+      placeholder: |
+        Consider backward compatibility:
+        - Would this be a breaking change?
+        - How could existing code be migrated?
+        - What deprecation strategy would be needed?
+        - Are there ways to maintain compatibility?
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-approach
+    attributes:
+      label: Implementation Approach
+      description: How should this refactoring be implemented?
+      placeholder: |
+        Suggest an implementation approach:
+        - Could this be done incrementally?
+        - What steps would be involved?
+        - Are there any technical challenges?
+        - What testing would be required?
+        - Should this be split into multiple smaller changes?
+    validations:
+      required: false
+
+  - type: textarea
+    id: benefits-risks
+    attributes:
+      label: Benefits and Risks
+      description: What are the expected benefits and potential risks?
+      placeholder: |
+        Analyze benefits and risks:
+
+        **Benefits:**
+        - Improved code maintainability
+        - Better performance
+        - Cleaner API
+        - Reduced technical debt
+
+        **Risks:**
+        - Potential breaking changes
+        - Implementation complexity
+        - Testing overhead
+        - User migration effort
+    validations:
+      required: false
+
+  - type: textarea
+    id: dev-notes
+    attributes:
+      label: Developer Notes
+      description: Additional technical notes for implementers
+      placeholder: |
+        Technical implementation notes:
+        - Code patterns to follow
+        - Libraries or tools to consider
+        - Performance considerations
+        - Testing strategies
+        - Code review checkpoints
+    validations:
+      required: false

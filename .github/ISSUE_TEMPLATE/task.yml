@@ -1,0 +1,75 @@
+name: Task
+description: A small task to implement/fix non-API related work
+title: "[TASK-XXX] Brief description of the task"
+labels: ["task"]
+projects: ["GdUnit4/5"]
+assignees:
+  - MikeSchulze
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### A Task is not a bug or feature request!
+        Tasks are for small implementation work, maintenance, or improvements that don't change the public API.
+
+        - Please search [existing tasks](https://github.com/MikeSchulze/gdUnit4/issues?q=label%3Atask%20is%3Aissue) to avoid duplicates
+        - Consider if this should be a bug report, feature request, or refactoring issue instead
+        - Keep tasks focused and small for easier completion
+
+  - type: dropdown
+    id: task-category
+    attributes:
+      label: Task Category
+      description: What type of task is this?
+      options:
+        - Code maintenance/cleanup
+        - Build/CI improvements
+        - Documentation updates
+        - Testing improvements
+        - Development tooling
+        - Internal utilities
+        - Configuration/setup
+        - Other maintenance work
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: task-description
+    attributes:
+      label: Task Description
+      description: What needs to be done?
+      placeholder: |
+        Describe the task clearly:
+        - What specific work needs to be completed?
+        - Why is this task needed?
+
+        Example: "Update CI workflow to use Node.js 18 and add caching for faster builds"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know this task is complete?
+      placeholder: Define clear, testable criteria for completion
+      value: |
+        - [ ] Task requirement 1
+        - [ ] Task requirement 2
+        - [ ] All tests pass
+        - [ ] Documentation updated (if needed)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: task-checklist
+    attributes:
+      label: Pre-work Checklist
+      description: Complete before starting work
+      options:
+        - label: I have confirmed this is not a duplicate task
+        - label: I have verified this doesn't require API changes (use feature request instead)
+        - label: I have confirmed this is not a bug (use bug report instead)
+        - label: The acceptance criteria are clear and testable

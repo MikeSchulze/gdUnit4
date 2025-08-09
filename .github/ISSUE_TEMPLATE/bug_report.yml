@@ -1,8 +1,8 @@
 name: Bug Report
 description: Report a GdUnit4 bug
-title: 'GD-XXX: Describe the issue briefly'
-labels: ['bug']
-projects: ['GdUnit4']
+title: "GD-XXX: Brief description of the issue"
+labels: ["bug"]
+projects: ["GdUnit4/5"]
 assignees:
   - MikeSchulze
 
@@ -55,7 +55,7 @@ body:
   - type: input
     id: godot-version
     attributes:
-      label: The used Godot version
+      label: Godot Version
       description: Which Godot version are you using?
       placeholder: v4.2.2.stable.official [15073afe3]
     validations:
@@ -64,22 +64,29 @@ body:
   - type: textarea
     id: system
     attributes:
-      label: Operating System
-      description: |
-        What operating system are you using?
-        - Specify the OS version, and when relevant hardware information.
-      placeholder: 'Example: macOS Big Sur'
+      label: Environment Details
+      description: Provide details about your development environment
+      placeholder: |
+        **Operating System:** (e.g., Windows 11, macOS Ventura, Ubuntu 22.04)
+        **Project Settings:** (if relevant - renderer, threading, etc.)
+        **Additional tools/plugins:** (other Godot addons that might conflict)
     validations:
       required: true
 
   - type: textarea
     id: bug-description
     attributes:
-      label: Describe the bug
+      label: Bug Description
       description: A clear and concise description of what the bug is.
       placeholder: |
-        Describe what you expected to happen and what actually happened.
-        Include any specific details, configuration, or environment necessary to reproduce the problem.
+        **What happened?**
+        Describe what actually occurred.
+
+        **What did you expect to happen?**
+        Describe the expected behavior.
+
+        **Additional context**
+        Any other relevant information, error messages, or screenshots.
         You can include images or videos with drag and drop, and format code blocks or logs with <code>```</code> tags.
     validations:
       required: true
@@ -92,14 +99,17 @@ body:
         Provide a detailed list of steps or sample code that reproduces the issue.
         Having reproducible issues is crucial for contributors to be able to solve them.
         If applicable, include information such as input data, specific configurations, or screenshots.
-      placeholder: Describe the steps to reproduce the issue.
+      placeholder: |
+        1. Create a new Godot project
+        2. Install GdUnit4 version X.X.X
+        3. Create a test script with the following content:
+        4. Run the test
+        5. Observe the error
       value: |
-        Example:
-        1. Open the application.
-        2. Click on '...' button.
-        3. Enter '...' in the input field.
-        4. Click on 'Submit'.
-        5. Observe the error in the console.
+        **Steps:**
+        1.
+        2.
+        3.
 
         If the issue involves code, please include relevant snippets below:
 
@@ -113,11 +123,9 @@ body:
   - type: textarea
     id: example-project
     attributes:
-      label: Minimal reproduction project
+      label: Minimal Reproduction Project
       description: |
-        A small Godot project which reproduces the issue, with no unnecessary files included. Be sure to not include the `.godot` folder in the archive (but keep `project.godot`).
+        Small Godot project reproducing the issue (exclude .godot folder and exclude the addon/gdunit4)
       placeholder: |
-        Drag and drop a ZIP archive to upload it (max 10 MB).
-        **Do not select another field until the project is done uploading.**
-    validations:
-      required: false
+        Drag and drop a ZIP file (max 10 MB)
+        **Wait for upload to complete before selecting other fields**
