@@ -32,3 +32,8 @@ runs:
       with:
         exclude_file: ".github/actions/formatting_checks/.validationignore"
         use_gitignore: ${{ inputs.use-gitignore }}
+
+    - name: 'Validate Markdown files'
+      uses: DavidAnson/markdownlint-cli2-action@v20
+      with:
+        config: ".github/actions/formatting_checks/.markdownlint.jsonc"
