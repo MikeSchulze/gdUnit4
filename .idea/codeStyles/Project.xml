@@ -9,5 +9,8 @@
       <option name="SPACE_BEFORE_COLON" value="true" />
       <option name="SPACE_AFTER_COLON" value="true" />
     </codeStyleSettings>
+    <codeStyleSettings language="Markdown">
+      <option name="RIGHT_MARGIN" value="160" />
+    </codeStyleSettings>
   </code_scheme>
 </component>

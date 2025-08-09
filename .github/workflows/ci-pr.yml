@@ -1,0 +1,40 @@
+﻿name: ci-pr
+
+run-name: ${{ github.head_ref || github.ref_name }}-ci-pr
+
+on: # yamllint disable-line rule:truthy
+  pull_request:
+    paths-ignore:
+      - '**.jpg'
+      - '**.png'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-pr-${{ github.event.number }}
+  cancel-in-progress: true
+
+
+jobs:
+  format-checks:
+    if: ${{ !cancelled() }}
+    name: '📝 MdLint'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v20
+        with:
+          config: ".github/.markdownlint.jsonc"
+          globs: '**.{md,markdown}'
+
+  finalize:
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    name: 'Final Results'
+    needs: [format-checks]
+    steps:
+      - run: exit 1
+        if: >-
+          ${{
+               contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+          }}
