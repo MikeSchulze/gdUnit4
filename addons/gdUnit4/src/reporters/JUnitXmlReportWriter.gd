@@ -1,7 +1,7 @@
 # This class implements the JUnit XML file format
 # based checked https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd
-class_name JUnitXmlReport
-extends RefCounted
+class_name JUnitXmlReportWriter
+extends GdUnitReportWriter
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
@@ -22,34 +22,32 @@ const ATTR_TYPE := "type"
 
 const HEADER := '<?xml version="1.0" encoding="UTF-8" ?>\n'
 
-var _report_path: String
+
+func output_format() -> String:
+	return "XML"
 
 
-func _init(path: String) -> void:
-	_report_path = path
-
-
-func write(report: GdUnitReportSummary) -> String:
-	var result_file: String = "%s/results.xml" % _report_path
-	DirAccess.make_dir_recursive_absolute(_report_path)
+func write(report_path: String, report: GdUnitReportSummary) -> String:
+	var result_file: String = "%s/results.xml" % report_path
+	DirAccess.make_dir_recursive_absolute(report_path)
 	var file := FileAccess.open(result_file, FileAccess.WRITE)
 	if file == null:
 		push_warning("Can't saving the result to '%s'\n Error: %s" % [result_file, error_string(FileAccess.get_open_error())])
 	else:
-		file.store_string(build_junit_report(report))
+		file.store_string(build_junit_report(report_path, report))
 	return result_file
 
 
-func build_junit_report(report: GdUnitReportSummary) -> String:
+func build_junit_report(report_path: String, report: GdUnitReportSummary) -> String:
 	var iso8601_datetime := Time.get_date_string_from_system()
 	var test_suites := XmlElement.new("testsuites")\
 		.attribute(ATTR_ID, iso8601_datetime)\
-		.attribute(ATTR_NAME, _report_path.get_file())\
+		.attribute(ATTR_NAME, report_path.get_file())\
 		.attribute(ATTR_TESTS, report.test_count())\
 		.attribute(ATTR_FAILURES, report.failure_count())\
 		.attribute(ATTR_SKIPPED, report.skipped_count())\
 		.attribute(ATTR_FLAKY, report.flaky_count())\
-		.attribute(ATTR_TIME, JUnitXmlReport.to_time(report.duration()))\
+		.attribute(ATTR_TIME, JUnitXmlReportWriter.to_time(report.duration()))\
 		.add_childs(build_test_suites(report))
 	var as_string := test_suites.to_xml()
 	test_suites.dispose()
@@ -72,7 +70,7 @@ func build_test_suites(summary: GdUnitReportSummary) -> Array:
 			.attribute(ATTR_ERRORS, suite_report.error_count())\
 			.attribute(ATTR_SKIPPED, suite_report.skipped_count())\
 			.attribute(ATTR_FLAKY, suite_report.flaky_count())\
-			.attribute(ATTR_TIME, JUnitXmlReport.to_time(suite_report.duration()))\
+			.attribute(ATTR_TIME, JUnitXmlReportWriter.to_time(suite_report.duration()))\
 			.add_childs(build_test_cases(suite_report)))
 	return test_suites
 
@@ -82,9 +80,9 @@ func build_test_cases(suite_report: GdUnitTestSuiteReport) -> Array:
 	for index in suite_report.get_reports().size():
 		var report :GdUnitTestCaseReport = suite_report.get_reports()[index]
 		test_cases.append( XmlElement.new("testcase")\
-			.attribute(ATTR_NAME, JUnitXmlReport.encode_xml(report.name()))\
+			.attribute(ATTR_NAME, JUnitXmlReportWriter.encode_xml(report.name()))\
 			.attribute(ATTR_CLASSNAME, report.suite_name())\
-			.attribute(ATTR_TIME, JUnitXmlReport.to_time(report.duration()))\
+			.attribute(ATTR_TIME, JUnitXmlReportWriter.to_time(report.duration()))\
 			.add_childs(build_reports(report)))
 	return test_cases
 
@@ -96,12 +94,12 @@ func build_reports(test_report: GdUnitTestCaseReport) -> Array:
 		if report.is_failure():
 			failure_reports.append(XmlElement.new("failure")\
 				.attribute(ATTR_MESSAGE, "FAILED: %s:%d" % [test_report.get_resource_path(), report.line_number()])\
-				.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
+				.attribute(ATTR_TYPE, JUnitXmlReportWriter.to_type(report.type()))\
 				.text(convert_rtf_to_text(report.message())))
 		elif report.is_error():
 			failure_reports.append(XmlElement.new("error")\
 				.attribute(ATTR_MESSAGE, "ERROR: %s:%d" % [test_report.get_resource_path(), report.line_number()])\
-				.attribute(ATTR_TYPE, JUnitXmlReport.to_type(report.type()))\
+				.attribute(ATTR_TYPE, JUnitXmlReportWriter.to_type(report.type()))\
 				.text(convert_rtf_to_text(report.message())))
 		elif report.is_skipped():
 			failure_reports.append(XmlElement.new("skipped")\

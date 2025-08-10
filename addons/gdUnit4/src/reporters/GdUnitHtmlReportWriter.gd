@@ -1,30 +1,23 @@
-class_name GdUnitHtmlReport
-extends RefCounted
+class_name GdUnitHtmlReportWriter
+extends GdUnitReportWriter
 
 
-var _report_path: String
+func output_format() -> String:
+	return "HTML"
 
 
-func _init(report_path: String) -> void:
-	_report_path = report_path
-
-
-func write(report: GdUnitReportSummary) -> String:
+func write(report_path: String, report: GdUnitReportSummary) -> String:
 	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/reporters/html/template/index.html")
 	var to_write := GdUnitHtmlPatterns.build(template, report, "")
-	to_write = _apply_path_reports(_report_path, to_write, report.get_reports())
-	to_write = _apply_testsuite_reports(_report_path, to_write, report.get_reports())
+	to_write = _apply_path_reports(report_path, to_write, report.get_reports())
+	to_write = _apply_testsuite_reports(report_path, to_write, report.get_reports())
 	# write report
-	DirAccess.make_dir_recursive_absolute(_report_path)
-	var html_report_file := _report_file()
+	DirAccess.make_dir_recursive_absolute(report_path)
+	var html_report_file := "%s/index.html" % report_path
 	FileAccess.open(html_report_file, FileAccess.WRITE).store_string(to_write)
 	@warning_ignore("return_value_discarded")
-	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/reporters/html/template/css/", _report_path + "/css")
+	GdUnitFileAccess.copy_directory("res://addons/gdUnit4/src/reporters/html/template/css/", report_path + "/css")
 	return html_report_file
-
-
-func _report_file() -> String:
-	return "%s/index.html" % _report_path
 
 
 func _apply_path_reports(report_dir: String, template: String, report_summaries: Array) -> String:
