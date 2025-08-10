@@ -17,17 +17,26 @@ var test_session: GdUnitTestSession:
 
 var _report_summary: GdUnitReportSummary
 var _reporter: GdUnitTestReporter
+var _report_writer: GdUnitReportWriter
 
 
-func _init(hook_name: String, hook_description: String) -> void:
+func _init(report_writer: GdUnitReportWriter, hook_name: String, hook_description: String) -> void:
 	super(hook_name, hook_description)
 	_reporter = GdUnitTestReporter.new()
+	_report_writer = report_writer
 
 
 func startup(session: GdUnitTestSession) -> GdUnitResult:
 	test_session = session
 	_report_summary = GdUnitReportSummary.new()
 	_reporter.init_summary()
+
+	return GdUnitResult.success()
+
+
+func shutdown(session: GdUnitTestSession) -> GdUnitResult:
+	var report_path := _report_writer.write(session.report_path, _report_summary)
+	session.send_message("Open {0} Report at: file://{1}".format([_report_writer.output_format(), report_path]))
 
 	return GdUnitResult.success()
 

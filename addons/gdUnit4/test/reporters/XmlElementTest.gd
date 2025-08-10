@@ -10,8 +10,8 @@ const __source = 'res://addons/gdUnit4/src/report/XmlElement.gd'
 
 func test_attribute() -> void:
 	var element := XmlElement.new("testsuites")\
-		.attribute(JUnitXmlReport.ATTR_ID, "1")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "foo")
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "1")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "foo")
 	var expected :="""
 		<testsuites id="1" name="foo">
 		</testsuites>
@@ -31,11 +31,11 @@ func test_empty() -> void:
 
 func test_add_child() -> void:
 	var child := XmlElement.new("foo")\
-		.attribute(JUnitXmlReport.ATTR_ID, "1")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "foo")
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "1")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "foo")
 	var element := XmlElement.new("bar")\
-		.attribute(JUnitXmlReport.ATTR_ID, "1")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "bar")\
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "1")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "bar")\
 		.add_child(child)
 	var expected := """
 		<bar id="1" name="bar">
@@ -49,14 +49,14 @@ func test_add_child() -> void:
 
 func test_add_childs() -> void:
 	var child_a := XmlElement.new("foo_a")\
-		.attribute(JUnitXmlReport.ATTR_ID, 1)\
-		.attribute(JUnitXmlReport.ATTR_NAME, "foo_a")
+		.attribute(JUnitXmlReportWriter.ATTR_ID, 1)\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "foo_a")
 	var child_b := XmlElement.new("foo_b")\
-		.attribute(JUnitXmlReport.ATTR_ID, 2)\
-		.attribute(JUnitXmlReport.ATTR_NAME, "foo_b")
+		.attribute(JUnitXmlReportWriter.ATTR_ID, 2)\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "foo_b")
 	var element := XmlElement.new("bar")\
-		.attribute(JUnitXmlReport.ATTR_ID, "1")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "bar")\
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "1")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "bar")\
 		.add_childs([child_a, child_b])
 	var expected := """
 		<bar id="1" name="bar">
@@ -86,33 +86,33 @@ func test_add_text() -> void:
 
 func test_complex_example() -> void:
 	var testsuite1 := XmlElement.new("testsuite")\
-		.attribute(JUnitXmlReport.ATTR_ID, "1")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "bar")
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "1")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "bar")
 	for test_case :int in [1,2,3,4,5]:
 		var test := XmlElement.new("testcase")\
-			.attribute(JUnitXmlReport.ATTR_ID, str(test_case))\
-			.attribute(JUnitXmlReport.ATTR_NAME, "test_case_%d" % test_case)
+			.attribute(JUnitXmlReportWriter.ATTR_ID, str(test_case))\
+			.attribute(JUnitXmlReportWriter.ATTR_NAME, "test_case_%d" % test_case)
 		testsuite1.add_child(test)
 	var testsuite2 := XmlElement.new("testsuite")\
-		.attribute(JUnitXmlReport.ATTR_ID, "2")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "bar2")
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "2")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "bar2")
 	for test_case :int in [1,2,3]:
 		var test := XmlElement.new("testcase")\
-			.attribute(JUnitXmlReport.ATTR_ID, str(test_case))\
-			.attribute(JUnitXmlReport.ATTR_NAME, "test_case_%d" % test_case)
+			.attribute(JUnitXmlReportWriter.ATTR_ID, str(test_case))\
+			.attribute(JUnitXmlReportWriter.ATTR_NAME, "test_case_%d" % test_case)
 		if test_case == 2:
 			var failure := XmlElement.new("failure")\
-				.attribute(JUnitXmlReport.ATTR_MESSAGE, "test_case.gd:12")\
-				.attribute(JUnitXmlReport.ATTR_TYPE, "FAILURE")\
+				.attribute(JUnitXmlReportWriter.ATTR_MESSAGE, "test_case.gd:12")\
+				.attribute(JUnitXmlReportWriter.ATTR_TYPE, "FAILURE")\
 				.text("This is a failure\nExpecting true but was false\n")
 			test.add_child(failure)
 		testsuite2.add_child(test)
 	var root := XmlElement.new("testsuites")\
-		.attribute(JUnitXmlReport.ATTR_ID, "ID-XXX")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "report_foo")\
-		.attribute(JUnitXmlReport.ATTR_TESTS, 42)\
-		.attribute(JUnitXmlReport.ATTR_FAILURES, 1)\
-		.attribute(JUnitXmlReport.ATTR_TIME, "1.22")\
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "ID-XXX")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "report_foo")\
+		.attribute(JUnitXmlReportWriter.ATTR_TESTS, 42)\
+		.attribute(JUnitXmlReportWriter.ATTR_FAILURES, 1)\
+		.attribute(JUnitXmlReportWriter.ATTR_TIME, "1.22")\
 		.add_childs([testsuite1, testsuite2])
 	var expected := """
 		<testsuites id="ID-XXX" name="report_foo" tests="42" failures="1" time="1.22">
@@ -150,37 +150,37 @@ func test_complex_example() -> void:
 
 func test_dispose() -> void:
 	var testsuite1 := XmlElement.new("testsuite")\
-		.attribute(JUnitXmlReport.ATTR_ID, "1")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "bar")
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "1")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "bar")
 	var testsuite1_expected_tests := Array()
 	for test_case :int in [1,2,3,4,5]:
 		var test := XmlElement.new("testcase")\
-			.attribute(JUnitXmlReport.ATTR_ID, str(test_case))\
-			.attribute(JUnitXmlReport.ATTR_NAME, "test_case_%d" % test_case)
+			.attribute(JUnitXmlReportWriter.ATTR_ID, str(test_case))\
+			.attribute(JUnitXmlReportWriter.ATTR_NAME, "test_case_%d" % test_case)
 		testsuite1.add_child(test)
 		testsuite1_expected_tests.append(test)
 	var testsuite2 := XmlElement.new("testsuite")\
-		.attribute(JUnitXmlReport.ATTR_ID, "2")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "bar2")
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "2")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "bar2")
 	var testsuite2_expected_tests := Array()
 	for test_case :int in [1,2,3]:
 		var test := XmlElement.new("testcase")\
-			.attribute(JUnitXmlReport.ATTR_ID, str(test_case))\
-			.attribute(JUnitXmlReport.ATTR_NAME, "test_case_%d" % test_case)
+			.attribute(JUnitXmlReportWriter.ATTR_ID, str(test_case))\
+			.attribute(JUnitXmlReportWriter.ATTR_NAME, "test_case_%d" % test_case)
 		testsuite2_expected_tests.append(test)
 		if test_case == 2:
 			var failure := XmlElement.new("failure")\
-				.attribute(JUnitXmlReport.ATTR_MESSAGE, "test_case.gd:12")\
-				.attribute(JUnitXmlReport.ATTR_TYPE, "FAILURE")\
+				.attribute(JUnitXmlReportWriter.ATTR_MESSAGE, "test_case.gd:12")\
+				.attribute(JUnitXmlReportWriter.ATTR_TYPE, "FAILURE")\
 				.text("This is a failure\nExpecting true but was false\n")
 			test.add_child(failure)
 		testsuite2.add_child(test)
 	var root := XmlElement.new("testsuites")\
-		.attribute(JUnitXmlReport.ATTR_ID, "ID-XXX")\
-		.attribute(JUnitXmlReport.ATTR_NAME, "report_foo")\
-		.attribute(JUnitXmlReport.ATTR_TESTS, 42)\
-		.attribute(JUnitXmlReport.ATTR_FAILURES, 1)\
-		.attribute(JUnitXmlReport.ATTR_TIME, "1.22")\
+		.attribute(JUnitXmlReportWriter.ATTR_ID, "ID-XXX")\
+		.attribute(JUnitXmlReportWriter.ATTR_NAME, "report_foo")\
+		.attribute(JUnitXmlReportWriter.ATTR_TESTS, 42)\
+		.attribute(JUnitXmlReportWriter.ATTR_FAILURES, 1)\
+		.attribute(JUnitXmlReportWriter.ATTR_TIME, "1.22")\
 		.add_childs([testsuite1, testsuite2])
 
 	assert_that(root._parent).is_null()
