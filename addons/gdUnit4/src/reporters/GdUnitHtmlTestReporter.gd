@@ -39,7 +39,7 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 		GdUnitEvent.TESTCASE_AFTER:
 			update_statistics(event)
 			var test := test_session.find_test_by_id(event.guid())
-			_report.set_testcase_counters(test.source_file,
+			_report.set_counters(test.source_file,
 				test.display_name,
 				event.error_count(),
 				event.failed_count(),
@@ -47,28 +47,8 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 				event.is_skipped(),
 				event.is_flaky(),
 				event.elapsed_time())
-			_report.add_testcase_reports(test.source_file, test.display_name, event.reports())
+			_report.add_reports(test.source_file, test.display_name, event.reports())
 
 
 func report_file() -> String:
 	return _report.report_file()
-
-
-func error_count(statistics: Dictionary) -> int:
-	return statistics["error_count"]
-
-
-func failed_count(statistics: Dictionary) -> int:
-	return statistics["failed_count"]
-
-
-func orphan_nodes(statistics: Dictionary) -> int:
-	return statistics["orphan_nodes"]
-
-
-func skipped_count(statistics: Dictionary) -> int:
-	return statistics["skipped_count"]
-
-
-func flaky_count(statistics: Dictionary) -> int:
-	return statistics["flaky_count"]

@@ -168,10 +168,10 @@ func build_executed_test_suite_msg(executed_count: int, total_count: int) -> Str
 	return "Executed test suites: (%d/%d), %d skipped" % [executed_count, total_count, (total_count - executed_count)]
 
 
-func build_executed_test_case_msg(total_count: int, skipped_count: int) -> String:
-	if skipped_count == 0:
+func build_executed_test_case_msg(total_count: int, p_skipped_count: int) -> String:
+	if p_skipped_count == 0:
 		return "Executed test cases : (%d/%d)" % [total_count, total_count]
-	return "Executed test cases : (%d/%d), %d skipped" % [total_count-skipped_count, total_count, skipped_count]
+	return "Executed test cases : (%d/%d), %d skipped" % [total_count-p_skipped_count, total_count, p_skipped_count]
 
 
 func print_message(message: String, color: Color = _text_color) -> void:
