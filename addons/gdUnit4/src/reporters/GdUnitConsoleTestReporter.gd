@@ -4,6 +4,20 @@ extends GdUnitTestReporter
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
+
+var test_session: GdUnitTestSession:
+	get:
+		return test_session
+	set(value):
+		# disconnect first possible connected listener
+		if test_session != null:
+			test_session.test_event.disconnect(on_gdunit_event)
+		# add listening to current session
+		test_session = value
+		if test_session != null:
+			test_session.test_event.connect(on_gdunit_event)
+
+
 var _writer: GdUnitMessageWritter
 var _status_indent := 86
 var _detailed: bool
