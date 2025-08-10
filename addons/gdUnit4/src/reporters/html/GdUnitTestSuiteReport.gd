@@ -91,7 +91,7 @@ func add_or_create_test_report(test_report: GdUnitTestCaseReport) -> void:
 	_reports.append(test_report)
 
 
-func update_testsuite_counters(
+func _update_testsuite_counters(
 	p_error_count: int,
 	p_failure_count: int,
 	p_orphan_count: int,
@@ -106,8 +106,14 @@ func update_testsuite_counters(
 	_duration += p_duration
 
 
-func set_testcase_counters(test_name: String, p_error_count: int, p_failure_count: int, p_orphan_count: int,
-	p_is_skipped: bool, p_is_flaky: bool, p_duration: int) -> void:
+func set_testcase_counters(
+	test_name: String,
+	p_error_count: int,
+	p_failure_count: int,
+	p_orphan_count: int,
+	p_is_skipped: bool,
+	p_is_flaky: bool,
+	p_duration: int) -> void:
 	if _reports.is_empty():
 		return
 	var test_report:GdUnitTestCaseReport = _reports.filter(func (report: GdUnitTestCaseReport) -> bool:

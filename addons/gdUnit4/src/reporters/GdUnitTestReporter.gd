@@ -104,3 +104,23 @@ func total_orphan_count() -> int:
 
 func elapsed_time() -> int:
 	return _summary["elapsed_time"]
+
+
+func error_count(statistics: Dictionary) -> int:
+	return statistics["error_count"]
+
+
+func failed_count(statistics: Dictionary) -> int:
+	return statistics["failed_count"]
+
+
+func orphan_nodes(statistics: Dictionary) -> int:
+	return statistics["orphan_nodes"]
+
+
+func skipped_count(statistics: Dictionary) -> int:
+	return statistics["skipped_count"]
+
+
+func flaky_count(statistics: Dictionary) -> int:
+	return statistics["flaky_count"]

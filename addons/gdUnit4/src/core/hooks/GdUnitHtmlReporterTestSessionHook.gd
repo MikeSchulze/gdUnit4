@@ -16,8 +16,6 @@ func startup(session: GdUnitTestSession) -> GdUnitResult:
 func shutdown(session: GdUnitTestSession) -> GdUnitResult:
 	session.send_message("Open HTML Report at: file://%s" % _html_reporter.report_file())
 
-	# TODO move to `GdUnitJUnitReporterTestSessionHook`
-	JUnitXmlReport.new(session.report_path).write(_html_reporter._report)
 	return GdUnitResult.success()
 
 

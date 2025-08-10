@@ -17,6 +17,7 @@ static func instance() -> GdUnitTestSessionHookService:
 		var service := GdUnitTestSessionHookService.new()
 		# Register default system hooks here
 		service.register(GdUnitHtmlReporterTestSessionHook.new(), true)
+		service.register(GdUnitXMLReporterTestSessionHook.new(), true)
 		service._save_settings = false
 		service.load_hook_settings()
 		service._save_settings = true
