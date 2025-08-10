@@ -23,7 +23,7 @@ extends "res://addons/gdUnit4/src/core/runners/GdUnitTestSessionRunner.gd"
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 var _console := GdUnitCSIMessageWriter.new()
-var _console_reporter: GdUnitTestReporter
+var _console_reporter: GdUnitConsoleTestReporter
 var _headless_mode_ignore := false
 var _runner_config_file := ""
 var _debug_cmd_args := PackedStringArray()
@@ -451,9 +451,11 @@ func _on_send_message(message: String) -> void:
 
 
 func _on_gdunit_event(event: GdUnitEvent) -> void:
-	if event.type() == GdUnitEvent.SESSION_START:
-		_console_reporter.test_session = _test_session
-	_console_reporter.on_gdunit_event(event)
+	match event.type():
+		GdUnitEvent.SESSION_START:
+			_console_reporter.test_session = _test_session
+		GdUnitEvent.SESSION_CLOSE:
+			_console_reporter.test_session = null
 
 
 func report_exit_code() -> int:

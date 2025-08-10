@@ -22,23 +22,25 @@ const ATTR_TYPE := "type"
 
 const HEADER := '<?xml version="1.0" encoding="UTF-8" ?>\n'
 
-var _report_path :String
+var _report_path: String
 
 
-func _init(path :String) -> void:
+func _init(path: String) -> void:
 	_report_path = path
 
 
-func write(report :GdUnitReportSummary) -> String:
+func write(report: GdUnitReportSummary) -> String:
 	var result_file: String = "%s/results.xml" % _report_path
+	DirAccess.make_dir_recursive_absolute(_report_path)
 	var file := FileAccess.open(result_file, FileAccess.WRITE)
 	if file == null:
 		push_warning("Can't saving the result to '%s'\n Error: %s" % [result_file, error_string(FileAccess.get_open_error())])
-	file.store_string(build_junit_report(report))
+	else:
+		file.store_string(build_junit_report(report))
 	return result_file
 
 
-func build_junit_report(report :GdUnitReportSummary) -> String:
+func build_junit_report(report: GdUnitReportSummary) -> String:
 	var iso8601_datetime := Time.get_date_string_from_system()
 	var test_suites := XmlElement.new("testsuites")\
 		.attribute(ATTR_ID, iso8601_datetime)\
@@ -54,8 +56,8 @@ func build_junit_report(report :GdUnitReportSummary) -> String:
 	return HEADER + as_string
 
 
-func build_test_suites(summary :GdUnitReportSummary) -> Array:
-	var test_suites :Array[XmlElement] = []
+func build_test_suites(summary: GdUnitReportSummary) -> Array:
+	var test_suites: Array[XmlElement] = []
 	for index in summary.get_reports().size():
 		var suite_report :GdUnitTestSuiteReport = summary.get_reports()[index]
 		var iso8601_datetime := Time.get_datetime_string_from_unix_time(suite_report.time_stamp())
@@ -75,8 +77,8 @@ func build_test_suites(summary :GdUnitReportSummary) -> Array:
 	return test_suites
 
 
-func build_test_cases(suite_report :GdUnitTestSuiteReport) -> Array:
-	var test_cases :Array[XmlElement] = []
+func build_test_cases(suite_report: GdUnitTestSuiteReport) -> Array:
+	var test_cases: Array[XmlElement] = []
 	for index in suite_report.get_reports().size():
 		var report :GdUnitTestCaseReport = suite_report.get_reports()[index]
 		test_cases.append( XmlElement.new("testcase")\
@@ -88,7 +90,7 @@ func build_test_cases(suite_report :GdUnitTestSuiteReport) -> Array:
 
 
 func build_reports(test_report: GdUnitTestCaseReport) -> Array:
-	var failure_reports :Array[XmlElement] = []
+	var failure_reports: Array[XmlElement] = []
 
 	for report: GdUnitReport in test_report.get_test_reports():
 		if report.is_failure():
@@ -108,11 +110,11 @@ func build_reports(test_report: GdUnitTestCaseReport) -> Array:
 	return failure_reports
 
 
-func convert_rtf_to_text(bbcode :String) -> String:
+func convert_rtf_to_text(bbcode: String) -> String:
 	return GdUnitTools.richtext_normalize(bbcode)
 
 
-static func to_type(type :int) -> String:
+static func to_type(type: int) -> String:
 	match type:
 		GdUnitReport.SUCCESS:
 			return "SUCCESS"
@@ -131,11 +133,11 @@ static func to_type(type :int) -> String:
 	return "UNKNOWN"
 
 
-static func to_time(duration :int) -> String:
+static func to_time(duration: int) -> String:
 	return "%4.03f" % (duration / 1000.0)
 
 
-static func encode_xml(value :String) -> String:
+static func encode_xml(value: String) -> String:
 	return value.xml_escape(true)
 
 

@@ -2,18 +2,8 @@ class_name GdUnitTestReporter
 extends RefCounted
 
 
-var test_session: GdUnitTestSession:
-	get:
-		return test_session
-	set(value):
-		test_session = value
-
 var _statistics := {}
 var _summary := {}
-
-
-func on_gdunit_event(_event: GdUnitEvent) -> void:
-	push_error("Reporter: 'on_gdunit_event' is not implemented!")
 
 
 func init_summary() -> void:
