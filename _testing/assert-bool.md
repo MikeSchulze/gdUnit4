@@ -2,7 +2,6 @@
 layout: default
 title: Boolean Assert
 parent: Asserts
-nav_order: 2
 ---
 
 # Boolean Assertions

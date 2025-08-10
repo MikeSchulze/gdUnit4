@@ -2,7 +2,6 @@
 layout: default
 title: Error/Exception Assert
 parent: Asserts
-nav_order: 13
 ---
 
 # Error Assertion
