@@ -131,8 +131,7 @@ func get_exit_code() -> int:
 ## [br]
 ## [param code] The exit code to return.
 func quit(code: int) -> void:
-	if code != RETURN_SUCCESS:
-		_state = EXIT
+	_state = EXIT
 	GdUnitTools.dispose_all()
 	await GdUnitMemoryObserver.gc_on_guarded_instances()
 	await super(code)
@@ -389,6 +388,7 @@ func init_gd_unit() -> void:
 		console_info("No test cases found, abort test run!", Color.YELLOW)
 		console_info("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)
 		quit(RETURN_SUCCESS)
+		return
 	_state = RUN
 
 
