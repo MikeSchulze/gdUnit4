@@ -114,6 +114,43 @@ func test_find_item_by_id() -> void:
 	assert_object(item).is_not_null()
 
 
+# Tests a special case, the test is named equal to the test suite
+func test_find_item_by_id_GD809() -> void:
+	# clear the cache before discover new tests
+	_inspector.clear_tree_item_cache()
+	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/gd_809/test_example.resource")
+	var discovered_tests := {}
+	GdUnitTestDiscoverer.discover_tests(suite_script, func(discover_test: GdUnitTestCase) -> void:
+		discover_sink(discover_test)
+		discovered_tests[discover_test.test_name] = discover_test
+	)
+	assert_dict(discovered_tests).contains_keys(["test_example", "test_example_b"])
+	var test_aa: GdUnitTestCase = discovered_tests["test_example"]
+	var item := _inspector._find_tree_item_by_id(_inspector._tree_root, test_aa.guid)
+	assert_object(item).is_not_null()
+
+
+# Tests a special case, the test is named equal to the test suite
+func test_find_item_by_path_GD809() -> void:
+	# clear the cache before discover new tests
+	_inspector.clear_tree_item_cache()
+	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/gd_809/test_example.resource")
+	var discovered_tests := {}
+	GdUnitTestDiscoverer.discover_tests(suite_script, func(discover_test: GdUnitTestCase) -> void:
+		discover_sink(discover_test)
+		discovered_tests[discover_test.test_name] = discover_test
+	)
+	assert_dict(discovered_tests).contains_keys(["test_example", "test_example_b"])
+	var test_example: GdUnitTestCase = discovered_tests["test_example"]
+	var test_example_b: GdUnitTestCase = discovered_tests["test_example"]
+	# find test_suite by path
+	var item := _inspector._find_tree_item_by_path(test_example.suite_resource_path, "test_example")
+	assert_object(item).is_not_null()
+	# find tests by id
+	assert_object(_inspector._find_tree_item_by_id(_inspector._tree_root, test_example.guid)).is_not_null()
+	assert_object(_inspector._find_tree_item_by_id(_inspector._tree_root, test_example_b.guid)).is_not_null()
+
+
 func test_select_first_failure() -> void:
 	# test initial nothing is selected
 	assert_object(_inspector._tree.get_selected()).is_null()
