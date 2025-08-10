@@ -2,7 +2,7 @@
 layout: default
 title: AssertThat
 parent: Asserts
-nav_order: 20
+nav_order: 0
 ---
 
 # AssertThat Assertions

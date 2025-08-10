@@ -2,7 +2,6 @@
 layout: default
 title: Vector Assert
 parent: Asserts
-nav_order: 8
 ---
 
 # Vector Assertions
