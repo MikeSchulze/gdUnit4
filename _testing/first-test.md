@@ -168,31 +168,102 @@ To learn how to use parameterized tests, please refer to the
 
 ---
 
-## How to fail fast (GdScript only)
+## When to Use Fail Fast with Multiple Assertions {#multiple-assertions-fail-fast}
 
 {% include advice.html
 content="Since GdScript does not have exceptions, we need to manually define an exit strategy to fail fast and avoid unnecessary test execution."
 %}
+When you have multiple assertions in a single test case, it's important to consider using fail fast techniques to avoid unnecessary test execution
+and get clearer failure reports.
 
-This means a TestCase can fail by one or more assertions and will not be aborted at the first failed assertion.
-However, to abort after the first error and fail fast, you can use the function **is_failure()**.
+### Why Use Fail Fast?
 
-Here's an example:
+By default, GdUnit4 will continue executing all assertions in a test case even after one fails.
+While this can provide comprehensive feedback about all failing conditions, it can also lead to:
+
+* **Cascading failures**: Later assertions may fail because earlier ones didn't establish the expected state
+* **Misleading error messages**: Subsequent failures might not represent real issues but rather consequences of the first failure
+* **Debugger interruptions**: In debug mode, accessing properties on null objects will cause the debugger to break with runtime errors,
+    stopping test execution unexpectedly
+* **Longer execution time**: Unnecessary processing when the test has already failed
+* **Cluttered output**: Multiple failure messages when only the first one is relevant
+
+### Example Without Fail Fast
 
 ```gd
-func test_foo():
-   # do some assertions
-   assert_str("").is_empty()
-   # last assert was succes 
-   if is_failure():
-      return
-   asset_str("abc").is_empty()
-   # last assert was failure, now abort the test here
-   if is_failure():
-      return
-
-   ...
+func test_player_setup():
+    var player = create_player()
+    
+    # If this fails, the following assertions may not make sense
+    assert_object(player).is_not_null()
+    
+    # In debug mode: debugger will break here with null reference error if player is null
+    # In release mode: will continue and show confusing assertion failure messages
+    assert_str(player.name)\
+        .is_equal("Hero")\
+        .starts_with("H")
+    assert_int(player.health).is_equal(100)
+    assert_bool(player.is_alive()).is_true()
 ```
+
+### Example With Fail Fast
+
+```gd
+func test_player_setup():
+    var player = create_player()
+    
+    # Check critical precondition first
+    assert_object(player).is_not_null()
+    if is_failure():
+        return
+    
+    # Now we can safely test player properties using fluent syntax
+    assert_str(player.name)\
+        .is_equal("Hero")\
+        .starts_with("H")
+    if is_failure():
+        return
+        
+    assert_int(player.health)\
+        .is_equal(100)\
+        .is_greater(0)
+    if is_failure():
+        return
+        
+    assert_bool(player.is_alive()).is_true()
+```
+
+### Using fail() for Complex Conditions
+
+Sometimes you need to fail based on complex logic that can't be expressed with standard assertions:
+
+```gd
+func test_game_state_validation():
+    var game_state = get_current_game_state()
+    
+    # Complex validation that requires custom logic
+    if game_state.level > 10 and game_state.player_health <= 0 and not game_state.has_revival_item:
+        fail("Invalid game state: Player cannot survive level 10+ with 0 health and no revival items")
+        return
+    
+    # Continue with standard assertions using fluent syntax
+    assert_that(game_state.is_valid()).is_true()
+    if is_failure():
+        return
+        
+    assert_int(game_state.score)\
+        .is_greater_equal(0)\
+        .is_less(1000000)
+```
+
+### Best Practices
+
+1. **Use fail fast for dependent assertions**: When later assertions depend on earlier ones being true
+2. **Check critical preconditions first**: Validate that objects exist and are in the expected state before testing their properties
+3. **Use fail() for complex conditions**: When standard assertions can't express the validation logic you need
+4. **Keep tests focused**: Consider splitting complex test cases with many assertions into smaller, more focused tests
+
+---
 
 ---
 <h4> document version v4.1.0 </h4>
