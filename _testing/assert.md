@@ -202,18 +202,86 @@ For more detailed information about fail fast techniques, see [How to fail fast]
 
 By default, GdUnit generates a failure report based on the used assert, according to the expected vs. current value scheme.
 However, in some cases, the default failure message may not be specific enough or helpful to the reader.
-In those cases, you can override the default failure message using the **override_failure_message function**.
+In those cases, you can override or append to the default failure message using specialized functions.
 
-To use this function, simply call it on the assertion and pass in a custom failure message as a string. For example:
+### Using override_failure_message()
 
-```ruby
-    func test_custom_failure_message() -> void:
-        assert_str("Hello World")\
-            # Override the default failure message with a custom one
-            .override_failure_message("This is a customized failure message!")\
-            # Let the test fail
-            .is_empty()
+The **override_failure_message()** function completely replaces the default failure message with your custom message:
+
+{% tabs override-failure-message %}
+{% tab override-failure-message GdScript %}
+
+```gd
+func test_custom_failure_message() -> void:
+    assert_str("Hello World")\
+        # Override the default failure message with a custom one
+        .override_failure_message("Player name should not be empty after character creation!")\
+        # Let the test fail
+        .is_empty()
 ```
+
+{% endtab %}
+{% tab override-failure-message C# %}
+
+```cs
+[TestCase]
+public void CustomFailureMessage()
+{
+    AssertString("Hello World")
+        // Override the default failure message with a custom one
+        .OverrideFailureMessage("Player name should not be empty after character creation!")
+        // Let the test fail
+        .IsEmpty();
+}
+```
+
+{% endtab %}
+{% endtabs %}
+
+### Using append_failure_message()
+
+The **append_failure_message()** function adds additional context to the existing failure message while keeping the original assertion details:
+
+{% tabs append-failure-message %}
+{% tab append-failure-message GdScript %}
+
+```gd
+func test_player_health_with_context() -> void:
+    var player = create_player()
+    var last_damage_source = "Fire Spell"
+    
+    assert_int(player.health)\
+        # Add context information to help debugging
+        .append_failure_message("Player was damaged by: %s" % last_damage_source)\
+        .is_greater(0)
+```
+
+{% endtab %}
+{% tab append-failure-message C# %}
+
+```cs
+[TestCase]
+public void PlayerHealthWithContext()
+{
+    var player = CreatePlayer();
+    var lastDamageSource = "Fire Spell";
+    
+    AssertThat(player.Health)
+        // Add context information to help debugging
+        .AppendFailureMessage($"Player was damaged by: {lastDamageSource}")
+        .IsGreater(0);
+}
+```
+
+{% endtab %}
+{% endtabs %}
+
+### When to Use Each Approach
+
+* **Use override_failure_message()** when the default message isn't clear or you need a completely different explanation
+* **Use append_failure_message()** when you want to keep the assertion details but add helpful debugging context
+
+Both functions support fluent syntax and can be chained with other assertion methods.
 
 ---
 
