@@ -66,6 +66,7 @@ jobs:
           godot-version: ${{ matrix.godot-version }}
           godot-status: ${{ matrix.godot-status }}
           godot-net: true
+          dotnet-version: 'net9.0'
           version: master
           paths: |
             res://addons/gdUnit4/test/dotnet
