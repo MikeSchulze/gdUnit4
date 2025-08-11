@@ -1,6 +1,6 @@
 name: cleanup-workflow-runs
 
-on:
+on: # yamllint disable-line rule:truthy
   schedule:
     - cron: "0 0 * * *" # GMT
   workflow_dispatch:
@@ -34,19 +34,21 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "DAYS_TO_KEEP=${{ github.event.inputs.days_to_keep || '5' }}" >> $GITHUB_ENV
-          echo "DELETE_CANCELLED=${{ github.event.inputs.delete_cancelled || 'true' }}" >> $GITHUB_ENV
-          echo "DELETE_SKIPPED=${{ github.event.inputs.delete_skipped || 'true' }}" >> $GITHUB_ENV
+          {
+            echo "DAYS_TO_KEEP=${{ github.event.inputs.days_to_keep || '5' }}"
+            echo "DELETE_CANCELLED=${{ github.event.inputs.delete_cancelled || 'true' }}"
+            echo "DELETE_SKIPPED=${{ github.event.inputs.delete_skipped || 'true' }}"
+          } >> "$GITHUB_ENV"
 
       - name: Cleanup of obsolete workflow runs
         uses: actions/github-script@v7
         with:
           script: |
-            const script = require('./.github/actions/workflow-cleanup/index.js')
-            await script({ 
-              github, 
-              context, 
-              core, 
+            const script = require("./.github/actions/workflow-cleanup/index.js")
+            await script({
+              github,
+              context,
+              core,
               exec,
               env: process.env
             });

@@ -1,0 +1,83 @@
+name: Documentation
+description: Report missing or incorrect GdUnit4 documentation
+title: "[DOC-XXX] Brief description of documentation issue"
+labels: ["documentation"]
+projects: ["GdUnit4/5"]
+assignees:
+  - MikeSchulze
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thanks for helping improve GdUnit4 documentation!
+        - Please search [existing documentation issues](https://github.com/MikeSchulze/gdUnit4/issues?q=label%3Adocumentation%20is%3Aissue) to avoid duplicates
+        - Check the [official GdUnit4 documentation](https://mikeschulze.github.io/gdUnit4/) first
+        - Consider if this might be better as a GitHub Discussion for questions
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Issue Type
+      description: What type of documentation issue is this?
+      options:
+        - Missing documentation
+        - Incorrect/outdated information
+        - Unclear/confusing explanation
+        - Missing examples/code samples
+        - Broken links/references
+        - Formatting/display issues
+        - Translation issues
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the problem
+      description: A clear and concise description of what you found or missed in the documentation.
+      placeholder: |
+        Describe the documentation issue:
+        - What is currently documented (if anything)?
+        - What is missing or incorrect?
+        - What should the documentation contain?
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case/Context
+      description: Why is this documentation needed?
+      placeholder: |
+        Explain the scenario where this documentation would help:
+        - What were you trying to accomplish?
+        - What confusion did you encounter?
+        - How would better docs have helped?
+        - What questions do users commonly ask about this?
+    validations:
+      required: true
+
+  - type: input
+    id: doc-link
+    attributes:
+      label: Documentation Link (if applicable)
+      description: Link to the specific documentation page
+      placeholder: https://mikeschulze.github.io/gdUnit4/path/to/page
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-content
+    attributes:
+      label: Suggested Content (Optional)
+      description: Draft content or outline for the documentation
+      placeholder: |
+        If you have ideas for the actual documentation content:
+        - Suggested text or explanations
+        - Code examples
+        - Structure/outline
+        - Screenshots or diagrams
+    validations:
+      required: false

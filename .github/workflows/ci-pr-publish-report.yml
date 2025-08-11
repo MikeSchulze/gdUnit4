@@ -1,7 +1,8 @@
 name: 'Publish Test Report'
-on:
+
+on: # yamllint disable-line rule:truthy
   workflow_run:
-    workflows: [ 'ci-pr' ]  # runs after ci-pr workflow
+    workflows: ['ci-pr']  # runs after ci-pr workflow
     types:
       - completed
   workflow_dispatch:
@@ -23,9 +24,9 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        godot-version: [ '4.3', '4.4', '4.4.1' ]
-        godot-status: [ 'stable' ]
-        godot-net: [ '-net', '' ]
+        godot-version: ['4.3', '4.4', '4.4.1']
+        godot-status: ['stable']
+        godot-net: ['-net', '']
         include:
           - godot-version: '4.5'
             godot-status: 'beta5'
@@ -48,11 +49,10 @@ jobs:
         with:
           # using artifact to download is broken since download-artifact@v4 see https://github.com/dorny/test-reporter/issues/363
           # We do the download manually on step `Download artifacts`
-          #artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
+          # artifact: artifact_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
           name: report_gdUnit4_Godot${{ matrix.godot-version }}-${{ matrix.godot-status }}${{ matrix.godot-net }}
           path: './home/runner/work/gdUnit4/gdUnit4/reports/**/*.xml'
           reporter: ${{ matrix.godot-net == '-net' && 'dotnet-trx' || 'java-junit' }}
           fail-on-error: 'false'
           fail-on-empty: 'false'
           use-actions-summary: 'false'
-

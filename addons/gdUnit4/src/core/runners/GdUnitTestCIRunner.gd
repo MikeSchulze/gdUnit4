@@ -23,7 +23,7 @@ extends "res://addons/gdUnit4/src/core/runners/GdUnitTestSessionRunner.gd"
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 var _console := GdUnitCSIMessageWriter.new()
-var _console_reporter: GdUnitTestReporter
+var _console_reporter: GdUnitConsoleTestReporter
 var _headless_mode_ignore := false
 var _runner_config_file := ""
 var _debug_cmd_args := PackedStringArray()
@@ -131,8 +131,7 @@ func get_exit_code() -> int:
 ## [br]
 ## [param code] The exit code to return.
 func quit(code: int) -> void:
-	if code != RETURN_SUCCESS:
-		_state = EXIT
+	_state = EXIT
 	GdUnitTools.dispose_all()
 	await GdUnitMemoryObserver.gc_on_guarded_instances()
 	await super(code)
@@ -389,6 +388,7 @@ func init_gd_unit() -> void:
 		console_info("No test cases found, abort test run!", Color.YELLOW)
 		console_info("Exit code: %d" % RETURN_SUCCESS, Color.DARK_SALMON)
 		quit(RETURN_SUCCESS)
+		return
 	_state = RUN
 
 
@@ -451,9 +451,11 @@ func _on_send_message(message: String) -> void:
 
 
 func _on_gdunit_event(event: GdUnitEvent) -> void:
-	if event.type() == GdUnitEvent.SESSION_START:
-		_console_reporter.test_session = _test_session
-	_console_reporter.on_gdunit_event(event)
+	match event.type():
+		GdUnitEvent.SESSION_START:
+			_console_reporter.test_session = _test_session
+		GdUnitEvent.SESSION_CLOSE:
+			_console_reporter.test_session = null
 
 
 func report_exit_code() -> int:

@@ -36,7 +36,7 @@ static func is_variant_string_matching(value: Variant) -> GdUnitResult:
 	if value is String or value is StringName:
 		return GdUnitResult.success()
 	if value is GdUnitArgumentMatcher:
-		if value._to_string() == "any()" or value._to_string() == "any_string()":
+		if str(value) == "any()" or str(value) == "any_string()":
 			return GdUnitResult.success()
 		return GdUnitResult.error("Only 'any()' and 'any_string()' argument matchers are allowed!")
 	return GdUnitResult.error("Only String or StringName types are allowed!")

@@ -2,18 +2,8 @@ class_name GdUnitTestReporter
 extends RefCounted
 
 
-var test_session: GdUnitTestSession:
-	get:
-		return test_session
-	set(value):
-		test_session = value
-
 var _statistics := {}
 var _summary := {}
-
-
-func on_gdunit_event(_event: GdUnitEvent) -> void:
-	push_error("Reporter: 'on_gdunit_event' is not implemented!")
 
 
 func init_summary() -> void:
@@ -104,3 +94,23 @@ func total_orphan_count() -> int:
 
 func elapsed_time() -> int:
 	return _summary["elapsed_time"]
+
+
+func error_count(statistics: Dictionary) -> int:
+	return statistics["error_count"]
+
+
+func failed_count(statistics: Dictionary) -> int:
+	return statistics["failed_count"]
+
+
+func orphan_nodes(statistics: Dictionary) -> int:
+	return statistics["orphan_nodes"]
+
+
+func skipped_count(statistics: Dictionary) -> int:
+	return statistics["skipped_count"]
+
+
+func flaky_count(statistics: Dictionary) -> int:
+	return statistics["flaky_count"]

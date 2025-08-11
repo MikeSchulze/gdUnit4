@@ -1,6 +1,6 @@
 name: ci-dev
 
-on:
+on: # yamllint disable-line rule:truthy
   push:
     branches:
       - master
@@ -22,9 +22,9 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        godot-version: [ '4.3', '4.4', '4.4.1' ]
-        godot-status: [ 'stable' ]
-        godot-net: [ '.Net', '' ]
+        godot-version: ['4.3', '4.4', '4.4.1']
+        godot-status: ['stable']
+        godot-net: ['.Net', '']
 
     permissions:
       actions: write
