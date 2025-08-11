@@ -187,6 +187,17 @@ namespace ExampleProject.Tests
 
 ---
 
+## Use Fail Fast with Multiple Assertions
+
+When you have multiple assertions in a single test case, it’s important to consider using fail fast techniques to avoid unnecessary test execution
+and get clearer failure reports.
+In debug mode, accessing properties on null objects will cause the debugger to break with runtime errors,
+stopping test execution unexpectedly.
+
+For more detailed information about fail fast techniques, see [How to fail fast](/gdUnit4/testing/first-test/#multiple-assertions-fail-fast).
+
+---
+
 ## How to Override the Failure Message
 
 By default, GdUnit generates a failure report based on the used assert, according to the expected vs. current value scheme.
