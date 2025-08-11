@@ -1,15 +1,16 @@
 class_name GdUnitTestCaseReport
 extends GdUnitReportSummary
 
-var _suite_name :String
-var _failure_reports :Array[GdUnitReport]
+
+var _suite_name: String
+var _failure_reports: Array[GdUnitReport] = []
 
 
-@warning_ignore("shadowed_variable")
-func _init(p_resource_path: String, p_suite_name: String, p_test_name: String) -> void:
+func _init(p_resource_path: String, p_suite_name: String, p_test_name: String, text_formatter: Callable) -> void:
 	_resource_path = p_resource_path
 	_suite_name = p_suite_name
 	_name = p_test_name
+	_text_formatter = text_formatter
 
 
 func suite_name() -> String:
@@ -17,21 +18,10 @@ func suite_name() -> String:
 
 
 func failure_report() -> String:
-	var html_report := ""
+	var report_message := ""
 	for report in get_test_reports():
-		html_report += convert_rtf_to_html(str(report))
-	return html_report
-
-
-func create_record(_report_dir :String) -> String:
-	return GdUnitHtmlPatterns.TABLE_RECORD_TESTCASE\
-		.replace(GdUnitHtmlPatterns.REPORT_STATE, report_state().to_lower())\
-		.replace(GdUnitHtmlPatterns.REPORT_STATE_LABEL, report_state())\
-		.replace(GdUnitHtmlPatterns.TESTCASE_NAME, name())\
-		.replace(GdUnitHtmlPatterns.SKIPPED_COUNT, str(skipped_count()))\
-		.replace(GdUnitHtmlPatterns.ORPHAN_COUNT, str(orphan_count()))\
-		.replace(GdUnitHtmlPatterns.DURATION, LocalTime.elapsed(_duration))\
-		.replace(GdUnitHtmlPatterns.FAILURE_REPORT, failure_report())
+		report_message += _text_formatter.call(str(report)) + "\n"
+	return report_message
 
 
 func add_testcase_reports(reports: Array[GdUnitReport]) -> void:
