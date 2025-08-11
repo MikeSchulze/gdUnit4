@@ -39,7 +39,34 @@ func _apply_path_reports(report_dir: String, template: String, report_summaries:
 func _apply_testsuite_reports(report_dir: String, template: String, test_suite_reports: Array[GdUnitReportSummary]) -> String:
 	var table_records := PackedStringArray()
 	for report: GdUnitTestSuiteReport in test_suite_reports:
-		var report_link: String = report.write(report_dir).replace(report_dir, ".")
+		var report_link: String = _write(report_dir, report).replace(report_dir, ".")
 		@warning_ignore("return_value_discarded")
-		table_records.append(report.create_record(report_link) as String)
+		table_records.append(GdUnitHtmlPatterns.create_suite_record(report_link, report))
 	return template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTSUITES, "\n".join(table_records))
+
+
+func _write(report_dir :String, report: GdUnitTestSuiteReport) -> String:
+	var template := GdUnitHtmlPatterns.load_template("res://addons/gdUnit4/src/reporters/html/template/suite_report.html")
+	template = GdUnitHtmlPatterns.build(template, report, "")
+
+	var report_output_path := create_output_path(report_dir, report.path(), report.name())
+	var test_report_table := PackedStringArray()
+	if not report._failure_reports.is_empty():
+		@warning_ignore("return_value_discarded")
+		test_report_table.append(GdUnitHtmlPatterns.create_suite_failure_report(report))
+	for test_report: GdUnitTestCaseReport in report._reports:
+		@warning_ignore("return_value_discarded")
+		test_report_table.append(GdUnitHtmlPatterns.create_test_failure_report(report_output_path, test_report))
+
+	template = template.replace(GdUnitHtmlPatterns.TABLE_BY_TESTCASES, "\n".join(test_report_table))
+
+	var dir := report_output_path.get_base_dir()
+	if not DirAccess.dir_exists_absolute(dir):
+		@warning_ignore("return_value_discarded")
+		DirAccess.make_dir_recursive_absolute(dir)
+	FileAccess.open(report_output_path, FileAccess.WRITE).store_string(template)
+	return report_output_path
+
+
+static func create_output_path(report_dir :String, path: String, name: String) -> String:
+	return "%s/test_suites/%s.%s.html" % [report_dir, path.replace("/", "."), name]
