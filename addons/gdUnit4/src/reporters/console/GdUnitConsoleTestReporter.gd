@@ -1,6 +1,5 @@
 @tool
 class_name GdUnitConsoleTestReporter
-extends GdUnitTestReporter
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
@@ -19,6 +18,7 @@ var test_session: GdUnitTestSession:
 
 
 var _writer: GdUnitMessageWritter
+var _reporter: GdUnitTestReporter = GdUnitTestReporter.new()
 var _status_indent := 86
 var _detailed: bool
 var _text_color: Color = Color.ANTIQUE_WHITE
@@ -50,7 +50,7 @@ func clear() -> void:
 func on_gdunit_event(event: GdUnitEvent) -> void:
 	match event.type():
 		GdUnitEvent.INIT:
-			init_summary()
+			_reporter.init_summary()
 
 		GdUnitEvent.STOP:
 			_print_summary()
@@ -61,7 +61,7 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 			_writer.effect(GdUnitMessageWritter.Effect.WAVE).print_at("", 0)
 
 		GdUnitEvent.TESTSUITE_BEFORE:
-			init_statistics()
+			_reporter.init_statistics()
 			print_message("Run Test Suite: ", Color.DARK_TURQUOISE)
 			println_message(event.resource_path(), _engine_type_color)
 
@@ -71,7 +71,7 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 					.style(GdUnitMessageWritter.BOLD)\
 					.println_message(event.suite_name()+":finalze")
 			_print_failure_report(event.reports())
-			_print_statistics(build_test_suite_statisitcs(event))
+			_print_statistics(_reporter.build_test_suite_statisitcs(event))
 			_print_status(event)
 			println_message("")
 			if _detailed:
@@ -86,7 +86,7 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 
 		GdUnitEvent.TESTCASE_AFTER:
 			var test := test_session.find_test_by_id(event.guid())
-			update_statistics(event)
+			_reporter.update_statistics(event)
 			if _detailed:
 				_print_test_path(test, event.guid())
 			_print_status(event)
@@ -167,12 +167,12 @@ func _print_summary() -> void:
 	print_message("Overall Summary:", Color.DODGER_BLUE)
 	_writer\
 		.println_message(" %d tests cases | %d errors | %d failures | %d flaky | %d skipped | %d orphans |" % [
-			_summary["total_count"],
-			_summary["error_count"],
-			_summary["failed_count"],
-			_summary["flaky_count"],
-			_summary["skipped_count"],
-			_summary["orphan_nodes"]
+			total_test_count(),
+			total_error_count(),
+			total_failure_count(),
+			total_flaky_count(),
+			total_skipped_count(),
+			total_orphan_count()
 		])
 
 
@@ -202,3 +202,35 @@ func prints_warning(message: String) -> void:
 
 func prints_error(message: String) -> void:
 	_writer.prints_error(message)
+
+
+func total_test_count() -> int:
+	return _reporter.total_test_count()
+
+
+func total_error_count() -> int:
+	return _reporter.total_error_count()
+
+
+func total_failure_count() -> int:
+	return _reporter.total_failure_count()
+
+
+func total_flaky_count() -> int:
+	return _reporter.total_flaky_count()
+
+
+func total_skipped_count() -> int:
+	return _reporter.total_skipped_count()
+
+
+func total_orphan_count() -> int:
+	return _reporter.total_orphan_count()
+
+
+func processed_suite_count() -> int:
+	return _reporter.processed_suite_count()
+
+
+func elapsed_time() -> int:
+	return _reporter.elapsed_time()
