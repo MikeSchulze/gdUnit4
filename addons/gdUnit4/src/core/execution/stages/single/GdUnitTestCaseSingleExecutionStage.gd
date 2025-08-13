@@ -24,7 +24,7 @@ func _execute(context :GdUnitExecutionContext) -> void:
 		fire_test_skipped(context)
 	else:
 		var reports: = context.collect_reports(true)
-		var statistics := context.calculate_statistics()
+		var statistics := context.calculate_statistics(reports)
 		fire_event(GdUnitEvent.new().test_after(context.test_case.id(), statistics, reports))
 
 

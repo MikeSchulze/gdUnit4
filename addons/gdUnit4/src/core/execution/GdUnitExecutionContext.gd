@@ -141,8 +141,9 @@ func orphan_monitor_stop() -> void:
 	_orphan_monitor.stop()
 
 
-func add_report(report: GdUnitReport) -> void:
+func add_report(report: GdUnitReport) -> GdUnitReport:
 	_report_collector.push_back(report)
+	return report
 
 
 func reports() -> Array[GdUnitReport]:
@@ -161,40 +162,35 @@ func collect_reports(recursive: bool) -> Array[GdUnitReport]:
 	return current_reports
 
 
-func calculate_statistics() -> Dictionary:
-	var is_success_ := is_success()
-	var failed_count_ := _count_failures(true)
-	var error_count_ := _count_errors(true)
-	var orphan_count_ :=  _count_orphans()
+func calculate_statistics(reports_: Array[GdUnitReport]) -> Dictionary:
+	var failed_count := GdUnitTestReportCollector.count_failures(reports_)
+	var error_count := GdUnitTestReportCollector.count_errors(reports_)
+	var warn_count := GdUnitTestReportCollector.count_warnings(reports_)
+	var skip_count := GdUnitTestReportCollector.count_skipped(reports_)
+	var is_failed := !is_success()
+	var orphan_count := _count_orphans()
+	var elapsed_time := _timer.elapsed_since_ms()
+	var retries := _sub_context.size()
 	# Mark as flaky if it is successful, but errors were counted
-	var is_flaky_ := is_success_ and (failed_count_ > 1 or error_count_ > 0)
-
+	var is_flaky := !is_failed and failed_count > 1
 	# In the case of a flakiness test, we do not report an error counter, as an unreliable test is considered successful
 	# after a certain number of repetitions.
-	if is_flaky_:
-		failed_count_ = 0
+	if is_flaky:
+		failed_count = 0
 
 	return {
-		GdUnitEvent.RETRY_COUNT: _sub_context.size(),
-		GdUnitEvent.ELAPSED_TIME: _timer.elapsed_since_ms(),
-		GdUnitEvent.FAILED: !is_success_,
-		GdUnitEvent.ERRORS: error_count_ > 0,
-		GdUnitEvent.WARNINGS: _has_warnings(),
-		GdUnitEvent.FLAKY: is_flaky_,
-		GdUnitEvent.SKIPPED: is_skipped(),
-		GdUnitEvent.FAILED_COUNT: failed_count_,
-		GdUnitEvent.ERROR_COUNT: error_count_,
-		GdUnitEvent.SKIPPED_COUNT: _count_skipped(true),
-		GdUnitEvent.ORPHAN_NODES: orphan_count_,
+		GdUnitEvent.RETRY_COUNT: retries,
+		GdUnitEvent.ELAPSED_TIME: elapsed_time,
+		GdUnitEvent.FAILED: is_failed,
+		GdUnitEvent.ERRORS: error_count > 0,
+		GdUnitEvent.WARNINGS: warn_count > 0,
+		GdUnitEvent.FLAKY: is_flaky,
+		GdUnitEvent.SKIPPED: skip_count > 0,
+		GdUnitEvent.FAILED_COUNT: failed_count,
+		GdUnitEvent.ERROR_COUNT: error_count,
+		GdUnitEvent.SKIPPED_COUNT: skip_count,
+		GdUnitEvent.ORPHAN_NODES: orphan_count,
 	}
-
-
-func _has_warnings() -> bool:
-	return (
-		_sub_context.any(func(c :GdUnitExecutionContext) -> bool:
-			return c._has_warnings())
-		or _report_collector.has_warnings()
-	)
 
 
 func is_success() -> bool:
@@ -214,30 +210,6 @@ func is_skipped() -> bool:
 
 func is_interupted() -> bool:
 	return false if test_case == null else test_case.is_interupted()
-
-
-func _count_failures(recursive: bool) -> int:
-	if not recursive:
-		return _report_collector.count_failures()
-	return _sub_context\
-		.map(func(c :GdUnitExecutionContext) -> int:
-				return c._count_failures(recursive)).reduce(sum, _report_collector.count_failures())
-
-
-func _count_errors(recursive: bool) -> int:
-	if not recursive:
-		return _report_collector.count_errors()
-	return _sub_context\
-		.map(func(c :GdUnitExecutionContext) -> int:
-				return c._count_errors(recursive)).reduce(sum, _report_collector.count_errors())
-
-
-func _count_skipped(recursive: bool) -> int:
-	if not recursive:
-		return _report_collector.count_skipped()
-	return _sub_context\
-		.map(func(c :GdUnitExecutionContext) -> int:
-				return c._count_skipped(recursive)).reduce(sum, _report_collector.count_skipped())
 
 
 func _count_orphans() -> int:

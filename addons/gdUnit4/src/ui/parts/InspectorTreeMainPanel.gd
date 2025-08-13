@@ -67,6 +67,7 @@ var _current_selected_item: TreeItem = null
 var _item_hash := Dictionary()
 var _current_tree_view_mode := GdUnitSettings.get_inspector_tree_view_mode()
 var _run_test_recovery := true
+var _is_verbose_debug := false
 
 
 func _build_cache_key(resource_path: String, test_name: String) -> Array:
@@ -555,24 +556,40 @@ func set_state_initial(item: TreeItem, type: GdUnitType) -> void:
 	set_item_icon_by_state(item)
 
 
-func set_state_running(item: TreeItem) -> void:
+func debug_state(_func_name: String, _item: TreeItem, _state: int) -> void:
+	if _is_verbose_debug:
+		prints( "%35s" % str(_item.get_meta(META_GDUNIT_NAME)), "state: ", STATE.keys()[_item.get_meta(META_GDUNIT_STATE)], " -> ", STATE.keys()[_state])
+
+
+func set_state_running(item: TreeItem, is_running: bool) -> void:
 	if is_state_running(item):
 		return
-	item.set_custom_color(0, Color.DARK_GREEN)
-	item.set_custom_color(1, Color.DARK_GREEN)
-	item.set_icon(0, ICON_SPINNER)
-	item.set_meta(META_GDUNIT_STATE, STATE.RUNNING)
-	item.collapsed = false
+	if is_item_state(item, STATE.INITIAL):
+		debug_state("set_state_running", item, STATE.RUNNING)
+		item.set_custom_color(0, Color.DARK_GREEN)
+		item.set_custom_color(1, Color.DARK_GREEN)
+		item.set_meta(META_GDUNIT_STATE, STATE.RUNNING)
+		item.collapsed = false
+
+	if is_running:
+		item.set_icon(0, ICON_SPINNER)
+	else:
+		set_item_icon_by_state(item)
+		for child in item.get_children():
+			set_item_icon_by_state(child)
+
 	var parent := item.get_parent()
 	if parent != _tree_root:
-		set_state_running(parent)
-	# force scrolling to current test case
-	_tree.scroll_to_item(item, true)
+		set_state_running(parent, is_running)
 
 
 func set_state_succeded(item: TreeItem) -> void:
+	# Do not overwrite higher states
+	if is_state_error(item) or is_state_failed(item):
+		return
 	if item == _tree_root:
 		return
+	debug_state("set_state_succeded", item, STATE.SUCCESS)
 	item.set_custom_color(0, Color.GREEN)
 	item.set_custom_color(1, Color.GREEN)
 	item.set_meta(META_GDUNIT_STATE, STATE.SUCCESS)
@@ -584,6 +601,7 @@ func set_state_flaky(item: TreeItem, event: GdUnitEvent) -> void:
 	# Do not overwrite higher states
 	if is_state_error(item):
 		return
+	debug_state("set_state_flaky", item, STATE.FLAKY)
 	var retry_count := event.statistic(GdUnitEvent.RETRY_COUNT)
 	item.set_meta(META_GDUNIT_STATE, STATE.FLAKY)
 	if retry_count > 1:
@@ -599,6 +617,7 @@ func set_state_flaky(item: TreeItem, event: GdUnitEvent) -> void:
 
 
 func set_state_skipped(item: TreeItem) -> void:
+	debug_state("set_state_skipped", item, STATE.SKIPPED)
 	item.set_meta(META_GDUNIT_STATE, STATE.SKIPPED)
 	item.set_text(1, "(skipped)")
 	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -612,6 +631,7 @@ func set_state_warnings(item: TreeItem) -> void:
 	# Do not overwrite higher states
 	if is_state_error(item) or is_state_failed(item):
 		return
+	debug_state("set_state_warnings", item, STATE.WARNING)
 	item.set_meta(META_GDUNIT_STATE, STATE.WARNING)
 	item.set_custom_color(0, Color.YELLOW)
 	item.set_custom_color(1, Color.YELLOW)
@@ -623,6 +643,7 @@ func set_state_failed(item: TreeItem, event: GdUnitEvent) -> void:
 	# Do not overwrite higher states
 	if is_state_error(item):
 		return
+	debug_state("set_state_failed", item, STATE.FAILED)
 	var retry_count := event.statistic(GdUnitEvent.RETRY_COUNT)
 	if retry_count > 1:
 		var item_text: String = item.get_meta(META_GDUNIT_NAME)
@@ -638,6 +659,7 @@ func set_state_failed(item: TreeItem, event: GdUnitEvent) -> void:
 
 
 func set_state_error(item: TreeItem) -> void:
+	debug_state("set_state_error", item, STATE.ERROR)
 	item.set_meta(META_GDUNIT_STATE, STATE.ERROR)
 	item.set_custom_color(0, Color.ORANGE_RED)
 	item.set_custom_color(1, Color.ORANGE_RED)
@@ -646,6 +668,7 @@ func set_state_error(item: TreeItem) -> void:
 
 
 func set_state_aborted(item: TreeItem) -> void:
+	debug_state("set_state_aborted", item, STATE.ABORDED)
 	item.set_meta(META_GDUNIT_STATE, STATE.ABORDED)
 	item.set_custom_color(0, Color.ORANGE_RED)
 	item.set_custom_color(1, Color.ORANGE_RED)
@@ -657,6 +680,7 @@ func set_state_aborted(item: TreeItem) -> void:
 
 
 func set_state_orphan(item: TreeItem, event: GdUnitEvent) -> void:
+	#debug_state("set_state_orphan", item)
 	var orphan_count := event.statistic(GdUnitEvent.ORPHAN_NODES)
 	if orphan_count == 0:
 		return
@@ -692,6 +716,15 @@ func update_state(item: TreeItem, event: GdUnitEvent, add_reports := true) -> vo
 			add_report(item, report)
 	set_state_orphan(item, event)
 
+	var parent := item.get_parent()
+	if parent == null:
+		return
+
+	var item_state: int = item.get_meta(META_GDUNIT_STATE)
+	var parent_state: int = parent.get_meta(META_GDUNIT_STATE)
+	if item_state <= parent_state:
+		return
+	#prints("   do update parent", STATE.keys()[item_state], " -> ", STATE.keys()[parent_state], item_state, "<=", parent_state)
 	update_state(item.get_parent(), event, false)
 
 
@@ -765,12 +798,13 @@ func update_test_suite(event: GdUnitEvent) -> void:
 		push_error("[InspectorTreeMainPanel#update_test_suite] Internal Error: Can't find tree item for\n %s" % event)
 		return
 	if event.type() == GdUnitEvent.TESTSUITE_BEFORE:
-		set_state_running(item)
+		#set_state_running(item)
 		return
 	if event.type() == GdUnitEvent.TESTSUITE_AFTER:
 		update_item_elapsed_time_counter(item, event.elapsed_time())
-		update_state(item, event)
+		#update_state(item, event)
 		update_progress_counters(item, 23)
+		set_state_running(item, false)
 
 
 func update_test_case(event: GdUnitEvent) -> void:
@@ -779,14 +813,24 @@ func update_test_case(event: GdUnitEvent) -> void:
 		#push_error("Internal Error: Can't find test id %s" % [event.guid()])
 		return
 	if event.type() == GdUnitEvent.TESTCASE_BEFORE:
-		set_state_running(item)
+		if _is_verbose_debug:
+			prints("--------update_test_case:before----------")
+		set_state_running(item, true)
+		# force scrolling to current test case
+		_tree.scroll_to_item(item, true)
+		if _is_verbose_debug:
+			prints("")
 		return
 
 	if event.type() == GdUnitEvent.TESTCASE_AFTER:
 		update_item_elapsed_time_counter(item, event.elapsed_time())
 		if event.is_success() or event.is_warning():
 			update_item_processed_counter(item)
+		if _is_verbose_debug:
+			prints("--------update_test_case:after----------")
 		update_state(item, event)
+		if _is_verbose_debug:
+			prints("")
 		update_progress_counters(item, event.retry_count())
 
 
