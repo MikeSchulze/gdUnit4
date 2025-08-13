@@ -28,7 +28,7 @@ runs:
         matcher: true
 
     - name: 'Validate JSON and YAML syntax'
-      uses: GrantBirki/json-yaml-validate@v2.7.1
+      uses: GrantBirki/json-yaml-validate@v3.3.2
       with:
         exclude_file: ".github/actions/formatting_checks/.validationignore"
         use_gitignore: ${{ inputs.use-gitignore }}
