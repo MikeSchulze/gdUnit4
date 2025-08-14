@@ -85,6 +85,7 @@ func test_collect_report_statistics_with_errors() -> void:
 				GdUnitEvent.SKIPPED_COUNT: 0,
 				GdUnitEvent.ORPHAN_NODES: 0,
 			})
+		ctx_suite.dispose()
 
 
 func test_collect_report_statistics_with_errors_on_suite_hooks() -> void:
@@ -149,6 +150,7 @@ func test_collect_report_statistics_with_errors_on_suite_hooks() -> void:
 				GdUnitEvent.SKIPPED_COUNT: 0,
 				GdUnitEvent.ORPHAN_NODES: 0,
 			})
+		ctx_suite.dispose()
 
 
 func test_collect_report_statistics_only_errors_on_test_hooks() -> void:
@@ -212,7 +214,7 @@ func test_collect_report_statistics_only_errors_on_test_hooks() -> void:
 				GdUnitEvent.SKIPPED_COUNT: 0,
 				GdUnitEvent.ORPHAN_NODES: 0,
 			})
-
+		ctx_suite.dispose()
 
 
 func test_collect_report_statistics_all_tests_skipped() -> void:
@@ -273,6 +275,7 @@ func test_collect_report_statistics_all_tests_skipped() -> void:
 				GdUnitEvent.SKIPPED_COUNT: 0,
 				GdUnitEvent.ORPHAN_NODES: 0,
 			})
+		ctx_suite.dispose()
 
 
 @warning_ignore("unused_parameter")
@@ -342,6 +345,7 @@ func test_simmulate_flaky_test(retry_count: int, is_flaky: bool, is_failed: bool
 				GdUnitEvent.SKIPPED_COUNT: 0,
 				GdUnitEvent.ORPHAN_NODES: 0,
 			})
+		ctx_suite.dispose()
 
 static func create_test_case(p_name: String, p_line_number: int, p_script_path: String) -> _TestCase:
 	var test_case := GdUnitTestCase.new()
