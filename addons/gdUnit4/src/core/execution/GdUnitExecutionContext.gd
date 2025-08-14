@@ -151,11 +151,12 @@ func reports() -> Array[GdUnitReport]:
 
 
 func collect_reports(recursive: bool) -> Array[GdUnitReport]:
-	var current_reports := reports()
 	if not recursive:
-		return current_reports
+		return reports()
 
 	# we combine the reports of test_before(), test_after() and test() to be reported by `fire_test_ended`
+	# we strictly need to copy the reports before adding sub context reports to avoid manipulation of the current context
+	var current_reports := reports().duplicate()
 	for sub_context in _sub_context:
 		current_reports.append_array(sub_context.collect_reports(true))
 
@@ -172,7 +173,7 @@ func calculate_statistics(reports_: Array[GdUnitReport]) -> Dictionary:
 	var elapsed_time := _timer.elapsed_since_ms()
 	var retries :=  1 if _parent_context == null else _sub_context.size()
 	# Mark as flaky if it is successful, but errors were counted
-	var is_flaky := !is_failed and failed_count > 1
+	var is_flaky := retries > 1  and not is_failed
 	# In the case of a flakiness test, we do not report an error counter, as an unreliable test is considered successful
 	# after a certain number of repetitions.
 	if is_flaky:
@@ -200,7 +201,7 @@ func is_success() -> bool:
 	if _parent_context == null:
 		return not _report_collector.has_failures()
 
-	return _sub_context[-1].is_success()
+	return _sub_context[-1].is_success() and not _report_collector.has_failures()
 
 
 func is_skipped() -> bool:

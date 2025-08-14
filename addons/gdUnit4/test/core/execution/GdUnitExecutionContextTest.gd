@@ -151,6 +151,70 @@ func test_collect_report_statistics_with_errors_on_suite_hooks() -> void:
 			})
 
 
+func test_collect_report_statistics_only_errors_on_test_hooks() -> void:
+	# setup
+	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
+	var tc :_TestCase = auto_free(create_test_case("test_case1", 0, ""))
+	ts.add_child(tc)
+
+	# setup execution context tree like is build by the executor run
+	# suite execution (GdUnitTestSuiteExecutor)
+	var ctx_suite := GdUnitExecutionContext.of_test_suite(ts)
+	if ctx_suite != null:
+
+		# test execution (GdUnitTestSuiteExecutionStage)
+		var ctx_test := GdUnitExecutionContext.of_test_case(ctx_suite, tc)
+		if ctx_test != null:
+			# (GdUnitTestCaseSingleExecutionStage)
+			var ctx_test_hook := GdUnitExecutionContext.of(ctx_test)
+
+			var err1 := ctx_test_hook.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 1, "error on before_test()"))
+			# test execution
+			var ctx_test_call := GdUnitExecutionContext.of(ctx_test_hook)
+			ctx_test_call.gc(GdUnitExecutionContext.GC_ORPHANS_CHECK.TEST_CASE)
+
+			ctx_test_hook.gc(GdUnitExecutionContext.GC_ORPHANS_CHECK.TEST_HOOK_AFTER)
+
+			# verify
+			ctx_test.gc()
+			var test_reports := ctx_test.collect_reports(true)
+			var test_statisitcs := ctx_test.calculate_statistics(test_reports)
+			assert_array(test_reports).contains_exactly([err1])
+			assert_dict(test_statisitcs).is_equal({
+				GdUnitEvent.RETRY_COUNT: 1,
+				GdUnitEvent.ELAPSED_TIME: test_statisitcs[GdUnitEvent.ELAPSED_TIME],
+				GdUnitEvent.FAILED: true,
+				GdUnitEvent.ERRORS: false,
+				GdUnitEvent.WARNINGS: false,
+				GdUnitEvent.FLAKY: false,
+				GdUnitEvent.SKIPPED: false,
+				GdUnitEvent.FAILED_COUNT: 1,
+				GdUnitEvent.ERROR_COUNT: 0,
+				GdUnitEvent.SKIPPED_COUNT: 0,
+				GdUnitEvent.ORPHAN_NODES: 0,
+			})
+
+		# verify
+		ctx_suite.gc(GdUnitExecutionContext.GC_ORPHANS_CHECK.SUITE_HOOK_AFTER)
+		var suite_reports := ctx_suite.collect_reports(false)
+		assert_array(suite_reports).is_empty()
+		var suite_statisitcs := ctx_suite.calculate_statistics(suite_reports)
+		assert_dict(suite_statisitcs).is_equal({
+				GdUnitEvent.RETRY_COUNT: 1,
+				GdUnitEvent.ELAPSED_TIME: suite_statisitcs[GdUnitEvent.ELAPSED_TIME],
+				GdUnitEvent.FAILED: false,
+				GdUnitEvent.ERRORS: false,
+				GdUnitEvent.WARNINGS: false,
+				GdUnitEvent.FLAKY: false,
+				GdUnitEvent.SKIPPED: false,
+				GdUnitEvent.FAILED_COUNT: 0,
+				GdUnitEvent.ERROR_COUNT: 0,
+				GdUnitEvent.SKIPPED_COUNT: 0,
+				GdUnitEvent.ORPHAN_NODES: 0,
+			})
+
+
+
 func test_collect_report_statistics_all_tests_skipped() -> void:
 	# setup
 	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
