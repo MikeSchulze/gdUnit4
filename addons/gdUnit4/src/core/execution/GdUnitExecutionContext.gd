@@ -9,9 +9,6 @@ enum GC_ORPHANS_CHECK {
 	TEST_CASE
 }
 
-const GC_ORPHANS_AFTER_SUITE := 0
-const GC_ORPHANS_AFTER_TEST := 1
-const GC_ORPHANS_TEST := 2
 
 var _parent_context: GdUnitExecutionContext
 var _sub_context: Array[GdUnitExecutionContext] = []
@@ -228,7 +225,6 @@ func _count_orphans() -> int:
 	_orphans = _orphan_monitor.orphan_nodes()
 	if _orphan_monitor.orphan_nodes() != orphans:
 		_orphans -= orphans
-	#prints("count_orphans".indent("			".left(index)), self,  _orphan_monitor._orphans(), _orphans, "o:", orphans )
 
 	return _orphans
 
