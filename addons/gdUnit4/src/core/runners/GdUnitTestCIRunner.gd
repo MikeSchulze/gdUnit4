@@ -432,13 +432,14 @@ func is_skipped(test: GdUnitTestCase) -> bool:
 		# is suite skipped by full path or suite name
 		if skipped_info == test.suite_name or test.source_file.contains(skipped_info):
 			return true
+		var skip_file := skipped_info.replace("res://", "")
 
 		# check for skipped single test
-		if not skipped_info.contains(":"):
+		if not skip_file.contains(":"):
 			continue
-		var parts: PackedStringArray = skipped_info.rsplit(":")
-		var skipped_suite :=  parts[0] + ":" + parts[1] if parts[0] == "res" else parts[0]
-		var skipped_test := parts[2] if parts[0] == "res" else parts[1]
+		var parts: PackedStringArray = skip_file.rsplit(":")
+		var skipped_suite :=  parts[0]
+		var skipped_test := parts[1]
 		# is suite skipped by full path or suite name
 		if (skipped_suite == test.suite_name or test.source_file.contains(skipped_suite)) and skipped_test == test.test_name:
 			return true

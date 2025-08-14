@@ -2,8 +2,12 @@
 extends GdUnitTestSuite
 
 
+func hook_service() -> GdUnitTestSessionHookService:
+	return auto_free(GdUnitTestSessionHookService.new())
+
+
 func test_load_hook_not_exists() -> void:
-	var hook := GdUnitTestSessionHookService.new().load_hook("res://addons/gdUnit4/test/core/hooks/InvalidTestSessionHook.gd")
+	var hook := hook_service().load_hook("res://addons/gdUnit4/test/core/hooks/InvalidTestSessionHook.gd")
 
 	assert_result(hook)\
 		.is_error()\
@@ -11,7 +15,7 @@ func test_load_hook_not_exists() -> void:
 
 
 func test_load_hook_not_inherits_hook() -> void:
-	var hook := GdUnitTestSessionHookService.new().load_hook("res://addons/gdUnit4/test/core/hooks/GdUnitTestSessionHookServiceTest.gd")
+	var hook := hook_service().load_hook("res://addons/gdUnit4/test/core/hooks/GdUnitTestSessionHookServiceTest.gd")
 
 	assert_result(hook)\
 		.is_error()\
@@ -19,7 +23,7 @@ func test_load_hook_not_inherits_hook() -> void:
 
 
 func test_load_hook_success() -> void:
-	var hook := GdUnitTestSessionHookService.new().load_hook("res://addons/gdUnit4/test/core/hooks/ExampleTestSessionHookA.gd")
+	var hook := hook_service().load_hook("res://addons/gdUnit4/test/core/hooks/ExampleTestSessionHookA.gd")
 
 	assert_result(hook).is_success()
 	assert_object(hook.value())\
@@ -28,7 +32,7 @@ func test_load_hook_success() -> void:
 
 
 func test_register_hook() -> void:
-	var service := GdUnitTestSessionHookService.new()
+	var service := hook_service()
 
 	var hook := ExampleTestSessionHookA.new()
 	service.register(hook)
@@ -45,7 +49,7 @@ func test_register_hook() -> void:
 
 
 func test_execute_startup() -> void:
-	var service := GdUnitTestSessionHookService.new()
+	var service := hook_service()
 
 	var hook := ExampleTestSessionHookA.new()
 	service.register(hook)
@@ -57,7 +61,7 @@ func test_execute_startup() -> void:
 
 
 func test_execute_shutdown() -> void:
-	var service := GdUnitTestSessionHookService.new()
+	var service := hook_service()
 
 	var hook := ExampleTestSessionHookA.new()
 	service.register(hook)
@@ -69,7 +73,7 @@ func test_execute_shutdown() -> void:
 
 
 func test_hook_priority_execution() -> void:
-	var service := GdUnitTestSessionHookService.new()
+	var service := hook_service()
 	var hook_a := ExampleTestSessionHookA.new()
 	var hook_b := ExampleTestSessionHookB.new()
 	var hook_c := ExampleTestSessionHookC.new()
@@ -100,7 +104,7 @@ func test_hook_priority_execution() -> void:
 
 
 func test_move_before() -> void:
-	var service := GdUnitTestSessionHookService.new()
+	var service := hook_service()
 	var hook_a := ExampleTestSessionHookA.new()
 	var hook_b := ExampleTestSessionHookB.new()
 	var hook_c := ExampleTestSessionHookC.new()
@@ -123,7 +127,7 @@ func test_move_before() -> void:
 
 
 func test_move_after() -> void:
-	var service := GdUnitTestSessionHookService.new()
+	var service := hook_service()
 	var hook_a := ExampleTestSessionHookA.new()
 	var hook_b := ExampleTestSessionHookB.new()
 	var hook_c := ExampleTestSessionHookC.new()

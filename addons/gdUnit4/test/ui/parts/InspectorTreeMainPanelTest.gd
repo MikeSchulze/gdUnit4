@@ -348,11 +348,11 @@ func test_suite_text_responds_to_test_case_events() -> void:
 
 	var skipped_ac := GdUnitEvent.new().test_after(test_ac.guid, {GdUnitEvent.SKIPPED: true})
 	_inspector._on_gdunit_event(skipped_ac)
-	assert_str(suite_a_item.get_text(0)).is_equal("(1/5) ExampleTestSuiteA")
+	assert_str(suite_a_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
 
 	var success_ae := GdUnitEvent.new().test_after(test_ae.guid)
 	_inspector._on_gdunit_event(success_ae)
-	assert_str(suite_a_item.get_text(0)).is_equal("(2/5) ExampleTestSuiteA")
+	assert_str(suite_a_item.get_text(0)).is_equal("(3/5) ExampleTestSuiteA")
 
 
 # test coverage for issue GD-117

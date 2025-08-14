@@ -27,8 +27,12 @@ func test_discover_tests_on_path_and_skip_suite() -> void:
 	runner.add_test_suite("res://addons/gdUnit4/test/core/discovery/resources/")
 	runner.skip_test_suite("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.gd")
 
+	# It will be discover two tests from DiscoverExampleTestSuite.cs
 	var tests := runner.discover_tests()
-	assert_array(tests).is_empty()
+	if ClassDB.class_exists("CSharpScript"):
+		assert_array(tests).has_size(2)
+	else:
+		assert_array(tests).is_empty()
 
 
 func test_is_skipped_entire_suite_by_full_path() -> void:
