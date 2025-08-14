@@ -12,11 +12,14 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const SUCCEEDED = true
 const FAILED = false
 const SKIPPED = true
-const FLAKY = true
 const NOT_SKIPPED = false
-const IS_FAILED = true
-const IS_ERROR = true
-const IS_WARNING = true
+const FLAKY = true
+const FAILURES = true
+const NO_FAILURES = false
+const ERRORS = true
+const NO_ERRORS = false
+const WARNINGS = true
+const NO_WARNING = false
 
 var _collected_events: Array[GdUnitEvent] = []
 var _saved_flack_check: bool
@@ -142,13 +145,13 @@ func test_execute_success() -> void:
 	])
 	# all tests passses
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# suite succeeds
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	# all success no reports expected
 	assert_event_reports(events, [
@@ -182,13 +185,13 @@ func test_execute_failure_on_stage_before() -> void:
 		tuple(any_class(GdUnitGUID), GdUnitEvent.TESTSUITE_AFTER, 0, 1, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# report suite is not success, is failed
-		tuple(any_class(GdUnitGUID), FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
 	])
 	# one failure at before()
 	assert_event_reports(events, [
@@ -228,13 +231,13 @@ func test_execute_failure_on_stage_after() -> void:
 	])
 	# all tests passses
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# report suite faile on hook after()
-		tuple(any_class(GdUnitGUID), FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
 	])
 	# one failure at after()
 	assert_event_reports(events, [
@@ -275,13 +278,13 @@ func test_execute_failure_on_stage_before_test() -> void:
 	])
 	# each test must be failed because of the failure on before_test() hook
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
 		# report suite succeeds, no failures on suite hooks
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	# before_test() failure report is append to each test
 	assert_event_reports(events, [
@@ -324,13 +327,13 @@ func test_execute_failure_on_stage_after_test() -> void:
 	])
 	# each test must be failed because of the failure on after_test() hook
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
 		# report suite succeeds, no failures on suite hooks
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 
 	# 'after_test' failure report is append to each test
@@ -372,13 +375,13 @@ func test_execute_failure_on_stage_test_case1() -> void:
 	])
 	# test_case1 is failing only
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# report suite succeeds, no failures on the suite hooks
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	# only 'test_case1' reports a failure
 	assert_event_reports(events, [
@@ -421,13 +424,13 @@ func test_execute_failure_on_multiple_stages() -> void:
 	])
 	# each test is failing in addition to failing test hooks
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
 		# report suite is not success, is failed on after() hook
-		tuple(any_class(GdUnitGUID), FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
 	])
 	# only 'test_case1' reports a 'real' failures plus test setup stage failures
 	assert_event_reports(events, [
@@ -475,15 +478,15 @@ func test_execute_failure_and_orphans() -> void:
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# test case succeeds with warnings
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, WARNINGS, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# test case has failures and warnings
-		tuple(test_case2.guid, FAILED, NOT_SKIPPED, IS_WARNING, IS_FAILED, !IS_ERROR),
+		tuple(test_case2.guid, FAILED, NOT_SKIPPED, WARNINGS, FAILURES, NO_ERRORS),
 		# report suite is success but orphan warnings and failures
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, WARNINGS, NO_FAILURES, NO_ERRORS),
 	])
 	# only 'test_case1' reports a 'real' failures plus test setup stage failures
 	assert_event_reports(events, [
@@ -532,15 +535,15 @@ func test_execute_failure_and_orphans_report_orphan_disabled() -> void:
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# test case has success
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# test case has a failure
-		tuple(test_case2.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
+		tuple(test_case2.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
 		# report suite succeeds with warnings and failures
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	# only 'test_case1' reports a failure, orphans are not reported
 	assert_event_reports(events, [
@@ -581,14 +584,14 @@ func test_execute_error_on_test_timeout() -> void:
 	])
 	# test_case1 is interrupted by a timeout and fails
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# testcase ends with a timeout error
-		tuple(test_case1.guid, FAILED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(test_case1.guid, FAILED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 		# report suite has no failures and errors
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	# 'test_case1' reports a error triggered by test timeout
 	assert_event_reports(events, [
@@ -610,8 +613,8 @@ func test_execute_fuzzed_metrics() -> void:
 	# simulate test suite execution
 	var events := await run_tests(all_tests)
 	assert_event_states(events).contains([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	assert_event_reports(events, [
 			[],
@@ -631,8 +634,8 @@ func test_execute_parameterized_metrics() -> void:
 	# simulate test suite execution
 	var events := await run_tests(all_tests)
 	assert_event_states(events).contains([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	assert_event_reports(events, [
 			[],
@@ -671,12 +674,12 @@ func test_execute_failure_fuzzer_iteration() -> void:
 	])
 	# is_success, is_warning, is_failed, is_error
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_multi_yielding_with_fuzzer.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_multi_yielding_with_fuzzer.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_multi_yielding_with_fuzzer_fail_after_3_iterations.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_multi_yielding_with_fuzzer_fail_after_3_iterations.guid, FAILED, NOT_SKIPPED, !IS_WARNING, IS_FAILED, !IS_ERROR),
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR)
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_multi_yielding_with_fuzzer.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_multi_yielding_with_fuzzer.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_multi_yielding_with_fuzzer_fail_after_3_iterations.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_multi_yielding_with_fuzzer_fail_after_3_iterations.guid, FAILED, NOT_SKIPPED, NO_WARNING, FAILURES, NO_ERRORS),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS)
 	])
 	# 'test_case1' reports a error triggered by test timeout
 	assert_event_reports(events, [
@@ -714,12 +717,12 @@ func test_execute_add_child_on_before_GD_106() -> void:
 		tuple(any_class(GdUnitGUID), GdUnitEvent.TESTSUITE_AFTER, 0, 0, 0),
 	])
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	# all success no reports expected
 	assert_event_reports(events, [
@@ -747,10 +750,10 @@ func test_execute_parameterizied_tests() -> void:
 	assert_array(events).extractv(
 		extr("type"), extr("guid"), extr("is_warning"), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
 		.contains([
-			tuple(GdUnitEvent.TESTCASE_AFTER, test_0.guid, !IS_WARNING, !IS_ERROR, IS_FAILED, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, test_1.guid, !IS_WARNING, !IS_ERROR, !IS_FAILED, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, test_2.guid, !IS_WARNING, !IS_ERROR, IS_FAILED, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, test_3.guid, !IS_WARNING, !IS_ERROR, !IS_FAILED, 0)
+			tuple(GdUnitEvent.TESTCASE_AFTER, test_0.guid, NO_WARNING, NO_ERRORS, FAILURES, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, test_1.guid, NO_WARNING, NO_ERRORS, NO_FAILURES, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, test_2.guid, NO_WARNING, NO_ERRORS, FAILURES, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, test_3.guid, NO_WARNING, NO_ERRORS, NO_FAILURES, 0)
 		])
 
 	# rerun the same tests again with allow to compare type unsave
@@ -763,10 +766,10 @@ func test_execute_parameterizied_tests() -> void:
 	assert_array(events).extractv(
 		extr("type"), extr("guid"), extr("is_warning"), extr("is_error"), extr("is_failed"), extr("orphan_nodes"))\
 		.contains([
-			tuple(GdUnitEvent.TESTCASE_AFTER, test_0.guid, !IS_WARNING, !IS_ERROR, !IS_FAILED, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, test_1.guid, !IS_WARNING, !IS_ERROR, !IS_FAILED, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, test_2.guid, !IS_WARNING, !IS_ERROR, !IS_FAILED, 0),
-			tuple(GdUnitEvent.TESTCASE_AFTER, test_3.guid, !IS_WARNING, !IS_ERROR, !IS_FAILED, 0)
+			tuple(GdUnitEvent.TESTCASE_AFTER, test_0.guid, NO_WARNING, NO_ERRORS, NO_FAILURES, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, test_1.guid, NO_WARNING, NO_ERRORS, NO_FAILURES, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, test_2.guid, NO_WARNING, NO_ERRORS, NO_FAILURES, 0),
+			tuple(GdUnitEvent.TESTCASE_AFTER, test_3.guid, NO_WARNING, NO_ERRORS, NO_FAILURES, 0)
 		])
 
 
@@ -786,12 +789,12 @@ func test_execute_test_suite_is_skipped() -> void:
 
 	# the entire test-suite is skipped
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(any_class(GdUnitGUID), SUCCEEDED, SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 	assert_event_reports(events, [
 			[],
@@ -830,12 +833,12 @@ func test_execute_test_case_is_skipped() -> void:
 
 	# the test_case1 is skipped
 	assert_event_states(events).contains_exactly([
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case1.guid, SUCCEEDED, SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
-		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, !IS_WARNING, !IS_FAILED, !IS_ERROR),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case1.guid, SUCCEEDED, SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(test_case2.guid, SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
+		tuple(any_class(GdUnitGUID), SUCCEEDED, NOT_SKIPPED, NO_WARNING, NO_FAILURES, NO_ERRORS),
 	])
 
 	assert_event_reports(events, [
