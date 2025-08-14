@@ -699,12 +699,12 @@ func update_state(item: TreeItem, event: GdUnitEvent, add_reports := true) -> vo
 	if item == null:
 		return
 
-	if event.is_success() and event.is_flaky():
+	if event.is_skipped():
+		set_state_skipped(item)
+	elif event.is_success() and event.is_flaky():
 		set_state_flaky(item, event)
 	elif event.is_success():
 		set_state_succeded(item)
-	elif event.is_skipped():
-		set_state_skipped(item)
 	elif event.is_error():
 		set_state_error(item)
 	elif event.is_failed():
