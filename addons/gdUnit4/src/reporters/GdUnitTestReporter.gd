@@ -42,9 +42,9 @@ func build_test_suite_statisitcs(event: GdUnitEvent) -> Dictionary:
 	}
 	_summary["suite_count"] += 1
 	_summary["total_count"] += _statistics.size()
-	# Add the suite hook specific counters
 	_summary["error_count"] += event.error_count()
 	_summary["failed_count"] += event.failed_count()
+	_summary["skipped_count"] += event.skipped_count()
 	_summary["orphan_nodes"] += event.orphan_nodes()
 	_summary["elapsed_time"] += event.elapsed_time()
 
