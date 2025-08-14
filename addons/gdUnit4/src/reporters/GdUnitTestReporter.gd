@@ -21,18 +21,14 @@ func init_statistics() -> void:
 	_statistics.clear()
 
 
-func update_statistics(event: GdUnitEvent) -> void:
-	var test_statisitics: Dictionary = _statistics.get_or_add(event.guid(), {
-		"error_count" : 0,
-		"failed_count" : 0,
+func add_test_statistics(event: GdUnitEvent) -> void:
+	_statistics[event.guid()] = {
+		"error_count" :  event.error_count(),
+		"failed_count" : event.failed_count(),
 		"skipped_count" : event.is_skipped() as int,
-		"flaky_count" : 0,
-		"orphan_nodes" : 0
-	})
-	test_statisitics["error_count"] = event.is_error() as int
-	test_statisitics["failed_count"] = event.is_failed() as int
-	test_statisitics["flaky_count"] = event.is_flaky() as int
-	test_statisitics["orphan_nodes"] = event.orphan_nodes()
+		"flaky_count" : event.is_flaky() as int,
+		"orphan_nodes" : event.orphan_nodes()
+	}
 
 
 func build_test_suite_statisitcs(event: GdUnitEvent) -> Dictionary:
@@ -54,7 +50,7 @@ func build_test_suite_statisitcs(event: GdUnitEvent) -> Dictionary:
 
 	for key: String in ["error_count", "failed_count", "skipped_count", "flaky_count", "orphan_nodes"]:
 		var value: int = _statistics.values().reduce(get_value.bind(key), 0 )
-		statistic[key] = value
+		statistic[key] += value
 		_summary[key] += value
 
 	return statistic

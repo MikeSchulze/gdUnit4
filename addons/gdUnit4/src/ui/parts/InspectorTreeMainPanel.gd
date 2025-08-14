@@ -802,8 +802,7 @@ func update_test_suite(event: GdUnitEvent) -> void:
 		return
 	if event.type() == GdUnitEvent.TESTSUITE_AFTER:
 		update_item_elapsed_time_counter(item, event.elapsed_time())
-		#update_state(item, event)
-		update_progress_counters(item, 23)
+		update_state(item, event)
 		set_state_running(item, false)
 
 
@@ -831,7 +830,7 @@ func update_test_case(event: GdUnitEvent) -> void:
 		update_state(item, event)
 		if _is_verbose_debug:
 			prints("")
-		update_progress_counters(item, event.retry_count())
+		update_progress_counters(item)
 
 
 func create_item(parent: TreeItem, test: GdUnitTestCase, item_name: String, type: GdUnitType) -> TreeItem:
@@ -877,12 +876,6 @@ func update_item_total_counter(item: TreeItem) -> void:
 		item.set_meta(META_GDUNIT_PROGRESS_COUNT_MAX, child_count)
 		item.set_text(0, "(0/%d) %s" % [child_count, item.get_meta(META_GDUNIT_NAME)])
 
-	if item == _tree_root:
-		var index: int = item.get_meta(META_GDUNIT_PROGRESS_INDEX)
-		var total_test: int = item.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX)
-		var state: STATE = item.get_meta(META_GDUNIT_STATE)
-		test_counters_changed.emit(index, total_test, state)
-
 	update_item_total_counter(item.get_parent())
 
 
@@ -905,13 +898,9 @@ func update_item_processed_counter(item: TreeItem, add_count := 1) -> void:
 	update_item_processed_counter(item.get_parent(), add_count)
 
 
-func update_progress_counters(item: TreeItem, rety_count: int) -> void:
-	var index: int = _tree_root.get_meta(META_GDUNIT_PROGRESS_INDEX)
+func update_progress_counters(item: TreeItem) -> void:
+	var index: int = _tree_root.get_meta(META_GDUNIT_PROGRESS_INDEX) + 1
 	var total_test: int = _tree_root.get_meta(META_GDUNIT_PROGRESS_COUNT_MAX)
-	# We only increment the index counter once for a test
-	if  rety_count <= 1:
-		index += 1
-
 	var state: STATE = item.get_meta(META_GDUNIT_STATE)
 	test_counters_changed.emit(index, total_test, state)
 	_tree_root.set_meta(META_GDUNIT_PROGRESS_INDEX, index)
@@ -959,12 +948,6 @@ func recalculate_counters(parent: TreeItem) -> void:
 
 		# Update the display text
 		parent.set_text(0, "(%d/%d) %s" % [success_count, total_count, parent.get_meta(META_GDUNIT_NAME)])
-
-	# If this is the root, emit the counter change signal
-	if parent == _tree_root:
-		var state: STATE = parent.get_meta(META_GDUNIT_STATE)
-		test_counters_changed.emit(progress_index, total_count, state)
-
 
 
 func update_item_elapsed_time_counter(item: TreeItem, time: int) -> void:

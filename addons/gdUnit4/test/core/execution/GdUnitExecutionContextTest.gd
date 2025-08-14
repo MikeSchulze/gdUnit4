@@ -87,6 +87,70 @@ func test_collect_report_statistics_with_errors() -> void:
 			})
 
 
+func test_collect_report_statistics_with_errors_on_suite_hooks() -> void:
+	# setup
+	var ts :GdUnitTestSuite = auto_free(GdUnitTestSuite.new())
+	var tc :_TestCase = auto_free(create_test_case("test_case1", 0, ""))
+	ts.add_child(tc)
+
+	# setup execution context tree like is build by the executor run
+	# suite execution (GdUnitTestSuiteExecutor)
+	var ctx_suite := GdUnitExecutionContext.of_test_suite(ts)
+	if ctx_suite != null:
+		var suite_err1 := ctx_suite.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 1, "suite before error"))
+
+		# test execution (GdUnitTestSuiteExecutionStage)
+		var ctx_test := GdUnitExecutionContext.of_test_case(ctx_suite, tc)
+		if ctx_test != null:
+			# (GdUnitTestCaseSingleExecutionStage)
+			var ctx_test_hook := GdUnitExecutionContext.of(ctx_test)
+			# test execution
+			var ctx_test_call := GdUnitExecutionContext.of(ctx_test_hook)
+			ctx_test_call.gc(GdUnitExecutionContext.GC_ORPHANS_CHECK.TEST_CASE)
+
+			ctx_test_hook.gc(GdUnitExecutionContext.GC_ORPHANS_CHECK.TEST_HOOK_AFTER)
+
+			# verify
+			ctx_test.gc()
+			var test_reports := ctx_test.collect_reports(true)
+			var test_statisitcs := ctx_test.calculate_statistics(test_reports)
+			assert_array(test_reports).is_empty()
+			assert_dict(test_statisitcs).is_equal({
+				GdUnitEvent.RETRY_COUNT: 1,
+				GdUnitEvent.ELAPSED_TIME: test_statisitcs[GdUnitEvent.ELAPSED_TIME],
+				GdUnitEvent.FAILED: false,
+				GdUnitEvent.ERRORS: false,
+				GdUnitEvent.WARNINGS: false,
+				GdUnitEvent.FLAKY: false,
+				GdUnitEvent.SKIPPED: false,
+				GdUnitEvent.FAILED_COUNT: 0,
+				GdUnitEvent.ERROR_COUNT: 0,
+				GdUnitEvent.SKIPPED_COUNT: 0,
+				GdUnitEvent.ORPHAN_NODES: 0,
+			})
+
+		var suite_err2 := ctx_suite.add_report(GdUnitReport.new().create(GdUnitReport.FAILURE, 1, "suite after error"))
+
+		# verify
+		ctx_suite.gc(GdUnitExecutionContext.GC_ORPHANS_CHECK.SUITE_HOOK_AFTER)
+		var suite_reports := ctx_suite.collect_reports(false)
+		assert_array(suite_reports).contains_exactly([suite_err1, suite_err2])
+		var suite_statisitcs := ctx_suite.calculate_statistics(suite_reports)
+		assert_dict(suite_statisitcs).is_equal({
+				GdUnitEvent.RETRY_COUNT: 1,
+				GdUnitEvent.ELAPSED_TIME: suite_statisitcs[GdUnitEvent.ELAPSED_TIME],
+				GdUnitEvent.FAILED: true,
+				GdUnitEvent.ERRORS: false,
+				GdUnitEvent.WARNINGS: false,
+				GdUnitEvent.FLAKY: false,
+				GdUnitEvent.SKIPPED: false,
+				GdUnitEvent.FAILED_COUNT: 2,
+				GdUnitEvent.ERROR_COUNT: 0,
+				GdUnitEvent.SKIPPED_COUNT: 0,
+				GdUnitEvent.ORPHAN_NODES: 0,
+			})
+
+
 @warning_ignore("unused_parameter")
 func test_simmulate_flaky_test(retry_count: int, is_flaky: bool, is_failed: bool, test_parameters := [
 	[1, false, true],
@@ -144,7 +208,7 @@ func test_simmulate_flaky_test(retry_count: int, is_flaky: bool, is_failed: bool
 		assert_dict(suite_statisitcs).is_equal({
 				GdUnitEvent.RETRY_COUNT: 1,
 				GdUnitEvent.ELAPSED_TIME: suite_statisitcs[GdUnitEvent.ELAPSED_TIME],
-				GdUnitEvent.FAILED: is_failed,
+				GdUnitEvent.FAILED: false, # no suite hook failures
 				GdUnitEvent.ERRORS: false,
 				GdUnitEvent.WARNINGS: false,
 				GdUnitEvent.FLAKY: false,

@@ -170,7 +170,7 @@ func calculate_statistics(reports_: Array[GdUnitReport]) -> Dictionary:
 	var is_failed := !is_success()
 	var orphan_count := _count_orphans()
 	var elapsed_time := _timer.elapsed_since_ms()
-	var retries := _sub_context.size()
+	var retries :=  1 if _parent_context == null else _sub_context.size()
 	# Mark as flaky if it is successful, but errors were counted
 	var is_flaky := !is_failed and failed_count > 1
 	# In the case of a flakiness test, we do not report an error counter, as an unreliable test is considered successful
@@ -195,6 +195,9 @@ func calculate_statistics(reports_: Array[GdUnitReport]) -> Dictionary:
 
 func is_success() -> bool:
 	if _sub_context.is_empty():
+		return not _report_collector.has_failures()
+	# we on test suite level?
+	if _parent_context == null:
 		return not _report_collector.has_failures()
 
 	return _sub_context[-1].is_success()

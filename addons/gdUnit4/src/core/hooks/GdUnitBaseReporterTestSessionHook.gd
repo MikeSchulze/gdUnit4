@@ -65,7 +65,7 @@ func _on_test_event(event: GdUnitEvent) -> void:
 			var test := test_session.find_test_by_id(event.guid())
 			_report_summary.add_testcase(test.source_file, test.suite_name, test.display_name)
 		GdUnitEvent.TESTCASE_AFTER:
-			_reporter.update_statistics(event)
+			_reporter.add_test_statistics(event)
 			var test := test_session.find_test_by_id(event.guid())
 			_report_summary.set_counters(test.source_file,
 				test.display_name,

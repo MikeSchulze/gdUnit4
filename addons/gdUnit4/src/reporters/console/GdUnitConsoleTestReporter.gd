@@ -85,7 +85,7 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 				println_message("")
 
 		GdUnitEvent.TESTCASE_AFTER:
-			_reporter.update_statistics(event)
+			_reporter.add_test_statistics(event)
 			if _detailed:
 				var test := test_session.find_test_by_id(event.guid())
 				_print_test_path(test, event.guid())
