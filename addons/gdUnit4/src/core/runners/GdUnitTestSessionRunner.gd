@@ -29,7 +29,7 @@ var _runner_config := GdUnitRunnerConfig.new()
 
 ## The test suite executor instance
 var _executor: GdUnitTestSuiteExecutor
-var _hooks := GdUnitTestSessionHookService.instance()
+var _hooks : GdUnitTestSessionHookService
 
 ## Current runner state
 var _state := READY
@@ -112,6 +112,7 @@ func _process(_delta: float) -> void:
 	match _state:
 		INIT:
 			await init_runner()
+			_hooks = GdUnitTestSessionHookService.instance()
 		RUN:
 			_test_session = GdUnitTestSession.new(_test_cases, report_path)
 			GdUnitSignals.instance().gdunit_event.emit(GdUnitSessionStart.new())
