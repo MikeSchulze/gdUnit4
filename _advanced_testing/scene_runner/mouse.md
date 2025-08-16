@@ -84,7 +84,7 @@ These functions allow you to mimic user mouse inputs for testing purposes. There
   
 {% include advice.html
 content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs.
-Use the <b>await await_input_processed()</b> function to accomplish this."
+Use the <b>await runner.await_input_processed()</b> function to accomplish this."
 %}
 See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)
 
@@ -112,7 +112,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # sets the current mouse position to 100, 100
 runner.set_mouse_position(Vector2(100, 100))
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
@@ -210,11 +210,11 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Set mouse position to a initial position
 runner.set_mouse_pos(Vector2(160, 20))
-await await_input_processed()
+await runner.await_input_processed()
 
 # Simulates a mouse move to final position 200, 40
 runner.simulate_mouse_move(Vector2(200, 40))
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
@@ -275,7 +275,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Set mouse position to an initial position
 runner.set_mouse_pos(Vector2(10, 20))
-await await_input_processed()
+await runner.await_input_processed()
 
 # Simulate a mouse move from the current position to the relative position within 1 second
 # the final position will be (410, 220) when is completed
@@ -337,7 +337,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Set mouse position to an initial position
 runner.set_mouse_pos(Vector2(10, 20))
-await await_input_processed()
+await runner.await_input_processed()
 
 # Simulate a mouse move from the current position to the absolute position within 1 second
 # the final position will be (400, 200) when is completed
@@ -397,7 +397,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Simulates pressing the left mouse button
 runner.simulate_mouse_button_pressed(BUTTON_LEFT)
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
@@ -452,7 +452,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # simulates mouse left button is press
 runner.simulate_mouse_button_press(BUTTON_LEFT)
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
@@ -507,7 +507,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Simulates a mouse left button is released
 runner.simulate_mouse_button_release(BUTTON_LEFT)
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
