@@ -1,8 +1,6 @@
 @tool
 class_name GdUnitConsoleTestReporter
 
-const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-
 
 var test_session: GdUnitTestSession:
 	get:
@@ -144,7 +142,7 @@ func _print_failure_report(reports: Array[GdUnitReport]) -> void:
 				.color(Color.DARK_TURQUOISE)\
 				.style(GdUnitMessageWritter.BOLD | GdUnitMessageWritter.UNDERLINE)\
 				.println_message("Report:")
-			var text := GdUnitTools.richtext_normalize(str(report))
+			var text := str(report)
 			for line in text.split("\n", false):
 				_writer.indent(2).color(Color.DARK_TURQUOISE).println_message(line)
 
