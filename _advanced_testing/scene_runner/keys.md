@@ -62,7 +62,7 @@ These functions allow you to mimic user key inputs for testing purposes. There a
   
 {% include advice.html
 content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs.
-Use the <b>await await_input_processed()</b> function to accomplish this."
+Use the <b>await runner.await_input_processed()</b> function to accomplish this."
 %}
 See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)
 
@@ -91,11 +91,11 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Simulate the enter key is pressed
 runner.simulate_key_pressed(KEY_ENTER)
-await await_input_processed()
+await runner.await_input_processed()
 
 # Simulates key combination ctrl+C is pressed
 runner.simulate_key_pressed(KEY_C, false, true)
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
@@ -158,17 +158,17 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Simulate the enter key is press
 runner.simulate_key_press(KEY_ENTER)
-await await_input_processed()
+await runner.await_input_processed()
 
 # Simulates key combination ctrl+C is press in one function call
 runner.simulate_key_press(KEY_C, false, true)
-await await_input_processed()
+await runner.await_input_processed()
 
 # Simulates multi key combination ctrl+alt+C is press
 runner.simulate_key_press(KEY_CTRL)
 runner.simulate_key_press(KEY_ALT)
 runner.simulate_key_press(KEY_C)
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
@@ -237,17 +237,17 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Simulate a enter key is released
 runner.simulate_key_release(KEY_ENTER)
-await await_input_processed()
+await runner.await_input_processed()
 
 # Simulates key combination ctrl+C is released in one function call
 runner.simulate_key_release(KEY_C, false, true)
-await await_input_processed()
+await runner.await_input_processed()
 
 # Simulates multi key combination ctrl+alt+C is released
 runner.simulate_key_release(KEY_CTRL)
 runner.simulate_key_release(KEY_ALT)
 runner.simulate_key_release(KEY_C)
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}

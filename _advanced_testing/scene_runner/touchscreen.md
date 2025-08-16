@@ -79,7 +79,7 @@ These functions allow you to mimic user touchscreen inputs for testing purposes.
   
 {% include advice.html
 content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs.
-Use the <b>await await_input_processed()</b> function to accomplish this."
+Use the <b>await runner.await_input_processed()</b> function to accomplish this."
 %}
 See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)
 

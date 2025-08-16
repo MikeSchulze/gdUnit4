@@ -62,7 +62,7 @@ These functions allow you to mimic user key inputs as actions for testing purpos
   
 {% include advice.html
 content="To ensure input events are processed correctly, you must wait at least one frame cycle after simulating inputs.
-Use the <b>await await_input_processed()</b> function to accomplish this."
+Use the <b>await runner.await_input_processed()</b> function to accomplish this."
 %}
 See [Synchronize Inputs Events](/gdUnit4/advanced_testing/scene_runner/sync_inputs/#synchronize-inputs-events)
 
@@ -88,7 +88,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Simulate the UP key is pressed by using the input action "ui_up"
 runner.simulate_action_pressed("ui_up")
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
@@ -141,7 +141,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Simulate the UP key is press by using the action "ui_up"
 runner.simulate_action_press("ui_up")
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
@@ -195,7 +195,7 @@ var runner := scene_runner("res://test_scene.tscn")
 
 # Simulate the UP key is released by using the action "ui_up"
 runner.simulate_action_release("ui-up")
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}

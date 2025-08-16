@@ -34,7 +34,7 @@ var runner := scene_runner("res://test_scene.tscn")
 runner.simulate_key_pressed(KEY_C, false, true)
 
 # finalize the input event processing
-await await_input_processed()
+await runner.await_input_processed()
 ```
 
 {% endtab %}
