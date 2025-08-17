@@ -70,9 +70,9 @@ func setup_test_env() -> void:
 		discovered_tests_suite_c[discover_test.test_name] = discover_test
 	)
 
-	suite_a_item = _inspector._find_tree_item_by_path(suite_a.resource_path, "ExampleTestSuiteA")
-	suite_b_item = _inspector._find_tree_item_by_path(suite_b.resource_path, "ExampleTestSuiteB")
-	suite_c_item = _inspector._find_tree_item_by_path(suite_c.resource_path, "ExampleTestSuiteC")
+	suite_a_item = _inspector._find_tree_item_by_test_suite(_inspector._tree_root, suite_a.resource_path, "ExampleTestSuiteA")
+	suite_b_item = _inspector._find_tree_item_by_test_suite(_inspector._tree_root, suite_b.resource_path, "ExampleTestSuiteB")
+	suite_c_item = _inspector._find_tree_item_by_test_suite(_inspector._tree_root, suite_c.resource_path, "ExampleTestSuiteC")
 
 
 func set_test_state(test_cases: Array[GdUnitTestCase], state: InspectorTreeMainPanel.STATE) -> void:
@@ -116,8 +116,6 @@ func test_find_item_by_id() -> void:
 
 # Tests a special case, the test is named equal to the test suite
 func test_find_item_by_id_GD809() -> void:
-	# clear the cache before discover new tests
-	_inspector.clear_tree_item_cache()
 	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/gd_809/test_example.resource")
 	var discovered_tests := {}
 	GdUnitTestDiscoverer.discover_tests(suite_script, func(discover_test: GdUnitTestCase) -> void:
@@ -132,8 +130,6 @@ func test_find_item_by_id_GD809() -> void:
 
 # Tests a special case, the test is named equal to the test suite
 func test_find_item_by_path_GD809() -> void:
-	# clear the cache before discover new tests
-	_inspector.clear_tree_item_cache()
 	var suite_script := GdUnitTestResourceLoader.load_gd_script("res://addons/gdUnit4/test/ui/parts/resources/gd_809/test_example.resource")
 	var discovered_tests := {}
 	GdUnitTestDiscoverer.discover_tests(suite_script, func(discover_test: GdUnitTestCase) -> void:
@@ -144,7 +140,7 @@ func test_find_item_by_path_GD809() -> void:
 	var test_example: GdUnitTestCase = discovered_tests["test_example"]
 	var test_example_b: GdUnitTestCase = discovered_tests["test_example"]
 	# find test_suite by path
-	var item := _inspector._find_tree_item_by_path(test_example.suite_resource_path, "test_example")
+	var item := _inspector._find_tree_item_by_test_suite(_inspector._tree_root, test_example.suite_resource_path, "test_example")
 	assert_object(item).is_not_null()
 	# find tests by id
 	assert_object(_inspector._find_tree_item_by_id(_inspector._tree_root, test_example.guid)).is_not_null()
@@ -364,7 +360,7 @@ func test_update_test_case_on_multiple_test_suite_with_same_name() -> void:
 		discover_sink(discover_test)
 		discovered_tests[discover_test.test_name] = discover_test
 	)
-	var suite_item := _inspector._find_tree_item_by_path(suite_script.resource_path, "ExampleTestSuiteA")
+	var suite_item := _inspector._find_tree_item_by_test_suite(_inspector._tree_root, suite_script.resource_path, "ExampleTestSuiteA")
 	assert_object(suite_item).is_not_same(suite_a_item)
 
 	# verify inital state
@@ -409,7 +405,7 @@ func test_update_icon_state() -> void:
 	)
 	var suite_script_path := suite_script.resource_path
 	var suite_name := "TestSuiteFailAndOrpahnsDetected"
-	var suite_item := _inspector._find_tree_item_by_path(suite_script_path, suite_name)
+	var suite_item := _inspector._find_tree_item_by_test_suite(_inspector._tree_root, suite_script_path, suite_name)
 
 	# Verify the inital state
 	assert_str(suite_item.get_text(0)).is_equal("(0/2) " + suite_name)
@@ -654,8 +650,57 @@ func test_collect_test_cases() -> void:
 		.contains_exactly_in_any_order(expected_tests)
 
 
+@warning_ignore("unused_parameter")
+func test_collect_test_cases_GD_872(do_skip := not GdUnit4CSharpApiLoader.is_api_loaded(), skip_reason := "Do run only for Godot .Net version") -> void:
+	var tests_by_id := {}
+	var resource_path := "res://addons/gdUnit4/test/ui/parts/resources/gd_872/"
+	for suite_path: String in ["ATests.cs", "AZTests.cs"]:
+		var script := cs_load_non_cached(resource_path + suite_path)
+		GdUnitTestDiscoverer.discover_tests(script, func(test_to_discover: GdUnitTestCase) -> void:
+			discover_sink(test_to_discover)
+			tests_by_id[test_to_discover.fully_qualified_name] = test_to_discover
+		)
+	# Validate if all tests discovered first
+	assert_dict(tests_by_id)\
+		.contains_keys([
+			"Minimal.Tests.ATests.TestExample",
+			"Minimal.Tests.ATests.TestExample2",
+			"Minimal.Tests.AZTests.TestExample",
+			"Minimal.Tests.AZTests.TestExample2"])\
+		.has_size(4)
+	# Validate suite `Minimal.Tests.ATests`
+	var test_case1: GdUnitTestCase = tests_by_id["Minimal.Tests.ATests.TestExample"]
+	var test_case2: GdUnitTestCase = tests_by_id["Minimal.Tests.ATests.TestExample2"]
+	# Validate tree paths
+	assert_str(buld_test_case_tree_path(test_case1)).is_equal("tree_root/Minimal/Tests/ATests/TestExample")
+	assert_str(buld_test_case_tree_path(test_case2)).is_equal("tree_root/Minimal/Tests/ATests/TestExample2")
+	# Valide suite find by resource name
+	assert_object(_inspector._find_tree_item_by_test_suite(_inspector._tree_root, test_case1.suite_resource_path, "ATests")).is_not_null()
+
+	# Validate suite `Minimal.Tests.AZTests`
+	test_case1 = tests_by_id["Minimal.Tests.AZTests.TestExample"]
+	test_case2 = tests_by_id["Minimal.Tests.AZTests.TestExample2"]
+	# Validate tree paths
+	assert_str(buld_test_case_tree_path(test_case1)).is_equal("tree_root/Minimal/Tests/AZTests/TestExample")
+	assert_str(buld_test_case_tree_path(test_case2)).is_equal("tree_root/Minimal/Tests/AZTests/TestExample2")
+	# Valide suite find by resource name
+	assert_object(_inspector._find_tree_item_by_test_suite(_inspector._tree_root, test_case1.suite_resource_path, "AZTests")).is_not_null()
+
 ## test helpers to validate two trees
 # ------------------------------------------------------------------------------------------------------------------------------------------
+
+func buld_test_case_tree_path(test_case: GdUnitTestCase) -> String:
+	var test := _inspector._find_tree_item_by_id(_inspector._tree_root, test_case.guid)
+	return _build_tree_path(test)
+
+
+func _build_tree_path(item: TreeItem, tree_path: String = "") -> String:
+	if item == null:
+		return tree_path
+	var part: String = item.get_meta("gdUnit_name")
+	if not tree_path.is_empty():
+		part += "/" + tree_path
+	return _build_tree_path(item.get_parent(), part)
 
 
 func assert_tree_equals(tree_left :TreeItem, tree_right: TreeItem) -> bool:
@@ -767,6 +812,10 @@ func create_child( parent: TreeItem, item_name: String) -> TreeItem:
 # we need to load the scripts freshly uncached because of script changes during test execution
 func load_non_cached(resource_path: String) -> GDScript:
 	return ResourceLoader.load(resource_path, "GDScript", ResourceLoader.CACHE_MODE_IGNORE)
+
+
+func cs_load_non_cached(resource_path: String) -> GDScript:
+	return ResourceLoader.load(resource_path, "CSharpScript", ResourceLoader.CACHE_MODE_IGNORE)
 
 
 class ItemNameExtractor extends GdUnitValueExtractor:
