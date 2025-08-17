@@ -1,6 +1,0 @@
-[submodule "gdUnit4-examples"]
-	path = gdUnit4-examples
-	url = https://github.com/MikeSchulze/gdUnit4-examples
-[submodule "addons/gdUnit4/mono"]
-	path = addons/gdUnit4/mono
-	url = https://github.com/MikeSchulze/gdUnit4Mono.git
