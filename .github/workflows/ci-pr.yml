@@ -65,7 +65,7 @@ jobs:
           echo "GDUNIT_SELFTEST=true" >> "$GITHUB_ENV"
 
       - name: 'Test GdUnit4 dev - Godot_${{ matrix.godot-version }}-${{ matrix.godot-status }}'
-        if: ${{ matrix.godot-net == '' }}
+        if: ${{ matrix.godot-net == 'exclude' }}
         uses: MikeSchulze/gdUnit4-action@v1
         with:
           godot-version: ${{ matrix.godot-version }}
