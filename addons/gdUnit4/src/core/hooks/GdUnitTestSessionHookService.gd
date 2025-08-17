@@ -14,8 +14,7 @@ var _save_settings: bool = false
 
 static func instance() -> GdUnitTestSessionHookService:
 	return GdUnitSingleton.instance("GdUnitTestSessionHookService", func()->GdUnitTestSessionHookService:
-		if GdUnitSettings.is_feature_enabled(GdUnitSettings.HOOK_SETTINGS_VISIBLE):
-			GdUnitSignals.instance().gdunit_message.emit("Installing GdUnit4 session system hooks.")
+		GdUnitSignals.instance().gdunit_message.emit("Installing GdUnit4 session system hooks.")
 		var service := GdUnitTestSessionHookService.new()
 		# Register default system hooks here
 		service.register(GdUnitHtmlReporterTestSessionHook.new(), true)
@@ -56,9 +55,7 @@ func register(hook: GdUnitTestSessionHook, is_system_hook := false) -> GdUnitRes
 	enigne_hooks.append(hook)
 	if not is_system_hook:
 		save_hock_setttings()
-
-	if GdUnitSettings.is_feature_enabled(GdUnitSettings.HOOK_SETTINGS_VISIBLE):
-		GdUnitSignals.instance().gdunit_message.emit("Session hook '%s' installed." % hook.name)
+	GdUnitSignals.instance().gdunit_message.emit("Session hook '%s' installed." % hook.name)
 
 	return GdUnitResult.success()
 
@@ -113,7 +110,7 @@ func execute(hook_func: String, session: GdUnitTestSession, reverse := false) ->
 	for hook_index in enigne_hooks.size():
 		var index := enigne_hooks.size()-hook_index-1 if reverse else hook_index
 		var hook: = enigne_hooks[index]
-		if OS.is_stdout_verbose() and GdUnitSettings.is_feature_enabled(GdUnitSettings.HOOK_SETTINGS_VISIBLE):
+		if OS.is_stdout_verbose():
 			GdUnitSignals.instance().gdunit_message.emit("Session hook '%s' > %s()" % [hook.name, hook_func])
 		var result: GdUnitResult = await hook.call(hook_func, session)
 		if result == null:

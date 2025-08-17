@@ -79,7 +79,7 @@ const INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL = GROUP_UI_TOOLBAR + "/run_overall"
 
 # Feature flags
 const GROUP_FEATURE = MAIN_CATEGORY + "/feature"
-const HOOK_SETTINGS_VISIBLE = GROUP_FEATURE + "/hook_settings_visible"
+
 
 # defaults
 # server connection timeout in minutes
