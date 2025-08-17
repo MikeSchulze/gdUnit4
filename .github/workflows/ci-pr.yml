@@ -91,6 +91,7 @@ jobs:
           version: installed
           paths: |
             res://addons/gdUnit4/test/dotnet
+          arguments: "--verbose"
           timeout: 5
           warnings-as-errors: true
           retries: 3 # We have set the number of repetitions to 3 because Godot mono randomly crashes during C# tests
