@@ -1,0 +1,15 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "documentationRules": {
+      "companyName": "Mike Schulze",
+      "copyrightText": "Copyright (c) 2025 Mike Schulze\nMIT License - See LICENSE file in the repository root for full license text",
+      "xmlHeader": false,
+      "headerDecoration": "",
+      "documentInternalElements": false,
+      "documentPrivateElements": false,
+      "documentPrivateFields": false,
+      "fileNamingConvention": "stylecop"
+    }
+  }
+}

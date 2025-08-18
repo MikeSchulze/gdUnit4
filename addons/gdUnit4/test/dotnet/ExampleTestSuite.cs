@@ -1,6 +1,6 @@
 // GdUnit generated TestSuite
-
 namespace gdUnit4.addons.gdUnit4.test.dotnet;
+
 #if GDUNIT4NET_API_V5
 using GdUnit4;
 

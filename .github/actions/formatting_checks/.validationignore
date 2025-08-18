@@ -31,3 +31,6 @@ examples/broken/
 # Third-party or generated files
 *.generated.yml
 *.auto.yaml
+
+# Ignore false positive detected invalid json
+stylecop.json
