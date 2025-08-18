@@ -1,0 +1,125 @@
+﻿<Project>
+  <!--
+  This Directory.Build.props file applies settings to all projects in this directory and subdirectories.
+  It ensures consistent code quality, style, and build configuration across the entire solution.
+  Updated for C# 13 support and GdUnit4Net project requirements.
+  -->
+
+  <PropertyGroup>
+    <!--
+    Language and Framework Configuration:
+    Set target framework and language version for modern C# features
+    -->
+    <LangVersion>13.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!--
+    Analyzer Configuration:
+    These settings enable code analysis tools that help maintain code quality by
+    identifying potential issues, enforcing consistent style, and encouraging best practices.
+    -->
+
+    <!-- Enable built-in .NET code analyzers with latest rules -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+
+    <!-- Enable all categories of analysis rules (Style, Design, Documentation, etc.) -->
+    <AnalysisMode>All</AnalysisMode>
+
+    <!-- Enforce code style rules during build, not just in the IDE -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- Use the custom StyleCop ruleset -->
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)stylecop.ruleset</CodeAnalysisRuleSet>
+
+    <!-- Convert all warnings to errors for stricter enforcement -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!--
+    Generate XML documentation files from code comments
+    This enables full analyzer functionality and documents your test examples
+    -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!--
+    MSBuild and Build Performance:
+    Enable features that improve build performance and developer experience
+    -->
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+
+    <!--
+    Assembly and Package Metadata:
+    Default values for all projects in the solution
+    -->
+    <Company>Mike Schulze</Company>
+    <Copyright>Copyright (c) 2025 Mike Schulze</Copyright>
+    <Product>GdUnit4</Product>
+
+  </PropertyGroup>
+
+  <!--
+  Configure source roots for projects with src folders
+  This tells the IDE and tooling that 'src' is the namespace root
+  -->
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)/addons/gdUnit4/src')">
+    <!-- Mark src folder as source root for namespace calculation -->
+    <SourceRoot Include="$(MSBuildProjectDirectory)/addons/gdUnit4/src/"/>
+  </ItemGroup>
+
+  <!--
+  External Code Analyzers:
+  These packages provide additional rules beyond what's built into the .NET SDK.
+  They're configured as private assets so they don't get published with your assembly.
+  Note: Analyzer projects (like GdUnit4Analyzers) are excluded as they manage their own analyzer dependencies.
+  -->
+  <ItemGroup Condition="!$(MSBuildProjectName.Contains('Analyzer'))">
+
+    <!--
+    StyleCop.Analyzers: Enforces style and consistency rules
+    Helps ensure readable and maintainable code across the codebase
+    -->
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+
+    <!--
+    Microsoft.CodeAnalysis.Analyzers: Additional code quality rules
+    Provides enhanced analysis for modern C# patterns
+    -->
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+
+  </ItemGroup>
+
+  <!--
+  Configuration files for all projects
+  -->
+  <ItemGroup>
+    <!-- Configuration files for StyleCop -->
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json"/>
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory).editorconfig"/>
+  </ItemGroup>
+
+  <!--
+  Conditional Configuration:
+  Different settings for different build configurations
+  -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <!-- Enable more detailed debugging information in Debug builds -->
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <!-- Optimize Release builds but keep debugging symbols -->
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <TrimUnusedDependencies>true</TrimUnusedDependencies>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="GdUnit4 StyleCop Ruleset" Description="StyleCop rules for GdUnit4 project with C# 12 support" ToolsVersion="16.0">
+
+  <!-- StyleCop Analyzers Rules -->
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+
+    <!-- Spacing Rules - Relaxed for modern C# -->
+    <Rule Id="SA1000" Action="None"/> <!-- Keywords should be spaced correctly -->
+    <Rule Id="SA1009" Action="None"/> <!-- Closing parenthesis should be spaced correctly -->
+
+    <!-- Readability Rules -->
+    <Rule Id="SA1101" Action="None"/> <!-- Prefix local calls with this -->
+    <Rule Id="SA1118" Action="None"/> <!-- Parameter should not span multiple lines -->
+    <Rule Id="SA1135" Action="None"/> <!-- Using directives should be qualified -->
+
+    <!-- Layout Rules -->
+    <Rule Id="SA1503" Action="None"/> <!-- Braces should not be omitted -->
+    <Rule Id="SA1520" Action="None"/> <!-- Use braces consistently -->
+
+    <!-- Naming Rules -->
+    <Rule Id="SA1310" Action="None"/> <!-- Field names should not contain underscore (allow SCREAMING_SNAKE_CASE) -->
+    <Rule Id="SA1413" Action="None"/> <!-- Use trailing comma in multi-line initializers -->
+
+    <!-- Documentation Rules - Keep strict for public API -->
+    <Rule Id="SA1633" Action="None"/> <!-- File should have header -->
+    <Rule Id="SA1635" Action="Error"/> <!-- File header should have copyright text -->
+    <Rule Id="SA1637" Action="None"/> <!-- File header should contain file name -->
+    <Rule Id="SA1638" Action="None"/> <!-- File header file name documentation should match file name -->
+    <Rule Id="SA1634" Action="None"/> <!-- File header should show copyright -->
+
+    <!-- Ordering Rules - Keep strict for consistency -->
+    <Rule Id="SA1201" Action="Error"/> <!-- Elements should appear in the correct order -->
+    <Rule Id="SA1202" Action="Error"/> <!-- Elements should be ordered by access -->
+    <Rule Id="SA1203" Action="Error"/> <!-- Constants should appear before fields -->
+    <Rule Id="SA1204" Action="Error"/> <!-- Static elements should appear before instance elements -->
+    <Rule Id="SA1206" Action="Error"/> <!-- Declaration keywords should follow order -->
+
+    <!-- Maintainability Rules -->
+    <Rule Id="SA1507" Action="Warning"/> <!-- Code should not contain multiple blank lines -->
+
+  </Rules>
+
+  <!-- C# Code Style Rules -->
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
+
+    <!-- Disable overly strict IDE rules -->
+    <Rule Id="IDE0011" Action="None"/> <!-- Add braces -->
+    <Rule Id="IDE0130" Action="None"/> <!-- Namespace does not match folder structure -->
+
+    <!-- C# 12 Collection Expression Rules - Set as suggestions -->
+    <Rule Id="IDE0290" Action="None"/> <!-- Use primary constructor -->
+
+  </Rules>
+
+  <!-- .NET Code Analysis Rules -->
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.NetAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.NetAnalyzers">
+
+    <!-- Globalization Rules - Relaxed for test framework -->
+    <Rule Id="CA1303" Action="None"/> <!-- Do not pass literals as localized parameters -->
+    <Rule Id="CA1304" Action="None"/> <!-- Specify CultureInfo -->
+    <Rule Id="CA1305" Action="None"/> <!-- Specify IFormatProvider -->
+    <Rule Id="CA1310" Action="None"/> <!-- Specify StringComparison for correctness -->
+    <Rule Id="CA1311" Action="None"/> <!-- Specify a culture or use an invariant version -->
+
+    <Rule Id="CS1591" Action="None"/>
+    
+    <Rule Id="CA1707" Action="None"/> <!-- Identifiers should not contain underscores (allow SCREAMING_SNAKE_CASE) -->
+
+    <!-- Performance Rules - Relaxed for test scenarios -->
+    <Rule Id="CA1822" Action="None"/> <!-- Mark members as static -->
+    <Rule Id="CA1861" Action="None"/> <!-- Avoid constant arrays as arguments -->
+
+    <!-- Design Rules - Keep for API quality -->
+    <Rule Id="CA1515" Action="None"/> <!-- Consider making public types internal (disabled for test files) -->
+
+  </Rules>
+
+</RuleSet>
