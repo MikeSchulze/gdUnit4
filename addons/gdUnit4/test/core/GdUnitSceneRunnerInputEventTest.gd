@@ -135,6 +135,7 @@ func test_simulate_key_press() -> void:
 		var event := InputEventKey.new()
 		event.keycode = key as Key
 		event.physical_keycode = key as Key
+		event.unicode = key
 		event.pressed = true
 		verify(_scene_spy, 1)._input(event)
 		assert_that(Input.is_key_pressed(key)).is_true()
@@ -160,6 +161,7 @@ func test_simulate_key_press_with_modifiers() -> void:
 	var event := InputEventKey.new()
 	event.keycode = KEY_SHIFT
 	event.physical_keycode = KEY_SHIFT
+	event.unicode = KEY_SHIFT as int
 	event.pressed = true
 	event.shift_pressed = true
 	verify(_scene_spy, 1)._input(event)
@@ -168,6 +170,7 @@ func test_simulate_key_press_with_modifiers() -> void:
 	event = InputEventKey.new()
 	event.keycode = KEY_A
 	event.physical_keycode = KEY_A
+	event.unicode = KEY_A as int
 	event.pressed = true
 	event.shift_pressed = true
 	verify(_scene_spy, 1)._input(event)
