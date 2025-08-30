@@ -45,9 +45,11 @@ text = "Test 3"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+current_tab = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="Panel1" type="ColorRect" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
@@ -115,6 +117,14 @@ offset_top = 529.0
 offset_right = 1123.0
 offset_bottom = 609.0
 text = "Exit"
+
+[node name="TextInput" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 694.0
+offset_top = 189.0
+offset_right = 1020.0
+offset_bottom = 268.0
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/test1" to="." method="_on_test_pressed" binds= [1]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/test2" to="." method="_on_test_pressed" binds= [2]]

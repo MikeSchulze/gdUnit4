@@ -798,3 +798,22 @@ func test_simulate_screen_touch_gesture_zoom_out() -> void:
 	# verify final position are correct
 	assert_that(_runner.get_screen_touch_drag_position(0)).is_equal(Vector2(300, 100))
 	assert_that(_runner.get_screen_touch_drag_position(1)).is_equal(Vector2(300, 350))
+
+
+func test_text_input_processing() -> void:
+	_runner.maximize_view()
+	var lineEdit := _runner.find_child("TextInput") as LineEdit
+
+	# Focus the text input and clear any existing content
+	lineEdit.grab_focus()
+	assert_that(lineEdit.has_focus()).is_true()
+	lineEdit.text = ""
+
+	# Type individual characters
+	_runner.simulate_key_pressed(KEY_H)
+	_runner.simulate_key_pressed(KEY_I)
+	await _runner.await_input_processed()
+	await _runner.simulate_frames(100)
+
+	# Verify text accumulation
+	assert_that(lineEdit.text).is_equal("HI");
