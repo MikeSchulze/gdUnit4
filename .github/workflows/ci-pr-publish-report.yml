@@ -29,7 +29,7 @@ jobs:
         godot-net: ['-net', '']
         include:
           - godot-version: '4.5'
-            godot-status: 'beta5'
+            godot-status: 'beta7'
 
     steps:
       - uses: actions/checkout@v4
@@ -56,3 +56,4 @@ jobs:
           fail-on-error: 'false'
           fail-on-empty: 'false'
           use-actions-summary: 'false'
+
