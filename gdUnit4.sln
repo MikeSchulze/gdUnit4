@@ -2,8 +2,6 @@
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gdUnit4", "gdUnit4.csproj", "{1F7492EE-4E0C-47ED-8D6F-FFF9FC4DCDB6}"
 EndProject
-# Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gdUnit4.api", "..\gdUnit4Net\api\gdUnit4Api.csproj", "{E5ED8330-DA73-49CE-A060-103CD6B8DC6D}"
-# EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 	Debug|Any CPU = Debug|Any CPU

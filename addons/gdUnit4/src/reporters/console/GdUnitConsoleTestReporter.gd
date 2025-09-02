@@ -1,8 +1,6 @@
 @tool
 class_name GdUnitConsoleTestReporter
 
-const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
-
 
 var test_session: GdUnitTestSession:
 	get:
@@ -55,7 +53,7 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 		GdUnitEvent.STOP:
 			_print_summary()
 			println_message(build_executed_test_suite_msg(processed_suite_count(), processed_suite_count()), Color.DARK_SALMON)
-			println_message(build_executed_test_case_msg(total_test_count(), total_flaky_count()), Color.DARK_SALMON)
+			println_message(build_executed_test_case_msg(total_test_count(), total_skipped_count()), Color.DARK_SALMON)
 			println_message("Total execution time: %s" % LocalTime.elapsed(elapsed_time()), Color.DARK_SALMON)
 			# We need finally to set the wave effect to enable the animations
 			_writer.effect(GdUnitMessageWritter.Effect.WAVE).print_at("", 0)
@@ -85,9 +83,9 @@ func on_gdunit_event(event: GdUnitEvent) -> void:
 				println_message("")
 
 		GdUnitEvent.TESTCASE_AFTER:
-			var test := test_session.find_test_by_id(event.guid())
-			_reporter.update_statistics(event)
+			_reporter.add_test_statistics(event)
 			if _detailed:
+				var test := test_session.find_test_by_id(event.guid())
 				_print_test_path(test, event.guid())
 			_print_status(event)
 			_print_failure_report(event.reports())
@@ -144,7 +142,7 @@ func _print_failure_report(reports: Array[GdUnitReport]) -> void:
 				.color(Color.DARK_TURQUOISE)\
 				.style(GdUnitMessageWritter.BOLD | GdUnitMessageWritter.UNDERLINE)\
 				.println_message("Report:")
-			var text := GdUnitTools.richtext_normalize(str(report))
+			var text := str(report)
 			for line in text.split("\n", false):
 				_writer.indent(2).color(Color.DARK_TURQUOISE).println_message(line)
 

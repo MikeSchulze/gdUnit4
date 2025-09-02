@@ -128,7 +128,7 @@ func resource_path() -> String:
 
 
 func is_success() -> bool:
-	return not is_warning() and not is_failed() and not is_error() and not is_skipped()
+	return not is_failed() and not is_error()
 
 
 func is_warning() -> bool:

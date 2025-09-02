@@ -82,7 +82,7 @@ func test_is_equal() -> void:
 			 but was
 			 '{
 				1: 1,
-				"key_ab": "value_ab"
+				"key_b": "value_b"
 			  }'"""
 			.dedent()
 			.trim_prefix("\n")

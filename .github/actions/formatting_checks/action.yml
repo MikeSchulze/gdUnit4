@@ -28,7 +28,7 @@ runs:
         matcher: true
 
     - name: 'Validate JSON and YAML syntax'
-      uses: GrantBirki/json-yaml-validate@v2.6.0
+      uses: GrantBirki/json-yaml-validate@v3.3.2
       with:
         exclude_file: ".github/actions/formatting_checks/.validationignore"
         use_gitignore: ${{ inputs.use-gitignore }}
@@ -37,3 +37,13 @@ runs:
       uses: DavidAnson/markdownlint-cli2-action@v20
       with:
         config: ".github/actions/formatting_checks/.markdownlint.jsonc"
+
+    - name: "Setup .Net"
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: 'global.json'
+
+    - name: "C# Code Formatting"
+      shell: bash
+      run: |
+        dotnet format gdUnit4.csproj --verify-no-changes --verbosity diagnostic

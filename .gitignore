@@ -15,7 +15,7 @@ icon.png.import
 .mono/
 data_*/
 mono_crash.*.json
-gdunit4_testadapter/*
+gdunit4_testadapter_v5/*
 
 # submodules
 gdUnit3-examples/

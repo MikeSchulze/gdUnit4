@@ -18,10 +18,10 @@ concurrency:
 jobs:
   format-checks:
     if: ${{ !cancelled() }}
-    name: '📝 YamlLint + MdLint'
+    name: '📝 Linting & Formatting'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/formatting_checks
 
   gdlint:
@@ -42,7 +42,7 @@ jobs:
         godot-net: ['.Net', '']
         include:
           - godot-version: '4.5'
-            godot-status: 'beta7'
+            godot-status: 'dev7'
 
     permissions:
       actions: write
@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
 
@@ -87,6 +87,7 @@ jobs:
           godot-version: ${{ matrix.godot-version }}
           godot-status: ${{ matrix.godot-status }}
           godot-net: true
+          dotnet-version: 'net9.0'
           version: installed
           paths: |
             res://addons/gdUnit4/test/dotnet
@@ -108,4 +109,3 @@ jobs:
                contains(needs.*.result, 'failure')
             || contains(needs.*.result, 'cancelled')
           }}
-

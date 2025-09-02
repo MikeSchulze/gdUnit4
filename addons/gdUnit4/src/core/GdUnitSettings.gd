@@ -77,6 +77,10 @@ const SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG = GROUP_SHORTCUT_FILESYSTEM + "/run_tes
 const GROUP_UI_TOOLBAR = UI_SETTINGS + "/toolbar"
 const INSPECTOR_TOOLBAR_BUTTON_RUN_OVERALL = GROUP_UI_TOOLBAR + "/run_overall"
 
+# Feature flags
+const GROUP_FEATURE = MAIN_CATEGORY + "/feature"
+
+
 # defaults
 # server connection timeout in minutes
 const DEFAULT_SERVER_TIMEOUT :int = 30
@@ -289,6 +293,10 @@ static func is_test_discover_enabled() -> bool:
 
 static func is_test_flaky_check_enabled() -> bool:
 	return get_setting(TEST_FLAKY_CHECK, false)
+
+
+static func is_feature_enabled(feature: String) -> bool:
+	return get_setting(feature, false)
 
 
 static func get_flaky_max_retries() -> int:
