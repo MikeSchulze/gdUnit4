@@ -1,6 +1,8 @@
 #if GDUNIT4NET_API_V5
 namespace gdUnit4.addons.gdUnit4.test.dotnet;
 
+using System.Diagnostics.CodeAnalysis;
+
 using GdUnit4;
 
 using Godot;
@@ -22,6 +24,7 @@ public partial class GdUnit4CSharpApiTest
     }
 
     [TestCase]
+    [SuppressMessage("Reliability", "CA2000:Objekte verwerfen, bevor Bereich verloren geht")]
     public void DiscoverTestsFromScript()
     {
         var script = GD.Load<CSharpScript>("res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs");
