@@ -47,17 +47,17 @@ public partial class GdUnit4CSharpApiTest
         AssertThat(testsWithoutGuids).HasSize(14)
             // Check for single test `IsFoo`
             .Contains(new Dictionary
-                {
-                    ["test_name"] = "IsFoo",
-                    ["source_file"] = "res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs",
-                    ["line_number"] = 16,
-                    ["attribute_index"] = 0,
-                    ["require_godot_runtime"] = true,
-                    ["code_file_path"] = fullScriptPath,
-                    ["fully_qualified_name"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite.IsFoo",
-                    ["simple_name"] = "IsFoo",
-                    ["managed_type"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite"
-                },
+            {
+                ["test_name"] = "IsFoo",
+                ["source_file"] = "res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs",
+                ["line_number"] = 16,
+                ["attribute_index"] = 0,
+                ["require_godot_runtime"] = true,
+                ["code_file_path"] = fullScriptPath,
+                ["fully_qualified_name"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite.IsFoo",
+                ["simple_name"] = "IsFoo",
+                ["managed_type"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite"
+            },
                 // Check exemplary two of the `ParameterizedTest` (index 0, index 11)
                 new Dictionary
                 {
