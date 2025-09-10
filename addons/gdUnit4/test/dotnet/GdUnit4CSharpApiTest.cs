@@ -1,6 +1,8 @@
 #if GDUNIT4NET_API_V5
 namespace gdUnit4.addons.gdUnit4.test.dotnet;
 
+using System.Diagnostics.CodeAnalysis;
+
 using GdUnit4;
 
 using Godot;
@@ -22,6 +24,7 @@ public partial class GdUnit4CSharpApiTest
     }
 
     [TestCase]
+    [SuppressMessage("Reliability", "CA2000:Objekte verwerfen, bevor Bereich verloren geht")]
     public void DiscoverTestsFromScript()
     {
         var script = GD.Load<CSharpScript>("res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs");
@@ -44,17 +47,17 @@ public partial class GdUnit4CSharpApiTest
         AssertThat(testsWithoutGuids).HasSize(14)
             // Check for single test `IsFoo`
             .Contains(new Dictionary
-            {
-                ["test_name"] = "IsFoo",
-                ["source_file"] = "res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs",
-                ["line_number"] = 16,
-                ["attribute_index"] = 0,
-                ["require_godot_runtime"] = true,
-                ["code_file_path"] = fullScriptPath,
-                ["fully_qualified_name"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite.IsFoo",
-                ["simple_name"] = "IsFoo",
-                ["managed_type"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite"
-            },
+                {
+                    ["test_name"] = "IsFoo",
+                    ["source_file"] = "res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs",
+                    ["line_number"] = 16,
+                    ["attribute_index"] = 0,
+                    ["require_godot_runtime"] = true,
+                    ["code_file_path"] = fullScriptPath,
+                    ["fully_qualified_name"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite.IsFoo",
+                    ["simple_name"] = "IsFoo",
+                    ["managed_type"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite"
+                },
                 // Check exemplary two of the `ParameterizedTest` (index 0, index 11)
                 new Dictionary
                 {

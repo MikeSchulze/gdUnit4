@@ -5,7 +5,12 @@ namespace gdUnit4.addons.gdUnit4.src.dotnet;
 #pragma warning restore IDE1006
 
 #if GDUNIT4NET_API_V5
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using GdUnit4;
 using GdUnit4.Api;
