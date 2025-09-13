@@ -42,7 +42,7 @@ jobs:
         godot-net: ['.Net', '']
         include:
           - godot-version: '4.5'
-            godot-status: 'dev5'
+            godot-status: 'beta7'
 
     permissions:
       actions: write
