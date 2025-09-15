@@ -121,6 +121,13 @@ func test_example():
 
  ---
 
+## Advanced Example: Automated Testing in Godot
+
+[![Watch the video](https://i.ytimg.com/an_webp/CreugthdgJ0/mqdefault_6s.webp?du=3000&sqp=CPzPoMYG&rs=AOn4CLCnb4LpbgbUEjAExFj1NAdZ5lnqKA)](https://www.youtube.com/watch?v=CreugthdgJ0)
+
+This excellent example is provided by [Godotneers](https://www.youtube.com/@godotneers) and demonstrates how to effectively test your game scenes using GDUnit4.
+The video walks through practical automated testing techniques that can help improve your Godot project's reliability and maintainability.
+
 ## Documentation
 
 <p align="left" style="font-family: Bedrock; font-size:21pt; color:#7253ed; font-style:bold">
