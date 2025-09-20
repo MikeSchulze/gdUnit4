@@ -12,6 +12,7 @@ const GdUnitTools = preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 class TestEmitter extends Node:
 	signal test_signal_counted(value :int)
 	signal test_signal(value :int)
+	signal test_signal_a(value: String)
 	@warning_ignore("unused_signal")
 	signal test_signal_unused()
 
@@ -28,10 +29,12 @@ class TestEmitter extends Node:
 		if _count == 20:
 			test_signal.emit(10)
 			test_signal.emit(20)
+			test_signal_a.emit("foo")
 		_count += 1
 
 	func reset_trigger(trigger_count := 10) -> void:
 		_trigger_count = trigger_count
+		_count = 0
 
 
 var signal_emitter :TestEmitter
@@ -102,6 +105,29 @@ func test_signal_is_not_emitted() -> void:
 	(
 		await assert_failure_await(func() -> void: await assert_signal(signal_emitter).wait_until(1000).is_not_emitted("test_signal_counted", [50]))
 	).starts_with_message("Expecting do not emit signal: 'test_signal_counted([50])' but is emitted after")
+
+
+func test_signal_is_not_emitted_use_argument_matcher() -> void:
+	# wait until signal 'test_signal_counted' is NOT emitted by using any_int() matcher for signal arguments
+	await assert_signal(signal_emitter).wait_until(10).is_not_emitted("test_signal_counted", [any()])
+	await assert_signal(signal_emitter).wait_until(10).is_not_emitted("test_signal_counted", [any_int()])
+
+	# until the next 500ms the signal is emitted and ends in a failure
+	(
+		await assert_failure_await(func() -> void: await assert_signal(signal_emitter).wait_until(1000).is_not_emitted("test_signal_counted", [any()]))
+	).starts_with_message("Expecting do not emit signal: 'test_signal_counted([any()])' but is emitted after")
+
+
+func test_signal_is_not_emitted_use_argument_matcher_GD_878() -> void:
+	await assert_signal(signal_emitter).wait_until(500).is_emitted("test_signal_a", ["foo"])
+	# verify the signal is not emitted again
+	await assert_signal(signal_emitter).wait_until(10).is_not_emitted("test_signal_a", ["foo"])
+
+	# restart trigger counter
+	signal_emitter.reset_trigger()
+	await assert_signal(signal_emitter).wait_until(500).is_emitted("test_signal_a", [any()])
+	# verify the signal is not emitted again
+	await assert_signal(signal_emitter).wait_until(1).is_not_emitted("test_signal_a", [any()])
 
 
 func test_override_failure_message() -> void:
