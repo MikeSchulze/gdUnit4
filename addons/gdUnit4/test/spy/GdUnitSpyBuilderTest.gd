@@ -146,9 +146,8 @@ func test_double_return_typed_function_with_args_and_varargs() -> void:
 	var expected := """
 		@warning_ignore('shadowed_variable', 'untyped_declaration')
 		@warning_ignore("native_method_override")
-		func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:
-			var varargs__: Array = __get_verifier().filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
-			var args__: Array = ["emit_signal", signal_] + varargs__
+		func emit_signal(signal_, ...varargs: Array) -> Error:
+			var args__: Array = ["emit_signal", signal_] + varargs
 
 			# verify block
 			var __verifier := __get_verifier()
@@ -159,7 +158,7 @@ func test_double_return_typed_function_with_args_and_varargs() -> void:
 				else:
 					__verifier.save_function_interaction(args__)
 
-			return __call_func("emit_signal", [signal_] + varargs__)
+			return __call_func("emit_signal", [signal_] + varargs)
 
 		""".dedent().trim_prefix("\n")
 	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
@@ -171,9 +170,8 @@ func test_double_return_void_function_only_varargs() -> void:
 	var fd := GdFunctionDescriptor.new( "bar", 23, false, false, false, TYPE_NIL, "void", [], GdFunctionDescriptor._build_varargs(true))
 	var expected := """
 		@warning_ignore('shadowed_variable', 'untyped_declaration')
-		func bar(vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:
-			var varargs__: Array = __get_verifier().filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
-			var args__: Array = ["bar", ] + varargs__
+		func bar(...varargs: Array) -> void:
+			var args__: Array = ["bar", ] + varargs
 
 			# verify block
 			var __verifier := __get_verifier()
@@ -184,7 +182,7 @@ func test_double_return_void_function_only_varargs() -> void:
 				else:
 					__verifier.save_function_interaction(args__)
 
-			__call_func("bar", [] + varargs__)
+			__call_func("bar", [] + varargs)
 
 		""".dedent().trim_prefix("\n")
 	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
@@ -196,9 +194,8 @@ func test_double_return_typed_function_only_varargs() -> void:
 	var fd := GdFunctionDescriptor.new( "bar", 23, false, false, false, TYPE_STRING, "String", [], GdFunctionDescriptor._build_varargs(true))
 	var expected := """
 		@warning_ignore('shadowed_variable', 'untyped_declaration')
-		func bar(vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> String:
-			var varargs__: Array = __get_verifier().filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
-			var args__: Array = ["bar", ] + varargs__
+		func bar(...varargs: Array) -> String:
+			var args__: Array = ["bar", ] + varargs
 
 			# verify block
 			var __verifier := __get_verifier()
@@ -209,7 +206,7 @@ func test_double_return_typed_function_only_varargs() -> void:
 				else:
 					__verifier.save_function_interaction(args__)
 
-			return __call_func("bar", [] + varargs__)
+			return __call_func("bar", [] + varargs)
 
 		""".dedent().trim_prefix("\n")
 	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
@@ -362,7 +359,8 @@ class NodeWithOutVirtualFunc extends Node:
 
 @warning_ignore("unsafe_method_access")
 func test_spy_on_script_respect_virtual_functions() -> void:
-	var do_spy :Variant = auto_free(GdUnitSpyBuilder.spy_on_script(auto_free(NodeWithOutVirtualFunc.new()), [], false).new())
+	var do_spy :Variant = auto_free(GdUnitSpyBuilder.spy_on_script(auto_free(NodeWithOutVirtualFunc.new()), [], true).new())
+
 	do_spy.__init(do_spy)
 	assert_bool(do_spy.has_method("_ready")).is_true()
 	assert_bool(do_spy.has_method("_input")).is_false()

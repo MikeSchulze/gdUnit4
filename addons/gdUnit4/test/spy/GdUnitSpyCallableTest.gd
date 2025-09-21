@@ -102,7 +102,7 @@ func test_bind() -> void:
 
 	# verify bind is called
 	verify(cb_spy).bind(24)
-	# verify bind is not called with 33
+	# verify bind is not called with 23
 	assert_failure(func() -> void: verify(cb_spy).bind(23)).is_failed()
 
 	# do use the spy to call the callable

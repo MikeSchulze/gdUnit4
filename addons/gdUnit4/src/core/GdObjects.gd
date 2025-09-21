@@ -20,10 +20,6 @@ const TYPE_CANVAS	= 2003
 const TYPE_ENUM		= 2004
 
 
-# used as default value for varargs
-const TYPE_VARARG_PLACEHOLDER_VALUE = "__null__"
-
-
 const TYPE_AS_STRING_MAPPINGS := {
 	TYPE_NIL: "null",
 	TYPE_BOOL: "bool",

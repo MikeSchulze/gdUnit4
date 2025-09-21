@@ -3,6 +3,13 @@ extends RefCounted
 
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
+const TYPE_VOID = GdObjects.TYPE_VOID
+const TYPE_VARIANT = GdObjects.TYPE_VARIANT
+const TYPE_VARARG = GdObjects.TYPE_VARARG
+const TYPE_FUNC = GdObjects.TYPE_FUNC
+const TYPE_FUZZER = GdObjects.TYPE_FUZZER
+const TYPE_ENUM = GdObjects.TYPE_ENUM
+
 const ALLOWED_CHARACTERS := "0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\""
 
 var TOKEN_NOT_MATCH := Token.new("")
@@ -23,6 +30,7 @@ var TOKEN_ARGUMENT_ASIGNMENT := Token.new("=")
 var TOKEN_ARGUMENT_TYPE_ASIGNMENT := Token.new(":=")
 var TOKEN_ARGUMENT_FUZZER := FuzzerToken.new(GdUnitTools.to_regex("((?!(fuzzer_(seed|iterations)))fuzzer?\\w+)( ?+= ?+| ?+:= ?+| ?+:Fuzzer ?+= ?+|)"))
 var TOKEN_ARGUMENT_TYPE := Token.new(":")
+var TOKEN_ARGUMENT_VARIADIC := Token.new("...")
 var TOKEN_ARGUMENT_SEPARATOR := Token.new(",")
 var TOKEN_BRACKET_ROUND_OPEN := Token.new("(")
 var TOKEN_BRACKET_ROUND_CLOSE := Token.new(")")
@@ -60,6 +68,7 @@ var TOKENS :Array[Token] = [
 	TOKEN_ARGUMENT_TYPE_ASIGNMENT,
 	TOKEN_ARGUMENT_ASIGNMENT,
 	TOKEN_ARGUMENT_TYPE,
+	TOKEN_ARGUMENT_VARIADIC,
 	TOKEN_FUNCTION,
 	TOKEN_ARGUMENT_SEPARATOR,
 	TOKEN_FUNCTION_RETURN_TYPE,
@@ -303,6 +312,7 @@ func get_token(input :String, current_index :int) -> Token:
 func next_token(input: String, current_index: int, ignore_tokens :Array[Token] = []) -> Token:
 	var token := TOKEN_NOT_MATCH
 	for t :Token in TOKENS.filter(func(t :Token) -> bool: return not ignore_tokens.has(t)):
+
 		if t.match(input, current_index):
 			token = t
 			break
@@ -390,12 +400,14 @@ func is_getter_or_setter(func_name: String) -> bool:
 	return func_name.begins_with("@") and (func_name.ends_with("getter") or func_name.ends_with("setter"))
 
 
-func _parse_function_arguments(input: String) -> Dictionary:
-	var arguments := {}
+func _parse_function_arguments(input: String) -> Array[Dictionary]:
+	var arguments: Array[Dictionary] = []
 	var current_index := 0
-	var token :Token = null
+	var token: Token = null
 	var bracket := 0
 	var in_function := false
+
+
 	while current_index < len(input):
 		token = next_token(input, current_index)
 		# fallback to not end in a endless loop
@@ -417,7 +429,6 @@ func _parse_function_arguments(input: String) -> Dictionary:
 		if token == TOKEN_BRACKET_ROUND_OPEN :
 			in_function = true
 			bracket += 1
-			continue
 		if token == TOKEN_BRACKET_ROUND_CLOSE:
 			bracket -= 1
 		# if function end?
@@ -428,17 +439,16 @@ func _parse_function_arguments(input: String) -> Dictionary:
 			token = next_token(input, current_index)
 			current_index += token._consumed
 			continue
-		# is fuzzer argument
-		if token is FuzzerToken:
-			var arg_value := _parse_end_function(input.substr(current_index), true)
-			current_index += arg_value.length()
-			var arg_name :String = (token as FuzzerToken).name()
-			arguments[arg_name] = arg_value.lstrip(" ")
-			continue
+
 		# is value argument
-		if in_function and token.is_variable():
-			var arg_name: String = (token as Variable).plain_value()
-			var arg_value: String = GdFunctionArgument.UNDEFINED
+		if in_function:
+			var arg_value := ""
+			var current_argument := {
+				"name" : "",
+				"value" : GdFunctionArgument.UNDEFINED,
+				"type" : TYPE_VARIANT
+			}
+
 			# parse type and default value
 			while current_index < len(input):
 				token = next_token(input, current_index)
@@ -446,19 +456,44 @@ func _parse_function_arguments(input: String) -> Dictionary:
 				if token.is_skippable():
 					continue
 
+				if token.is_variable() && current_argument["name"] == "":
+					arguments.append(current_argument)
+					current_argument["name"] = (token as Variable).plain_value()
+					continue
+
 				match token:
+							# is fuzzer argument
+					TOKEN_ARGUMENT_FUZZER:
+						arg_value = _parse_end_function(input.substr(current_index), true)
+						current_index += arg_value.length()
+						current_argument["name"] = (token as FuzzerToken).name()
+						current_argument["value"] = arg_value.lstrip(" ")
+						current_argument["type"] = TYPE_FUZZER
+						arguments.append(current_argument)
+						continue
+
+					TOKEN_ARGUMENT_VARIADIC:
+						current_argument["type"] = TYPE_VARARG
+
 					TOKEN_ARGUMENT_TYPE:
 						token = next_token(input, current_index)
 						if token == TOKEN_SPACE:
 							current_index += token._consumed
 							token = next_token(input, current_index)
+							current_index += token._consumed
+						if current_argument["type"] != TYPE_VARARG:
+							current_argument["type"] = GdObjects.string_to_type((token as Variable).plain_value())
+
 					TOKEN_ARGUMENT_TYPE_ASIGNMENT:
 						arg_value = _parse_end_function(input.substr(current_index), true)
 						current_index += arg_value.length()
+						current_argument["value"] = arg_value.lstrip(" ")
 					TOKEN_ARGUMENT_ASIGNMENT:
 						token = next_token(input, current_index)
 						arg_value = _parse_end_function(input.substr(current_index), true)
 						current_index += arg_value.length()
+						current_argument["value"] = arg_value.lstrip(" ")
+
 					TOKEN_BRACKET_SQUARE_OPEN:
 						bracket += 1
 					TOKEN_BRACKET_CURLY_OPEN:
@@ -484,8 +519,13 @@ func _parse_function_arguments(input: String) -> Dictionary:
 							break
 					TOKEN_ARGUMENT_SEPARATOR:
 						if bracket <= 1:
-							break
-			arguments[arg_name] = arg_value.lstrip(" ")
+							# next argument
+							current_argument = {
+								"name" : "",
+								"value" : GdFunctionArgument.UNDEFINED,
+								"type" : GdObjects.TYPE_VARIANT
+							}
+							continue
 	return arguments
 
 
@@ -634,9 +674,7 @@ func _enrich_function_descriptor(script: GDScript, fds: Array[GdFunctionDescript
 					var func_signature := extract_func_signature(rows, rowIndex)
 					var func_arguments := _parse_function_arguments(func_signature)
 					# enrich missing default values
-					for arg_name: String in func_arguments.keys():
-						var func_argument: String = func_arguments[arg_name]
-						fd.set_argument_value(arg_name, func_argument)
+					fd.enrich_arguments(func_arguments)
 					fd.enrich_file_info(script_to_scan.resource_path, rowIndex + 1)
 					fd._is_coroutine = is_func_coroutine(rows, rowIndex)
 					# enrich return class name if not set

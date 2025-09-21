@@ -60,16 +60,7 @@ func test_extract_from_func_with_vararg() -> void:
 	assert_int(fd.return_type()).is_equal(GdObjects.TYPE_ENUM)
 	assert_array(fd.args()).contains_exactly([GdFunctionArgument.new("signal", TYPE_STRING_NAME)])
 	assert_array(fd.varargs()).contains_exactly([
-		GdFunctionArgument.new("vararg0_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg1_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg2_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg3_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg4_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg5_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg6_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg7_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg8_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE),
-		GdFunctionArgument.new("vararg9_", GdObjects.TYPE_VARARG, '"%s"' % GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
+		GdFunctionArgument.new("varargs", GdObjects.TYPE_VARARG, '')
 	])
 
 
