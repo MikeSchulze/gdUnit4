@@ -22,6 +22,8 @@ static func build(clazz :Variant, mock_mode :String, debug_write := false) -> Va
 		return mock_on_scene(packed_scene, debug_write)
 	# mocking a script
 	var instance := create_instance(clazz)
+	if instance == null:
+		push_error("Can't create instance of class %s" % clazz)
 	var mock := mock_on_script(instance, clazz, [ "get_script"], debug_write)
 	if not instance is RefCounted:
 		instance.free()

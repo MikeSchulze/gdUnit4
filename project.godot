@@ -12,7 +12,7 @@ config_version=5
 
 config/name="gdUnit4"
 config/tags=PackedStringArray("addon", "godot4", "testing")
-config/features=PackedStringArray("4.4", "C#")
+config/features=PackedStringArray("4.5", "C#")
 config/icon="res://icon.png"
 
 [audio]
@@ -43,7 +43,6 @@ ui/inspector/node_collapse=false
 ui/toolbar/run_overall=true
 ui/inspector/tree_sort_mode=1
 report/godot/script_error=false
-settings/test/flaky_check_enable=true
 settings/common/update_notification_enabled=false
 
 [importer_defaults]

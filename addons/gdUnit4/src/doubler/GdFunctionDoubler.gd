@@ -67,13 +67,19 @@ const DEFAULT_ENUM_RETURN_VALUES = {
 	"Error" : "OK",
 	"PropertyHint" : "PROPERTY_HINT_NONE",
 	"Variant.Type" : "TYPE_NIL",
+	"Vector2.Axis" : "Vector2.AXIS_X",
+	"Vector2i.Axis" : "Vector2i.AXIS_X",
+	"Vector3.Axis" : "Vector3.AXIS_X",
+	"Vector3i.Axis" : "Vector3i.AXIS_X",
+	"Vector4.Axis" : "Vector4.AXIS_X",
+	"Vector4i.Axis" : "Vector4i.AXIS_X",
 }
 
 var _push_errors :String
 
 
 # Determine the enum default by reflection
-static func get_enum_default(value :String) -> Variant:
+static func get_enum_default(value: String) -> Variant:
 	var script := GDScript.new()
 	script.source_code = """
 	extends Resource
@@ -83,7 +89,9 @@ static func get_enum_default(value :String) -> Variant:
 
 	""".dedent() % value
 	@warning_ignore("return_value_discarded")
-	script.reload()
+	var err := script.reload()
+	if err != OK:
+		push_error("Cant get enum values form '%s', %s" % [value, error_string(err)])
 	@warning_ignore("unsafe_method_access")
 	return script.new().call("get_enum_default")
 
@@ -92,6 +100,9 @@ static func default_return_value(func_descriptor :GdFunctionDescriptor) -> Strin
 	var return_type :Variant = func_descriptor.return_type()
 	if return_type == GdObjects.TYPE_ENUM:
 		var enum_class := func_descriptor._return_class
+		if DEFAULT_ENUM_RETURN_VALUES.has(enum_class):
+			return DEFAULT_ENUM_RETURN_VALUES.get(func_descriptor._return_class, "0")
+
 		var enum_path := enum_class.split(".")
 		if enum_path.size() >= 2:
 			var keys := ClassDB.class_get_enum_constants(enum_path[0], enum_path[1])
@@ -124,10 +135,8 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 	var is_coroutine := func_descriptor.is_coroutine()
 	var func_name := func_descriptor.name()
 	var args := func_descriptor.args()
-	var varargs := func_descriptor.varargs()
 	var return_value := GdFunctionDoubler.default_return_value(func_descriptor)
 	var arg_names := extract_arg_names(args, true)
-	var vararg_names := extract_arg_names(varargs)
 
 	# save original constructor arguments
 	if func_name == "_init":
@@ -149,7 +158,6 @@ func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) ->
 	var func_template := get_template(func_descriptor, is_callable).replace("\r\n", "\n")
 	double_src += func_template\
 		.replace("$(arguments)", ", ".join(arg_names))\
-		.replace("$(varargs)", ", ".join(vararg_names))\
 		.replace("$(await)", GdFunctionDoubler.await_is_coroutine(is_coroutine)) \
 		.replace("$(func_name)", func_name )\
 		.replace("${default_return_value}", return_value)\
@@ -209,9 +217,9 @@ static func typeless_args(descriptor: GdFunctionDescriptor) -> String:
 		else:
 			@warning_ignore("return_value_discarded")
 			collect.push_back(arg.name() + "_")
-	for arg in descriptor.varargs():
+	if descriptor.is_vararg():
 		@warning_ignore("return_value_discarded")
-		collect.push_back(arg.name() + "=" + arg.value_as_string())
+		collect.push_back("...varargs: Array")
 	return ", ".join(collect)
 
 

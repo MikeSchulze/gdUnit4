@@ -52,8 +52,7 @@ const TEMPLATE_FUNC_WITH_RETURN_VOID = """
 
 
 const TEMPLATE_FUNC_VARARG_RETURN_VALUE = """
-	var varargs__: Array = __get_verifier().filter_vargs([$(varargs)])
-	var args__: Array = ["$(func_name)", $(arguments)] + varargs__
+	var args__: Array = ["$(func_name)", $(arguments)] + varargs
 
 	if __is_prepare_return_value():
 		if $(push_errors):
@@ -71,34 +70,12 @@ const TEMPLATE_FUNC_VARARG_RETURN_VALUE = """
 			__verifier.save_function_interaction(args__)
 
 	if __do_call_real_func("$(func_name)", args__):
-		match varargs__.size():
-			@warning_ignore("unsafe_call_argument")
-			0: return $(await)super($(arguments))
-			@warning_ignore("unsafe_call_argument")
-			1: return $(await)super($(arguments), varargs__[0])
-			@warning_ignore("unsafe_call_argument")
-			2: return $(await)super($(arguments), varargs__[0], varargs__[1])
-			@warning_ignore("unsafe_call_argument")
-			3: return $(await)super($(arguments), varargs__[0], varargs__[1], varargs__[2])
-			@warning_ignore("unsafe_call_argument")
-			4: return $(await)super($(arguments), varargs__[0], varargs__[1], varargs__[2], varargs__[3])
-			@warning_ignore("unsafe_call_argument")
-			5: return $(await)super($(arguments), varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4])
-			@warning_ignore("unsafe_call_argument")
-			6: return $(await)super($(arguments), varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5])
-			@warning_ignore("unsafe_call_argument")
-			7: return $(await)super($(arguments), varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6])
-			@warning_ignore("unsafe_call_argument")
-			8: return $(await)super($(arguments), varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7])
-			@warning_ignore("unsafe_call_argument")
-			9: return $(await)super($(arguments), varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8])
-			@warning_ignore("unsafe_call_argument")
-			10: return $(await)super($(arguments), varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8], varargs__[9])
+		@warning_ignore("unsafe_call_argument")
+		return $(await)super($(arguments), varargs)
 
 	return __get_mocked_return_value_or_default(args__, ${default_return_value})
 
 """
-
 
 func _init(push_errors :bool = false) -> void:
 	super._init(push_errors)

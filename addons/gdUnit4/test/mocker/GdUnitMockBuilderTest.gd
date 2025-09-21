@@ -121,9 +121,8 @@ func test_double_int_function_with_varargs() -> void:
 	var expected := """
 		@warning_ignore('shadowed_variable', 'untyped_declaration')
 		@warning_ignore("native_method_override")
-		func emit_signal(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> Error:
-			var varargs__: Array = __get_verifier().filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
-			var args__: Array = ["emit_signal", signal_] + varargs__
+		func emit_signal(signal_, ...varargs: Array) -> Error:
+			var args__: Array = ["emit_signal", signal_] + varargs
 
 			if __is_prepare_return_value():
 				if false:
@@ -141,29 +140,8 @@ func test_double_int_function_with_varargs() -> void:
 					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("emit_signal", args__):
-				match varargs__.size():
-					@warning_ignore("unsafe_call_argument")
-					0: return super(signal_)
-					@warning_ignore("unsafe_call_argument")
-					1: return super(signal_, varargs__[0])
-					@warning_ignore("unsafe_call_argument")
-					2: return super(signal_, varargs__[0], varargs__[1])
-					@warning_ignore("unsafe_call_argument")
-					3: return super(signal_, varargs__[0], varargs__[1], varargs__[2])
-					@warning_ignore("unsafe_call_argument")
-					4: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3])
-					@warning_ignore("unsafe_call_argument")
-					5: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4])
-					@warning_ignore("unsafe_call_argument")
-					6: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5])
-					@warning_ignore("unsafe_call_argument")
-					7: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6])
-					@warning_ignore("unsafe_call_argument")
-					8: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7])
-					@warning_ignore("unsafe_call_argument")
-					9: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8])
-					@warning_ignore("unsafe_call_argument")
-					10: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8], varargs__[9])
+				@warning_ignore("unsafe_call_argument")
+				return super(signal_, varargs)
 
 			return __get_mocked_return_value_or_default(args__, OK)
 
@@ -180,9 +158,8 @@ func test_double_untyped_function_with_varargs() -> void:
 		GdFunctionDescriptor._build_varargs(true))
 	var expected := """
 		@warning_ignore('shadowed_variable', 'untyped_declaration')
-		func emit_custom(signal_, vararg0_="__null__", vararg1_="__null__", vararg2_="__null__", vararg3_="__null__", vararg4_="__null__", vararg5_="__null__", vararg6_="__null__", vararg7_="__null__", vararg8_="__null__", vararg9_="__null__") -> void:
-			var varargs__: Array = __get_verifier().filter_vargs([vararg0_, vararg1_, vararg2_, vararg3_, vararg4_, vararg5_, vararg6_, vararg7_, vararg8_, vararg9_])
-			var args__: Array = ["emit_custom", signal_] + varargs__
+		func emit_custom(signal_, ...varargs: Array) -> void:
+			var args__: Array = ["emit_custom", signal_] + varargs
 
 			if __is_prepare_return_value():
 				if false:
@@ -200,29 +177,8 @@ func test_double_untyped_function_with_varargs() -> void:
 					__verifier.save_function_interaction(args__)
 
 			if __do_call_real_func("emit_custom", args__):
-				match varargs__.size():
-					@warning_ignore("unsafe_call_argument")
-					0: return super(signal_)
-					@warning_ignore("unsafe_call_argument")
-					1: return super(signal_, varargs__[0])
-					@warning_ignore("unsafe_call_argument")
-					2: return super(signal_, varargs__[0], varargs__[1])
-					@warning_ignore("unsafe_call_argument")
-					3: return super(signal_, varargs__[0], varargs__[1], varargs__[2])
-					@warning_ignore("unsafe_call_argument")
-					4: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3])
-					@warning_ignore("unsafe_call_argument")
-					5: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4])
-					@warning_ignore("unsafe_call_argument")
-					6: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5])
-					@warning_ignore("unsafe_call_argument")
-					7: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6])
-					@warning_ignore("unsafe_call_argument")
-					8: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7])
-					@warning_ignore("unsafe_call_argument")
-					9: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8])
-					@warning_ignore("unsafe_call_argument")
-					10: return super(signal_, varargs__[0], varargs__[1], varargs__[2], varargs__[3], varargs__[4], varargs__[5], varargs__[6], varargs__[7], varargs__[8], varargs__[9])
+				@warning_ignore("unsafe_call_argument")
+				return super(signal_, varargs)
 
 			return __get_mocked_return_value_or_default(args__, null)
 

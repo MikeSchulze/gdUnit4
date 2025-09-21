@@ -80,13 +80,3 @@ func verify_no_more_interactions() -> Dictionary:
 
 func reset_interactions() -> void:
 	saved_interactions.clear()
-
-
-func filter_vargs(arg_values: Array[Variant]) -> Array[Variant]:
-	var filtered: Array[Variant] = []
-	for index in arg_values.size():
-		var arg: Variant = arg_values[index]
-		if typeof(arg) == TYPE_STRING and arg == GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE:
-			continue
-		filtered.append(arg)
-	return filtered

@@ -58,20 +58,8 @@ static func callable_functions() -> PackedStringArray:
 ## Callable functions stubing
 ## -----------------------------------------------------------------------------------------------------------------------------------------
 
-@warning_ignore("untyped_declaration")
-func bind(arg0=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg1=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg2=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg3=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg4=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg5=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg6=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg7=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg8=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg9=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE) -> Callable:
-	# save
-	var bind_values: Array = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE)
-	_cb = _cb.bindv(bind_values)
+func bind(...args: Array) -> Callable:
+	_cb = _cb.bindv(args)
 	return _cb
 
 
@@ -80,18 +68,8 @@ func bindv(caller_args: Array) -> Callable:
 	return _cb
 
 
-@warning_ignore("untyped_declaration", "native_method_override", "unused_parameter")
-func call(arg0=null,
-	arg1=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg2=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg3=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg4=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg5=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg6=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg7=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg8=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE,
-	arg9=GdObjects.TYPE_VARARG_PLACEHOLDER_VALUE) -> Variant:
-
+@warning_ignore("native_method_override", "unused_parameter")
+func call(...args: Array) -> Variant:
 	# This is a placeholder function signanture without any functionallity!
 	# It is used by the function doubler to double function signature of Callable:call()
 	# The doubled function calls direct _cb.callv(<arguments>) see GdUnitSpyFunctionDoubler:TEMPLATE_CALLABLE_CALL template

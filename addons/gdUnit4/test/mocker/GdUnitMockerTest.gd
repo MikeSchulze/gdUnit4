@@ -167,8 +167,10 @@ func test_mock_extends_godot_class() -> void:
 
 
 var _test_signal_args := Array()
-func _emit_ready(a :String, b :String, c :Variant = null) -> void:
-	_test_signal_args = [a, b, c]
+func _emit_ready(...args: Array) -> void:
+	if args.is_empty():
+		return
+	_test_signal_args = args[0]
 
 
 @warning_ignore("unsafe_method_access")
@@ -211,7 +213,7 @@ func test_mock_Node_func_vararg_call_real_func() -> void:
 	# verify is emitted
 	verify(mocked_node).emit_signal("ready", "aa", "xxx")
 	await get_tree().process_frame
-	assert_that(_test_signal_args).is_equal(["aa", "xxx", null])
+	assert_that(_test_signal_args).is_equal(["aa", "xxx"])
 
 
 class ClassWithSignal:

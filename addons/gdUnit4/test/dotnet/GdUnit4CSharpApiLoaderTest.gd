@@ -25,7 +25,7 @@ func test_is_engine_version_supported(version :int, expected :bool, test_paramet
 
 
 func test_api_version() -> void:
-	assert_str(GdUnit4CSharpApiLoader.version()).starts_with("5.0.0")
+	assert_str(GdUnit4CSharpApiLoader.version()).starts_with("5.1.0")
 
 
 func test_create_test_suite() -> void:
