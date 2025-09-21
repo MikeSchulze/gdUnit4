@@ -73,13 +73,13 @@ func test_name(fuzzer := <Fuzzer>, <fuzzer_iterations>, <fuzzer_seed>):
 Here is an example of using a fuzzer that generates random values in the range from -23 to 22 and iterates 100 times:
 ```gd
 func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iterations = 100)
-	assert_int(fuzzer.next_value()).is_between(-23, 22)
+    assert_int(fuzzer.next_value()).is_between(-23, 22)
 
 
 # using multiple fuzzers in test are allowed
 func test_fuzzer_inject_value(fuzzer_a := Fuzzers.rangei(-23, 22), fuzzer_b := Fuzzers.rangei(0, 42), fuzzer_iterations := 100):
-	assert_int(fuzzer_a.next_value()).is_between(-23, 22)
-	assert_int(fuzzer_b.next_value()).is_between(-23, 22)
+    assert_int(fuzzer_a.next_value()).is_between(-23, 22)
+    assert_int(fuzzer_b.next_value()).is_between(-23, 22)
 ```
 
 * **fuzzer_iterations**<br>
