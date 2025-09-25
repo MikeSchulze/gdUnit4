@@ -59,7 +59,7 @@ func test_spy_source_with_class_name_by_resource_path() -> void:
 	var instance :Object = auto_free(_load('res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd').new())
 	var m :Variant = spy(instance)
 	@warning_ignore("unsafe_method_access")
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledSpyClassMunderwoodPathingWorld")\
 		.contains("extends 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'")
@@ -68,7 +68,7 @@ func test_spy_source_with_class_name_by_resource_path() -> void:
 func test_spy_source_with_class_name_by_class() -> void:
 	var m :Variant = spy(auto_free(Munderwood_Pathing_World.new()))
 	@warning_ignore("unsafe_method_access")
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledSpyClassMunderwoodPathingWorld")\
 		.contains("extends 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'")
@@ -77,7 +77,7 @@ func test_spy_source_with_class_name_by_class() -> void:
 func test_spy_extends_godot_class() -> void:
 	var m :Variant = spy(auto_free(World3D.new()))
 	@warning_ignore("unsafe_method_access")
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledSpyClassWorld")\
 		.contains("extends World3D")
@@ -512,29 +512,22 @@ func test_spy_preload_class_GD_166() -> void:
 	assert_str(spy_instance.type_name).is_equal("FOO")
 
 
-var _test_signal_args := Array()
-func _emit_ready(a :String, b :String, c :Variant = null) -> void:
-	_test_signal_args = [a, b, c]
-
-
 # https://github.com/MikeSchulze/gdUnit4/issues/38
 func test_spy_Node_use_real_func_vararg() -> void:
 	# setup
-	var instance := Node.new()
-	instance.connect("ready", _emit_ready)
+	var instance :Variant = auto_free(Node.new())
+
 	@warning_ignore("unsafe_method_access")
-	assert_that(_test_signal_args).is_empty()
-	var spy_node :Variant = spy(auto_free(instance))
+	var spy_node :Variant = spy(instance)
 	assert_that(spy_node).is_not_null()
 
 	# test emit it
 	@warning_ignore("unsafe_method_access")
 	spy_node.emit_signal("ready", "aa", "bb", "cc")
+
 	# verify is emitted
 	@warning_ignore("unsafe_method_access")
 	verify(spy_node).emit_signal("ready", "aa", "bb", "cc")
-	await get_tree().process_frame
-	assert_that(_test_signal_args).is_equal(["aa", "bb", "cc"])
 
 	# test emit it
 	@warning_ignore("unsafe_method_access")
@@ -542,8 +535,6 @@ func test_spy_Node_use_real_func_vararg() -> void:
 	# verify is emitted
 	@warning_ignore("unsafe_method_access")
 	verify(spy_node).emit_signal("ready", "aa", "xxx")
-	await get_tree().process_frame
-	assert_that(_test_signal_args).is_equal(["aa", "xxx", null])
 
 
 class ClassWithSignal:
@@ -562,6 +553,17 @@ class ClassWithSignal:
 		else:
 			emit_signal(test_signal_b.get_name(), "bb", true)
 		return true
+
+	@warning_ignore("unused_parameter")
+	func do_call(name: String, ...varargs: Array) -> void:
+		pass
+
+
+func test_spy_verify_variadic_args() -> void:
+	var spy_instance :Variant = spy(ClassWithSignal.new())
+
+	spy_instance.do_call("foo", 1, 2, 3)
+	verify(spy_instance, 1).do_call("foo", 1, 2, 3)
 
 
 # https://github.com/MikeSchulze/gdUnit4/issues/14

@@ -95,8 +95,7 @@ static func get_class_info(clazz :Variant) -> Dictionary:
 
 
 static func mock_on_script(instance :Object, clazz :Variant, function_excludes :PackedStringArray, debug_write :bool) -> GDScript:
-	var push_errors := is_push_errors()
-	var function_doubler := GdUnitMockFunctionDoubler.new(push_errors)
+	var function_doubler := GdUnitMockFunctionDoubler.new()
 	var class_info := get_class_info(clazz)
 	var lines := load_template(MOCK_TEMPLATE.source_code, class_info, instance)
 

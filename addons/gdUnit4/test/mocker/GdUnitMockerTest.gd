@@ -141,7 +141,7 @@ func test_mock_Node() -> void:
 func test_mock_source_with_class_name_by_resource_path() -> void:
 	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
 	var m: Variant = mock(resource_path_)
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledMockClassMunderwoodPathingWorld")\
 		.contains("extends '%s'" % resource_path_)
@@ -151,7 +151,7 @@ func test_mock_source_with_class_name_by_resource_path() -> void:
 func test_mock_source_with_class_name_by_class() -> void:
 	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
 	var m: Variant = mock(Munderwood_Pathing_World)
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledMockClassMunderwoodPathingWorld")\
 		.contains("extends '%s'" % resource_path_)
@@ -160,7 +160,7 @@ func test_mock_source_with_class_name_by_class() -> void:
 @warning_ignore("unsafe_method_access")
 func test_mock_extends_godot_class() -> void:
 	var m: Variant = mock(World3D)
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledMockClassWorld")\
 		.contains("extends World3D")
@@ -170,7 +170,7 @@ var _test_signal_args := Array()
 func _emit_ready(...args: Array) -> void:
 	if args.is_empty():
 		return
-	_test_signal_args = args[0]
+	_test_signal_args = args
 
 
 @warning_ignore("unsafe_method_access")
@@ -318,27 +318,29 @@ func test_mock_custom_class_func_foo_use_real_func() -> void:
 
 
 @warning_ignore("unsafe_method_access")
-func test_mock_custom_class_void_func() -> void:
+func test_mock_void_func_not_allowed() -> void:
 	var m: Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
 	# test mocked void function returns null by default
 	assert_that(m.foo_void()).is_null()
+
 	# try now mock return value for a void function. results into an error
-	do_return("overridden value").on(m).foo_void()
-	# verify it has no affect for void func
-	assert_that(m.foo_void()).is_null()
+	assert_error(func() -> void:
+		do_return("overridden value").on(m).foo_void()
+	).is_push_error("Mocking functions with return type void is not allowed!")
 
 
 @warning_ignore("unsafe_method_access")
-func test_mock_custom_class_void_func_real_func() -> void:
+func test_mock_void_call_real_func_not_allowed() -> void:
 	var m: Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	# test mocked void function returns null by default
 	assert_that(m.foo_void()).is_null()
+
 	# try now mock return value for a void function. results into an error
-	do_return("overridden value").on(m).foo_void()
-	# verify it has no affect for void func
-	assert_that(m.foo_void()).is_null()
+	assert_error(func() -> void:
+		do_return("overridden value").on(m).foo_void()
+	).is_push_error("Mocking functions with return type void is not allowed!")
 
 
 @warning_ignore("unsafe_method_access")
@@ -1258,3 +1260,9 @@ func test_mock_with_await_function() -> void:
 
 	@warning_ignore("unsafe_method_access")
 	verify(mocked_instance, 1).await_function()
+
+
+func test_foo() -> void:
+	var m :Variant = mock(InputEventKey)
+
+	m.as_text_keycode()

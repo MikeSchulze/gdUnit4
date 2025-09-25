@@ -59,8 +59,6 @@ static func callable_functions() -> PackedStringArray:
 ## -----------------------------------------------------------------------------------------------------------------------------------------
 
 func bind(...varargs: Array) -> Callable:
-	if varargs.is_empty():
-		return _cb
 	_cb = _cb.bindv(varargs)
 	return _cb
 
@@ -70,24 +68,19 @@ func bindv(caller_args: Array) -> Callable:
 	return _cb
 
 
-@warning_ignore("native_method_override", "unused_parameter")
+@warning_ignore("native_method_override")
 func call(...varargs: Array) -> Variant:
-	# This is a placeholder function signanture without any functionallity!
-	# It is used by the function doubler to double function signature of Callable:call()
-	# The doubled function calls direct _cb.callv(<arguments>) see GdUnitSpyFunctionDoubler:TEMPLATE_CALLABLE_CALL template
-	assert(false)
-	return null
+	return _cb.callv(varargs)
 
 
 # Is not supported, see class description
-#func call_deferred(a) -> void:
-#	pass
+#func call_deferred(...varargs: Array) -> void:
+#	return _cb.call_deferred(varargs)
 
 
 # Is not supported, see class description
-#func callv(a) -> void:
-#	pass
-
+#func callv(arguments: Array) -> Variant:
+#	return _cb.callv(arguments)
 
 
 func get_bound_arguments() -> Array:
@@ -131,13 +124,32 @@ func is_valid() -> bool:
 
 
 func rpc(...varargs: Array) -> void:
-	_cb.rpc(varargs)
+	match varargs.size():
+		0: _cb.rpc()
+		1: _cb.rpc(varargs[0])
+		2: _cb.rpc(varargs[0], varargs[1])
+		3: _cb.rpc(varargs[0], varargs[1], varargs[2])
+		4: _cb.rpc(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
+		5: _cb.rpc(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
+		6: _cb.rpc(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
+		7: _cb.rpc(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
+		8: _cb.rpc(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
+		9: _cb.rpc(varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
 
 
 @warning_ignore("untyped_declaration")
 func rpc_id(peer_id: int, ...varargs: Array) -> void:
-	_cb.rpc_id(peer_id, varargs)
-
+	match varargs.size():
+		0: _cb.rpc_id(peer_id )
+		1: _cb.rpc_id(peer_id, varargs[0])
+		2: _cb.rpc_id(peer_id, varargs[0], varargs[1])
+		3: _cb.rpc_id(peer_id, varargs[0], varargs[1], varargs[2])
+		4: _cb.rpc_id(peer_id, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4])
+		5: _cb.rpc_id(peer_id, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5])
+		6: _cb.rpc_id(peer_id, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6])
+		7: _cb.rpc_id(peer_id, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7])
+		8: _cb.rpc_id(peer_id, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8])
+		9: _cb.rpc_id(peer_id, varargs[0], varargs[1], varargs[2], varargs[3], varargs[4], varargs[5], varargs[6], varargs[7], varargs[8], varargs[9])
 
 func unbind(argcount: int) -> Callable:
 	_cb = _cb.unbind(argcount)

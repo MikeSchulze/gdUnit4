@@ -1,5 +1,6 @@
-class_name GdFunctionDoubler
+@abstract class_name GdFunctionDoubler
 extends RefCounted
+
 
 const DEFAULT_TYPED_RETURN_VALUES := {
 	TYPE_NIL: "null",
@@ -75,8 +76,6 @@ const DEFAULT_ENUM_RETURN_VALUES = {
 	"Vector4i.Axis" : "Vector4i.AXIS_X",
 }
 
-var _push_errors :String
-
 
 # Determine the enum default by reflection
 static func get_enum_default(value: String) -> Variant:
@@ -116,8 +115,7 @@ static func default_return_value(func_descriptor :GdFunctionDescriptor) -> Strin
 	return DEFAULT_TYPED_RETURN_VALUES.get(return_type, "invalid")
 
 
-func _init(push_errors :bool = false) -> void:
-	_push_errors = "true" if push_errors else "false"
+func _init() -> void:
 	for type_key in TYPE_MAX:
 		if not DEFAULT_TYPED_RETURN_VALUES.has(type_key):
 			push_error("missing default definitions! Expexting %d bud is %d" % [DEFAULT_TYPED_RETURN_VALUES.size(), TYPE_MAX])
@@ -125,50 +123,179 @@ func _init(push_errors :bool = false) -> void:
 			assert(DEFAULT_TYPED_RETURN_VALUES.has(type_key), "Missing Type default definition!")
 
 
+@abstract func double(func_descriptor: GdFunctionDescriptor) -> PackedStringArray
+
 @warning_ignore("unused_parameter")
-func get_template(return_type: GdFunctionDescriptor, is_callable: bool) -> String:
+func get_template(return_type: GdFunctionDescriptor) -> String:
 	assert(false, "'get_template' must be implemented!")
 	return ""
 
+class GdUnitFunctionDublerBuilder extends RefCounted:
+	static var def_verify_block := """
+		# verify block
+		var __verifier := __get_verifier()
+		if __verifier != null:
+			if __verifier.is_verify_interactions():
+				__verifier.verify_interactions("$func_name", __args)
+				$default_return
+			else:
+				__verifier.save_function_interaction("$func_name", __args)
+		""".dedent().indent("\t").trim_suffix("\n")
 
-func double(func_descriptor: GdFunctionDescriptor, is_callable: bool = false) -> PackedStringArray:
-	var is_coroutine := func_descriptor.is_coroutine()
-	var func_name := func_descriptor.name()
-	var args := func_descriptor.args()
-	var return_value := GdFunctionDoubler.default_return_value(func_descriptor)
-	var arg_names := extract_arg_names(args, true)
+	static var def_prepare_block := """
+		if __is_prepare_return_value():
+			__save_function_return_value("$func_name", __args)
+			$default_return
+		""".dedent().indent("\t").trim_suffix("\n")
 
-	# save original constructor arguments
-	if func_name == "_init":
-		var constructor_args := ",".join(GdFunctionDoubler.extract_constructor_args(args))
-		var constructor := """
-			func _init(%s) -> void:
-				Engine.set_meta(__INSTANCE_ID, self)
-				@warning_ignore("unsafe_call_argument")
-				super(%s)
+	static var def_void_prepare_block := """
+		if __is_prepare_return_value():
+			push_error("Mocking functions with return type void is not allowed!")
+			return
+		""".dedent().indent("\t").trim_suffix("\n")
 
-			""".dedent() % [constructor_args, ", ".join(arg_names)]
-		return constructor.split("\n")
+	static var def_mock_return := """
+		if __is_do_not_call_real_func("$func_name", __args):
+			return __return_mock_value("$func_name", __args, $default_return)
+		""".dedent().indent("\t").trim_suffix("\n")
 
-	var double_src := "@warning_ignore('shadowed_variable', 'untyped_declaration')\n"
-	if func_descriptor.is_engine():
-		double_src += '@warning_ignore("native_method_override")\n'
-	double_src += GdFunctionDoubler.extract_func_signature(func_descriptor)
-	# fix to  unix format, this is need when the template is edited under windows than the template is stored with \r\n
-	var func_template := get_template(func_descriptor, is_callable).replace("\r\n", "\n")
-	double_src += func_template\
-		.replace("$(arguments)", ", ".join(arg_names))\
-		.replace("$(await)", GdFunctionDoubler.await_is_coroutine(is_coroutine)) \
-		.replace("$(func_name)", func_name )\
-		.replace("${default_return_value}", return_value)\
-		.replace("$(push_errors)", _push_errors)
+	static var def_void_mock_return := """
+		if __is_do_not_call_real_func("$func_name", __args):
+			return
+		""".dedent().indent("\t").trim_suffix("\n")
 
-	if func_descriptor.return_type() == GdObjects.TYPE_ENUM:
-		double_src = double_src.replace("$(return_as)", " as " + func_descriptor.return_type_as_string())
-	else:
-		double_src = double_src.replace("$(return_as)", "")
+	var fd: GdFunctionDescriptor
+	var func_args: Array
+	var default_return: String
+	var func_signature: String
+	var verify_block: String = ""
+	var prepare_block: String = ""
+	var mock_return: String = ""
 
-	return double_src.split("\n")
+	static func extract_func_signature(descriptor: GdFunctionDescriptor) -> String:
+		var signature := ""
+		if descriptor._return_type == TYPE_NIL:
+			signature = "func %s(%s) -> void:" % [descriptor.name(), typeless_args(descriptor)]
+		elif descriptor._return_type == GdObjects.TYPE_VARIANT:
+			signature = "func %s(%s):" % [descriptor.name(), typeless_args(descriptor)]
+		else:
+			signature = "func %s(%s) -> %s:" % [descriptor.name(), typeless_args(descriptor), descriptor.return_type_as_string()]
+		return "static " + signature if descriptor.is_static() else signature
+
+
+	static func typeless_args(descriptor: GdFunctionDescriptor) -> String:
+		var collect := PackedStringArray()
+		for arg in descriptor.args():
+			if arg.has_default():
+				# For Variant types we need to enforce the type in the signature
+				if arg.type() == GdObjects.TYPE_VARIANT:
+					collect.push_back("%s_:%s=%s" % [arg.name(), GdObjects.type_as_string(arg.type()), arg.value_as_string()])
+				else:
+					@warning_ignore("return_value_discarded")
+					collect.push_back("%s_=%s" % [arg.name(), arg.value_as_string()])
+			else:
+				@warning_ignore("return_value_discarded")
+				collect.push_back(arg.name() + "_")
+		if descriptor.is_vararg():
+			var arg_descriptor := descriptor.varargs()[0]
+			@warning_ignore("return_value_discarded")
+			collect.push_back("...%s_: Array" % arg_descriptor.name())
+		return ", ".join(collect)
+
+
+	static func extract_arg_names(descriptor: GdFunctionDescriptor) -> PackedStringArray:
+		var arg_names := PackedStringArray()
+		for arg in descriptor.args():
+			@warning_ignore("return_value_discarded")
+			arg_names.append(arg._name + "_")
+		return arg_names
+
+
+	func _init(descriptor: GdFunctionDescriptor) -> void:
+		self.fd = descriptor
+
+		func_args = extract_arg_names(descriptor)
+		func_signature = extract_func_signature(descriptor)
+		default_return = GdFunctionDoubler.default_return_value(descriptor)
+		reset()
+
+	func reset() -> void:
+		pass
+
+	func is_void_func() -> bool:
+		return fd.return_type() == TYPE_NIL or fd.return_type() == GdObjects.TYPE_VOID
+
+	func with_args() -> String:
+		return "\tvar __args := [$args]"\
+			.replace("[$args]", "[$args]%s" % (" + varargs_" if fd.is_vararg() else ""))\
+			.replace("$args", ", ".join(func_args))
+
+	func with_verify_block() -> GdUnitFunctionDublerBuilder:
+		verify_block = def_verify_block\
+				.replace("$func_name", fd.name())\
+				.replace("$default_return", "return" if is_void_func() else "return " + default_return)
+		return self
+
+	func with_prepare_block() -> GdUnitFunctionDublerBuilder:
+		if fd.return_type() == TYPE_NIL or fd.return_type() == GdObjects.TYPE_VOID:
+			prepare_block = def_void_prepare_block
+			return self
+
+		prepare_block = def_prepare_block\
+				.replace("$func_name", fd.name())\
+				.replace("$default_return", "return" if is_void_func() else "return " + default_return)
+		return self
+
+	func with_mocked_return_value() -> GdUnitFunctionDublerBuilder:
+		if fd.return_type() == TYPE_NIL or fd.return_type() == GdObjects.TYPE_VOID:
+			mock_return = def_void_mock_return.replace("$func_name", fd.name())
+			return self
+
+		mock_return = def_mock_return\
+				.replace("$func_name", fd.name())\
+				.replace("$default_return", "no_arg" if is_void_func() else default_return)
+		return self
+
+	func super_call_block() -> String:
+		if !fd.is_vararg():
+			return 'super(%s)\n' % ", ".join(func_args)
+
+		var match_block := "match varargs_.size():\n"
+		for i in range(0, 11):
+			match_block += '%d: super(%s)\n'\
+				.indent("\t") % [i, ", ".join(func_args + vararg_list(i))]
+		match_block += '_: push_error("to many varradic arguments")\n'.indent("\t")
+		match_block += '$default_return\n'.replace("$default_return", "return" if is_void_func() else "return " + default_return)
+		return match_block
+
+
+	func vararg_list(count: int) -> Array:
+		var arg_list := []
+		for index in count:
+			arg_list.append("varargs_[%d]" % index)
+		return arg_list
+
+
+	func build() -> PackedStringArray:
+		var func_body: PackedStringArray = []
+		func_body.append(func_signature)
+		func_body.append(with_args())
+		if not prepare_block.is_empty():
+			func_body.append(prepare_block)
+		func_body.append(verify_block)
+		if not mock_return.is_empty():
+			func_body.append(mock_return)
+		var super_calls := super_call_block()
+		if not is_void_func():
+			super_calls = super_calls.replace("super(", "return super(" )
+		if fd.is_coroutine():
+			super_calls = super_calls.replace("super(", "await super(" )
+		func_body.append("")
+		func_body.append(super_calls.indent("\t"))
+		return func_body
+
+
+
 
 
 func extract_arg_names(argument_signatures: Array[GdFunctionArgument], add_suffix := false) -> PackedStringArray:
@@ -191,36 +318,6 @@ static func extract_constructor_args(args :Array[GdFunctionArgument]) -> PackedS
 			@warning_ignore("return_value_discarded")
 			constructor_args.append(arg_name + ":=" + default_value)
 	return constructor_args
-
-
-static func extract_func_signature(descriptor: GdFunctionDescriptor) -> String:
-	var func_signature := ""
-	if descriptor._return_type == TYPE_NIL:
-		func_signature = "func %s(%s) -> void:" % [descriptor.name(), typeless_args(descriptor)]
-	elif descriptor._return_type == GdObjects.TYPE_VARIANT:
-		func_signature = "func %s(%s):" % [descriptor.name(), typeless_args(descriptor)]
-	else:
-		func_signature = "func %s(%s) -> %s:" % [descriptor.name(), typeless_args(descriptor), descriptor.return_type_as_string()]
-	return "static " + func_signature if descriptor.is_static() else func_signature
-
-
-static func typeless_args(descriptor: GdFunctionDescriptor) -> String:
-	var collect := PackedStringArray()
-	for arg in descriptor.args():
-		if arg.has_default():
-			# For Variant types we need to enforce the type in the signature
-			if arg.type() == GdObjects.TYPE_VARIANT:
-				collect.push_back("%s_:%s=%s" % [arg.name(), GdObjects.type_as_string(arg.type()), arg.value_as_string()])
-			else:
-				@warning_ignore("return_value_discarded")
-				collect.push_back("%s_=%s" % [arg.name(), arg.value_as_string()])
-		else:
-			@warning_ignore("return_value_discarded")
-			collect.push_back(arg.name() + "_")
-	if descriptor.is_vararg():
-		@warning_ignore("return_value_discarded")
-		collect.push_back("...varargs: Array")
-	return ", ".join(collect)
 
 
 static func get_default(arg :GdFunctionArgument) -> String:

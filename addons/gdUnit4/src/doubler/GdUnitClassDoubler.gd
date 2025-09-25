@@ -46,6 +46,7 @@ static func load_template(template: String, class_info: Dictionary, instance: Ob
 	var lines := GdScriptParser.to_unix_format(source_code).split("\n")
 	@warning_ignore("return_value_discarded")
 	lines.insert(1, extends_clazz(class_info))
+	lines.insert(0, "@warning_ignore_start('unsafe_call_argument', 'shadowed_variable', 'untyped_declaration', 'native_method_override', 'int_as_enum_without_cast')")
 	return lines
 
 
@@ -80,7 +81,7 @@ static func double_functions(instance: Object, clazz_name: String, clazz_path: P
 				continue
 			if functions.has(func_descriptor.name()) or exclude_override_functions.has(func_descriptor.name()):
 				continue
-			doubled_source += func_doubler.double(func_descriptor, instance is CallableDoubler)
+			doubled_source += func_doubler.double(func_descriptor)
 			functions.append(func_descriptor.name())
 
 	# double regular class functions
@@ -101,7 +102,7 @@ static func double_functions(instance: Object, clazz_name: String, clazz_path: P
 			#prints("no virtual func implemented",clazz_name, func_descriptor.name() )
 			continue
 		functions.append(func_descriptor.name())
-		doubled_source.append_array(func_doubler.double(func_descriptor, instance is CallableDoubler))
+		doubled_source.append_array(func_doubler.double(func_descriptor))
 	return doubled_source
 
 

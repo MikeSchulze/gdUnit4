@@ -50,8 +50,6 @@ func _enter_tree() -> void:
 	prints("Loading GdUnit4 Plugin success")
 
 
-
-
 func _exit_tree() -> void:
 	if check_running_in_test_env():
 		return

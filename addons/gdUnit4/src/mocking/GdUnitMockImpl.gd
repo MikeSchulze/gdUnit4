@@ -91,10 +91,8 @@ static func __sort_dictionary(__unsorted_args: Dictionary) -> Dictionary:
 	return __sorted_result
 
 
-static func __save_function_return_value(__fuction_args: Array) -> void:
+static func __save_function_return_value(__func_name: String, __func_args: Array) -> void:
 	var __mock := __mock_state()
-	var __func_name: String = __fuction_args[0]
-	var __func_args: Array = __fuction_args.slice(1)
 	var mocked_return_value_by_args: Dictionary = __mock.return_values.get(__func_name, {})
 
 	mocked_return_value_by_args[__func_args] = __mock.return_value
@@ -125,12 +123,10 @@ static func __is_mocked_args_match(__func_args: Array, __mocked_args: Array) -> 
 	return __is_matching
 
 
-static func __get_mocked_return_value_or_default(__fuction_args: Array, __default_return_value: Variant) -> Variant:
+static func __return_mock_value(__func_name: String, __func_args: Array, __default_return_value: Variant) -> Variant:
 	var __mock := __mock_state()
-	var __func_name: String = __fuction_args[0]
 	if not __mock.return_values.has(__func_name):
 		return __default_return_value
-	var __func_args: Array = __fuction_args.slice(1)
 	@warning_ignore("unsafe_method_access")
 	var __mocked_args: Array = __mock.return_values.get(__func_name).keys()
 	for __index in __mocked_args.size():
@@ -140,16 +136,15 @@ static func __get_mocked_return_value_or_default(__fuction_args: Array, __defaul
 	return __default_return_value
 
 
-static func __do_call_real_func(__func_name: String, __func_args := []) -> bool:
+static func __is_do_not_call_real_func(__func_name: String, __func_args := []) -> bool:
 	var __mock := __mock_state()
 	var __is_call_real_func: bool = __mock.working_mode == GdUnitMock.CALL_REAL_FUNC  and not __mock.excluded_methods.has(__func_name)
 	# do not call real funcions for mocked functions
 	if __is_call_real_func and __mock.return_values.has(__func_name):
-		var __fuction_args: Array = __func_args.slice(1)
 		@warning_ignore("unsafe_method_access")
 		var __mocked_args: Array = __mock.return_values.get(__func_name).keys()
-		return not __is_mocked_args_match(__fuction_args, __mocked_args)
-	return __is_call_real_func
+		return __is_mocked_args_match(__func_args, __mocked_args)
+	return !__is_call_real_func
 
 
 func __exclude_method_call(exluded_methods: PackedStringArray) -> void:

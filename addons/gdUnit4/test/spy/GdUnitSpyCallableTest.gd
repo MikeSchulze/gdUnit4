@@ -71,7 +71,7 @@ func test_call_with_binded_value() -> void:
 	# verify is called by validate the result
 	assert_that(result).is_equal("is_called 42.24")
 	# verify should be successfull
-	verify(cb_spy).call(42, 24)
+	verify(cb_spy).call(42)
 	# verify with a not used argument must fail
 	assert_failure(func() -> void: verify(cb_spy).call(23)).is_failed()
 
@@ -94,11 +94,21 @@ func _test_callv() -> void:
 
 
 @warning_ignore("unsafe_method_access")
+func test_bind_vararg() -> void:
+	var cb := func(x: int, y: int) -> String:
+		return "is_called %s.%s" % [x, y]
+	var cb_spy :Variant = spy(cb)
+	cb_spy.bind(24, 25, 26)
+	assert_array(cb_spy.get_bound_arguments()).contains_exactly([24, 25, 26])
+
+
+@warning_ignore("unsafe_method_access")
 func test_bind() -> void:
 	var cb := func(x: int, y: int) -> String:
 		return "is_called %s.%s" % [x, y]
 	var cb_spy :Variant = spy(cb)
 	cb_spy.bind(24)
+	assert_array(cb_spy.get_bound_arguments()).contains_exactly([24])
 
 	# verify bind is called
 	verify(cb_spy).bind(24)
@@ -110,7 +120,7 @@ func test_bind() -> void:
 	# verify is called by validate the result
 	assert_that(result).is_equal("is_called 42.24")
 	# verify should be successfull
-	verify(cb_spy).call(42, 24)
+	verify(cb_spy).call(42)
 
 
 @warning_ignore("unsafe_method_access")

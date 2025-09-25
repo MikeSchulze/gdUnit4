@@ -79,44 +79,32 @@ func test_extract_from_descriptor_is_virtual_func() -> void:
 func test_extract_from_descriptor_is_virtual_func_full_check() -> void:
 	var methods := ClassDB.class_get_method_list("Node")
 	var expected_virtual_functions := [
-		# Object virtuals
-		"_get",
-		"_get_property_list",
-		"_init",
-		"_notification",
-		"_property_can_revert",
-		"_property_get_revert",
-		"_set",
-		"_to_string",
-		# Note virtuals
+		"_process",
+		"_physics_process",
 		"_enter_tree",
 		"_exit_tree",
-		"_get_configuration_warnings",
-		"_input",
-		"_physics_process",
-		"_process",
 		"_ready",
+		"_get_configuration_warnings",
+		"_get_accessibility_configuration_warnings",
+		"_input",
 		"_shortcut_input",
 		"_unhandled_input",
-		"_unhandled_key_input"
+		"_unhandled_key_input",
+		"_get_focused_accessibility_element",
+		"_init",
+		"_to_string",
+		"_notification",
+		"_set",
+		"_get",
+		"_get_property_list",
+		"_validate_property",
+		"_property_can_revert",
+		"_property_get_revert",
+		"_iter_init",
+		"_iter_next",
+		"_iter_get"
 	]
-	# since Godot 4.2 there are more virtual functions
-	if Engine.get_version_info().hex >= 0x40200:
-		expected_virtual_functions.append("_validate_property")
-	# since Godot 4.4.x there are more virtual functions
-	if Engine.get_version_info().hex >= 0x40400:
-		expected_virtual_functions.append_array([
-			"_iter_init",
-			"_iter_next",
-			"_iter_get"
-		])
-	# since Godot 4.5-dev5 there are more virtual functions
-	if Engine.get_version_info().hex >= 0x40500 and Engine.get_version_info().status == 'dev5':
-		expected_virtual_functions.append_array([
-			"_get_accessibility_configuration_warnings",
-			"_get_focused_accessibility_element",
-			"_get_accessibility_container_name"
-		])
+
 	var _count := 0
 	for method_descriptor in methods:
 		var fd := GdFunctionDescriptor.extract_from(method_descriptor)
