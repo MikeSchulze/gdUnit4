@@ -5,6 +5,19 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const SPY_TEMPLATE :GDScript = preload("res://addons/gdUnit4/src/spy/GdUnitSpyImpl.gd")
 const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
 
+static var spy_template: String = ""
+
+
+static func get_template() -> String:
+	if not spy_template.is_empty():
+		return spy_template
+	# preload the spy template
+	var source := SPY_TEMPLATE.source_code
+	spy_template = source\
+		.replace("extends GdUnitDoublerInstanceRef", SPY_TEMPLATE.get_base_script().source_code)\
+		.replace("class_name GdUnitDoublerInstanceRef", "")
+	return spy_template
+
 
 static func build(to_spy: Variant, debug_write := false) -> Variant:
 	if GdObjects.is_singleton(to_spy):
@@ -41,7 +54,7 @@ static func build(to_spy: Variant, debug_write := false) -> Variant:
 	var spy_instance: Object = spy.new()
 	@warning_ignore("unsafe_method_access")
 	# we do not call the original implementation for _ready and all input function, this is actualy done by the engine
-	spy_instance.__init(to_spy, ["_input", "_gui_input", "_input_event", "_unhandled_input"])
+	spy_instance.__init(["_input", "_gui_input", "_input_event", "_unhandled_input"])
 	@warning_ignore("unsafe_cast")
 	copy_properties(to_spy as Object, spy_instance)
 	@warning_ignore("return_value_discarded")
@@ -71,7 +84,7 @@ static func spy_on_script(instance :Variant, function_excludes :PackedStringArra
 			push_error("Can't build spy for class type '%s'! Using an instance instead e.g. 'spy(<instance>)'" % [clazz_name])
 		return null
 	@warning_ignore("unsafe_cast")
-	var lines := load_template(SPY_TEMPLATE.source_code, class_info, instance as Object)
+	var lines := load_template(get_template(), class_info, instance as Object)
 	@warning_ignore("unsafe_cast")
 	lines += double_functions(instance as Object, clazz_name, clazz_path, GdUnitSpyFunctionDoubler.new(), function_excludes)
 	# We disable warning/errors for inferred_declaration
@@ -124,7 +137,7 @@ static func spy_on_scene(scene :Node, debug_write :bool) -> Object:
 		scene.set(property_name, original_properties[property_name])
 
 	@warning_ignore("unsafe_method_access")
-	scene.__init(scene, [])
+	scene.__init()
 	return register_auto_free(scene)
 
 

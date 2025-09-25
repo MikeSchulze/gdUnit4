@@ -7,7 +7,6 @@ func test_double__init() -> void:
 	var fd := get_function_description("Object", "_init")
 	var expected := """
 		func _init() -> void:
-			Engine.set_meta(__INSTANCE_ID, self)
 			@warning_ignore("unsafe_call_argument")
 			super()
 

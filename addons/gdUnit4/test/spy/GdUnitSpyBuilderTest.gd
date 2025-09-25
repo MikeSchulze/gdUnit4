@@ -1,4 +1,5 @@
 # GdUnit generated TestSuite
+@warning_ignore_start("unsafe_method_access")
 class_name GdUnitSpyBuilderTest
 extends GdUnitTestSuite
 
@@ -13,18 +14,16 @@ class NodeWithOutVirtualFunc extends Node:
 	#func _input(event :InputEvent) -> void:
 
 
-@warning_ignore("unsafe_method_access")
 func test_spy_on_script_respect_virtual_functions() -> void:
 	var do_spy :Variant = auto_free(GdUnitSpyBuilder.spy_on_script(auto_free(NodeWithOutVirtualFunc.new()), [], true).new())
 
-	do_spy.__init(do_spy)
+	do_spy.__init([])
 	assert_bool(do_spy.has_method("_ready")).is_true()
 	assert_bool(do_spy.has_method("_input")).is_false()
 
 
 func test_spy_on_scene_with_onready_parameters() -> void:
 	# setup a scene with holding parameters
-	@warning_ignore("unsafe_method_access")
 	var scene: TestSceneWithProperties = load("res://addons/gdUnit4/test/spy/resources/TestSceneWithProperties.tscn").instantiate()
 	add_child(scene)
 

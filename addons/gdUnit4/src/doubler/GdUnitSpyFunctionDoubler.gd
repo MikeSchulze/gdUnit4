@@ -12,7 +12,6 @@ func double(func_descriptor: GdFunctionDescriptor) -> PackedStringArray:
 		var constructor_args := ",".join(GdFunctionDoubler.extract_constructor_args(args))
 		var constructor := """
 			func _init(%s) -> void:
-				Engine.set_meta(__INSTANCE_ID, self)
 				@warning_ignore("unsafe_call_argument")
 				super(%s)
 
