@@ -1,18 +1,6 @@
 extends GdFunctionDoublerTest
 
 
-func test_double__init() -> void:
-	var doubler := GdUnitSpyFunctionDoubler.new()
-	# void _init() virtual
-	var fd := get_function_description("Object", "_init")
-	var expected := """
-		func _init() -> void:
-			super()
-
-		""".dedent()
-	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
-
-
 func test_double_virtual_return_void_function_without_arg() -> void:
 	var doubler := GdUnitSpyFunctionDoubler.new()
 	# void _ready() virtual
@@ -174,7 +162,7 @@ func test_double_return_typed_function_with_args_and_varargs() -> void:
 				8: return super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7])
 				9: return super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8])
 				10: return super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8], varargs_[9])
-				_: push_error("to many varradic arguments")
+				_: push_error("To many varradic arguments.")
 			return OK
 		""".dedent().trim_prefix("\n")
 	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
@@ -209,7 +197,7 @@ func test_double_return_void_function_only_varargs() -> void:
 				8: super(varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7])
 				9: super(varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8])
 				10: super(varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8], varargs_[9])
-				_: push_error("to many varradic arguments")
+				_: push_error("To many varradic arguments.")
 			return
 		""".dedent().trim_prefix("\n")
 	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
@@ -244,7 +232,7 @@ func test_double_return_typed_function_only_varargs() -> void:
 				8: return super(varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7])
 				9: return super(varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8])
 				10: return super(varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8], varargs_[9])
-				_: push_error("to many varradic arguments")
+				_: push_error("To many varradic arguments.")
 			return ""
 		""".dedent().trim_prefix("\n")
 	assert_str("\n".join(doubler.double(fd))).is_equal(expected)

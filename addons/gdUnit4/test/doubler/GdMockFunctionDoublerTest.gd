@@ -126,7 +126,7 @@ func test_double_int_function_with_varargs() -> void:
 				8: return super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7])
 				9: return super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8])
 				10: return super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8], varargs_[9])
-				_: push_error("to many varradic arguments")
+				_: push_error("To many varradic arguments.")
 			return OK
 	""".dedent().trim_prefix("\n")
 	assert_str("\n".join(doubler.double(fd))).is_equal(expected)
@@ -171,7 +171,7 @@ func test_double_untyped_function_with_varargs() -> void:
 				8: super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7])
 				9: super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8])
 				10: super(signal_, varargs_[0], varargs_[1], varargs_[2], varargs_[3], varargs_[4], varargs_[5], varargs_[6], varargs_[7], varargs_[8], varargs_[9])
-				_: push_error("to many varradic arguments")
+				_: push_error("To many varradic arguments.")
 			return
 	""".dedent().trim_prefix("\n")
 	assert_str("\n".join(doubler.double(fd))).is_equal(expected)

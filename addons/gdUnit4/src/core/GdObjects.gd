@@ -6,8 +6,6 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 
 # introduced with Godot 4.3.beta1
-const TYPE_PACKED_VECTOR4_ARRAY = 38 #TYPE_PACKED_VECTOR4_ARRAY
-
 const TYPE_VOID 	= 1000
 const TYPE_VARARG 	= 1001
 const TYPE_VARIANT	= 1002

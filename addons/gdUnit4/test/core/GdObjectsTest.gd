@@ -480,8 +480,6 @@ func test_all_types() -> void:
 	for type_index in TYPE_MAX:
 		expected_types.append(type_index)
 
-	if Engine.get_version_info().hex < 0x40300:
-		expected_types.append(GdObjects.TYPE_PACKED_VECTOR4_ARRAY)
 	expected_types.append(GdObjects.TYPE_VOID)
 	expected_types.append(GdObjects.TYPE_VARARG)
 	expected_types.append(GdObjects.TYPE_FUNC)

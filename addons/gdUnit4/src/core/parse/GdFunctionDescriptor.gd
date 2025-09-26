@@ -101,6 +101,8 @@ func return_type() -> int:
 
 
 func return_type_as_string() -> String:
+	if return_type() == TYPE_NIL:
+		return "void"
 	if (return_type() == TYPE_OBJECT or return_type() == GdObjects.TYPE_ENUM) and not _return_class.is_empty():
 		return _return_class
 	return GdObjects.type_as_string(return_type())
