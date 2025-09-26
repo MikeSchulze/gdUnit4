@@ -1259,9 +1259,3 @@ func test_mock_with_await_function() -> void:
 
 	@warning_ignore("unsafe_method_access")
 	verify(mocked_instance, 1).await_function()
-
-
-func test_foo() -> void:
-	var m :Variant = mock(InputEventKey)
-
-	m.as_text_keycode()

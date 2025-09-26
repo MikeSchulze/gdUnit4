@@ -5,8 +5,6 @@ const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 const SPY_TEMPLATE :GDScript = preload("res://addons/gdUnit4/src/spy/GdUnitSpyImpl.gd")
 const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
 
-static var spy_template: String = ""
-
 
 static func build(to_spy: Variant, debug_write := false) -> Variant:
 	if GdObjects.is_singleton(to_spy):
