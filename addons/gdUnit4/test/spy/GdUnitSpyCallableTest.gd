@@ -1,3 +1,4 @@
+@warning_ignore_start("unsafe_method_access")
 extends GdUnitTestSuite
 
 var _rpc_called: String = ""
@@ -44,7 +45,7 @@ func test_exclude_functions() -> void:
 		.not_contains(CallableDoubler.callable_functions())
 
 
-@warning_ignore("unsafe_method_access")
+
 func test_call() -> void:
 	var cb := func(x: int) -> String:
 		return "is_called %s" % x
@@ -60,7 +61,6 @@ func test_call() -> void:
 	assert_failure(func() -> void: verify(cb_spy).call(23)).is_failed()
 
 
-@warning_ignore("unsafe_method_access")
 func test_call_with_binded_value() -> void:
 	var cb := func(x: int, y: int) -> String:
 		return "is_called %s.%s" % [x, y]
@@ -71,7 +71,7 @@ func test_call_with_binded_value() -> void:
 	# verify is called by validate the result
 	assert_that(result).is_equal("is_called 42.24")
 	# verify should be successfull
-	verify(cb_spy).call(42, 24)
+	verify(cb_spy).call(42)
 	# verify with a not used argument must fail
 	assert_failure(func() -> void: verify(cb_spy).call(23)).is_failed()
 
@@ -79,7 +79,6 @@ func test_call_with_binded_value() -> void:
 # we not able to stub on callv because the original signature of Callabe:callv and Object:callv are different
 # and a spy is a specialized object delegator to the original implementation as object instance
 # a Callable is not inherits form object so it makes it impossible to spy/mock on `callv`
-@warning_ignore("unsafe_method_access")
 func _test_callv() -> void:
 	var cb := func(x: int, y: int) -> String:
 		return "is_called %s.%s" % [x, y]
@@ -93,16 +92,24 @@ func _test_callv() -> void:
 	verify(cb_spy).callv([42, 24])
 
 
-@warning_ignore("unsafe_method_access")
+func test_bind_vararg() -> void:
+	var cb := func(x: int, y: int) -> String:
+		return "is_called %s.%s" % [x, y]
+	var cb_spy :Variant = spy(cb)
+	cb_spy.bind(24, 25, 26)
+	assert_array(cb_spy.get_bound_arguments()).contains_exactly([24, 25, 26])
+
+
 func test_bind() -> void:
 	var cb := func(x: int, y: int) -> String:
 		return "is_called %s.%s" % [x, y]
 	var cb_spy :Variant = spy(cb)
 	cb_spy.bind(24)
+	assert_array(cb_spy.get_bound_arguments()).contains_exactly([24])
 
 	# verify bind is called
 	verify(cb_spy).bind(24)
-	# verify bind is not called with 33
+	# verify bind is not called with 23
 	assert_failure(func() -> void: verify(cb_spy).bind(23)).is_failed()
 
 	# do use the spy to call the callable
@@ -110,10 +117,9 @@ func test_bind() -> void:
 	# verify is called by validate the result
 	assert_that(result).is_equal("is_called 42.24")
 	# verify should be successfull
-	verify(cb_spy).call(42, 24)
+	verify(cb_spy).call(42)
 
 
-@warning_ignore("unsafe_method_access")
 func test_bindv() -> void:
 	var cb := func(a1: int, a2: int, a3: int, a4: int) -> String:
 		return "is_called %s %s %s %s" % [a1, a2, a3, a4]
@@ -128,7 +134,6 @@ func test_bindv() -> void:
 	assert_str(cb_spy.call(42)).is_equal("is_called 42 21 22 23")
 
 
-@warning_ignore("unsafe_method_access")
 func test_unbind() -> void:
 	var cb := func(a1: int, a2: int, a3: int) -> String:
 		return "is_called %s %s %s" % [a1, a2, a3]
@@ -143,7 +148,6 @@ func test_unbind() -> void:
 	assert_str(cb_spy.call(42)).is_equal("is_called 21 22 23")
 
 
-@warning_ignore("unsafe_method_access")
 func test_rpc() -> void:
 	_rpc_called = ""
 	var cb_spy :Variant = spy(do_rpc)
@@ -157,7 +161,6 @@ func test_rpc() -> void:
 	assert_failure(func() -> void: verify(cb_spy).rpc("abc", 43)).is_failed()
 
 
-@warning_ignore("unsafe_method_access")
 func test_rpc_id() -> void:
 	_rpc_called = ""
 	var cb_spy :Variant = spy(do_rpc_on_peer)
@@ -171,7 +174,6 @@ func test_rpc_id() -> void:
 	assert_failure(func() -> void: verify(cb_spy).rpc_id(23, "arg1", "arg2")).is_failed()
 
 
-@warning_ignore("unsafe_method_access")
 func test_get_bound_arguments() -> void:
 	var cb := func() -> void: return
 	var cb_syp :Variant = spy(cb)
@@ -182,7 +184,6 @@ func test_get_bound_arguments() -> void:
 	verify(cb_syp, 1).get_bound_arguments()
 
 
-@warning_ignore("unsafe_method_access")
 func test_get_bound_arguments_count() -> void:
 	var cb := func() -> void: return
 	var cb_syp :Variant = spy(cb)
@@ -193,7 +194,6 @@ func test_get_bound_arguments_count() -> void:
 	verify(cb_syp, 1).get_bound_arguments_count()
 
 
-@warning_ignore("unsafe_method_access")
 func test_get_method() -> void:
 	var cb_syp :Variant = spy(do_rpc)
 
@@ -202,7 +202,6 @@ func test_get_method() -> void:
 	verify(cb_syp, 1).get_method()
 
 
-@warning_ignore("unsafe_method_access")
 func test_get_object() -> void:
 	var cb_syp :Variant = spy(do_rpc)
 
@@ -211,7 +210,6 @@ func test_get_object() -> void:
 	verify(cb_syp, 1).get_object()
 
 
-@warning_ignore("unsafe_method_access")
 func test_get_object_id() -> void:
 	var cb_syp :Variant = spy(do_rpc)
 
@@ -220,7 +218,6 @@ func test_get_object_id() -> void:
 	verify(cb_syp, 1).get_object_id()
 
 
-@warning_ignore("unsafe_method_access")
 func test_hash() -> void:
 	var cb_syp :Variant = spy(do_rpc)
 
@@ -229,7 +226,6 @@ func test_hash() -> void:
 	verify(cb_syp, 1).hash()
 
 
-@warning_ignore("unsafe_method_access")
 func test_is_custom_is_true() -> void:
 	var cb_syp :Variant = spy(do_rpc)
 	assert_that(do_rpc.is_custom()).is_true()
@@ -239,7 +235,6 @@ func test_is_custom_is_true() -> void:
 	verify(cb_syp, 1).is_custom()
 
 
-@warning_ignore("unsafe_method_access")
 func test_is_custom_is_false() -> void:
 	var cb := Callable(self, "do_rpc")
 	assert_that(cb.is_custom()).is_false()
@@ -250,7 +245,6 @@ func test_is_custom_is_false() -> void:
 	verify(cb_syp, 1).is_custom()
 
 
-@warning_ignore("unsafe_method_access")
 func test_is_null() -> void:
 	var cb_syp :Variant = spy(do_rpc)
 
@@ -262,7 +256,6 @@ func test_is_null() -> void:
 	assert_that(cb_syp.is_null()).is_true()
 
 
-@warning_ignore("unsafe_method_access")
 func test_is_standard_is_false() -> void:
 	var cb_syp :Variant = spy(do_rpc)
 	assert_that(do_rpc.is_standard()).is_false()
@@ -272,7 +265,6 @@ func test_is_standard_is_false() -> void:
 	verify(cb_syp, 1).is_standard()
 
 
-@warning_ignore("unsafe_method_access")
 func test_is_standard_is_true() -> void:
 	var cb := Callable(self, "do_rpc")
 	assert_that(cb.is_standard()).is_true()
@@ -283,7 +275,6 @@ func test_is_standard_is_true() -> void:
 	verify(cb_syp, 1).is_standard()
 
 
-@warning_ignore("unsafe_method_access")
 func test_is_valid() -> void:
 	var cb_syp :Variant = spy(do_rpc)
 

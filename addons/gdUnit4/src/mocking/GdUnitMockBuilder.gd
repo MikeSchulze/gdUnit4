@@ -22,6 +22,8 @@ static func build(clazz :Variant, mock_mode :String, debug_write := false) -> Va
 		return mock_on_scene(packed_scene, debug_write)
 	# mocking a script
 	var instance := create_instance(clazz)
+	if instance == null:
+		push_error("Can't create instance of class %s" % clazz)
 	var mock := mock_on_script(instance, clazz, [ "get_script"], debug_write)
 	if not instance is RefCounted:
 		instance.free()
@@ -93,10 +95,9 @@ static func get_class_info(clazz :Variant) -> Dictionary:
 
 
 static func mock_on_script(instance :Object, clazz :Variant, function_excludes :PackedStringArray, debug_write :bool) -> GDScript:
-	var push_errors := is_push_errors()
-	var function_doubler := GdUnitMockFunctionDoubler.new(push_errors)
+	var function_doubler := GdUnitMockFunctionDoubler.new()
 	var class_info := get_class_info(clazz)
-	var lines := load_template(MOCK_TEMPLATE.source_code, class_info, instance)
+	var lines := load_template(MOCK_TEMPLATE.source_code, class_info)
 
 	var clazz_name :String = class_info.get("class_name")
 	var clazz_path :PackedStringArray = class_info.get("class_path", [clazz_name])

@@ -249,21 +249,15 @@ func test_decode_typedArrays(variant_type :int, value :Variant, expected :String
 	[TYPE_PACKED_VECTOR2_ARRAY, PackedVector2Array(),
 		'PackedVector2Array()'],
 	[TYPE_PACKED_VECTOR2_ARRAY, PackedVector2Array([Vector2.ONE, Vector2.ONE*2]),
-		'PackedVector2Array([Vector2'+str(Vector2(1, 1))+', Vector2'+str(Vector2(2, 2))+'])'],
+		'PackedVector2Array([Vector2'+str(Vector2.ONE)+', Vector2'+str(Vector2.ONE*2)+'])'],
 	[TYPE_PACKED_VECTOR3_ARRAY, PackedVector3Array(),
 		'PackedVector3Array()'],
 	[TYPE_PACKED_VECTOR3_ARRAY, PackedVector3Array([Vector3.ONE, Vector3.ONE*2]),
-		'PackedVector3Array([Vector3'+str(Vector3(1, 1, 1))+', Vector3'+str(Vector3(2, 2, 2))+'])'],
+		'PackedVector3Array([Vector3'+str(Vector3.ONE)+', Vector3'+str(Vector3.ONE*2)+'])'],
+	[TYPE_PACKED_VECTOR4_ARRAY, PackedVector4Array(),
+		'PackedVector4Array()'],
+	[TYPE_PACKED_VECTOR4_ARRAY, PackedVector4Array([Vector4.ONE, Vector4.ONE*2]),
+		'PackedVector4Array([Vector4'+str(Vector4.ONE)+', Vector4'+str(Vector4.ONE*2)+'])']
 	]) -> void:
 	assert_that(GdDefaultValueDecoder.decode_typed(variant_type, value)).is_equal(expected)
 	_tested_types[variant_type] = 1
-
-
-# Godot 4.3.1.beta1 defines in addition TYPE_PACKED_VECTOR4_ARRAY
-func test_decode_Vector4Array() -> void:
-	# TYPE_PACKED_VECTOR4_ARRAY
-	var type := GdObjects.TYPE_PACKED_VECTOR4_ARRAY
-	# We need a pragma to include code Godot version specific
-	#assert_that(GdDefaultValueDecoder.decode_typed(type, PackedVector4Array([Vector4.ONE, Vector4.ONE*2])))\
-	#	.is_equal('PackedVector4Array([Vector4(1, 1, 1, 1), Vector4(2, 2, 2, 2)])')
-	_tested_types[type] = 1
