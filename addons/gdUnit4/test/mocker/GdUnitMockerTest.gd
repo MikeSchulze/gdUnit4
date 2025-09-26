@@ -22,7 +22,6 @@ func test_mock_instance_id_is_unique() -> void:
 	var m2: Variant = mock(RefCounted)
 	# test the internal instance id is unique
 	@warning_ignore("unsafe_method_access")
-	assert_that(m1.__instance_id()).is_not_equal(m2.__instance_id())
 	assert_object(m1).is_not_same(m2)
 
 
@@ -141,7 +140,7 @@ func test_mock_Node() -> void:
 func test_mock_source_with_class_name_by_resource_path() -> void:
 	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
 	var m: Variant = mock(resource_path_)
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledMockClassMunderwoodPathingWorld")\
 		.contains("extends '%s'" % resource_path_)
@@ -151,7 +150,7 @@ func test_mock_source_with_class_name_by_resource_path() -> void:
 func test_mock_source_with_class_name_by_class() -> void:
 	var resource_path_ := 'res://addons/gdUnit4/test/mocker/resources/GD-256/world.gd'
 	var m: Variant = mock(Munderwood_Pathing_World)
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledMockClassMunderwoodPathingWorld")\
 		.contains("extends '%s'" % resource_path_)
@@ -160,15 +159,17 @@ func test_mock_source_with_class_name_by_class() -> void:
 @warning_ignore("unsafe_method_access")
 func test_mock_extends_godot_class() -> void:
 	var m: Variant = mock(World3D)
-	var head :String = m.get_script().source_code.substr(0, 200)
+	var head :String = m.get_script().source_code.substr(0, 500)
 	assert_str(head)\
 		.contains("class_name DoubledMockClassWorld")\
 		.contains("extends World3D")
 
 
 var _test_signal_args := Array()
-func _emit_ready(a :String, b :String, c :Variant = null) -> void:
-	_test_signal_args = [a, b, c]
+func _emit_ready(...args: Array) -> void:
+	if args.is_empty():
+		return
+	_test_signal_args = args
 
 
 @warning_ignore("unsafe_method_access")
@@ -211,7 +212,7 @@ func test_mock_Node_func_vararg_call_real_func() -> void:
 	# verify is emitted
 	verify(mocked_node).emit_signal("ready", "aa", "xxx")
 	await get_tree().process_frame
-	assert_that(_test_signal_args).is_equal(["aa", "xxx", null])
+	assert_that(_test_signal_args).is_equal(["aa", "xxx"])
 
 
 class ClassWithSignal:
@@ -316,27 +317,29 @@ func test_mock_custom_class_func_foo_use_real_func() -> void:
 
 
 @warning_ignore("unsafe_method_access")
-func test_mock_custom_class_void_func() -> void:
+func test_mock_void_func_not_allowed() -> void:
 	var m: Variant = mock(CustomResourceTestClass)
 	assert_that(m).is_not_null()
 	# test mocked void function returns null by default
 	assert_that(m.foo_void()).is_null()
+
 	# try now mock return value for a void function. results into an error
-	do_return("overridden value").on(m).foo_void()
-	# verify it has no affect for void func
-	assert_that(m.foo_void()).is_null()
+	assert_error(func() -> void:
+		do_return("overridden value").on(m).foo_void()
+	).is_push_error("Mocking functions with return type void is not allowed!")
 
 
 @warning_ignore("unsafe_method_access")
-func test_mock_custom_class_void_func_real_func() -> void:
+func test_mock_void_call_real_func_not_allowed() -> void:
 	var m: Variant = mock(CustomResourceTestClass, CALL_REAL_FUNC)
 	assert_that(m).is_not_null()
 	# test mocked void function returns null by default
 	assert_that(m.foo_void()).is_null()
+
 	# try now mock return value for a void function. results into an error
-	do_return("overridden value").on(m).foo_void()
-	# verify it has no affect for void func
-	assert_that(m.foo_void()).is_null()
+	assert_error(func() -> void:
+		do_return("overridden value").on(m).foo_void()
+	).is_push_error("Mocking functions with return type void is not allowed!")
 
 
 @warning_ignore("unsafe_method_access")
@@ -809,7 +812,7 @@ func test_matching_is_sorted() -> void:
 	do_return(null).on(mocked_node).get_child(3, true)
 
 	# get the sorted mocked args as array
-	var mocked_args :Array = mocked_node.__mock_state().return_values.get("get_child").keys()
+	var mocked_args :Array = mocked_node.__return_values__.get("get_child").keys()
 	assert_array(mocked_args).has_size(5)
 
 	# we expect all argument matchers are sorted to the end

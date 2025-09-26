@@ -10,7 +10,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Godot-v4.3-%23478cbf?logo=godot-engine&logoColor=cyian&color=green" alt="">
   <img src="https://img.shields.io/badge/Godot-v4.4-%23478cbf?logo=godot-engine&logoColor=cyian&color=green" alt="">
-<img src="https://img.shields.io/badge/Godot-v4.4.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green" alt="">
+  <img src="https://img.shields.io/badge/Godot-v4.4.1-%23478cbf?logo=godot-engine&logoColor=cyian&color=green" alt="">
+  <img src="https://img.shields.io/badge/Godot-v4.5-%23478cbf?logo=godot-engine&logoColor=cyian&color=yellow" alt="">
 </p>
 
 <h1 align="center">Compatibility Overview</h1>
@@ -24,7 +25,10 @@
   </thead>
   <tbody>
     <tr>
-      <td>v5.0.x, v5.1.x</td><td>v4.3, v4.4, v4.4.1</td>
+      <td>v6.x+ (not released yet)</td><td>v4.5</td>
+    </tr>
+    <tr>
+      <td>v5.x+</td><td>v4.3, v4.4, v4.4.1</td>
     </tr>
     <tr>
       <td>v4.4.0+</td><td>v4.2.0, v4.3, v4.4.dev2</td>
