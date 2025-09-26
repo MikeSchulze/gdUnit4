@@ -8,17 +8,6 @@ const EXCLUDE_PROPERTIES_TO_COPY = ["script", "type"]
 static var spy_template: String = ""
 
 
-static func get_template() -> String:
-	if not spy_template.is_empty():
-		return spy_template
-	# preload the spy template
-	var source := SPY_TEMPLATE.source_code
-	spy_template = source\
-		.replace("extends GdUnitDoublerInstanceRef", SPY_TEMPLATE.get_base_script().source_code)\
-		.replace("class_name GdUnitDoublerInstanceRef", "")
-	return spy_template
-
-
 static func build(to_spy: Variant, debug_write := false) -> Variant:
 	if GdObjects.is_singleton(to_spy):
 		@warning_ignore("unsafe_cast")
@@ -84,7 +73,7 @@ static func spy_on_script(instance :Variant, function_excludes :PackedStringArra
 			push_error("Can't build spy for class type '%s'! Using an instance instead e.g. 'spy(<instance>)'" % [clazz_name])
 		return null
 	@warning_ignore("unsafe_cast")
-	var lines := load_template(get_template(), class_info, instance as Object)
+	var lines := load_template(SPY_TEMPLATE.source_code, class_info)
 	@warning_ignore("unsafe_cast")
 	lines += double_functions(instance as Object, clazz_name, clazz_path, GdUnitSpyFunctionDoubler.new(), function_excludes)
 	# We disable warning/errors for inferred_declaration

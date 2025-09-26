@@ -22,7 +22,6 @@ func test_mock_instance_id_is_unique() -> void:
 	var m2: Variant = mock(RefCounted)
 	# test the internal instance id is unique
 	@warning_ignore("unsafe_method_access")
-	assert_that(m1.__instance_id()).is_not_equal(m2.__instance_id())
 	assert_object(m1).is_not_same(m2)
 
 
@@ -813,7 +812,7 @@ func test_matching_is_sorted() -> void:
 	do_return(null).on(mocked_node).get_child(3, true)
 
 	# get the sorted mocked args as array
-	var mocked_args :Array = mocked_node.__mock_state().return_values.get("get_child").keys()
+	var mocked_args :Array = mocked_node.__return_values__.get("get_child").keys()
 	assert_array(mocked_args).has_size(5)
 
 	# we expect all argument matchers are sorted to the end
