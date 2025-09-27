@@ -59,6 +59,12 @@ func is_null() -> GdUnitFileAssert:
 	return self
 
 
+func is_not_null() -> GdUnitFileAssert:
+	@warning_ignore("return_value_discarded")
+	_base.is_not_null()
+	return self
+
+
 func is_equal(expected :Variant) -> GdUnitFileAssert:
 	@warning_ignore("return_value_discarded")
 	_base.is_equal(expected)

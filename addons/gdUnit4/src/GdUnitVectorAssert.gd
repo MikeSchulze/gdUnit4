@@ -7,6 +7,10 @@ extends GdUnitAssert
 @abstract func is_null() -> GdUnitVectorAssert
 
 
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitVectorAssert
+
+
 ## Verifies that the current value is equal to expected one.
 @warning_ignore("unused_parameter")
 func is_equal(expected :Variant) -> GdUnitVectorAssert:

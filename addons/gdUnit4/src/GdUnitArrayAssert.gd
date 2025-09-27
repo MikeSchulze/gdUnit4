@@ -8,8 +8,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current value is not null.
-func is_not_null() -> GdUnitArrayAssert:
-	return self
+@abstract func is_not_null() -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array is equal to the given one.

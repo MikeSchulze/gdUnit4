@@ -8,6 +8,10 @@ extends GdUnitAssert
 @abstract func is_null() -> GdUnitFailureAssert
 
 
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitFailureAssert
+
+
 ## Verifies if the executed assert was successful
 func is_success() -> GdUnitFailureAssert:
 	return self

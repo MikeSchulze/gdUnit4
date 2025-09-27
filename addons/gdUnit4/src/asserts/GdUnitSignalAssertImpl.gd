@@ -71,8 +71,14 @@ func wait_until(timeout := 2000) -> GdUnitSignalAssert:
 
 
 func is_null() -> GdUnitSignalAssert:
-	if _emitter == null:
+	if _emitter != null:
 		return report_error(GdAssertMessages.error_is_null(_emitter))
+	return report_success()
+
+
+func is_not_null() -> GdUnitSignalAssert:
+	if _emitter == null:
+		return report_error(GdAssertMessages.error_is_not_null())
 	return report_success()
 
 
