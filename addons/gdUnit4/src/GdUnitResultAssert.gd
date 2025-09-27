@@ -8,8 +8,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current value is not null.
-func is_not_null() -> GdUnitResultAssert:
-	return self
+@abstract func is_not_null() -> GdUnitResultAssert
 
 
 ## Verifies that the result is ends up with empty

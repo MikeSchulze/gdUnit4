@@ -8,9 +8,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current value is not null.
-func is_not_null() -> GdUnitFuncAssert:
-	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
+@abstract func is_not_null() -> GdUnitFuncAssert
 
 
 ## Verifies that the current value is equal to the given one.

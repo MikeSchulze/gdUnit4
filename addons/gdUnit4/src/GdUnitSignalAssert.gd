@@ -7,6 +7,10 @@ extends GdUnitAssert
 @abstract func is_null() -> GdUnitSignalAssert
 
 
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitSignalAssert
+
+
 ## Verifies that given signal is emitted until waiting time
 @warning_ignore("unused_parameter")
 func is_emitted(name :String, args := []) -> GdUnitSignalAssert:

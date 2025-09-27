@@ -7,6 +7,10 @@ extends GdUnitAssert
 @abstract func is_null() -> GdUnitFloatAssert
 
 
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitFloatAssert
+
+
 ## Verifies that the current String is equal to the given one.
 @warning_ignore("unused_parameter")
 func is_equal(expected :Variant) -> GdUnitFloatAssert:

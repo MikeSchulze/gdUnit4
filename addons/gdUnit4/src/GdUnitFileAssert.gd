@@ -6,6 +6,10 @@ extends GdUnitAssert
 @abstract func is_null() -> GdUnitFileAssert
 
 
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitFileAssert
+
+
 func is_file() -> GdUnitFileAssert:
 	return self
 

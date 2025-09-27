@@ -57,7 +57,6 @@ func is_null() -> GdUnitBoolAssert:
 	return self
 
 
-# Verifies that the current value is not null.
 func is_not_null() -> GdUnitBoolAssert:
 	@warning_ignore("return_value_discarded")
 	_base.is_not_null()

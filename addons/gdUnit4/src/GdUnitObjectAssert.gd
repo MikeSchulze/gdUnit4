@@ -7,6 +7,10 @@ extends GdUnitAssert
 @abstract func is_null() -> GdUnitObjectAssert
 
 
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitObjectAssert
+
+
 ## Verifies that the current object is equal to expected one.
 @warning_ignore("unused_parameter")
 func is_equal(expected: Variant) -> GdUnitObjectAssert:
@@ -16,11 +20,6 @@ func is_equal(expected: Variant) -> GdUnitObjectAssert:
 ## Verifies that the current object is not equal to expected one.
 @warning_ignore("unused_parameter")
 func is_not_equal(expected: Variant) -> GdUnitObjectAssert:
-	return self
-
-
-## Verifies that the current object is not null.
-func is_not_null() -> GdUnitObjectAssert:
 	return self
 
 
