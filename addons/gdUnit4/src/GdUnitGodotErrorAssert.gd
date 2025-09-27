@@ -1,6 +1,10 @@
 ## An assertion tool to verify for Godot runtime errors like assert() and push notifications like push_error().
-class_name GdUnitGodotErrorAssert
+@abstract class_name GdUnitGodotErrorAssert
 extends GdUnitAssert
+
+
+## Verifies that the current value is null.
+@abstract func is_null() -> GdUnitGodotErrorAssert
 
 
 ## Verifies if the executed code runs without any runtime errors

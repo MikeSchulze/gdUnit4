@@ -1,11 +1,10 @@
 ## An Assertion Tool to verify boolean values
-class_name GdUnitBoolAssert
+@abstract class_name GdUnitBoolAssert
 extends GdUnitAssert
 
 
 ## Verifies that the current value is null.
-func is_null() -> GdUnitBoolAssert:
-	return self
+@abstract func is_null() -> GdUnitBoolAssert
 
 
 ## Verifies that the current value is not null.

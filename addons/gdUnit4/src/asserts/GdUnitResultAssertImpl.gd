@@ -28,11 +28,13 @@ func current_value() -> GdUnitResult:
 
 
 func report_success() -> GdUnitResultAssert:
+	@warning_ignore("return_value_discarded")
 	_base.report_success()
 	return self
 
 
 func report_error(error :String) -> GdUnitResultAssert:
+	@warning_ignore("return_value_discarded")
 	_base.report_error(error)
 	return self
 

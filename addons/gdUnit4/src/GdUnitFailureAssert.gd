@@ -1,7 +1,11 @@
 ## An assertion tool to verify GDUnit asserts.
 ## This assert is for internal use only, to verify that failed asserts work as expected.
-class_name GdUnitFailureAssert
+@abstract class_name GdUnitFailureAssert
 extends GdUnitAssert
+
+
+## Verifies that the current value is null.
+@abstract func is_null() -> GdUnitFailureAssert
 
 
 ## Verifies if the executed assert was successful

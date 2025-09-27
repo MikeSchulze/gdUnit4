@@ -1,11 +1,10 @@
 ## An Assertion Tool to verify dictionary
-class_name GdUnitDictionaryAssert
+@abstract class_name GdUnitDictionaryAssert
 extends GdUnitAssert
 
 
 ## Verifies that the current value is null.
-func is_null() -> GdUnitDictionaryAssert:
-	return self
+@abstract func is_null() -> GdUnitDictionaryAssert
 
 
 ## Verifies that the current value is not null.
