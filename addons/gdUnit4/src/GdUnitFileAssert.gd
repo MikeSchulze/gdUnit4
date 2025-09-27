@@ -1,5 +1,9 @@
-class_name GdUnitFileAssert
+@abstract class_name GdUnitFileAssert
 extends GdUnitAssert
+
+
+## Verifies that the current value is null.
+@abstract func is_null() -> GdUnitFileAssert
 
 
 func is_file() -> GdUnitFileAssert:

@@ -1,7 +1,7 @@
 # GdUnit generated TestSuite
 class_name GdUnitFuncAssertImplTest
 extends GdUnitTestSuite
-@warning_ignore("unused_parameter")
+@warning_ignore_start("redundant_await")
 
 
 # TestSuite generated from

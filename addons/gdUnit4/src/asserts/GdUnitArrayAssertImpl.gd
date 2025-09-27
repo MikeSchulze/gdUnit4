@@ -26,11 +26,13 @@ func _notification(event: int) -> void:
 
 
 func report_success() -> GdUnitArrayAssert:
+	@warning_ignore("return_value_discarded")
 	_base.report_success()
 	return self
 
 
 func report_error(error: String) -> GdUnitArrayAssert:
+	@warning_ignore("return_value_discarded")
 	_base.report_error(error)
 	return self
 
@@ -40,11 +42,13 @@ func failure_message() -> String:
 
 
 func override_failure_message(message: String) -> GdUnitArrayAssert:
+	@warning_ignore("return_value_discarded")
 	_base.override_failure_message(message)
 	return self
 
 
 func append_failure_message(message: String) -> GdUnitArrayAssert:
+	@warning_ignore("return_value_discarded")
 	_base.append_failure_message(message)
 	return self
 

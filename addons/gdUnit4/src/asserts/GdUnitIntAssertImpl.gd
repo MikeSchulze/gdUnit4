@@ -24,11 +24,13 @@ func current_value() -> Variant:
 
 
 func report_success() -> GdUnitIntAssert:
+	@warning_ignore("return_value_discarded")
 	_base.report_success()
 	return self
 
 
 func report_error(error :String) -> GdUnitIntAssert:
+	@warning_ignore("return_value_discarded")
 	_base.report_error(error)
 	return self
 

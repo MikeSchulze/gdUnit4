@@ -1,6 +1,10 @@
 ## An Assertion Tool to verify Object values
-class_name GdUnitObjectAssert
+@abstract class_name GdUnitObjectAssert
 extends GdUnitAssert
+
+
+## Verifies that the current value is null.
+@abstract func is_null() -> GdUnitObjectAssert
 
 
 ## Verifies that the current object is equal to expected one.
@@ -12,11 +16,6 @@ func is_equal(expected: Variant) -> GdUnitObjectAssert:
 ## Verifies that the current object is not equal to expected one.
 @warning_ignore("unused_parameter")
 func is_not_equal(expected: Variant) -> GdUnitObjectAssert:
-	return self
-
-
-## Verifies that the current object is null.
-func is_null() -> GdUnitObjectAssert:
 	return self
 
 

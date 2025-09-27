@@ -26,11 +26,13 @@ func current_value() -> String:
 
 
 func report_success() -> GdUnitFileAssert:
+	@warning_ignore("return_value_discarded")
 	_base.report_success()
 	return self
 
 
 func report_error(error :String) -> GdUnitFileAssert:
+	@warning_ignore("return_value_discarded")
 	_base.report_error(error)
 	return self
 
@@ -48,6 +50,12 @@ func override_failure_message(message :String) -> GdUnitFileAssert:
 func append_failure_message(message :String) -> GdUnitFileAssert:
 	@warning_ignore("return_value_discarded")
 	_base.append_failure_message(message)
+	return self
+
+
+func is_null() -> GdUnitFileAssert:
+	@warning_ignore("return_value_discarded")
+	_base.is_null()
 	return self
 
 
@@ -97,5 +105,6 @@ func contains_exactly(expected_rows: Array) -> GdUnitFileAssert:
 	if script is GDScript:
 		var source_code := GdScriptParser.to_unix_format(script.source_code)
 		var rows := Array(source_code.split("\n"))
+		@warning_ignore("return_value_discarded")
 		GdUnitArrayAssertImpl.new(rows).contains_exactly(expected_rows)
 	return self
