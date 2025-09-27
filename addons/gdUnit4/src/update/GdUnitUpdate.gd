@@ -199,6 +199,7 @@ func create_temp_dir(folder_name :String) -> String:
 func delete_directory(path: String, only_content := false) -> void:
 	var dir := DirAccess.open(path)
 	if dir != null:
+		dir.include_hidden = true
 		@warning_ignore("return_value_discarded")
 		dir.list_dir_begin()
 		var file_name := "."
