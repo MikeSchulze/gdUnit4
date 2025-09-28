@@ -324,7 +324,7 @@ func test_mock_void_func_not_allowed() -> void:
 	assert_that(m.foo_void()).is_null()
 
 	# try now mock return value for a void function. results into an error
-	assert_error(func() -> void:
+	await assert_error(func() -> void:
 		do_return("overridden value").on(m).foo_void()
 	).is_push_error("Mocking functions with return type void is not allowed!")
 
@@ -337,7 +337,7 @@ func test_mock_void_call_real_func_not_allowed() -> void:
 	assert_that(m.foo_void()).is_null()
 
 	# try now mock return value for a void function. results into an error
-	assert_error(func() -> void:
+	await assert_error(func() -> void:
 		do_return("overridden value").on(m).foo_void()
 	).is_push_error("Mocking functions with return type void is not allowed!")
 
@@ -812,7 +812,7 @@ func test_matching_is_sorted() -> void:
 	do_return(null).on(mocked_node).get_child(3, true)
 
 	# get the sorted mocked args as array
-	var mocked_args :Array = mocked_node.__return_values__.get("get_child").keys()
+	var mocked_args :Array = mocked_node.__doubler_state().return_values.get("get_child").keys()
 	assert_array(mocked_args).has_size(5)
 
 	# we expect all argument matchers are sorted to the end
@@ -1255,7 +1255,7 @@ func test_mock_with_await_function() -> void:
 	var mocked_instance := mock(ClassWithAwaitFunc, CALL_REAL_FUNC) as ClassWithAwaitFunc
 	add_child(mocked_instance)
 
-	mocked_instance.await_function()
+	await mocked_instance.await_function()
 
 	@warning_ignore("unsafe_method_access")
 	verify(mocked_instance, 1).await_function()

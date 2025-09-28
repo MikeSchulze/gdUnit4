@@ -85,6 +85,7 @@ const DEFAULT_ENUM_RETURN_VALUES = {
 
 static var def_constructor := """
 	func _init({constructor_args}) -> void:
+		__init_doubler()
 		super({args})
 	""".dedent()
 
