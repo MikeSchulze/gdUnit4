@@ -3,8 +3,7 @@
 
 # Godot-specific ignores
 .godot/
-assets/*.import
-icon.png.import
+*.import
 # ignore the godot4.4-dev5 generated uid files
 *.gd.uid
 *.cs.uid
