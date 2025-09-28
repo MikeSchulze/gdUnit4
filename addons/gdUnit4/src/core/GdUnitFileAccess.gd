@@ -163,6 +163,7 @@ static func as_resource_path(value: String) -> String:
 
 static func scan_dir(path :String) -> PackedStringArray:
 	var dir := DirAccess.open(path)
+	dir.include_hidden = true
 	if dir == null or not dir.dir_exists(path):
 		return PackedStringArray()
 	var content := PackedStringArray()

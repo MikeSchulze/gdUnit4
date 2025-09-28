@@ -161,6 +161,7 @@ func test_delete_directory() -> void:
 	create_temp_dir("test_delete_dir/data2")
 	_create_file("test_delete_dir", "example_a.txt")
 	_create_file("test_delete_dir", "example_b.txt")
+	_create_file("test_delete_dir", ".hidden_file_example_c.txt")
 	_create_file("test_delete_dir/data1", "example.txt")
 	_create_file("test_delete_dir/data2", "example2.txt")
 
@@ -168,7 +169,8 @@ func test_delete_directory() -> void:
 		"data1",
 		"data2",
 		"example_a.txt",
-		"example_b.txt"
+		"example_b.txt",
+		".hidden_file_example_c.txt"
 	])
 
 	# Delete the entire directory and its contents
