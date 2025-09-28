@@ -17,6 +17,7 @@ class NodeWithOutVirtualFunc extends Node:
 func test_spy_on_script_respect_virtual_functions() -> void:
 	var do_spy :Variant = auto_free(GdUnitSpyBuilder.spy_on_script(auto_free(NodeWithOutVirtualFunc.new()), [], true).new())
 
+	do_spy.__init_doubler()
 	do_spy.__init([])
 	assert_bool(do_spy.has_method("_ready")).is_true()
 	assert_bool(do_spy.has_method("_input")).is_false()

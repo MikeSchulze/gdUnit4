@@ -2,7 +2,7 @@
 class_name GdUnitClassDoubler
 extends RefCounted
 
-
+const DOUBLER_INSTANCE_ID_PREFIX := "gdunit_doubler_instance_id_"
 const EXCLUDE_VIRTUAL_FUNCTIONS = [
 	# we have to exclude notifications because NOTIFICATION_PREDELETE is try
 	# to delete already freed spy/mock resources and will result in a conflict
@@ -22,6 +22,15 @@ const EXLCUDE_SCENE_FUNCTIONS = [
 	"_to_string",
 ]
 const EXCLUDE_FUNCTIONS = ["new", "free", "get_instance_id", "get_tree"]
+
+
+static func check_leaked_instances() -> void:
+	## we check that all registered spy/mock instances are removed from the engine meta data
+	for key in Engine.get_meta_list():
+		if key.begins_with(DOUBLER_INSTANCE_ID_PREFIX):
+			var instance: Variant = Engine.get_meta(key)
+			push_error("GdUnit internal error: an spy/mock instance '%s', class:'%s' is not removed from the engine and will lead in a leaked instance!" % [instance, instance.__SOURCE_CLASS])
+			await (Engine.get_main_loop() as SceneTree).process_frame
 
 
 # loads the doubler template
