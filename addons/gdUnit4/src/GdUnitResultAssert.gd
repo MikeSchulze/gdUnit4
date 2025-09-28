@@ -1,16 +1,14 @@
 ## An Assertion Tool to verify Results
-class_name GdUnitResultAssert
+@abstract class_name GdUnitResultAssert
 extends GdUnitAssert
 
 
 ## Verifies that the current value is null.
-func is_null() -> GdUnitResultAssert:
-	return self
+@abstract func is_null() -> GdUnitResultAssert
 
 
 ## Verifies that the current value is not null.
-func is_not_null() -> GdUnitResultAssert:
-	return self
+@abstract func is_not_null() -> GdUnitResultAssert
 
 
 ## Verifies that the result is ends up with empty

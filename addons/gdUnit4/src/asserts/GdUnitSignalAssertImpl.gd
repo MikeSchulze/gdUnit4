@@ -70,6 +70,18 @@ func wait_until(timeout := 2000) -> GdUnitSignalAssert:
 	return self
 
 
+func is_null() -> GdUnitSignalAssert:
+	if _emitter != null:
+		return report_error(GdAssertMessages.error_is_null(_emitter))
+	return report_success()
+
+
+func is_not_null() -> GdUnitSignalAssert:
+	if _emitter == null:
+		return report_error(GdAssertMessages.error_is_not_null())
+	return report_success()
+
+
 # Verifies the signal exists checked the emitter
 func is_signal_exists(signal_name :String) -> GdUnitSignalAssert:
 	if not _emitter.has_signal(signal_name):

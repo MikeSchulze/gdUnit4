@@ -1,6 +1,14 @@
 ## An Assertion Tool to verify Vector values
-class_name GdUnitVectorAssert
+@abstract class_name GdUnitVectorAssert
 extends GdUnitAssert
+
+
+## Verifies that the current value is null.
+@abstract func is_null() -> GdUnitVectorAssert
+
+
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitVectorAssert
 
 
 ## Verifies that the current value is equal to expected one.

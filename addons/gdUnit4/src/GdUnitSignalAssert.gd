@@ -1,6 +1,14 @@
 ## An Assertion Tool to verify for emitted signals until a waiting time
-class_name GdUnitSignalAssert
+@abstract class_name GdUnitSignalAssert
 extends GdUnitAssert
+
+
+## Verifies that the current value is null.
+@abstract func is_null() -> GdUnitSignalAssert
+
+
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitSignalAssert
 
 
 ## Verifies that given signal is emitted until waiting time

@@ -1,6 +1,14 @@
 ## An Assertion Tool to verify float values
-class_name GdUnitFloatAssert
+@abstract class_name GdUnitFloatAssert
 extends GdUnitAssert
+
+
+## Verifies that the current value is null.
+@abstract func is_null() -> GdUnitFloatAssert
+
+
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitFloatAssert
 
 
 ## Verifies that the current String is equal to the given one.

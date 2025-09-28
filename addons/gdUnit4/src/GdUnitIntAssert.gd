@@ -1,6 +1,15 @@
 ## An Assertion Tool to verify integer values
-class_name GdUnitIntAssert
+@abstract class_name GdUnitIntAssert
 extends GdUnitAssert
+
+
+## Verifies that the current value is null.
+@abstract func is_null() -> GdUnitIntAssert
+
+
+## Verifies that the current value is not null.
+@abstract func is_not_null() -> GdUnitIntAssert
+
 
 ## Verifies that the current String is equal to the given one.
 @warning_ignore("unused_parameter")

@@ -1,18 +1,13 @@
 ## Base interface of all GdUnit asserts
-class_name GdUnitAssert
+@abstract class_name GdUnitAssert
 extends RefCounted
 
 
 ## Verifies that the current value is null.
-@warning_ignore("untyped_declaration")
-func is_null():
-	return self
-
+@abstract func is_null() -> GdUnitAssert
 
 ## Verifies that the current value is not null.
-@warning_ignore("untyped_declaration")
-func is_not_null():
-	return self
+@abstract func is_not_null() -> GdUnitAssert
 
 
 ## Verifies that the current value is equal to expected one.

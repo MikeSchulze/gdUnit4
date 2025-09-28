@@ -61,6 +61,14 @@ func _to_list(log_entries: Array[ErrorLogEntry]) -> String:
 	return value
 
 
+func is_null() -> GdUnitGodotErrorAssert:
+	return _report_error("Not implemented")
+
+
+func is_not_null() -> GdUnitGodotErrorAssert:
+	return _report_error("Not implemented")
+
+
 func is_success() -> GdUnitGodotErrorAssert:
 	var log_entries := await _execute()
 	if log_entries.is_empty():

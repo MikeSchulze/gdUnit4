@@ -1,18 +1,14 @@
 ## An Assertion Tool to verify function callback values
-class_name GdUnitFuncAssert
+@abstract class_name GdUnitFuncAssert
 extends GdUnitAssert
 
 
 ## Verifies that the current value is null.
-func is_null() -> GdUnitFuncAssert:
-	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
+@abstract func is_null() -> GdUnitFuncAssert
 
 
 ## Verifies that the current value is not null.
-func is_not_null() -> GdUnitFuncAssert:
-	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
+@abstract func is_not_null() -> GdUnitFuncAssert
 
 
 ## Verifies that the current value is equal to the given one.
