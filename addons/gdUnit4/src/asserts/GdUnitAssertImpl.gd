@@ -42,7 +42,7 @@ func do_fail() -> GdUnitAssert:
 	return report_error(GdAssertMessages.error_not_implemented())
 
 
-func override_failure_message(message :String) -> GdUnitAssert:
+func override_failure_message(message: String) -> GdUnitAssert:
 	_custom_failure_message = message
 	return self
 

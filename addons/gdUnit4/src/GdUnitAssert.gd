@@ -26,13 +26,11 @@ extends RefCounted
 ##     [codeblock]
 ##		# Override with custom context-specific message
 ##		func test_player_inventory():
-##		    assert_int(player.get_item_count("sword"))\
+##		    assert_that(player.get_item_count("sword"))\
 ##		        .override_failure_message("Player should have exactly one sword")\
 ##		        .is_equal(1)
 ##     [/codeblock]
-@warning_ignore("untyped_declaration")
-func override_failure_message(_message: String):
-	return self
+@abstract func override_failure_message(message: String) -> GdUnitAssert
 
 
 ## Appends a custom message to the failure message.[br]

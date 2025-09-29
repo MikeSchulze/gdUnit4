@@ -39,7 +39,7 @@ func report_error(error :String) -> GdUnitStringAssert:
 	return self
 
 
-func override_failure_message(message :String) -> GdUnitStringAssert:
+func override_failure_message(message: String) -> GdUnitStringAssert:
 	@warning_ignore("return_value_discarded")
 	_base.override_failure_message(message)
 	return self

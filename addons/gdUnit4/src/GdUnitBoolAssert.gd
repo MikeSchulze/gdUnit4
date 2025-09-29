@@ -19,6 +19,10 @@ extends GdUnitAssert
 @abstract func is_not_equal(expected: Variant) -> GdUnitBoolAssert
 
 
+## Overrides the default failure message by given custom message.
+@abstract func override_failure_message(message: String) -> GdUnitBoolAssert
+
+
 ## Verifies that the current value is true.
 func is_true() -> GdUnitBoolAssert:
 	return self
@@ -26,10 +30,4 @@ func is_true() -> GdUnitBoolAssert:
 
 ## Verifies that the current value is false.
 func is_false() -> GdUnitBoolAssert:
-	return self
-
-
-## Overrides the default failure message by given custom message.
-@warning_ignore("unused_parameter")
-func override_failure_message(message :String) -> GdUnitBoolAssert:
 	return self

@@ -19,6 +19,10 @@ extends GdUnitAssert
 @abstract func is_not_equal(expected: Variant) -> GdUnitGodotErrorAssert
 
 
+## Overrides the default failure message by given custom message.
+@abstract func override_failure_message(message: String) -> GdUnitGodotErrorAssert
+
+
 ## Verifies if the executed code runs without any runtime errors
 ## Usage:
 ##     [codeblock]

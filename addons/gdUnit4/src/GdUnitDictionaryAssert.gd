@@ -19,6 +19,10 @@ extends GdUnitAssert
 @abstract func is_not_equal(expected: Variant) -> GdUnitDictionaryAssert
 
 
+## Overrides the default failure message by given custom message.
+@abstract func override_failure_message(message: String) -> GdUnitDictionaryAssert
+
+
 ## Verifies that the current dictionary is empty, it has a size of 0.
 func is_empty() -> GdUnitDictionaryAssert:
 	return self

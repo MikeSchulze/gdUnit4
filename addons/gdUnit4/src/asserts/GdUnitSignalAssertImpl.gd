@@ -50,7 +50,7 @@ func failure_message() -> String:
 	return _current_failure_message
 
 
-func override_failure_message(message :String) -> GdUnitSignalAssert:
+func override_failure_message(message: String) -> GdUnitSignalAssert:
 	_custom_failure_message = message
 	return self
 

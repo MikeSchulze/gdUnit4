@@ -60,6 +60,10 @@ func is_not_null() -> GdUnitFailureAssert:
 	return _report_error("Not implemented")
 
 
+func override_failure_message(_message: String) -> GdUnitFailureAssert:
+	return _report_error("Not implemented")
+
+
 func is_success() -> GdUnitFailureAssert:
 	if _is_failed:
 		return _report_error("Expect: assertion ends successfully.")
