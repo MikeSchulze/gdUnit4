@@ -11,6 +11,14 @@ extends GdUnitAssert
 @abstract func is_not_null() -> GdUnitGodotErrorAssert
 
 
+## Verifies that the current value is equal to the given one.
+@abstract func is_equal(expected: Variant) -> GdUnitGodotErrorAssert
+
+
+## Verifies that the current value is not equal to expected one.
+@abstract func is_not_equal(expected: Variant) -> GdUnitGodotErrorAssert
+
+
 ## Verifies if the executed code runs without any runtime errors
 ## Usage:
 ##     [codeblock]

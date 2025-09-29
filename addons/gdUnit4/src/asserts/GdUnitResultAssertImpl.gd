@@ -67,6 +67,18 @@ func is_not_null() -> GdUnitResultAssert:
 	return self
 
 
+func is_equal(expected: Variant) -> GdUnitResultAssert:
+	return is_value(expected)
+
+
+func is_not_equal(expected: Variant) -> GdUnitResultAssert:
+	var result := current_value()
+	var value :Variant = null if result == null else result.value()
+	if GdObjects.equals(value, expected):
+		return report_error(GdAssertMessages.error_not_equal(value, expected))
+	return report_success()
+
+
 func is_empty() -> GdUnitResultAssert:
 	var result := current_value()
 	if result == null or not result.is_empty():
@@ -108,13 +120,9 @@ func contains_message(expected :String) -> GdUnitResultAssert:
 	return report_success()
 
 
-func is_value(expected :Variant) -> GdUnitResultAssert:
+func is_value(expected: Variant) -> GdUnitResultAssert:
 	var result := current_value()
 	var value :Variant = null if result == null else result.value()
 	if not GdObjects.equals(value, expected):
 		return report_error(GdAssertMessages.error_result_is_value(value, expected))
 	return report_success()
-
-
-func is_equal(expected :Variant) -> GdUnitResultAssert:
-	return is_value(expected)

@@ -98,12 +98,12 @@ func is_true() -> GdUnitFuncAssert:
 	return self
 
 
-func is_equal(expected :Variant) -> GdUnitFuncAssert:
+func is_equal(expected: Variant) -> GdUnitFuncAssert:
 	await _validate_callback(cb_is_equal, expected)
 	return self
 
 
-func is_not_equal(expected :Variant) -> GdUnitFuncAssert:
+func is_not_equal(expected: Variant) -> GdUnitFuncAssert:
 	await _validate_callback(cb_is_not_equal, expected)
 	return self
 

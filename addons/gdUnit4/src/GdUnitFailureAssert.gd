@@ -12,6 +12,14 @@ extends GdUnitAssert
 @abstract func is_not_null() -> GdUnitFailureAssert
 
 
+## Verifies that the current value is equal to the given one.
+@abstract func is_equal(expected: Variant) -> GdUnitFailureAssert
+
+
+## Verifies that the current value is not equal to expected one.
+@abstract func is_not_equal(expected: Variant) -> GdUnitFailureAssert
+
+
 ## Verifies if the executed assert was successful
 func is_success() -> GdUnitFailureAssert:
 	return self

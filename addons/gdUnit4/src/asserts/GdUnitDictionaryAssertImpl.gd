@@ -63,7 +63,7 @@ func is_not_null() -> GdUnitDictionaryAssert:
 	return self
 
 
-func is_equal(expected :Variant) -> GdUnitDictionaryAssert:
+func is_equal(expected: Variant) -> GdUnitDictionaryAssert:
 	var current :Variant = current_value()
 	if current == null:
 		return report_error(GdAssertMessages.error_equal(null, GdAssertMessages.format_dict(expected)))
@@ -74,8 +74,8 @@ func is_equal(expected :Variant) -> GdUnitDictionaryAssert:
 	return report_success()
 
 
-func is_not_equal(expected :Variant) -> GdUnitDictionaryAssert:
-	var current :Variant = current_value()
+func is_not_equal(expected: Variant) -> GdUnitDictionaryAssert:
+	var current: Variant = current_value()
 	if GdObjects.equals(current, expected):
 		return report_error(GdAssertMessages.error_not_equal(current, expected))
 	return report_success()
