@@ -26,18 +26,13 @@ extends GdUnitAssert
 @abstract func append_failure_message(message: String) -> GdUnitFileAssert
 
 
-func is_file() -> GdUnitFileAssert:
-	return self
+@abstract func is_file() -> GdUnitFileAssert
 
 
-func exists() -> GdUnitFileAssert:
-	return self
+@abstract func exists() -> GdUnitFileAssert
 
 
-func is_script() -> GdUnitFileAssert:
-	return self
+@abstract func is_script() -> GdUnitFileAssert
 
 
-@warning_ignore("unused_parameter")
-func contains_exactly(expected_rows :Array) -> GdUnitFileAssert:
-	return self
+@abstract func contains_exactly(expected_rows :Array) -> GdUnitFileAssert
