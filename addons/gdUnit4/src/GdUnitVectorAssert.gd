@@ -11,10 +11,8 @@ extends GdUnitAssert
 @abstract func is_not_null() -> GdUnitVectorAssert
 
 
-## Verifies that the current value is equal to expected one.
-@warning_ignore("unused_parameter")
-func is_equal(expected :Variant) -> GdUnitVectorAssert:
-	return self
+## Verifies that the current value is equal to the given one.
+@abstract func is_equal(expected: Variant) -> GdUnitVectorAssert
 
 
 ## Verifies that the current value is not equal to expected one.

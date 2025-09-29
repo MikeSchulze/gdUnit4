@@ -63,7 +63,7 @@ func is_not_null() -> GdUnitFloatAssert:
 	return self
 
 
-func is_equal(expected :Variant) -> GdUnitFloatAssert:
+func is_equal(expected: Variant) -> GdUnitFloatAssert:
 	@warning_ignore("return_value_discarded")
 	_base.is_equal(expected)
 	return self

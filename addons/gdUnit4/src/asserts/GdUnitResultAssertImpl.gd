@@ -67,6 +67,10 @@ func is_not_null() -> GdUnitResultAssert:
 	return self
 
 
+func is_equal(expected: Variant) -> GdUnitResultAssert:
+	return is_value(expected)
+
+
 func is_empty() -> GdUnitResultAssert:
 	var result := current_value()
 	if result == null or not result.is_empty():
@@ -114,7 +118,3 @@ func is_value(expected :Variant) -> GdUnitResultAssert:
 	if not GdObjects.equals(value, expected):
 		return report_error(GdAssertMessages.error_result_is_value(value, expected))
 	return report_success()
-
-
-func is_equal(expected :Variant) -> GdUnitResultAssert:
-	return is_value(expected)

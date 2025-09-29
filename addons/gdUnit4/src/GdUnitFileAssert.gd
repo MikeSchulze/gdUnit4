@@ -10,6 +10,10 @@ extends GdUnitAssert
 @abstract func is_not_null() -> GdUnitFileAssert
 
 
+## Verifies that the current value is equal to the given one.
+@abstract func is_equal(expected: Variant) -> GdUnitFileAssert
+
+
 func is_file() -> GdUnitFileAssert:
 	return self
 

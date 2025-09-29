@@ -63,7 +63,7 @@ func is_not_null() -> GdUnitDictionaryAssert:
 	return self
 
 
-func is_equal(expected :Variant) -> GdUnitDictionaryAssert:
+func is_equal(expected: Variant) -> GdUnitDictionaryAssert:
 	var current :Variant = current_value()
 	if current == null:
 		return report_error(GdAssertMessages.error_equal(null, GdAssertMessages.format_dict(expected)))

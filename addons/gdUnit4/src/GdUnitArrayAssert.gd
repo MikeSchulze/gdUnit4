@@ -12,9 +12,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current Array is equal to the given one.
-@warning_ignore("unused_parameter")
-func is_equal(expected :Variant) -> GdUnitArrayAssert:
-	return self
+@abstract func is_equal(expected: Variant) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array is equal to the given one, ignoring case considerations.
