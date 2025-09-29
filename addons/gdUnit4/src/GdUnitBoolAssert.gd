@@ -23,6 +23,10 @@ extends GdUnitAssert
 @abstract func override_failure_message(message: String) -> GdUnitBoolAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitBoolAssert
+
+
 ## Verifies that the current value is true.
 func is_true() -> GdUnitBoolAssert:
 	return self

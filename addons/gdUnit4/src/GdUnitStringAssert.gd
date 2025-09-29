@@ -35,6 +35,10 @@ func is_not_equal_ignoring_case(expected :Variant) -> GdUnitStringAssert:
 @abstract func override_failure_message(message: String) -> GdUnitStringAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitStringAssert
+
+
 ## Verifies that the current String is empty, it has a length of 0.
 func is_empty() -> GdUnitStringAssert:
 	return self

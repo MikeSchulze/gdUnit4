@@ -23,6 +23,10 @@ extends GdUnitAssert
 @abstract func override_failure_message(message: String) -> GdUnitGodotErrorAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitGodotErrorAssert
+
+
 ## Verifies if the executed code runs without any runtime errors
 ## Usage:
 ##     [codeblock]

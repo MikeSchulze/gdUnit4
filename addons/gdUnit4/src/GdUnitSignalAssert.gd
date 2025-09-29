@@ -23,6 +23,10 @@ extends GdUnitAssert
 @abstract func override_failure_message(message: String) -> GdUnitSignalAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitSignalAssert
+
+
 ## Verifies that given signal is emitted until waiting time
 @warning_ignore("unused_parameter")
 func is_emitted(name :String, args := []) -> GdUnitSignalAssert:

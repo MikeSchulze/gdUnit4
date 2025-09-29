@@ -24,6 +24,10 @@ extends GdUnitAssert
 @abstract func override_failure_message(message: String) -> GdUnitFailureAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitFailureAssert
+
+
 ## Verifies if the executed assert was successful
 func is_success() -> GdUnitFailureAssert:
 	return self

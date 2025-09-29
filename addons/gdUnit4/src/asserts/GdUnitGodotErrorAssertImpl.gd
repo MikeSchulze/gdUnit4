@@ -1,6 +1,8 @@
 extends GdUnitGodotErrorAssert
 
-var _current_error_message: String
+var _current_failure_message := ""
+var _custom_failure_message := ""
+var _additional_failure_message := ""
 var _callable: Callable
 
 
@@ -26,7 +28,7 @@ func _error_monitor() -> GodotGdErrorMonitor:
 
 
 func failure_message() -> String:
-	return _current_error_message
+	return _current_failure_message
 
 
 func _report_success() -> GdUnitAssert:
@@ -36,8 +38,8 @@ func _report_success() -> GdUnitAssert:
 
 func _report_error(error_message: String, failure_line_number: int = -1) -> GdUnitAssert:
 	var line_number := failure_line_number if failure_line_number != -1 else GdUnitAssertions.get_line_number()
-	_current_error_message = error_message
-	GdAssertReports.report_error(error_message, line_number)
+	_current_failure_message = GdAssertMessages.build_failure_message(error_message, _additional_failure_message, _custom_failure_message)
+	GdAssertReports.report_error(_current_failure_message, line_number)
 	return self
 
 
@@ -77,8 +79,14 @@ func is_not_equal(_expected: Variant) -> GdUnitGodotErrorAssert:
 	return _report_error("Not implemented")
 
 
-func override_failure_message(_message: String) -> GdUnitGodotErrorAssert:
-	return _report_error("Not implemented")
+func override_failure_message(message: String) -> GdUnitGodotErrorAssert:
+	_custom_failure_message = message
+	return self
+
+
+func append_failure_message(message: String) -> GdUnitGodotErrorAssert:
+	_additional_failure_message = message
+	return self
 
 
 func is_success() -> GdUnitGodotErrorAssert:

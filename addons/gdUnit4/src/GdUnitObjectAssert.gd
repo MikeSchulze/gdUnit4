@@ -23,6 +23,10 @@ extends GdUnitAssert
 @abstract func override_failure_message(message: String) -> GdUnitObjectAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitObjectAssert
+
+
 ## Verifies that the current object is the same as the given one.
 @warning_ignore("unused_parameter", "shadowed_global_identifier")
 func is_same(expected: Variant) -> GdUnitObjectAssert:

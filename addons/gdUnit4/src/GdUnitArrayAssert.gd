@@ -35,6 +35,10 @@ func is_not_equal_ignoring_case(expected :Variant) -> GdUnitArrayAssert:
 @abstract func override_failure_message(message: String) -> GdUnitArrayAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitArrayAssert
+
+
 ## Verifies that the current Array is empty, it has a size of 0.
 func is_empty() -> GdUnitArrayAssert:
 	return self
@@ -155,9 +159,4 @@ func extractv(
 	extractor7 :GdUnitValueExtractor = null,
 	extractor8 :GdUnitValueExtractor = null,
 	extractor9 :GdUnitValueExtractor = null) -> GdUnitArrayAssert:
-	return self
-
-
-@warning_ignore("unused_parameter")
-func append_failure_message(message :String) -> GdUnitArrayAssert:
 	return self

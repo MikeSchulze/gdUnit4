@@ -3,7 +3,10 @@ extends GdUnitFailureAssert
 const GdUnitTools := preload("res://addons/gdUnit4/src/core/GdUnitTools.gd")
 
 var _is_failed := false
-var _failure_message :String
+var _failure_message: String
+var _current_failure_message := ""
+var _custom_failure_message := ""
+var _additional_failure_message := ""
 
 
 func _set_do_expect_fail(enabled :bool = true) -> void:
@@ -60,8 +63,14 @@ func is_not_null() -> GdUnitFailureAssert:
 	return _report_error("Not implemented")
 
 
-func override_failure_message(_message: String) -> GdUnitFailureAssert:
-	return _report_error("Not implemented")
+func override_failure_message(message: String) -> GdUnitFailureAssert:
+	_custom_failure_message = message
+	return self
+
+
+func append_failure_message(message: String) -> GdUnitFailureAssert:
+	_additional_failure_message = message
+	return self
 
 
 func is_success() -> GdUnitFailureAssert:
@@ -117,7 +126,8 @@ func starts_with_message(expected :String) -> GdUnitFailureAssert:
 
 func _report_error(error_message :String, failure_line_number: int = -1) -> GdUnitAssert:
 	var line_number := failure_line_number if failure_line_number != -1 else GdUnitAssertions.get_line_number()
-	GdAssertReports.report_error(error_message, line_number)
+	_current_failure_message = GdAssertMessages.build_failure_message(error_message, _additional_failure_message, _custom_failure_message)
+	GdAssertReports.report_error(_current_failure_message, line_number)
 	return self
 
 
