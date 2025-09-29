@@ -28,10 +28,8 @@ extends GdUnitAssert
 
 
 ## Verifies that the current value is true.
-func is_true() -> GdUnitBoolAssert:
-	return self
+@abstract func is_true() -> GdUnitBoolAssert
 
 
 ## Verifies that the current value is false.
-func is_false() -> GdUnitBoolAssert:
-	return self
+@abstract func is_false() -> GdUnitBoolAssert

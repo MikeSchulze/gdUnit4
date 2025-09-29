@@ -28,32 +28,24 @@ extends GdUnitAssert
 
 
 ## Verifies that the result is ends up with empty
-func is_empty() -> GdUnitResultAssert:
-	return self
+@abstract func is_empty() -> GdUnitResultAssert
 
 
 ## Verifies that the result is ends up with success
-func is_success() -> GdUnitResultAssert:
-	return self
+@abstract func is_success() -> GdUnitResultAssert
 
 
 ## Verifies that the result is ends up with warning
-func is_warning() -> GdUnitResultAssert:
-	return self
+@abstract func is_warning() -> GdUnitResultAssert
 
 
 ## Verifies that the result is ends up with error
-func is_error() -> GdUnitResultAssert:
-	return self
+@abstract func is_error() -> GdUnitResultAssert
 
 
 ## Verifies that the result contains the given message
-@warning_ignore("unused_parameter")
-func contains_message(expected :String) -> GdUnitResultAssert:
-	return self
+@abstract func contains_message(expected: String) -> GdUnitResultAssert
 
 
 ## Verifies that the result contains the given value
-@warning_ignore("unused_parameter")
-func is_value(expected :Variant) -> GdUnitResultAssert:
-	return self
+@abstract func is_value(expected: Variant) -> GdUnitResultAssert

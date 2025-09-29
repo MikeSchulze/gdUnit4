@@ -28,72 +28,52 @@ extends GdUnitAssert
 
 
 ## Verifies that the current value is less than the given one.
-@warning_ignore("unused_parameter")
-func is_less(expected :int) -> GdUnitIntAssert:
-	return self
+@abstract func is_less(expected: int) -> GdUnitIntAssert
 
 
 ## Verifies that the current value is less than or equal the given one.
-@warning_ignore("unused_parameter")
-func is_less_equal(expected :int) -> GdUnitIntAssert:
-	return self
+@abstract func is_less_equal(expected: int) -> GdUnitIntAssert
 
 
 ## Verifies that the current value is greater than the given one.
-@warning_ignore("unused_parameter")
-func is_greater(expected :int) -> GdUnitIntAssert:
-	return self
+@abstract func is_greater(expected: int) -> GdUnitIntAssert
 
 
 ## Verifies that the current value is greater than or equal the given one.
-@warning_ignore("unused_parameter")
-func is_greater_equal(expected :int) -> GdUnitIntAssert:
-	return self
+@abstract func is_greater_equal(expected: int) -> GdUnitIntAssert
 
 
 ## Verifies that the current value is even.
-func is_even() -> GdUnitIntAssert:
-	return self
+@abstract func is_even() -> GdUnitIntAssert
 
 
 ## Verifies that the current value is odd.
-func is_odd() -> GdUnitIntAssert:
-	return self
+@abstract func is_odd() -> GdUnitIntAssert
 
 
 ## Verifies that the current value is negative.
-func is_negative() -> GdUnitIntAssert:
-	return self
+@abstract func is_negative() -> GdUnitIntAssert
 
 
 ## Verifies that the current value is not negative.
-func is_not_negative() -> GdUnitIntAssert:
-	return self
+@abstract func is_not_negative() -> GdUnitIntAssert
 
 
 ## Verifies that the current value is equal to zero.
-func is_zero() -> GdUnitIntAssert:
-	return self
+@abstract func is_zero() -> GdUnitIntAssert
 
 
 ## Verifies that the current value is not equal to zero.
-func is_not_zero() -> GdUnitIntAssert:
-	return self
+@abstract func is_not_zero() -> GdUnitIntAssert
 
 
 ## Verifies that the current value is in the given set of values.
-@warning_ignore("unused_parameter")
-func is_in(expected :Array) -> GdUnitIntAssert:
-	return self
+@abstract func is_in(expected: Array) -> GdUnitIntAssert
 
 
 ## Verifies that the current value is not in the given set of values.
-@warning_ignore("unused_parameter")
-func is_not_in(expected :Array) -> GdUnitIntAssert:
-	return self
+@abstract func is_not_in(expected: Array) -> GdUnitIntAssert
 
 
 ## Verifies that the current value is between the given boundaries (inclusive).
-@warning_ignore("unused_parameter")
-func is_between(from :int, to :int) -> GdUnitIntAssert:
-	return self
+@abstract func is_between(from: int, to: int) -> GdUnitIntAssert
