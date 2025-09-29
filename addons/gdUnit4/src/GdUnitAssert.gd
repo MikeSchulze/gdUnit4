@@ -40,10 +40,8 @@ extends RefCounted
 ##     [codeblock]
 ##		# Add context to existing failure message
 ##		func test_player_health():
-##		    assert_int(player.health)\
+##		    assert_that(player.health)\
 ##		        .append_failure_message("Player was damaged by: %s" % last_damage_source)\
 ##		        .is_greater(0)
 ##     [/codeblock]
-@warning_ignore("untyped_declaration")
-func append_failure_message(_message: String):
-	return self
+@abstract func append_failure_message(message: String) -> GdUnitAssert

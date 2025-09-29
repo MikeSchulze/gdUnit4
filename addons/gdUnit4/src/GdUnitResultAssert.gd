@@ -23,6 +23,10 @@ extends GdUnitAssert
 @abstract func override_failure_message(message: String) -> GdUnitResultAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitResultAssert
+
+
 ## Verifies that the result is ends up with empty
 func is_empty() -> GdUnitResultAssert:
 	return self

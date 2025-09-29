@@ -49,7 +49,7 @@ func override_failure_message(message: String) -> GdUnitResultAssert:
 	return self
 
 
-func append_failure_message(message :String) -> GdUnitResultAssert:
+func append_failure_message(message: String) -> GdUnitResultAssert:
 	@warning_ignore("return_value_discarded")
 	_base.append_failure_message(message)
 	return self

@@ -22,6 +22,10 @@ extends GdUnitAssert
 @abstract func override_failure_message(message: String) -> GdUnitFileAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitFileAssert
+
+
 func is_file() -> GdUnitFileAssert:
 	return self
 

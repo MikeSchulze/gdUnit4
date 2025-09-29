@@ -29,6 +29,10 @@ func is_equal_approx(expected :Variant, approx :Variant) -> GdUnitVectorAssert:
 @abstract func override_failure_message(message: String) -> GdUnitVectorAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitVectorAssert
+
+
 ## Verifies that the current value is less than the given one.
 @warning_ignore("unused_parameter")
 func is_less(expected :Variant) -> GdUnitVectorAssert:

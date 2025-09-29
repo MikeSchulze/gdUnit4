@@ -23,6 +23,10 @@ extends GdUnitAssert
 @abstract func override_failure_message(message: String) -> GdUnitFuncAssert
 
 
+## Appends a custom message to the failure message.
+@abstract func append_failure_message(message: String) -> GdUnitFuncAssert
+
+
 ## Verifies that the current value is true.
 func is_true() -> GdUnitFuncAssert:
 	await (Engine.get_main_loop() as SceneTree).process_frame
