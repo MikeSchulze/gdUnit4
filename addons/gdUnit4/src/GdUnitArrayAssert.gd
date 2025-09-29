@@ -16,9 +16,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current Array is equal to the given one, ignoring case considerations.
-@warning_ignore("unused_parameter")
-func is_equal_ignoring_case(expected :Variant) -> GdUnitArrayAssert:
-	return self
+@abstract func is_equal_ignoring_case(expected: Variant) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array is not equal to the given one.
@@ -26,9 +24,7 @@ func is_equal_ignoring_case(expected :Variant) -> GdUnitArrayAssert:
 
 
 ## Verifies that the current Array is not equal to the given one, ignoring case considerations.
-@warning_ignore("unused_parameter")
-func is_not_equal_ignoring_case(expected :Variant) -> GdUnitArrayAssert:
-	return self
+@abstract func is_not_equal_ignoring_case(expected: Variant) -> GdUnitArrayAssert
 
 
 ## Overrides the default failure message by given custom message.
@@ -58,7 +54,6 @@ func is_not_equal_ignoring_case(expected :Variant) -> GdUnitArrayAssert:
 
 
 ## Verifies that the current Array has a size of given value.
-
 @abstract func has_size(expectd: int) -> GdUnitArrayAssert
 
 

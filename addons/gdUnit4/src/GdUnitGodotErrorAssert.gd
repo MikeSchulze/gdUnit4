@@ -32,9 +32,7 @@ extends GdUnitAssert
 ##     [codeblock]
 ##		await assert_error(<callable>).is_success()
 ##     [/codeblock]
-func is_success() -> GdUnitGodotErrorAssert:
-	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
+@abstract func is_success() -> GdUnitGodotErrorAssert
 
 
 ## Verifies if the executed code runs into a runtime error
@@ -42,10 +40,7 @@ func is_success() -> GdUnitGodotErrorAssert:
 ##     [codeblock]
 ##		await assert_error(<callable>).is_runtime_error(<expected error message>)
 ##     [/codeblock]
-@warning_ignore("unused_parameter")
-func is_runtime_error(expected_error: Variant) -> GdUnitGodotErrorAssert:
-	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
+@abstract func is_runtime_error(expected_error: Variant) -> GdUnitGodotErrorAssert
 
 
 ## Verifies if the executed code has a push_warning() used
@@ -53,10 +48,7 @@ func is_runtime_error(expected_error: Variant) -> GdUnitGodotErrorAssert:
 ##     [codeblock]
 ##		await assert_error(<callable>).is_push_warning(<expected push warning message>)
 ##     [/codeblock]
-@warning_ignore("unused_parameter")
-func is_push_warning(expected_warning: Variant) -> GdUnitGodotErrorAssert:
-	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
+@abstract func is_push_warning(expected_warning: Variant) -> GdUnitGodotErrorAssert
 
 
 ## Verifies if the executed code has a push_error() used
@@ -64,7 +56,4 @@ func is_push_warning(expected_warning: Variant) -> GdUnitGodotErrorAssert:
 ##     [codeblock]
 ##		await assert_error(<callable>).is_push_error(<expected push error message>)
 ##     [/codeblock]
-@warning_ignore("unused_parameter")
-func is_push_error(expected_error: Variant) -> GdUnitGodotErrorAssert:
-	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
+@abstract func is_push_error(expected_error: Variant) -> GdUnitGodotErrorAssert
