@@ -85,8 +85,8 @@ func is_equal_ignoring_case(expected :Variant) -> GdUnitStringAssert:
 	return report_success()
 
 
-func is_not_equal(expected :Variant) -> GdUnitStringAssert:
-	var current :Variant = current_value()
+func is_not_equal(expected: Variant) -> GdUnitStringAssert:
+	var current: Variant = current_value()
 	if GdObjects.equals(current, expected):
 		return report_error(GdAssertMessages.error_not_equal(current, expected))
 	return report_success()

@@ -15,10 +15,8 @@ extends GdUnitAssert
 @abstract func is_equal(expected: Variant) -> GdUnitFloatAssert
 
 
-## Verifies that the current String is not equal to the given one.
-@warning_ignore("unused_parameter")
-func is_not_equal(expected :Variant) -> GdUnitFloatAssert:
-	return self
+## Verifies that the current value is not equal to expected one.
+@abstract func is_not_equal(expected: Variant) -> GdUnitFloatAssert
 
 
 ## Verifies that the current and expected value are approximately equal.

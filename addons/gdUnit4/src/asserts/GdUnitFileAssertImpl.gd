@@ -71,7 +71,7 @@ func is_equal(expected: Variant) -> GdUnitFileAssert:
 	return self
 
 
-func is_not_equal(expected :Variant) -> GdUnitFileAssert:
+func is_not_equal(expected: Variant) -> GdUnitFileAssert:
 	@warning_ignore("return_value_discarded")
 	_base.is_not_equal(expected)
 	return self

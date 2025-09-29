@@ -21,10 +21,8 @@ func is_equal_ignoring_case(expected :Variant) -> GdUnitStringAssert:
 	return self
 
 
-## Verifies that the current String is not equal to the given one.
-@warning_ignore("unused_parameter")
-func is_not_equal(expected :Variant) -> GdUnitStringAssert:
-	return self
+## Verifies that the current value is not equal to expected one.
+@abstract func is_not_equal(expected: Variant) -> GdUnitStringAssert
 
 
 ## Verifies that the current String is not equal to the given one, ignoring case considerations.
