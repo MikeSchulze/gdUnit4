@@ -6,15 +6,13 @@ extends RefCounted
 ## Verifies that the current value is null.
 @abstract func is_null() -> GdUnitAssert
 
+
 ## Verifies that the current value is not null.
 @abstract func is_not_null() -> GdUnitAssert
 
 
 ## Verifies that the current value is equal to expected one.
-@warning_ignore("unused_parameter")
-@warning_ignore("untyped_declaration")
-func is_equal(expected: Variant):
-	return self
+@abstract func is_equal(expected: Variant) -> GdUnitAssert
 
 
 ## Verifies that the current value is not equal to expected one.

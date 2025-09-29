@@ -63,8 +63,8 @@ func is_not_null() -> GdUnitStringAssert:
 	return self
 
 
-func is_equal(expected :Variant) -> GdUnitStringAssert:
-	var current :Variant = current_value()
+func is_equal(expected: Variant) -> GdUnitStringAssert:
+	var current: Variant = current_value()
 	if current == null:
 		return report_error(GdAssertMessages.error_equal(current, expected))
 	if not GdObjects.equals(current, expected):

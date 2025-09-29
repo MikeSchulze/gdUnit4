@@ -12,9 +12,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current value is equal to the given one.
-@warning_ignore("unused_parameter")
-func is_equal(expected :Variant) -> GdUnitBoolAssert:
-	return self
+@abstract func is_equal(expected: Variant) -> GdUnitBoolAssert
 
 
 ## Verifies that the current value is not equal to the given one.

@@ -12,10 +12,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current value is equal to the given one.
-@warning_ignore("unused_parameter")
-func is_equal(expected :Variant) -> GdUnitFuncAssert:
-	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
+@abstract func is_equal(expected: Variant) -> GdUnitFuncAssert
 
 
 ## Verifies that the current value is not equal to the given one.

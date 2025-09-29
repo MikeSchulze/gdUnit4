@@ -12,9 +12,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current dictionary is equal to the given one, ignoring order.
-@warning_ignore("unused_parameter")
-func is_equal(expected :Variant) -> GdUnitDictionaryAssert:
-	return self
+@abstract func is_equal(expected: Variant) -> GdUnitDictionaryAssert
 
 
 ## Verifies that the current dictionary is not equal to the given one, ignoring order.
