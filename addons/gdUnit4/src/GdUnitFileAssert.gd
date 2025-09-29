@@ -18,6 +18,10 @@ extends GdUnitAssert
 @abstract func is_not_equal(expected: Variant) -> GdUnitFileAssert
 
 
+## Overrides the default failure message by given custom message.
+@abstract func override_failure_message(message: String) -> GdUnitFileAssert
+
+
 func is_file() -> GdUnitFileAssert:
 	return self
 

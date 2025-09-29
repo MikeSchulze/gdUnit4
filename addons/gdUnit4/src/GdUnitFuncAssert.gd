@@ -19,6 +19,10 @@ extends GdUnitAssert
 @abstract func is_not_equal(expected: Variant) -> GdUnitFuncAssert
 
 
+## Overrides the default failure message by given custom message.
+@abstract func override_failure_message(message: String) -> GdUnitFuncAssert
+
+
 ## Verifies that the current value is true.
 func is_true() -> GdUnitFuncAssert:
 	await (Engine.get_main_loop() as SceneTree).process_frame
@@ -28,12 +32,6 @@ func is_true() -> GdUnitFuncAssert:
 ## Verifies that the current value is false.
 func is_false() -> GdUnitFuncAssert:
 	await (Engine.get_main_loop() as SceneTree).process_frame
-	return self
-
-
-## Overrides the default failure message by given custom message.
-@warning_ignore("unused_parameter")
-func override_failure_message(message :String) -> GdUnitFuncAssert:
 	return self
 
 

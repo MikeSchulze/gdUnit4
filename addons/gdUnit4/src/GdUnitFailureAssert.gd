@@ -20,6 +20,10 @@ extends GdUnitAssert
 @abstract func is_not_equal(expected: Variant) -> GdUnitFailureAssert
 
 
+## Overrides the default failure message by given custom message.
+@abstract func override_failure_message(message: String) -> GdUnitFailureAssert
+
+
 ## Verifies if the executed assert was successful
 func is_success() -> GdUnitFailureAssert:
 	return self

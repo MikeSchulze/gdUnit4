@@ -19,6 +19,10 @@ extends GdUnitAssert
 @abstract func is_not_equal(expected: Variant) -> GdUnitIntAssert
 
 
+## Overrides the default failure message by given custom message.
+@abstract func override_failure_message(message: String) -> GdUnitIntAssert
+
+
 ## Verifies that the current value is less than the given one.
 @warning_ignore("unused_parameter")
 func is_less(expected :int) -> GdUnitIntAssert:

@@ -59,7 +59,7 @@ func failure_message() -> String:
 	return _current_failure_message
 
 
-func override_failure_message(message :String) -> GdUnitFuncAssert:
+func override_failure_message(message: String) -> GdUnitFuncAssert:
 	_custom_failure_message = message
 	return self
 

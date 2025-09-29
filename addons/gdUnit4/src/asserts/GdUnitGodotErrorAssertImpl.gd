@@ -77,6 +77,10 @@ func is_not_equal(_expected: Variant) -> GdUnitGodotErrorAssert:
 	return _report_error("Not implemented")
 
 
+func override_failure_message(_message: String) -> GdUnitGodotErrorAssert:
+	return _report_error("Not implemented")
+
+
 func is_success() -> GdUnitGodotErrorAssert:
 	var log_entries := await _execute()
 	if log_entries.is_empty():

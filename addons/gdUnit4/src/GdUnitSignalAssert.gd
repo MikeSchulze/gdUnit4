@@ -19,6 +19,10 @@ extends GdUnitAssert
 @abstract func is_not_equal(expected: Variant) -> GdUnitSignalAssert
 
 
+## Overrides the default failure message by given custom message.
+@abstract func override_failure_message(message: String) -> GdUnitSignalAssert
+
+
 ## Verifies that given signal is emitted until waiting time
 @warning_ignore("unused_parameter")
 func is_emitted(name :String, args := []) -> GdUnitSignalAssert:
@@ -36,12 +40,6 @@ func is_not_emitted(name :String, args := []) -> GdUnitSignalAssert:
 ## Verifies the signal exists checked the emitter
 @warning_ignore("unused_parameter")
 func is_signal_exists(name :String) -> GdUnitSignalAssert:
-	return self
-
-
-## Overrides the default failure message by given custom message.
-@warning_ignore("unused_parameter")
-func override_failure_message(message :String) -> GdUnitSignalAssert:
 	return self
 
 
