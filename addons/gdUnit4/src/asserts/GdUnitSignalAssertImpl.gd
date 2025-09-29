@@ -86,6 +86,10 @@ func is_equal(_expected: Variant) -> GdUnitSignalAssert:
 	return report_error("Not implemented")
 
 
+func is_not_equal(_expected: Variant) -> GdUnitSignalAssert:
+	return report_error("Not implemented")
+
+
 # Verifies the signal exists checked the emitter
 func is_signal_exists(signal_name :String) -> GdUnitSignalAssert:
 	if not _emitter.has_signal(signal_name):

@@ -73,8 +73,8 @@ func is_equal(expected: Variant) -> GdUnitAssert:
 	return report_success()
 
 
-func is_not_equal(expected :Variant) -> GdUnitAssert:
-	var current :Variant = current_value()
+func is_not_equal(expected: Variant) -> GdUnitAssert:
+	var current: Variant = current_value()
 	if GdObjects.equals(current, expected):
 		return report_error(GdAssertMessages.error_not_equal(current, expected))
 	return report_success()

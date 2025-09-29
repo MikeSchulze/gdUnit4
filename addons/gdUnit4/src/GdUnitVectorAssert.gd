@@ -16,9 +16,7 @@ extends GdUnitAssert
 
 
 ## Verifies that the current value is not equal to expected one.
-@warning_ignore("unused_parameter")
-func is_not_equal(expected :Variant) -> GdUnitVectorAssert:
-	return self
+@abstract func is_not_equal(expected: Variant) -> GdUnitVectorAssert
 
 
 ## Verifies that the current and expected value are approximately equal.
