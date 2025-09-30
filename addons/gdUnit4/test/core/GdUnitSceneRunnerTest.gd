@@ -429,7 +429,6 @@ func test_touch_drag_and_drop_absolute() -> void:
 func test_touch_drag_and_drop() -> void:
 	var spy_scene :Variant = spy("res://addons/gdUnit4/test/core/resources/scenes/drag_and_drop/DragAndDropTestScene.tscn")
 	var runner := scene_runner(spy_scene)
-
 	var slot_left :TextureRect = $"/root/DragAndDropScene/left/TextureRect"
 	var slot_right :TextureRect = $"/root/DragAndDropScene/right/TextureRect"
 	var drag_start := slot_left.global_position + Vector2(50, 50)
@@ -455,6 +454,22 @@ func test_runner_GD_356() -> void:
 	# this results into releasing the scene while `simulate_mouse_move_relative` is processing the mouse move
 	runner.simulate_mouse_move_relative(Vector2(100, 100), 1.0)
 	assert_that(runner.scene()).is_not_null()
+
+
+func test_move_window_to_foreground() -> void:
+	var runner := scene_runner("res://addons/gdUnit4/test/core/resources/scenes/simple_scene.tscn")
+	# we set inital to background
+	runner.move_window_to_background()
+	await runner.simulate_frames(1)
+	if not Engine.is_embedded_in_editor():
+		assert_that(DisplayServer.window_get_mode()).is_equal(DisplayServer.WINDOW_MODE_MINIMIZED)
+	else:
+		assert_that(DisplayServer.window_get_mode()).is_equal(DisplayServer.WINDOW_MODE_WINDOWED)
+
+	# force window to foreground
+	runner.move_window_to_foreground()
+	await runner.simulate_frames(1)
+	assert_that(DisplayServer.window_get_mode()).is_equal(DisplayServer.WINDOW_MODE_WINDOWED)
 
 
 # we override the scene runner function for test purposes to hide push_error notifications
