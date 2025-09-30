@@ -310,6 +310,57 @@ func test_contains_keys() -> void:
 			.dedent().trim_prefix("\n"))
 
 
+func test_contains_keys_variadic_args() -> void:
+	var key_a := TestObj.new()
+	var key_b := TestObj.new()
+	var key_c := TestObj.new()
+	var key_d := TestObj.new("D")
+
+	assert_dict({1:1, 2:2, 3:3}).contains_keys(2)
+	assert_dict({1:1, 2:2, "key_a": "value_a"}).contains_keys(2, "key_a")
+	assert_dict({key_a:1, key_b:2, key_c:3}).contains_keys(key_a, key_b)
+	assert_dict({key_a:1, key_c:3 }).contains_keys(key_b)
+	assert_dict({key_a:1, 3:3}).contains_keys(key_a, key_b)
+
+	assert_failure(func() -> void: assert_dict({1:1, 3:3}).contains_keys(2)) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains keys:
+			 '[1, 3]'
+			 to contains:
+			 '[2]'
+			 but can't find key's:
+			 '[2]'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure(func() -> void: assert_dict({1:1, 3:3}).contains_keys(1, 4)) \
+		.is_failed() \
+		.has_message("""
+			Expecting contains keys:
+			 '[1, 3]'
+			 to contains:
+			 '[1, 4]'
+			 but can't find key's:
+			 '[4]'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure(func() -> void: assert_dict(null).contains_keys(1, 4)) \
+		.is_failed() \
+		.has_message("Expecting: not to be '<null>'")
+	assert_failure(func() -> void: assert_dict({key_a:1, 3:3}).contains_keys(key_a, key_d)) \
+		.is_failed() \
+		.has_message("""
+			 Expecting contains keys:
+			  '[class:Foo:0, 3]'
+			  to contains:
+			  '[class:Foo:0, class:D:0]'
+			  but can't find key's:
+			  '[class:D:0]'"""
+			.dedent().trim_prefix("\n"))
+
+
 func test_contains_key_value() -> void:
 	assert_dict({1:1}).contains_key_value(1, 1)
 	assert_dict({1:1, 2:2, 3:3}).contains_key_value(3, 3).contains_key_value(1, 1)
@@ -359,6 +410,40 @@ func test_not_contains_keys() -> void:
 			.trim_prefix("\n")
 		)
 	assert_failure(func() -> void: assert_dict(null).not_contains_keys([1, 4])) \
+		.is_failed() \
+		.has_message("Expecting: not to be '<null>'")
+
+
+func test_not_contains_keys_variadic_args() -> void:
+	assert_dict({}).not_contains_keys(2)
+	assert_dict({1:1, 3:3}).not_contains_keys(2)
+	assert_dict({1:1, 3:3}).not_contains_keys(2, 4)
+
+	assert_failure(func() -> void: assert_dict({1:1, 2:2, 3:3}).not_contains_keys(2, 4)) \
+		.is_failed() \
+		.has_message("""
+			Expecting NOT contains keys:
+			 '[1, 2, 3]'
+			 do not contains:
+			 '[2, 4]'
+			 but contains key's:
+			 '[2]'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure(func() -> void: assert_dict({1:1, 2:2, 3:3}).not_contains_keys(1, 2, 3, 4)) \
+		.is_failed() \
+		.has_message("""
+			Expecting NOT contains keys:
+			 '[1, 2, 3]'
+			 do not contains:
+			 '[1, 2, 3, 4]'
+			 but contains key's:
+			 '[1, 2, 3]'"""
+			.dedent()
+			.trim_prefix("\n")
+		)
+	assert_failure(func() -> void: assert_dict(null).not_contains_keys(1, 4)) \
 		.is_failed() \
 		.has_message("Expecting: not to be '<null>'")
 
@@ -428,6 +513,28 @@ func test_not_contains_same_keys() -> void:
 	assert_dict({key_a:1, key_b:2}).not_contains_same_keys([key_c, key_d])
 
 	assert_failure(func() -> void: assert_dict({key_a:1, key_b:2}).not_contains_same_keys([key_c, key_b])) \
+		.is_failed() \
+		.has_message("""
+			Expecting NOT contains SAME keys
+			 '[class:A:0, class:B:0]'
+			 do not contains:
+			 '[class:C:0, class:B:0]'
+			 but contains key's:
+			 '[class:B:0]'"""
+			.dedent().trim_prefix("\n")
+		)
+
+
+func test_not_contains_same_keys_variadic_args() -> void:
+	var key_a := TestObj.new("A")
+	var key_b := TestObj.new("B")
+	var key_c := TestObj.new("C")
+	var key_d := TestObj.new("A")
+
+	assert_dict({}).not_contains_same_keys(key_a)
+	assert_dict({key_a:1, key_b:2}).not_contains_same_keys(key_c, key_d)
+
+	assert_failure(func() -> void: assert_dict({key_a:1, key_b:2}).not_contains_same_keys(key_c, key_b)) \
 		.is_failed() \
 		.has_message("""
 			Expecting NOT contains SAME keys

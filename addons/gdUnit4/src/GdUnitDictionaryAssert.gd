@@ -51,7 +51,7 @@ extends GdUnitAssert
 
 ## Verifies that the current dictionary contains the given key(s).[br]
 ## The keys are compared by deep parameter comparision, for object reference compare you have to use [method contains_same_keys]
-@abstract func contains_keys(expected: Array) -> GdUnitDictionaryAssert
+@abstract func contains_keys(...expected: Array) -> GdUnitDictionaryAssert
 
 
 ## Verifies that the current dictionary contains the given key and value.[br]
@@ -61,7 +61,7 @@ extends GdUnitAssert
 
 ## Verifies that the current dictionary not contains the given key(s).[br]
 ## The keys are compared by deep parameter comparision, for object reference compare you have to use [method not_contains_same_keys]
-@abstract func not_contains_keys(expected: Array) -> GdUnitDictionaryAssert
+@abstract func not_contains_keys(...expected: Array) -> GdUnitDictionaryAssert
 
 
 ## Verifies that the current dictionary contains the given key(s).[br]
@@ -76,4 +76,4 @@ extends GdUnitAssert
 
 ## Verifies that the current dictionary not contains the given key(s).
 ## The keys are compared by object reference, for deep parameter comparision use [method not_contains_keys]
-@abstract func not_contains_same_keys(expected: Array) -> GdUnitDictionaryAssert
+@abstract func not_contains_same_keys(...expected: Array) -> GdUnitDictionaryAssert
