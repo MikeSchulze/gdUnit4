@@ -107,6 +107,13 @@ func _scene_tree() -> SceneTree:
 	return Engine.get_main_loop() as SceneTree
 
 
+func await_input_processed() -> void:
+	if scene() != null and scene().process_mode != Node.PROCESS_MODE_DISABLED:
+		Input.flush_buffered_events()
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	await (Engine.get_main_loop() as SceneTree).physics_frame
+
+
 @warning_ignore("return_value_discarded")
 func simulate_action_pressed(action: String, event_index := -1) -> GdUnitSceneRunner:
 	simulate_action_press(action, event_index)
@@ -411,46 +418,21 @@ func simulate_frames(frames: int, delta_milli: int = -1) -> GdUnitSceneRunner:
 	return self
 
 
-func simulate_until_signal(
-	signal_name: String,
-	arg0: Variant = NO_ARG,
-	arg1: Variant = NO_ARG,
-	arg2: Variant = NO_ARG,
-	arg3: Variant = NO_ARG,
-	arg4: Variant = NO_ARG,
-	arg5: Variant = NO_ARG,
-	arg6: Variant = NO_ARG,
-	arg7: Variant = NO_ARG,
-	arg8: Variant = NO_ARG,
-	arg9: Variant = NO_ARG) -> GdUnitSceneRunner:
-	var args: Array = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], NO_ARG)
+func simulate_until_signal(signal_name: String, ...args: Array) -> GdUnitSceneRunner:
 	await _awaiter.await_signal_idle_frames(scene(), signal_name, args, 10000)
 	return self
 
 
-func simulate_until_object_signal(
-	source: Object,
-	signal_name: String,
-	arg0: Variant = NO_ARG,
-	arg1: Variant = NO_ARG,
-	arg2: Variant = NO_ARG,
-	arg3: Variant = NO_ARG,
-	arg4: Variant = NO_ARG,
-	arg5: Variant = NO_ARG,
-	arg6: Variant = NO_ARG,
-	arg7: Variant = NO_ARG,
-	arg8: Variant = NO_ARG,
-	arg9: Variant = NO_ARG) -> GdUnitSceneRunner:
-	var args: Array = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], NO_ARG)
+func simulate_until_object_signal(source: Object, signal_name: String, ...args: Array) -> GdUnitSceneRunner:
 	await _awaiter.await_signal_idle_frames(source, signal_name, args, 10000)
 	return self
 
 
-func await_func(func_name: String, args := []) -> GdUnitFuncAssert:
+func await_func(func_name: String, ...args: Array) -> GdUnitFuncAssert:
 	return GdUnitFuncAssertImpl.new(scene(), func_name, args)
 
 
-func await_func_on(instance: Object, func_name: String, args := []) -> GdUnitFuncAssert:
+func await_func_on(instance: Object, func_name: String, ...args: Array) -> GdUnitFuncAssert:
 	return GdUnitFuncAssertImpl.new(instance, func_name, args)
 
 
@@ -462,7 +444,7 @@ func await_signal_on(source: Object, signal_name: String, args := [], timeout :=
 	await _awaiter.await_signal_on(source, signal_name, args, timeout)
 
 
-func maximize_view() -> GdUnitSceneRunner:
+func move_window_to_foreground() -> GdUnitSceneRunner:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	DisplayServer.window_move_to_foreground()
 	return self
@@ -486,19 +468,7 @@ func set_property(name: String, value: Variant) -> bool:
 	return true
 
 
-func invoke(
-	name: String,
-	arg0: Variant = NO_ARG,
-	arg1: Variant = NO_ARG,
-	arg2: Variant = NO_ARG,
-	arg3: Variant = NO_ARG,
-	arg4: Variant = NO_ARG,
-	arg5: Variant = NO_ARG,
-	arg6: Variant = NO_ARG,
-	arg7: Variant = NO_ARG,
-	arg8: Variant = NO_ARG,
-	arg9: Variant = NO_ARG) -> Variant:
-	var args: Array = GdArrayTools.filter_value([arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9], NO_ARG)
+func invoke(name: String, ...args: Array) -> Variant:
 	if scene().has_method(name):
 		return await scene().callv(name, args)
 	return "The method '%s' not exist checked loaded scene." % name
