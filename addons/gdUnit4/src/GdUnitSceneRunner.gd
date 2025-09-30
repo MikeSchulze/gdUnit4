@@ -49,11 +49,6 @@ extends RefCounted
 @abstract func simulate_key_release(key_code: int, shift_pressed := false, ctrl_pressed := false) -> GdUnitSceneRunner
 
 
-## Sets the mouse cursor to given position relative to the viewport.
-## @deprecated: Use [set_mouse_position] instead.
-@abstract func set_mouse_pos(position: Vector2) -> GdUnitSceneRunner
-
-
 ## Sets the mouse position to the specified vector, provided in pixels and relative to an origin at the upper left corner of the currently focused Window Manager game window.[br]
 ## [member position] : The absolute position in pixels as Vector2
 @abstract func set_mouse_position(position: Vector2) -> GdUnitSceneRunner
