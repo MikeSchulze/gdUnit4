@@ -12,19 +12,19 @@ extends GdUnitAssert
 
 
 ## Verifies that the current Array is equal to the given one.
-@abstract func is_equal(expected: Variant) -> GdUnitArrayAssert
+@abstract func is_equal(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array is equal to the given one, ignoring case considerations.
-@abstract func is_equal_ignoring_case(expected: Variant) -> GdUnitArrayAssert
+@abstract func is_equal_ignoring_case(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array is not equal to the given one.
-@abstract func is_not_equal(expected: Variant) -> GdUnitArrayAssert
+@abstract func is_not_equal(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array is not equal to the given one, ignoring case considerations.
-@abstract func is_not_equal_ignoring_case(expected: Variant) -> GdUnitArrayAssert
+@abstract func is_not_equal_ignoring_case(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Overrides the default failure message by given custom message.
@@ -59,32 +59,32 @@ extends GdUnitAssert
 
 ## Verifies that the current Array contains the given values, in any order.[br]
 ## The values are compared by deep parameter comparision, for object reference compare you have to use [method contains_same]
-@abstract func contains(expected: Variant) -> GdUnitArrayAssert
+@abstract func contains(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array contains exactly only the given values and nothing else, in same order.[br]
 ## The values are compared by deep parameter comparision, for object reference compare you have to use [method contains_same_exactly]
-@abstract func contains_exactly(expected: Variant) -> GdUnitArrayAssert
+@abstract func contains_exactly(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array contains exactly only the given values and nothing else, in any order.[br]
 ## The values are compared by deep parameter comparision, for object reference compare you have to use [method contains_same_exactly_in_any_order]
-@abstract func contains_exactly_in_any_order(expected: Variant) -> GdUnitArrayAssert
+@abstract func contains_exactly_in_any_order(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array contains the given values, in any order.[br]
 ## The values are compared by object reference, for deep parameter comparision use [method contains]
-@abstract func contains_same(expected: Variant) -> GdUnitArrayAssert
+@abstract func contains_same(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array contains exactly only the given values and nothing else, in same order.[br]
 ## The values are compared by object reference, for deep parameter comparision use [method contains_exactly]
-@abstract func contains_same_exactly(expected: Variant) -> GdUnitArrayAssert
+@abstract func contains_same_exactly(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array contains exactly only the given values and nothing else, in any order.[br]
 ## The values are compared by object reference, for deep parameter comparision use [method contains_exactly_in_any_order]
-@abstract func contains_same_exactly_in_any_order(expected: Variant) -> GdUnitArrayAssert
+@abstract func contains_same_exactly_in_any_order(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array do NOT contains the given values, in any order.[br]
@@ -92,11 +92,11 @@ extends GdUnitAssert
 ## [b]Example:[/b]
 ## [codeblock]
 ## # will succeed
-## assert_array([1, 2, 3, 4, 5]).not_contains([6])
+## assert_array([1, 2, 3, 4, 5]).not_contains(6)
 ## # will fail
-## assert_array([1, 2, 3, 4, 5]).not_contains([2, 6])
+## assert_array([1, 2, 3, 4, 5]).not_contains(2, 6)
 ## [/codeblock]
-@abstract func not_contains(expected: Variant) -> GdUnitArrayAssert
+@abstract func not_contains(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Verifies that the current Array do NOT contains the given values, in any order.[br]
@@ -104,28 +104,19 @@ extends GdUnitAssert
 ## [b]Example:[/b]
 ## [codeblock]
 ## # will succeed
-## assert_array([1, 2, 3, 4, 5]).not_contains([6])
+## assert_array([1, 2, 3, 4, 5]).not_contains(6)
 ## # will fail
-## assert_array([1, 2, 3, 4, 5]).not_contains([2, 6])
+## assert_array([1, 2, 3, 4, 5]).not_contains(2, 6)
 ## [/codeblock]
-@abstract func not_contains_same(expected: Variant) -> GdUnitArrayAssert
+@abstract func not_contains_same(...expected: Array) -> GdUnitArrayAssert
 
 
 ## Extracts all values by given function name and optional arguments into a new ArrayAssert.
 ## If the elements not accessible by `func_name` the value is converted to `"n.a"`, expecting null values
-@abstract func extract(func_name: String, args := Array()) -> GdUnitArrayAssert
+@abstract func extract(func_name: String, ...func_args: Array) -> GdUnitArrayAssert
 
 
 ## Extracts all values by given extractor's into a new ArrayAssert.
 ## If the elements not extractable than the value is converted to `"n.a"`, expecting null values
-@abstract func extractv(
-	extractor0 :GdUnitValueExtractor,
-	extractor1 :GdUnitValueExtractor = null,
-	extractor2 :GdUnitValueExtractor = null,
-	extractor3 :GdUnitValueExtractor = null,
-	extractor4 :GdUnitValueExtractor = null,
-	extractor5 :GdUnitValueExtractor = null,
-	extractor6 :GdUnitValueExtractor = null,
-	extractor7 :GdUnitValueExtractor = null,
-	extractor8 :GdUnitValueExtractor = null,
-	extractor9 :GdUnitValueExtractor = null) -> GdUnitArrayAssert
+## -- The argument type is Array[GdUnitValueExtractor]
+@abstract func extractv(...extractors: Array) -> GdUnitArrayAssert
