@@ -1,3 +1,4 @@
+@warning_ignore_start("redundant_await")
 # GdUnit generated TestSuite
 extends GdUnitTestSuite
 
@@ -804,7 +805,7 @@ func test_simulate_screen_touch_gesture_zoom_out() -> void:
 
 
 func test_text_input_processing() -> void:
-	_runner.maximize_view()
+	_runner.move_window_to_foreground()
 	var lineEdit := _runner.find_child("TextInput") as LineEdit
 
 	# Focus the text input and clear any existing content
