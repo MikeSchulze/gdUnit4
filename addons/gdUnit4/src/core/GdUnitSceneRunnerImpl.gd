@@ -179,10 +179,6 @@ func simulate_key_release(key_code: int, shift_pressed := false, ctrl_pressed :=
 	return _handle_input_event(event)
 
 
-func set_mouse_pos(pos: Vector2) -> GdUnitSceneRunner:
-	return set_mouse_position(pos)
-
-
 func set_mouse_position(pos: Vector2) -> GdUnitSceneRunner:
 	var event := InputEventMouseMotion.new()
 	event.position = pos
@@ -282,7 +278,7 @@ func simulate_screen_touch_pressed(index: int, position: Vector2, double_tap := 
 func simulate_screen_touch_press(index: int, position: Vector2, double_tap := false) -> GdUnitSceneRunner:
 	if is_emulate_mouse_from_touch():
 		# we need to simulate in addition to the touch the mouse events
-		set_mouse_pos(position)
+		set_mouse_position(position)
 		simulate_mouse_button_press(MOUSE_BUTTON_LEFT)
 	# push touch press event at position
 	var event := InputEventScreenTouch.new()
