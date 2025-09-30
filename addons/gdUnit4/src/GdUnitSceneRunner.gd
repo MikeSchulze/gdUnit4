@@ -1,7 +1,7 @@
 ## The Scene Runner is a tool used for simulating interactions on a scene.
 ## With this tool, you can simulate input events such as keyboard or mouse input and/or simulate scene processing over a certain number of frames.
 ## This tool is typically used for integration testing a scene.
-class_name GdUnitSceneRunner
+@abstract class_name GdUnitSceneRunner
 extends RefCounted
 
 const NO_ARG = GdUnitConstants.NO_ARG
@@ -9,23 +9,20 @@ const NO_ARG = GdUnitConstants.NO_ARG
 
 ## Simulates that an action has been pressed.[br]
 ## [member action] : the action e.g. [code]"ui_up"[/code][br]
-@warning_ignore("unused_parameter")
-func simulate_action_pressed(action: String) -> GdUnitSceneRunner:
-	return self
+## [member event_index] : [url=https://docs.godotengine.org/en/4.4/classes/class_inputeventaction.html#class-inputeventaction-property-event-index]default=-1[/url][br]
+@abstract func simulate_action_pressed(action: String, event_index := -1) -> GdUnitSceneRunner
 
 
 ## Simulates that an action is pressed.[br]
 ## [member action] : the action e.g. [code]"ui_up"[/code][br]
-@warning_ignore("unused_parameter")
-func simulate_action_press(action: String) -> GdUnitSceneRunner:
-	return self
+## [member event_index] : [url=https://docs.godotengine.org/en/4.4/classes/class_inputeventaction.html#class-inputeventaction-property-event-index]default=-1[/url][br]
+@abstract func simulate_action_press(action: String, event_index := -1) -> GdUnitSceneRunner
 
 
 ## Simulates that an action has been released.[br]
 ## [member action] : the action e.g. [code]"ui_up"[/code][br]
-@warning_ignore("unused_parameter")
-func simulate_action_release(action: String) -> GdUnitSceneRunner:
-	return self
+## [member event_index] : [url=https://docs.godotengine.org/en/4.4/classes/class_inputeventaction.html#class-inputeventaction-property-event-index]default=-1[/url][br]
+@abstract func simulate_action_release(action: String, event_index := -1) -> GdUnitSceneRunner
 
 
 ## Simulates that a key has been pressed.[br]

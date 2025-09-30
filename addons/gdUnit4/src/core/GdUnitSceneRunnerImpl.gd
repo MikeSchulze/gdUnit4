@@ -108,32 +108,28 @@ func _scene_tree() -> SceneTree:
 
 
 @warning_ignore("return_value_discarded")
-func simulate_action_pressed(action: String) -> GdUnitSceneRunner:
-	simulate_action_press(action)
-	simulate_action_release(action)
+func simulate_action_pressed(action: String, event_index := -1) -> GdUnitSceneRunner:
+	simulate_action_press(action, event_index)
+	simulate_action_release(action, event_index)
 	return self
 
 
-func simulate_action_press(action: String) -> GdUnitSceneRunner:
+func simulate_action_press(action: String, event_index := -1) -> GdUnitSceneRunner:
 	__print_current_focus()
 	var event := InputEventAction.new()
 	event.pressed = true
 	event.action = action
-	if Engine.get_version_info().hex >= 0x40300:
-		@warning_ignore("unsafe_property_access")
-		event.event_index = InputMap.get_actions().find(action)
+	event.event_index = event_index
 	_action_on_press.append(action)
 	return _handle_input_event(event)
 
 
-func simulate_action_release(action: String) -> GdUnitSceneRunner:
+func simulate_action_release(action: String, event_index := -1) -> GdUnitSceneRunner:
 	__print_current_focus()
 	var event := InputEventAction.new()
 	event.pressed = false
 	event.action = action
-	if Engine.get_version_info().hex >= 0x40300:
-		@warning_ignore("unsafe_property_access")
-		event.event_index = InputMap.get_actions().find(action)
+	event.event_index = event_index
 	_action_on_press.erase(action)
 	return _handle_input_event(event)
 
