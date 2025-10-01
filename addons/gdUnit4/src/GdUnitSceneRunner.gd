@@ -289,6 +289,11 @@ extends RefCounted
 @abstract func move_window_to_foreground() -> GdUnitSceneRunner
 
 
+## Minimizes the scene window to a windowed mode and brings it to the background.[br]
+## This ensures that the scene is hidden during testing.
+@abstract func move_window_to_background() -> GdUnitSceneRunner
+
+
 ## Return the current value of the property with the name <name>.[br]
 ## [member name] : name of property[br]
 ## [member return] : the value of the property
