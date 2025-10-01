@@ -82,7 +82,8 @@ func _init(p_scene: Variant, p_verbose: bool, p_hide_push_errors := false) -> vo
 	)
 	_simulate_start_time = LocalTime.now()
 	# we need to set inital a valid window otherwise the warp_mouse() is not handled
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	move_window_to_foreground()
+
 	# set inital mouse pos to 0,0
 	var max_iteration_to_wait := 0
 	while get_global_mouse_position() != Vector2.ZERO and max_iteration_to_wait < 100:
@@ -95,6 +96,7 @@ func _notification(what: int) -> void:
 		# reset time factor to normal
 		__deactivate_time_factor()
 		if is_instance_valid(_current_scene):
+			move_window_to_background()
 			_scene_tree().root.remove_child(_current_scene)
 			# do only free scenes instanciated by this runner
 			if _scene_auto_free:
@@ -441,8 +443,16 @@ func await_signal_on(source: Object, signal_name: String, args := [], timeout :=
 
 
 func move_window_to_foreground() -> GdUnitSceneRunner:
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_move_to_foreground()
+	if not Engine.is_embedded_in_editor():
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_move_to_foreground()
+	return self
+
+
+func move_window_to_background() -> GdUnitSceneRunner:
+	if not Engine.is_embedded_in_editor():
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	return self
 
 
