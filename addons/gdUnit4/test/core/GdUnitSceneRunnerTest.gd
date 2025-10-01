@@ -462,10 +462,11 @@ func test_move_window_to_foreground() -> void:
 	runner.move_window_to_background()
 	await runner.simulate_frames(1)
 	if not Engine.is_embedded_in_editor():
-		assert_that(DisplayServer.window_get_mode()).is_equal(DisplayServer.WINDOW_MODE_MINIMIZED)
+		# We need a workaround because of https://github.com/godotengine/godot/issues/111119
+		var expecetd_mode := DisplayServer.WINDOW_MODE_WINDOWED if OS.get_name() == "Linux" else DisplayServer.WINDOW_MODE_WINDOWED
+		assert_that(DisplayServer.window_get_mode()).is_equal(expecetd_mode)
 	else:
 		assert_that(DisplayServer.window_get_mode()).is_equal(DisplayServer.WINDOW_MODE_WINDOWED)
-
 	# force window to foreground
 	runner.move_window_to_foreground()
 	await runner.simulate_frames(1)
