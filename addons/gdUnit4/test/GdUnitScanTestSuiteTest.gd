@@ -4,8 +4,8 @@ extends GdUnitTestSuite
 
 
 func test_example() -> void:
-	assert_that("This is a example message").has_length(25)
-	assert_that("This is a example message").starts_with("This is a ex")
+	assert_that("This is an example message").has_length(26)
+	assert_that("This is an example message").starts_with("This is an ex")
 
 
 func test_b() -> void:
