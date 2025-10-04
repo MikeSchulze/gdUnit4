@@ -50,7 +50,7 @@ func test_discover_new_suite_GDScript() -> void:
 	)
 
 	# verify the all tests are discovered
-	assert_array(discovered_tests).has_size(11)
+	assert_array(discovered_tests).has_size(12)
 	assert_array(discovered_tests).extractv(extr("test_name"), extr("attribute_index")).contains_exactly([
 		tuple("test_case1", -1),
 		tuple("test_case2", -1),
@@ -63,6 +63,7 @@ func test_discover_new_suite_GDScript() -> void:
 		tuple("test_parameterized_dynamic", 0),
 		tuple("test_parameterized_dynamic", 1),
 		tuple("test_parameterized_dynamic", 2),
+		tuple("test_日本語", -1),
 	])
 
 	# verify the cache now contains all discovered tests
@@ -89,7 +90,7 @@ func test_discover_deleted_test_GDScript() -> void:
 	)
 	# verify the expected tests are collected
 	assert_array(expected_deleted_tests).has_size(2)
-	assert_array(discovered_tests).has_size(11)
+	assert_array(discovered_tests).has_size(12)
 
 	# we simmulate deleted tests
 	script.source_code = script.source_code.replace("test_case1", "_test_case1").replace("test_case2", "_test_case2")
@@ -122,6 +123,7 @@ func test_discover_deleted_test_GDScript() -> void:
 			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 35),
 			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 35),
 			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 35),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 41),
 		])
 
 
@@ -183,8 +185,9 @@ func test_discover_added_test_GDScript() -> void:
 			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 35),
 			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 35),
 			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 35),
-			tuple(expected_added_tests[0].guid, "test_case3", -1, 47),
-			tuple(expected_added_tests[1].guid, "test_case4", -1, 51),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 41),
+			tuple(expected_added_tests[0].guid, "test_case3", -1, 51),
+			tuple(expected_added_tests[1].guid, "test_case4", -1, 55),
 		])
 
 
@@ -241,6 +244,7 @@ func test_discover_renamed_test_GDScript() -> void:
 			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 35),
 			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 35),
 			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 35),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 41),
 		])
 
 
@@ -293,6 +297,7 @@ func test_discover_moved_test_GDScript() -> void:
 			tuple(expected_renamed_tests[3].guid, "test_parameterized_dynamic", 0, 37),
 			tuple(expected_renamed_tests[4].guid, "test_parameterized_dynamic", 1, 37),
 			tuple(expected_renamed_tests[5].guid, "test_parameterized_dynamic", 2, 37),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 43),
 		])
 	# and no added or removed tests
 	assert_array(discoverer._discovered_changes["deleted_tests"]).is_empty()
@@ -314,6 +319,7 @@ func test_discover_moved_test_GDScript() -> void:
 			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 37),
 			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 37),
 			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 37),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 43),
 		])
 
 

@@ -39,7 +39,7 @@ func test_parameterized_dynamic(value :Variant, test_parameters := data_set()) -
 
 
 func test_日本語() -> void:
-	assert_bool(true).is_true
+	assert_bool(true).is_true()
 
 
 func data_set() -> Array:

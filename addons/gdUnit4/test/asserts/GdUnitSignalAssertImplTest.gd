@@ -1,3 +1,4 @@
+@warning_ignore_start("redundant_await")
 # GdUnit generated TestSuite
 #warning-ignore-all:unused_argument
 #warning-ignore-all:return_value_discarded
