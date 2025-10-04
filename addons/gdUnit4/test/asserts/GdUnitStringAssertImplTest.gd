@@ -63,7 +63,7 @@ func test_is_equal_ignoring_case() -> void:
 			Expecting:
 			 'This is a Message'
 			 but was
-			 'This is a test Mmessage' (ignoring case)""".dedent().trim_prefix("\n"))
+			 'This is a Mtest message' (ignoring case)""".dedent().trim_prefix("\n"))
 	assert_failure(func() -> void: assert_str(null).is_equal_ignoring_case("This is a Message")) \
 		.is_failed() \
 		.has_message("""
@@ -463,3 +463,14 @@ func test_is_failure() -> void:
 	assert_str(null).is_null()
 	# is true because we have an already failed assert
 	assert_bool(is_failure()).is_true()
+
+
+func test_日本語() -> void:
+	assert_str("test_日本語").is_equal("test_日本語")
+	assert_failure(func() -> void: assert_str("test_日本語").is_equal("test_本語")) \
+		.is_failed() \
+		.has_message("""
+			Expecting:
+			 'test_本語'
+			 but was
+			 'test_日本語'""".dedent().trim_prefix("\n"))

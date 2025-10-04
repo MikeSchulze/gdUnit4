@@ -64,6 +64,7 @@ func test_discover_tests() -> void:
 			tuple("test_parameterized_dynamic", "test_parameterized_dynamic:0 (<null>)"),
 			tuple("test_parameterized_dynamic", "test_parameterized_dynamic:1 (%s)" % Vector2.ONE),
 			tuple("test_parameterized_dynamic", "test_parameterized_dynamic:2 (%s)" % Vector2i.ONE),
+			tuple("test_日本語", "test_日本語"),
 		])
 
 
