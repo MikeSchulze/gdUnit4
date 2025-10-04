@@ -38,6 +38,10 @@ func test_parameterized_dynamic(value :Variant, test_parameters := data_set()) -
 		.is_instanceof(GdUnitVectorAssert)
 
 
+func test_日本語() -> void:
+	assert_bool(true).is_true
+
+
 func data_set() -> Array:
 	var test_values := []
 	for index in 3:

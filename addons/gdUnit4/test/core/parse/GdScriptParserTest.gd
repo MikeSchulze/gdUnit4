@@ -389,6 +389,8 @@ func test_parse_func_name() -> void:
 	assert_str(_parser.parse_func_name("func a() -> String:")).is_equal("a")
 	# function name contains tokens e.g func or class
 	assert_str(_parser.parse_func_name("func foo_func_class():")).is_equal("foo_func_class")
+	# unicode characters in the name
+	assert_str(_parser.parse_func_name("func test_日本語() -> void:")).is_equal("test_日本語")
 	# should fail
 	assert_str(_parser.parse_func_name("#func foo():")).is_empty()
 	assert_str(_parser.parse_func_name("var x")).is_empty()
