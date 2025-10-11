@@ -109,16 +109,16 @@ ensure that your code is thoroughly tested and free of bugs, which can save you 
 * **Test Session Hooks**  
   Set up and tear down test resources at the session level for efficient test management
 * **Mocking & Spying**
-    * Mock classes to simulate behavior and define output for specific functions
-    * Spy on functions to verify they were called with expected parameters
-    * Mock or spy on scenes to simulate behavior and verify function calls
+  * Mock classes to simulate behavior and define output for specific functions
+  * Spy on functions to verify they were called with expected parameters
+  * Mock or spy on scenes to simulate behavior and verify function calls
 * **Scene Runner**  
   Simulate different kinds of inputs and actions:
-    * Mouse clicks and movements
-    * Keyboard inputs
-    * Touch screen interactions
-    * Custom input actions
-    * Wait for specific signals or function return values
+  * Mouse clicks and movements
+  * Keyboard inputs
+  * Touch screen interactions
+  * Custom input actions
+  * Wait for specific signals or function return values
 * **Flaky Test Handling**  
   Detect and handle flaky tests by rerunning failed tests  
   Configure retry count and mark non-deterministic failures in test results
@@ -143,9 +143,9 @@ ensure that your code is thoroughly tested and free of bugs, which can save you 
   Full support for writing tests in C#
 * **VSTest Integration** - [gdunit4.test.adapter](https://github.com/MikeSchulze/gdUnit4Net/blob/master/TestAdapter/README.md)  
   Run and debug tests in:
-    * Visual Studio
-    * Visual Studio Code
-    * JetBrains Rider
+  * Visual Studio
+  * Visual Studio Code
+  * JetBrains Rider
 
 ---
 
