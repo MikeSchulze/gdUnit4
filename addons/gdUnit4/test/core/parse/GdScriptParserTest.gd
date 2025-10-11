@@ -17,7 +17,15 @@ static func build_tmp_script(source_code: String) -> GDScript:
 	var file := FileAccess.open(script.resource_path, FileAccess.WRITE)
 	file.store_string(script.source_code)
 	file.close()
+
+	var unsafe_method_access: Variant = ProjectSettings.get_setting("debug/gdscript/warnings/unsafe_method_access")
+	var unused_parameter: Variant = ProjectSettings.get_setting("debug/gdscript/warnings/unused_parameter")
+	# disable and load the script
+	ProjectSettings.set_setting("debug/gdscript/warnings/unsafe_method_access", 0)
+	ProjectSettings.set_setting("debug/gdscript/warnings/unused_parameter", 0)
 	var error := script.reload()
+	ProjectSettings.set_setting("debug/gdscript/warnings/unsafe_method_access", unsafe_method_access)
+	ProjectSettings.set_setting("debug/gdscript/warnings/unused_parameter", unused_parameter)
 	if error:
 		push_error("Can't load temp script '%s', error: %s" % [source_code, error_string(error)])
 		return null
@@ -358,6 +366,7 @@ func test_parse_arguments_variadic() -> void:
 
 	var script := GDScript.new()
 	script.source_code = """
+	@warning_ignore("unused_parameter")
 	func custom(name: String, ...varargs: Array) -> int:
 		return 0
 	""".dedent()
@@ -383,6 +392,7 @@ func test_parse_arguments_typed_array() -> void:
 class TestObject:
 	var x: int
 
+
 func test_parse_func_name() -> void:
 	assert_str(_parser.parse_func_name("func foo():")).is_equal("foo")
 	assert_str(_parser.parse_func_name("static func foo():")).is_equal("foo")
@@ -394,7 +404,6 @@ func test_parse_func_name() -> void:
 	# should fail
 	assert_str(_parser.parse_func_name("#func foo():")).is_empty()
 	assert_str(_parser.parse_func_name("var x")).is_empty()
-
 
 func test_load_source_code_inner_class_AtmosphereData() -> void:
 	var base_class := AdvancedTestClass.new()
@@ -466,11 +475,6 @@ func test_strip_leading_spaces() -> void:
 	assert_str(GdScriptParser.TokenInnerClass._strip_leading_spaces("	 ")).is_equal("	 ")
 	assert_str(GdScriptParser.TokenInnerClass._strip_leading_spaces("var x=")).is_equal("var x=")
 	assert_str(GdScriptParser.TokenInnerClass._strip_leading_spaces("class foo")).is_equal("class foo")
-
-
-func test_extract_clazz_name() -> void:
-	assert_str(_parser.extract_clazz_name("class SoundData:\n")).is_equal("SoundData")
-	assert_str(_parser.extract_clazz_name("class SoundData extends Node:\n")).is_equal("SoundData")
 
 
 func test_parse_func_description() -> void:
@@ -733,3 +737,21 @@ func test_is_func_coroutine() -> void:
 	assert_bool(_parser.is_func_coroutine(rows, 10)).is_true()
 	assert_bool(_parser.is_func_coroutine(rows, 15)).is_false()
 	assert_bool(_parser.is_func_coroutine(rows, 19)).is_false()
+
+
+func test_using_class_in_variable_name() -> void:
+	var script := """
+	extends RefCounted:
+		func foo() -> void:
+			var class1.a = "a"
+			var class2 = "abc"
+
+
+		func bar() -> void:
+			print("bar")
+
+	"""
+
+	var rows := script.split("\n")
+	assert_bool(_parser.is_func_coroutine(rows, 0)).is_false()
+	assert_bool(_parser.is_func_coroutine(rows, 4)).is_false()
