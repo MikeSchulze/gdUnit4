@@ -10,10 +10,10 @@ var _charset: PackedInt32Array
 
 
 func _init(min_length: int, max_length: int, pattern: String = DEFAULT_CHARSET) -> void:
-	assert(min_length > 0 and min_length < max_length)
-	assert(not null or not pattern.is_empty())
 	_min_length = min_length
 	_max_length = max_length + 1 # +1 for inclusive
+	assert(not null or not pattern.is_empty())
+	assert(_min_length > 0 and _min_length < _max_length)
 	_charset = StringFuzzer.extract_charset(pattern)
 
 

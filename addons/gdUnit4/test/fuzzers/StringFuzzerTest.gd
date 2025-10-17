@@ -33,7 +33,7 @@ func test_next_value() -> void:
 		assert_str(r.sub(value, "")).is_empty()
 
 
-func test_next_value_min_max_borders() -> void:
+func test_next_value_min_max_boundaries() -> void:
 	var boundaries := {}
 	var fuzzer := StringFuzzer.new(2, 3, "A")
 	for i in 200:
@@ -45,3 +45,17 @@ func test_next_value_min_max_borders() -> void:
 		.is_not_empty()\
 		.has_size(2)\
 		.contains_keys(2, 3)
+
+
+func test_next_value_min_max_same_boundaries() -> void:
+	var boundaries := {}
+	var fuzzer := StringFuzzer.new(2, 2, "A")
+	for i in 200:
+		var value :String = fuzzer.next_value()
+		boundaries[value.length()] = boundaries.get_or_add(value.length(), 0)
+
+	# verify it contains only values with length 2 or 3
+	assert_dict(boundaries)\
+		.is_not_empty()\
+		.has_size(1)\
+		.contains_keys(2)
