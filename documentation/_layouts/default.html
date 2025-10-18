@@ -1,0 +1,51 @@
+---
+layout: table_wrappers
+---
+
+<!DOCTYPE html>
+
+<html lang="{{ site.lang | default: 'en-US' }}">
+{% include head.html %}
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  {% include icons/icons.html %}
+  {% include components/sidebar.html %}
+
+  <div class="main" id="top">
+    {% include components/header.html %}
+    <div class="main-content-wrap">
+      {% include components/breadcrumbs.html %}
+      <div id="main-content" class="main-content">
+        <main>
+          {% if site.heading_anchors != false %}
+            {% include vendor/anchor_headings.html html=content beforeHeading="true" anchorBody="<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use xlink:href=\"#svg-link\"></use></svg>" anchorClass="anchor-heading" anchorAttrs="aria-labelledby=\"%html_id%\"" %}
+          {% else %}
+            {{ content }}
+          {% endif %}
+
+          {% if page.has_children == true and page.has_toc != false %}
+            {% include components/children_nav.html %}
+          {% endif %}
+        </main>
+        {% include components/footer.html %}
+      </div>
+    </div>
+    <footer>
+      <div class="text-small text-grey-dk-100 mb-0">
+        <p>Copyright &copy; 2021-2025 Mike Schulze. Distributed by an <a href="https://github.com/MikeSchulze/gdUnit4/blob/master/LICENSE">MIT license.</a>.</p>
+      </div>
+    </footer>
+    {% if site.search_enabled != false %}
+      {% include components/search_footer.html %}
+    {% endif %}
+  </div>
+
+  {% if site.mermaid %}
+    {% include components/mermaid.html %}
+  {% endif %}
+
+  <script src="{{site.baseurl}}/assets/js/tabs.js"></script>
+  <link rel="stylesheet" href="{{site.baseurl}}/assets/css/tab.css" />
+  <link rel="stylesheet" href="{{site.baseurl}}/assets/css/site-header.css" />
+</body>
+</html>
