@@ -1,0 +1,89 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+color_scheme: light
+logo: './assets/images/logo.png'
+title: GdUnit4
+
+email: mikeschulze.lpz@gmail.com
+baseurl: '/gdUnit4' # the subpath of your site, e.g. /blog
+# url: "http://GdUnit4.com" # the base hostname & protocol for your site, e.g. http://example.com
+github_username: MikeSchulze
+
+aux_links:
+  'GdUnit4 on GitHub':
+    - '//github.com/MikeSchulze/gdUnit4'
+aux_links_new_tab: true
+
+# Define Jekyll collections with correct source paths
+collections_dir: doc
+
+# Define Jekyll collections
+collections:
+  first_steps:
+    permalink: '/:collection/:path/'
+    output: true
+  csharp_project_setup:
+    permalink: '/:collection/:path/'
+    output: true
+  testing:
+    permalink: '/:collection/:path/'
+    output: true
+  advanced_testing:
+    permalink: '/:collection/:path/'
+    output: true
+  tutorials:
+    permalink: '/:collection/:path/'
+    output: true
+  faq:
+    permalink: '/:collection/:path/'
+    output: true
+
+just_the_docs:
+  collections:
+    first_steps:
+      name: First Steps
+    csharp_project_setup:
+      name: C# Project Setup
+    testing:
+      name: Testing
+    advanced_testing:
+    tutorials:
+    faq:
+      name: FAQ
+
+# Google Analytics Tracking (optional)
+# ga_tracking: UA-0000000-00
+# ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true by default)
+
+
+# Build settings
+safe: false
+markdown: kramdown
+theme: just-the-docs
+# remote_theme: pmarsceill/just-the-docs
+plugins:
+  - jekyll-tabs
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/

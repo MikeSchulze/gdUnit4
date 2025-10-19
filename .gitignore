@@ -4,8 +4,7 @@
 # Godot-specific ignores
 .godot/
 assets/*.import
-icon.png.import
-# ignore the godot4.4-dev5 generated uid files
+*.import
 *.gd.uid
 *.cs.uid
 *.json.uid
@@ -37,3 +36,6 @@ reports/
 
 .fake
 .ionide
+
+# jekyll build
+documentation/_site/

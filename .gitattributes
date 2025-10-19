@@ -6,6 +6,7 @@
 /addons/gdUnit4        !export-ignore
 /addons/gdUnit4/**     !export-ignore
 /addons/gdUnit4/test   export-ignore
+/documentation         export-ignore
 
 
 # Ensure Unix line endings for text files
