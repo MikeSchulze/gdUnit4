@@ -1,24 +1,121 @@
 name: Deploy-GdUnit4-GitHub-Pages
 
-on: # yamllint disable-line rule:truthy
-  push:
-    branches:
-      - documentation
+on:
+  release:
+    types:
+      - published
+
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (existing tag only, e.g., v5.1.1, v6.0.0)'
+        required: true
+        type: string
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  github-pages:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v5
+      - name: 'Checkout'
+        uses: actions/checkout@v5
         with:
-          ref: documentation
-      - uses: actions/cache@v4
+          fetch-depth: 0
+
+      - name: 'Determine and validate version'
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+
+            # Validate that the provided version is an existing tag
+            if ! git rev-parse "refs/tags/${VERSION}" >/dev/null 2>&1; then
+              echo "Error: Tag ${VERSION} does not exist"
+              exit 1
+            fi
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
+            VERSION="${{ github.event.release.tag_name }}"
+          else
+            echo "Error: Unsupported event type"
+            exit 1
+          fi
+
+          echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
+
+          # Checkout the specific tag
+          git checkout "tags/${VERSION}"
+
+      - name: 'Determine if latest version'
+        id: latest
+        run: |
+          # Get all tags sorted by version
+          LATEST_TAG=$(git tag -l --sort=-v:refname | head -n 1)
+          CURRENT_VERSION="${{ steps.version.outputs.VERSION }}"
+
+          if [[ "${CURRENT_VERSION}" == "${LATEST_TAG}" ]]; then
+            echo "IS_LATEST=true" >> "$GITHUB_OUTPUT"
+            echo "Current version ${CURRENT_VERSION} is the latest version"
+          else
+            echo "IS_LATEST=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 'Setup Ruby'
+        uses: ruby/setup-ruby@v1
         with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-      - uses: helaili/jekyll-action@v2
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: documentation
+
+      - name: 'Build Jekyll site'
+        working-directory: documentation
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+
+          echo "Building Jekyll site for version ${VERSION}"
+          bundle install
+          bundle exec jekyll build --baseurl "/gdUnit4/${VERSION}" --destination "_site/${VERSION}"
+          touch "_site/${VERSION}/.nojekyll"
+
+          # If this is the latest version, also build for root
+          if [[ "${{ steps.latest.outputs.IS_LATEST }}" == "true" ]]; then
+            echo "Building root documentation (latest version)"
+            bundle exec jekyll build --baseurl "/gdUnit4" --destination "_site"
+            touch "_site/.nojekyll"
+          fi
+
+      - name: 'Deploy versioned documentation 🚀'
+        uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: documentation/_site/${{ steps.version.outputs.VERSION }}
+          TARGET_FOLDER: ${{ steps.version.outputs.VERSION }}
+          CLEAN: false
+
+      - name: 'Deploy root documentation (if latest) 🚀'
+        if: steps.latest.outputs.IS_LATEST == 'true'
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: documentation/_site
+          TARGET_FOLDER: /
+          CLEAN: false
+
+      - name: 'Summary'
+        run: |
+          {
+            echo "## Deployment Summary"
+            echo "- **Version**: ${{ steps.version.outputs.VERSION }}"
+            echo "- **Is Latest**: ${{ steps.latest.outputs.IS_LATEST }}"
+            echo "- **Documentation URL**: https://${{ github.repository_owner }}.github.io/gdUnit4/${{ steps.version.outputs.VERSION }}/"
+            if [[ "${{ steps.latest.outputs.IS_LATEST }}" == "true" ]]; then
+              echo "- **Root URL**: https://${{ github.repository_owner }}.github.io/gdUnit4/"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

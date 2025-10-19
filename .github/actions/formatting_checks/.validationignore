@@ -34,3 +34,4 @@ examples/broken/
 
 # Ignore false positive detected invalid json
 stylecop.json
+zzzz-search-data.json
