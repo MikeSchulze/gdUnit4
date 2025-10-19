@@ -18,7 +18,7 @@ logo: './assets/images/logo.png'
 title: GdUnit4
 
 email: mikeschulze.lpz@gmail.com
-baseurl: '/gdUnit4/v0.0.0' # the subpath of your site, e.g. /blog
+baseurl: '/gdUnit4' # the subpath of your site, e.g. /blog
 # url: "http://GdUnit4.com" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: MikeSchulze
 
