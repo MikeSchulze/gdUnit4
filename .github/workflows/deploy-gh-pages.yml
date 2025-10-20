@@ -11,6 +11,11 @@ on:
         description: 'Version to deploy (existing tag only, e.g., v5.1.1, v6.0.0)'
         required: true
         type: string
+      documentation_source:
+        description: 'Source for documentation (commit SHA, branch, or "tag" to use tag itself)'
+        required: false
+        default: 'master'
+        type: string
 
 concurrency:
   group: "pages"
@@ -33,6 +38,7 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             VERSION="${{ github.event.inputs.version }}"
+            DOC_SOURCE="${{ github.event.inputs.documentation_source }}"
 
             # Validate that the provided version is an existing tag
             if ! git rev-parse "refs/tags/${VERSION}" >/dev/null 2>&1; then
@@ -41,15 +47,26 @@ jobs:
             fi
           elif [[ "${{ github.event_name }}" == "release" ]]; then
             VERSION="${{ github.event.release.tag_name }}"
+            DOC_SOURCE="tags/${VERSION}"
           else
             echo "Error: Unsupported event type"
             exit 1
           fi
 
           echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "DOC_SOURCE=${DOC_SOURCE}" >> "$GITHUB_OUTPUT"
 
-          # Checkout the specific tag
-          git checkout "tags/${VERSION}"
+          # Log the configuration
+          echo "Building documentation for version: ${VERSION}"
+          echo "Documentation source: ${DOC_SOURCE}"
+
+          # Checkout documentation source
+          git checkout "${DOC_SOURCE}"
+          # Verify documentation folder exists
+          if [[ ! -d "documentation" ]]; then
+            echo "Error: documentation folder not found in ${DOC_SOURCE}"
+            exit 1
+          fi
 
       - name: 'Determine if latest version'
         id: latest
@@ -79,6 +96,8 @@ jobs:
 
           echo "Building Jekyll site for version ${VERSION}"
           bundle install
+
+          # Build with version-specific baseurl
           bundle exec jekyll build --baseurl "/gdUnit4/${VERSION}" --destination "_site/${VERSION}"
           touch "_site/${VERSION}/.nojekyll"
 
@@ -113,6 +132,7 @@ jobs:
           {
             echo "## Deployment Summary"
             echo "- **Version**: ${{ steps.version.outputs.VERSION }}"
+            echo "- **Documentation Source**: ${{ steps.version.outputs.DOC_SOURCE }}"
             echo "- **Is Latest**: ${{ steps.latest.outputs.IS_LATEST }}"
             echo "- **Documentation URL**: https://${{ github.repository_owner }}.github.io/gdUnit4/${{ steps.version.outputs.VERSION }}/"
             if [[ "${{ steps.latest.outputs.IS_LATEST }}" == "true" ]]; then
