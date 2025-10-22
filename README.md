@@ -173,7 +173,7 @@ The video walks through practical automated testing techniques that can help imp
 ## Documentation
 
 <p align="left" style="font-family: Bedrock; font-size:21pt; color:#7253ed; font-style:bold">
-  <a href="https://mikeschulze.github.io/gdUnit4/first_steps/install/">How to Install GdUnit</a>
+  <a href="https://mikeschulze.github.io/gdUnit4/latest/first_steps/install/">How to Install GdUnit</a>
 </p>
 
 <p align="left" style="font-family: Bedrock; font-size:21pt; color:#7253ed; font-style:bold">
