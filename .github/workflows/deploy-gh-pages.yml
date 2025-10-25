@@ -28,12 +28,12 @@ jobs:
       contents: write
 
     steps:
-      - name: 'Checkout'
+      - name: '📥 Checkout'
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: 'Determine and validate version'
+      - name: '🏷️ Determine and validate version'
         id: version
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
@@ -68,7 +68,7 @@ jobs:
             exit 1
           fi
 
-      - name: 'Determine if latest version'
+      - name: '🔍 Determine if latest version'
         id: latest
         run: |
           # Get all tags sorted by version
@@ -82,14 +82,14 @@ jobs:
             echo "IS_LATEST=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: 'Setup Ruby'
+      - name: '💎 Setup Ruby'
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           bundler-cache: true
           working-directory: documentation
 
-      - name: 'Build Jekyll site'
+      - name: '🔨 Build Jekyll site'
         working-directory: documentation
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
@@ -98,36 +98,46 @@ jobs:
           bundle install
 
           # Build with version-specific baseurl
-          bundle exec jekyll build --baseurl "/gdUnit4/${VERSION}" --destination "_site/${VERSION}"
-          touch "_site/${VERSION}/.nojekyll"
+          bundle exec jekyll build --baseurl "/gdUnit4/${VERSION}" --destination "/tmp/jekyll-build/${VERSION}"
+          touch "/tmp/jekyll-build/${VERSION}/.nojekyll"
 
-          # If this is the latest version, also build for root
+          # If this is the latest version build latest in addition
           if [[ "${{ steps.latest.outputs.IS_LATEST }}" == "true" ]]; then
-            echo "Building root documentation (latest version)"
-            bundle exec jekyll build --baseurl "/gdUnit4" --destination "_site"
-            touch "_site/.nojekyll"
+            echo "Building latest documentation"
+            bundle exec jekyll build --baseurl "/gdUnit4/latest" --destination "/tmp/jekyll-build/latest"
+            touch "/tmp/jekyll-build/latest/.nojekyll"
           fi
 
-      - name: 'Deploy versioned documentation 🚀'
-        uses: JamesIves/github-pages-deploy-action@v4.7.3
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: documentation/_site/${{ steps.version.outputs.VERSION }}
-          TARGET_FOLDER: ${{ steps.version.outputs.VERSION }}
-          CLEAN: false
+      - name: '🚀 Deploy versioned documentation'
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
 
-      - name: 'Deploy root documentation (if latest) 🚀'
-        if: steps.latest.outputs.IS_LATEST == 'true'
-        uses: JamesIves/github-pages-deploy-action@v4.7.3
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: documentation/_site
-          TARGET_FOLDER: /
-          CLEAN: false
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: 'Summary'
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+
+          if [[ -d "./${VERSION}" ]]; then
+            rm -rf "./${VERSION}"
+          fi
+          echo "Copying built site to ${VERSION} folder"
+          cp -r /tmp/jekyll-build/${VERSION} ./${VERSION}
+          git add ./${VERSION}
+
+          if [[ "${{ steps.latest.outputs.IS_LATEST }}" == "true" ]]; then
+            if [[ -d "./latest" ]]; then
+              rm -rf "./latest"
+            fi
+            echo "Copying built site to latest folder"
+            cp -r /tmp/jekyll-build/latest ./latest
+            git add ./latest
+          fi
+
+          git commit -m "Deploy documentation for version ${VERSION}"
+          git push origin gh-pages
+
+      - name: '📊 Summary'
         run: |
           {
             echo "## Deployment Summary"

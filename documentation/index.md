@@ -5,7 +5,7 @@ nav_order: 1
 has_toc: false
 ---
 
-# GdUnit4 V5.0.0
+# GdUnit4 {{site.current_version}}
 
 ![GdUnit4](./assets/images/background.png)
 build on (v4.4.1.stable.mono.official [49a5bc7b6])

@@ -27,6 +27,14 @@ aux_links:
     - '//github.com/MikeSchulze/gdUnit4'
 aux_links_new_tab: true
 
+# Version configuration
+current_version: "v6.0.0"
+versions:
+  - "latest"
+  - "v6.0.0"
+  - "v5.1.1"
+
+
 # Define Jekyll collections with correct source paths
 collections_dir: doc
 
