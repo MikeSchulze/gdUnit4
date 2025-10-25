@@ -1,0 +1,15 @@
+<!-- _includes/nav_footer_custom.html -->
+<footer class="site-footer">
+  <div class="version-switcher">
+    <label>Version:</label>
+    <div class="version-selector">
+      <select onchange="location = this.value;">
+        {% for version in site.versions %}
+        <option value="/gdUnit4/{{ version }}/" class="version-dropdown-item" {% if {{site.baseurl}} contains {{version}} %}selected{% endif %}>
+          {{ version }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</footer>
