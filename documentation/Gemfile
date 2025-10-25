@@ -13,7 +13,7 @@ gem "jekyll", "~> 4.4.1"
 # This is the  theme for new Jekyll sites.
 #gem "jekyll-theme-slate"
 gem "just-the-docs", "~> 0.10.1"
-gem "sass-embedded", "~> 1.78.0" # https://github.com/just-the-docs/just-the-docs/issues/1541#issuecomment-2401649789
+gem "sass-embedded", "~> 1.93.0" # https://github.com/just-the-docs/just-the-docs/issues/1541#issuecomment-2401649789
 
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and
 # uncomment the line below. To upgrade, run `bundle update github-pages`.
