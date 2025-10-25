@@ -1,0 +1,12 @@
+<ul id="<%= @name %>" class="tab" data-tab="<%= uuid %>" data-name="<%= @name %>">
+  <% environment["tabs-#{@name}"].each_with_index do |(key, value), index| %>
+      <li<%= index == 0 ? ' class="active"' : ''%> id="<%= @name + '-' + key.dup.strip.downcase.gsub(/[^0-9a-z]/, '-') %>">
+          <a href="#"><%= key %></a>
+      </li>
+  <% end %>
+</ul>
+<ul class="tab-content" id="<%= uuid %>" data-name="<%= @name %>">
+  <% environment["tabs-#{@name}"].each_with_index do |(key, value), index| %>
+      <li<%= index == 0 ? ' class="active"' : ''%>><%= value %></li>
+  <% end %>
+</ul>
