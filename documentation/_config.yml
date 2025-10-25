@@ -28,7 +28,7 @@ aux_links:
 aux_links_new_tab: true
 
 # Version configuration
-current_version: "v6.0.0"
+current_version: "v5.1.1"
 versions:
   - "latest"
   - "v6.0.0"
