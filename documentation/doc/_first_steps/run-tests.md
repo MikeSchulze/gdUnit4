@@ -93,21 +93,22 @@ This area gives you information about the current/last test execution, such as t
 With the arrow buttons, you can navigate back and forth over found failures.<br>
 ![status-bar]({{site.baseurl}}/assets/images/inspector/status-bar.png){:.centered}
 
-|Marker|Description|
-|--- | --- |
-|(1)| Test execution progress (indicator of test run)|
-|(2)| Number of errors found (parse/runtime errors)|
-|(3)| Number of test case failures found|
-|(4)| Navigate to previous failure |
-|(5)| Navigate to next failure |
-|(6)| Run discover tests |
-|(7)| Sort the tree |
-|(8)| Change the tree presentation |
+| Marker | Description                                     |
+|--------|-------------------------------------------------|
+| (0)    | Test execution progress (indicator of test run) |
+| (1)    | Number of errors (parse/runtime errors)         |
+| (2)    | Number of failures                              |
+| (3)    | Number of flaky tests                           |
+| (4)    | Number of skipped tests                         |
+| (5)    | Discover and run all tests                      |
+| (6)    | Change sort tree mode (asc/desc/time)           |
+| (7)    | Change the test tree presentation  (tree/flat)  |
 
 - **Sorting Options**
 
     The sorting option controls how the test results are displayed in the inspector tree. You can sort the results by:
 
+  - **Unsorted**: The natural order.
   - **Name Ascending**: Sorts the test cases alphabetically from A to Z.
   - **Name Descending**: Sorts the test cases alphabetically from Z to A.
   - **Test Execution Time**: Sorts the test cases based on the time they took to execute, from longest to shortest.

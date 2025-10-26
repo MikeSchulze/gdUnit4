@@ -136,9 +136,6 @@ The text field at the bottom displays contextual information about the selected 
 
 ---
 
----
-
-
 ## UI Settings
 
 ![settings-ui]({{site.baseurl}}/assets/images/settings/settings-ui.png){:.centered}
