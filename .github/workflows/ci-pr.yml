@@ -7,7 +7,6 @@ on: # yamllint disable-line rule:truthy
     paths-ignore:
       - '**.jpg'
       - '**.png'
-      - '**.md'
   workflow_dispatch:
 
 concurrency:
