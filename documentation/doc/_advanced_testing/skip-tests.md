@@ -1,7 +1,8 @@
 ---
 layout: default
-title: How To Skip Tests
-nav_order: 5
+title: Skip Tests
+parent: Advanced Testing
+nav_order: 10
 ---
 
 # How to Skip Tests in GdUnit4

@@ -2,7 +2,7 @@
 layout: default
 title: Command Line Tool
 parent: Advanced Testing
-nav_order: 8
+nav_order: 14
 ---
 
 # Command Line Tool

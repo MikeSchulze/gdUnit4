@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Integration Tests
-nav_order: 2
+title: Integration Testing
+nav_order: 1
 ---
 
 # Integration Tests

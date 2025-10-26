@@ -2,7 +2,7 @@
 layout: default
 title: Orphan Nodes
 parent: Advanced Testing
-nav_order: 7
+nav_order: 12
 ---
 
 # Orphan Nodes or Leaking Memory

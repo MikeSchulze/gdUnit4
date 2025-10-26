@@ -80,6 +80,65 @@ public async Task foo() {
 
 ---
 
+
+## Hooks Settings
+
+Configure test session hooks and reporting mechanisms for automated test lifecycle management.
+
+![settings-hook]({{site.baseurl}}/assets/images/settings/settings-hooks.png){:.centered}
+
+### Overview
+
+Test session hooks execute custom logic at the beginning and end of test sessions, enabling:
+- Automated test environment setup and teardown
+- Custom test report generation in various formats
+- Integration with external systems and CI/CD pipelines
+- Resource management across multiple test suites
+
+### Built-in System Hooks
+
+GdUnit4 includes two pre-installed system hooks that provide essential reporting functionality:
+
+* **GdUnitHtmlTestReporter** `SYSTEM`  
+  Generates interactive HTML test reports with detailed results, execution times, and statistics. Reports include collapsible sections and visual charts for easy analysis.
+
+* **GdUnitXMLTestReporter** `SYSTEM`  
+  Produces JUnit-compatible XML reports for CI/CD integration. Compatible with Jenkins, GitLab CI, GitHub Actions, and other continuous integration tools.
+
+### Hook Management Controls
+
+| Control | Function | Description |
+|---------|----------|-------------|
+| ☑️ **Checkbox** | Enable/Disable | Toggle hook activation without removing it from the list |
+| ⬆️ **Up Arrow** | Increase Priority | Move hook higher in execution order (executes earlier) |
+| ⬇️ **Down Arrow** | Decrease Priority | Move hook lower in execution order (executes later) |
+| ➕ **Add** | Register Hook | Add a new custom hook to the system |
+| 🗑️ **Remove** | Delete Hook | Remove custom hooks (system hooks cannot be deleted) |
+
+### Execution Order
+
+Hooks execute in the priority order shown in the list:
+1. **Startup Phase**: Hooks initialize in top-to-bottom order before tests begin
+2. **Test Execution**: All test suites run if startup succeeds
+3. **Shutdown Phase**: Hooks cleanup in reverse order after tests complete
+
+### Configuration Notes
+
+* **System hooks** are marked with a `SYSTEM` tag and cannot be removed
+* **Custom hooks** can be added, removed, and reordered as needed
+* **Disabled hooks** remain in the list but don't execute during test sessions
+* **Hook failures** during startup prevent test execution and display errors in the console
+* **Priority changes** take effect immediately for the next test session
+
+### Status Information
+
+The text field at the bottom displays contextual information about the selected hook, including its description and current configuration status. For system hooks, it shows "The Html test reporting hook" or "The XML test reporting hook" respectively.
+
+---
+
+---
+
+
 ## UI Settings
 
 ![settings-ui]({{site.baseurl}}/assets/images/settings/settings-ui.png){:.centered}
