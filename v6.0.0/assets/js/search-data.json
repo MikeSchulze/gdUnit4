@@ -155,7 +155,7 @@
   },"22": {
     "doc": "Run Tests",
     "title": "The GdUnit Test Inspector/Explorer",
-    "content": "Definition . The GdUnit inspector provides an overview of the currently executed tests and allows you to navigate them. It allows you to select individual tests and view possible test failures. The integrated status and info bar gives you a quick overview of the last test run. | (1) Button Bar | (2) Status Bar | (3) Test Run Overview | (4) Failure Report | (5) Info Bar | . Button Bar . The button bar contains several buttons that allow you to perform different actions in GdUnit: . | Button | Description | . | (1) | Opens the GdUnit documentation page in your browser | . | (2) | Opens the GdUnit settings window | . | (3) | Run Overall tests | . | (4) | (Re)Run the tests in runtime mode | . | (5) | (Re)Run the tests in debug mode | . | (6) | Stops the current test run | . | (7) | Displays the version of GdUnit | . Note that the keyboard shortcuts for these buttons may vary depending on your specific GdUnit configuration. Advice When running tests in GdUnit, it is recommended to first run them in debug mode (4) in order to get the line number where the failure occurred in the test report. This is because Godot does not provide stack trace information when running in runtime mode (3), which can result in the failure line not being displayed in the report. The Run Overall Button . The Run Overall button provides a convenient way to execute all the tests in your project at once, instead of running them one by one or selecting a custom set of tests. By clicking the “Run Overall” button, you can initiate the execution of all the tests in your project, saving you time and effort. To enable the Run Overall button in GdUnit4, you need to adjust the UI settings. Once you have enabled the Run Overall button, it should be visible in the inspector. Status Bar . This area gives you information about the current/last test execution, such as the progress and errors/failures found. With the arrow buttons, you can navigate back and forth over found failures. | Marker | Description | . | (1) | Test execution progress (indicator of test run) | . | (2) | Number of errors found (parse/runtime errors) | . | (3) | Number of test case failures found | . | (4) | Navigate to previous failure | . | (5) | Navigate to next failure | . | (6) | Run discover tests | . | (7) | Sort the tree | . | (8) | Change the tree presentation | . | Sorting Options . The sorting option controls how the test results are displayed in the inspector tree. You can sort the results by: . | Name Ascending: Sorts the test cases alphabetically from A to Z. | Name Descending: Sorts the test cases alphabetically from Z to A. | Test Execution Time: Sorts the test cases based on the time they took to execute, from longest to shortest. | . | Tree Presentation . The tree presentation setting allows you to switch between two views: . | Flat View: Displays all test cases in a single, flat list without any hierarchical structure. | Tree View: Displays test cases in a hierarchical structure, reflecting the path of your test files and suites. | . | . Advice Whats the difference between errors and failures? GdUnit distinguishes between errors and failures. An error is a hard failure such as a test abort or timeout, while a failure is a test error caused by a failed assertion. Test Run Overview Tree . This area provides an overview of all executed/executing tests and their execution status in real-time. Here, you can navigate through the tests and view the report for each individual test by selecting it. You can also run the currently selected test or test suite again by right-clicking to open a context menu. Advice Double-clicking on a test in the test run overview allows you to jump directly to the test or test error if a failure line was reported in Debug Mode (4). Failure Report . This area displays the failure report of the currently selected failed test. GdUnit generates the failure report based on the used assert, according to the scheme expected vs current value. Info Bar . This section provides you with information about the total duration of the test execution and any orphaned nodes found. | Time The time taken to execute all tests. | Orphans The number of nodes that were not cleaned up after the execution of the tests. Orphaned nodes can cause memory leaks, and it’s essential to clean them | up after the execution of the tests. | . Advice It's recommended to always check for orphaned nodes after the execution of tests to ensure there are no memory leaks in your game/application. ",
+    "content": "Definition . The GdUnit inspector provides an overview of the currently executed tests and allows you to navigate them. It allows you to select individual tests and view possible test failures. The integrated status and info bar gives you a quick overview of the last test run. | (1) Button Bar | (2) Status Bar | (3) Test Run Overview | (4) Failure Report | (5) Info Bar | . Button Bar . The button bar contains several buttons that allow you to perform different actions in GdUnit: . | Button | Description | . | (1) | Opens the GdUnit documentation page in your browser | . | (2) | Opens the GdUnit settings window | . | (3) | Run Overall tests | . | (4) | (Re)Run the tests in runtime mode | . | (5) | (Re)Run the tests in debug mode | . | (6) | Stops the current test run | . | (7) | Displays the version of GdUnit | . Note that the keyboard shortcuts for these buttons may vary depending on your specific GdUnit configuration. Advice When running tests in GdUnit, it is recommended to first run them in debug mode (4) in order to get the line number where the failure occurred in the test report. This is because Godot does not provide stack trace information when running in runtime mode (3), which can result in the failure line not being displayed in the report. The Run Overall Button . The Run Overall button provides a convenient way to execute all the tests in your project at once, instead of running them one by one or selecting a custom set of tests. By clicking the “Run Overall” button, you can initiate the execution of all the tests in your project, saving you time and effort. To enable the Run Overall button in GdUnit4, you need to adjust the UI settings. Once you have enabled the Run Overall button, it should be visible in the inspector. Status Bar . This area gives you information about the current/last test execution, such as the progress and errors/failures found. With the arrow buttons, you can navigate back and forth over found failures. | Marker | Description | . | (0) | Test execution progress (indicator of test run) | . | (1) | Number of errors (parse/runtime errors) | . | (2) | Number of failures | . | (3) | Number of flaky tests | . | (4) | Number of skipped tests | . | (5) | Discover and run all tests | . | (6) | Change sort tree mode (asc/desc/time) | . | (7) | Change the test tree presentation (tree/flat) | . | Sorting Options . The sorting option controls how the test results are displayed in the inspector tree. You can sort the results by: . | Unsorted: The natural order. | Name Ascending: Sorts the test cases alphabetically from A to Z. | Name Descending: Sorts the test cases alphabetically from Z to A. | Test Execution Time: Sorts the test cases based on the time they took to execute, from longest to shortest. | . | Tree Presentation . The tree presentation setting allows you to switch between two views: . | Flat View: Displays all test cases in a single, flat list without any hierarchical structure. | Tree View: Displays test cases in a hierarchical structure, reflecting the path of your test files and suites. | . | . Advice Whats the difference between errors and failures? GdUnit distinguishes between errors and failures. An error is a hard failure such as a test abort or timeout, while a failure is a test error caused by a failed assertion. Test Run Overview Tree . This area provides an overview of all executed/executing tests and their execution status in real-time. Here, you can navigate through the tests and view the report for each individual test by selecting it. You can also run the currently selected test or test suite again by right-clicking to open a context menu. Advice Double-clicking on a test in the test run overview allows you to jump directly to the test or test error if a failure line was reported in Debug Mode (4). Failure Report . This area displays the failure report of the currently selected failed test. GdUnit generates the failure report based on the used assert, according to the scheme expected vs current value. Info Bar . This section provides you with information about the total duration of the test execution and any orphaned nodes found. | Time The time taken to execute all tests. | Orphans The number of nodes that were not cleaned up after the execution of the tests. Orphaned nodes can cause memory leaks, and it’s essential to clean them | up after the execution of the tests. | . Advice It's recommended to always check for orphaned nodes after the execution of tests to ensure there are no memory leaks in your game/application. ",
     "url": "/gdUnit4/v6.0.0/first_steps/run-tests/#the-gdunit-test-inspectorexplorer",
     
     "relUrl": "/first_steps/run-tests/#the-gdunit-test-inspectorexplorer"
@@ -867,152 +867,152 @@
     
     "relUrl": "/testing/hooks/"
   },"124": {
-    "doc": "Unit Testing",
-    "title": "Unit Tests",
-    "content": "What is Unit Testing? Unit testing is a fundamental practice in software development that involves testing individual components or “units” of your code to ensure they work as expected in isolation. In game development, a unit typically refers to a small piece of functionality, such as a single function, method, or class. The goal of unit testing is to verify that each unit of your code performs its intended task correctly and to catch bugs early in the development process. ",
-    "url": "/gdUnit4/v6.0.0/testing/index/#unit-tests",
-    
-    "relUrl": "/testing/index/#unit-tests"
-  },"125": {
-    "doc": "Unit Testing",
-    "title": "Key Characteristics of Unit Testing",
-    "content": ". | Isolation: Each test targets a specific piece of code, independent of other parts of the system. This isolation helps identify which component is responsible for any given issue. | Automated: Unit tests are usually automated, allowing developers to run them frequently, quickly, and consistently. This automation is especially useful for catching regressions after changes are made to the codebase. | Fast and Focused: Unit tests should be small and fast to execute, focusing on a single “unit” of functionality. This makes them ideal for verifying specific behaviors, such as a character’s movement logic or a function that calculates in-game scores. | . ",
-    "url": "/gdUnit4/v6.0.0/testing/index/#key-characteristics-of-unit-testing",
-    
-    "relUrl": "/testing/index/#key-characteristics-of-unit-testing"
-  },"126": {
-    "doc": "Unit Testing",
-    "title": "Benefits of Unit Testing",
-    "content": ". | Early Bug Detection: By testing individual components, you can detect and fix bugs early in the development cycle before they affect other parts of your game. Improved Code Quality:** Writing unit tests encourages developers to write modular, maintainable, and well-documented code. It also helps ensure that each unit of functionality behaves as intended. | Refactoring Confidence: Unit tests act as a safety net when refactoring or optimizing code. If all tests pass after changes are made, you can be confident that your updates haven’t introduced new bugs. | Documentation: Unit tests serve as a form of documentation by demonstrating how specific functions or classes are intended to be used, making it easier for other developers to understand the codebase. | . ",
-    "url": "/gdUnit4/v6.0.0/testing/index/#benefits-of-unit-testing",
-    
-    "relUrl": "/testing/index/#benefits-of-unit-testing"
-  },"127": {
-    "doc": "Unit Testing",
-    "title": "Writing Unit Tests in Game Development",
-    "content": "In the context of game development, unit tests can be used to verify: . | Game Logic: Testing rules and mechanics, such as character health calculations, score updates, or level progression. | Math Functions: Verifying mathematical calculations, such as physics equations or vector operations. | Utility Functions: Testing helper functions that perform operations like data parsing, string manipulation, or AI decision-making. | State Management: Ensuring that game states (e.g., paused, active, game-over) transition correctly and behave as expected. | . ",
-    "url": "/gdUnit4/v6.0.0/testing/index/#writing-unit-tests-in-game-development",
-    
-    "relUrl": "/testing/index/#writing-unit-tests-in-game-development"
-  },"128": {
-    "doc": "Unit Testing",
-    "title": "Unit Testing",
-    "content": " ",
-    "url": "/gdUnit4/v6.0.0/testing/index/",
-    
-    "relUrl": "/testing/index/"
-  },"129": {
     "doc": "Integration Testing",
     "title": "Integration Tests",
     "content": "Integration testing is a critical process in game development that ensures different parts of your game work together seamlessly. Unlike unit testing, which focuses on individual components, integration testing verifies the interaction between multiple components and systems within your scene. ",
     "url": "/gdUnit4/v6.0.0/testing/integration-testing/#integration-tests",
     
     "relUrl": "/testing/integration-testing/#integration-tests"
-  },"130": {
+  },"125": {
     "doc": "Integration Testing",
     "title": "What is Integration Testing?",
     "content": "Integration testing involves testing the combination of different modules, scenes, or features of your game to ensure they work together as intended. This type of testing helps identify issues that may not surface during unit testing, such as: . | Interaction Bugs: Conflicts between different input actions, such as keyboard shortcuts and mouse events. | Scene Transitions: Ensuring smooth transitions between scenes or UI states. | Gameplay Logic: Verifying that gameplay mechanics function correctly when various elements interact, such as player actions, enemy behavior, and environment changes. | . Benefits of Integration Testing . | Early Bug Detection: Catch issues early in the development cycle by testing how different parts of your game interact. | Improved Stability: Ensure that updates or changes to one part of your game don’t unintentionally break other parts. | Automated Testing: With tools like SceneRunner, you can automate complex interactions, making it easier to run tests regularly and consistently. | . Integration Tests: Using the SceneRunner to Test Your Scene . The SceneRunner tool in GdUnit4 is specifically designed to facilitate integration testing by simulating interactions and processing within your scene. Scene Runner: How to use the SceneRunner. ",
     "url": "/gdUnit4/v6.0.0/testing/integration-testing/#what-is-integration-testing",
     
     "relUrl": "/testing/integration-testing/#what-is-integration-testing"
-  },"131": {
+  },"126": {
     "doc": "Integration Testing",
     "title": "Integration Testing",
     "content": " ",
     "url": "/gdUnit4/v6.0.0/testing/integration-testing/",
     
     "relUrl": "/testing/integration-testing/"
-  },"132": {
+  },"127": {
     "doc": "Test Case",
     "title": "GdUnit Test Case",
     "content": " ",
     "url": "/gdUnit4/v6.0.0/testing/test-case/#gdunit-test-case",
     
     "relUrl": "/testing/test-case/#gdunit-test-case"
-  },"133": {
+  },"128": {
     "doc": "Test Case",
     "title": "TestCase Definition",
     "content": "Test cases are essential in software testing because they provide a way to ensure that the software is working as intended and meets the requirements and specifications of the project. By executing a set of test cases, testers can identify and report any defects or issues in the software, which can then be addressed by the development team. A test is defined as a function that follows the pattern test_name([arguments]) -&gt; void. The function name must start with the prefix test_ to be identified as a test. You can choose any name for the name part, but it should correspond to the function being tested. Test [arguments] are optional and will be explained later in the advanced testing section. When naming your tests, use a descriptive name that accurately represents what the test does. In addition to containing multiple test cases, a TestSuite can also contain test setup and teardown (hooks) that are executed before and after each test case, as well as before and after the entire TestSuite. This allows you to control the test environment and ensure that tests are executed in a consistent and repeatable manner. | TestCase Hooks | . ",
     "url": "/gdUnit4/v6.0.0/testing/test-case/#testcase-definition",
     
     "relUrl": "/testing/test-case/#testcase-definition"
-  },"134": {
+  },"129": {
     "doc": "Test Case",
     "title": "Single TestCase",
     "content": ". | GdScript | C# | . | To define a TestCase you have to use the prefix test_ e.g. test_verify_is_string . extends GdUnitTestSuite func before_test(): # Setup test data here func after_test(): # Cleanup test data here func test_string_to_lower() -&gt; void: assert_str(\"AbcD\".to_lower()).is_equal(\"abcd\") . We named it test_string_to_lower() because we test the to_lower function on a string. | Use the [TestCase] attribute to define a method as a TestCase. namespace Examples; using GdUnit4; using static GdUnit4.Assertions; [TestSuite] public class GdUnitExampleTest { [TestCase] public void StringToLower() { AssertString(\"AbcD\".ToLower()).IsEqual(\"abcd\"); } } . We named it StringToLower() because we test the ToLower function on a string. | . ",
     "url": "/gdUnit4/v6.0.0/testing/test-case/#single-testcase",
     
     "relUrl": "/testing/test-case/#single-testcase"
-  },"135": {
+  },"130": {
     "doc": "Test Case",
     "title": "Using Parameterized TestCases",
     "content": "See Testing with Parameterized TestCases . ",
     "url": "/gdUnit4/v6.0.0/testing/test-case/#using-parameterized-testcases",
     
     "relUrl": "/testing/test-case/#using-parameterized-testcases"
-  },"136": {
+  },"131": {
     "doc": "Test Case",
     "title": "Using Fuzzers on Tests",
     "content": "See Testing with Fuzzers . ",
     "url": "/gdUnit4/v6.0.0/testing/test-case/#using-fuzzers-on-tests",
     
     "relUrl": "/testing/test-case/#using-fuzzers-on-tests"
-  },"137": {
+  },"132": {
     "doc": "Test Case",
     "title": "TestCase Parameters",
     "content": "GdUnit allows you to define additional test parameters to have more control over the test execution. | GdScript | C# | . | | Parameter | Description | . | timeout | Defines a custom timeout in milliseconds. By default, a TestCase will be interrupted after 5 minutes if the tests are not finished. | . | do_skip | Set to ‘true’ to skip the test. Conditional expressions are supported. | . | skip_reason | Adds a comment why you want to skip this test. | . | fuzzer | Defines a fuzzer to provide test data. | . | fuzzer_iterations | Defines the number of times a TestCase will be run using the fuzzer. | . | fuzzer_seed | Defines a seed used by the fuzzer. | . | test_parameters | Defines the TestCase dataset for parameterized tests. | . | | Parameter | Description | . | Timeout | Defines a custom timeout in milliseconds. By default, a TestCase will be interrupted after 5 minutes if the tests are not finished. | . | TestName | Defines a custom TestCase name. | . | Seed | Defines a seed to provide test data. | . | . timeout . The timeout paramater sets the duration in milliseconds before a test case is interrupted. By default, a test case will be interrupted after 5 minutes if it has not finished executing. You can customize the default timeout value in the GdUnit Settings. A test case that is interrupted by a timeout is marked and reported as a failure. | GdScript | C# | . | Sets the test execution timeout to 2s. func test_with_timeout(timeout=2000): ... | Sets the test execution timeout to 2s. [TestCase(Timeout = 2000)] public async Task ATestWithTimeout() { ... | . fuzzer parameters . To learn how to use the fuzzer parameter, please refer to the Using Fuzzers section . test_parameters . To learn how to use parameterized tests, please refer to the Parameterized TestCases section . ",
     "url": "/gdUnit4/v6.0.0/testing/test-case/#testcase-parameters",
     
     "relUrl": "/testing/test-case/#testcase-parameters"
-  },"138": {
+  },"133": {
     "doc": "Test Case",
     "title": "When to Use Fail Fast with Multiple Assertions",
     "content": "Advice Since GdScript does not have exceptions, we need to manually define an exit strategy to fail fast and avoid unnecessary test execution. When you have multiple assertions in a single test case, it’s important to consider using fail fast techniques to avoid unnecessary test execution and get clearer failure reports. Why Use Fail Fast? . By default, GdUnit4 will continue executing all assertions in a test case even after one fails. While this can provide comprehensive feedback about all failing conditions, it can also lead to: . | Cascading failures: Later assertions may fail because earlier ones didn’t establish the expected state | Misleading error messages: Subsequent failures might not represent real issues but rather consequences of the first failure | Debugger interruptions: In debug mode, accessing properties on null objects will cause the debugger to break with runtime errors, stopping test execution unexpectedly | Longer execution time: Unnecessary processing when the test has already failed | Cluttered output: Multiple failure messages when only the first one is relevant | . Example Without Fail Fast . func test_player_setup(): var player = create_player() # If this fails, the following assertions may not make sense assert_object(player).is_not_null() # In debug mode: debugger will break here with null reference error if player is null # In release mode: will continue and show confusing assertion failure messages assert_str(player.name)\\ .is_equal(\"Hero\")\\ .starts_with(\"H\") assert_int(player.health).is_equal(100) assert_bool(player.is_alive()).is_true() . Example With Fail Fast . func test_player_setup(): var player = create_player() # Check critical precondition first assert_object(player).is_not_null() if is_failure(): return # Now we can safely test player properties using fluent syntax assert_str(player.name)\\ .is_equal(\"Hero\")\\ .starts_with(\"H\") if is_failure(): return assert_int(player.health)\\ .is_equal(100)\\ .is_greater(0) if is_failure(): return assert_bool(player.is_alive()).is_true() . Using fail() for Complex Conditions . Sometimes you need to fail based on complex logic that can’t be expressed with standard assertions: . func test_game_state_validation(): var game_state = get_current_game_state() # Complex validation that requires custom logic if game_state.level &gt; 10 and game_state.player_health &lt;= 0 and not game_state.has_revival_item: fail(\"Invalid game state: Player cannot survive level 10+ with 0 health and no revival items\") return # Continue with standard assertions using fluent syntax assert_that(game_state.is_valid()).is_true() if is_failure(): return assert_int(game_state.score)\\ .is_greater_equal(0)\\ .is_less(1000000) . Best Practices . | Use fail fast for dependent assertions: When later assertions depend on earlier ones being true | Check critical preconditions first: Validate that objects exist and are in the expected state before testing their properties | Use fail() for complex conditions: When standard assertions can’t express the validation logic you need | Keep tests focused: Consider splitting complex test cases with many assertions into smaller, more focused tests | . ",
     "url": "/gdUnit4/v6.0.0/testing/test-case/#multiple-assertions-fail-fast",
     
     "relUrl": "/testing/test-case/#multiple-assertions-fail-fast"
-  },"139": {
+  },"134": {
     "doc": "Test Case",
     "title": "Test Case",
     "content": " ",
     "url": "/gdUnit4/v6.0.0/testing/test-case/",
     
     "relUrl": "/testing/test-case/"
-  },"140": {
+  },"135": {
     "doc": "Test Suite",
     "title": "GdUnit Test Suite",
     "content": " ",
     "url": "/gdUnit4/v6.0.0/testing/test-suite/#gdunit-test-suite",
     
     "relUrl": "/testing/test-suite/#gdunit-test-suite"
-  },"141": {
+  },"136": {
     "doc": "Test Suite",
     "title": "TestSuite Definition",
     "content": "A TestSuite is a collection of tests that are aligned to a specific class or module that you want to test. When writing tests, it is common to find that several tests require similar test data to be created before and cleaned up after the test run. GdUnit TestSuites allow you to define pre-initialized test data and cleanup (hooks) that will be executed at specific points during test execution. In addition to containing multiple test cases, a TestSuite can also contain test setup and teardown hooks that are executed before and after each test case, as well as before and after the entire TestSuite. This allows you to control the test environment and ensure that tests are executed in a consistent and repeatable manner. | TestSuite Hooks | . ",
     "url": "/gdUnit4/v6.0.0/testing/test-suite/#testsuite-definition",
     
     "relUrl": "/testing/test-suite/#testsuite-definition"
-  },"142": {
+  },"137": {
     "doc": "Test Suite",
     "title": "TestSuite Example",
     "content": ". | GdScript | C# | . | Defines a TestSuite with two TestCases . extends GdUnitTestSuite func before() -&gt; void: # Setup suite-level shared resources, expensive setup func after() -&gt; void: # Cleanup suite-level shared resources, expensive setup func test_string_to_lower() -&gt; void: assert_str(\"AbcD\".to_lower()).is_equal(\"abcd\") func test_string_to_upper() -&gt; void: assert_str(\"AbcD\".to_upper()).is_equal(\"ABCD\") . | Use the [TestSuite] attribute to define TestSuite. namespace Examples; using GdUnit4; using static GdUnit4.Assertions; [TestSuite] public class GdUnitExampleTest { [Before] public void Setup() { // Setup suite-level shared resources, expensive setup } [After] public void Setup() { // Cleanup suite-level shared resources, expensive setup } [TestCase] public void StringToLower() { AssertString(\"AbcD\".ToLower()).IsEqual(\"abcd\"); } [TestCase] public void StringToUpper() { AssertString(\"AbcD\".ToUpper()).IsEqual(\"ABCD\"); } } . | . ",
     "url": "/gdUnit4/v6.0.0/testing/test-suite/#testsuite-example",
     
     "relUrl": "/testing/test-suite/#testsuite-example"
-  },"143": {
+  },"138": {
     "doc": "Test Suite",
     "title": "The TestSuite Execution Graph",
     "content": ". | GdScript | C# | . | . | . | . ",
     "url": "/gdUnit4/v6.0.0/testing/test-suite/#the-testsuite-execution-graph",
     
     "relUrl": "/testing/test-suite/#the-testsuite-execution-graph"
-  },"144": {
+  },"139": {
     "doc": "Test Suite",
     "title": "Test Suite",
     "content": " ",
     "url": "/gdUnit4/v6.0.0/testing/test-suite/",
     
     "relUrl": "/testing/test-suite/"
+  },"140": {
+    "doc": "Unit Testing",
+    "title": "Unit Tests",
+    "content": "What is Unit Testing? Unit testing is a fundamental practice in software development that involves testing individual components or “units” of your code to ensure they work as expected in isolation. In game development, a unit typically refers to a small piece of functionality, such as a single function, method, or class. The goal of unit testing is to verify that each unit of your code performs its intended task correctly and to catch bugs early in the development process. ",
+    "url": "/gdUnit4/v6.0.0/testing/unit-testing/#unit-tests",
+    
+    "relUrl": "/testing/unit-testing/#unit-tests"
+  },"141": {
+    "doc": "Unit Testing",
+    "title": "Key Characteristics of Unit Testing",
+    "content": ". | Isolation: Each test targets a specific piece of code, independent of other parts of the system. This isolation helps identify which component is responsible for any given issue. | Automated: Unit tests are usually automated, allowing developers to run them frequently, quickly, and consistently. This automation is especially useful for catching regressions after changes are made to the codebase. | Fast and Focused: Unit tests should be small and fast to execute, focusing on a single “unit” of functionality. This makes them ideal for verifying specific behaviors, such as a character’s movement logic or a function that calculates in-game scores. | . ",
+    "url": "/gdUnit4/v6.0.0/testing/unit-testing/#key-characteristics-of-unit-testing",
+    
+    "relUrl": "/testing/unit-testing/#key-characteristics-of-unit-testing"
+  },"142": {
+    "doc": "Unit Testing",
+    "title": "Benefits of Unit Testing",
+    "content": ". | Early Bug Detection: By testing individual components, you can detect and fix bugs early in the development cycle before they affect other parts of your game. Improved Code Quality:** Writing unit tests encourages developers to write modular, maintainable, and well-documented code. It also helps ensure that each unit of functionality behaves as intended. | Refactoring Confidence: Unit tests act as a safety net when refactoring or optimizing code. If all tests pass after changes are made, you can be confident that your updates haven’t introduced new bugs. | Documentation: Unit tests serve as a form of documentation by demonstrating how specific functions or classes are intended to be used, making it easier for other developers to understand the codebase. | . ",
+    "url": "/gdUnit4/v6.0.0/testing/unit-testing/#benefits-of-unit-testing",
+    
+    "relUrl": "/testing/unit-testing/#benefits-of-unit-testing"
+  },"143": {
+    "doc": "Unit Testing",
+    "title": "Writing Unit Tests in Game Development",
+    "content": "In the context of game development, unit tests can be used to verify: . | Game Logic: Testing rules and mechanics, such as character health calculations, score updates, or level progression. | Math Functions: Verifying mathematical calculations, such as physics equations or vector operations. | Utility Functions: Testing helper functions that perform operations like data parsing, string manipulation, or AI decision-making. | State Management: Ensuring that game states (e.g., paused, active, game-over) transition correctly and behave as expected. | . ",
+    "url": "/gdUnit4/v6.0.0/testing/unit-testing/#writing-unit-tests-in-game-development",
+    
+    "relUrl": "/testing/unit-testing/#writing-unit-tests-in-game-development"
+  },"144": {
+    "doc": "Unit Testing",
+    "title": "Unit Testing",
+    "content": " ",
+    "url": "/gdUnit4/v6.0.0/testing/unit-testing/",
+    
+    "relUrl": "/testing/unit-testing/"
   },"145": {
     "doc": "Argument Matchers",
     "title": "Argument Matchers",
