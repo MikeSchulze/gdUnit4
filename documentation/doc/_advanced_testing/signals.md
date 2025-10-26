@@ -2,7 +2,7 @@
 layout: default
 title: Signals
 parent: Advanced Testing
-nav_order: 3
+nav_order: 5
 ---
 
 # Testing for Signals

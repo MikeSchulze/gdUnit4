@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Flaky Tests
-nav_order: 6
+parent: Advanced Testing
+nav_order: 11
 ---
 
 # Flaky Tests
