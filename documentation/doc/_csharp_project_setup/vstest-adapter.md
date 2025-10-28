@@ -74,7 +74,7 @@ Below is an example:
         <TestSessionTimeout>180000</TestSessionTimeout>
         <TreatNoTestsAsError>true</TreatNoTestsAsError>
         <EnvironmentVariables>
-            <GODOT_BIN>d:\development\Godot_v4.4.1-stable_mono_win64\Godot_v4.4.1-stable_mono_win64.exe</GODOT_BIN>
+            <GODOT_BIN>d:\development\Godot_v4.5-stable_mono_win64\Godot_v4.5-stable_mono_win64.exe</GODOT_BIN>
         </EnvironmentVariables>
     </RunConfiguration>
 

@@ -21,22 +21,24 @@ making it easier to find and fix bugs and improve the overall quality of your ga
 {% tabs scene-runner-accessors %}
 {% tab scene-runner-accessors GdScript %}
 
-|Function|Description|
-|---|---|
-|[get_property]({{site.baseurl}}/advanced_testing/sceneRunner/#get_property) | Return the current value of a property. |
-|[set_property]({{site.baseurl}}/advanced_testing/sceneRunner/#set_property) | Sets the value of the property with the specified name. |
-|[find_child]({{site.baseurl}}/advanced_testing/sceneRunner/#find_child) | Searches for the specified node with the name in the current scene. |
-|[invoke]({{site.baseurl}}/advanced_testing/sceneRunner/#invoke) | Executes the function specified by name in the scene and returns the result. |
+| Function                                                                                | Description                                                                  |
+|-----------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [get_property]({{site.baseurl}}/advanced_testing//scene_runner/accessors/#get_property) | Return the current value of a property.                                      |
+| [set_property]({{site.baseurl}}/advanced_testing//scene_runner/accessors/#set_property) | Sets the value of the property with the specified name.                      |
+| [find_child]({{site.baseurl}}/advanced_testing//scene_runner/accessors/#find_child)     | Searches for the specified node with the name in the current scene.          |
+| [invoke]({{site.baseurl}}/advanced_testing//scene_runner/accessors/#invoke)             | Executes the function specified by name in the scene and returns the result. |
+| [scene]({{site.baseurl}}/advanced_testing/scene_runner/accessors/#scene)                | Gets access to the current running scene.                                    |
 
 {% endtab %}
 {% tab scene-runner-accessors C# %}
 
-|Function|Description|
-|---|---|
-|[GetProperty]({{site.baseurl}}/advanced_testing/sceneRunner/#get_property) | Return the current value of a property. |
-|[SetProperty]({{site.baseurl}}/advanced_testing/sceneRunner/#set_property) | Sets the value of the property with the specified name. |
-|[FindChild]({{site.baseurl}}/advanced_testing/sceneRunner/#find_child) | Searches for the specified node with the name in the current scene. |
-|[Invoke]({{site.baseurl}}/advanced_testing/sceneRunner/#invoke) | Executes the function specified by name in the scene and returns the result. |
+| Function                                                                              | Description                                                                  |
+|---------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [GetProperty]({{site.baseurl}}/advanced_testing/scene_runner/accessors/#get_property) | Return the current value of a property.                                      |
+| [SetProperty]({{site.baseurl}}/advanced_testing/scene_runner/accessors/#set_property) | Sets the value of the property with the specified name.                      |
+| [FindChild]({{site.baseurl}}/advanced_testing/scene_runner/accessors/#find_child)     | Searches for the specified node with the name in the current scene.          |
+| [Invoke]({{site.baseurl}}/advanced_testing/scene_runner/accessors/#invoke)            | Executes the function specified by name in the scene and returns the result. |
+| [Scene]({{site.baseurl}}/advanced_testing/scene_runner/accessors/#scene)              | Gets access to the current running scene.                                    |
 
 {% endtab %}
 {% endtabs %}
@@ -241,6 +243,68 @@ ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
 
 // Invokes the function `start_color_cycle`
 runner.Invoke("start_color_cycle");
+```
+
+{% endtab %}
+{% endtabs %}
+
+
+### scene
+
+The **scene** function gets access to current loaded and managed scene by the SceneRunner.
+
+{% tabs scene-runner-scene %}
+{% tab scene-runner-scene GdScript %}
+
+```gd
+## Returns the scene instance that is currently loaded and managed by this SceneRunner.
+## [member return] : The node representing the current running scene
+func scene() -> Node:
+```
+
+Here is an example of how to use scene():
+
+```gd
+var runner := scene_runner("res://test_scene.tscn")
+
+# Gets access to the scene instance
+var my_scene := runner.scene()
+```
+
+{% endtab %}
+{% tab scene-runner-scene C# %}
+
+```cs
+    /// <summary>
+    ///     Access to the current running scene.
+    ///     Returns the scene instance that is currently loaded and managed by this SceneRunner.
+    ///     The scene remains available for testing and interaction until the runner is disposed
+    ///     or the scene is explicitly freed.<br />
+    ///     <br />
+    ///     Lifecycle behavior:<br />
+    ///     - Returns valid Node instance when scene is loaded and active<br />
+    ///     - Returns null when the SceneRunner has been disposed<br />
+    ///     - Returns null when autoFree has cleaned up the scene<br />
+    ///     <br />
+    ///     Usage patterns:<br />
+    ///     - Check for null before accessing scene properties or methods<br />
+    ///     - Use in assertions to verify scene state and availability<br />
+    ///     - Access child nodes through the returned scene instance.<br />
+    /// </summary>
+    /// <returns>
+    ///     The current scene Node instance, or null when the SceneRunner is disposed
+    ///     or the scene has been freed.
+    /// </returns>
+    Node? Scene();
+```
+
+Here is an example of how to use Invoke:
+
+```cs
+ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
+
+// Invokes the function `start_color_cycle`
+var currentScene = runner.Scene();
 ```
 
 {% endtab %}

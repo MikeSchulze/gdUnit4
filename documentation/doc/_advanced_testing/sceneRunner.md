@@ -56,6 +56,9 @@ Here is a short example:
 func test_simulate_frames(timeout = 5000) -> void:
     # Create the scene runner for scene `test_scene.tscn`
     var runner := scene_runner("res://test_scene.tscn")
+    
+    # Get access to the loaded scene node
+    var my_scene := runner.scene()
 
     # Get access to scene property '_box1'
     var box1: ColorRect = runner.get_property("_box1")
@@ -77,7 +80,10 @@ func test_simulate_frames(timeout = 5000) -> void:
 [TestCase]
 public async Task simulate_frame() {
     // Create the scene runner for scene `test_scene.tscn`
-    ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn");
+    ISceneRunner runner = ISceneRunner.Load("res://test_scene.tscn"); 
+    
+    // Get access to the loaded scene node
+    var my_scene = runner.Scene();
 
     // Get access to scene property '_box1'
     ColorRect box1 = runner.GetProperty("_box1");
