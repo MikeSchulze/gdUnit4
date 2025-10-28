@@ -6,11 +6,6 @@ nav_order: 1
 
 ## GdUnit4 C# Test Setup
 
-{% include advice.html
-content="Please note that running C# tests is only supported with GdUnit4 version 5.0.0 and higher.<br>
-To be able to use the GdUnit4Net C# Test API, at least one Godot-Mono version 4.3.x must be installed."
-%}
-
 ### How GdUnit4 Integrates C# Test Support
 
 GdUnit4 integrates C# testing capabilities through the [GdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net){:target="_blank"} project.
@@ -39,18 +34,15 @@ GdUnit4 utilizes the C# language standard 12.0. To ensure seamless integration, 
 1. Setup your Project
 
    GdUnit4Net C# API supports the frameworks **net8.0** and **net9.0** to support the latest language standard<br>
-   Open you project file (\*.csproj), and change:
-    * under section `<PropertyGroup>`
-        * change the *TargetFramework* to `net8.0` or `net9.0`
-        * add `<LangVersion>12.0</LangVersion>`
-        * add `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>`
-    * add the section `<ItemGroup>` see below
+   Open you project file (\*.csproj), and check you have added the gdunit4 dependencies.
+   The **gdUnit4.api** should be used with version `5.1.0-rc1` to be best fit to Godot 4.5.
 
     ```cs
+      <!-- gdUnit4 package dependencies --> 
       <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-        <PackageReference Include="gdUnit4.api" Version="5.0.0" />
-        <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0"/>
+        <PackageReference Include="gdUnit4.api" Version="5.1.0-rc1"/>
+        <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0"/>
         <PackageReference Include="gdUnit4.analyzers" Version="1.0.0">
           <PrivateAssets>none</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -77,27 +69,28 @@ GdUnit4 utilizes the C# language standard 12.0. To ensure seamless integration, 
    Here is a complete example of what your project should look like.
 
    ```cs
-   <Project Sdk="Godot.NET.Sdk/4.4.1">
-     <PropertyGroup>
-       <TargetFrameworks>net8.0</TargetFrameworks>
-       <LangVersion>12.0</LangVersion>
-       <!--Force nullable warnings, you can disable if you want-->
-       <Nullable>enable</Nullable>
-       <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-       <!--Disable warning of invalid/incompatible GodotSharp version-->
-       <NoWarn>NU1605</NoWarn>
-     </PropertyGroup>
-     <ItemGroup>
-       <!--Required for GdUnit4Net-->
-       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-       <PackageReference Include="gdUnit4.api" Version="5.0.0" />
-       <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0" />
-       <PackageReference Include="gdUnit4.analyzers" Version="1.0.0">
-         <PrivateAssets>none</PrivateAssets>
-         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-       </PackageReference>
-     </ItemGroup>
-   </Project>
+    <Project Sdk="Godot.NET.Sdk/4.5">
+      <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>13.0</LangVersion>
+        <!--Force nullable warnings, you can disable if you want-->
+        <Nullable>enable</Nullable>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <!--Disable warning of invalid/incompatible GodotSharp version-->
+        <NoWarn>NU1605</NoWarn>
+      </PropertyGroup>
+      
+      <!-- gdUnit4 package dependencies --> 
+      <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0"/>
+        <PackageReference Include="gdUnit4.api" Version="5.1.0-rc1"/>
+        <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0"/>
+        <PackageReference Include="gdUnit4.analyzers" Version="1.0.0">
+          <PrivateAssets>none</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+      </ItemGroup>
+    </Project>
    ```
 
 ## The GdUnit4 Godot Editor C# Support

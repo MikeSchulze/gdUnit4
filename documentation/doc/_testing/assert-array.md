@@ -144,10 +144,10 @@ func assert_array(<current>).is_equal(<expected>) -> GdUnitArrayAssert
 ```gd
 var a := [1, 2, 3, 4, 2, 5]
 # this assertion succeeds, all values are equal
-assert_array(a).is_equal([1, 2, 3, 4, 2, 5])
+assert_array(a).is_equal(1, 2, 3, 4, 2, 5)
 
 # should fail because the array not contains the expected elements and has diff size
-assert_array(a).is_equal([1, 2, 3, 4, 2, 5, 7])
+assert_array(a).is_equal(1, 2, 3, 4, 2, 5, 7)
 ```
 {% endtab %}
 {% tab assert-array-is_not_null C# %}
@@ -174,10 +174,10 @@ func assert_array(<current>).is_equal_ignoring_case(<expected>) -> GdUnitArrayAs
 ```
 ```gd
 # this assertion succeeds
-assert_array(["this", "is", "a", "message"]).is_equal_ignoring_case(["This", "is", "a", "Message"])
+assert_array(["this", "is", "a", "message"]).is_equal_ignoring_case("This", "is", "a", "Message")
 
 # should fail because the array not contains same elements
-assert_array(["this", "is", "a", "message"]).is_equal_ignoring_case(["This", "is", "an", "Message"])
+assert_array(["this", "is", "a", "message"]).is_equal_ignoring_case("This", "is", "an", "Message")
 ```
 {% endtab %}
 {% tab assert-array-is_equal_ignoring_case C# %}
@@ -206,10 +206,10 @@ func assert_array(<current>).is_not_equal(<expected>) -> GdUnitArrayAssert
 ```
 ```gd
 # this assertion succeeds
-assert_array([1, 2, 3, 4, 5]).is_not_equal([1, 2, 3, 4, 5, 6])
+assert_array([1, 2, 3, 4, 5]).is_not_equal(1, 2, 3, 4, 5, 6)
 
 # should fail because the array contains same elements
-assert_array([1, 2, 3, 4, 5]).is_not_equal([1, 2, 3, 4, 5])
+assert_array([1, 2, 3, 4, 5]).is_not_equal(1, 2, 3, 4, 5)
 ```
 {% endtab %}
 {% tab assert-array-is_equal_ignoring_case C# %}
@@ -236,10 +236,10 @@ func assert_array(<current>).is_not_equal_ignoring_case(<expected>) -> GdUnitArr
 ```
 ```gd
 # this assertion succeeds
-assert_array(["this", "is", "a", "message"]).is_not_equal_ignoring_case(["This", "is", "an", "Message"])
+assert_array(["this", "is", "a", "message"]).is_not_equal_ignoring_case("This", "is", "an", "Message")
 
 # should fail because the array contains same elements ignoring case sensitive
-assert_array(["this", "is", "a", "message"]).is_not_equal_ignoring_case(["This", "is", "a", "Message"])
+assert_array(["this", "is", "a", "message"]).is_not_equal_ignoring_case("This", "is", "a", "Message")
 ```
 {% endtab %}
 {% tab assert-array-is_not_equal_ignoring_case C# %}
@@ -432,10 +432,10 @@ func assert_array(<current>).contains(<expected>) -> GdUnitArrayAssert
 ```
 ```gd
 # this assertion succeeds
-assert_array([1, 2, 3, 4, 5]).contains([5, 2])
+assert_array([1, 2, 3, 4, 5]).contains(5, 2)
 
 # should fail because the array not contains 7 and 6
-assert_array([1, 2, 3, 4, 5]).contains([2, 7, 6])
+assert_array([1, 2, 3, 4, 5]).contains(2, 7, 6)
 ```
 {% endtab %}
 {% tab assert-array-contains C# %}
@@ -464,10 +464,10 @@ func assert_array(<current>).contains_exactly(<expected>) -> GdUnitArrayAssert
 ```
 ```gd
 # this assertion succeeds
-assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 2, 3, 4, 5])
+assert_array([1, 2, 3, 4, 5]).contains_exactly(1, 2, 3, 4, 5)
 
 # should fail because the array contains the same elements but in a different order
-assert_array([1, 2, 3, 4, 5]).contains_exactly([1, 4, 3, 2, 5])
+assert_array([1, 2, 3, 4, 5]).contains_exactly(1, 4, 3, 2, 5)
 ```
 {% endtab %}
 {% tab assert-array-contains_exactly C# %}
@@ -496,10 +496,10 @@ func contains_exactly_in_any_order(expected) -> GdUnitArrayAssert:
 ```
 ```gd
 # this assertion succeeds, contains all elements but in a different order
-assert_array([1, 2, 3, 4, 5]).contains_exactly_in_any_order([1, 5, 3, 4, 2])
+assert_array([1, 2, 3, 4, 5]).contains_exactly_in_any_order(1, 5, 3, 4, 2)
 
 # should fail because the array contains not exacly all elements (5 is missing)
-assert_array([1, 2, 3, 4]).contains_exactly([1, 4, 3, 2])
+assert_array([1, 2, 3, 4]).contains_exactly(1, 4, 3, 2)
 ```
 {% endtab %}
 {% tab assert-array-contains_exactly_in_any_order C# %}
@@ -528,10 +528,10 @@ func not_contains(expected) -> GdUnitArrayAssert:
 ```
 ```gd
 # this assertion succeeds
-assert_array([1, 2, 3, 4, 5]).not_contains([6, 0])
+assert_array([1, 2, 3, 4, 5]).not_contains(6, 0)
 
 # should fail because the array contains the value 2
-assert_array([1, 2, 3, 4]).contains_exactly([[6, 0, 2])
+assert_array([1, 2, 3, 4]).contains_exactly(6, 0, 2)
 ```
 {% endtab %}
 {% tab assert-array-not_contains C# %}
@@ -565,10 +565,10 @@ var value_c := Node.new()
 var a := [value_a, value_b]
 
 # this assertion succeeds
-assert_array(a).contains_same([value_a])
+assert_array(a).contains_same(value_a)
 
 # should fail because the array not contains value_c
-assert_array(a).contains_same([value_c])
+assert_array(a).contains_same(value_c)
 ```
 {% endtab %}
 {% tab assert-array-contains_same C# %}
@@ -605,10 +605,10 @@ var value_b := Node.new()
 var a := [value_a, value_b]
 
 # this assertion succeeds
-assert_array(a).contains_same_exactly([value_a, value_b])
+assert_array(a).contains_same_exactly(value_a, value_b)
 
 # should fail because the array not contains more than value_a
-assert_array(a).contains_same_exactly([value_a])
+assert_array(a).contains_same_exactly(value_a)
 ```
 {% endtab %}
 {% tab assert-array-contains_same_exactly C# %}
@@ -644,10 +644,10 @@ var value_b := Node.new()
 var a := [value_a, value_b]
 
 # this assertion succeeds
-assert_array(a).contains_same_exactly_in_any_order([value_b, value_a])
+assert_array(a).contains_same_exactly_in_any_order(value_b, value_a)
 
 # should fail because the array not contains more than value_a
-assert_array(a).contains_same_exactly_in_any_order([value_a])
+assert_array(a).contains_same_exactly_in_any_order(value_a)
 ```
 {% endtab %}
 {% tab assert-array-contains_same_exactly_in_any_order C# %}
@@ -679,10 +679,10 @@ func not_contains_same(expected) -> GdUnitArrayAssert:
 ```
 ```gd
 # this assertion succeeds
-assert_array([1, 2, 3, 4, 5]).not_contains_same([6, 0])
+assert_array([1, 2, 3, 4, 5]).not_contains_same(6, 0)
 
 # should fail because the array contains the value 2
-assert_array([1, 2, 3, 4]).not_contains_same([[6, 0, 2])
+assert_array([1, 2, 3, 4]).not_contains_same([6, 0, 2)
 ```
 {% endtab %}
 {% tab assert-array-not_contains_same C# %}
