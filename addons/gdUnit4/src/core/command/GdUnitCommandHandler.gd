@@ -327,39 +327,6 @@ func cmd_discover_tests() -> void:
 	await GdUnitTestDiscoverer.run()
 
 
-static func scan_all_test_directories(root: String) -> PackedStringArray:
-	var base_directory := "res://"
-	# If the test root folder is configured as blank, "/", or "res://", use the root folder as described in the settings panel
-	if root.is_empty() or root == "/" or root == base_directory:
-		return [base_directory]
-	return scan_test_directories(base_directory, root, [])
-
-
-static func scan_test_directories(base_directory: String, test_directory: String, test_suite_paths: PackedStringArray) -> PackedStringArray:
-	print_verbose("Scannning for test directory '%s' at %s" % [test_directory, base_directory])
-	for directory in DirAccess.get_directories_at(base_directory):
-		if directory.begins_with("."):
-			continue
-		var current_directory := normalize_path(base_directory + "/" + directory)
-		if GdUnitTestSuiteScanner.exclude_scan_directories.has(current_directory):
-			continue
-		if match_test_directory(directory, test_directory):
-			@warning_ignore("return_value_discarded")
-			test_suite_paths.append(current_directory)
-		else:
-			@warning_ignore("return_value_discarded")
-			scan_test_directories(current_directory, test_directory, test_suite_paths)
-	return test_suite_paths
-
-
-static func normalize_path(path: String) -> String:
-	return path.replace("///", "//")
-
-
-static func match_test_directory(directory: String, test_directory: String) -> bool:
-	return directory == test_directory or test_directory.is_empty() or test_directory == "/" or test_directory == "res://"
-
-
 func run_debug_mode() -> void:
 	EditorInterface.play_custom_scene("res://addons/gdUnit4/src/core/runners/GdUnitTestRunner.tscn")
 	_is_running = true
