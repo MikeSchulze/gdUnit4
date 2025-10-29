@@ -114,3 +114,38 @@ func test_discover_csharp_tests(do_skip := !GdUnit4CSharpApiLoader.is_api_loaded
 			tuple("TestCase2", "TestCase2", "gdUnit4.addons.gdUnit4.test.core.discovery.resources.DiscoverExampleTestSuite.TestCase2")
 		])
 #endif
+
+
+func test_scan_test_directories() -> void:
+	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "test", [])).contains_exactly([
+		"res://addons/gdUnit4/test"
+	])
+	# for root folders
+	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "", [])).contains_exactly([
+		"res://addons", "res://assets", "res://documentation"
+	])
+	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "/", [])).contains_exactly([
+		"res://addons", "res://assets", "res://documentation"
+	])
+	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "res://", [])).contains_exactly([
+		"res://addons", "res://assets", "res://documentation"
+	])
+	# a test folder not exists
+	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "notest", [])).is_empty()
+
+
+func test_scan_all_test_directories() -> void:
+	# Test when test_root_folder is empty
+	assert_array(GdUnitTestDiscoverer.scan_all_test_directories("")).contains_exactly(["res://"])
+
+	# Test when test_root_folder is "/"
+	assert_array(GdUnitTestDiscoverer.scan_all_test_directories("/")).contains_exactly(["res://"])
+
+	# Test when test_root_folder is "res://"
+	assert_array(GdUnitTestDiscoverer.scan_all_test_directories("res://")).contains_exactly(["res://"])
+
+	# Test when test_root_folder is set to a specific folder
+	assert_array(GdUnitTestDiscoverer.scan_all_test_directories("test")).contains_exactly(["res://addons/gdUnit4/test"])
+
+	# Test when test_root_folder is set to something which doesn't exist
+	assert_array(GdUnitTestDiscoverer.scan_all_test_directories("notest")).is_empty()
