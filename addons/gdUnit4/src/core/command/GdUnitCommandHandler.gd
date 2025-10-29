@@ -30,6 +30,18 @@ const SETTINGS_SHORTCUT_MAPPING := {
 	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTSUITE_DEBUG
 }
 
+const CommandMapping = {
+	GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL: GdUnitCommandHandler.CMD_RUN_OVERALL,
+	GdUnitShortcut.ShortCut.RUN_TESTCASE: GdUnitCommandHandler.CMD_RUN_TESTCASE,
+	GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG: GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG,
+	GdUnitShortcut.ShortCut.RUN_TESTSUITE: GdUnitCommandHandler.CMD_RUN_TESTSUITE,
+	GdUnitShortcut.ShortCut.RUN_TESTSUITE_DEBUG: GdUnitCommandHandler.CMD_RUN_TESTSUITE_DEBUG,
+	GdUnitShortcut.ShortCut.RERUN_TESTS: GdUnitCommandHandler.CMD_RERUN_TESTS,
+	GdUnitShortcut.ShortCut.RERUN_TESTS_DEBUG: GdUnitCommandHandler.CMD_RERUN_TESTS_DEBUG,
+	GdUnitShortcut.ShortCut.STOP_TEST_RUN: GdUnitCommandHandler.CMD_STOP_TEST_RUN,
+	GdUnitShortcut.ShortCut.CREATE_TEST: GdUnitCommandHandler.CMD_CREATE_TESTCASE,
+}
+
 # the current test runner config
 var _runner_config := GdUnitRunnerConfig.new()
 
@@ -156,7 +168,7 @@ func get_shortcut_action(shortcut_type: GdUnitShortcut.ShortCut) -> GdUnitShortc
 
 
 func get_shortcut_command(p_shortcut: GdUnitShortcut.ShortCut) -> String:
-	return GdUnitShortcut.CommandMapping.get(p_shortcut, "unknown command")
+	return CommandMapping.get(p_shortcut, "unknown command")
 
 
 func register_command(p_command: GdUnitCommand) -> void:
