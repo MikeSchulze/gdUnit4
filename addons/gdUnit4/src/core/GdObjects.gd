@@ -69,6 +69,7 @@ const TYPE_AS_STRING_MAPPINGS := {
 class EditorNotifications:
 	# NOTE: Hardcoding to avoid runtime errors in exported projects when editor
 	#       classes are not available. These values are unlikely to change.
+	# See: EditorSettings.NOTIFICATION_EDITOR_SETTINGS_CHANGED
 	const NOTIFICATION_EDITOR_SETTINGS_CHANGED := 10000
 
 
