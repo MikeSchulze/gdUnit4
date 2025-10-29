@@ -15,7 +15,7 @@ static func run() -> Array[GdUnitTestCase]:
 		var runner_config := GdUnitRunnerConfig.new()
 		runner_config.load_config()
 		var recovered_tests := runner_config.test_cases()
-		var test_suite_directories :PackedStringArray = scan_all_test_directories(GdUnitSettings.test_root_folder())
+		var test_suite_directories := scan_all_test_directories(GdUnitSettings.test_root_folder())
 		var scanner := GdUnitTestSuiteScanner.new()
 
 		var collected_tests: Array[GdUnitTestCase] = []
