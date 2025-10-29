@@ -30,7 +30,7 @@ const SETTINGS_SHORTCUT_MAPPING := {
 	GdUnitSettings.SHORTCUT_FILESYSTEM_RUN_TEST_DEBUG : GdUnitShortcut.ShortCut.RUN_TESTSUITE_DEBUG
 }
 
-const CommandMapping = {
+const CommandMapping := {
 	GdUnitShortcut.ShortCut.RUN_TESTS_OVERALL: GdUnitCommandHandler.CMD_RUN_OVERALL,
 	GdUnitShortcut.ShortCut.RUN_TESTCASE: GdUnitCommandHandler.CMD_RUN_TESTCASE,
 	GdUnitShortcut.ShortCut.RUN_TESTCASE_DEBUG: GdUnitCommandHandler.CMD_RUN_TESTCASE_DEBUG,
