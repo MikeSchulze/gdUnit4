@@ -357,8 +357,8 @@ static func add_test_case(resource_path: String, func_name: String)  -> GdUnitRe
 	if Engine.is_editor_hint():
 		# NOTE: Avoid using EditorInterface and EditorSettings directly,
 		#       as it causes compilation errors in exported projects.
-		var editor_interface = Engine.get_singleton("EditorInterface")
-		var settings = editor_interface.get_editor_settings()
+		var editor_interface :Object = Engine.get_singleton("EditorInterface")
+		var settings :RefCounted = editor_interface.get_editor_settings()
 		var ident_type :int = settings.get_setting("text_editor/behavior/indent/type")
 		var ident_size :int = settings.get_setting("text_editor/behavior/indent/size")
 		if ident_type == 1:
