@@ -17,35 +17,30 @@ func test_before() -> void:
 	_test_param2 = 22
 
 
-@warning_ignore("unused_parameter")
-func test_example_a(a: int, b: int, test_parameters := [[1, 2], [3,4]]) -> void:
+func test_example_a(_a: int, _b: int, _test_parameters := [[1, 2], [3,4]]) -> void:
 	pass
 
 
-@warning_ignore("unused_parameter")
-func test_example_b(a: Vector2, b: Vector2, test_parameters := [
+func test_example_b(_a: Vector2, _b: Vector2, _test_parameters := [
 	[Vector2.ZERO, Vector2.ONE], [Vector2(1.1, 3.2), Vector2.DOWN]] ) -> void:
 	pass
 
 
-@warning_ignore("unused_parameter")
-func test_example_c(a: Object, b: Object, test_parameters := [
+func test_example_c(_a: Object, _b: Object, _test_parameters := [
 	[Resource.new(), Resource.new()],
 	[Resource.new(), null]
 	] ) -> void:
 	pass
 
 
-@warning_ignore("unused_parameter")
-func test_resolve_parameters_static(a: int, b: int, test_parameters := [
+func test_resolve_parameters_static(_a: int, _b: int, _test_parameters := [
 	[1, 10],
 	[2, 20]
 	]) -> void:
 	pass
 
 
-@warning_ignore("unused_parameter")
-func test_resolve_parameters_at_runtime(a: int, b: int, test_parameters := [
+func test_resolve_parameters_at_runtime(_a: int, _b: int, _test_parameters := [
 	[1, _test_param1],
 	[2, _test_param2],
 	[3, 30]
@@ -53,8 +48,7 @@ func test_resolve_parameters_at_runtime(a: int, b: int, test_parameters := [
 	pass
 
 
-@warning_ignore("unused_parameter")
-func test_parameterized_with_comments(a: int, b :int, c :String, expected :int, test_parameters := [
+func test_parameterized_with_comments(_a: int, _b: int, _c: String, _expected: int, _test_parameters := [
 	# before data set
 	[1, 2, '3', 6], # after data set
 	# between data sets
@@ -70,8 +64,7 @@ func build_param(value: float) -> Vector3:
 	return Vector3(value, value, value)
 
 
-@warning_ignore("unused_parameter")
-func test_example_d(a: Vector3, b: Vector3, test_parameters:=[
+func test_example_d(_a: Vector3, _b: Vector3, _test_parameters:=[
 	[build_param(1), build_param(3)],
 	[Vector3.BACK, Vector3.UP]
 	] ) -> void:
@@ -88,8 +81,7 @@ class TestObj extends RefCounted:
 		return _value
 
 
-@warning_ignore("unused_parameter")
-func test_example_e(a: Object, b: Object, expected: String, test_parameters:=[
+func test_example_e(_a: Object, _b: Object, _expected: String, _test_parameters:=[
 	[TestObj.new("abc"), TestObj.new("def"), "abcdef"]]) -> void:
 	pass
 

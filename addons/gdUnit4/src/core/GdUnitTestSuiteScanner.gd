@@ -166,7 +166,8 @@ func _build_test_attribute(script: GDScript, fd: GdFunctionDescriptor) -> TestCa
 		if arg.type() == GdObjects.TYPE_FUZZER:
 			attribute.fuzzers.append(arg)
 		else:
-			match arg.name():
+			# We allow underscore as prefix to prevent unused argument warnings
+			match arg.name().trim_prefix("_"):
 				ARGUMENT_TIMEOUT:
 					attribute.timeout = type_convert(arg.default(), TYPE_INT)
 				ARGUMENT_SKIP:
@@ -239,7 +240,8 @@ static func parse_test_suite_name(script: Script) -> String:
 
 func _handle_test_suite_arguments(test_suite: GdUnitTestSuite, script: GDScript, fd: GdFunctionDescriptor) -> void:
 	for arg in fd.args():
-		match arg.name():
+		# We allow underscore as prefix to prevent unused argument warnings
+		match arg.name().trim_prefix("_"):
 			ARGUMENT_SKIP:
 				var result: Variant = _expression_runner.execute(script, arg.plain_value())
 				if result is bool:
