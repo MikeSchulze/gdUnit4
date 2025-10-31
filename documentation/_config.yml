@@ -28,11 +28,11 @@ aux_links:
 aux_links_new_tab: true
 
 # Version configuration
-current_version: "v5.1.1"
+current_version: "v5.1.x"
 versions:
   - "latest"
-  - "v6.0.0"
-  - "v5.1.1"
+  - "v6.0.x"
+  - "v5.1.x"
 
 
 # Define Jekyll collections with correct source paths
