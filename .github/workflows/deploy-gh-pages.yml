@@ -53,11 +53,32 @@ jobs:
             exit 1
           fi
 
-          echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "DOC_SOURCE=${DOC_SOURCE}" >> "$GITHUB_OUTPUT"
+          # Parse version to extract major and minor components
+          # Remove 'v' prefix if present and split by dots
+          VERSION_WITHOUT_V="${VERSION#v}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${VERSION_WITHOUT_V}"
+
+          # Validate version format
+          if [[ -z "$MAJOR" ]] || [[ -z "$MINOR" ]]; then
+            echo "Error: Invalid version format. Expected format: vX.Y.Z"
+            exit 1
+          fi
+
+          # Create documentation version folder name (e.g., v6.0.x, v6.1.x)
+          DOC_VERSION="v${MAJOR}.${MINOR}.x"
+
+          {
+            echo "VERSION=${VERSION}"
+            echo "DOC_VERSION=${DOC_VERSION}"
+            echo "DOC_SOURCE=${DOC_SOURCE}"
+            echo "MAJOR=${MAJOR}"
+            echo "MINOR=${MINOR}"
+            echo "PATCH=${PATCH}"
+          } >> "$GITHUB_OUTPUT"
 
           # Log the configuration
           echo "Building documentation for version: ${VERSION}"
+          echo "Documentation will be deployed to: ${DOC_VERSION}"
           echo "Documentation source: ${DOC_SOURCE}"
 
           # Checkout documentation source
@@ -75,11 +96,24 @@ jobs:
           LATEST_TAG=$(git tag -l --sort=-v:refname | head -n 1)
           CURRENT_VERSION="${{ steps.version.outputs.VERSION }}"
 
+          # Also check if this is the latest version within the major.minor series
+          MAJOR="${{ steps.version.outputs.MAJOR }}"
+          MINOR="${{ steps.version.outputs.MINOR }}"
+          LATEST_IN_SERIES=$(git tag -l "v${MAJOR}.${MINOR}.*" --sort=-v:refname | head -n 1)
+
           if [[ "${CURRENT_VERSION}" == "${LATEST_TAG}" ]]; then
             echo "IS_LATEST=true" >> "$GITHUB_OUTPUT"
-            echo "Current version ${CURRENT_VERSION} is the latest version"
+            echo "Current version ${CURRENT_VERSION} is the latest version overall"
           else
             echo "IS_LATEST=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [[ "${CURRENT_VERSION}" == "${LATEST_IN_SERIES}" ]]; then
+            echo "IS_LATEST_IN_SERIES=true" >> "$GITHUB_OUTPUT"
+            echo "Current version ${CURRENT_VERSION} is the latest in the ${MAJOR}.${MINOR}.x series"
+          else
+            echo "IS_LATEST_IN_SERIES=false" >> "$GITHUB_OUTPUT"
+            echo "Current version ${CURRENT_VERSION} is NOT the latest in the ${MAJOR}.${MINOR}.x series (latest is ${LATEST_IN_SERIES})"
           fi
 
       - name: '💎 Setup Ruby'
@@ -93,15 +127,16 @@ jobs:
         working-directory: documentation
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
+          DOC_VERSION="${{ steps.version.outputs.DOC_VERSION }}"
 
-          echo "Building Jekyll site for version ${VERSION}"
+          echo "Building Jekyll site for version ${VERSION} to be deployed as ${DOC_VERSION}"
           bundle install
 
-          # Build with version-specific baseurl
-          bundle exec jekyll build --baseurl "/gdUnit4/${VERSION}" --destination "/tmp/jekyll-build/${VERSION}"
-          touch "/tmp/jekyll-build/${VERSION}/.nojekyll"
+          # Build with version-specific baseurl using major.minor.x format
+          bundle exec jekyll build --baseurl "/gdUnit4/${DOC_VERSION}" --destination "/tmp/jekyll-build/${DOC_VERSION}"
+          touch "/tmp/jekyll-build/${DOC_VERSION}/.nojekyll"
 
-          # If this is the latest version build latest in addition
+          # If this is the latest version overall, also build latest
           if [[ "${{ steps.latest.outputs.IS_LATEST }}" == "true" ]]; then
             echo "Building latest documentation"
             bundle exec jekyll build --baseurl "/gdUnit4/latest" --destination "/tmp/jekyll-build/latest"
@@ -111,6 +146,16 @@ jobs:
       - name: '🚀 Deploy versioned documentation'
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
+          DOC_VERSION="${{ steps.version.outputs.DOC_VERSION }}"
+          IS_LATEST_IN_SERIES="${{ steps.latest.outputs.IS_LATEST_IN_SERIES }}"
+
+          # Only deploy if this is the latest version in the major.minor series
+          # This prevents older patch versions from overwriting newer ones
+          if [[ "${IS_LATEST_IN_SERIES}" != "true" ]]; then
+            echo "⚠️ Skipping deployment: ${VERSION} is not the latest version in the ${DOC_VERSION} series"
+            echo "To deploy an older patch version, use the workflow_dispatch with the latest patch version"
+            exit 0
+          fi
 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -118,34 +163,58 @@ jobs:
           git fetch origin gh-pages:gh-pages
           git checkout gh-pages
 
-          if [[ -d "./${VERSION}" ]]; then
-            rm -rf "./${VERSION}"
+          # Deploy to major.minor.x folder (e.g., v6.0.x)
+          if [[ -d "./${DOC_VERSION}" ]]; then
+            echo "Removing existing ${DOC_VERSION} documentation"
+            rm -rf "./${DOC_VERSION}"
           fi
-          echo "Copying built site to ${VERSION} folder"
-          cp -r /tmp/jekyll-build/${VERSION} ./${VERSION}
-          git add ./${VERSION}
+          echo "Copying built site to ${DOC_VERSION} folder"
+          cp -r /tmp/jekyll-build/${DOC_VERSION} ./${DOC_VERSION}
 
+          # Create or update version info file to track which patch version is deployed
+          echo "${VERSION}" > "./${DOC_VERSION}/VERSION"
+          echo "Documentation built from ${VERSION} on $(date)" > "./${DOC_VERSION}/BUILD_INFO"
+
+          git add ./${DOC_VERSION}
+
+          # If this is the latest version overall, also deploy to latest
           if [[ "${{ steps.latest.outputs.IS_LATEST }}" == "true" ]]; then
             if [[ -d "./latest" ]]; then
+              echo "Removing existing latest documentation"
               rm -rf "./latest"
             fi
             echo "Copying built site to latest folder"
             cp -r /tmp/jekyll-build/latest ./latest
+            echo "${VERSION}" > "./latest/VERSION"
+            echo "Documentation built from ${VERSION} on $(date)" > "./latest/BUILD_INFO"
             git add ./latest
           fi
 
-          git commit -m "Deploy documentation for version ${VERSION}"
+          git commit -m "Deploy documentation for version ${VERSION} as ${DOC_VERSION}"
           git push origin gh-pages
 
       - name: '📊 Summary'
         run: |
           {
             echo "## Deployment Summary"
-            echo "- **Version**: ${{ steps.version.outputs.VERSION }}"
+            echo "- **Version Tag**: ${{ steps.version.outputs.VERSION }}"
+            echo "- **Documentation Version**: ${{ steps.version.outputs.DOC_VERSION }}"
             echo "- **Documentation Source**: ${{ steps.version.outputs.DOC_SOURCE }}"
-            echo "- **Is Latest**: ${{ steps.latest.outputs.IS_LATEST }}"
-            echo "- **Documentation URL**: https://${{ github.repository_owner }}.github.io/gdUnit4/${{ steps.version.outputs.VERSION }}/"
+            echo "- **Is Latest Overall**: ${{ steps.latest.outputs.IS_LATEST }}"
+            echo "- **Is Latest in Series**: ${{ steps.latest.outputs.IS_LATEST_IN_SERIES }}"
+            echo ""
+            echo "### URLs"
+            echo "- **Documentation URL**: https://${{ github.repository_owner }}.github.io/gdUnit4/${{ steps.version.outputs.DOC_VERSION }}/"
             if [[ "${{ steps.latest.outputs.IS_LATEST }}" == "true" ]]; then
-              echo "- **Root URL**: https://${{ github.repository_owner }}.github.io/gdUnit4/"
+              echo "- **Latest URL**: https://${{ github.repository_owner }}.github.io/gdUnit4/latest/"
+            fi
+            echo ""
+            echo "### Version Details"
+            echo "- Major: ${{ steps.version.outputs.MAJOR }}"
+            echo "- Minor: ${{ steps.version.outputs.MINOR }}"
+            echo "- Patch: ${{ steps.version.outputs.PATCH }}"
+            echo ""
+            if [[ "${{ steps.latest.outputs.IS_LATEST_IN_SERIES }}" != "true" ]]; then
+              echo "⚠️ **Note**: Documentation was NOT deployed because this is not the latest patch version ${{ steps.version.outputs.DOC_VERSION }}"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
