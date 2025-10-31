@@ -20,10 +20,11 @@ Here's an example of skipping an individual test case:
 {% tab faq-test-skip_test GdScript %}
 
 ```gd
-@warning_ignore('unused_parameter')
-func test_case1(do_skip=true):
+func test_case1(_do_skip := true):
     ...
 ```
+
+💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
 
 {% endtab %}
 {% tab faq-test-skip_test C# %}
@@ -50,10 +51,11 @@ Here's an example of skipping an entire test suite:
 {% tab faq-test-skip GdScript %}
 
 ```gd
-@warning_ignore('unused_parameter')
-func before(do_skip=true):
+func before(_do_skip := true):
     # Test hook code here
 ```
+
+💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
 
 {% endtab %}
 {% tab faq-test-skip C# %}
@@ -78,10 +80,11 @@ why the test is being skipped.
 {% tab faq-test-skip-reason GdScript %}
 
 ```gd
-@warning_ignore('unused_parameter')
-func test_case1(do_skip=true, skip_reason="Test case under development"):
+func test_case1(_do_skip := true, _skip_reason := "Test case under development"):
     # Test case code here
 ```
+
+💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
 
 {% endtab %}
 {% tab faq-test-skip-reason C# %}
@@ -109,10 +112,11 @@ Here's an example of using a conditional expression to skip a test case:
 {% tab faq-test-skip-expression GdScript %}
 
 ```gd
-@warning_ignore('unused_parameter')
-func test_case1(do_skip=Engine.get_version_info().hex < 0x40100):
+func test_case1(_do_skip := Engine.get_version_info().hex < 0x40100):
     # Test case code here
 ```
+
+💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
 
 {% endtab %}
 {% tab faq-test-skip-expression C# %}

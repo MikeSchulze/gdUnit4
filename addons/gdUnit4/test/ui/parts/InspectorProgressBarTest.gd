@@ -24,8 +24,7 @@ func test_progress_init() -> void:
 	assert_that(_status.text).is_equal("0:0")
 
 
-@warning_ignore("unused_parameter")
-func test_progress_on_test_counter_changed(index: int, total_count: int, state: GdUnitInspectorTreeConstants.STATE, expected_color :Color, test_parameters := [
+func test_progress_on_test_counter_changed(index: int, total_count: int, state: GdUnitInspectorTreeConstants.STATE, expected_color: Color, _test_parameters := [
 	[0, 0, GdUnitInspectorTreeConstants.STATE.INITIAL, Color.DARK_GREEN],
 	[1, 2, GdUnitInspectorTreeConstants.STATE.SUCCESS, Color.DARK_GREEN],
 	[2, 2, GdUnitInspectorTreeConstants.STATE.WARNING, Color.DARK_GREEN],

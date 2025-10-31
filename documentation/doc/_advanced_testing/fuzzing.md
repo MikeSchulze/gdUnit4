@@ -70,33 +70,43 @@ func test_name(fuzzer := <Fuzzer>, <fuzzer_iterations>, <fuzzer_seed>):
 {% endtab %}
 {% endtabs %}
 
-Here is an example of using a fuzzer that generates random values in the range from -23 to 22 and iterates 100 times:
-```gd
-func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-23, 22), fuzzer_iterations = 100)
-    assert_int(fuzzer.next_value()).is_between(-23, 22)
+* **Example**
 
+  Here is an example of using a fuzzer that generates random values in the range from -23 to 22 and iterates 100 times:
 
-# using multiple fuzzers in test are allowed
-func test_fuzzer_inject_value(fuzzer_a := Fuzzers.rangei(-23, 22), fuzzer_b := Fuzzers.rangei(0, 42), fuzzer_iterations := 100):
-    assert_int(fuzzer_a.next_value()).is_between(-23, 22)
-    assert_int(fuzzer_b.next_value()).is_between(-23, 22)
-```
+  ```gd
+  func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-23, 22), _fuzzer_iterations := 100)
+      assert_int(fuzzer.next_value()).is_between(-23, 22)
+  
+  
+  # using multiple fuzzers in test are allowed
+  func test_fuzzer_inject_value(fuzzer_a := Fuzzers.rangei(-23, 22), fuzzer_b := Fuzzers.rangei(0, 42), _fuzzer_iterations := 100):
+      assert_int(fuzzer_a.next_value()).is_between(-23, 22)
+      assert_int(fuzzer_b.next_value()).is_between(-23, 22)
+  ```
+    
+  💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
 
-* **fuzzer_iterations**<br>
-    If you want to iterate more or less than the default of 1000 iterations, you can set the number of iterations using the `fuzzer_iterations` argument.
+* **fuzzer_iterations**
 
-    ```gd
-    # execute this test 5000 times
-    func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-100000, 100000), fuzzer_iterations=5000):
-    ```
+  If you want to iterate more or less than the default of 1000 iterations, you can set the number of iterations using the `fuzzer_iterations` argument.
+  
+  ```gd
+  # execute this test 5000 times
+  func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-100000, 100000), _fuzzer_iterations := 5000):
+  ```
+  
+  💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
 
-* **fuzzer_seed**<br>
-    If you want to ensure consistent test results for a random generating fuzzer, you can specify a seed using the `fuzzer_seed` argument.
+* **fuzzer_seed**
 
-    ```gd
-    # execute this test with a seed value of 123456
-    func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-100000, 100000), fuzzer_seed=123456):
-    ```
+  If you want to ensure consistent test results for a random generating fuzzer, you can specify a seed using the `fuzzer_seed` argument.  
+  ```gd
+  # execute this test with a seed value of 123456
+  func test_fuzzer_inject_value(fuzzer := Fuzzers.rangei(-100000, 100000), _fuzzer_seed := 123456):
+  ```
+  
+  💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
 
 ---
 

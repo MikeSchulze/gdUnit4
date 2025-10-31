@@ -15,8 +15,7 @@ func test_case2() -> void:
 	assert_bool(false).is_equal(false);
 
 
-@warning_ignore("unused_parameter")
-func test_parameterized_static(value: int, expected: int, test_parameters := [
+func test_parameterized_static(value: int, expected: int, _test_parameters := [
 	[1, 1],
 	[2, 2],
 	[3, 3]
@@ -24,15 +23,13 @@ func test_parameterized_static(value: int, expected: int, test_parameters := [
 	assert_int(value).is_equal(expected);
 
 
-@warning_ignore("unused_parameter")
-func test_parameterized_static_external(value :Variant, test_parameters := _test_seta) -> void:
+func test_parameterized_static_external(value :Variant, _test_parameters := _test_seta) -> void:
 	assert_object(assert_vector(value))\
 		.is_not_null()\
 		.is_instanceof(GdUnitVectorAssert)
 
 
-@warning_ignore("unused_parameter")
-func test_parameterized_dynamic(value :Variant, test_parameters := data_set()) -> void:
+func test_parameterized_dynamic(value :Variant, _test_parameters := data_set()) -> void:
 	assert_object(assert_vector(value))\
 		.is_not_null()\
 		.is_instanceof(GdUnitVectorAssert)

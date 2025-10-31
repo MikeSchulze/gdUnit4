@@ -278,8 +278,7 @@ func test_collect_report_statistics_all_tests_skipped() -> void:
 		ctx_suite.dispose()
 
 
-@warning_ignore("unused_parameter")
-func test_simmulate_flaky_test(retry_count: int, is_flaky: bool, is_failed: bool, test_parameters := [
+func test_simmulate_flaky_test(retry_count: int, is_flaky: bool, is_failed: bool, _test_parameters := [
 	[1, false, true],
 	[2, false, true],
 	[3, true, false],]) -> void:

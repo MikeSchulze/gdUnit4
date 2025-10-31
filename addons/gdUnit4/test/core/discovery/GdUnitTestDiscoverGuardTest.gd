@@ -114,16 +114,16 @@ func test_discover_deleted_test_GDScript() -> void:
 	assert_array(discoverer._discover_cache.get(script.resource_path))\
 		.extractv(extr("guid"), extr("test_name"), extr("attribute_index"), extr("line_number"))\
 		.contains_exactly([
-			tuple(discovered_tests[2].guid, "test_parameterized_static", 0, 19),
-			tuple(discovered_tests[3].guid, "test_parameterized_static", 1, 19),
-			tuple(discovered_tests[4].guid, "test_parameterized_static", 2, 19),
-			tuple(discovered_tests[5].guid, "test_parameterized_static_external", 0, 28),
-			tuple(discovered_tests[6].guid, "test_parameterized_static_external", 1, 28),
-			tuple(discovered_tests[7].guid, "test_parameterized_static_external", 2, 28),
-			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 35),
-			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 35),
-			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 35),
-			tuple(discovered_tests[11].guid, "test_日本語", -1, 41),
+			tuple(discovered_tests[2].guid, "test_parameterized_static", 0, 18),
+			tuple(discovered_tests[3].guid, "test_parameterized_static", 1, 18),
+			tuple(discovered_tests[4].guid, "test_parameterized_static", 2, 18),
+			tuple(discovered_tests[5].guid, "test_parameterized_static_external", 0, 26),
+			tuple(discovered_tests[6].guid, "test_parameterized_static_external", 1, 26),
+			tuple(discovered_tests[7].guid, "test_parameterized_static_external", 2, 26),
+			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 32),
+			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 32),
+			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 32),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 38),
 		])
 
 
@@ -176,18 +176,18 @@ func test_discover_added_test_GDScript() -> void:
 		.contains_exactly([
 			tuple(discovered_tests[0].guid, "test_case1", -1, 10),
 			tuple(discovered_tests[1].guid, "test_case2", -1, 14),
-			tuple(discovered_tests[2].guid, "test_parameterized_static", 0, 19),
-			tuple(discovered_tests[3].guid, "test_parameterized_static", 1, 19),
-			tuple(discovered_tests[4].guid, "test_parameterized_static", 2, 19),
-			tuple(discovered_tests[5].guid, "test_parameterized_static_external", 0, 28),
-			tuple(discovered_tests[6].guid, "test_parameterized_static_external", 1, 28),
-			tuple(discovered_tests[7].guid, "test_parameterized_static_external", 2, 28),
-			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 35),
-			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 35),
-			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 35),
-			tuple(discovered_tests[11].guid, "test_日本語", -1, 41),
-			tuple(expected_added_tests[0].guid, "test_case3", -1, 51),
-			tuple(expected_added_tests[1].guid, "test_case4", -1, 55),
+			tuple(discovered_tests[2].guid, "test_parameterized_static", 0, 18),
+			tuple(discovered_tests[3].guid, "test_parameterized_static", 1, 18),
+			tuple(discovered_tests[4].guid, "test_parameterized_static", 2, 18),
+			tuple(discovered_tests[5].guid, "test_parameterized_static_external", 0, 26),
+			tuple(discovered_tests[6].guid, "test_parameterized_static_external", 1, 26),
+			tuple(discovered_tests[7].guid, "test_parameterized_static_external", 2, 26),
+			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 32),
+			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 32),
+			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 32),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 38),
+			tuple(expected_added_tests[0].guid, "test_case3", -1, 48),
+			tuple(expected_added_tests[1].guid, "test_case4", -1, 52),
 		])
 
 
@@ -235,16 +235,16 @@ func test_discover_renamed_test_GDScript() -> void:
 		.contains_exactly([
 			tuple(discovered_tests[0].guid, "test_case11", -1, 10),
 			tuple(discovered_tests[1].guid, "test_foo", -1, 14),
-			tuple(discovered_tests[2].guid, "test_parameterized_static", 0, 19),
-			tuple(discovered_tests[3].guid, "test_parameterized_static", 1, 19),
-			tuple(discovered_tests[4].guid, "test_parameterized_static", 2, 19),
-			tuple(discovered_tests[5].guid, "test_parameterized_static_external", 0, 28),
-			tuple(discovered_tests[6].guid, "test_parameterized_static_external", 1, 28),
-			tuple(discovered_tests[7].guid, "test_parameterized_static_external", 2, 28),
-			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 35),
-			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 35),
-			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 35),
-			tuple(discovered_tests[11].guid, "test_日本語", -1, 41),
+			tuple(discovered_tests[2].guid, "test_parameterized_static", 0, 18),
+			tuple(discovered_tests[3].guid, "test_parameterized_static", 1, 18),
+			tuple(discovered_tests[4].guid, "test_parameterized_static", 2, 18),
+			tuple(discovered_tests[5].guid, "test_parameterized_static_external", 0, 26),
+			tuple(discovered_tests[6].guid, "test_parameterized_static_external", 1, 26),
+			tuple(discovered_tests[7].guid, "test_parameterized_static_external", 2, 26),
+			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 32),
+			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 32),
+			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 32),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 38),
 		])
 
 
@@ -268,12 +268,12 @@ func test_discover_moved_test_GDScript() -> void:
 	# verify the expected tests are collected (2 test each with a dataset of 3 == 6)
 	assert_array(expected_renamed_tests).extractv(extr("test_name"), extr("attribute_index"), extr("line_number"))\
 		.contains_exactly([
-			tuple("test_parameterized_static_external", 0, 28),
-			tuple("test_parameterized_static_external", 1, 28),
-			tuple("test_parameterized_static_external", 2, 28),
-			tuple("test_parameterized_dynamic", 0, 35),
-			tuple("test_parameterized_dynamic", 1, 35),
-			tuple("test_parameterized_dynamic", 2, 35),
+			tuple("test_parameterized_static_external", 0, 26),
+			tuple("test_parameterized_static_external", 1, 26),
+			tuple("test_parameterized_static_external", 2, 26),
+			tuple("test_parameterized_dynamic", 0, 32),
+			tuple("test_parameterized_dynamic", 1, 32),
+			tuple("test_parameterized_dynamic", 2, 32),
 		])
 
 	# we insert two new lines before test test_parameterized_static_external (test source_line is now changed)
@@ -291,13 +291,13 @@ func test_discover_moved_test_GDScript() -> void:
 	var changed_tests: Array[GdUnitTestCase] = discoverer._discovered_changes["changed_tests"]
 	assert_array(changed_tests).extractv(extr("guid"), extr("test_name"), extr("attribute_index"), extr("line_number"))\
 		.contains_exactly([
-			tuple(expected_renamed_tests[0].guid, "test_parameterized_static_external", 0, 30),
-			tuple(expected_renamed_tests[1].guid, "test_parameterized_static_external", 1, 30),
-			tuple(expected_renamed_tests[2].guid, "test_parameterized_static_external", 2, 30),
-			tuple(expected_renamed_tests[3].guid, "test_parameterized_dynamic", 0, 37),
-			tuple(expected_renamed_tests[4].guid, "test_parameterized_dynamic", 1, 37),
-			tuple(expected_renamed_tests[5].guid, "test_parameterized_dynamic", 2, 37),
-			tuple(discovered_tests[11].guid, "test_日本語", -1, 43),
+			tuple(expected_renamed_tests[0].guid, "test_parameterized_static_external", 0, 28),
+			tuple(expected_renamed_tests[1].guid, "test_parameterized_static_external", 1, 28),
+			tuple(expected_renamed_tests[2].guid, "test_parameterized_static_external", 2, 28),
+			tuple(expected_renamed_tests[3].guid, "test_parameterized_dynamic", 0, 34),
+			tuple(expected_renamed_tests[4].guid, "test_parameterized_dynamic", 1, 34),
+			tuple(expected_renamed_tests[5].guid, "test_parameterized_dynamic", 2, 34),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 40),
 		])
 	# and no added or removed tests
 	assert_array(discoverer._discovered_changes["deleted_tests"]).is_empty()
@@ -309,23 +309,22 @@ func test_discover_moved_test_GDScript() -> void:
 		.contains_exactly([
 			tuple(discovered_tests[0].guid, "test_case1", -1, 10),
 			tuple(discovered_tests[1].guid, "test_case2", -1, 14),
-			tuple(discovered_tests[2].guid, "test_parameterized_static", 0, 19),
-			tuple(discovered_tests[3].guid, "test_parameterized_static", 1, 19),
-			tuple(discovered_tests[4].guid, "test_parameterized_static", 2, 19),
+			tuple(discovered_tests[2].guid, "test_parameterized_static", 0, 18),
+			tuple(discovered_tests[3].guid, "test_parameterized_static", 1, 18),
+			tuple(discovered_tests[4].guid, "test_parameterized_static", 2, 18),
 			# the following tests has line_number changes
-			tuple(discovered_tests[5].guid, "test_parameterized_static_external", 0, 30),
-			tuple(discovered_tests[6].guid, "test_parameterized_static_external", 1, 30),
-			tuple(discovered_tests[7].guid, "test_parameterized_static_external", 2, 30),
-			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 37),
-			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 37),
-			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 37),
-			tuple(discovered_tests[11].guid, "test_日本語", -1, 43),
+			tuple(discovered_tests[5].guid, "test_parameterized_static_external", 0, 28),
+			tuple(discovered_tests[6].guid, "test_parameterized_static_external", 1, 28),
+			tuple(discovered_tests[7].guid, "test_parameterized_static_external", 2, 28),
+			tuple(discovered_tests[8].guid, "test_parameterized_dynamic", 0, 34),
+			tuple(discovered_tests[9].guid, "test_parameterized_dynamic", 1, 34),
+			tuple(discovered_tests[10].guid, "test_parameterized_dynamic", 2, 34),
+			tuple(discovered_tests[11].guid, "test_日本語", -1, 40),
 		])
 
 
 #if GDUNIT4NET_API_V5
-@warning_ignore("unused_parameter")
-func test_discover_on_csharp_script(do_skip := !GdUnit4CSharpApiLoader.is_api_loaded()) -> void:
+func test_discover_on_csharp_script(_do_skip := !GdUnit4CSharpApiLoader.is_api_loaded()) -> void:
 	var discoverer :GdUnitTestDiscoverGuard = auto_free(GdUnitTestDiscoverGuard.new())
 	var discovered_tests: Array[GdUnitTestCase] = []
 	var script := load_non_cached("res://addons/gdUnit4/test/core/discovery/resources/DiscoverExampleTestSuite.cs")

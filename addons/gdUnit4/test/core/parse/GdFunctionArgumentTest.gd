@@ -29,7 +29,7 @@ func test__parse_argument_as_array_typ1() -> void:
 			\"\"\"]
 		]"""
 
-	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
+	var fa := GdFunctionArgument.new("test_parameters", TYPE_STRING, test_parameters)
 	assert_array(fa.parameter_sets()).contains_exactly([
 		"""[1, "flowchart TDid>This is a  flag shaped node]"]""",
 		"""[2, "flowchart TDid(((This is a\tdouble circle node)))"]""",
@@ -60,7 +60,7 @@ func test__parse_argument_as_array_typ2() -> void:
 			{Node2D: "LOG"}
 		]
 	]"""
-	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
+	var fa := GdFunctionArgument.new("test_parameters", TYPE_STRING, test_parameters)
 	assert_array(fa.parameter_sets()).contains_exactly([
 		"""["test_a", null, "LOG", {}]""",
 		"""["test_b", Node2D, null, {Node2D: "ER,ROR"}]""",
@@ -86,7 +86,7 @@ func test__parse_argument_as_array_bad_formatted() -> void:
 		]
 
 		  ]"""
-	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
+	var fa := GdFunctionArgument.new("test_parameters", TYPE_STRING, test_parameters)
 	assert_array(fa.parameter_sets()).contains_exactly([
 		"""["test_a", null, "LOG", {}]""",
 		"""["test_b", Node2D, null, {Node2D: "ER,ROR"}]""",
@@ -102,7 +102,7 @@ func test_parse_argument_as_array_ends_with_additional_comma() -> void:
 			[42, 'int'],
 			['foo', 'String'],
 		]"""
-	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
+	var fa := GdFunctionArgument.new("test_parameters", TYPE_STRING, test_parameters)
 	assert_array(fa.parameter_sets()).contains_exactly([
 		"""[true, 'bool']""",
 		"""[42, 'int']""",
@@ -114,12 +114,12 @@ func test_parse_argument_as_array_ends_with_additional_comma() -> void:
 func test__parse_argument_as_reference() -> void:
 	var test_parameters := "_test_args()"
 
-	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
+	var fa := GdFunctionArgument.new("test_parameters", TYPE_STRING, test_parameters)
 	assert_array(fa.parameter_sets()).is_empty()
 
 
 func test_parse_parameter_set_with_const_data_in_array() -> void:
 	var test_parameters := "[_data1, _data2]"
 
-	var fa := GdFunctionArgument.new(GdFunctionArgument.ARG_PARAMETERIZED_TEST, TYPE_STRING, test_parameters)
+	var fa := GdFunctionArgument.new("test_parameters", TYPE_STRING, test_parameters)
 	assert_array(fa.parameter_sets()).contains_exactly(["_data1", "_data2"])

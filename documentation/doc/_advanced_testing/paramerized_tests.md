@@ -18,14 +18,18 @@ This is especially useful when you have similar test setups with different input
 To define a TestCase with parameters, you need to add input parameters and a test data set with the name **test_parameters**.
 This TestCase will be executed multiple times with the test data provided by the **test_parameters** parameter.<br>
 Here's an example:
+
 ```gd
-func test_parameterized_int_values(a: int, b :int, c :int, expected :int, test_parameters := [
+func test_parameterized_int_values(a: int, b: int, c: int, expected: int, _test_parameters := [
      [1, 2, 3, 6],
      [3, 4, 5, 12],
      [6, 7, 8, 21] ]):
      
      assert_that(a+b+c).is_equal(expected)
 ```
+
+💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
+
 {% endtab %}
 {% tab faq-test-case-name C# %}
 To define a TestCase with parameters, you can use the attribute **[TestCase]** and provide it with a test data set for each parameter set.
@@ -56,7 +60,9 @@ public void TestCasesWithCustomTestName(int a, double b, int c, int expect)
 {% endtab %}
 {% endtabs %}
 
-💡 **Note:** The TestCase dataset must match the required input parameters and types. If the parameters do not match, a corresponding error is reported.
+{% include advice.html
+content="The TestCase dataset must match the required input parameters and types. If the parameters do not match, a corresponding error is reported."
+%}
 
 ---
 

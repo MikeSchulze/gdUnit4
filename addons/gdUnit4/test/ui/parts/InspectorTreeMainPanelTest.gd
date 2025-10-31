@@ -650,8 +650,7 @@ func test_collect_test_cases() -> void:
 		.contains_exactly_in_any_order(expected_tests)
 
 
-@warning_ignore("unused_parameter")
-func test_collect_test_cases_GD_872(do_skip := not GdUnit4CSharpApiLoader.is_api_loaded(), skip_reason := "Do run only for Godot .Net version") -> void:
+func test_collect_test_cases_GD_872(_do_skip := not GdUnit4CSharpApiLoader.is_api_loaded(), _skip_reason := "Do run only for Godot .Net version") -> void:
 	var tests_by_id := {}
 	var resource_path := "res://addons/gdUnit4/test/ui/parts/resources/gd_872/"
 	for suite_path: String in ["ATests.cs", "AZTests.cs"]:
