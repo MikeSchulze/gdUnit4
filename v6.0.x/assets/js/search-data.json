@@ -7,11 +7,11 @@
     "relUrl": "/doc/about.html"
   },"1": {
     "doc": "About",
-    "title": "GdUnit4 v6.0.0",
+    "title": "GdUnit4 v6.0.x",
     "content": "Advice GdUnit4 v6.0.0 requires at least Godot 4.5! Compatiblility Overview build on (v4.5.stable.mono.official [876b29033]) . ",
-    "url": "/gdUnit4/v6.0.x/#gdunit4-v600",
+    "url": "/gdUnit4/v6.0.x/#gdunit4-v60x",
     
-    "relUrl": "/#gdunit4-v600"
+    "relUrl": "/#gdunit4-v60x"
   },"2": {
     "doc": "About",
     "title": "What is GdUnit4?",
