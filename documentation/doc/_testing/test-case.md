@@ -82,15 +82,19 @@ GdUnit allows you to define additional test parameters to have more control over
 {% tabs faq-test-case-attr %}
 {% tab faq-test-case-attr GdScript %}
 
-| Parameter | Description |
-|---| ---|
-| timeout | Defines a custom timeout in milliseconds. By default, a TestCase will be interrupted after 5 minutes if the tests are not finished.|
-| do_skip | Set to 'true' to skip the test. Conditional expressions are supported. |
-| skip_reason | Adds a comment why you want to skip this test. |
-| fuzzer | Defines a fuzzer to provide test data. |
-| fuzzer_iterations | Defines the number of times a TestCase will be run using the fuzzer. |
-| fuzzer_seed | Defines a seed used by the fuzzer. |
-| test_parameters | Defines the TestCase dataset for parameterized tests. |
+| Parameter                                                                                       | Description                                                                                                                         |
+|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| [timeout]({{site.baseurl}}/testing/test-case/#timeout)                                          | Defines a custom timeout in milliseconds. By default, a TestCase will be interrupted after 5 minutes if the tests are not finished. |
+| [do_skip]({{site.baseurl}}/advanced_testing/skip-tests/#skipping-individual-test-cases)         | Set to 'true' to skip the test. Conditional expressions are supported.                                                              |
+| [skip_reason]({{site.baseurl}}/advanced_testing/skip-tests/#customizing-skip-reasons)           | Adds a comment why you want to skip this test.                                                                                      |
+| [fuzzer]({{site.baseurl}}/advanced_testing/fuzzing/#testing-with-fuzzers)                       | Defines a fuzzer to provide test data.                                                                                              |
+| [fuzzer_iterations]({{site.baseurl}}/advanced_testing/fuzzing/#using-fuzzers)                   | Defines the number of times a TestCase will be run using the fuzzer.                                                                |
+| [fuzzer_seed]({{site.baseurl}}/advanced_testing/fuzzing/#using-fuzzers)                         | Defines a seed used by the fuzzer.                                                                                                  |
+| [test_parameters]({{site.baseurl}}/advanced_testing/paramerized_tests/#parameterized-testcases) | Defines the TestCase dataset for parameterized tests.                                                                               |
+
+{% include advice.html
+content="To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.."
+%}
 
 {% endtab %}
 {% tab faq-test-case-attr C# %}
@@ -116,9 +120,11 @@ A test case that is interrupted by a timeout is marked and reported as a failure
 Sets the test execution timeout to 2s.
 
 ```gd
-func test_with_timeout(timeout=2000):
+func test_with_timeout(_timeout := 2000):
    ...
 ```
+
+💡 To avoid warnings about unused arguments, use the underscore prefix `_` or use `@warning_ignore(“unused_parameter”)`.
 
 {% endtab %}
 {% tab faq-test-case-attr-timeout C# %}
