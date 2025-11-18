@@ -34,7 +34,7 @@ runs:
         use_gitignore: ${{ inputs.use-gitignore }}
 
     - name: 'Validate Markdown files'
-      uses: DavidAnson/markdownlint-cli2-action@v20
+      uses: DavidAnson/markdownlint-cli2-action@v21
       with:
         config: ".github/actions/formatting_checks/.markdownlint.jsonc"
 
