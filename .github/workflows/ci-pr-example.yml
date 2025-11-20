@@ -28,7 +28,7 @@ jobs:
       statuses: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           lfs: true
       - uses: MikeSchulze/gdUnit4-action@v1
