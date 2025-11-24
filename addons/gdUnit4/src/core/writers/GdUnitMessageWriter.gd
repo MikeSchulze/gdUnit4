@@ -61,7 +61,7 @@ var _current_indent := 0
 var _current_flags := 0
 
 ## The current text alignment to be used for the next output operation
-var _current_align: int = Align.LEFT
+var _current_align := Align.LEFT
 
 ## The current text effect to be used for the next output operation
 var _current_effect := Effect.NONE
