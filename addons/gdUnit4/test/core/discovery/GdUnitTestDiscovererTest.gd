@@ -132,6 +132,8 @@ func test_scan_test_directories() -> void:
 	])
 	# a test folder not exists
 	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "notest", [])).is_empty()
+	# for excluded folder (contain .gdignore file)
+	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "excluded", [])).is_empty()
 
 
 func test_scan_all_test_directories() -> void:
