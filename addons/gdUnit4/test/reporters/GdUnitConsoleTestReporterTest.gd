@@ -3,11 +3,11 @@ class_name GdUnitConsoleTestReporterTest
 extends GdUnitTestSuite
 
 
-var reporter :=  GdUnitConsoleTestReporter.new(GdUnitMessageWritter.new())
+var reporter := GdUnitConsoleTestReporter.new(GdUnitMessageWriter.new())
 
 
 func before_test() -> void:
-	reporter.test_session =  GdUnitTestSession.new([], "res://reports")
+	reporter.test_session = GdUnitTestSession.new([], "res://reports")
 	reporter.on_gdunit_event(GdUnitInit.new())
 
 
