@@ -194,7 +194,7 @@ and get clearer failure reports.
 In debug mode, accessing properties on null objects will cause the debugger to break with runtime errors,
 stopping test execution unexpectedly.
 
-For more detailed information about fail fast techniques, see [How to fail fast]({{site.baseurl}}/testing/first-test/#multiple-assertions-fail-fast).
+For more detailed information about fail fast techniques, see [How to fail fast]({{site.baseurl}}/testing/test-case/#multiple-assertions-fail-fast).
 
 ---
 
