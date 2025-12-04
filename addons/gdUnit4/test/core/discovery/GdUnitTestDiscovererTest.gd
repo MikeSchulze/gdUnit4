@@ -122,13 +122,13 @@ func test_scan_test_directories() -> void:
 	])
 	# for root folders
 	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "", [])).contains_exactly([
-		"res://addons", "res://assets", "res://documentation"
+		"res://addons", "res://assets"
 	])
 	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "/", [])).contains_exactly([
-		"res://addons", "res://assets", "res://documentation"
+		"res://addons", "res://assets"
 	])
 	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "res://", [])).contains_exactly([
-		"res://addons", "res://assets", "res://documentation"
+		"res://addons", "res://assets"
 	])
 	# a test folder not exists
 	assert_array(GdUnitTestDiscoverer.scan_test_directories("res://", "notest", [])).is_empty()
