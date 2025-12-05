@@ -474,3 +474,15 @@ func test_日本語() -> void:
 			 'test_本語'
 			 but was
 			 'test_日本語'""".dedent().trim_prefix("\n"))
+
+
+func test_is_equal_on_rich_text() -> void:
+	assert_failure(func() -> void:
+		assert_str("[color=ff00ff]test[/color]").is_equal("[color=ffff00]test[/color]")
+	).is_failed() \
+		# We expect for text containing bbcode tags is rendered with masked tags
+		.has_message("""
+			Expecting:
+			 '[lb]color=ffff00]test[lb]/color]'
+			 but was
+			 '[lb]color=ff00ff]test[lb]/color]'""".dedent().trim_prefix("\n"))
