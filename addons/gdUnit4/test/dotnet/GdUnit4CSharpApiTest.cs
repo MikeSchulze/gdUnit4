@@ -1,7 +1,11 @@
 #if GDUNIT4NET_API_V5
 namespace gdUnit4.addons.gdUnit4.test.dotnet;
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Threading.Tasks;
 
 using GdUnit4;
 
@@ -24,7 +28,7 @@ public partial class GdUnit4CSharpApiTest
     }
 
     [TestCase]
-    [SuppressMessage("Reliability", "CA2000:Objekte verwerfen, bevor Bereich verloren geht")]
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope")]
     public void DiscoverTestsFromScript()
     {
         var script = GD.Load<CSharpScript>("res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs");
@@ -46,18 +50,19 @@ public partial class GdUnit4CSharpApiTest
 
         AssertThat(testsWithoutGuids).HasSize(14)
             // Check for single test `IsFoo`
-            .Contains(new Dictionary
-            {
-                ["test_name"] = "IsFoo",
-                ["source_file"] = "res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs",
-                ["line_number"] = 16,
-                ["attribute_index"] = 0,
-                ["require_godot_runtime"] = true,
-                ["code_file_path"] = fullScriptPath,
-                ["fully_qualified_name"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite.IsFoo",
-                ["simple_name"] = "IsFoo",
-                ["managed_type"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite"
-            },
+            .Contains(
+                new Dictionary
+                {
+                    ["test_name"] = "IsFoo",
+                    ["source_file"] = "res://addons/gdUnit4/test/dotnet/ExampleTestSuite.cs",
+                    ["line_number"] = 16,
+                    ["attribute_index"] = 0,
+                    ["require_godot_runtime"] = true,
+                    ["code_file_path"] = fullScriptPath,
+                    ["fully_qualified_name"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite.IsFoo",
+                    ["simple_name"] = "IsFoo",
+                    ["managed_type"] = "gdUnit4.addons.gdUnit4.test.dotnet.ExampleTestSuite"
+                },
                 // Check exemplary two of the `ParameterizedTest` (index 0, index 11)
                 new Dictionary
                 {
@@ -110,16 +115,17 @@ public partial class GdUnit4CSharpApiTest
 
         // Create a TestEventHandler object to handle the events
         using var eventHandler = new TestEventHandler();
-        eventHandler!.EventReceived += eventData =>
+        eventHandler.EventReceived += eventData =>
         {
             // Track the event
-            receivedEvents.Add(new Dictionary
-            {
-                ["type"] = eventData["type"],
-                ["guid"] = eventData["guid"],
-                ["suite_name"] = eventData["suite_name"],
-                ["test_name"] = eventData["test_name"]
-            });
+            receivedEvents.Add(
+                new Dictionary
+                {
+                    ["type"] = eventData["type"],
+                    ["guid"] = eventData["guid"],
+                    ["suite_name"] = eventData["suite_name"],
+                    ["test_name"] = eventData["test_name"]
+                });
         };
 
         // Create a Callable that references the handler method
@@ -162,8 +168,7 @@ public partial class GdUnit4CSharpApiTest
                 ["guid"] = tests.First()["guid"],
                 ["suite_name"] = "ExampleTestSuite",
                 ["test_name"] = "IsFoo"
-            }
-        );
+            });
     }
 
     // Helper class to handle events
