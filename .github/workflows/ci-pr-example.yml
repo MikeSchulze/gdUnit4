@@ -33,8 +33,8 @@ jobs:
           lfs: true
       - uses: MikeSchulze/gdUnit4-action@v1
         with:
-          godot-version: '4.2.2'
-          version: 'v4.2.0'
+          godot-version: '4.5.1'
+          version: 'v6.0.3'
           paths: |
             res://project/tests/
           timeout: 5
