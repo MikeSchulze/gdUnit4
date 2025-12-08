@@ -7,7 +7,7 @@ has_toc: false
 
 # GdUnit4 {{site.current_version}}
 {% include advice.html
-content="GdUnit4 v6.0.0 requires at least Godot 4.5!<br>
+content="GdUnit4 v6.x+ requires at least Godot 4.5!<br>
 <a href=\"https://github.com/MikeSchulze/gdUnit4#compatibility-overview\" target=\"_blank\">Compatiblility Overview</a>"
 %}
 
