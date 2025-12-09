@@ -473,6 +473,13 @@ func test_move_window_to_foreground() -> void:
 	assert_that(DisplayServer.window_get_mode()).is_equal(DisplayServer.WINDOW_MODE_WINDOWED)
 
 
+# https://github.com/MikeSchulze/gdUnit4/issues/1020
+func test_load_scene_with_audio_player() -> void:
+	var runner := scene_runner("res://addons/gdUnit4/test/core/resources/scenes/scene_audio.tscn")
+
+	await runner.simulate_frames(1)
+
+
 # we override the scene runner function for test purposes to hide push_error notifications
 func scene_runner(scene :Variant, verbose := false) -> GdUnitSceneRunner:
 	return auto_free(GdUnitSceneRunnerImpl.new(scene, verbose, true))
