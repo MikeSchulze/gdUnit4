@@ -74,10 +74,8 @@ func _init(p_scene: Variant, p_verbose: bool, p_hide_push_errors := false) -> vo
 	_scene_tree().root.add_child(_current_scene)
 	# do finally reset all open input events when the scene is removed
 	@warning_ignore("return_value_discarded")
-	_scene_tree().root.child_exiting_tree.connect(func f(child :Node) -> void:
+	_scene_tree().root.child_exiting_tree.connect(func f(child: Node) -> void:
 		if child == _current_scene:
-			# we need to disable the processing to avoid input flush buffer errors
-			_current_scene.process_mode = Node.PROCESS_MODE_DISABLED
 			_reset_input_to_default()
 	)
 	_simulate_start_time = LocalTime.now()
@@ -485,6 +483,8 @@ func find_child(name: String, recursive: bool = true, owned: bool = false) -> No
 
 
 func _scene_name() -> String:
+	if scene() == null:
+		return "unknown"
 	var scene_script :GDScript = scene().get_script()
 	var scene_name :String = scene().get_name()
 	if not scene_script:
