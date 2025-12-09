@@ -58,12 +58,10 @@ func is_enabled(script: Script) -> bool:
 	return command.is_enabled.call(script)
 
 
-func is_visible(script: Script) -> bool:
-	return visible.call(script)
+func is_visible(...args: Array) -> bool:
+	return visible.callv(args)
 
 
-func execute(arguments:=[]) -> void:
-	if arguments.is_empty():
-		command.runnable.call()
-	else:
-		command.runnable.callv(arguments)
+func execute(...args: Array) -> void:
+	prints("execute", args)
+	command.runnable.callv(args)
