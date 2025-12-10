@@ -63,16 +63,6 @@ func _init(...args: Array) -> void:
 	_values = args
 
 
-## Creates a GdUnitTuple from an array of test values.
-## [br]
-## Static factory method useful when programmatically building tuples
-## from test data arrays, particularly when working with data-driven tests.
-static func of(args: Array) -> GdUnitTuple:
-	var t := GdUnitTuple.new()
-	t._values = args
-	return t
-
-
 ## Returns the tuple's values as an array for assertion comparisons.
 ## [br]
 ## Provides access to the stored test values. Used internally by GdUnit4's

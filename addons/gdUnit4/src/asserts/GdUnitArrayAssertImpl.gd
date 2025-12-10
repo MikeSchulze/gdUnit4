@@ -379,7 +379,7 @@ func extractv(...extractors: Array) -> GdUnitArrayAssert:
 				var extractor: GdUnitValueExtractor = extractors[index]
 				ev.append(extractor.extract_value(element))
 			if extractors.size() > 1:
-				extracted_elements.append(GdUnitTuple.of(ev))
+				extracted_elements.append(GdUnitTuple.new.callv(ev))
 			else:
 				extracted_elements.append(ev[0])
 		_current_value_provider = DefaultValueProvider.new(extracted_elements)
