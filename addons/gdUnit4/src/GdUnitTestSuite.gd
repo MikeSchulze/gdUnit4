@@ -533,7 +533,7 @@ func tuple(...args: Array) -> GdUnitTuple:
 	if args.size() < 2:
 		push_error("Tuple requires at least two arguments.")
 		return GdUnitTuple.new()
-	return GdUnitTuple.of(args)
+	return GdUnitTuple.new.callv(args)
 
 
 # === Asserts ==================================================================
