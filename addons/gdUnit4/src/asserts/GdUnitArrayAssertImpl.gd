@@ -374,24 +374,12 @@ func extractv(...extractors: Array) -> GdUnitArrayAssert:
 		_current_value_provider = DefaultValueProvider.new(null)
 	else:
 		for element: Variant in current:
-			var ev: Array[Variant] = [
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG,
-				GdUnitTuple.NO_ARG
-			]
-
+			var ev: Array[Variant] = []
 			for index: int in extractors.size():
 				var extractor: GdUnitValueExtractor = extractors[index]
-				ev[index] = extractor.extract_value(element)
+				ev.append(extractor.extract_value(element))
 			if extractors.size() > 1:
-				extracted_elements.append(GdUnitTuple.new(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], ev[9]))
+				extracted_elements.append(GdUnitTuple.of(ev))
 			else:
 				extracted_elements.append(ev[0])
 		_current_value_provider = DefaultValueProvider.new(extracted_elements)
