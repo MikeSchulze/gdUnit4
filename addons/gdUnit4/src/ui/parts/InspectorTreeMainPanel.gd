@@ -6,16 +6,10 @@ signal test_counters_changed(index: int, total: int, state: GdUnitInspectorTreeC
 signal tree_item_selected(item: TreeItem)
 
 
-const CONTEXT_MENU_RUN_ID = 0
-const CONTEXT_MENU_DEBUG_ID = 1
-const CONTEXT_MENU_COLLAPSE_ALL = 3
-const CONTEXT_MENU_EXPAND_ALL = 4
-
-
 @onready var _tree: Tree = $Panel/Tree
 @onready var _report_list: Node = $report/ScrollContainer/list
 @onready var _report_template: RichTextLabel = $report/report_template
-@onready var _context_menu: PopupMenu = $contextMenu
+@onready var _context_menu: GdUnitInspectorContextMenu = $contextMenu
 @onready var _discover_hint: Control = %discover_hint
 @onready var _spinner: Button = %spinner
 
@@ -193,14 +187,6 @@ func disable_test_recovery() -> void:
 
 @warning_ignore("return_value_discarded")
 func _ready() -> void:
-	_context_menu.set_item_icon(CONTEXT_MENU_RUN_ID, GdUnitUiTools.get_icon("Play"))
-	_context_menu.set_item_icon(CONTEXT_MENU_DEBUG_ID, GdUnitUiTools.get_icon("PlayStart"))
-	_context_menu.set_item_icon(CONTEXT_MENU_EXPAND_ALL, GdUnitUiTools.get_icon("ExpandTree"))
-	_context_menu.set_item_icon(CONTEXT_MENU_COLLAPSE_ALL, GdUnitUiTools.get_icon("CollapseTree"))
-	# do colorize the icons
-	#for index in _context_menu.item_count:
-	#	_context_menu.set_item_icon_modulate(index, Color.MEDIUM_PURPLE)
-
 	_spinner.icon = GdUnitUiTools.get_spinner()
 	init_tree()
 	GdUnitSignals.instance().gdunit_settings_changed.connect(_on_settings_changed)
@@ -208,8 +194,7 @@ func _ready() -> void:
 	GdUnitSignals.instance().gdunit_test_discover_added.connect(on_test_case_discover_added)
 	GdUnitSignals.instance().gdunit_test_discover_deleted.connect(on_test_case_discover_deleted)
 	GdUnitSignals.instance().gdunit_test_discover_modified.connect(on_test_case_discover_modified)
-	var command_handler := GdUnitCommandHandler.instance()
-	command_handler.gdunit_runner_stop.connect(_on_gdunit_runner_stop)
+	GdUnitCommandHandler.instance().gdunit_runner_stop.connect(_on_gdunit_runner_stop)
 	if _run_test_recovery:
 		GdUnitTestDiscoverer.restore_last_session()
 
@@ -508,13 +493,6 @@ func do_collapse_parent(item: TreeItem) -> void:
 	if item != null:
 		item.collapsed = false
 		do_collapse_parent(item.get_parent())
-
-
-func do_collapse_all(collapse: bool, parent := _tree_root) -> void:
-	for item in parent.get_children():
-		item.collapsed = collapse
-		if not collapse:
-			do_collapse_all(collapse, item)
 
 
 func set_state_initial(item: TreeItem, type: GdUnitType) -> void:
@@ -1122,14 +1100,7 @@ func collect_test_cases(item: TreeItem, tests: Array[GdUnitTestCase] = []) -> Ar
 ################################################################################
 # Tree signal receiver
 ################################################################################
-func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -> void:
-	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		_context_menu.position = get_screen_position() + mouse_position
-		_context_menu.popup()
-
-
 func _on_run_pressed(run_debug: bool) -> void:
-	_context_menu.hide()
 	var item: = _tree.get_selected()
 	if item == null:
 		print_rich("[color=GOLDENROD]Abort Testrun, no test suite selected![/color]")
@@ -1139,13 +1110,20 @@ func _on_run_pressed(run_debug: bool) -> void:
 	GdUnitCommandHandler.instance().cmd_run_tests(test_to_execute, run_debug)
 
 
+func _on_collapse_tree_item(collapse: bool, parent := _current_selected_item) -> void:
+	if parent == null:
+		parent = _tree_root
+	else:
+		parent.collapsed = collapse
+	for item in parent.get_children():
+		item.collapsed = collapse
+		if not collapse:
+			_on_collapse_tree_item(collapse, item)
+
+
 func _on_Tree_item_selected() -> void:
-	# only show report checked manual item selection
-	# we need to check the run mode here otherwise it will be called every selection
-	if not _context_menu.is_item_disabled(CONTEXT_MENU_RUN_ID):
-		var selected_item: TreeItem = _tree.get_selected()
-		show_failed_report(selected_item)
 	_current_selected_item = _tree.get_selected()
+	show_failed_report(_current_selected_item)
 	tree_item_selected.emit(_current_selected_item)
 
 
@@ -1176,15 +1154,13 @@ func _on_Tree_item_activated() -> void:
 # external signal receiver
 ################################################################################
 func _on_gdunit_runner_start() -> void:
-	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, true)
-	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, true)
+	_context_menu.disable_items()
 	reset_tree_state(_tree_root)
 	clear_reports()
 
 
 func _on_gdunit_runner_stop(_id: int) -> void:
-	_context_menu.set_item_disabled(CONTEXT_MENU_RUN_ID, false)
-	_context_menu.set_item_disabled(CONTEXT_MENU_DEBUG_ID, false)
+	_context_menu.enable_items()
 	abort_running()
 	sort_tree_items(_tree_root)
 	# wait until the tree redraw
@@ -1221,18 +1197,6 @@ func _on_gdunit_event(event: GdUnitEvent) -> void:
 
 		GdUnitEvent.TESTSUITE_AFTER:
 			update_test_suite(event)
-
-
-func _on_context_m_index_pressed(index: int) -> void:
-	match index:
-		CONTEXT_MENU_DEBUG_ID:
-			_on_run_pressed(true)
-		CONTEXT_MENU_RUN_ID:
-			_on_run_pressed(false)
-		CONTEXT_MENU_EXPAND_ALL:
-			do_collapse_all(false)
-		CONTEXT_MENU_COLLAPSE_ALL:
-			do_collapse_all(true)
 
 
 func _on_settings_changed(property :GdUnitProperty) -> void:
