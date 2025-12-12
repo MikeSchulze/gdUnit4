@@ -21,6 +21,7 @@ const TEST_SUITE_NAMING_CONVENTION = GROUP_TEST + "/test_suite_naming_convention
 const TEST_DISCOVER_ENABLED = GROUP_TEST + "/test_discovery"
 const TEST_FLAKY_CHECK = GROUP_TEST + "/flaky_check_enable"
 const TEST_FLAKY_MAX_RETRIES = GROUP_TEST + "/flaky_max_retries"
+const TEST_RERUN_UNTIL_FAILURE_RETRIES = GROUP_TEST + "/rerun_until_failure_retries"
 
 
 # Report Setiings
@@ -112,6 +113,7 @@ static func setup() -> void:
 	create_property_if_need(TEST_DISCOVER_ENABLED, false, "Automatically detect new tests in test lookup folders at runtime")
 	create_property_if_need(TEST_FLAKY_CHECK, false, "Rerun tests on failure and mark them as FLAKY")
 	create_property_if_need(TEST_FLAKY_MAX_RETRIES, 3, "Sets the number of retries for rerunning a flaky test")
+	create_property_if_need(TEST_RERUN_UNTIL_FAILURE_RETRIES, 10, "The number of reruns until the test fails.")
 	# report settings
 	create_property_if_need(REPORT_PUSH_ERRORS, false, "Report push_error() as failure")
 	create_property_if_need(REPORT_SCRIPT_ERRORS, true, "Report script errors as failure")
